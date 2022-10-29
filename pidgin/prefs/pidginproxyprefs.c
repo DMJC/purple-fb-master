@@ -158,6 +158,30 @@ pidgin_proxy_prefs_set_type_mapping(const GValue *gvalue,
 	return g_variant_new_string(map[position]);
 }
 
+static gboolean
+pidgin_proxy_prefs_get_port_mapping(GValue *value, GVariant *variant,
+                                    G_GNUC_UNUSED gpointer data)
+{
+	g_value_take_string(value,
+	                    g_strdup_printf("%d", g_variant_get_uint16(variant)));
+
+	return TRUE;
+}
+
+static GVariant *
+pidgin_proxy_prefs_set_port_mapping(const GValue *value,
+                                    G_GNUC_UNUSED const GVariantType *expected_type,
+                                    G_GNUC_UNUSED gpointer data)
+{
+	const char *current = g_value_get_string(value);
+
+	if(current != NULL) {
+		return g_variant_new_uint16(atoi(current) & 0xFFFF);
+	}
+
+	return NULL;
+}
+
 static void
 pidgin_proxy_prefs_init_gnome(PidginProxyPrefs *prefs) {
 	gchar *path = NULL;
@@ -205,8 +229,13 @@ pidgin_proxy_prefs_init_non_gnome(PidginProxyPrefs *prefs) {
 
 	g_settings_bind(settings, "host", prefs->host, "text",
 	                G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind(settings, "port", prefs->port, "value",
-	                G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind_with_mapping(settings, "port",
+	                             prefs->port, "text",
+	                             G_SETTINGS_BIND_DEFAULT,
+	                             pidgin_proxy_prefs_get_port_mapping,
+	                             pidgin_proxy_prefs_set_port_mapping,
+	                             NULL,
+	                             NULL);
 	g_settings_bind(settings, "username", prefs->username, "text",
 	                G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(settings, "password", prefs->password, "text",

@@ -18,7 +18,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
 -->
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <requires lib="Adw" version="1.0"/>
+  <requires lib="Adw" version="1.2"/>
   <!-- interface-license-type gplv2 -->
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
@@ -85,73 +85,31 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             <child>
               <object class="GtkListBox">
                 <child>
-                  <object class="AdwActionRow">
-                    <property name="activatable-widget">host</property>
+                  <object class="AdwEntryRow" id="host">
                     <property name="title" translatable="1">_Host</property>
                     <property name="use-underline">1</property>
-                    <property name="focusable">0</property>
-                    <child>
-                      <object class="GtkEntry" id="host">
-                        <property name="focusable">1</property>
-                        <property name="hexpand">1</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="AdwActionRow">
-                    <property name="activatable-widget">port</property>
+                  <object class="AdwEntryRow" id="port">
                     <property name="title" translatable="1">P_ort</property>
                     <property name="use-underline">1</property>
                     <property name="focusable">0</property>
-                    <child>
-                      <object class="GtkSpinButton" id="port">
-                        <property name="focusable">1</property>
-                        <property name="text" translatable="1">0</property>
-                        <property name="adjustment">
-                          <object class="GtkAdjustment">
-                            <property name="upper">65535</property>
-                            <property name="step-increment">1</property>
-                            <property name="page-increment">10</property>
-                          </object>
-                        </property>
-                        <property name="numeric">1</property>
-                        <property name="hexpand">1</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
+                    <property name="input-purpose">number</property>
                   </object>
                 </child>
                 <child>
-                  <object class="AdwActionRow">
-                    <property name="activatable-widget">username</property>
+                  <object class="AdwEntryRow" id="username">
                     <property name="title" translatable="1">User_name</property>
                     <property name="use-underline">1</property>
                     <property name="focusable">0</property>
-                    <child>
-                      <object class="GtkEntry" id="username">
-                        <property name="focusable">1</property>
-                        <property name="hexpand">1</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="AdwActionRow">
-                    <property name="activatable-widget">password</property>
+                  <object class="AdwPasswordEntryRow" id="password">
                     <property name="title" translatable="1">Pa_ssword</property>
                     <property name="use-underline">1</property>
                     <property name="focusable">0</property>
-                    <child>
-                      <object class="GtkPasswordEntry" id="password">
-                        <property name="focusable">1</property>
-                        <property name="hexpand">1</property>
-                        <property name="show-peek-icon">1</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>
