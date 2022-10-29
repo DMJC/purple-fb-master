@@ -96,18 +96,10 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
               <object class="AdwPreferencesGroup">
                 <property name="title" translatable="1">User Options</property>
                 <child>
-                  <object class="AdwActionRow">
-                    <property name="activatable-widget">alias</property>
+                  <object class="AdwEntryRow" id="alias">
                     <property name="focusable">0</property>
                     <property name="title" translatable="1">_Local alias</property>
                     <property name="use-underline">1</property>
-                    <child>
-                      <object class="GtkEntry" id="alias">
-                        <property name="truncate-multiline">1</property>
-                        <property name="hexpand">1</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
                 <child>
@@ -201,69 +193,32 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                       <object class="GtkListBox">
                         <property name="focusable">0</property>
                         <child>
-                          <object class="AdwActionRow">
-                            <property name="activatable-widget">proxy_host</property>
+                          <object class="AdwEntryRow" id="proxy_host">
                             <property name="focusable">0</property>
                             <property name="title" translatable="1">_Host</property>
                             <property name="use-underline">1</property>
-                            <child>
-                              <object class="GtkEntry" id="proxy_host">
-                                <property name="hexpand">1</property>
-                                <property name="valign">center</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                         <child>
-                          <object class="AdwActionRow">
-                            <property name="activatable-widget">proxy_port</property>
+                          <object class="AdwEntryRow" id="proxy_port">
                             <property name="focusable">0</property>
                             <property name="title" translatable="1">P_ort</property>
                             <property name="use-underline">1</property>
-                            <child>
-                              <object class="GtkSpinButton" id="proxy_port">
-                                <property name="text" translatable="1">0</property>
-                                <property name="adjustment">
-                                  <object class="GtkAdjustment">
-                                    <property name="upper">65535</property>
-                                    <property name="step-increment">1</property>
-                                    <property name="page-increment">10</property>
-                                  </object>
-                                </property>
-                                <property name="numeric">1</property>
-                                <property name="hexpand">1</property>
-                                <property name="valign">center</property>
-                              </object>
-                            </child>
+                            <property name="input-purpose">number</property>
                           </object>
                         </child>
                         <child>
-                          <object class="AdwActionRow">
-                            <property name="activatable-widget">proxy_username</property>
+                          <object class="AdwEntryRow" id="proxy_username">
                             <property name="focusable">0</property>
                             <property name="title" translatable="1">User_name</property>
                             <property name="use-underline">1</property>
-                            <child>
-                              <object class="GtkEntry" id="proxy_username">
-                                <property name="hexpand">1</property>
-                                <property name="valign">center</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                         <child>
-                          <object class="AdwActionRow">
-                            <property name="activatable-widget">proxy_password</property>
+                          <object class="AdwPasswordEntryRow" id="proxy_password">
                             <property name="focusable">0</property>
                             <property name="title" translatable="1">Pa_ssword</property>
                             <property name="use-underline">1</property>
-                            <child>
-                              <object class="GtkPasswordEntry" id="proxy_password">
-                                <property name="hexpand">1</property>
-                                <property name="show-peek-icon">1</property>
-                                <property name="valign">center</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>

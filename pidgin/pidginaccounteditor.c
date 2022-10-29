@@ -579,6 +579,7 @@ static void
 pidgin_account_editor_update_proxy_options(PidginAccountEditor *editor) {
 	PurpleProxyInfo *info = NULL;
 	GListModel *model = NULL;
+	char *str = NULL;
 	const char *type = "global";
 	const char *hostname = NULL;
 	const char *username = NULL;
@@ -637,8 +638,10 @@ pidgin_account_editor_update_proxy_options(PidginAccountEditor *editor) {
 	}
 	gtk_editable_set_text(GTK_EDITABLE(editor->proxy_host), hostname);
 
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(editor->proxy_port),
-	                          (gdouble)port);
+
+	str = g_strdup_printf("%d", port);
+	gtk_editable_set_text(GTK_EDITABLE(editor->proxy_port), str);
+	g_free(str);
 
 	if(username == NULL) {
 		username = "";
@@ -874,7 +877,6 @@ pidgin_account_editor_save_proxy(PidginAccountEditor *editor,
 	PurpleProxyType type = PURPLE_PROXY_TYPE_NONE;
 	GObject *item = NULL;
 	const gchar *svalue = NULL;
-	gint ivalue = 0;
 
 	/* Build the ProxyInfo object */
 	if(!new_account) {
@@ -911,8 +913,8 @@ pidgin_account_editor_save_proxy(PidginAccountEditor *editor,
 	svalue = gtk_editable_get_text(GTK_EDITABLE(editor->proxy_host));
 	purple_proxy_info_set_hostname(info, svalue);
 
-	ivalue = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(editor->proxy_port));
-	purple_proxy_info_set_port(info, ivalue);
+	svalue = gtk_editable_get_text(GTK_EDITABLE(editor->proxy_port));
+	purple_proxy_info_set_port(info, atoi(svalue));
 
 	svalue = gtk_editable_get_text(GTK_EDITABLE(editor->proxy_username));
 	purple_proxy_info_set_username(info, svalue);
