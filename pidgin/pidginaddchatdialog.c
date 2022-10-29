@@ -316,11 +316,14 @@ pidgin_add_chat_dialog_response_cb(GtkDialog *dialog, gint response_id,
 }
 
 static void
-pidgin_add_chat_dialog_account_changed_cb(GtkComboBox *widget, gpointer data) {
+pidgin_add_chat_dialog_account_changed_cb(GObject *obj,
+                                          G_GNUC_UNUSED GParamSpec *pspec,
+                                          gpointer data)
+{
 	PidginAddChatDialog *dialog = data;
 	PurpleAccount *account = NULL;
 
-	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(widget));
+	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(obj));
 
 	if(PURPLE_IS_ACCOUNT(account)) {
 		PurpleProtocol *protocol = purple_account_get_protocol(account);

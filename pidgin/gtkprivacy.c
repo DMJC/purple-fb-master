@@ -120,8 +120,10 @@ user_selected_cb(GtkTreeSelection *sel, PidginPrivacyDialog *dialog)
 }
 
 static void
-select_account_cb(GtkWidget *w, PidginPrivacyDialog *dialog) {
-	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(w);
+select_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data)
+{
+	PidginPrivacyDialog *dialog = data;
+	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(obj);
 	PurpleAccount *account = pidgin_account_chooser_get_selected(chooser);
 	gsize i;
 

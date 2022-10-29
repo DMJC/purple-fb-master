@@ -315,8 +315,11 @@ close_request_cb(GtkWidget *w, G_GNUC_UNUSED gpointer d)
 }
 
 static void
-dialog_select_account_cb(G_GNUC_UNUSED GtkWidget *w, PidginRoomlistDialog *dialog) {
-	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(w);
+dialog_select_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
+                         gpointer data)
+{
+	PidginRoomlistDialog *dialog = data;
+	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(obj);
 	PurpleAccount *account = pidgin_account_chooser_get_selected(chooser);
 	gboolean change = (account != dialog->account);
 	dialog->account = account;

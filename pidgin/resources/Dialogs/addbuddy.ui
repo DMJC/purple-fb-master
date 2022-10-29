@@ -66,7 +66,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
               <object class="PidginAccountChooser" id="account">
                 <property name="hexpand">1</property>
                 <property name="model">filter</property>
-                <signal name="changed" handler="pidgin_add_buddy_dialog_account_changed_cb" object="PidginAddBuddyDialog" swapped="no"/>
+                <signal name="notify::account" handler="pidgin_add_buddy_dialog_account_changed_cb" swapped="no"/>
                 <accessibility>
                   <relation name="labelled-by">label1</relation>
                 </accessibility>

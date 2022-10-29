@@ -482,9 +482,11 @@ message_clicked_cb(GtkWidget *w, gpointer data)
 }
 
 static void
-dropdown_changed_cb(GtkComboBox *widget, gpointer data) {
+dropdown_changed_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
+                    gpointer data)
+{
 	PidginXmppConsole *console = data;
-	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(widget);
+	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(obj);
 	PurpleAccount *account = NULL;
 
 	account = pidgin_account_chooser_get_selected(chooser);
@@ -592,7 +594,7 @@ static void
 pidgin_xmpp_console_init(PidginXmppConsole *console) {
 	gtk_widget_init_template(GTK_WIDGET(console));
 
-	dropdown_changed_cb(console->account_chooser, console);
+	dropdown_changed_cb(G_OBJECT(console->account_chooser), NULL, console);
 	entry_changed_cb(console->entry_buffer, console);
 
 	gtk_widget_show(GTK_WIDGET(console));

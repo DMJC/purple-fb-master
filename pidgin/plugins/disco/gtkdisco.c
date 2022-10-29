@@ -145,9 +145,11 @@ pidgin_disco_load_icon(XmppDiscoService *service, const char *size)
 }
 
 static void
-dialog_select_account_cb(GtkWidget *chooser, PidginDiscoDialog *dialog)
+dialog_select_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
+                         gpointer data)
 {
-	PurpleAccount *account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(chooser));
+	PidginDiscoDialog *dialog = data;
+	PurpleAccount *account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(obj));
 	gboolean change = (account != dialog->account);
 	dialog->account = account;
 	g_simple_action_set_enabled(dialog->browse_action, account != NULL);

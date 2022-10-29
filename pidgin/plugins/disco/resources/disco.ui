@@ -78,7 +78,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
               <object class="PidginAccountChooser" id="account_chooser">
                 <property name="model">xmpp_accounts</property>
                 <property name="active">0</property>
-                <signal name="changed" handler="dialog_select_account_cb" object="PidginDiscoDialog" swapped="no"/>
+                <signal name="notify::account" handler="dialog_select_account_cb" swapped="no"/>
               </object>
             </child>
           </object>

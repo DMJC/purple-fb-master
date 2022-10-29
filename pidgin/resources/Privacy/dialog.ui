@@ -68,7 +68,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                 <property name="hexpand">1</property>
                 <property name="model">connected_account_store</property>
                 <property name="active">0</property>
-                <signal name="changed" handler="select_account_cb" object="PidginPrivacyDialog" swapped="no"/>
+                <signal name="notify::account" handler="select_account_cb" swapped="no"/>
                 <accessibility>
                   <relation name="labelled-by">label1</relation>
                 </accessibility>

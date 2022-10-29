@@ -198,12 +198,15 @@ pidgin_add_buddy_dialog_response_cb(GtkDialog *dialog, gint response_id,
 }
 
 static void
-pidgin_add_buddy_dialog_account_changed_cb(GtkComboBox *widget, gpointer data) {
+pidgin_add_buddy_dialog_account_changed_cb(GObject *obj,
+                                           G_GNUC_UNUSED GParamSpec *pspec,
+                                           gpointer data)
+{
 	PidginAddBuddyDialog *dialog = data;
 	PurpleAccount *account = NULL;
 	gboolean message_sensitive = TRUE;
 
-	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(widget));
+	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(obj));
 
 	if(PURPLE_IS_ACCOUNT(account)) {
 		PurpleProtocol *protocol = purple_account_get_protocol(account);
