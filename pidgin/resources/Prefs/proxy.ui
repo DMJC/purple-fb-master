@@ -53,14 +53,18 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
     <child>
       <object class="AdwPreferencesGroup" id="nongnome">
         <property name="title" translatable="1">Proxy Server</property>
+        <property name="focusable">0</property>
         <child>
           <object class="AdwComboRow" id="type">
             <property name="title" translatable="1">Proxy t_ype</property>
             <property name="use-subtitle">1</property>
             <property name="use-underline">1</property>
+            <property name="focusable">1</property>
             <property name="model">
               <object class="GtkStringList">
                 <items>
+                  <!-- the order of this list must be consistent with
+                       prefs/pidginproxyprefs.c at all times. -->
                   <item>none</item>
                   <item>socks4</item>
                   <item>socks5</item>
@@ -77,6 +81,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         </child>
         <child>
           <object class="AdwPreferencesRow" id="options">
+            <property name="focusable">0</property>
             <child>
               <object class="GtkListBox">
                 <child>
@@ -84,12 +89,12 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                     <property name="activatable-widget">host</property>
                     <property name="title" translatable="1">_Host</property>
                     <property name="use-underline">1</property>
+                    <property name="focusable">0</property>
                     <child>
                       <object class="GtkEntry" id="host">
                         <property name="focusable">1</property>
                         <property name="hexpand">1</property>
                         <property name="valign">center</property>
-                        <signal name="changed" handler="proxy_print_option" object="PidginProxyPrefs" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -99,6 +104,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                     <property name="activatable-widget">port</property>
                     <property name="title" translatable="1">P_ort</property>
                     <property name="use-underline">1</property>
+                    <property name="focusable">0</property>
                     <child>
                       <object class="GtkSpinButton" id="port">
                         <property name="focusable">1</property>
@@ -113,7 +119,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                         <property name="numeric">1</property>
                         <property name="hexpand">1</property>
                         <property name="valign">center</property>
-                        <signal name="changed" handler="proxy_print_option" object="PidginProxyPrefs" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -123,12 +128,12 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                     <property name="activatable-widget">username</property>
                     <property name="title" translatable="1">User_name</property>
                     <property name="use-underline">1</property>
+                    <property name="focusable">0</property>
                     <child>
                       <object class="GtkEntry" id="username">
                         <property name="focusable">1</property>
                         <property name="hexpand">1</property>
                         <property name="valign">center</property>
-                        <signal name="changed" handler="proxy_print_option" object="PidginProxyPrefs" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -138,13 +143,13 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                     <property name="activatable-widget">password</property>
                     <property name="title" translatable="1">Pa_ssword</property>
                     <property name="use-underline">1</property>
+                    <property name="focusable">0</property>
                     <child>
                       <object class="GtkPasswordEntry" id="password">
                         <property name="focusable">1</property>
                         <property name="hexpand">1</property>
                         <property name="show-peek-icon">1</property>
                         <property name="valign">center</property>
-                        <signal name="changed" handler="proxy_print_option" object="PidginProxyPrefs" swapped="no"/>
                       </object>
                     </child>
                   </object>
