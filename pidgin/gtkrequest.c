@@ -1385,11 +1385,24 @@ create_image_field(PurpleRequestField *field)
 	return widget;
 }
 
+static gboolean
+field_custom_account_filter_cb(gpointer item, G_GNUC_UNUSED gpointer data) {
+	PurpleFilterAccountFunc func = data;
+	gboolean ret = FALSE;
+
+	if(PURPLE_IS_ACCOUNT(item)) {
+		ret = func(PURPLE_ACCOUNT(item));
+	}
+
+	return ret;
+}
+
 static GtkWidget *
 create_account_field(PurpleRequestField *field)
 {
 	GtkWidget *widget;
 	PurpleAccount *account;
+	GtkCustomFilter *custom_filter = NULL;
 
 	widget = pidgin_account_chooser_new();
 	account  = purple_request_field_account_get_default_value(field);
@@ -1415,9 +1428,15 @@ create_account_field(PurpleRequestField *field)
 
 	pidgin_account_chooser_set_selected(PIDGIN_ACCOUNT_CHOOSER(widget),
 	                                    account);
-	pidgin_account_chooser_set_filter_func(
+	custom_filter = gtk_custom_filter_new(
+	        field_custom_account_filter_cb,
+	        purple_request_field_account_get_filter(field),
+	        NULL);
+	pidgin_account_chooser_set_filter(
 	        PIDGIN_ACCOUNT_CHOOSER(widget),
-	        purple_request_field_account_get_filter(field));
+	        GTK_FILTER(custom_filter));
+	g_object_unref(custom_filter);
+
 	g_signal_connect(widget, "changed", G_CALLBACK(field_account_cb),
 	                 field);
 

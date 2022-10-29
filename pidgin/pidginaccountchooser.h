@@ -49,17 +49,28 @@ G_DECLARE_FINAL_TYPE(PidginAccountChooser, pidgin_account_chooser, PIDGIN,
 GtkWidget *pidgin_account_chooser_new(void);
 
 /**
- * pidgin_account_chooser_set_filter_func:
- * @chooser: The account chooser combo box.
- * @filter_func: (scope notified): A function for checking if an account should be shown. This
- *               can be %NULL to remove any filter.
+ * pidgin_account_chooser_get_filter:
+ * @chooser: The chooser.
  *
- * Set the filter function used to determine which accounts to show.
+ * Gets the filter used to determine which accounts to show.
+ *
+ * Returns: (transfer none): Returns the #GtkFilter that is currently
+ *          displayed.
  *
  * Since: 3.0.0
  */
-void pidgin_account_chooser_set_filter_func(
-        PidginAccountChooser *chooser, PurpleFilterAccountFunc filter_func);
+GtkFilter *pidgin_account_chooser_get_filter(PidginAccountChooser *chooser);
+
+/**
+ * pidgin_account_chooser_set_filter:
+ * @chooser: The chooser.
+ * @filter: The filter.
+ *
+ * Sets the current list filter for the account chooser.
+ *
+ * Since: 3.0.0
+ */
+void pidgin_account_chooser_set_filter(PidginAccountChooser *chooser, GtkFilter *filter);
 
 /**
  * pidgin_account_chooser_get_selected:

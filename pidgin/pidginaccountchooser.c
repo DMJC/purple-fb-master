@@ -29,13 +29,14 @@
 struct _PidginAccountChooser {
 	GtkComboBox parent;
 
-	PurpleFilterAccountFunc filter_func;
+	GtkFilter *filter;
 };
 
 enum
 {
 	PROP_0,
 	PROP_ACCOUNT,
+	PROP_FILTER,
 	PROP_LAST
 };
 
@@ -64,6 +65,9 @@ pidgin_account_chooser_get_property(GObject *object, guint prop_id,
 		case PROP_ACCOUNT:
 			g_value_set_object(value, pidgin_account_chooser_get_selected(chooser));
 			break;
+		case PROP_FILTER:
+			g_value_set_object(value, pidgin_account_chooser_get_filter(chooser));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 			break;
@@ -80,6 +84,10 @@ pidgin_account_chooser_set_property(GObject *object, guint prop_id,
 		case PROP_ACCOUNT:
 			pidgin_account_chooser_set_selected(chooser,
 			                                    g_value_get_object(value));
+			break;
+		case PROP_FILTER:
+			pidgin_account_chooser_set_filter(chooser,
+			                                  g_value_get_object(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -99,7 +107,14 @@ pidgin_account_chooser_class_init(PidginAccountChooserClass *klass)
 
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 	        "account", "Account", "The account that is currently selected.",
-	        PURPLE_TYPE_ACCOUNT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+	        PURPLE_TYPE_ACCOUNT,
+	        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	properties[PROP_FILTER] = g_param_spec_object(
+	        "filter", "filter",
+	        "The filter to be applied on the list of accounts.",
+	        GTK_TYPE_FILTER,
+	        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, PROP_LAST, properties);
 
@@ -129,13 +144,22 @@ pidgin_account_chooser_new(void) {
 	return GTK_WIDGET(chooser);
 }
 
+GtkFilter *
+pidgin_account_chooser_get_filter(PidginAccountChooser *chooser) {
+	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_CHOOSER(chooser), NULL);
+
+	return chooser->filter;
+}
+
 void
-pidgin_account_chooser_set_filter_func(PidginAccountChooser *chooser,
-                                       PurpleFilterAccountFunc filter_func)
+pidgin_account_chooser_set_filter(PidginAccountChooser *chooser,
+                                  GtkFilter *filter)
 {
 	g_return_if_fail(PIDGIN_IS_ACCOUNT_CHOOSER(chooser));
 
-	chooser->filter_func = filter_func;
+	if(g_set_object(&chooser->filter, filter)) {
+		g_object_notify_by_pspec(G_OBJECT(chooser), properties[PROP_FILTER]);
+	}
 }
 
 PurpleAccount *

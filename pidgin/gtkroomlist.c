@@ -444,13 +444,17 @@ pidgin_roomlist_query_tooltip(GtkWidget *widget, int x, int y,
 	return TRUE;
 }
 
-static gboolean account_filter_func(PurpleAccount *account)
-{
-	PurpleConnection *conn = purple_account_get_connection(account);
+static gboolean
+account_filter_func(gpointer item, G_GNUC_UNUSED gpointer data) {
 	PurpleProtocol *protocol = NULL;
 
-	if (conn && PURPLE_CONNECTION_IS_CONNECTED(conn))
-		protocol = purple_connection_get_protocol(conn);
+	if(PURPLE_IS_ACCOUNT(item)) {
+		PurpleAccount *account = PURPLE_ACCOUNT(item);
+		PurpleConnection *conn = purple_account_get_connection(account);
+		if(conn && PURPLE_CONNECTION_IS_CONNECTED(conn)) {
+			protocol = purple_connection_get_protocol(conn);
+		}
+	}
 
 	return (protocol && PURPLE_PROTOCOL_IMPLEMENTS(protocol, ROOMLIST, get_list));
 }
@@ -464,8 +468,9 @@ pidgin_roomlist_is_showable(void)
 	for (c = purple_connections_get_all(); c != NULL; c = c->next) {
 		gc = c->data;
 
-		if (account_filter_func(purple_connection_get_account(gc)))
+		if(account_filter_func(purple_connection_get_account(gc), NULL)) {
 			return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -517,12 +522,15 @@ static void
 pidgin_roomlist_dialog_init(PidginRoomlistDialog *self)
 {
 	GSimpleActionGroup *group = NULL;
+	GtkCustomFilter *filter = NULL;
 
 	gtk_widget_init_template(GTK_WIDGET(self));
 
-	pidgin_account_chooser_set_filter_func(
+	filter = gtk_custom_filter_new(account_filter_func, NULL, NULL);
+	pidgin_account_chooser_set_filter(
 	        PIDGIN_ACCOUNT_CHOOSER(self->account_widget),
-	        account_filter_func);
+	        GTK_FILTER(filter));
+	g_object_unref(filter);
 
 	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(self->tree),
 	                                    _search_func, NULL, NULL);

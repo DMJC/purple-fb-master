@@ -948,13 +948,18 @@ pidgin_blist_update_privacy_cb(PurpleBuddy *buddy)
 }
 
 static gboolean
-chat_account_filter_func(PurpleAccount *account)
-{
-	PurpleConnection *gc = purple_account_get_connection(account);
+chat_account_filter_func(gpointer item, G_GNUC_UNUSED gpointer data) {
+	PurpleConnection *gc = NULL;
 	PurpleProtocol *protocol = NULL;
 
-	if (gc == NULL)
+	if(!PURPLE_IS_ACCOUNT(item)) {
 		return FALSE;
+	}
+
+	gc = purple_account_get_connection(PURPLE_ACCOUNT(item));
+	if(gc == NULL) {
+		return FALSE;
+	}
 
 	protocol = purple_connection_get_protocol(gc);
 
@@ -970,8 +975,9 @@ pidgin_blist_joinchat_is_showable(void)
 	for (c = purple_connections_get_all(); c != NULL; c = c->next) {
 		gc = c->data;
 
-		if (chat_account_filter_func(purple_connection_get_account(gc)))
+		if(chat_account_filter_func(purple_connection_get_account(gc), NULL)) {
 			return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -980,7 +986,7 @@ pidgin_blist_joinchat_is_showable(void)
 static void
 make_blist_request_dialog(PidginBlistRequestData *data, PurpleAccount *account,
 	const char *title, const char *window_role, const char *label_text,
-	GCallback callback_func, PurpleFilterAccountFunc filter_func,
+	GCallback callback_func, GtkCustomFilterFunc filter_func,
 	GCallback response_cb)
 {
 	GtkWidget *label;
@@ -990,6 +996,7 @@ make_blist_request_dialog(PidginBlistRequestData *data, PurpleAccount *account,
 	GtkWidget *vbox;
 	GtkWindow *blist_window;
 	GtkTreeModel *model = NULL, *filter = NULL;
+	GtkCustomFilter *custom_filter = NULL;
 	PidginBuddyList *gtkblist;
 
 	data->account = account;
@@ -1040,8 +1047,12 @@ make_blist_request_dialog(PidginBlistRequestData *data, PurpleAccount *account,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(data->account_menu), 0);
 	}
 
-	pidgin_account_chooser_set_filter_func(
-	        PIDGIN_ACCOUNT_CHOOSER(data->account_menu), filter_func);
+	custom_filter = gtk_custom_filter_new(filter_func, NULL, NULL);
+	pidgin_account_chooser_set_filter(
+	        PIDGIN_ACCOUNT_CHOOSER(data->account_menu),
+	        GTK_FILTER(custom_filter));
+	g_object_unref(custom_filter);
+
 	pidgin_add_widget_to_vbox(GTK_BOX(vbox), _("A_ccount"), data->sg, data->account_menu, TRUE, NULL);
 	g_signal_connect(data->account_menu, "changed",
 	                 G_CALLBACK(callback_func), data);
