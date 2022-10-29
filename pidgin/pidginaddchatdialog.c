@@ -100,16 +100,19 @@ pidgin_add_chat_dialog_update_components(PidginAddChatDialog *dialog) {
 	GHashTable *defaults = NULL;
 	gboolean focus_set = FALSE;
 
-	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(dialog->account));
-	connection = purple_account_get_connection(account);
-	protocol = purple_account_get_protocol(account);
-
 	/* Clean up the dynamic box and our list of entires. */
 	while((child = gtk_widget_get_first_child(dialog->dynamic_box)) != NULL) {
 		gtk_box_remove(GTK_BOX(dialog->dynamic_box), child);
 	}
 	g_clear_pointer(&dialog->inputs, g_list_free);
 
+	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(dialog->account));
+	if(!PURPLE_IS_ACCOUNT(account)) {
+		return;
+	}
+
+	connection = purple_account_get_connection(account);
+	protocol = purple_account_get_protocol(account);
 	info = purple_protocol_chat_info(PURPLE_PROTOCOL_CHAT(protocol),
 	                                 connection);
 	defaults = purple_protocol_chat_info_defaults(PURPLE_PROTOCOL_CHAT(protocol),
