@@ -475,6 +475,16 @@ static void
 pidgin_application_quit(GSimpleAction *simple, GVariant *parameter,
                         gpointer data)
 {
+	GPluginManager *manager = NULL;
+
+	/* Remove the signal handlers for plugin state changing so we don't try to
+	 * update preferences.
+	 */
+	manager = gplugin_manager_get_default();
+	g_signal_handlers_disconnect_by_func(manager,
+	                                     pidgin_application_plugin_state_changed,
+	                                     NULL);
+
 	purple_core_quit();
 }
 
