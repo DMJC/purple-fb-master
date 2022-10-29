@@ -41,7 +41,6 @@ struct _PidginAccountEditor {
 	GtkWidget *require_password_row;
 	GtkWidget *require_password;
 
-	GList *user_split_entries;
 	GList *user_split_rows;
 
 	/* User Options */
@@ -90,28 +89,18 @@ static void
 pidgin_account_editor_add_user_split(gpointer data, gpointer user_data) {
 	PurpleAccountUserSplit *split = data;
 	PidginAccountEditor *editor = user_data;
-	GtkWidget *entry = NULL;
 
 	if(!purple_account_user_split_is_constant(split)) {
 		GtkWidget *row = NULL;
 
-		row = adw_action_row_new();
+		row = adw_entry_row_new();
 		editor->user_split_rows = g_list_append(editor->user_split_rows, row);
 		gtk_list_box_append(GTK_LIST_BOX(editor->user_splits), row);
 
 		gtk_widget_set_focusable(row, FALSE);
 		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row),
 		                              purple_account_user_split_get_text(split));
-
-		entry = gtk_entry_new();
-		gtk_widget_set_hexpand(entry, TRUE);
-		gtk_widget_set_valign(entry, GTK_ALIGN_CENTER);
-		adw_action_row_add_suffix(ADW_ACTION_ROW(row), entry);
-		adw_action_row_set_activatable_widget(ADW_ACTION_ROW(row), entry);
 	}
-
-	editor->user_split_entries = g_list_append(editor->user_split_entries,
-	                                           entry);
 }
 
 static gboolean
@@ -121,13 +110,10 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 	PurpleProtocolOptions options;
 	GList *user_splits = NULL;
 	GList *split_item = NULL;
-	GList *entry_item = NULL;
+	GList *row_item = NULL;
 	gchar *username = NULL;
 	gboolean require_password = FALSE;
 	gboolean ret = FALSE;
-
-	/* Clear out the old user splits from our list. */
-	g_clear_pointer(&editor->user_split_entries, g_list_free);
 
 	/* Now remove the rows we added to the preference group for each non
 	 * constant user split.
@@ -158,9 +144,9 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 	 * the username.
 	 */
 	split_item = g_list_last(user_splits);
-	entry_item = g_list_last(editor->user_split_entries);
-	while(split_item != NULL && entry_item != NULL) {
-		GtkWidget *entry = entry_item->data;
+	row_item = g_list_last(editor->user_split_rows);
+	while(split_item != NULL && row_item != NULL) {
+		GtkWidget *row = row_item->data;
 		PurpleAccountUserSplit *split = split_item->data;
 		gchar *ptr = NULL;
 		const gchar *value = NULL;
@@ -187,12 +173,12 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 			value = purple_account_user_split_get_default_value(split);
 		}
 
-		if(value != NULL && GTK_IS_ENTRY(entry)) {
-			gtk_editable_set_text(GTK_EDITABLE(entry), value);
+		if(value != NULL && GTK_IS_EDITABLE(row)) {
+			gtk_editable_set_text(GTK_EDITABLE(row), value);
 		}
 
 		split_item = split_item->prev;
-		entry_item = entry_item->prev;
+		row_item = row_item->prev;
 	}
 
 	/* Free the user splits. */
@@ -331,7 +317,6 @@ pidgin_account_editor_add_advanced_int(PidginAccountEditor *editor,
                                        PurpleAccountOption *option)
 {
 	GtkWidget *row = NULL;
-	GtkWidget *entry = NULL;
 	gint value = 0;
 	gchar *title = NULL;
 	gchar *svalue = NULL;
@@ -346,11 +331,13 @@ pidgin_account_editor_add_advanced_int(PidginAccountEditor *editor,
 	}
 
 	/* Create the row and set its title with a mnemonic. */
-	row = adw_action_row_new();
+	row = adw_entry_row_new();
 	g_object_bind_property(editor->advanced_toggle, "active", row, "visible",
 	                       G_BINDING_SYNC_CREATE);
 	gtk_widget_set_focusable(row, FALSE);
 	adw_preferences_row_set_use_underline(ADW_PREFERENCES_ROW(row), TRUE);
+	adw_entry_row_set_input_purpose(ADW_ENTRY_ROW(row),
+	                                GTK_INPUT_PURPOSE_NUMBER);
 	title = g_strdup_printf("_%s", purple_account_option_get_text(option));
 	adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), title);
 	g_free(title);
@@ -361,19 +348,12 @@ pidgin_account_editor_add_advanced_int(PidginAccountEditor *editor,
 	/* Add the row to the editor's list of advanced rows. */
 	editor->advanced_rows = g_list_append(editor->advanced_rows, row);
 
-	/* Create the input widget. */
-	entry = gtk_entry_new();
-	gtk_entry_set_input_purpose(GTK_ENTRY(entry), GTK_INPUT_PURPOSE_DIGITS);
+	/* Set the default value. */
 	svalue = g_strdup_printf("%d", value);
-	gtk_editable_set_text(GTK_EDITABLE(entry), svalue);
+	gtk_editable_set_text(GTK_EDITABLE(row), svalue);
 	g_free(svalue);
 
-	gtk_widget_set_hexpand(entry, TRUE);
-	gtk_widget_set_valign(entry, GTK_ALIGN_CENTER);
-	adw_action_row_add_suffix(ADW_ACTION_ROW(row), entry);
-	adw_action_row_set_activatable_widget(ADW_ACTION_ROW(row), entry);
-
-	return entry;
+	return row;
 }
 
 static GtkWidget *
@@ -381,7 +361,6 @@ pidgin_account_editor_add_advanced_string(PidginAccountEditor *editor,
                                           PurpleAccountOption *option)
 {
 	GtkWidget *row = NULL;
-	GtkWidget *entry = NULL;
 	gchar *title = NULL;
 	const gchar *value = NULL;
 
@@ -396,8 +375,13 @@ pidgin_account_editor_add_advanced_string(PidginAccountEditor *editor,
 		value = purple_account_get_string(editor->account, setting, def_value);
 	}
 
-	/* Create the row and set its title with a mnemonic. */
-	row = adw_action_row_new();
+	/* Create the row depending on the masked hint. */
+	if(purple_account_option_string_get_masked(option)) {
+		row = adw_password_entry_row_new();
+	} else {
+		row = adw_entry_row_new();
+	}
+
 	g_object_bind_property(editor->advanced_toggle, "active", row, "visible",
 	                       G_BINDING_SYNC_CREATE);
 	gtk_widget_set_focusable(row, FALSE);
@@ -412,22 +396,11 @@ pidgin_account_editor_add_advanced_string(PidginAccountEditor *editor,
 	/* Add the row to the editor's list of advanced rows. */
 	editor->advanced_rows = g_list_append(editor->advanced_rows, row);
 
-	/* Create the input widget. */
-	if(purple_account_option_string_get_masked(option)) {
-		entry = gtk_password_entry_new();
-	} else {
-		entry = gtk_entry_new();
-	}
-
 	if(value != NULL) {
-		gtk_editable_set_text(GTK_EDITABLE(entry), value);
+		gtk_editable_set_text(GTK_EDITABLE(row), value);
 	}
-	gtk_widget_set_hexpand(entry, TRUE);
-	gtk_widget_set_valign(entry, GTK_ALIGN_CENTER);
-	adw_action_row_add_suffix(ADW_ACTION_ROW(row), entry);
-	adw_action_row_set_activatable_widget(ADW_ACTION_ROW(row), entry);
 
-	return entry;
+	return row;
 }
 
 static GtkWidget *
@@ -721,10 +694,10 @@ pidgin_account_editor_login_options_update_editable(PidginAccountEditor *editor)
 
 	gtk_widget_set_sensitive(editor->protocol, editable);
 	gtk_editable_set_editable(GTK_EDITABLE(editor->username), editable);
-	for(GList *l = editor->user_split_entries; l != NULL; l = l->next) {
-		GtkWidget *widget = l->data;
+	for(GList *l = editor->user_split_rows; l != NULL; l = l->next) {
+		GtkWidget *row = l->data;
 
-		gtk_editable_set_editable(GTK_EDITABLE(widget), editable);
+		gtk_editable_set_editable(GTK_EDITABLE(row), editable);
 	}
 	gtk_widget_set_sensitive(editor->require_password, editable);
 }
@@ -749,7 +722,8 @@ pidgin_account_editor_set_account(PidginAccountEditor *editor,
 static gboolean
 pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 	PurpleProtocol *protocol = NULL;
-	GList *split_item = NULL, *entry_item = NULL;
+	GList *split_item = NULL;
+	GList *row_item = NULL;
 	GString *username = NULL;
 	const gchar *protocol_id = NULL;
 	gboolean new_account = FALSE;
@@ -761,18 +735,18 @@ pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 	username = g_string_new(gtk_editable_get_text(GTK_EDITABLE(editor->username)));
 
 	split_item = purple_protocol_get_user_splits(protocol);
-	entry_item = editor->user_split_entries;
-	while(split_item != NULL && entry_item != NULL) {
+	row_item = editor->user_split_rows;
+	while(split_item != NULL && row_item != NULL) {
 		PurpleAccountUserSplit *split = split_item->data;
-		GtkEntry *entry = entry_item->data;
+		GtkWidget *row = row_item->data;
 		const gchar *value = "";
 		gchar sep = '\0';
 
 		sep = purple_account_user_split_get_separator(split);
 		g_string_append_c(username, sep);
 
-		if(GTK_IS_ENTRY(entry)) {
-			value = gtk_editable_get_text(GTK_EDITABLE(entry));
+		if(GTK_IS_EDITABLE(row)) {
+			value = gtk_editable_get_text(GTK_EDITABLE(row));
 		}
 
 		if(value == NULL || *value == '\0') {
@@ -782,7 +756,7 @@ pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 		g_string_append(username, value);
 
 		split_item = split_item->next;
-		entry_item = entry_item->next;
+		row_item = row_item->next;
 	}
 
 	if(!PURPLE_IS_ACCOUNT(editor->account)) {
@@ -1202,7 +1176,6 @@ static void
 pidgin_account_editor_finalize(GObject *obj) {
 	PidginAccountEditor *editor = PIDGIN_ACCOUNT_EDITOR(obj);
 
-	g_clear_pointer(&editor->user_split_entries, g_list_free);
 	g_clear_pointer(&editor->user_split_rows, g_list_free);
 
 	g_clear_pointer(&editor->advanced_entries, g_list_free);

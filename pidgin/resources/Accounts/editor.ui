@@ -56,19 +56,11 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                       <object class="GtkListBox" id="user_splits">
                         <property name="focusable">0</property>
                         <child>
-                          <object class="AdwActionRow">
-                            <property name="activatable-widget">username</property>
+                          <object class="AdwEntryRow" id="username">
                             <property name="focusable">0</property>
                             <property name="title" translatable="1">_Username</property>
                             <property name="use-underline">1</property>
-                            <child>
-                              <object class="GtkEntry" id="username">
-                                <property name="hexpand">1</property>
-                                <property name="valign">center</property>
-                                <property name="truncate-multiline">1</property>
-                                <signal name="changed" handler="pidgin_account_editor_username_changed_cb" object="PidginAccountEditor" swapped="no"/>
-                              </object>
-                            </child>
+                            <signal name="changed" handler="pidgin_account_editor_username_changed_cb" object="PidginAccountEditor" swapped="no"/>
                           </object>
                         </child>
                       </object>
