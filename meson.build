@@ -238,7 +238,7 @@ conf.set('ENABLE_INTROSPECTION', enable_introspection)
 #######################################################################
 if get_option('gtkui')
 	gtk = dependency('gtk4', version : '>= 4.0.0')
-	libadwaita = dependency('libadwaita-1', version : '>= 1')
+	libadwaita = dependency('libadwaita-1', version : '>= 1.2')
 
 	talkatu_dep = dependency('talkatu',
 		version: '>=0.1.0',
