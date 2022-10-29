@@ -36,7 +36,6 @@ struct _PidginNetworkPrefs {
 	GtkWidget *auto_ip_row;
 	GtkWidget *auto_ip;
 	GtkWidget *public_ip;
-	GtkWidget *public_ip_row;
 	GtkWidget *map_ports;
 	GtkWidget *ports_range_use;
 	GtkWidget *ports_range_start;
@@ -154,8 +153,6 @@ pidgin_network_prefs_class_init(PidginNetworkPrefsClass *klass)
 	                                     auto_ip);
 	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
 	                                     public_ip);
-	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
-	                                     public_ip_row);
 	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
 	                                     map_ports);
 	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,

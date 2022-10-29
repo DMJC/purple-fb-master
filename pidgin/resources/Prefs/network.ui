@@ -48,22 +48,13 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       <object class="AdwPreferencesGroup">
         <property name="title" translatable="1">IP Address</property>
         <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">stun_server</property>
+          <object class="AdwEntryRow" id="stun_server">
             <property name="title" translatable="1">ST_UN server</property>
             <property name="use-underline">1</property>
+            <property name="input-purpose">url</property>
             <child>
-              <object class="GtkEntry" id="stun_server">
-                <property name="hexpand">1</property>
-                <property name="valign">center</property>
-                <property name="focusable">1</property>
-                <property name="placeholder-text" translatable="1">Example: stunserver.org</property>
-                <property name="input-purpose">url</property>
-                <child>
-                  <object class="GtkEventControllerFocus">
-                    <signal name="leave" handler="network_stun_server_changed_cb" object="stun_server" swapped="no"/>
-                  </object>
-                </child>
+              <object class="GtkEventControllerFocus">
+                <signal name="leave" handler="network_stun_server_changed_cb" object="stun_server" swapped="no"/>
               </object>
             </child>
           </object>
@@ -73,6 +64,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             <property name="activatable-widget">auto_ip</property>
             <property name="title" translatable="1">Use _automatically detected IP address</property>
             <property name="use-underline">1</property>
+            <property name="focusable">0</property>
             <child>
               <object class="GtkSwitch" id="auto_ip">
                 <property name="focusable">1</property>
@@ -83,19 +75,11 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           </object>
         </child>
         <child>
-          <object class="AdwActionRow" id="public_ip_row">
-            <property name="activatable-widget">public_ip</property>
+          <object class="AdwEntryRow" id="public_ip">
             <property name="title" translatable="1">Public _IP</property>
             <property name="use-underline">1</property>
             <property name="sensitive" bind-source="auto_ip" bind-property="active" bind-flags="sync-create|invert-boolean">0</property>
-            <child>
-              <object class="GtkEntry" id="public_ip">
-                <property name="focusable">1</property>
-                <property name="hexpand">1</property>
-                <property name="valign">center</property>
-                <signal name="changed" handler="network_ip_changed" swapped="no"/>
-              </object>
-            </child>
+            <signal name="changed" handler="network_ip_changed" swapped="no"/>
           </object>
         </child>
       </object>
@@ -108,6 +92,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             <property name="activatable-widget">map_ports</property>
             <property name="title" translatable="1">_Enable automatic router port forwarding</property>
             <property name="use-underline">1</property>
+            <property name="focusable">0</property>
             <child>
               <object class="GtkSwitch" id="map_ports">
                 <property name="focusable">1</property>
@@ -121,11 +106,13 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             <property name="title" translatable="1">_Manually specify range of ports to listen on</property>
             <property name="show-enable-switch">1</property>
             <property name="use-underline">1</property>
+            <property name="focusable">0</property>
             <child>
               <object class="AdwActionRow">
                 <property name="activatable-widget">ports_range_start</property>
                 <property name="title" translatable="1">_Start</property>
                 <property name="use-underline">1</property>
+                <property name="focusable">0</property>
                 <child>
                   <object class="GtkSpinButton" id="ports_range_start">
                     <property name="focusable">1</property>
@@ -142,6 +129,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                 <property name="activatable-widget">ports_range_end</property>
                 <property name="title" translatable="1">_End</property>
                 <property name="use-underline">1</property>
+                <property name="focusable">0</property>
                 <child>
                   <object class="GtkSpinButton" id="ports_range_end">
                     <property name="focusable">1</property>
@@ -161,20 +149,12 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       <object class="AdwPreferencesGroup">
         <property name="title" translatable="1">Relay Server (TURN)</property>
         <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">turn_server</property>
+          <object class="AdwEntryRow" id="turn_server">
             <property name="title" translatable="1">_TURN server</property>
             <property name="use-underline">1</property>
             <child>
-              <object class="GtkEntry" id="turn_server">
-                <property name="focusable">1</property>
-                <property name="hexpand">1</property>
-                <property name="valign">center</property>
-                <child>
-                  <object class="GtkEventControllerFocus">
-                    <signal name="leave" handler="network_turn_server_changed_cb" object="turn_server" swapped="no"/>
-                  </object>
-                </child>
+              <object class="GtkEventControllerFocus">
+                <signal name="leave" handler="network_turn_server_changed_cb" object="turn_server" swapped="no"/>
               </object>
             </child>
           </object>
@@ -184,6 +164,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             <property name="activatable-widget">turn_port_udp</property>
             <property name="title" translatable="1">_UDP Port</property>
             <property name="use-underline">1</property>
+            <property name="focusable">0</property>
             <child>
               <object class="GtkSpinButton" id="turn_port_udp">
                 <property name="focusable">1</property>
@@ -200,6 +181,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             <property name="activatable-widget">turn_port_tcp</property>
             <property name="title" translatable="1">T_CP Port</property>
             <property name="use-underline">1</property>
+            <property name="focusable">0</property>
             <child>
               <object class="GtkSpinButton" id="turn_port_tcp">
                 <property name="focusable">1</property>
@@ -212,32 +194,15 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           </object>
         </child>
         <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">turn_username</property>
+          <object class="AdwEntryRow" id="turn_username">
             <property name="title" translatable="1">Use_rname</property>
             <property name="use-underline">1</property>
-            <child>
-              <object class="GtkEntry" id="turn_username">
-                <property name="focusable">1</property>
-                <property name="hexpand">1</property>
-                <property name="valign">center</property>
-              </object>
-            </child>
           </object>
         </child>
         <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">turn_password</property>
+          <object class="AdwPasswordEntryRow" id="turn_password">
             <property name="title" translatable="1">Pass_word</property>
             <property name="use-underline">1</property>
-            <child>
-              <object class="GtkPasswordEntry" id="turn_password">
-                <property name="focusable">1</property>
-                <property name="hexpand">1</property>
-                <property name="show-peek-icon">1</property>
-                <property name="valign">center</property>
-              </object>
-            </child>
           </object>
         </child>
       </object>
