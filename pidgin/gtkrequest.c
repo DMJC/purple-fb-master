@@ -302,14 +302,15 @@ field_choice_option_cb(GtkCheckButton *button, PurpleRequestField *field)
 }
 
 static void
-field_account_cb(GObject *w, PurpleRequestField *field)
+field_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data)
 {
-	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(w);
+	PurpleRequestField *field = data;
+	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(obj);
 
 	purple_request_field_account_set_value(
 	        field, pidgin_account_chooser_get_selected(chooser));
 
-	req_field_changed_common(GTK_WIDGET(w), field);
+	req_field_changed_common(GTK_WIDGET(obj), field);
 }
 
 static void
@@ -1435,7 +1436,7 @@ create_account_field(PurpleRequestField *field)
 	        GTK_FILTER(custom_filter));
 	g_object_unref(custom_filter);
 
-	g_signal_connect(widget, "changed", G_CALLBACK(field_account_cb),
+	g_signal_connect(widget, "notify::account", G_CALLBACK(field_account_cb),
 	                 field);
 
 	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));

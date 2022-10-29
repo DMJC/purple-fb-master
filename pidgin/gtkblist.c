@@ -1054,7 +1054,7 @@ make_blist_request_dialog(PidginBlistRequestData *data, PurpleAccount *account,
 	g_object_unref(custom_filter);
 
 	pidgin_add_widget_to_vbox(GTK_BOX(vbox), _("A_ccount"), data->sg, data->account_menu, TRUE, NULL);
-	g_signal_connect(data->account_menu, "changed",
+	g_signal_connect(data->account_menu, "notify::account",
 	                 G_CALLBACK(callback_func), data);
 
 	data->vbox = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 5));
@@ -1154,9 +1154,11 @@ rebuild_chat_entries(PidginChatData *data, const char *default_chat_name)
 }
 
 static void
-chat_select_account_cb(GObject *w, PidginChatData *data)
+chat_select_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
+                       gpointer user_data)
 {
-	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(w);
+	PidginChatData *data = user_data;
+	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(obj);
 	PurpleAccount *account = pidgin_account_chooser_get_selected(chooser);
 
 	g_return_if_fail(data != NULL);
