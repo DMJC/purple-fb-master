@@ -226,10 +226,44 @@ field_string_focus_out_cb(GtkEventControllerFocus *controller,
 }
 
 static void
+req_field_changed_common(GtkWidget *widget, PurpleRequestField *field)
+{
+	PurpleRequestFieldGroup *group;
+	PurpleRequestFields *fields;
+	PidginRequestData *req_data;
+	const GList *it;
+
+	group = purple_request_field_get_group(field);
+	fields = purple_request_field_group_get_fields_list(group);
+	req_data = purple_request_fields_get_ui_data(fields);
+
+	gtk_widget_set_sensitive(req_data->ok_button,
+		purple_request_fields_all_required_filled(fields) &&
+		purple_request_fields_all_valid(fields));
+
+	it = purple_request_fields_get_autosensitive(fields);
+	for(; it != NULL; it = g_list_next(it)) {
+		PurpleRequestField *field = it->data;
+		GtkWidget *widget = purple_request_field_get_ui_data(field);
+		gboolean sensitive;
+
+		sensitive = purple_request_field_is_sensitive(field);
+		gtk_widget_set_sensitive(widget, sensitive);
+
+		/* XXX: and what about multiline? */
+		if(GTK_IS_EDITABLE(widget)) {
+			gtk_editable_set_editable(GTK_EDITABLE(widget), sensitive);
+		}
+	}
+}
+
+static void
 field_bool_cb(GtkCheckButton *button, PurpleRequestField *field)
 {
 	purple_request_field_bool_set_value(field,
 			gtk_check_button_get_active(button));
+
+	req_field_changed_common(GTK_WIDGET(button), field);
 }
 
 static void
@@ -274,6 +308,8 @@ field_account_cb(GObject *w, PurpleRequestField *field)
 
 	purple_request_field_account_set_value(
 	        field, pidgin_account_chooser_get_selected(chooser));
+
+	req_field_changed_common(GTK_WIDGET(w), field);
 }
 
 static void
@@ -1033,11 +1069,8 @@ req_entry_field_changed_cb(GtkWidget *entry, PurpleRequestField *field)
 	if (purple_request_field_get_field_type(field) == PURPLE_REQUEST_FIELD_INTEGER) {
 		int value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 		purple_request_field_int_set_value(field, value);
-		return;
-	}
 
-	if (purple_request_field_string_is_multiline(field))
-	{
+	} else if (purple_request_field_string_is_multiline(field)) {
 		char *text;
 		GtkTextIter start_iter, end_iter;
 
@@ -1047,44 +1080,14 @@ req_entry_field_changed_cb(GtkWidget *entry, PurpleRequestField *field)
 		text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(entry), &start_iter, &end_iter, FALSE);
 		purple_request_field_string_set_value(field, (!text || !*text) ? NULL : text);
 		g_free(text);
-	}
-	else
-	{
+
+	} else {
 		const char *text = NULL;
 		text = gtk_editable_get_text(GTK_EDITABLE(entry));
 		purple_request_field_string_set_value(field, (*text == '\0') ? NULL : text);
 	}
-}
 
-static void
-req_field_changed_cb(GtkWidget *widget, PurpleRequestField *field)
-{
-	PurpleRequestFieldGroup *group;
-	PurpleRequestFields *fields;
-	PidginRequestData *req_data;
-	const GList *it;
-
-	group = purple_request_field_get_group(field);
-	fields = purple_request_field_group_get_fields_list(group);
-	req_data = purple_request_fields_get_ui_data(fields);
-
-	gtk_widget_set_sensitive(req_data->ok_button,
-		purple_request_fields_all_required_filled(fields) &&
-		purple_request_fields_all_valid(fields));
-
-	it = purple_request_fields_get_autosensitive(fields);
-	for (; it != NULL; it = g_list_next(it)) {
-		PurpleRequestField *field = it->data;
-		GtkWidget *widget = purple_request_field_get_ui_data(field);
-		gboolean sensitive;
-
-		sensitive = purple_request_field_is_sensitive(field);
-		gtk_widget_set_sensitive(widget, sensitive);
-
-		/* XXX: and what about multiline? */
-		if (GTK_IS_EDITABLE(widget))
-			gtk_editable_set_editable(GTK_EDITABLE(widget), sensitive);
-	}
+	req_field_changed_common(entry, field);
 }
 
 static void
@@ -1094,10 +1097,8 @@ setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
 
 	g_object_set(entry, "activates-default", TRUE, NULL);
 
-	g_signal_connect(G_OBJECT(entry), "changed",
-		G_CALLBACK(req_entry_field_changed_cb), field);
-	g_signal_connect(G_OBJECT(entry), "changed",
-		G_CALLBACK(req_field_changed_cb), field);
+	g_signal_connect(entry, "changed", G_CALLBACK(req_entry_field_changed_cb),
+	                 field);
 
 	if ((type_hint = purple_request_field_get_field_type_hint(field)) != NULL)
 	{
@@ -1175,8 +1176,8 @@ create_string_field(PurpleRequestField *field)
 	    if (purple_request_field_is_required(field))
 	    {
 			GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
-			g_signal_connect(G_OBJECT(buffer), "changed",
-							 G_CALLBACK(req_entry_field_changed_cb), field);
+			g_signal_connect(buffer, "changed",
+			                 G_CALLBACK(req_entry_field_changed_cb), field);
 	    }
 
 		widget = gtk_scrolled_window_new();
@@ -1253,10 +1254,7 @@ create_bool_field(PurpleRequestField *field,
 	gtk_check_button_set_active(GTK_CHECK_BUTTON(widget),
 		purple_request_field_bool_get_default_value(field));
 
-	g_signal_connect(G_OBJECT(widget), "toggled",
-					 G_CALLBACK(field_bool_cb), field);
-	g_signal_connect(widget, "toggled",
-		G_CALLBACK(req_field_changed_cb), field);
+	g_signal_connect(widget, "toggled", G_CALLBACK(field_bool_cb), field);
 
 	return widget;
 }
@@ -1441,8 +1439,6 @@ create_account_field(PurpleRequestField *field)
 	                 field);
 
 	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
-	g_signal_connect(widget, "changed",
-		G_CALLBACK(req_field_changed_cb), field);
 
 	return widget;
 }
