@@ -20,16 +20,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301 USA
  */
+#include <glib/gi18n-lib.h>
+
 #include <gtk/gtk.h>
 
 #include "pidginaccountchooser.h"
 
-#include "pidginaccountstore.h"
-
 struct _PidginAccountChooser {
-	GtkComboBox parent;
+	AdwBin parent;
 
-	GtkFilter *filter;
+	GtkDropDown *chooser;
+	GtkFilterListModel *filter;
 };
 
 enum
@@ -45,15 +46,60 @@ static GParamSpec *properties[PROP_LAST] = {NULL};
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
+static char *
+pidgin_account_chooser_icon_name_cb(G_GNUC_UNUSED GObject *self,
+                                    PurpleAccount *account,
+                                    G_GNUC_UNUSED gpointer data)
+{
+	const char *icon_name = NULL;
+
+	if(PURPLE_IS_ACCOUNT(account)) {
+		PurpleProtocol *protocol = purple_account_get_protocol(account);
+		icon_name = purple_protocol_get_icon_name(protocol);
+	}
+
+	return g_strdup(icon_name);
+}
+
+static char *
+pidgin_account_chooser_label_cb(G_GNUC_UNUSED GObject *self,
+                                PurpleAccount *account,
+                                G_GNUC_UNUSED gpointer data)
+{
+	gchar *markup = NULL;
+	const gchar *alias = NULL;
+
+	if(!PURPLE_IS_ACCOUNT(account)) {
+		return NULL;
+	}
+
+	alias = purple_account_get_private_alias(account);
+	if(alias != NULL) {
+		markup = g_strdup_printf(_("%s (%s) (%s)"),
+		                         purple_account_get_username(account),
+		                         alias,
+		                         purple_account_get_protocol_name(account));
+	} else {
+		markup = g_strdup_printf(_("%s (%s)"),
+		                         purple_account_get_username(account),
+		                         purple_account_get_protocol_name(account));
+	}
+
+	return markup;
+}
+
 static void
-pidgin_account_chooser_changed_cb(GtkComboBox *widget, gpointer user_data) {
-	g_object_notify_by_pspec(G_OBJECT(widget), properties[PROP_ACCOUNT]);
+pidgin_account_chooser_changed_cb(G_GNUC_UNUSED GObject *obj,
+                                  G_GNUC_UNUSED GParamSpec *pspec,
+                                  gpointer data)
+{
+	g_object_notify_by_pspec(G_OBJECT(data), properties[PROP_ACCOUNT]);
 }
 
 /******************************************************************************
  * GObject implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountChooser, pidgin_account_chooser, GTK_TYPE_COMBO_BOX)
+G_DEFINE_TYPE(PidginAccountChooser, pidgin_account_chooser, ADW_TYPE_BIN)
 
 static void
 pidgin_account_chooser_get_property(GObject *object, guint prop_id,
@@ -121,15 +167,28 @@ pidgin_account_chooser_class_init(PidginAccountChooserClass *klass)
 	/* Widget template */
 	gtk_widget_class_set_template_from_resource(
 	        widget_class, "/im/pidgin/Pidgin3/Accounts/chooser.ui");
+
+	gtk_widget_class_bind_template_child(widget_class, PidginAccountChooser,
+	                                     chooser);
+	gtk_widget_class_bind_template_child(widget_class, PidginAccountChooser,
+	                                     filter);
+
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_account_chooser_icon_name_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_account_chooser_label_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_account_chooser_changed_cb);
 }
 
 static void
 pidgin_account_chooser_init(PidginAccountChooser *chooser) {
+	GListModel *model = NULL;
+
 	gtk_widget_init_template(GTK_WIDGET(chooser));
 
-	/* this callback emits the notify for the account property */
-	g_signal_connect(chooser, "changed",
-	                 G_CALLBACK(pidgin_account_chooser_changed_cb), NULL);
+	model = purple_account_manager_get_default_as_model();
+	gtk_filter_list_model_set_model(chooser->filter, model);
 }
 
 /******************************************************************************
@@ -148,7 +207,7 @@ GtkFilter *
 pidgin_account_chooser_get_filter(PidginAccountChooser *chooser) {
 	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_CHOOSER(chooser), NULL);
 
-	return chooser->filter;
+	return gtk_filter_list_model_get_filter(chooser->filter);
 }
 
 void
@@ -157,56 +216,44 @@ pidgin_account_chooser_set_filter(PidginAccountChooser *chooser,
 {
 	g_return_if_fail(PIDGIN_IS_ACCOUNT_CHOOSER(chooser));
 
-	if(g_set_object(&chooser->filter, filter)) {
-		g_object_notify_by_pspec(G_OBJECT(chooser), properties[PROP_FILTER]);
-	}
+	gtk_filter_list_model_set_filter(chooser->filter, filter);
+	g_object_notify_by_pspec(G_OBJECT(chooser), properties[PROP_FILTER]);
 }
 
 PurpleAccount *
 pidgin_account_chooser_get_selected(PidginAccountChooser *chooser) {
-	GtkTreeIter iter;
-	gpointer account = NULL;
-
 	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_CHOOSER(chooser), NULL);
 
-	if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(chooser), &iter)) {
-		GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(chooser));
-		gtk_tree_model_get(model, &iter,
-		                   PIDGIN_ACCOUNT_STORE_COLUMN_ACCOUNT, &account, -1);
-	}
-
-	return account;
+	return gtk_drop_down_get_selected_item(chooser->chooser);
 }
 
 void
 pidgin_account_chooser_set_selected(PidginAccountChooser *chooser,
                                     PurpleAccount *account)
 {
-	GtkTreeModel *model = NULL;
-	GtkTreeIter iter;
-	PurpleAccount *acc = NULL;
+	GListModel *model = NULL;
+	guint n_items = 0;
 
 	g_return_if_fail(PIDGIN_IS_ACCOUNT_CHOOSER(chooser));
 
-	model = gtk_combo_box_get_model(GTK_COMBO_BOX(chooser));
-	g_return_if_fail(GTK_IS_TREE_MODEL(model));
+	model = gtk_drop_down_get_model(chooser->chooser);
+	g_return_if_fail(G_IS_LIST_MODEL(model));
 
-	if(gtk_tree_model_get_iter_first(model, &iter)) {
-		do {
-			gtk_tree_model_get(model, &iter,
-			                   PIDGIN_ACCOUNT_STORE_COLUMN_ACCOUNT, &acc, -1);
-			if(acc == account) {
-				/* NOTE: Property notification occurs in 'changed' signal
-				 * callback.
-				 */
-				gtk_combo_box_set_active_iter(GTK_COMBO_BOX(chooser), &iter);
+	n_items = g_list_model_get_n_items(model);
+	for(guint position = 0; position < n_items; position++) {
+		PurpleAccount *acc = g_list_model_get_item(model, position);
 
-				g_object_unref(G_OBJECT(acc));
+		if(acc == account) {
+			/* NOTE: Property notification occurs in 'changed' signal
+			 * callback.
+			 */
+			gtk_drop_down_set_selected(chooser->chooser, position);
 
-				return;
-			}
-			g_object_unref(G_OBJECT(acc));
-		} while(gtk_tree_model_iter_next(model, &iter));
+			g_object_unref(acc);
+
+			return;
+		}
+
+		g_object_unref(acc);
 	}
 }
-

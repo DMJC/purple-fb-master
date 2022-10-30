@@ -25,13 +25,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <object class="PidginAccountStore" id="account_store"/>
-  <object class="PidginAccountFilterConnected" id="account_filter_connected">
-    <property name="child-model">account_store</property>
-  </object>
-  <object class="GtkTreeModelFilter" id="filter">
-    <property name="child-model">account_filter_connected</property>
-  </object>
   <template class="PidginAddBuddyDialog" parent="GtkDialog">
     <property name="title" translatable="1">Add Buddy</property>
     <property name="resizable">0</property>
@@ -65,7 +58,16 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             <child>
               <object class="PidginAccountChooser" id="account">
                 <property name="hexpand">1</property>
-                <property name="model">filter</property>
+                <property name="filter">
+                  <object class="GtkEveryFilter">
+                    <child>
+                      <object class="GtkCustomFilter" id="filter"/>
+                    </child>
+                    <child>
+                      <object class="PidginAccountFilterConnected"/>
+                    </child>
+                  </object>
+                </property>
                 <signal name="notify::account" handler="pidgin_add_buddy_dialog_account_changed_cb" swapped="no"/>
                 <accessibility>
                   <relation name="labelled-by">label1</relation>

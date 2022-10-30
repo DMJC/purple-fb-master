@@ -27,6 +27,7 @@
 #define PIDGIN_ACCOUNT_CHOOSER_H
 
 #include <gtk/gtk.h>
+#include <adwaita.h>
 
 #include <purple.h>
 
@@ -35,7 +36,7 @@ G_BEGIN_DECLS
 #define PIDGIN_TYPE_ACCOUNT_CHOOSER (pidgin_account_chooser_get_type())
 
 G_DECLARE_FINAL_TYPE(PidginAccountChooser, pidgin_account_chooser, PIDGIN,
-                     ACCOUNT_CHOOSER, GtkComboBox)
+                     ACCOUNT_CHOOSER, AdwBin)
 
 /**
  * pidgin_account_chooser_new:

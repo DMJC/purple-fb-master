@@ -23,7 +23,6 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <object class="PidginAccountStore" id="accounts"/>
   <template class="PidginRoomlistDialog" parent="GtkDialog">
     <property name="title" translatable="1">Room List</property>
     <signal name="close-request" handler="close_request_cb" swapped="no"/>
@@ -47,8 +46,6 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
               <object class="PidginAccountChooser" id="account_widget">
                 <property name="hexpand">1</property>
                 <property name="can-focus">1</property>
-                <property name="model">accounts</property>
-                <property name="active">0</property>
                 <signal name="notify::account" handler="dialog_select_account_cb" swapped="no"/>
                 <accessibility>
                   <relation name="labelled-by">label1</relation>

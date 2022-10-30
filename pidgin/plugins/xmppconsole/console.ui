@@ -106,19 +106,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             </child>
             <child>
               <object class="PidginAccountChooser" id="account_chooser">
-                <property name="model">
-                  <object class="PidginAccountFilterProtocol">
-                    <property name="child-model">
-                      <object class="PidginAccountFilterConnected">
-                        <property name="child-model">
-                          <object class="PidginAccountStore"/>
-                        </property>
+                <property name="filter">
+                  <object class="GtkEveryFilter">
+                    <child>
+                      <object class="PidginAccountFilterProtocol">
+                        <property name="protocol-id">prpl-jabber</property>
                       </object>
-                    </property>
-                    <property name="protocol-id">prpl-jabber</property>
+                    </child>
+                    <child>
+                      <object class="PidginAccountFilterConnected"/>
+                    </child>
                   </object>
                 </property>
-                <property name="active">0</property>
                 <property name="hexpand">1</property>
                 <signal name="notify::account" handler="dropdown_changed_cb" swapped="no"/>
               </object>

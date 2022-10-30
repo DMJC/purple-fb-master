@@ -37,14 +37,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       </item>
     </section>
   </menu>
-  <object class="PidginAccountStore" id="accounts"/>
-  <object class="PidginAccountFilterConnected" id="accounts_connected">
-    <property name="child_model">accounts</property>
-  </object>
-  <object class="PidginAccountFilterProtocol" id="xmpp_accounts">
-    <property name="child_model">accounts_connected</property>
-    <property name="protocol_id">prpl-jabber</property>
-  </object>
   <object class="GtkTreeStore" id="model">
     <columns>
       <!-- column-name pixbuf -->
@@ -76,8 +68,18 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             </child>
             <child>
               <object class="PidginAccountChooser" id="account_chooser">
-                <property name="model">xmpp_accounts</property>
-                <property name="active">0</property>
+                <property name="filter">
+                  <object class="GtkEveryFilter">
+                    <child>
+                      <object class="PidginAccountFilterProtocol">
+                        <property name="protocol_id">prpl-jabber</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="PidginAccountFilterConnected"/>
+                    </child>
+                  </object>
+                </property>
                 <signal name="notify::account" handler="dialog_select_account_cb" swapped="no"/>
               </object>
             </child>

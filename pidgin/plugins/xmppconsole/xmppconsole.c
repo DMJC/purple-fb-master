@@ -35,7 +35,7 @@
 struct _PidginXmppConsole {
 	GtkWindow parent;
 
-	GtkComboBox *account_chooser;
+	PidginAccountChooser *account_chooser;
 	PurpleConnection *gc;
 	GtkTextBuffer *buffer;
 	struct {

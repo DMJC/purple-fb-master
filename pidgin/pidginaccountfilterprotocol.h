@@ -34,9 +34,10 @@ G_BEGIN_DECLS
 /**
  * PidginAccountFilterProtocol:
  *
- * #PidginAccountFilterProtocol is a #GtkTreeModelFilter that will only show
+ * #PidginAccountFilterProtocol is a [class@Gtk.Filter] that will only show
  * accounts for the given protocol.  It's intended to be used with
- * #PidginAccountStore.
+ * [class@Pidgin.AccountChooser] or a [iface@Gio.ListModel] that contains
+ * [class@Purple.Account].
  *
  * Since: 3.0.0
  */
@@ -44,24 +45,20 @@ G_BEGIN_DECLS
 #define PIDGIN_TYPE_ACCOUNT_FILTER_PROTOCOL pidgin_account_filter_protocol_get_type()
 G_DECLARE_FINAL_TYPE(PidginAccountFilterProtocol,
                      pidgin_account_filter_protocol, PIDGIN,
-                     ACCOUNT_FILTER_PROTOCOL, GtkTreeModelFilter)
+                     ACCOUNT_FILTER_PROTOCOL, GtkFilter)
 
 /**
  * pidgin_account_filter_protocol_new:
  * @protocol_id: The ID of the protocol to filter for.
- * @child_model: The #GtkTreeModel that should be filtered.
- * @root: The root path that should be filtered.
  *
  * Creates a new #PidginAccountFilterProtocol that should be used to filter
- * only online accounts in a #PidginAccountStore.
- *
- * See gtk_tree_model_filter_new() for more information.
+ * only protocols with the given @protocol_id.
  *
  * Returns: (transfer full): The new #PidginAccountFilterProtocol instance.
  *
  * Since: 3.0.0
  */
-GtkTreeModel *pidgin_account_filter_protocol_new(const gchar *protocol_id, GtkTreeModel *child_model, GtkTreePath *root);
+GtkFilter *pidgin_account_filter_protocol_new(const gchar *protocol_id);
 
 /**
  * pidgin_account_filter_protocol_get_protocol_id:

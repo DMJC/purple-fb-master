@@ -282,7 +282,6 @@ pidgin/pidginaccountfilterprotocol.c
 pidgin/pidginaccountmanager.c
 pidgin/pidginaccountsdisabledmenu.c
 pidgin/pidginaccountsenabledmenu.c
-pidgin/pidginaccountstore.c
 pidgin/pidginactiongroup.c
 pidgin/pidginaddbuddydialog.c
 pidgin/pidginaddchatdialog.c

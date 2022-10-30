@@ -30,7 +30,6 @@
 #include "gtkutils.h"
 #include "pidginaccountchooser.h"
 #include "pidginaccountfilterconnected.h"
-#include "pidginaccountstore.h"
 #include "pidgincore.h"
 #include "pidgindialog.h"
 
@@ -1401,40 +1400,32 @@ create_account_field(PurpleRequestField *field)
 {
 	GtkWidget *widget;
 	PurpleAccount *account;
-	GtkCustomFilter *custom_filter = NULL;
+	GtkFilter *filter = NULL;
 
 	widget = pidgin_account_chooser_new();
 	account  = purple_request_field_account_get_default_value(field);
 
-	if(purple_request_field_account_get_show_all(field)) {
-		GtkListStore *store = pidgin_account_store_new();
+	filter = GTK_FILTER(gtk_custom_filter_new(
+	        field_custom_account_filter_cb,
+	        purple_request_field_account_get_filter(field),
+	        NULL));
 
-		gtk_combo_box_set_model(GTK_COMBO_BOX(widget), GTK_TREE_MODEL(store));
+	if(!purple_request_field_account_get_show_all(field)) {
+		GtkEveryFilter *every = NULL;
 
-		g_object_unref(G_OBJECT(store));
-	} else {
-		GtkListStore *store = NULL;
-		GtkTreeModel *filter = NULL;
+		every = gtk_every_filter_new();
+		gtk_multi_filter_append(GTK_MULTI_FILTER(every), filter);
 
-		store = pidgin_account_store_new();
-		filter = pidgin_account_filter_connected_new(GTK_TREE_MODEL(store),
-		                                             NULL);
-		g_object_unref(G_OBJECT(store));
+		filter = pidgin_account_filter_connected_new();
+		gtk_multi_filter_append(GTK_MULTI_FILTER(every), filter);
 
-		gtk_combo_box_set_model(GTK_COMBO_BOX(widget), GTK_TREE_MODEL(filter));
-		g_object_unref(G_OBJECT(filter));
+		filter = GTK_FILTER(every);
 	}
 
 	pidgin_account_chooser_set_selected(PIDGIN_ACCOUNT_CHOOSER(widget),
 	                                    account);
-	custom_filter = gtk_custom_filter_new(
-	        field_custom_account_filter_cb,
-	        purple_request_field_account_get_filter(field),
-	        NULL);
-	pidgin_account_chooser_set_filter(
-	        PIDGIN_ACCOUNT_CHOOSER(widget),
-	        GTK_FILTER(custom_filter));
-	g_object_unref(custom_filter);
+	pidgin_account_chooser_set_filter(PIDGIN_ACCOUNT_CHOOSER(widget), filter);
+	g_object_unref(filter);
 
 	g_signal_connect(widget, "notify::account", G_CALLBACK(field_account_cb),
 	                 field);

@@ -26,13 +26,12 @@
 
 #include "gtkaccount.h"
 #include "pidginaccountchooser.h"
-#include "pidginaccountstore.h"
 #include "pidgincore.h"
 
 struct _PidginAddBuddyDialog {
 	GtkDialog parent;
 
-	GtkTreeModel *filter;
+	GtkCustomFilter *filter;
 
 	GtkWidget *account;
 	GtkWidget *username;
@@ -47,29 +46,19 @@ G_DEFINE_TYPE(PidginAddBuddyDialog, pidgin_add_buddy_dialog, GTK_TYPE_DIALOG)
  * Helpers
  *****************************************************************************/
 static gboolean
-pidgin_add_buddy_dialog_filter_accounts(GtkTreeModel *model, GtkTreeIter *iter,
-                                        gpointer data)
+pidgin_add_buddy_dialog_filter_accounts(gpointer item,
+                                        G_GNUC_UNUSED gpointer data)
 {
-	PurpleAccount *account = NULL;
-	PurpleProtocol *protocol = NULL;
 	gboolean ret = FALSE;
 
-	g_return_val_if_fail(GTK_IS_TREE_MODEL(model), FALSE);
-	g_return_val_if_fail(iter != NULL, FALSE);
+	if(PURPLE_IS_ACCOUNT(item)) {
+		PurpleAccount *account = PURPLE_ACCOUNT(item);
+		PurpleProtocol *protocol = purple_account_get_protocol(account);
 
-	gtk_tree_model_get(model, iter, PIDGIN_ACCOUNT_STORE_COLUMN_ACCOUNT,
-	                   &account, -1);
-
-	if(!PURPLE_IS_ACCOUNT(account)) {
-		return FALSE;
+		if(PURPLE_IS_PROTOCOL(protocol)) {
+			ret = PURPLE_PROTOCOL_IMPLEMENTS(protocol, SERVER, add_buddy);
+		}
 	}
-
-	protocol = purple_account_get_protocol(account);
-	if(PURPLE_IS_PROTOCOL(protocol)) {
-		ret = PURPLE_PROTOCOL_IMPLEMENTS(protocol, SERVER, add_buddy);
-	}
-
-	g_object_unref(G_OBJECT(account));
 
 	return ret;
 }
@@ -248,12 +237,9 @@ pidgin_add_buddy_dialog_init(PidginAddBuddyDialog *dialog) {
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
-	gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(dialog->filter),
-	                                       pidgin_add_buddy_dialog_filter_accounts,
-	                                       NULL, NULL);
-	gtk_tree_model_filter_refilter(GTK_TREE_MODEL_FILTER(dialog->filter));
-
-	gtk_combo_box_set_active(GTK_COMBO_BOX(dialog->account), 0);
+	gtk_custom_filter_set_filter_func(dialog->filter,
+	                                  pidgin_add_buddy_dialog_filter_accounts,
+	                                  NULL, NULL);
 
 	purple_blist_walk(pidgin_add_buddy_dialog_group_cb, NULL, NULL, NULL,
 	                  dialog);

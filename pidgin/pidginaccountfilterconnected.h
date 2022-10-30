@@ -34,9 +34,10 @@ G_BEGIN_DECLS
 /**
  * PidginAccountFilterConnected:
  *
- * #PidginAccountFilterConnected is a #GtkTreeModelFilter that will only show
- * accounts that are connected.  It's intended to be used with
- * #PidginAccountStore.
+ * #PidginAccountFilterConnected is a [class@Gtk.Filter] that will only show
+ * accounts that are connected. It's intended to be used with
+ * [class@Pidgin.AccountChooser] or a [iface@Gio.ListModel] that contains
+ * [class@Purple.Account].
  *
  * Since: 3.0.0
  */
@@ -44,21 +45,19 @@ G_BEGIN_DECLS
 #define PIDGIN_TYPE_ACCOUNT_FILTER_CONNECTED pidgin_account_filter_connected_get_type()
 G_DECLARE_FINAL_TYPE(PidginAccountFilterConnected,
                      pidgin_account_filter_connected, PIDGIN,
-                     ACCOUNT_FILTER_CONNECTED, GtkTreeModelFilter)
+                     ACCOUNT_FILTER_CONNECTED, GtkFilter)
 
 /**
  * pidgin_account_filter_connected_new:
- * @child_model: The #GtkTreeModel instance to filter.
- * @root: The #GtkTreePath to start at or %NULL.
  *
  * Creates a new #PidginAccountFilterConnected that should be used to filter
- * only online accounts in a #PidginAccountStore.
+ * only online accounts.
  *
  * Returns: (transfer full): The new #PidginAccountFilterConnected instance.
  *
  * Since: 3.0.0
  */
-GtkTreeModel *pidgin_account_filter_connected_new(GtkTreeModel *child_model, GtkTreePath *root);
+GtkFilter *pidgin_account_filter_connected_new(void);
 
 G_END_DECLS
 

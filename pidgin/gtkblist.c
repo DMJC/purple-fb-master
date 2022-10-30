@@ -37,7 +37,6 @@
 #include "gtkutils.h"
 #include "pidgin/pidginaccountchooser.h"
 #include "pidgin/pidginaccountfilterconnected.h"
-#include "pidgin/pidginaccountstore.h"
 #include "pidgin/pidginactiongroup.h"
 #include "pidgin/pidginaddbuddydialog.h"
 #include "pidgin/pidginaddchatdialog.h"
@@ -995,8 +994,8 @@ make_blist_request_dialog(PidginBlistRequestData *data, PurpleAccount *account,
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWindow *blist_window;
-	GtkTreeModel *model = NULL, *filter = NULL;
-	GtkCustomFilter *custom_filter = NULL;
+	GtkEveryFilter *every = NULL;
+	GtkFilter *filter = NULL;
 	PidginBuddyList *gtkblist;
 
 	data->account = account;
@@ -1034,24 +1033,21 @@ make_blist_request_dialog(PidginBlistRequestData *data, PurpleAccount *account,
 
 	data->sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
-	model = GTK_TREE_MODEL(pidgin_account_store_new());
-	filter = pidgin_account_filter_connected_new(model, NULL);
-	g_object_unref(G_OBJECT(model));
 	data->account_menu = pidgin_account_chooser_new();
-	gtk_combo_box_set_model(GTK_COMBO_BOX(data->account_menu), filter);
-	g_object_unref(G_OBJECT(filter));
+	every = gtk_every_filter_new();
+	filter = pidgin_account_filter_connected_new();
+	gtk_multi_filter_append(GTK_MULTI_FILTER(every), filter);
+	filter = GTK_FILTER(gtk_custom_filter_new(filter_func, NULL, NULL));
+	gtk_multi_filter_append(GTK_MULTI_FILTER(every), filter);
+	pidgin_account_chooser_set_filter(
+	        PIDGIN_ACCOUNT_CHOOSER(data->account_menu),
+	        GTK_FILTER(every));
+	g_object_unref(every);
+
 	if(PURPLE_IS_ACCOUNT(account)) {
 		pidgin_account_chooser_set_selected(PIDGIN_ACCOUNT_CHOOSER(
 			data->account_menu), account);
-	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->account_menu), 0);
 	}
-
-	custom_filter = gtk_custom_filter_new(filter_func, NULL, NULL);
-	pidgin_account_chooser_set_filter(
-	        PIDGIN_ACCOUNT_CHOOSER(data->account_menu),
-	        GTK_FILTER(custom_filter));
-	g_object_unref(custom_filter);
 
 	pidgin_add_widget_to_vbox(GTK_BOX(vbox), _("A_ccount"), data->sg, data->account_menu, TRUE, NULL);
 	g_signal_connect(data->account_menu, "notify::account",
@@ -1162,7 +1158,9 @@ chat_select_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
 	PurpleAccount *account = pidgin_account_chooser_get_selected(chooser);
 
 	g_return_if_fail(data != NULL);
-	g_return_if_fail(account != NULL);
+	if(account == NULL) {
+		return;
+	}
 
 	if (purple_strequal(purple_account_get_protocol_id(data->rq_data.account),
 	                    purple_account_get_protocol_id(account)))

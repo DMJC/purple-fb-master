@@ -28,7 +28,6 @@
 #include "gtkprivacy.h"
 #include "gtkutils.h"
 #include "pidginaccountchooser.h"
-#include "pidginaccountstore.h"
 
 #define PIDGIN_TYPE_PRIVACY_DIALOG (pidgin_privacy_dialog_get_type())
 G_DECLARE_FINAL_TYPE(PidginPrivacyDialog, pidgin_privacy_dialog, PIDGIN,

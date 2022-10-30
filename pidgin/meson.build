@@ -28,7 +28,6 @@ libpidgin_SOURCES = [
 	'pidginaccountmanager.c',
 	'pidginaccountsdisabledmenu.c',
 	'pidginaccountsenabledmenu.c',
-	'pidginaccountstore.c',
 	'pidginactiongroup.c',
 	'pidginaddbuddydialog.c',
 	'pidginaddchatdialog.c',
@@ -97,7 +96,6 @@ libpidgin_headers = [
 	'pidginaccountmanager.h',
 	'pidginaccountsdisabledmenu.h',
 	'pidginaccountsenabledmenu.h',
-	'pidginaccountstore.h',
 	'pidginactiongroup.h',
 	'pidginaddbuddydialog.h',
 	'pidginaddchatdialog.h',
@@ -149,7 +147,6 @@ libpidgin_enum_headers = [
 	'gtkblist.h',
 	'gtkconv.h',
 	'gtkutils.h',
-	'pidginaccountstore.h',
 ]
 
 pidgin_SOURCES = [

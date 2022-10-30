@@ -22,18 +22,52 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <template class="PidginAccountChooser" parent="GtkComboBox">
-    <child>
-      <object class="GtkCellRendererPixbuf"/>
-      <attributes>
-        <attribute name="icon-name">2</attribute>
-      </attributes>
-    </child>
-    <child>
-      <object class="GtkCellRendererText"/>
-      <attributes>
-        <attribute name="text">1</attribute>
-      </attributes>
-    </child>
+  <template class="PidginAccountChooser" parent="AdwBin">
+    <property name="child">
+      <object class="GtkDropDown" id="chooser">
+        <property name="factory">
+          <object class="GtkBuilderListItemFactory">
+            <property name="bytes">
+<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkImage">
+            <binding name="icon-name">
+              <closure type="gchararray" function="pidgin_account_chooser_icon_name_cb">
+                <lookup name="item">GtkListItem</lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="xalign">0</property>
+            <binding name="label">
+              <closure type="gchararray" function="pidgin_account_chooser_label_cb">
+                <lookup name="item">GtkListItem</lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
+]]>
+            </property>
+          </object>
+        </property>
+        <property name="model">
+          <object class="GtkFilterListModel" id="filter"/>
+        </property>
+        <signal name="notify::selected" handler="pidgin_account_chooser_changed_cb" swapped="no"/>
+      </object>
+    </property>
   </template>
 </interface>

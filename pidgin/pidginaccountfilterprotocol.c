@@ -22,12 +22,10 @@
 
 #include "pidgin/pidginaccountfilterprotocol.h"
 
-#include "pidgin/pidginaccountstore.h"
-
 #include <purple.h>
 
 struct _PidginAccountFilterProtocol {
-	GtkTreeModelFilter parent;
+	GtkFilter parent;
 
 	gchar *protocol_id;
 };
@@ -48,33 +46,35 @@ pidgin_account_filter_protocol_set_protocol_id(PidginAccountFilterProtocol *filt
 {
 	g_free(filter->protocol_id);
 	filter->protocol_id = g_strdup(protocol_id);
+
+	gtk_filter_changed(GTK_FILTER(filter), GTK_FILTER_CHANGE_DIFFERENT);
+}
+
+/******************************************************************************
+ * GtkFilter Implementation
+ *****************************************************************************/
+static GtkFilterMatch
+pidgin_account_filter_protocol_get_strictness(G_GNUC_UNUSED GtkFilter *self) {
+	return GTK_FILTER_MATCH_SOME;
 }
 
 static gboolean
-pidgin_account_filter_protocol_func(GtkTreeModel *model, GtkTreeIter *iter,
-                                    gpointer data)
+pidgin_account_filter_protocol_match(G_GNUC_UNUSED GtkFilter *self,
+                                     gpointer item)
 {
-	PidginAccountFilterProtocol *filter = NULL;
-	PurpleAccount *account = NULL;
 	gboolean ret = FALSE;
 
-	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_FILTER_PROTOCOL(data), FALSE);
-	g_return_val_if_fail(GTK_IS_TREE_MODEL(model), FALSE);
-	g_return_val_if_fail(iter != NULL, FALSE);
+	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_FILTER_PROTOCOL(self), FALSE);
 
-	filter = PIDGIN_ACCOUNT_FILTER_PROTOCOL(data);
+	if(PURPLE_IS_ACCOUNT(item)) {
+		PidginAccountFilterProtocol *filter = NULL;
+		PurpleAccount *account = NULL;
 
-	gtk_tree_model_get(model, iter, PIDGIN_ACCOUNT_STORE_COLUMN_ACCOUNT,
-	                   &account, -1);
-
-	if(!PURPLE_IS_ACCOUNT(account)) {
-		return FALSE;
+		filter = PIDGIN_ACCOUNT_FILTER_PROTOCOL(self);
+		account = PURPLE_ACCOUNT(item);
+		ret = purple_strequal(purple_account_get_protocol_id(account),
+		                      filter->protocol_id);
 	}
-
-	ret = purple_strequal(purple_account_get_protocol_id(account),
-	                      filter->protocol_id);
-
-	g_object_unref(G_OBJECT(account));
 
 	return ret;
 }
@@ -83,7 +83,7 @@ pidgin_account_filter_protocol_func(GtkTreeModel *model, GtkTreeIter *iter,
  * GObject Implementation
  *****************************************************************************/
 G_DEFINE_TYPE(PidginAccountFilterProtocol, pidgin_account_filter_protocol,
-              GTK_TYPE_TREE_MODEL_FILTER)
+              GTK_TYPE_FILTER)
 
 static void
 pidgin_account_filter_protocol_get_property(GObject *obj, guint param_id,
@@ -130,19 +130,21 @@ pidgin_account_filter_protocol_finalize(GObject *obj) {
 }
 
 static void
-pidgin_account_filter_protocol_init(PidginAccountFilterProtocol *filter) {
-	gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(filter),
-	                                       pidgin_account_filter_protocol_func,
-	                                       filter, NULL);
+pidgin_account_filter_protocol_init(G_GNUC_UNUSED PidginAccountFilterProtocol *filter)
+{
 }
 
 static void
 pidgin_account_filter_protocol_class_init(PidginAccountFilterProtocolClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
+	GtkFilterClass *filter_class = GTK_FILTER_CLASS(klass);
 
 	obj_class->get_property = pidgin_account_filter_protocol_get_property;
 	obj_class->set_property = pidgin_account_filter_protocol_set_property;
 	obj_class->finalize = pidgin_account_filter_protocol_finalize;
+
+	filter_class->get_strictness = pidgin_account_filter_protocol_get_strictness;
+	filter_class->match = pidgin_account_filter_protocol_match;
 
 	/**
 	 * PidginAccountFilterProtocol:protocol-id:
@@ -160,18 +162,11 @@ pidgin_account_filter_protocol_class_init(PidginAccountFilterProtocolClass *klas
 /******************************************************************************
  * API
  *****************************************************************************/
-GtkTreeModel *
-pidgin_account_filter_protocol_new(const gchar *protocol_id,
-                                   GtkTreeModel *child_model,
-                                   GtkTreePath *root)
-{
-	g_return_val_if_fail(GTK_IS_TREE_MODEL(child_model), NULL);
-
+GtkFilter *
+pidgin_account_filter_protocol_new(const gchar *protocol_id) {
 	return g_object_new(
 		PIDGIN_TYPE_ACCOUNT_FILTER_PROTOCOL,
 		"protocol-id", protocol_id,
-		"child-model", child_model,
-		"virtual-root", root,
 		NULL);
 }
 
