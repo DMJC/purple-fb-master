@@ -708,9 +708,9 @@ pidgin_account_editor_set_account(PidginAccountEditor *editor,
 {
 	if(g_set_object(&editor->account, account)) {
 		if(PURPLE_IS_ACCOUNT(account)) {
-			g_signal_connect(account, "notify::connection",
-			                 G_CALLBACK(pidgin_account_editor_connection_changed_cb),
-			                 editor);
+			g_signal_connect_object(account, "notify::connection",
+			                        G_CALLBACK(pidgin_account_editor_connection_changed_cb),
+			                        editor, 0);
 		}
 
 		g_object_notify_by_pspec(G_OBJECT(editor), properties[PROP_ACCOUNT]);
