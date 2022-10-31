@@ -61,6 +61,7 @@ libpidgin_SOURCES = [
 	'pidginstatusprimitivechooser.c',
 	'pidginstatusprimitivestore.c',
 	'pidgintalkatu.c',
+	'pidginui.c',
 	'prefs/pidginprefs.c',
 	'prefs/pidginawayprefs.c',
 	'prefs/pidginconversationprefs.c',
@@ -129,6 +130,7 @@ libpidgin_headers = [
 	'pidginstatusprimitivechooser.h',
 	'pidginstatusprimitivestore.h',
 	'pidgintalkatu.h',
+	'pidginui.h',
 ]
 
 libpidgin_prefs_headers = [

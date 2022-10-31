@@ -54,26 +54,25 @@
 
 struct PurpleCore
 {
-	PurpleUiInfo *ui_info;
+	PurpleUi *ui;
 
 	void *reserved;
 };
 
-static PurpleCoreUiOps *_ops  = NULL;
 static PurpleCore      *_core = NULL;
 static GSettingsBackend *settings_backend = NULL;
 
 static void
 purple_core_print_version(void)
 {
-	PurpleUiInfo *ui_info = purple_core_get_ui_info();
+	PurpleUi *ui = purple_core_get_ui();
 	const gchar *ui_name = NULL;
 	const gchar *ui_version = NULL;
 	gchar *ui_full_name = NULL;
 
-	if(PURPLE_IS_UI_INFO(ui_info)) {
-		ui_name = purple_ui_info_get_name(ui_info);
-		ui_version = purple_ui_info_get_version(ui_info);
+	if(PURPLE_IS_UI(ui)) {
+		ui_name = purple_ui_get_name(ui);
+		ui_version = purple_ui_get_version(ui);
 	}
 
 	if (ui_name) {
@@ -93,11 +92,10 @@ purple_core_print_version(void)
 }
 
 gboolean
-purple_core_init(PurpleUiInfo *ui_info) {
-	PurpleCoreUiOps *ops;
+purple_core_init(PurpleUi *ui) {
 	PurpleCore *core;
 
-	g_return_val_if_fail(PURPLE_IS_UI_INFO(ui_info), FALSE);
+	g_return_val_if_fail(PURPLE_IS_UI(ui), FALSE);
 	g_return_val_if_fail(purple_get_core() == NULL, FALSE);
 
 	bindtextdomain(PACKAGE, PURPLE_LOCALEDIR);
@@ -107,10 +105,8 @@ purple_core_init(PurpleUiInfo *ui_info) {
 #endif
 
 	_core = core = g_new0(PurpleCore, 1);
-	core->ui_info = ui_info;
+	core->ui = ui;
 	core->reserved = NULL;
-
-	ops = purple_core_get_ui_ops();
 
 	/* This monster is to work around a bug that was fixed in glib 2.73.3. Once
 	 * we require glib 2.74.0 this should be removed.
@@ -143,15 +139,12 @@ purple_core_init(PurpleUiInfo *ui_info) {
 	/* The prefs subsystem needs to be initialized before static protocols
 	 * for protocol prefs to work. */
 	purple_prefs_init();
-	settings_backend = ops->get_settings_backend();
+
+	settings_backend = purple_ui_get_settings_backend(core->ui);
 
 	purple_debug_init();
 
-	if (ops != NULL) {
-		if (ops->ui_prefs_init != NULL) {
-			ops->ui_prefs_init();
-		}
-	}
+	purple_ui_prefs_init(core->ui);
 
 	purple_notification_manager_startup();
 
@@ -197,8 +190,7 @@ purple_core_init(PurpleUiInfo *ui_info) {
 	 */
 	purple_network_discover_my_ip();
 
-	if (ops != NULL && ops->ui_init != NULL)
-		ops->ui_init();
+	purple_ui_start(core->ui);
 
 	/* Load the buddy list after UI init */
 	purple_blist_boot();
@@ -211,7 +203,6 @@ purple_core_init(PurpleUiInfo *ui_info) {
 void
 purple_core_quit(void)
 {
-	PurpleCoreUiOps *ops;
 	PurpleCore *core = purple_get_core();
 	PurpleCredentialManager *credential_manager = NULL;
 	PurpleHistoryManager *history_manager = NULL;
@@ -249,9 +240,7 @@ purple_core_quit(void)
 	_purple_image_store_uninit();
 	purple_network_uninit();
 
-	ops = purple_core_get_ui_ops();
-	if (ops != NULL && ops->quit != NULL)
-		ops->quit();
+	purple_ui_stop(core->ui);
 
 	/* Everything after prefs_uninit must not try to read any prefs */
 	g_clear_object(&settings_backend);
@@ -275,7 +264,7 @@ purple_core_quit(void)
 
 	purple_signals_uninit();
 
-	g_clear_object(&core->ui_info);
+	g_clear_object(&core->ui);
 	g_free(core);
 
 #ifdef _WIN32
@@ -310,19 +299,7 @@ purple_core_get_settings_backend(void) {
 	return settings_backend;
 }
 
-void
-purple_core_set_ui_ops(PurpleCoreUiOps *ops)
-{
-	_ops = ops;
-}
-
-PurpleCoreUiOps *
-purple_core_get_ui_ops(void)
-{
-	return _ops;
-}
-
-PurpleUiInfo *
-purple_core_get_ui_info(void) {
-	return _core->ui_info;
+PurpleUi *
+purple_core_get_ui(void) {
+	return _core->ui;
 }

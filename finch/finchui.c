@@ -1,5 +1,6 @@
 /*
- * finch
+ * Finch - Universal Text Chat Client
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Finch is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -16,17 +17,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 
-#include <glib/gi18n-lib.h>
+#define G_SETTINGS_ENABLE_BACKEND
+#include <gio/gsettingsbackend.h>
 
-#include <purple.h>
-
-#include "gntui.h"
+#include "finchui.h"
 
 #include "finchnotifications.h"
 #include "gntaccount.h"
@@ -34,15 +34,25 @@
 #include "gntconn.h"
 #include "gntconv.h"
 #include "gntdebug.h"
-#include "gntxfer.h"
 #include "gntmedia.h"
 #include "gntnotify.h"
 #include "gntplugin.h"
 #include "gntprefs.h"
+#include "gntprefs.h"
 #include "gntrequest.h"
 #include "gntroomlist.h"
 #include "gntstatus.h"
+#include "gntxfer.h"
 
+struct _FinchUi {
+	PurpleUi parent;
+};
+
+G_DEFINE_TYPE(FinchUi, finch_ui, PURPLE_TYPE_UI)
+
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
 static gboolean
 finch_history_init(GError **error) {
 	PurpleHistoryManager *manager = NULL;
@@ -74,9 +84,16 @@ finch_history_init(GError **error) {
 	return purple_history_manager_set_active(manager, id, error);
 }
 
-void
-finch_ui_init(void)
-{
+/******************************************************************************
+ * PurpleUi Implementation
+ *****************************************************************************/
+static void
+finch_ui_prefs_init(G_GNUC_UNUSED PurpleUi *ui) {
+	finch_prefs_init();
+}
+
+static void
+finch_ui_start(G_GNUC_UNUSED PurpleUi *ui) {
 	GError *error = NULL;
 
 	finch_debug_init();
@@ -144,9 +161,8 @@ finch_ui_init(void)
 #ifdef STANDALONE
 }
 
-void
-finch_ui_uninit(void)
-{
+static void
+finch_ui_stop(G_GNUC_UNUSED PurpleUi *ui) {
 	purple_accounts_set_ui_ops(NULL);
 	finch_accounts_uninit();
 
@@ -181,4 +197,50 @@ finch_ui_uninit(void)
 	gnt_set_config_dir(NULL);
 #endif /* _WIN32 */
 #endif /* STANDALONE */
+}
+
+static gpointer
+finch_ui_get_settings_backend(G_GNUC_UNUSED PurpleUi *ui) {
+	GSettingsBackend *backend = NULL;
+	char *config = NULL;
+
+	config = g_build_filename(purple_config_dir(), "finch3.ini", NULL);
+	backend = g_keyfile_settings_backend_new(config, "/", NULL);
+
+	g_free(config);
+
+	return backend;
+}
+
+/******************************************************************************
+ * GObject Implementation
+ *****************************************************************************/
+static void
+finch_ui_init(G_GNUC_UNUSED FinchUi *ui) {
+}
+
+static void
+finch_ui_class_init(FinchUiClass *klass) {
+	PurpleUiClass *ui_class = PURPLE_UI_CLASS(klass);
+
+	ui_class->prefs_init = finch_ui_prefs_init;
+	ui_class->start = finch_ui_start;
+	ui_class->stop = finch_ui_stop;
+	ui_class->get_settings_backend = finch_ui_get_settings_backend;
+}
+
+/******************************************************************************
+ * Public API
+ *****************************************************************************/
+PurpleUi *
+finch_ui_new(void) {
+	return g_object_new(
+		FINCH_TYPE_UI,
+		"id", "finch3",
+		"name", _("Finch"),
+		"version", VERSION,
+		"website", "https://pidgin.im",
+		"support-website", "https://pidgin.im/contact/",
+		"client-type", "console",
+		NULL);
 }

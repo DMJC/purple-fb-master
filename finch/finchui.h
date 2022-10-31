@@ -1,5 +1,6 @@
 /*
- * finch
+ * Finch - Universal Text Chat Client
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Finch is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -16,8 +17,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #if !defined(FINCH_GLOBAL_HEADER_INSIDE) && !defined(FINCH_COMPILATION)
@@ -27,10 +27,25 @@
 #ifndef FINCH_UI_H
 #define FINCH_UI_H
 
-#include "gnt.h"
+#include <purple.h>
 
-void finch_ui_init(void);
-void finch_ui_uninit(void);
+G_BEGIN_DECLS
+
+#define FINCH_TYPE_UI (finch_ui_get_type())
+G_DECLARE_FINAL_TYPE(FinchUi, finch_ui, FINCH, UI, PurpleUi)
+
+/**
+ * finch_ui_new:
+ *
+ * Creates the [class@Purple.Ui] for finch.
+ *
+ * Note: This isn't really useful outside of Finch itself.
+ *
+ * Since: 3.0.0
+ */
+PurpleUi *finch_ui_new(void);
+
+G_END_DECLS
 
 #endif /* FINCH_UI_H */
 

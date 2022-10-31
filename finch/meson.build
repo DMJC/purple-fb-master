@@ -79,6 +79,7 @@ enable_consoleui = true
 
 libfinch_SOURCES = [
 	'finchnotifications.c',
+	'finchui.c',
 	'gntaccount.c',
 	'gntblist.c',
 	'gntconn.c',
@@ -93,7 +94,6 @@ libfinch_SOURCES = [
 	'gntrequest.c',
 	'gntroomlist.c',
 	'gntstatus.c',
-	'gntui.c',
 	'gntxfer.c',
 	package_revision,
 	'libfinch.c'
@@ -101,6 +101,7 @@ libfinch_SOURCES = [
 
 libfinch_headers = [
 	'finchnotifications.h',
+	'finchui.h',
 	'gntaccount.h',
 	'gntblist.h',
 	'gntconn.h',
@@ -115,7 +116,6 @@ libfinch_headers = [
 	'gntrequest.h',
 	'gntroomlist.h',
 	'gntstatus.h',
-	'gntui.h',
 	'gntxfer.h',
 	'libfinch.h'
 ]

@@ -1,4 +1,6 @@
-/* pidgin
+/*
+ * Pidgin - Internet Messenger
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Pidgin is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -15,51 +17,44 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #if !defined(PIDGIN_GLOBAL_HEADER_INSIDE) && !defined(PIDGIN_COMPILATION)
 # error "only <pidgin.h> may be included directly"
 #endif
 
-#ifndef PIDGIN_CORE_H
-#define PIDGIN_CORE_H
+#ifndef PIDGIN_UI_H
+#define PIDGIN_UI_H
 
 #include <glib.h>
 
 #include <purple.h>
 
-#ifdef _WIN32
-#  include "win32/gtkwin32dep.h"
-#endif
-
-/* change this only when we have a sane upgrade path for old prefs */
-#define PIDGIN_PREFS_ROOT "/pidgin"
-
-/* Translators may want to transliterate the name.
- It is not to be translated. */
-#define PIDGIN_NAME _("Pidgin")
+G_BEGIN_DECLS
 
 /**
- * PIDGIN_ALERT_TITLE:
+ * PidginUi:
  *
- * The title that should be used for alert dialogs.
+ * Is a subclass of [class@Purple.Ui] that identifies Pidgin to libpurple.
+ *
+ * Since: 3.0.0
  */
-#ifndef _WIN32
-# define PIDGIN_ALERT_TITLE ""
-#else
-# define PIDGIN_ALERT_TITLE PIDGIN_NAME
-#endif
+
+#define PIDGIN_TYPE_UI (pidgin_ui_get_type())
+G_DECLARE_FINAL_TYPE(PidginUi, pidgin_ui, PIDGIN, UI, PurpleUi)
 
 /**
- * pidgin_start:
- * @argc: The argc from main() (or 0 if argv is %NULL).
- * @argv: The argv from main(), or %NULL.
+ * pidgin_ui_new:
  *
- * Start pidgin with the given command line arguments.
+ * Creates the new [class@Pidgin.Ui] instance.
+ *
+ * Note: there's not much use for this outside of Pidgin's internal code.
+ *
+ * Returns: (transfer full): The new instance.
  */
-int pidgin_start(int argc, char *argv[]);
+PurpleUi *pidgin_ui_new(void);
 
-#endif /* PIDGIN_CORE_H */
+G_END_DECLS
 
+#endif /* PIDGIN_UI_H */

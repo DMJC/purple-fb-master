@@ -65,13 +65,13 @@ jabber_bosh_connection_send_now(PurpleJabberBOSHConnection *conn);
 void
 jabber_bosh_init(void)
 {
-	PurpleUiInfo *ui_info = purple_core_get_ui_info();
+	PurpleUi *ui = purple_core_get_ui();
 	const gchar *ui_name = NULL;
 	const gchar *ui_version = NULL;
 
-	if(PURPLE_IS_UI_INFO(ui_info)) {
-		ui_name = purple_ui_info_get_name(ui_info);
-		ui_version = purple_ui_info_get_version(ui_info);
+	if(PURPLE_IS_UI(ui)) {
+		ui_name = purple_ui_get_name(ui);
+		ui_version = purple_ui_get_version(ui);
 	}
 
 	if(ui_name) {

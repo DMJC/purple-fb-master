@@ -26,53 +26,18 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#define G_SETTINGS_ENABLE_BACKEND
-#include <gio/gsettingsbackend.h>
-
 #include <locale.h>
 
 #include <purple.h>
 
+#include "finchui.h"
 #include "gntdebug.h"
 #include "gntidle.h"
 #include "gntprefs.h"
-#include "gntui.h"
 #include "libfinch.h"
 
 #include "config.h"
 #include "package_revision.h"
-
-static void
-finch_quit(void)
-{
-	finch_ui_uninit();
-}
-
-static gpointer
-finch_get_settings_backend(void) {
-	GSettingsBackend *backend = NULL;
-	char *config = NULL;
-
-	config = g_build_filename(purple_config_dir(), "finch3.ini", NULL);
-	backend = g_keyfile_settings_backend_new(config, "/", NULL);
-
-	g_free(config);
-
-	return backend;
-}
-
-static PurpleCoreUiOps core_ops = {
-	.ui_prefs_init = finch_prefs_init,
-	.ui_init = finch_ui_init,
-	.quit = finch_quit,
-	.get_settings_backend = finch_get_settings_backend,
-};
-
-static PurpleCoreUiOps *
-gnt_core_get_ui_ops(void)
-{
-	return &core_ops;
-}
 
 static gboolean
 start_with_debugwin(gpointer null)
@@ -106,7 +71,6 @@ finch_plugins_init(void) {
 static int
 init_libpurple(int argc, char **argv)
 {
-	PurpleUiInfo *ui_info = NULL;
 	gboolean opt_nologin = FALSE;
 	gboolean opt_version = FALSE;
 	gboolean opt_debug = FALSE;
@@ -196,14 +160,9 @@ init_libpurple(int argc, char **argv)
 		g_timeout_add(0, start_with_debugwin, NULL);
 	}
 
-	purple_core_set_ui_ops(gnt_core_get_ui_ops());
 	purple_idle_set_ui(finch_idle_new());
 
-	ui_info = purple_ui_info_new("finch3", _("Finch"), VERSION,
-	                             "https://pidgin.im",
-	                             "https://developer.pidgin.im", "console");
-
-	if (!purple_core_init(ui_info))
+	if (!purple_core_init(finch_ui_new()))
 	{
 		fprintf(stderr,
 				"Initialization of the Purple core failed. Dumping core.\n"

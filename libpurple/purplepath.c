@@ -19,7 +19,7 @@
 #include <libpurple/purplepath.h>
 
 #include <libpurple/core.h>
-#include <libpurple/purpleuiinfo.h>
+#include <libpurple/purpleui.h>
 
 #ifdef _WIN32
 # include "win32/win32dep.h"
@@ -43,10 +43,10 @@ purple_xdg_dir(gchar **xdg_dir, const gchar *xdg_base_dir,
 {
 	if (!*xdg_dir) {
 		if (!custom_user_dir) {
-			PurpleUiInfo *info = purple_core_get_ui_info();
+			PurpleUi *ui = purple_core_get_ui();
 			const gchar *id = NULL;
 
-			id = purple_ui_info_get_id(info);
+			id = purple_ui_get_id(ui);
 			if(id == NULL) {
 				id = "purple";
 			}

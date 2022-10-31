@@ -53,12 +53,12 @@ G_DEFINE_DYNAMIC_TYPE(PurpleKWalletProvider, purple_kwallet_provider,
  *****************************************************************************/
 static QString
 purple_kwallet_get_ui_name(void) {
-	PurpleUiInfo *ui_info = NULL;
+	PurpleUi *ui = NULL;
 	QString ui_name = NULL;
 
-	ui_info = purple_core_get_ui_info();
-	if(PURPLE_IS_UI_INFO(ui_info)) {
-		ui_name = purple_ui_info_get_name(ui_info);
+	ui = purple_core_get_ui();
+	if(PURPLE_IS_UI(ui)) {
+		ui_name = purple_ui_get_name(ui);
 	}
 
 	if(ui_name.isEmpty()) {

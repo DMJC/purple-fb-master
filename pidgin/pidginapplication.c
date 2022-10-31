@@ -52,9 +52,10 @@
 #include "pidginmooddialog.h"
 #include "pidginpluginsdialog.h"
 #include "pidginpluginsmenu.h"
+#include "pidginprefs.h"
 #include "pidginstatuseditor.h"
 #include "pidginstatusmanager.h"
-#include "pidginprefs.h"
+#include "pidginui.h"
 
 struct _PidginApplication {
 	GtkApplication parent;
@@ -745,7 +746,6 @@ pidgin_application_window_added(GtkApplication *application,
 static void
 pidgin_application_startup(GApplication *application) {
 	PurpleAccountManager *manager = NULL;
-	PurpleUiInfo *ui_info = NULL;
 	GList *active_accounts = NULL;
 	gpointer handle = NULL;
 
@@ -780,13 +780,7 @@ pidgin_application_startup(GApplication *application) {
 	winpidgin_init();
 #endif
 
-	purple_core_set_ui_ops(pidgin_core_get_ui_ops());
-
-	ui_info = purple_ui_info_new("pidgin3", PIDGIN_NAME, VERSION,
-	                             "https://pidgin.im",
-	                             "https://developer.pidgin.im", "pc");
-
-	if(!purple_core_init(ui_info)) {
+	if(!purple_core_init(pidgin_ui_new())) {
 		fprintf(stderr,
 				_("Initialization of the libpurple core failed. Aborting!\n"
 				  "Please report this!\n"));

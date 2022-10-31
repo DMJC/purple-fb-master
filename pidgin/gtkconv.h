@@ -26,6 +26,8 @@
 #ifndef _PIDGIN_CONVERSATION_H_
 #define _PIDGIN_CONVERSATION_H_
 
+#include <gtk/gtk.h>
+
 typedef struct _PidginConversation PidginConversation;
 
 enum {

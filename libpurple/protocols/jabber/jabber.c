@@ -3679,7 +3679,7 @@ xmpp_uri_handler(const char *proto, const char *user, GHashTable *params,
 static void
 jabber_do_init(void)
 {
-	PurpleUiInfo *ui_info = purple_core_get_ui_info();
+	PurpleUi *ui = purple_core_get_ui();
 	const gchar *ui_type;
 	const gchar *type = "pc"; /* default client type, if unknown or
 								unspecified */
@@ -3713,7 +3713,7 @@ jabber_do_init(void)
 
 	jabber_cmds = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, cmds_free_func);
 
-	ui_type = ui_info ? purple_ui_info_get_client_type(ui_info) : NULL;
+	ui_type = ui ? purple_ui_get_client_type(ui) : NULL;
 	if (ui_type) {
 		if (purple_strequal(ui_type, "pc") ||
 			purple_strequal(ui_type, "console") ||
@@ -3725,8 +3725,8 @@ jabber_do_init(void)
 		}
 	}
 
-	if (ui_info)
-		ui_name = purple_ui_info_get_name(ui_info);
+	if (ui)
+		ui_name = purple_ui_get_name(ui);
 	if (ui_name == NULL)
 		ui_name = PACKAGE;
 
