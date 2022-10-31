@@ -606,6 +606,7 @@ jabber_recv_cb(GObject *stream, gpointer data)
 			purple_connection_error(js->gc,
 			                        PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
 			                        _("Server closed the connection"));
+			js->inpa = 0;
 			return G_SOURCE_REMOVE;
 		} else if (len < 0) {
 			if (error->code == G_IO_ERROR_WOULD_BLOCK) {
@@ -618,6 +619,7 @@ jabber_recv_cb(GObject *stream, gpointer data)
 				               _("Lost connection with server: "));
 				purple_connection_take_error(js->gc, error);
 			}
+			js->inpa = 0;
 			return G_SOURCE_REMOVE;
 		}
 

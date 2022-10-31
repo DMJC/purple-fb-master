@@ -1651,6 +1651,7 @@ read_cb(GObject *stream, gpointer data)
       purple_connection_error(pd->gc,
                               PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
                               _("Server closed the connection"));
+	  pd->inpa = 0;
       return G_SOURCE_REMOVE;
     } else if (len < 0) {
       /* read problem occurred if we're here, so we'll need to take care of
