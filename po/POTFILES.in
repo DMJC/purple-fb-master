@@ -1,4 +1,5 @@
 finch/finch.c
+finch/finchui.c
 finch/gntaccount.c
 finch/gntblist.c
 finch/gntconn.c
@@ -13,7 +14,6 @@ finch/gntprefs.c
 finch/gntrequest.c
 finch/gntroomlist.c
 finch/gntstatus.c
-finch/gntui.c
 finch/gntxfer.c
 finch/libfinch.c
 finch/plugins/gntclipboard/gntclipboard.c
