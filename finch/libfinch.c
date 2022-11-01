@@ -165,11 +165,10 @@ init_libpurple(int argc, char **argv)
 	if (!purple_core_init(finch_ui_new(), &error))
 	{
 		fprintf(stderr,
-		        _("Initialization of the libpurple core failed. %s\n"
-		          "Aborting!\nPlease report this!\n"),
+		        _("Finch3 initialization failed!\nError message: %s\n"),
 		        (error != NULL) ? error->message : "unknown error");
 		g_clear_error(&error);
-		abort();
+		return 0;
 	}
 
 	finch_plugins_init();
