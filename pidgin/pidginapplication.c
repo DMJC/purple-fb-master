@@ -712,6 +712,14 @@ pidgin_application_signed_off_cb(PurpleAccount *account, gpointer data) {
 	}
 }
 
+static void
+pidgin_application_error_reponse_cb(G_GNUC_UNUSED AdwMessageDialog *self,
+                                    G_GNUC_UNUSED char *response,
+                                    gpointer data)
+{
+	g_application_quit(data);
+}
+
 /******************************************************************************
  * GtkApplication Implementation
  *****************************************************************************/
@@ -782,12 +790,30 @@ pidgin_application_startup(GApplication *application) {
 #endif
 
 	if(!purple_core_init(pidgin_ui_new(), &error)) {
-		fprintf(stderr,
-		        _("Initialization of the libpurple core failed. %s\n"
-		          "Aborting!\nPlease report this!\n"),
-		        (error != NULL) ? error->message : "unknown error");
+		GtkWidget *message = NULL;
+		const char *error_message = "unknown error";
+
+		if(error != NULL) {
+			error_message = error->message;
+		}
+
+		message = adw_message_dialog_new(NULL,
+		                                 _("Pidgin 3 failed to initialize"),
+		                                 error_message);
 		g_clear_error(&error);
-		g_abort();
+
+		adw_message_dialog_add_responses(ADW_MESSAGE_DIALOG(message),
+		                                 "close", _("Close"), NULL);
+		adw_message_dialog_set_close_response(ADW_MESSAGE_DIALOG(message),
+		                                      "close");
+
+		g_signal_connect(message, "response",
+		                 G_CALLBACK(pidgin_application_error_reponse_cb),
+		                 application);
+
+		gtk_window_present_with_time(GTK_WINDOW(message), GDK_CURRENT_TIME);
+
+		return;
 	}
 
 	pidgin_application_init_plugins();

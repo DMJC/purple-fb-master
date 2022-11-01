@@ -94,6 +94,7 @@ purple_core_print_version(void)
 gboolean
 purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	PurpleCore *core;
+	const char *force_error_message = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_UI(ui), FALSE);
 	g_return_val_if_fail(purple_get_core() == NULL, FALSE);
@@ -189,6 +190,22 @@ purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	 * hopefully save some time later.
 	 */
 	purple_network_discover_my_ip();
+
+	/* Set this environment variable to anything to test the error reporting in
+	 * the user interface.
+	 */
+	force_error_message = g_getenv("PURPLE3_CORE_ERROR_MESSAGE");
+	if(force_error_message != NULL) {
+		if(force_error_message[0] == '\0') {
+			force_error_message = "This is a forced error for testing user "
+			                      "interfaces.";
+		}
+
+		g_set_error_literal(error, g_quark_from_static_string("purple"), 0,
+		                    force_error_message);
+
+		return FALSE;
+	}
 
 	purple_ui_start(core->ui);
 
