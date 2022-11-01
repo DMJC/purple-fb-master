@@ -207,7 +207,9 @@ purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 		return FALSE;
 	}
 
-	purple_ui_start(core->ui);
+	if(!purple_ui_start(core->ui, error)) {
+		return FALSE;
+	}
 
 	/* Load the buddy list after UI init */
 	purple_blist_boot();

@@ -63,7 +63,7 @@ struct _PurpleUiClass {
 
 	/*< public >*/
 	void (*prefs_init)(PurpleUi *ui);
-	void (*start)(PurpleUi *ui);
+	gboolean (*start)(PurpleUi *ui, GError **error);
 	void (*stop)(PurpleUi *ui);
 
 	gpointer (*get_settings_backend)(PurpleUi *ui);
@@ -159,15 +159,21 @@ void purple_ui_prefs_init(PurpleUi *ui);
 /**
  * purple_ui_start:
  * @ui: The instance.
+ * @error: (optional) (nullable): A return address for a [type@GLib.GError].
  *
  * Tells @ui that libpurple is done initializing and that @ui should continue
  * its initialization.
  *
+ * The user interface can return errors here which will be propagated by
+ * [func@Purple.core_init] which calls this function.
+ *
  * Note: This should only be called by libpurple.
+ *
+ * Returns: %TRUE if successful, otherwise %FALSE with @error optionally set.
  *
  * Since: 3.0.0
  */
-void purple_ui_start(PurpleUi *ui);
+gboolean purple_ui_start(PurpleUi *ui, GError **error);
 
 /**
  * purple_ui_stop:

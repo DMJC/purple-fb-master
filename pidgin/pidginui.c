@@ -138,12 +138,11 @@ pidgin_ui_prefs_init(G_GNUC_UNUSED PurpleUi *ui) {
 	pidgin_prefs_init();
 }
 
-static void
-pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui) {
+static gboolean
+pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
 	PurpleProtocolManager *protocol_manager = NULL;
 	GdkDisplay *display = NULL;
 	GtkIconTheme *theme = NULL;
-	GError *error = NULL;
 	gchar *path;
 
 	pidgin_debug_init();
@@ -168,10 +167,16 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui) {
 	purple_protocol_manager_foreach(protocol_manager,
 	                                pidgin_ui_protocol_foreach_theme_cb, NULL);
 
-	if(!pidgin_history_init(&error)) {
-		g_critical("failed to initialize the history api: %s",
-		           error != NULL ? error->message : "unknown");
-		g_clear_error(&error);
+	if(!pidgin_history_init(error)) {
+		const char *error_message = "unknown";
+
+		if(error != NULL && *error != NULL) {
+			error_message = (*error)->message;
+		}
+
+		g_critical("failed to initialize the history api: %s", error_message);
+
+		return FALSE;
 	}
 
 	/* Set the UI operation structures. */
@@ -194,6 +199,8 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui) {
 	pidgin_roomlist_init();
 	pidgin_medias_init();
 	pidgin_notify_init();
+
+	return TRUE;
 }
 
 static void

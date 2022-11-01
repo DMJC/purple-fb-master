@@ -386,16 +386,18 @@ purple_ui_prefs_init(PurpleUi *ui) {
 	}
 }
 
-void
-purple_ui_start(PurpleUi *ui) {
+gboolean
+purple_ui_start(PurpleUi *ui, GError **error) {
 	PurpleUiClass *klass = NULL;
 
-	g_return_if_fail(PURPLE_IS_UI(ui));
+	g_return_val_if_fail(PURPLE_IS_UI(ui), FALSE);
 
 	klass = PURPLE_UI_GET_CLASS(ui);
 	if(klass != NULL && klass->start != NULL) {
-		klass->start(ui);
+		return klass->start(ui, error);
 	}
+
+	return FALSE;
 }
 
 void

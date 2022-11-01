@@ -70,9 +70,11 @@ G_DECLARE_FINAL_TYPE(TestPurpleUi, test_purple_ui, TEST_PURPLE, UI, PurpleUi)
 
 G_DEFINE_TYPE(TestPurpleUi, test_purple_ui, PURPLE_TYPE_UI)
 
-static void
-test_purple_ui_start(G_GNUC_UNUSED PurpleUi *ui) {
+static gboolean
+test_purple_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	purple_conversations_set_ui_ops(&test_conv_uiops);
+
+	return TRUE;
 }
 
 static gpointer
