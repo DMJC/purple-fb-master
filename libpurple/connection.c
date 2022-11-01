@@ -73,8 +73,6 @@ typedef struct {
 	 */
 	gboolean wants_to_die;
 
-	gboolean is_finalizing;    /* The object is being destroyed. */
-
 	/* The connection error and its description if an error occurred. */
 	PurpleConnectionErrorInfo *error_info;
 
@@ -441,11 +439,36 @@ purple_connection_disconnect_cb(gpointer data) {
 		priv = purple_connection_get_instance_private(connection);
 
 		priv->disconnect_timeout = 0;
+
+		if(priv->state != PURPLE_CONNECTION_STATE_DISCONNECTED) {
+			/* If the connection is not disconnected, disconnect it. */
+			purple_account_disconnect(account);
+		} else {
+			/* Otherwise assume the connection was already disconnected or in
+			 * the process of being disconnected and we just need to finish our
+			 * cleanup.
+			 */
+			GError *error = NULL;
+
+			if(!purple_connection_disconnect(connection, &error)) {
+				const char *message = "unknown error";
+
+				if(error != NULL) {
+					message = error->message;
+				}
+
+				purple_debug_warning("connections",
+				                     "failed to disconnect %p : %s",
+				                     connection, message);
+			}
+
+			g_clear_error(&error);
+
+			purple_account_set_connection(account, NULL);
+		}
 	}
 
-	purple_account_disconnect(account);
-
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 void
@@ -659,10 +682,52 @@ purple_connection_set_id(PurpleConnection *connection, const gchar *id) {
 	g_object_notify_by_pspec(G_OBJECT(connection), properties[PROP_ID]);
 }
 
-/**************************************************************************
- * GObject code
- **************************************************************************/
+static void
+purple_connection_set_account(PurpleConnection *connection,
+                              PurpleAccount *account)
+{
+	PurpleConnectionPrivate *priv = NULL;
 
+	priv = purple_connection_get_instance_private(connection);
+
+	if(g_set_object(&priv->account, account)) {
+		g_object_notify_by_pspec(G_OBJECT(connection),
+		                         properties[PROP_ACCOUNT]);
+	}
+}
+
+/**************************************************************************
+ * PurpleConnection Implementation
+ **************************************************************************/
+static gboolean
+purple_connection_default_connect(PurpleConnection *connection,
+                                  G_GNUC_UNUSED GError **error)
+{
+	PurpleConnectionPrivate *priv = NULL;
+
+	priv = purple_connection_get_instance_private(connection);
+
+	purple_protocol_login(priv->protocol, priv->account);
+
+	return TRUE;
+}
+
+static gboolean
+purple_connection_default_disconnect(PurpleConnection *connection,
+                                     G_GNUC_UNUSED GError **error)
+{
+	PurpleConnectionPrivate *priv = NULL;
+
+	priv = purple_connection_get_instance_private(connection);
+
+	purple_protocol_close(priv->protocol, connection);
+
+	return TRUE;
+}
+
+/**************************************************************************
+ * GObject Implementation
+ **************************************************************************/
 static void
 purple_connection_set_property(GObject *obj, guint param_id,
                                const GValue *value, GParamSpec *pspec)
@@ -686,7 +751,8 @@ purple_connection_set_property(GObject *obj, guint param_id,
 			purple_connection_set_state(connection, g_value_get_enum(value));
 			break;
 		case PROP_ACCOUNT:
-			priv->account = g_value_get_object(value);
+			purple_connection_set_account(connection,
+			                              g_value_get_object(value));
 			break;
 		case PROP_PASSWORD:
 			purple_connection_set_password(connection,
@@ -763,77 +829,35 @@ purple_connection_constructed(GObject *object) {
 		g_free(uuid);
 	}
 
-	purple_account_set_connection(priv->account, connection);
-
 	purple_signal_emit(purple_connections_get_handle(), "signing-on",
 	                   connection);
+}
+
+static void
+purple_connection_dispose(GObject *obj) {
+	PurpleConnection *connection = PURPLE_CONNECTION(obj);
+	PurpleConnectionPrivate *priv = NULL;
+
+	priv = purple_connection_get_instance_private(connection);
+
+	g_clear_object(&priv->account);
+
+	if(priv->disconnect_timeout > 0) {
+		g_source_remove(priv->disconnect_timeout);
+		priv->disconnect_timeout = 0;
+	}
+
+	G_OBJECT_CLASS(purple_connection_parent_class)->dispose(obj);
 }
 
 static void
 purple_connection_finalize(GObject *object) {
 	PurpleConnection *connection = PURPLE_CONNECTION(object);
 	PurpleConnectionPrivate *priv = NULL;
-	GSList *buddies;
-	gboolean remove = FALSE;
-	gpointer handle;
 
 	priv = purple_connection_get_instance_private(connection);
 
-	priv->is_finalizing = TRUE;
-
-	handle = purple_connections_get_handle();
-
-	purple_debug_info("connection", "Disconnecting connection %p", connection);
-
-	if(priv->state != PURPLE_CONNECTION_STATE_CONNECTING) {
-		remove = TRUE;
-	}
-
-	purple_signal_emit(handle, "signing-off", connection);
-
-	g_slist_free_full(priv->active_chats,
-	                  (GDestroyNotify)purple_chat_conversation_leave);
-
-	update_keepalive(connection, FALSE);
-
-	purple_protocol_close(priv->protocol, connection);
-
-	/* Clear out the proto data that was freed in the protocol's close method */
-	buddies = purple_blist_find_buddies(priv->account, NULL);
-	while (buddies != NULL) {
-		PurpleBuddy *buddy = buddies->data;
-		purple_buddy_set_protocol_data(buddy, NULL);
-		buddies = g_slist_delete_link(buddies, buddies);
-	}
-
-	connections = g_list_remove(connections, connection);
-
-	purple_connection_set_state(connection, PURPLE_CONNECTION_STATE_DISCONNECTED);
-
-	if(remove) {
-		purple_blist_remove_account(priv->account);
-	}
-
-	purple_signal_emit(handle, "signed-off", connection);
-
-	purple_account_request_close_with_account(priv->account);
-	purple_request_close_with_handle(connection);
-	purple_notify_close_with_handle(connection);
-
-	connections_connected = g_list_remove(connections_connected, connection);
-	if(connections_connected == NULL) {
-		purple_signal_emit(handle, "offline");
-	}
-
-	purple_debug_info("connection", "Destroying connection %p", connection);
-
-	purple_account_set_connection(priv->account, NULL);
-
 	g_clear_pointer(&priv->error_info, purple_connection_error_info_free);
-
-	if(priv->disconnect_timeout > 0) {
-		g_source_remove(priv->disconnect_timeout);
-	}
 
 	purple_str_wipe(priv->password);
 	g_free(priv->display_name);
@@ -848,8 +872,12 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 
 	obj_class->get_property = purple_connection_get_property;
 	obj_class->set_property = purple_connection_set_property;
+	obj_class->dispose = purple_connection_dispose;
 	obj_class->finalize = purple_connection_finalize;
 	obj_class->constructed = purple_connection_constructed;
+
+	klass->connect = purple_connection_default_connect;
+	klass->disconnect = purple_connection_default_disconnect;
 
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -894,85 +922,10 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 }
 
 void
-_purple_connection_new(PurpleAccount *account, gboolean is_registration,
-                       const gchar *password)
-{
-	PurpleConnection *connection = NULL;
-	PurpleConnectionPrivate *priv = NULL;
-	PurpleProtocol *protocol = NULL;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	if(!purple_account_is_disconnected(account)) {
-		return;
-	}
-
-	protocol = purple_account_get_protocol(account);
-
-	if(protocol == NULL) {
-		gchar *message;
-
-		message = g_strdup_printf(_("Missing protocol for %s"),
-			purple_account_get_username(account));
-		purple_notify_error(NULL, is_registration ? _("Registration Error") :
-			_("Connection Error"), message, NULL,
-			purple_request_cpar_from_account(account));
-		g_free(message);
-
-		return;
-	}
-
-	if(is_registration) {
-		if(!PURPLE_PROTOCOL_IMPLEMENTS(protocol, SERVER, register_user)) {
-			return;
-		}
-	} else {
-		if(((password == NULL) || (*password == '\0')) &&
-		   !(purple_protocol_get_options(protocol) & OPT_PROTO_NO_PASSWORD) &&
-		   !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
-		{
-			purple_debug_error("connection", "Cannot connect to account %s "
-			                   "without a password.",
-			                   purple_account_get_username(account));
-
-			return;
-		}
-	}
-
-	connection = g_object_new(
-		PURPLE_TYPE_CONNECTION,
-		"protocol", protocol,
-		"account", account,
-		"password", password,
-		NULL);
-
-	g_return_if_fail(connection != NULL);
-
-	priv = purple_connection_get_instance_private(connection);
-
-	if(is_registration) {
-		purple_debug_info("connection", "Registering.  connection = %p",
-		                  connection);
-
-		/* set this so we don't auto-reconnect after registering */
-		priv->wants_to_die = TRUE;
-
-		purple_protocol_server_register_user(PURPLE_PROTOCOL_SERVER(protocol),
-		                                     account);
-	} else {
-		purple_debug_info("connection", "Connecting. connection = %p",
-		                  connection);
-
-		purple_protocol_login(protocol, account);
-	}
-}
-
-void
 _purple_connection_new_unregister(PurpleAccount *account, const char *password,
                                   PurpleAccountUnregistrationCb cb,
                                   gpointer user_data)
 {
-	/* Lots of copy/pasted code to avoid API changes. You might want to integrate that into the previous function when possible. */
 	PurpleConnection *gc;
 	PurpleProtocol *protocol;
 
@@ -984,9 +937,9 @@ _purple_connection_new_unregister(PurpleAccount *account, const char *password,
 		gchar *message;
 
 		message = g_strdup_printf(_("Missing protocol for %s"),
-								  purple_account_get_username(account));
+		                          purple_account_get_username(account));
 		purple_notify_error(NULL, _("Unregistration Error"), message,
-			NULL, purple_request_cpar_from_account(account));
+		                    NULL, purple_request_cpar_from_account(account));
 		g_free(message);
 		return;
 	}
@@ -1001,8 +954,9 @@ _purple_connection_new_unregister(PurpleAccount *account, const char *password,
 	   !(purple_protocol_get_options(protocol) & OPT_PROTO_NO_PASSWORD) &&
 	   !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
 	{
-		purple_debug_error("connection", "Cannot connect to account %s without "
-						   "a password.\n", purple_account_get_username(account));
+		purple_debug_error("connection", "Cannot connect to account %s "
+		                   "without a password.",
+		                   purple_account_get_username(account));
 
 		return;
 	}
@@ -1016,10 +970,129 @@ _purple_connection_new_unregister(PurpleAccount *account, const char *password,
 
 	g_return_if_fail(gc != NULL);
 
-	purple_debug_info("connection", "Unregistering.  gc = %p\n", gc);
+	purple_debug_info("connection", "Unregistering.  gc = %p", gc);
 
 	purple_protocol_server_unregister_user(PURPLE_PROTOCOL_SERVER(protocol),
 	                                       account, cb, user_data);
+}
+
+gboolean
+purple_connection_connect(PurpleConnection *connection, GError **error) {
+	PurpleConnectionClass *klass = NULL;
+	PurpleConnectionPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), FALSE);
+
+	priv = purple_connection_get_instance_private(connection);
+
+	if(!purple_account_is_disconnected(priv->account)) {
+		g_set_error(error, PURPLE_CONNECTION_ERROR, 0,
+		            "account %s is not disconnected",
+		            purple_account_get_username(priv->account));
+
+		return TRUE;
+	}
+
+	if(((priv->password == NULL) || (*priv->password == '\0')) &&
+	   !(purple_protocol_get_options(priv->protocol) & OPT_PROTO_NO_PASSWORD) &&
+	   !(purple_protocol_get_options(priv->protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
+	{
+		g_set_error(error, PURPLE_CONNECTION_ERROR, 0,
+		            "Cannot connect to account %s without a password.",
+		            purple_account_get_username(priv->account));
+
+		return FALSE;
+	}
+
+	purple_debug_info("connection", "Connecting. connection = %p",
+	                  connection);
+
+	klass = PURPLE_CONNECTION_GET_CLASS(connection);
+	if(klass != NULL && klass->connect != NULL) {
+		return klass->connect(connection, error);
+	}
+
+	g_set_error(error, PURPLE_CONNECTION_ERROR, 0,
+	            "The connection for %s did not implement the connect method",
+	            purple_account_get_username(priv->account));
+
+	return FALSE;
+}
+
+gboolean
+purple_connection_disconnect(PurpleConnection *connection, GError **error) {
+	PurpleConnectionClass *klass = NULL;
+	PurpleConnectionPrivate *priv = NULL;
+	GSList *buddies = NULL;
+	gboolean remove = FALSE;
+	gboolean ret = TRUE;
+	gpointer handle = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), FALSE);
+
+	/* We don't check if the connection's state is connected as everything
+	 * should be idempotent when doing cleanup.
+	 */
+
+	priv = purple_connection_get_instance_private(connection);
+
+	/* If we're not connecting, we'll need to remove stuff from our contacts
+	 * from the buddy list.
+	 */
+	if(priv->state != PURPLE_CONNECTION_STATE_CONNECTING) {
+		remove = TRUE;
+	}
+
+	handle = purple_connections_get_handle();
+
+	purple_debug_info("connection", "Disconnecting connection %p", connection);
+	purple_connection_set_state(connection,
+	                            PURPLE_CONNECTION_STATE_DISCONNECTING);
+	purple_signal_emit(handle, "signing-off", connection);
+
+	g_slist_free_full(priv->active_chats,
+	                  (GDestroyNotify)purple_chat_conversation_leave);
+
+	update_keepalive(connection, FALSE);
+
+	/* Dispatch to the connection's disconnect method. */
+	klass = PURPLE_CONNECTION_GET_CLASS(connection);
+	if(klass != NULL && klass->disconnect != NULL) {
+		ret = klass->disconnect(connection, error);
+	}
+
+	/* Clear out the proto data that was freed in the protocol's close method */
+	buddies = purple_blist_find_buddies(priv->account, NULL);
+	while (buddies != NULL) {
+		PurpleBuddy *buddy = buddies->data;
+		purple_buddy_set_protocol_data(buddy, NULL);
+		buddies = g_slist_delete_link(buddies, buddies);
+	}
+
+	/* Do the rest of our cleanup. */
+	connections = g_list_remove(connections, connection);
+
+	purple_connection_set_state(connection,
+	                            PURPLE_CONNECTION_STATE_DISCONNECTED);
+
+	if(remove) {
+		purple_blist_remove_account(priv->account);
+	}
+
+	purple_signal_emit(handle, "signed-off", connection);
+
+	purple_account_request_close_with_account(priv->account);
+	purple_request_close_with_handle(connection);
+	purple_notify_close_with_handle(connection);
+
+	connections_connected = g_list_remove(connections_connected, connection);
+	if(connections_connected == NULL) {
+		purple_signal_emit(handle, "offline");
+	}
+
+	purple_debug_info("connection", "Destroying connection %p", connection);
+
+	return ret;
 }
 
 /**************************************************************************

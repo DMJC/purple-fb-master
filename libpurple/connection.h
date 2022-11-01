@@ -117,6 +117,9 @@ struct _PurpleConnectionClass {
 	/*< private >*/
 	GObjectClass parent;
 
+	gboolean (*connect)(PurpleConnection *connection, GError **error);
+	gboolean (*disconnect)(PurpleConnection *connection, GError **error);
+
 	/*< private >*/
 	gpointer reserved[8];
 };
@@ -180,6 +183,48 @@ _purple_assert_connection_is_valid(PurpleConnection *gc,
 /**************************************************************************/
 /* Connection API                                                         */
 /**************************************************************************/
+
+/**
+ * purple_connection_connect:
+ * @connection: The instance.
+ * @error: (optional): An optional return address for a [type@GLib.GError].
+ *
+ * Tells the connection to connect. This is done by calling the
+ * [vfunc@Purple.Connection.connect] function. State is managed by this
+ * function.
+ *
+ * The default [vfunc@Purple.Connection.connect] is to call
+ * [vfunc@Purple.Protocol.login].
+ *
+ * Due to the asynchronous nature of network connections, the return value and
+ * @error are to be used to do some initial validation before a connection is
+ * actually attempted.
+ *
+ * Returns: %TRUE if the initial connection for @account was successful,
+ *          otherwise %FALSE with @error possibly set.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_connection_connect(PurpleConnection *connection, GError **error);
+
+/**
+ * purple_connection_disconnect:
+ * @connection: The instance.
+ * @error: (optional): An optional return address for a [type@GLib.GError].
+ *
+ * Tells the connection to disconnect. This is done by calling the
+ * [vfunc@Purple.Connection.disconnect] function. State is managed by this
+ * function.
+ *
+ * The default [vfunc@Purple.Connection.disconnect] is to call
+ * [vfunc@Purple.Protocol.close].
+ *
+ * Returns: %TRUE if the account was disconnected gracefully, otherwise %FALSE
+ *          with @error possibly set.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_connection_disconnect(PurpleConnection *connection, GError **error);
 
 /**
  * purple_connection_set_state:
@@ -530,7 +575,6 @@ void purple_connections_uninit(void);
  * Returns: The connections subsystem handle.
  */
 void *purple_connections_get_handle(void);
-
 
 G_END_DECLS
 

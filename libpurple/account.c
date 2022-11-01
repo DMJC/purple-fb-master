@@ -138,6 +138,46 @@ G_DEFINE_TYPE(PurpleAccount, purple_account, G_TYPE_OBJECT);
  * Helpers
  *****************************************************************************/
 static void
+purple_account_real_connect(PurpleAccount *account, const char *password) {
+	PurpleConnection *connection = NULL;
+	PurpleProtocol *protocol = NULL;
+	GError *error = NULL;
+
+	protocol = purple_account_get_protocol(account);
+
+	connection = purple_protocol_create_connection(protocol, account, password,
+	                                               &error);
+	if(error != NULL) {
+		purple_debug_warning("failed to create connection for %s: %s",
+		                     purple_account_get_username(account),
+		                     error->message);
+		g_clear_error(&error);
+
+		return;
+	}
+
+	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
+
+	purple_account_set_connection(account, connection);
+	if(!purple_connection_connect(connection, &error)) {
+		const char *message = "unknown error";
+
+		if(error != NULL && error->message != NULL) {
+			message = error->message;
+		}
+
+		purple_connection_error(connection,
+		                        PURPLE_CONNECTION_ERROR_OTHER_ERROR,
+		                        message);
+
+		g_clear_error(&error);
+	}
+
+	/* Finally remove our reference to the connection. */
+	g_object_unref(connection);
+}
+
+static void
 purple_account_register_got_password_cb(GObject *obj, GAsyncResult *res,
                                         gpointer data)
 {
@@ -148,14 +188,17 @@ purple_account_register_got_password_cb(GObject *obj, GAsyncResult *res,
 
 	password = purple_credential_manager_read_password_finish(manager, res,
 	                                                          &error);
-
 	if(error != NULL) {
+		/* If we failed to read a password, just log it, as it could not be
+		 * stored yet, in which case we will just prompt the user later in the
+		 * connection process.
+		 */
 		purple_debug_warning("account", "failed to read password: %s",
 		                     error->message);
-		g_error_free(error);
+		g_clear_error(&error);
 	}
 
-	_purple_connection_new(account, TRUE, password);
+	purple_account_real_connect(account, password);
 
 	g_free(password);
 }
@@ -255,7 +298,7 @@ request_password_write_cb(GObject *obj, GAsyncResult *res, gpointer data) {
 		                  error != NULL ? error->message : "unknown error");
 	}
 
-	_purple_connection_new(account, FALSE, password);
+	purple_account_real_connect(account, password);
 
 	g_free(password);
 }
@@ -294,7 +337,7 @@ request_password_ok_cb(PurpleAccount *account, PurpleRequestFields *fields)
 		                                               request_password_write_cb,
 		                                               account);
 	} else {
-		_purple_connection_new(account, FALSE, entry);
+		purple_account_real_connect(account, entry);
 	}
 }
 
@@ -341,7 +384,7 @@ purple_account_connect_got_password_cb(GObject *obj, GAsyncResult *res,
 			G_CALLBACK(request_password_ok_cb),
 			G_CALLBACK(request_password_cancel_cb), account);
 	} else {
-		_purple_connection_new(account, FALSE, password);
+		purple_account_real_connect(account, password);
 	}
 
 	g_free(password);
@@ -385,7 +428,7 @@ static gboolean
 no_password_cb(gpointer data) {
 	PurpleAccount *account = data;
 
-	_purple_connection_new(account, FALSE, NULL);
+	purple_account_real_connect(account, NULL);
 
 	return G_SOURCE_REMOVE;
 }
@@ -867,6 +910,7 @@ purple_account_dispose(GObject *object)
 		purple_account_disconnect(account);
 	}
 
+	g_clear_object(&account->gc);
 	g_clear_object(&account->presence);
 
 	G_OBJECT_CLASS(purple_account_parent_class)->dispose(object);
@@ -1155,6 +1199,7 @@ purple_account_unregister(PurpleAccount *account,
 void
 purple_account_disconnect(PurpleAccount *account)
 {
+	GError *error = NULL;
 	const char *username;
 
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
@@ -1166,6 +1211,14 @@ purple_account_disconnect(PurpleAccount *account)
 	                  username ? username : "(null)", account);
 
 	account->disconnecting = TRUE;
+
+	if(!purple_connection_disconnect(account->gc, &error)) {
+		g_warning("error while disconnecting account %s (%s): %s",
+		          purple_account_get_username(account),
+		          purple_account_get_protocol_id(account),
+		          (error != NULL) ? error->message : "unknown error");
+		g_clear_error(&error);
+	}
 
 	purple_account_set_connection(account, NULL);
 
@@ -1416,14 +1469,13 @@ purple_account_set_protocol_id(PurpleAccount *account, const char *protocol_id)
 }
 
 void
-purple_account_set_connection(PurpleAccount *account, PurpleConnection *gc)
-{
+purple_account_set_connection(PurpleAccount *account, PurpleConnection *gc) {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	g_clear_object(&account->gc);
-	account->gc = gc;
-
-	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_CONNECTION]);
+	if(g_set_object(&account->gc, gc)) {
+		g_object_notify_by_pspec(G_OBJECT(account),
+		                         properties[PROP_CONNECTION]);
+	}
 }
 
 void

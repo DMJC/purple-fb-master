@@ -83,26 +83,6 @@ void
 _purple_buddy_icons_blist_loaded_cb(void);
 
 /**
- * _purple_connection_new:
- * @account:  The account the connection should be connecting to.
- * @is_registration: Whether we are registering a new account or just trying to
- *                   do a normal signon.
- * @password: The password to use.
- *
- * Creates a connection to the specified account and either connects
- * or attempts to register a new account.  If you are logging in,
- * the connection uses the current active status for this account.
- * So if you want to sign on as "away," for example, you need to
- * have called purple_account_set_status(account, "away").
- * (And this will call purple_account_connect() automatically).
- *
- * Note: This function should only be called by purple_account_connect()
- *       in account.c.  If you're trying to sign on an account, use that
- *       function instead.
- */
-void _purple_connection_new(PurpleAccount *account, gboolean is_registration,
-                            const gchar *password);
-/**
  * _purple_connection_new_unregister:
  * @account:  The account to unregister
  * @password: The password to use.

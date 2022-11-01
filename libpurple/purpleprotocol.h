@@ -145,6 +145,8 @@ struct _PurpleProtocolClass {
 
 	void (*close)(PurpleProtocol *protocol, PurpleConnection *connection);
 
+	PurpleConnection *(*create_connection)(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
+
 	GList *(*status_types)(PurpleProtocol *protocol, PurpleAccount *account);
 
 	/*< private >*/
@@ -287,6 +289,24 @@ void purple_protocol_login(PurpleProtocol *protocol, PurpleAccount *account);
  * Since: 3.0.0
  */
 void purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *connection);
+
+/**
+ * purple_protocol_create_connection:
+ * @protocol: The instance.
+ * @account: The [class@Purple.Account] for the connection.
+ * @password: The password for the account.
+ * @error: A return address for a [type@GLib.GError].
+ *
+ * Creates a [class@PurpleConnection] for @account.
+ *
+ * A protocol may indicate an error by setting @error and returning %NULL.
+ *
+ * Returns: (transfer full): The new connection or %NULL with @error possibly
+ *          set on error.
+ *
+ * Since: 3.0.0
+ */
+PurpleConnection *purple_protocol_create_connection(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
 
 /**
  * purple_protocol_get_status_types:
