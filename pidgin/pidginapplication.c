@@ -746,6 +746,7 @@ pidgin_application_window_added(GtkApplication *application,
 static void
 pidgin_application_startup(GApplication *application) {
 	PurpleAccountManager *manager = NULL;
+	GError *error = NULL;
 	GList *active_accounts = NULL;
 	gpointer handle = NULL;
 
@@ -780,10 +781,12 @@ pidgin_application_startup(GApplication *application) {
 	winpidgin_init();
 #endif
 
-	if(!purple_core_init(pidgin_ui_new())) {
+	if(!purple_core_init(pidgin_ui_new(), &error)) {
 		fprintf(stderr,
-				_("Initialization of the libpurple core failed. Aborting!\n"
-				  "Please report this!\n"));
+		        _("Initialization of the libpurple core failed. %s\n"
+		          "Aborting!\nPlease report this!\n"),
+		        (error != NULL) ? error->message : "unknown error");
+		g_clear_error(&error);
 		g_abort();
 	}
 

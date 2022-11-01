@@ -162,11 +162,13 @@ init_libpurple(int argc, char **argv)
 
 	purple_idle_set_ui(finch_idle_new());
 
-	if (!purple_core_init(finch_ui_new()))
+	if (!purple_core_init(finch_ui_new(), &error))
 	{
 		fprintf(stderr,
-				"Initialization of the Purple core failed. Dumping core.\n"
-				"Please report this!\n");
+		        _("Initialization of the libpurple core failed. %s\n"
+		          "Aborting!\nPlease report this!\n"),
+		        (error != NULL) ? error->message : "unknown error");
+		g_clear_error(&error);
 		abort();
 	}
 

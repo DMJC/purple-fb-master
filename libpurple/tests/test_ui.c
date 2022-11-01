@@ -25,6 +25,7 @@
 
 #include <glib.h>
 #include <glib/gprintf.h>
+#include <glib/gi18n-lib.h>
 
 #define G_SETTINGS_ENABLE_BACKEND
 #include <gio/gsettingsbackend.h>
@@ -151,11 +152,13 @@ test_ui_purple_init(void) {
 	/* Now that all the essential stuff has been set, let's try to init the core. It's
 	 * necessary to provide a non-NULL name for the current ui to the core. This name
 	 * is used by stuff that depends on this ui, for example the ui-specific plugins. */
-	if (!purple_core_init(ui)) {
+	if (!purple_core_init(ui, &error)) {
 		/* Initializing the core failed. Terminate. */
 		fprintf(stderr,
-				"libpurple initialization failed. Dumping core.\n"
-				"Please report this!\n");
+		        _("Initialization of the libpurple core failed. %s\n"
+		          "Aborting!\nPlease report this!\n"),
+		        (error != NULL) ? error->message : "unknown error");
+		g_clear_error(&error);
 		abort();
 	}
 

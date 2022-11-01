@@ -38,14 +38,13 @@ G_BEGIN_DECLS
 /**
  * purple_core_init:
  * @ui: (transfer full): The [class@Purple.Ui] of the UI using the core.
+ * @error: (optional) (nullable): A return address for a [type@GLib.GError].
  *
  * Initializes the core of purple.
  *
- * This will setup preferences for all the core subsystems.
- *
- * Returns: %TRUE if successful, or %FALSE otherwise.
+ * Returns: %TRUE if successful, otherwise %FALSE with @error potentially set.
  */
-gboolean purple_core_init(PurpleUi *ui);
+gboolean purple_core_init(PurpleUi *ui, GError **error);
 
 /**
  * purple_core_quit:

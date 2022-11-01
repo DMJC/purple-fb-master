@@ -92,7 +92,7 @@ purple_core_print_version(void)
 }
 
 gboolean
-purple_core_init(PurpleUi *ui) {
+purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	PurpleCore *core;
 
 	g_return_val_if_fail(PURPLE_IS_UI(ui), FALSE);
