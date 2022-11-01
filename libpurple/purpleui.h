@@ -53,7 +53,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleUi, purple_ui, PURPLE, UI, GObject)
  *                        the UI is using.
  *
  * The base class for all user interfaces which is used to identify themselves
- * to libpurple when calling [func@Purple.core_init].
+ * to libpurple when calling [func@Purple.Core.init].
  *
  * Since: 3.0.0
  */
@@ -165,7 +165,7 @@ void purple_ui_prefs_init(PurpleUi *ui);
  * its initialization.
  *
  * The user interface can return errors here which will be propagated by
- * [func@Purple.core_init] which calls this function.
+ * [func@Purple.Core.init] which calls this function.
  *
  * Note: This should only be called by libpurple.
  *
