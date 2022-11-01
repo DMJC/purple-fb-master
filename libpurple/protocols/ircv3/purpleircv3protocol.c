@@ -23,10 +23,6 @@
 #include "purpleircv3connection.h"
 #include "purpleircv3core.h"
 
-typedef struct {
-	gboolean dummy;
-} PurpleIRCv3ProtocolPrivate;
-
 /******************************************************************************
  * PurpleProtocol Implementation
  *****************************************************************************/
@@ -84,44 +80,36 @@ purple_ircv3_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol
 	return options;
 }
 
-static void
-purple_ircv3_protocol_login(G_GNUC_UNUSED PurpleProtocol *protocol,
-                            PurpleAccount *account)
+static PurpleConnection *
+purple_ircv3_protocol_create_connection(PurpleProtocol *protocol,
+                                        PurpleAccount *account,
+                                        const char *password,
+                                        GError **error)
 {
-	PurpleIRCv3Connection *connection = NULL;
-	PurpleConnection *purple_connection = NULL;
-	GError *error = NULL;
+	const char *username = NULL;
 
-	purple_connection = purple_account_get_connection(account);
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), NULL);
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	connection = purple_ircv3_connection_new(account);
-	if(!purple_ircv3_connection_valid(connection, &error)) {
-		purple_connection_take_error(purple_connection, error);
+	/* Make sure the username (which includes the servername via usersplits),
+	 * does not contain any whitespace.
+	 */
+	username = purple_account_get_username(account);
+	if(strpbrk(username, " \t\v\r\n") != NULL) {
+		g_set_error(error,
+		            PURPLE_CONNECTION_ERROR,
+		            PURPLE_CONNECTION_ERROR_INVALID_SETTINGS,
+		            _("IRC nick and server may not contain whitespace"));
 
-		return;
+		return NULL;
 	}
 
-	g_object_set_data_full(G_OBJECT(purple_connection),
-	                       PURPLE_IRCV3_CONNECTION_KEY,
-	                       connection, g_object_unref);
-
-	purple_ircv3_connection_connect(connection);
-}
-
-static void
-purple_ircv3_protocol_close(G_GNUC_UNUSED PurpleProtocol *protocol,
-                            PurpleConnection *purple_connection)
-{
-	PurpleIRCv3Connection *connection = NULL;
-
-	connection = g_object_get_data(G_OBJECT(purple_connection),
-	                               PURPLE_IRCV3_CONNECTION_KEY);
-
-	purple_ircv3_connection_close(connection);
-
-	/* Set our connection data to NULL which will remove the last reference. */
-	g_object_set_data(G_OBJECT(purple_connection), PURPLE_IRCV3_CONNECTION_KEY,
-	                  NULL);
+	return g_object_new(
+		PURPLE_IRCV3_TYPE_CONNECTION,
+		"protocol", protocol,
+		"account", account,
+		"password", password,
+		NULL);
 }
 
 static GList *
@@ -149,9 +137,8 @@ purple_ircv3_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_DYNAMIC_TYPE_EXTENDED(
-	PurpleIRCv3Protocol, purple_ircv3_protocol, PURPLE_TYPE_PROTOCOL, 0,
-	G_ADD_PRIVATE_DYNAMIC(PurpleIRCv3Protocol))
+G_DEFINE_DYNAMIC_TYPE(PurpleIRCv3Protocol, purple_ircv3_protocol,
+                      PURPLE_TYPE_PROTOCOL)
 
 static void
 purple_ircv3_protocol_init(PurpleIRCv3Protocol *protocol) {
@@ -168,8 +155,8 @@ purple_ircv3_protocol_class_init(PurpleIRCv3ProtocolClass *klass) {
 	protocol_class->get_user_splits = purple_ircv3_protocol_get_user_splits;
 	protocol_class->get_account_options =
 		purple_ircv3_protocol_get_account_options;
-	protocol_class->login = purple_ircv3_protocol_login;
-	protocol_class->close = purple_ircv3_protocol_close;
+	protocol_class->create_connection =
+		purple_ircv3_protocol_create_connection;
 	protocol_class->status_types = purple_ircv3_protocol_status_types;
 }
 
