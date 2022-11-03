@@ -37,7 +37,11 @@ purple_toast_get_application(void) {
 		application = g_application_get_default();
 
 		if(application == NULL) {
+#if GLIB_CHECK_VERSION(2,74,0)
+			application = g_application_new(NULL, G_APPLICATION_DEFAULT_FLAGS);
+#else
 			application = g_application_new(NULL, G_APPLICATION_FLAGS_NONE);
+#endif
 			g_application_register(application, NULL, NULL);
 		}
 	}
