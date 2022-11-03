@@ -51,6 +51,9 @@
 #include "status.h"
 #include "stun.h"
 #include "util.h"
+#ifdef _WIN32
+#include "win32/win32dep.h"
+#endif
 
 struct PurpleCore
 {

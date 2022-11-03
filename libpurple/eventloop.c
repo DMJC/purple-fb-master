@@ -22,6 +22,9 @@
 #include <unistd.h>
 
 #include "eventloop.h"
+#ifdef _WIN32
+#include "win32/win32dep.h"
+#endif
 
 #define PURPLE_GLIB_READ_COND  (G_IO_IN | G_IO_HUP | G_IO_ERR)
 #define PURPLE_GLIB_WRITE_COND (G_IO_OUT | G_IO_HUP | G_IO_ERR | G_IO_NVAL)

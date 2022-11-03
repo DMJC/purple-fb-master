@@ -36,6 +36,9 @@
 #include "debug.h"
 #include "purplepath.h"
 #include "util.h"
+#ifdef _WIN32
+#include "win32/win32dep.h"
+#endif
 
 struct _PurplePrefCallbackData {
 	PurplePrefCallback func;

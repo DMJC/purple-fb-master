@@ -32,6 +32,9 @@
 #include "purpleenums.h"
 #include "signals.h"
 #include "util.h"
+#ifdef _WIN32
+#include "win32/win32dep.h"
+#endif
 
 /**************************************************************************
  * Globals
