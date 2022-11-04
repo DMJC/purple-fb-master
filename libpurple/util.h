@@ -55,14 +55,12 @@ void purple_util_set_current_song(const char *title, const char *artist,
  * @title:     The title of the song, %NULL to unset the value.
  * @artist:    The artist of the song, can be %NULL.
  * @album:     The album of the song, can be %NULL.
- * @unused:    Currently unused, must be %NULL.
  *
  * Format song information.
  *
  * Returns:   The formatted string. The caller must g_free the returned string.
  */
-char * purple_util_format_song_info(const char *title, const char *artist,
-		const char *album, gpointer unused);
+char *purple_util_format_song_info(const char *title, const char *artist, const char *album);
 
 /**************************************************************************/
 /* Utility Subsystem                                                      */

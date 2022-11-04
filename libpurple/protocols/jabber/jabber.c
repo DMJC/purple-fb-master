@@ -2076,7 +2076,7 @@ jabber_status_text(PurpleProtocolClient *client, PurpleBuddy *b) {
 			const char *title = purple_status_get_attr_string(status, PURPLE_TUNE_TITLE);
 			const char *artist = purple_status_get_attr_string(status, PURPLE_TUNE_ARTIST);
 			const char *album = purple_status_get_attr_string(status, PURPLE_TUNE_ALBUM);
-			ret = purple_util_format_song_info(title, artist, album, NULL);
+			ret = purple_util_format_song_info(title, artist, album);
 		}
 	}
 
@@ -2209,7 +2209,7 @@ jabber_tooltip_text(PurpleProtocolClient *client, PurpleBuddy *b,
 				const char *title = purple_status_get_attr_string(tune, PURPLE_TUNE_TITLE);
 				const char *artist = purple_status_get_attr_string(tune, PURPLE_TUNE_ARTIST);
 				const char *album = purple_status_get_attr_string(tune, PURPLE_TUNE_ALBUM);
-				char *playing = purple_util_format_song_info(title, artist, album, NULL);
+				char *playing = purple_util_format_song_info(title, artist, album);
 				if (playing) {
 					purple_notify_user_info_add_pair_html(user_info, _("Now Listening"), playing);
 					g_free(playing);

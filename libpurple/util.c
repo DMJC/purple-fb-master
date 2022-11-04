@@ -975,13 +975,16 @@ void purple_util_set_current_song(const char *title, const char *artist, const c
 	}
 }
 
-char * purple_util_format_song_info(const char *title, const char *artist, const char *album, gpointer unused)
+char *
+purple_util_format_song_info(const char *title, const char *artist,
+                             const char *album)
 {
 	GString *string;
 	char *esc;
 
-	if (!title || !*title)
+	if (!title || !*title) {
 		return NULL;
+	}
 
 	esc = g_markup_escape_text(title, -1);
 	string = g_string_new("");

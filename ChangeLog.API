@@ -274,6 +274,8 @@ version 3.0.0 (??/??/????):
 		* purple_util_fetch_url_request now takes a length as the eighth
 		  parameter
 		* purple_util_fetch_url_len now takes a length as the fifth parameter
+		* purple_util_format_song_info no longer takes a fourth
+		  parameter
 		* purple_uuid_random.  Use g_uuid_string_random.
 		* PurpleWhiteboard is now a GObject. Please see the documentation for
 		  details.
