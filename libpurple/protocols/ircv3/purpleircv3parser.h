@@ -57,7 +57,7 @@ G_GNUC_INTERNAL void purple_ircv3_parser_set_fallback_handler(PurpleIRCv3Parser 
  * purple_ircv3_parser_parse:
  * @parser: The instance.
  * @buffer: The buffer to parse.
- * @error: (nullable) (out): A return address for a [boxed@Glib.GError].
+ * @error: Return address for a #GError, or %NULL.
  * @data: (nullable): Optional data to pass to the handler.
  *
  * Parses @buffer with @parser.

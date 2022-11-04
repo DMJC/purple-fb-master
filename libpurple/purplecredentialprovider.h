@@ -139,7 +139,7 @@ const gchar *purple_credential_provider_get_description(PurpleCredentialProvider
 /**
  * purple_credential_provider_is_valid:
  * @provider: The #PurpleCredentialProvider instance.
- * @error: (out) (optional) (nullable): Return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Checks whether or not @provider is setup correctly.  This is primarily meant
  * for #purple_credential_provider_register_provider to call to avoid
@@ -171,7 +171,7 @@ void purple_credential_provider_read_password_async(PurpleCredentialProvider *pr
  * @provider: The #PurpleCredentialProvider instance.
  * @result: The #GAsyncResult from the previous
  *          purple_credential_provider_read_password_async() call.
- * @error: (out) (optional) (nullable): Return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Finishes a previous call to purple_credential_provider_read_password_async().
  *
@@ -203,7 +203,7 @@ void purple_credential_provider_write_password_async(PurpleCredentialProvider *p
  * @provider: The #PurpleCredentialProvider instance.
  * @result: The #GAsyncResult from the previous
  *          purple_credential_provider_write_password_async() call.
- * @error: (out) (optional) (nullable): Return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Finishes a previous call to
  * purple_credential_provider_write_password_async().
@@ -235,7 +235,7 @@ void purple_credential_provider_clear_password_async(PurpleCredentialProvider *p
  * @provider: The #PurpleCredentialProvider instance.
  * @result: The #GAsyncResult from the previous
  *          purple_credential_provider_clear_password_async() call.
- * @error: (out) (optional) (nullable): Return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Finishes a previous call to
  * purple_credential_provider_clear_password_async().

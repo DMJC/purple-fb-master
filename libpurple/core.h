@@ -38,7 +38,7 @@ G_BEGIN_DECLS
 /**
  * purple_core_init:
  * @ui: (transfer full): The [class@Purple.Ui] of the UI using the core.
- * @error: (optional) (nullable): A return address for a [type@GLib.GError].
+ * @error: Return address for a #GError, or %NULL.
  *
  * Initializes the core of purple.
  *

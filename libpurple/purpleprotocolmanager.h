@@ -78,7 +78,7 @@ PurpleProtocolManager *purple_protocol_manager_get_default(void);
  * purple_protocol_manager_register:
  * @manager: The #PurpleProtocolManager instance.
  * @protocol: The #PurpleProtocol to register.
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Registers @protocol with @manager.
  *
@@ -93,7 +93,7 @@ gboolean purple_protocol_manager_register(PurpleProtocolManager *manager, Purple
  * purple_protocol_manager_unregister:
  * @manager: The #PurpleProtocolManager instance.
  * @protocol: The #PurpleProtocol to unregister.
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Unregisters @protocol from @manager.
  *

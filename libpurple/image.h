@@ -69,7 +69,7 @@ PurpleImage *purple_image_new_from_bytes(GBytes *bytes);
 /**
  * purple_image_new_from_file:
  * @path: the path to the image file.
- * @error: (optional) (out): An optional return address for a #GError
+ * @error: Return address for a #GError, or %NULL.
  *
  * Loads an image file as a new #PurpleImage object. The @path must exists, be
  * readable and should point to a valid image file. If you don't set @be_eager

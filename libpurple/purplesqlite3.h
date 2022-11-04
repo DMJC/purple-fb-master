@@ -58,7 +58,7 @@ typedef sqlite3 PurpleSqlite3;
 /**
  * purple_sqlite3_get_schema_version:
  * @db: The sqlite3 connection.
- * @error: (nullable): A return address for a [type@GLib.Error].
+ * @error: Return address for a #GError, or %NULL.
  *
  * Attempts to read the result of `PRAGMA user_version` which this API uses to
  * store the schema version.
@@ -74,7 +74,7 @@ int purple_sqlite3_get_schema_version(PurpleSqlite3 *db, GError **error);
  * @db: The sqlite3 connection.
  * @migrations: (array zero-terminated=1): A list of SQL statements, each item
  *              being its own migration.
- * @error: (nullable): A return address for a [type@GLib.Error].
+ * @error: Return address for a #GError, or %NULL.
  *
  * Runs the given migrations in the order they are given. The index of each
  * migration plus 1 is assumed is to be the version number of the migration,
@@ -116,7 +116,7 @@ gboolean purple_sqlite3_run_migrations_from_strings(PurpleSqlite3 *db, const cha
  * @path: The base path in @resource to use.
  * @migrations: (array zero-terminated=1): The list of migrations in the order
  *              to run them.
- * @error: (nullable): A return address for a [type@GLib.Error].
+ * @error: Return address for a #GError, or %NULL.
  *
  * Runs the given migrations in the order they are given. The index of each
  * migration plus 1 is assumed to be the version number of the migration, which

@@ -187,7 +187,7 @@ _purple_assert_connection_is_valid(PurpleConnection *gc,
 /**
  * purple_connection_connect:
  * @connection: The instance.
- * @error: (optional): An optional return address for a [type@GLib.GError].
+ * @error: Return address for a #GError, or %NULL.
  *
  * Tells the connection to connect. This is done by calling the
  * [vfunc@Purple.Connection.connect] function. State is managed by this
@@ -210,7 +210,7 @@ gboolean purple_connection_connect(PurpleConnection *connection, GError **error)
 /**
  * purple_connection_disconnect:
  * @connection: The instance.
- * @error: (optional): An optional return address for a [type@GLib.GError].
+ * @error: Return address for a #GError, or %NULL.
  *
  * Tells the connection to disconnect. This is done by calling the
  * [vfunc@Purple.Connection.disconnect] function. State is managed by this
@@ -442,7 +442,7 @@ void purple_connection_g_error(PurpleConnection *pc, const GError *error);
 /**
  * purple_connection_take_error:
  * @pc: Connection the error is associated with
- * @error: (transfer full): Error information
+ * @error: Return address for a #GError, or %NULL.
  *
  * Closes a connection similar to [method@Purple.Connection.error], but takes a
  * [type@GLib.Error] which is then converted to purple error codes.

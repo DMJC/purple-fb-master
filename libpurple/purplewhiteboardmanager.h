@@ -78,7 +78,7 @@ PurpleWhiteboardManager *purple_whiteboard_manager_get_default(void);
  * purple_whiteboard_manager_register:
  * @manager: The #PurpleWhiteboardManager instance.
  * @whiteboard: The #PurpleWhiteboard to register.
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Registers @whiteboard with @manager.
  *
@@ -93,7 +93,7 @@ gboolean purple_whiteboard_manager_register(PurpleWhiteboardManager *manager, Pu
  * purple_whiteboard_manager_unregister:
  * @manager: The #PurpleWhiteboardManager instance.
  * @whiteboard: The #PurpleWhiteboard to unregister.
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Unregisters @whiteboard from @manager.
  *

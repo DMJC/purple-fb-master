@@ -159,7 +159,7 @@ void purple_ui_prefs_init(PurpleUi *ui);
 /**
  * purple_ui_start:
  * @ui: The instance.
- * @error: (optional) (nullable): A return address for a [type@GLib.GError].
+ * @error: Return address for a #GError, or %NULL.
  *
  * Tells @ui that libpurple is done initializing and that @ui should continue
  * its initialization.

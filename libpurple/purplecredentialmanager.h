@@ -83,7 +83,7 @@ PurpleCredentialManager *purple_credential_manager_get_default(void);
  * purple_credential_manager_register:
  * @manager: The #PurpleCredentialManager instance.
  * @provider: The #PurpleCredentialProvider to register.
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Registers @provider with @manager.
  *
@@ -98,7 +98,7 @@ gboolean purple_credential_manager_register(PurpleCredentialManager *manager, Pu
  * purple_credential_manager_unregister:
  * @manager: The #PurpleCredentialManager instance.
  * @provider: The #PurpleCredentialProvider to unregister.
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Unregisters @provider from @manager.
  *
@@ -114,7 +114,7 @@ gboolean purple_credential_manager_unregister(PurpleCredentialManager *manager, 
  * @manager: The #PurpleCredentialManager instance.
  * @id: The id of the #PurpleCredentialProvider to use or %NULL to disable the
  *      active provider.
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Changes the active #PurpleCredentialProvider of @manager to provider with an
  * id of @id.
@@ -164,7 +164,7 @@ void purple_credential_manager_read_password_async(PurpleCredentialManager *mana
  * @manager: The #PurpleCredentialManager instance.
  * @result: The #GAsyncResult from the previous
  *          purple_credential_manager_read_password_async() call.
- * @error: (out) (optional): Return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Finishes a previous call to purple_credential_manager_read_password_async().
  *
@@ -197,7 +197,7 @@ void purple_credential_manager_write_password_async(PurpleCredentialManager *man
  * @manager: The #PurpleCredentialManager instance.
  * @result: The #GAsyncResult from the previous
  *          purple_credential_provider_write_password_async() call.
- * @error: (out) (optional) (nullable): Return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Finishes a previous call to purple_credential_manager_write_password_async().
  *
@@ -229,7 +229,7 @@ void purple_credential_manager_clear_password_async(PurpleCredentialManager *man
  * @manager: The #PurpleCredentialManager instance.
  * @result: The #GAsyncResult from the previous
  *          purple_credential_provider_clear_password_async() call.
- * @error: (out) (optional) (nullable): Return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Finishes a previous call to
  * purple_credential_provider_clear_password_async().
@@ -244,7 +244,7 @@ gboolean purple_credential_manager_clear_password_finish(PurpleCredentialManager
 /**
  * purple_credential_manager_read_settings:
  * @manager: The #PurpleCredentialManager instance.
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Reads settings from the active #PurpleCredentialProvider of @manager.
  *
@@ -260,7 +260,7 @@ PurpleRequestFields *purple_credential_manager_read_settings(PurpleCredentialMan
  * @manager: The #PurpleCredentialManager instance.
  * @fields: (transfer full): Modified settings from
  *          purple_credential_manager_read_settings().
- * @error: (out) (optional) (nullable): A return address for a #GError.
+ * @error: Return address for a #GError, or %NULL.
  *
  * Write @fields to the active #PurpleCredentialProvider of @manager.
  *
