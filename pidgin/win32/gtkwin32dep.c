@@ -71,66 +71,6 @@ HINSTANCE winpidgin_dll_hinstance(void) {
 	return dll_hInstance;
 }
 
-int winpidgin_gz_decompress(const char* in, const char* out) {
-	GFile *fin;
-	GFile *fout;
-	GInputStream *input;
-	GOutputStream *output;
-	GOutputStream *conv_out;
-	GZlibDecompressor *decompressor;
-	gssize size;
-	GError *error = NULL;
-
-	fin = g_file_new_for_path(in);
-	input = G_INPUT_STREAM(g_file_read(fin, NULL, &error));
-	g_object_unref(fin);
-
-	if (input == NULL) {
-		purple_debug_error("winpidgin_gz_decompress",
-				"Failed to open: %s: %s\n",
-				in, error->message);
-		g_clear_error(&error);
-		return 0;
-	}
-
-	fout = g_file_new_for_path(out);
-	output = G_OUTPUT_STREAM(g_file_replace(fout, NULL, FALSE,
-			G_FILE_CREATE_NONE, NULL, &error));
-	g_object_unref(fout);
-
-	if (output == NULL) {
-		purple_debug_error("winpidgin_gz_decompress",
-				"Error opening file: %s: %s\n",
-				out, error->message);
-		g_clear_error(&error);
-		g_object_unref(input);
-		return 0;
-	}
-
-	decompressor = g_zlib_decompressor_new(G_ZLIB_COMPRESSOR_FORMAT_GZIP);
-	conv_out = g_converter_output_stream_new(output,
-			G_CONVERTER(decompressor));
-	g_object_unref(decompressor);
-	g_object_unref(output);
-
-	size = g_output_stream_splice(conv_out, input,
-			G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE |
-			G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, NULL, &error);
-
-	g_object_unref(input);
-	g_object_unref(conv_out);
-
-	if (size < 0) {
-		purple_debug_error("wpurple_gz_decompress",
-				"Error writing to file: %s\n",
-				error->message);
-		g_clear_error(&error);
-		return 0;
-	}
-
-	return 1;
-}
-
 #define PIDGIN_WM_FOCUS_REQUEST (WM_APP + 13)
 #define PIDGIN_WM_PROTOCOL_HANDLE (WM_APP + 14)
 
@@ -143,7 +83,7 @@ winpidgin_netconfig_changed_cb(GNetworkMonitor *monitor, gboolean available, gpo
 }
 
 static gboolean
-winpidgin_pwm_reconnect(void)
+winpidgin_pwm_reconnect(G_GNUC_UNUSED gpointer data)
 {
 	g_signal_handlers_disconnect_by_func(g_network_monitor_get_default,
 	                                     G_CALLBACK(winpidgin_netconfig_changed_cb),

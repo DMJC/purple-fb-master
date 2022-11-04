@@ -31,10 +31,6 @@ HINSTANCE winpidgin_dll_hinstance(void);
 HINSTANCE winpidgin_exe_hinstance(void);
 void winpidgin_set_exe_hinstance(HINSTANCE hint);
 
-/* Utility */
-int winpidgin_gz_decompress(const char* in, const char* out);
-int winpidgin_gz_untar(const char* filename, const char* destdir);
-
 /* Misc */
 DWORD winpidgin_get_lastactive(void);
 
