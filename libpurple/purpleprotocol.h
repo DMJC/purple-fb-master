@@ -145,6 +145,9 @@ struct _PurpleProtocolClass {
 
 	void (*close)(PurpleProtocol *protocol, PurpleConnection *connection);
 
+	void (*can_connect_async)(PurpleProtocol *protocol, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	gboolean (*can_connect_finish)(PurpleProtocol *protocol, GAsyncResult *result, GError **error);
+
 	PurpleConnection *(*create_connection)(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
 
 	GList *(*status_types)(PurpleProtocol *protocol, PurpleAccount *account);
@@ -289,6 +292,39 @@ void purple_protocol_login(PurpleProtocol *protocol, PurpleAccount *account);
  * Since: 3.0.0
  */
 void purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *connection);
+
+/**
+ * purple_protocol_can_connect_async:
+ * @protocol: The instance.
+ * @account: The [class@Purple.Account] instance.
+ * @cancellable: (nullable): The [class@Gio.Cancellable] instance.
+ * @callback: (scope async): The [callback@Gio.AsyncReadyCallback] to call.
+ * @data: (nullable): User data to pass to @callback.
+ *
+ * Asks @protocol if it can determine if @account can be connected.
+ *
+ * Most protocol plugins will call [method@Gio.NetworkMonitor.can_reach_async]
+ * to determine if a connection is possible.
+ *
+ * Since: 3.0.0
+ */
+void purple_protocol_can_connect_async(PurpleProtocol *protocol, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_protocol_can_connect_finish:
+ * @protocol: The instance.
+ * @result: The [iface@Gio.AsyncResult] of the operation.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * This should be called from the callback of
+ * [method@Purple.Protocol.can_connect_async] to get the result of the call.
+ *
+ * Returns: %TRUE on success, otherwise %FALSE with @error optionally set.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_protocol_can_connect_finish(PurpleProtocol *protocol, GAsyncResult *result, GError **error);
+
 
 /**
  * purple_protocol_create_connection:

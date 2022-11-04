@@ -567,6 +567,41 @@ purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *gc) {
 	}
 }
 
+void
+purple_protocol_can_connect_async(PurpleProtocol *protocol,
+                                  PurpleAccount *account,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer data)
+{
+	PurpleProtocolClass *klass = NULL;
+
+	g_return_if_fail(PURPLE_IS_PROTOCOL(protocol));
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
+	if(klass != NULL && klass->can_connect_async != NULL) {
+		klass->can_connect_async(protocol, account, cancellable, callback,
+		                         data);
+	}
+}
+
+gboolean
+purple_protocol_can_connect_finish(PurpleProtocol *protocol,
+                                   GAsyncResult *result,
+                                   GError **error)
+{
+	PurpleProtocolClass *klass = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), FALSE);
+
+	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
+	if(klass != NULL && klass->can_connect_finish != NULL) {
+		return klass->can_connect_finish(protocol, result, error);
+	}
+
+	return FALSE;
+}
 
 PurpleConnection *
 purple_protocol_create_connection(PurpleProtocol *protocol,
