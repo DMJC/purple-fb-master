@@ -252,6 +252,7 @@ jabber_bosh_connection_recv(GObject *source, GAsyncResult *result,
 	node = jabber_bosh_connection_parse(bosh_conn, msg, response_body, error);
 	g_clear_pointer(&response_body, g_bytes_unref);
 	g_clear_error(&error);
+	g_clear_object(&msg);
 
 	if (node == NULL) {
 		return;
@@ -436,6 +437,7 @@ jabber_bosh_connection_session_created(GObject *source, GAsyncResult *result,
 	node = jabber_bosh_connection_parse(bosh_conn, msg, response_body, error);
 	g_clear_pointer(&response_body, g_bytes_unref);
 	g_clear_error(&error);
+	g_clear_object(&msg);
 
 	if (node == NULL) {
 		return;

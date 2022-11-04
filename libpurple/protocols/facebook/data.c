@@ -511,6 +511,7 @@ fb_data_image_cb(GObject *source, GAsyncResult *result, gpointer data) {
 	}
 
 	g_object_unref(img);
+	g_object_unref(msg);
 }
 
 void

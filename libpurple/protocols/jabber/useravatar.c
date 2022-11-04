@@ -244,6 +244,7 @@ do_buddy_avatar_update_fromurl(GObject *source, GAsyncResult *result,
 out:
 	g_free(info->from);
 	g_free(info->id);
+	g_object_unref(info->msg);
 	g_free(info);
 	g_clear_error(&error);
 }

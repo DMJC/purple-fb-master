@@ -798,6 +798,7 @@ fb_api_cb_http_bool(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -807,6 +808,7 @@ fb_api_cb_http_bool(GObject *source, GAsyncResult *result, gpointer data) {
 	}
 
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 static void
@@ -989,6 +991,7 @@ fb_api_cb_seqid(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -1002,6 +1005,7 @@ fb_api_cb_seqid(GObject *source, GAsyncResult *result, gpointer data) {
 	FB_API_ERROR_EMIT(api, err,
 		g_object_unref(values);
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	);
 
@@ -1018,6 +1022,7 @@ fb_api_cb_seqid(GObject *source, GAsyncResult *result, gpointer data) {
 
 	g_object_unref(values);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 static void
@@ -2022,6 +2027,7 @@ fb_api_cb_attach(GObject *source, GAsyncResult *result, gpointer data) {
 	static const gchar *imgexts[] = {".jpg", ".png", ".gif"};
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2033,6 +2039,7 @@ fb_api_cb_attach(GObject *source, GAsyncResult *result, gpointer data) {
 	FB_API_ERROR_EMIT(api, err,
 		g_object_unref(values);
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	);
 
@@ -2055,7 +2062,7 @@ fb_api_cb_attach(GObject *source, GAsyncResult *result, gpointer data) {
 	g_slist_free_full(msgs, (GDestroyNotify) fb_api_message_free);
 	g_object_unref(values);
 	json_node_free(root);
-
+	g_object_unref(soupmsg);
 }
 
 static void
@@ -2070,7 +2077,7 @@ fb_api_attach(FbApi *api, FbId aid, const gchar *msgid, FbApiMessage *msg)
 
 	http = fb_api_http_req(api, FB_API_URL_ATTACH, "getAttachment",
 	                       "messaging.getAttachment", prms,
-			       fb_api_cb_attach);
+	                       fb_api_cb_attach);
 	g_object_set_data_full(G_OBJECT(http), "fb-api-msg", msg,
 	                       (GDestroyNotify)fb_api_message_free);
 }
@@ -2085,6 +2092,7 @@ fb_api_cb_auth(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2096,6 +2104,7 @@ fb_api_cb_auth(GObject *source, GAsyncResult *result, gpointer data) {
 	FB_API_ERROR_EMIT(api, err,
 		g_object_unref(values);
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	);
 
@@ -2106,6 +2115,7 @@ fb_api_cb_auth(GObject *source, GAsyncResult *result, gpointer data) {
 	g_signal_emit_by_name(api, "auth");
 	g_object_unref(values);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 void
@@ -2155,6 +2165,7 @@ fb_api_cb_contact(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2164,6 +2175,7 @@ fb_api_cb_contact(GObject *source, GAsyncResult *result, gpointer data) {
 		fb_api_error_literal(api, FB_API_ERROR_GENERAL,
 		                     _("Failed to obtain contact information"));
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2177,6 +2189,7 @@ fb_api_cb_contact(GObject *source, GAsyncResult *result, gpointer data) {
 	FB_API_ERROR_EMIT(api, err,
 		g_object_unref(values);
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	);
 
@@ -2192,6 +2205,7 @@ fb_api_cb_contact(GObject *source, GAsyncResult *result, gpointer data) {
 	fb_api_user_reset(&user, TRUE);
 	g_object_unref(values);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 void
@@ -2312,6 +2326,7 @@ fb_api_cb_contacts(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *node;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2388,6 +2403,7 @@ fb_api_cb_contacts(GObject *source, GAsyncResult *result, gpointer data) {
 
 	json_node_free(croot);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 void
@@ -2626,6 +2642,7 @@ fb_api_cb_unread_msgs(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *xode;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2635,6 +2652,7 @@ fb_api_cb_unread_msgs(GObject *source, GAsyncResult *result, gpointer data) {
 		fb_api_error_literal(api, FB_API_ERROR_GENERAL,
 		                     _("Failed to obtain unread messages"));
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2645,6 +2663,7 @@ fb_api_cb_unread_msgs(GObject *source, GAsyncResult *result, gpointer data) {
 
 	FB_API_ERROR_EMIT(api, err,
 		g_object_unref(values);
+		g_object_unref(soupmsg);
 		return;
 	);
 
@@ -2736,6 +2755,7 @@ fb_api_cb_unread_msgs(GObject *source, GAsyncResult *result, gpointer data) {
 	g_slist_free_full(msgs, (GDestroyNotify) fb_api_message_free);
 	g_object_unref(values);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 static void
@@ -2751,6 +2771,7 @@ fb_api_cb_unread(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2795,6 +2816,7 @@ fb_api_cb_unread(GObject *source, GAsyncResult *result, gpointer data) {
 
 	g_object_unref(values);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 void
@@ -2830,6 +2852,7 @@ fb_api_cb_sticker(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2842,6 +2865,7 @@ fb_api_cb_sticker(GObject *source, GAsyncResult *result, gpointer data) {
 	FB_API_ERROR_EMIT(api, err,
 		g_object_unref(values);
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	);
 
@@ -2854,6 +2878,7 @@ fb_api_cb_sticker(GObject *source, GAsyncResult *result, gpointer data) {
 	g_slist_free_full(msgs, (GDestroyNotify) fb_api_message_free);
 	g_object_unref(values);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 static void
@@ -2957,6 +2982,7 @@ fb_api_cb_thread(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2966,6 +2992,7 @@ fb_api_cb_thread(GObject *source, GAsyncResult *result, gpointer data) {
 		fb_api_error_literal(api, FB_API_ERROR_GENERAL,
 		                     _("Failed to obtain thread information"));
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -2988,6 +3015,7 @@ fb_api_cb_thread(GObject *source, GAsyncResult *result, gpointer data) {
 
 	fb_api_thread_reset(&thrd, TRUE);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 void
@@ -3018,6 +3046,7 @@ fb_api_cb_thread_create(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -3028,6 +3057,7 @@ fb_api_cb_thread_create(GObject *source, GAsyncResult *result, gpointer data) {
 	FB_API_ERROR_EMIT(api, err,
 		g_object_unref(values);
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	);
 
@@ -3037,6 +3067,7 @@ fb_api_cb_thread_create(GObject *source, GAsyncResult *result, gpointer data) {
 
 	g_object_unref(values);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 void
@@ -3132,8 +3163,7 @@ fb_api_thread_topic(FbApi *api, FbId tid, const gchar *topic)
 	fb_http_params_set_str(prms, "name", topic);
 	fb_http_params_set_int(prms, "tid", tid);
 	fb_api_http_req(api, FB_API_URL_TOPIC, "setThreadName",
-	                "messaging.setthreadname", prms,
-			fb_api_cb_http_bool);
+	                "messaging.setthreadname", prms, fb_api_cb_http_bool);
 }
 
 static void
@@ -3151,6 +3181,7 @@ fb_api_cb_threads(GObject *source, GAsyncResult *result, gpointer data) {
 	JsonNode *root;
 
 	if (!fb_api_http_chk(api, session, result, soupmsg, &root)) {
+		g_object_unref(soupmsg);
 		return;
 	}
 
@@ -3158,6 +3189,7 @@ fb_api_cb_threads(GObject *source, GAsyncResult *result, gpointer data) {
 	                           &err);
 	FB_API_ERROR_EMIT(api, err,
 		json_node_free(root);
+		g_object_unref(soupmsg);
 		return;
 	);
 
@@ -3189,6 +3221,7 @@ fb_api_cb_threads(GObject *source, GAsyncResult *result, gpointer data) {
 	g_list_free(elms);
 	json_array_unref(arr);
 	json_node_free(root);
+	g_object_unref(soupmsg);
 }
 
 void

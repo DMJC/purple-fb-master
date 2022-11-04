@@ -233,10 +233,12 @@ url_fetched(GObject *source, GAsyncResult *result, gpointer user_data) {
 		gnt_text_view_tag_change(tv, data->tag, str, FALSE);
 		g_free(str);
 		g_free(data->tag);
+		g_object_unref(data->msg);
 		g_free(data);
 		return;
 	}
 	g_free(data->tag);
+	g_object_unref(data->msg);
 	g_free(data);
 	purple_debug_info("TinyURL", "Conversation no longer exists... :(\n");
 }
@@ -409,6 +411,7 @@ tinyurl_notify_fetch_cb(GObject *source, GAsyncResult *result, gpointer data)
 	}
 
 	if (response_body == NULL) {
+		g_object_unref(msg);
 		return;
 	}
 
@@ -421,6 +424,7 @@ tinyurl_notify_fetch_cb(GObject *source, GAsyncResult *result, gpointer data)
 	tinyurl_notify_tinyuri(win, url);
 
 	g_bytes_unref(response_body);
+	g_object_unref(msg);
 }
 
 static void *
@@ -473,7 +477,7 @@ tinyurl_notify_uri(const char *uri)
 	                       g_free);
 
 	soup_session_send_and_read_async(session, msg, G_PRIORITY_DEFAULT,
-	                                 cancellable, tinyurl_notify_fetch_cb, win);
+	                                 cancellable, tinyurl_notify_fetch_cb, msg);
 	g_signal_connect_object(win, "destroy", G_CALLBACK(g_cancellable_cancel),
 	                        cancellable, G_CONNECT_SWAPPED);
 	g_free(fullurl);
