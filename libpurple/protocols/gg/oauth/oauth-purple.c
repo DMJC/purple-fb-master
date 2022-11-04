@@ -41,6 +41,7 @@
 
 typedef struct
 {
+	SoupMessage *msg;
 	PurpleConnection *gc;
 	ggp_oauth_request_cb callback;
 	gpointer user_data;
@@ -52,6 +53,7 @@ typedef struct
 
 static void ggp_oauth_data_free(ggp_oauth_data *data)
 {
+	g_object_unref(data->msg);
 	g_free(data->token);
 	g_free(data->token_secret);
 	g_free(data->sign_method);
@@ -60,16 +62,32 @@ static void ggp_oauth_data_free(ggp_oauth_data *data)
 }
 
 static void
-ggp_oauth_access_token_got(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
+ggp_oauth_access_token_got(GObject *source, GAsyncResult *result,
                            gpointer user_data)
 {
 	ggp_oauth_data *data = user_data;
+	GBytes *response_body = NULL;
+	const char *buffer = NULL;
+	gsize size = 0;
 	gchar *token = NULL, *token_secret = NULL;
 	PurpleXmlNode *xml;
 	gboolean succ = TRUE;
+	GError *error = NULL;
 
-	xml = purple_xmlnode_from_str(msg->response_body->data,
-	                              msg->response_body->length);
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  result, &error);
+	if(response_body == NULL) {
+		purple_debug_error("gg", "ggp_oauth_access_token_got: failed: %s",
+		                   error->message);
+		ggp_oauth_data_free(data);
+		g_error_free(error);
+		return;
+	}
+
+	buffer = g_bytes_get_data(response_body, &size);
+	xml = purple_xmlnode_from_str(buffer, size);
+	g_bytes_unref(response_body);
+
 	if (xml == NULL) {
 		purple_debug_error("gg", "ggp_oauth_access_token_got: invalid xml");
 		ggp_oauth_data_free(data);
@@ -114,13 +132,14 @@ ggp_oauth_access_token_got(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
 }
 
 static void
-ggp_oauth_authorization_done(SoupSession *session, SoupMessage *msg,
+ggp_oauth_authorization_done(GObject *source, GAsyncResult *result,
                              gpointer user_data)
 {
 	ggp_oauth_data *data = user_data;
 	PurpleAccount *account;
 	SoupStatus status_code;
 	char *auth;
+	SoupMessage *msg = NULL;
 	const char *method = "POST";
 	const char *url = "http://api.gadu-gadu.pl/access_token";
 
@@ -128,7 +147,7 @@ ggp_oauth_authorization_done(SoupSession *session, SoupMessage *msg,
 
 	account = purple_connection_get_account(data->gc);
 
-	status_code = soup_message_get_status(msg);
+	status_code = soup_message_get_status(data->msg);
 	if (status_code != 302) {
 		purple_debug_error("gg",
 		                   "ggp_oauth_authorization_done: failed (code = %d)",
@@ -145,42 +164,62 @@ ggp_oauth_authorization_done(SoupSession *session, SoupMessage *msg,
 	                                purple_connection_get_password(data->gc),
 	                                data->token, data->token_secret);
 
-	msg = soup_message_new(method, url);
+	g_clear_object(&data->msg);
+	data->msg = msg = soup_message_new(method, url);
 	// purple_http_request_set_max_len(req, GGP_OAUTH_RESPONSE_MAX);
 	soup_message_headers_replace(soup_message_get_request_headers(msg),
 	                             "Authorization", auth);
-	soup_session_queue_message(session, msg, ggp_oauth_access_token_got, data);
+	soup_session_send_and_read_async(SOUP_SESSION(source), msg,
+	                                 G_PRIORITY_DEFAULT, NULL,
+	                                 ggp_oauth_access_token_got, data);
 
 	g_free(auth);
 }
 
 static void
-ggp_oauth_request_token_got(SoupSession *session, SoupMessage *msg,
+ggp_oauth_request_token_got(GObject *source, GAsyncResult *result,
                             gpointer user_data)
 {
+	SoupSession *session = SOUP_SESSION(source);
 	ggp_oauth_data *data = user_data;
+	GBytes *response_body = NULL;
+	const char *buffer = NULL;
+	gsize size = 0;
 	PurpleAccount *account;
 	PurpleXmlNode *xml;
+	SoupMessage *msg = NULL;
 	gchar *request_data;
 	GBytes *body = NULL;
 	gboolean succ = TRUE;
+	GError *error = NULL;
 
 	PURPLE_ASSERT_CONNECTION_IS_VALID(data->gc);
 
 	account = purple_connection_get_account(data->gc);
 
-	if (!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(msg))) {
+	if(!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(data->msg))) {
 		purple_debug_error("gg", "ggp_oauth_request_token_got: "
 			"requested token not received\n");
 		ggp_oauth_data_free(data);
 		return;
 	}
 
+	response_body = soup_session_send_and_read_finish(session, result, &error);
+	if(response_body == NULL) {
+		purple_debug_error("gg", "ggp_oauth_access_token_got: failed: %s",
+		                   error->message);
+		ggp_oauth_data_free(data);
+		g_error_free(error);
+		return;
+	}
+
 	purple_debug_misc("gg", "ggp_oauth_request_token_got: "
 		"got request token, doing authorization...\n");
 
-	xml = purple_xmlnode_from_str(msg->response_body->data,
-	                              msg->response_body->length);
+	buffer = g_bytes_get_data(response_body, &size);
+	xml = purple_xmlnode_from_str(buffer, size);
+	g_bytes_unref(response_body);
+
 	if (xml == NULL) {
 		purple_debug_error("gg", "ggp_oauth_request_token_got: "
 			"invalid xml\n");
@@ -205,7 +244,9 @@ ggp_oauth_request_token_got(SoupSession *session, SoupMessage *msg,
 		purple_account_get_username(account),
 		purple_connection_get_password(data->gc));
 
-	msg = soup_message_new("POST", "https://login.gadu-gadu.pl/authorize");
+	g_clear_object(&data->msg);
+	data->msg = msg = soup_message_new("POST",
+	                                   "https://login.gadu-gadu.pl/authorize");
 	// purple_http_request_set_max_len(msg, GGP_OAUTH_RESPONSE_MAX);
 	/* we don't need any results, nor 302 redirection */
 	soup_message_set_flags(msg, SOUP_MESSAGE_NO_REDIRECT);
@@ -214,8 +255,8 @@ ggp_oauth_request_token_got(SoupSession *session, SoupMessage *msg,
 	                                         "application/x-www-form-urlencoded",
 	                                         body);
 	g_bytes_unref(body);
-	soup_session_queue_message(session, msg, ggp_oauth_authorization_done,
-	                           data);
+	soup_session_send_and_read_async(session, msg, G_PRIORITY_DEFAULT, NULL,
+	                                 ggp_oauth_authorization_done, data);
 }
 
 void
@@ -244,12 +285,12 @@ ggp_oauth_request(PurpleConnection *gc, ggp_oauth_request_cb callback,
 	data->sign_method = g_strdup(sign_method);
 	data->sign_url = g_strdup(sign_url);
 
-	msg = soup_message_new(method, url);
+	data->msg = msg = soup_message_new(method, url);
 	// purple_http_request_set_max_len(req, GGP_OAUTH_RESPONSE_MAX);
 	soup_message_headers_replace(soup_message_get_request_headers(msg),
 	                             "Authorization", auth);
-	soup_session_queue_message(info->http, msg, ggp_oauth_request_token_got,
-	                           data);
+	soup_session_send_and_read_async(info->http, msg, G_PRIORITY_DEFAULT, NULL,
+	                                 ggp_oauth_request_token_got, data);
 
 	g_free(auth);
 }

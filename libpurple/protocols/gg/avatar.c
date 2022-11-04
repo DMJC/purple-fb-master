@@ -48,6 +48,7 @@ typedef struct
 	uin_t uin;
 	time_t timestamp;
 	PurpleConnection *gc;
+	SoupMessage *msg;
 } ggp_avatar_buddy_update_req;
 
 #define GGP_AVATAR_BUDDY_URL "http://avatars.gg.pl/%u/s,big"
@@ -100,26 +101,37 @@ void ggp_avatar_buddy_remove(PurpleConnection *gc, uin_t uin)
 }
 
 static void
-ggp_avatar_buddy_update_received(G_GNUC_UNUSED SoupSession *session,
-                                 SoupMessage *msg, gpointer _pending_update)
+ggp_avatar_buddy_update_received(GObject *source, GAsyncResult *result,
+                                 gpointer data)
 {
-	ggp_avatar_buddy_update_req *pending_update = _pending_update;
+	ggp_avatar_buddy_update_req *pending_update = data;
+	GBytes *response_body = NULL;
+	GError *error = NULL;
+	const char *error_message = NULL;
 	PurpleBuddy *buddy;
 	PurpleAccount *account;
 	PurpleConnection *gc = pending_update->gc;
 	gchar timestamp_str[20];
-	const gchar *got_data;
-	size_t got_len;
+	char *got_data = NULL;
+	gsize got_len = 0;
 
 	PURPLE_ASSERT_CONNECTION_IS_VALID(gc);
 
-	if (!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(msg))) {
+	if(SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(pending_update->msg))) {
+		response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+		                                                  result, &error);
+		error_message = error != NULL ? error->message : "unknown";
+	} else {
+		error_message = soup_message_get_reason_phrase(pending_update->msg);
+	}
+	if(response_body == NULL) {
 		purple_debug_error("gg",
 		                   "ggp_avatar_buddy_update_received: bad response "
 		                   "while getting avatar for %u: %s",
-		                   pending_update->uin,
-		                   soup_message_get_reason_phrase(msg));
+		                   pending_update->uin, error_message);
+		g_object_unref(pending_update->msg);
 		g_free(pending_update);
+		g_clear_error(&error);
 		return;
 	}
 
@@ -131,22 +143,22 @@ ggp_avatar_buddy_update_received(G_GNUC_UNUSED SoupSession *session,
 		purple_debug_warning(
 		        "gg", "ggp_avatar_buddy_update_received: buddy %u disappeared",
 		        pending_update->uin);
+		g_object_unref(pending_update->msg);
 		g_free(pending_update);
 		return;
 	}
 
 	g_snprintf(timestamp_str, sizeof(timestamp_str), "%lu",
 	           pending_update->timestamp);
-	got_data = msg->response_body->data;
-	got_len = msg->response_body->length;
+	got_data = g_bytes_unref_to_data(response_body, &got_len);
 	purple_buddy_icons_set_for_user(account, purple_buddy_get_name(buddy),
-	                                g_memdup2(got_data, got_len), got_len,
-	                                timestamp_str);
+	                                got_data, got_len, timestamp_str);
 
 	purple_debug_info("gg",
 	                  "ggp_avatar_buddy_update_received: got avatar for buddy "
 	                  "%u [ts=%lu]",
 	                  pending_update->uin, pending_update->timestamp);
+	g_object_unref(pending_update->msg);
 	g_free(pending_update);
 }
 
@@ -214,13 +226,14 @@ ggp_avatar_buddy_update(PurpleConnection *gc, uin_t uin, time_t timestamp)
 	pending_update->gc = gc;
 
 	url = g_strdup_printf(GGP_AVATAR_BUDDY_URL, pending_update->uin);
-	req = soup_message_new("GET", url);
+	pending_update->msg = req = soup_message_new("GET", url);
 	g_free(url);
 	soup_message_headers_replace(soup_message_get_request_headers(req),
 	                             "User-Agent", GGP_AVATAR_USERAGENT);
 	// purple_http_request_set_max_len(req, GGP_AVATAR_SIZE_MAX);
-	soup_session_queue_message(
-	        info->http, req, ggp_avatar_buddy_update_received, pending_update);
+	soup_session_send_and_read_async(info->http, req, G_PRIORITY_DEFAULT, NULL,
+	                                 ggp_avatar_buddy_update_received,
+	                                 pending_update);
 }
 
 /*******************************************************************************
@@ -236,20 +249,33 @@ ggp_avatar_buddy_update(PurpleConnection *gc, uin_t uin, time_t timestamp)
  */
 
 static void
-ggp_avatar_own_sent(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
-                    gpointer user_data)
-{
-	PurpleConnection *gc = user_data;
-
-	PURPLE_ASSERT_CONNECTION_IS_VALID(gc);
+ggp_avatar_own_sent(GObject *source, GAsyncResult *result, gpointer data) {
+	SoupMessage *msg = data;
+	GBytes *response_body = NULL;
+	GError *error = NULL;
+	const char *buffer = NULL;
+	gsize size = 0;
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(msg))) {
-		purple_debug_error("gg", "ggp_avatar_own_sent: avatar not sent. %s\n",
+		purple_debug_error("gg", "ggp_avatar_own_sent: avatar not sent. %s",
 		                   soup_message_get_reason_phrase(msg));
+		g_object_unref(msg);
 		return;
 	}
-	purple_debug_info("gg", "ggp_avatar_own_sent: %s\n",
-	                  msg->response_body->data);
+	g_clear_object(&msg);
+
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  result, &error);
+	if(response_body == NULL) {
+		purple_debug_error("gg", "ggp_avatar_own_sent: avatar not sent. %s",
+		                   error->message);
+		g_error_free(error);
+		return;
+	}
+
+	buffer = g_bytes_get_data(response_body, &size);
+	purple_debug_info("gg", "ggp_avatar_own_sent: %*s", (int)size, buffer);
+	g_bytes_unref(response_body);
 }
 
 static void
@@ -286,7 +312,8 @@ ggp_avatar_own_got_token(PurpleConnection *gc, const gchar *token,
 	headers = soup_message_get_request_headers(req);
 	soup_message_headers_replace(headers, "Authorization", token);
 	soup_message_headers_replace(headers, "From", "avatars to avatars");
-	soup_session_queue_message(info->http, req, ggp_avatar_own_sent, gc);
+	soup_session_send_and_read_async(info->http, req, G_PRIORITY_DEFAULT, NULL,
+	                                 ggp_avatar_own_sent, req);
 	g_free(img_data);
 	g_free(uin_str);
 }

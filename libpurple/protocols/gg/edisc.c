@@ -65,6 +65,9 @@ struct _ggp_edisc_session_data
 struct _GGPXfer
 {
 	PurpleXfer parent;
+#if SOUP_MAJOR_VERSION >= 3
+	GCancellable *cancellable;
+#endif
 
 	gchar *filename;
 	gchar *ticket_id;
@@ -1150,7 +1153,9 @@ ggp_xfer_start(PurpleXfer *xfer) {
 
 static void
 ggp_xfer_init(GGPXfer *xfer) {
-
+#if SOUP_MAJOR_VERSION >= 3
+	xfer->cancellable = g_cancellable_new();
+#endif
 }
 
 static void
@@ -1161,8 +1166,13 @@ ggp_xfer_finalize(GObject *obj) {
 	sdata = ggp_edisc_get_sdata(edisc_xfer->gc);
 
 	g_free(edisc_xfer->filename);
+#if SOUP_MAJOR_VERSION >= 3
+	g_cancellable_cancel(edisc_xfer->cancellable);
+	g_clear_object(&edisc_xfer->cancellable);
+#else
 	soup_session_cancel_message(sdata->session, edisc_xfer->msg,
 	                            SOUP_STATUS_CANCELLED);
+#endif
 
 	if (edisc_xfer->ticket_id != NULL) {
 		g_hash_table_remove(sdata->xfers_initialized,

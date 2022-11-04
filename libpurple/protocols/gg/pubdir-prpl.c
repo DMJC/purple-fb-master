@@ -139,26 +139,37 @@ ggp_pubdir_request_free(ggp_pubdir_request *request)
 }
 
 static void
-ggp_pubdir_got_data(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
-                    gpointer _request)
-{
-	ggp_pubdir_request *request = _request;
+ggp_pubdir_got_data(GObject *source, GAsyncResult *result, gpointer data) {
+	ggp_pubdir_request *request = data;
 	PurpleConnection *gc = request->gc;
+	GBytes *response_body = NULL;
 	gboolean succ = TRUE;
 	PurpleXmlNode *xml;
-	const gchar *xml_raw;
+	const char *xml_raw = NULL;
+	gsize xml_size = 0;
 	unsigned int status, next_offset;
 	int record_count, i;
 	ggp_pubdir_record *records;
+	GError *error = NULL;
 
-	xml_raw = msg->response_body->data;
-
-	if (purple_debug_is_verbose() && purple_debug_is_unsafe()) {
-		purple_debug_misc("gg", "ggp_pubdir_got_data: xml=[%s]\n",
-			xml_raw);
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  result, &error);
+	if (response_body == NULL) {
+		purple_debug_error("gg", "ggp_pubdir_got_data: %s", error->message);
+		request->cb(gc, -1, NULL, 0, request->user_data);
+		ggp_pubdir_request_free(request);
+		g_error_free(error);
+		return;
 	}
 
-	xml = purple_xmlnode_from_str(xml_raw, -1);
+	xml_raw = g_bytes_unref_to_data(response_body, &xml_size);
+
+	if (purple_debug_is_verbose() && purple_debug_is_unsafe()) {
+		purple_debug_misc("gg", "ggp_pubdir_got_data: xml=[%*s]",
+		                  (int)xml_size, xml_raw);
+	}
+
+	xml = purple_xmlnode_from_str(xml_raw, xml_size);
 	if (xml == NULL) {
 		purple_debug_error("gg", "ggp_pubdir_got_data: "
 			"invalid xml\n");
@@ -299,7 +310,9 @@ ggp_pubdir_get_info_got_token(PurpleConnection *gc, const gchar *token,
 	g_free(url);
 	soup_message_headers_replace(soup_message_get_request_headers(msg),
 	                             "Authorization", token);
-	soup_session_queue_message(info->http, msg, ggp_pubdir_got_data, request);
+	soup_session_send_and_read_async(info->http, msg, G_PRIORITY_DEFAULT, NULL,
+	                                 ggp_pubdir_got_data, request);
+	g_object_unref(msg);
 }
 
 void
@@ -540,8 +553,10 @@ static void ggp_pubdir_search_got_token(PurpleConnection *gc,
 	msg = soup_message_new("GET", url);
 	soup_message_headers_replace(soup_message_get_request_headers(msg),
 	                             "Authorization", token);
-	soup_session_queue_message(info->http, msg, ggp_pubdir_got_data, request);
+	soup_session_send_and_read_async(info->http, msg, G_PRIORITY_DEFAULT, NULL,
+	                                 ggp_pubdir_got_data, request);
 
+	g_object_unref(msg);
 	g_free(url);
 	g_free(query);
 }
@@ -764,19 +779,40 @@ ggp_pubdir_search(PurpleConnection *gc, const ggp_pubdir_search_form *form)
  ******************************************************************************/
 
 static void
-ggp_pubdir_set_info_got_response(G_GNUC_UNUSED SoupSession *session,
-                                 SoupMessage *msg, gpointer user_data)
+ggp_pubdir_set_info_got_response(GObject *source, GAsyncResult *result,
+                                 gpointer data)
 {
+	SoupMessage *msg = data;
+	GBytes *response_body = NULL;
+	const char *buffer = NULL;
+	gsize size = 0;
+	GError *error = NULL;
+
 	if (!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(msg))) {
 		purple_debug_error("gg", "ggp_pubdir_set_info_got_response: failed");
+		g_object_unref(msg);
+		return;
+	}
+	g_clear_object(&msg);
+
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  result, &error);
+	if (response_body == NULL) {
+		purple_debug_error("gg",
+		                   "ggp_pubdir_set_info_got_response: failed: %s",
+		                   error->message);
+		g_error_free(error);
 		return;
 	}
 
-	purple_debug_info("gg", "ggp_pubdir_set_info_got_response: [%s]",
-	                  msg->response_body->data);
+	buffer = g_bytes_get_data(response_body, &size);
+	purple_debug_info("gg", "ggp_pubdir_set_info_got_response: [%*s]",
+	                  (int)size, buffer);
 	/* <result><status>0</status></result> */
 
 	/* TODO: notify about failure */
+
+	g_bytes_unref(response_body);
 }
 
 static void ggp_pubdir_set_info_got_token(PurpleConnection *gc,
@@ -841,8 +877,8 @@ static void ggp_pubdir_set_info_got_token(PurpleConnection *gc,
 	                                         "application/x-www-form-urlencoded",
 	                                         body);
 	g_bytes_unref(body);
-	soup_session_queue_message(info->http, msg,
-	                           ggp_pubdir_set_info_got_response, NULL);
+	soup_session_send_and_read_async(info->http, msg, G_PRIORITY_DEFAULT, NULL,
+	                                 ggp_pubdir_set_info_got_response, msg);
 
 	g_free(url);
 	ggp_pubdir_record_free(record, 1);
