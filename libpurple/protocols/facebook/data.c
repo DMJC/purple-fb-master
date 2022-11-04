@@ -45,7 +45,7 @@ struct _FbData {
 	GHashTable *imgs;
 	GHashTable *unread;
 	GHashTable *evs;
-} FbDataPrivate;
+};
 
 /**
  * FbDataImage:
