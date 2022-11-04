@@ -274,7 +274,7 @@ ggp_avatar_own_sent(GObject *source, GAsyncResult *result, gpointer data) {
 	}
 
 	buffer = g_bytes_get_data(response_body, &size);
-	purple_debug_info("gg", "ggp_avatar_own_sent: %*s", (int)size, buffer);
+	purple_debug_info("gg", "ggp_avatar_own_sent: %.*s", (int)size, buffer);
 	g_bytes_unref(response_body);
 }
 

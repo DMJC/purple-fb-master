@@ -246,7 +246,7 @@ jabber_bosh_connection_recv(GObject *source, GAsyncResult *result,
 		gsize length = 0;
 
 		body = g_bytes_get_data(response_body, &length);
-		purple_debug_misc("jabber-bosh", "received: %*s", (int)length, body);
+		purple_debug_misc("jabber-bosh", "received: %.*s", (int)length, body);
 	}
 
 	node = jabber_bosh_connection_parse(bosh_conn, msg, response_body, error);
@@ -430,7 +430,7 @@ jabber_bosh_connection_session_created(GObject *source, GAsyncResult *result,
 		gsize length = 0;
 
 		body = g_bytes_get_data(response_body, &length);
-		purple_debug_misc("jabber-bosh", "received (session creation): %*s",
+		purple_debug_misc("jabber-bosh", "received (session creation): %.*s",
 		                  (int)length, body);
 	}
 

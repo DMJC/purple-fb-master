@@ -165,7 +165,7 @@ ggp_pubdir_got_data(GObject *source, GAsyncResult *result, gpointer data) {
 	xml_raw = g_bytes_unref_to_data(response_body, &xml_size);
 
 	if (purple_debug_is_verbose() && purple_debug_is_unsafe()) {
-		purple_debug_misc("gg", "ggp_pubdir_got_data: xml=[%*s]",
+		purple_debug_misc("gg", "ggp_pubdir_got_data: xml=[%.*s]",
 		                  (int)xml_size, xml_raw);
 	}
 
@@ -806,7 +806,7 @@ ggp_pubdir_set_info_got_response(GObject *source, GAsyncResult *result,
 	}
 
 	buffer = g_bytes_get_data(response_body, &size);
-	purple_debug_info("gg", "ggp_pubdir_set_info_got_response: [%*s]",
+	purple_debug_info("gg", "ggp_pubdir_set_info_got_response: [%.*s]",
 	                  (int)size, buffer);
 	/* <result><status>0</status></result> */
 
