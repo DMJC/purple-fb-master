@@ -258,7 +258,6 @@ libpurple/xfer.c
 libpurple/xmlnode.c
 pidgin/gtkaccount.c
 pidgin/gtkblist.c
-pidgin/gtkconn.c
 pidgin/gtkconv.c
 pidgin/gtkdialogs.c
 pidgin/gtkidle.c

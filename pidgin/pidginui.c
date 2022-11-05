@@ -34,7 +34,6 @@
 
 #include "gtkaccount.h"
 #include "gtkblist.h"
-#include "gtkconn.h"
 #include "gtkconv.h"
 #include "gtkidle.h"
 #include "gtkmedia.h"
@@ -184,12 +183,10 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
 	purple_blist_set_ui(PIDGIN_TYPE_BUDDY_LIST);
 	purple_notify_set_ui_ops(pidgin_notify_get_ui_ops());
 	purple_request_set_ui_ops(pidgin_request_get_ui_ops());
-	purple_connections_set_ui_ops(pidgin_connections_get_ui_ops());
 	purple_whiteboard_set_ui_ops(pidgin_whiteboard_get_ui_ops());
 	purple_idle_set_ui(pidgin_idle_new());
 
 	pidgin_accounts_init();
-	pidgin_connection_init();
 	pidgin_request_init();
 	pidgin_blist_init();
 	pidgin_conversations_init();
@@ -213,7 +210,6 @@ pidgin_ui_stop(G_GNUC_UNUSED PurpleUi *ui) {
 	pidgin_conversations_uninit();
 	pidgin_blist_uninit();
 	pidgin_request_uninit();
-	pidgin_connection_uninit();
 	pidgin_accounts_uninit();
 	pidgin_xfers_uninit();
 	pidgin_debug_window_hide();

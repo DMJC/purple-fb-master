@@ -159,9 +159,6 @@ struct _PurpleConnectionUiOps
 	void (*connected)(PurpleConnection *gc);
 	void (*disconnected)(PurpleConnection *gc);
 
-	void (*network_connected)(void);
-	void (*network_disconnected)(void);
-
 	void (*report_disconnect)(PurpleConnection *gc,
 	                          PurpleConnectionError reason,
 	                          const char *text);
