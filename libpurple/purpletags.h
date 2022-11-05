@@ -152,6 +152,20 @@ GList *purple_tags_get_all(PurpleTags *tags);
  */
 gchar *purple_tags_to_string(PurpleTags *tags, const gchar *separator);
 
+/**
+ * purple_tag_parse:
+ * @tag: The tag.
+ * @name: (nullable) (optional) (out): An optional return address for the name
+ *        of the tag.
+ * @value: (nullable) (optional) (out): An optional return address for the
+ *         value of the tag.
+ *
+ * Splits a tag into its name and value parts.
+ *
+ * Since: 3.0.0
+ */
+void purple_tag_parse(const char *tag, char **name, char **value);
+
 G_END_DECLS
 
 #endif /* PURPLE_TAGS_H */

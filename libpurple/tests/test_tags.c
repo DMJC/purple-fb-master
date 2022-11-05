@@ -245,6 +245,47 @@ test_purple_tags_to_string_multiple_with_null_separator(void) {
 }
 
 /******************************************************************************
+ * purple_tag_parse Tests
+ *****************************************************************************/
+typedef struct {
+	char *tag;
+	char *name;
+	char *value;
+} TestPurpleTagParseData;
+
+static void
+test_purple_tag_parse(void) {
+	TestPurpleTagParseData data[] = {
+		{"", "", NULL},
+		{"foo", "foo", NULL},
+		{"🐦", "🐦", NULL},
+		{":", "", ""},
+		{"foo:bar", "foo", "bar"},
+		{"🐦:", "🐦", ""},
+		{":🐦", "", "🐦"},
+		{NULL},
+	};
+
+	for(int i = 0; data[i].tag != NULL; i++) {
+		char *name = NULL;
+		char *value = NULL;
+
+		purple_tag_parse(data[i].tag, &name, &value);
+
+		g_assert_cmpstr(name, ==, data[i].name);
+		g_assert_cmpstr(value, ==, data[i].value);
+
+		g_free(name);
+		g_free(value);
+	}
+
+	/* Finally make sure that we don't crash if neither optional argument was
+	 * passed.
+	 */
+	purple_tag_parse("", NULL, NULL);
+}
+
+/******************************************************************************
  * Public API
  *****************************************************************************/
 gint
@@ -280,6 +321,8 @@ main(gint argc, gchar **argv) {
 	                test_purple_tags_to_string_multiple_with_separator);
 	g_test_add_func("/tags/to-string-multiple-with-null-separator",
 	                test_purple_tags_to_string_multiple_with_null_separator);
+
+	g_test_add_func("/tag/parse", test_purple_tag_parse);
 
 	return g_test_run();
 }

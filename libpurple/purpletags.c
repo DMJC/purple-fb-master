@@ -175,3 +175,27 @@ purple_tags_to_string(PurpleTags *tags, const gchar *separator) {
 
 	return g_string_free(value, FALSE);
 }
+
+void
+purple_tag_parse(const char *tag, char **name, char **value) {
+	const char *colon = NULL;
+
+	g_return_if_fail(tag != NULL);
+
+	colon = g_strstr_len(tag, -1, ":");
+	if(colon == NULL) {
+		if(name != NULL) {
+			*name = g_strdup(tag);
+		}
+		if(value != NULL) {
+			*value = NULL;
+		}
+	} else {
+		if(name != NULL) {
+			*name = g_strndup(tag, colon - tag);
+		}
+		if(value != NULL) {
+			*value = g_strdup(colon + 1);
+		}
+	}
+}
