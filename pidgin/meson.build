@@ -220,7 +220,6 @@ _libpidgin_dependencies = [
 	json,
 	libadwaita,
 	math,
-	libsoup,
 	talkatu_dep,
 	libpurple_dep,
 ]

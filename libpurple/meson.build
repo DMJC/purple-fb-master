@@ -339,7 +339,10 @@ pkgconfig.generate(
     subdirs : [purple_filebase, purple_include_base],
     # NOTE: Don't use gplugin from pkgconfig, as it might be a subproject.
     requires : [glib, gdk_pixbuf, 'gplugin'],
-    variables : ['plugindir=${libdir}/@0@'.format(purple_filebase)])
+    variables : [
+      f'plugindir=${libdir}/@purple_filebase@',
+      f'soupapiversion=@soup_api_version@',
+    ])
 
 if enable_introspection
 	introspection_sources = (purple_coresources + purple_coreheaders +

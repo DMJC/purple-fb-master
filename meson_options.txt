@@ -25,8 +25,8 @@ option('kwallet', type : 'feature',
 option('libsecret', type : 'feature',
        description : 'enable libsecret support')
 
-option('soup3', type : 'boolean', value : false,
-       description : 'compile against libsoup3')
+option('soup2', type : 'boolean', value : false,
+       description : 'compile against libsoup2')
 
 ##############################################################################
 # Protocol Plugins
