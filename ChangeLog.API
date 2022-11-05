@@ -362,6 +362,7 @@ version 3.0.0 (??/??/????):
 		* PurpleAccountUiOps:close_account_request
 		* PurpleAccountUiOps:request_add
 		* PurpleAccountUiOps:request_authorization
+		* PurpleAccountUiOps:status_changed
 		* purple_account_add_buddies_with_invite
 		* purple_account_add_buddy_with_invite
 		* purple_account_destroy_log

@@ -48,9 +48,6 @@ typedef struct _PurpleAccountUiOps  PurpleAccountUiOps;
  */
 struct _PurpleAccountUiOps
 {
-	void (*status_changed)(PurpleAccount *account,
-	                       PurpleStatus *status);
-
 	void (*permit_added)(PurpleAccount *account, const char *name);
 	void (*permit_removed)(PurpleAccount *account, const char *name);
 	void (*deny_added)(PurpleAccount *account, const char *name);
