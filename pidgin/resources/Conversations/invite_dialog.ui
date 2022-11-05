@@ -111,8 +111,8 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">button1</action-widget>
-      <action-widget response="-3">button2</action-widget>
+      <action-widget response="cancel">button1</action-widget>
+      <action-widget response="accept">button2</action-widget>
     </action-widgets>
   </template>
 </interface>

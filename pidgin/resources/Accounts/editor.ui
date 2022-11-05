@@ -232,6 +232,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
     </child>
     <child type="action">
       <object class="GtkButton" id="button2">
+        <property name="css-classes">suggested-action</property>
         <property name="label" translatable="1">_Save</property>
         <property name="receives-default">1</property>
         <property name="sensitive">0</property>
@@ -239,8 +240,8 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">button1</action-widget>
-      <action-widget response="-10">button2</action-widget>
+      <action-widget response="cancel">button1</action-widget>
+      <action-widget response="apply">button2</action-widget>
     </action-widgets>
   </template>
 </interface>

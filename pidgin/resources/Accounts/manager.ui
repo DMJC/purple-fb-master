@@ -150,7 +150,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       <action-widget response="0">button3</action-widget>
       <action-widget response="1">modify_button</action-widget>
       <action-widget response="2">remove_button</action-widget>
-      <action-widget response="-7">button2</action-widget>
+      <action-widget response="close">button2</action-widget>
     </action-widgets>
   </template>
 </interface>

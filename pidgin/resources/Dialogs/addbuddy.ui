@@ -173,8 +173,8 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">button1</action-widget>
-      <action-widget response="-5">button2</action-widget>
+      <action-widget response="cancel">button1</action-widget>
+      <action-widget response="ok">button2</action-widget>
     </action-widgets>
     <child type="action">
       <object class="GtkButton" id="button1">

@@ -165,7 +165,7 @@ License along with this library; if not, see <https://www.gnu.org/licenses/>.
       <action-widget response="1">button1</action-widget>
       <action-widget response="2">modify_button</action-widget>
       <action-widget response="3">remove_button</action-widget>
-      <action-widget response="-7">button2</action-widget>
+      <action-widget response="close">button2</action-widget>
     </action-widgets>
   </template>
 </interface>

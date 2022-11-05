@@ -228,7 +228,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-7">close_button</action-widget>
+      <action-widget response="close">close_button</action-widget>
     </action-widgets>
     <child internal-child="action_area">
       <object class="GtkBox">
