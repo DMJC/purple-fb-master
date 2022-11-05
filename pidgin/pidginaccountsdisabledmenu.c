@@ -62,7 +62,8 @@ pidgin_accounts_disabled_menu_refresh(PidginAccountsDisabledMenu *menu) {
 }
 
 static void
-pidgin_accounts_disabled_menu_changed_cb(G_GNUC_UNUSED PurpleAccount *account,
+pidgin_accounts_disabled_menu_changed_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                                         G_GNUC_UNUSED PurpleAccount *account,
                                          gpointer data)
 {
 	PidginAccountsDisabledMenu *menu = data;
@@ -182,16 +183,11 @@ pidgin_accounts_disabled_menu_constructed(GObject *obj) {
 
 static void
 pidgin_accounts_disabled_menu_init(PidginAccountsDisabledMenu *menu) {
-	gpointer handle = NULL;
+	PurpleAccountManager *manager = purple_account_manager_get_default();
 
-	/* Wire up the purple signals we care about. */
-	handle = purple_accounts_get_handle();
-	purple_signal_connect(handle, "account-enabled", menu,
-	                      G_CALLBACK(pidgin_accounts_disabled_menu_changed_cb),
-	                      menu);
-	purple_signal_connect(handle, "account-disabled", menu,
-	                      G_CALLBACK(pidgin_accounts_disabled_menu_changed_cb),
-	                      menu);
+	g_signal_connect_object(manager, "account-changed::enabled",
+	                        G_CALLBACK(pidgin_accounts_disabled_menu_changed_cb),
+	                        menu, 0);
 }
 
 static void

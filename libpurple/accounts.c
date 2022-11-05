@@ -680,14 +680,6 @@ purple_accounts_init(void)
 	void *handle = purple_accounts_get_handle();
 	void *conn_handle = purple_connections_get_handle();
 
-	purple_signal_register(handle, "account-disabled",
-						 purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
-						 PURPLE_TYPE_ACCOUNT);
-
-	purple_signal_register(handle, "account-enabled",
-						 purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
-						 PURPLE_TYPE_ACCOUNT);
-
 	purple_signal_register(handle, "account-created",
 						 purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
 						 PURPLE_TYPE_ACCOUNT);

@@ -1500,15 +1500,11 @@ purple_account_set_enabled(PurpleAccount *account, gboolean value) {
 
 	was_enabled = account->enabled;
 	account->enabled = value;
+	if(was_enabled != value) {
+		g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_ENABLED]);
+	}
 
 	gc = purple_account_get_connection(account);
-	if(was_enabled && !value)
-		purple_signal_emit(purple_accounts_get_handle(), "account-disabled", account);
-	else if(!was_enabled && value)
-		purple_signal_emit(purple_accounts_get_handle(), "account-enabled", account);
-
-	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_ENABLED]);
-
 	if ((gc != NULL) && (_purple_connection_wants_to_die(gc)))
 		return;
 

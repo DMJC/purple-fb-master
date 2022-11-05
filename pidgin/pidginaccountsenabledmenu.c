@@ -41,30 +41,30 @@ G_DEFINE_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
  * Callbacks
  *****************************************************************************/
 static void
-pidgin_accounts_enabled_menu_enabled_cb(PurpleAccount *account, gpointer data) {
-	PidginAccountsEnabledMenu *menu = data;
-
-	/* Add the account to the start of the list. */
-	g_queue_push_head(menu->accounts, g_object_ref(account));
-
-	/* Tell everyone our model added a new item at position 0. */
-	g_menu_model_items_changed(G_MENU_MODEL(menu), 0, 0, 1);
-}
-
-static void
-pidgin_accounts_enabled_menu_disabled_cb(PurpleAccount *account, gpointer data)
+pidgin_accounts_enabled_menu_changed_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                                        PurpleAccount *account,
+                                        gpointer data)
 {
 	PidginAccountsEnabledMenu *menu = data;
-	gint index = -1;
 
-	index = g_queue_index(menu->accounts, account);
-	if(index >= 0) {
-		g_queue_pop_nth(menu->accounts, index);
+	if(purple_account_get_enabled(account)) {
+		/* Add the account to the start of the list. */
+		g_queue_push_head(menu->accounts, g_object_ref(account));
 
-		/* Tell the model that we removed one item at the given index. */
-		g_menu_model_items_changed(G_MENU_MODEL(menu), index, 1, 0);
+		/* Tell everyone our model added a new item at position 0. */
+		g_menu_model_items_changed(G_MENU_MODEL(menu), 0, 0, 1);
+	} else {
+		gint index = g_queue_index(menu->accounts, account);
 
-		g_object_unref(account);
+		if(index >= 0) {
+			g_queue_pop_nth(menu->accounts, index);
+
+			/* Tell the model that we removed one item at the given index. */
+			g_menu_model_items_changed(G_MENU_MODEL(menu), index, 1, 0);
+
+			/* Remove the reference to the account that we were holding. */
+			g_object_unref(account);
+		}
 	}
 }
 
@@ -311,18 +311,18 @@ pidgin_accounts_enabled_menu_constructed(GObject *obj) {
 
 static void
 pidgin_accounts_enabled_menu_init(PidginAccountsEnabledMenu *menu) {
+	PurpleAccountManager *manager = NULL;
 	gpointer handle = NULL;
 
 	menu->accounts = g_queue_new();
 
+	manager = purple_account_manager_get_default();
+	g_signal_connect_object(manager, "account-changed::enabled",
+	                        G_CALLBACK(pidgin_accounts_enabled_menu_changed_cb),
+	                        menu, 0);
+
 	/* Wire up the purple signals we care about. */
 	handle = purple_accounts_get_handle();
-	purple_signal_connect(handle, "account-enabled", menu,
-	                      G_CALLBACK(pidgin_accounts_enabled_menu_enabled_cb),
-	                      menu);
-	purple_signal_connect(handle, "account-disabled", menu,
-	                      G_CALLBACK(pidgin_accounts_enabled_menu_disabled_cb),
-	                      menu);
 
 	/* For the account actions, we also need to know when an account is online
 	 * or offline.

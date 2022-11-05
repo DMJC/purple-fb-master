@@ -26,6 +26,7 @@
 enum {
 	SIG_ADDED,
 	SIG_REMOVED,
+	SIG_ACCOUNT_CHANGED,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -37,6 +38,24 @@ struct _PurpleAccountManager {
 };
 
 static PurpleAccountManager *default_manager = NULL;
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+/* This is the callback for the notify signal on accounts. It re-emits the
+ * signal as coming from the manager and passes the account as a parameter to
+ * the callback. It supports details as well so you can use
+ * g_signal_connect(manager, "account-changed::enabled", ...) to just get
+ * called when an account's enabled property changes.
+ */
+static void
+purple_account_manager_account_notify_cb(GObject *source, GParamSpec *pspec,
+                                         gpointer data)
+{
+	g_signal_emit(data, signals[SIG_ACCOUNT_CHANGED],
+	              g_param_spec_get_name_quark(pspec),
+	              source);
+}
 
 /******************************************************************************
  * GListModel Implementation
@@ -144,6 +163,33 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 		G_TYPE_NONE,
 		1,
 		PURPLE_TYPE_ACCOUNT);
+
+	/**
+	 * PurpleAccountManager::account-changed:
+	 * @manager: The account manager instance.
+	 * @account: The account that was changed.
+	 *
+	 * This is a propagation of the notify signal from @account. This means
+	 * that your callback will be called for any account that @manager knows
+	 * about.
+	 *
+	 * This also supports details, so you can specify the signal name as
+	 * something like `account-changed::enabled` and your callback will only
+	 * be called when the enabled property of @account has been changed.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_ACCOUNT_CHANGED] = g_signal_new_class_handler(
+		"account-changed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		PURPLE_TYPE_ACCOUNT);
 }
 
 /******************************************************************************
@@ -192,6 +238,11 @@ purple_account_manager_add(PurpleAccountManager *manager,
 	 * new account.
 	 */
 	g_ptr_array_insert(manager->accounts, 0, account);
+
+	/* Connect to the signals of the account that we want to propagate. */
+	g_signal_connect_object(account, "notify",
+	                        G_CALLBACK(purple_account_manager_account_notify_cb),
+	                        manager, 0);
 
 	purple_accounts_schedule_save();
 

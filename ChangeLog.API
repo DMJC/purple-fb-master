@@ -328,6 +328,10 @@ version 3.0.0 (??/??/????):
 		* _XMLNodeType
 		* account-added signal. Use PurpleAccountManager::added
 		  instead.
+		* account-disabled signal. Use
+		  PurpleAccountManager::account-changed::enabled instead.
+		* account-enabled signal. Use
+		  PurpleAccountManager::account-changed::enabled instead.
 		* account-alias-changed signal
 		* account-authorization-denied, account-authorization-granted,
 		  account-authorization-requested,

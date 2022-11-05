@@ -861,14 +861,6 @@ void finch_account_dialog_show(PurpleAccount *account)
 	edit_account(account);
 }
 
-static gpointer
-finch_accounts_get_handle(void)
-{
-	static int handle;
-
-	return &handle;
-}
-
 static void
 account_added_callback(G_GNUC_UNUSED PurpleAccountManager *manager,
                        PurpleAccount *account, G_GNUC_UNUSED gpointer data)
@@ -890,12 +882,16 @@ account_removed_callback(G_GNUC_UNUSED PurpleAccountManager *manager,
 }
 
 static void
-account_abled_cb(PurpleAccount *account, gpointer user_data)
+account_abled_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                 PurpleAccount *account,
+                 G_GNUC_UNUSED gpointer data)
 {
-	if (accounts.window == NULL)
+	if(accounts.window == NULL) {
 		return;
+	}
+
 	gnt_tree_set_choice(GNT_TREE(accounts.tree), account,
-			GPOINTER_TO_INT(user_data));
+	                    purple_account_get_enabled(account));
 }
 
 void
@@ -903,23 +899,17 @@ finch_accounts_init(void)
 {
 	PurpleAccountManager *manager = NULL;
 	GListModel *manager_model = NULL;
-	gpointer account_handle = NULL;
 	guint n_items = 0;
 
 	manager = purple_account_manager_get_default();
 	manager_model = G_LIST_MODEL(manager);
-	account_handle = purple_accounts_get_handle();
 
 	g_signal_connect(manager, "added", G_CALLBACK(account_added_callback),
 	                 NULL);
 	g_signal_connect(manager, "removed", G_CALLBACK(account_removed_callback),
 	                 NULL);
-	purple_signal_connect(account_handle, "account-disabled",
-			finch_accounts_get_handle(),
-			G_CALLBACK(account_abled_cb), GINT_TO_POINTER(FALSE));
-	purple_signal_connect(account_handle, "account-enabled",
-			finch_accounts_get_handle(),
-			G_CALLBACK(account_abled_cb), GINT_TO_POINTER(TRUE));
+	g_signal_connect(manager, "account-changed::enabled",
+	                 G_CALLBACK(account_abled_cb), NULL);
 
 	n_items = g_list_model_get_n_items(manager_model);
 	if(n_items != 0) {

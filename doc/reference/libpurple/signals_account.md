@@ -7,8 +7,6 @@ Slug: account-signals
 
 * [account-created](#account-created)
 * [account-destroying](#account-destroying)
-* [account-disabled](#account-disabled)
-* [account-enabled](#account-enabled)
 * [account-status-changed](#account-status-changed)
 * [account-actions-changed](#account-actions-changed)
 * [account-error-changed](#account-error-changed)
@@ -47,42 +45,6 @@ Emitted when an account is about to be destroyed.
 
 **account**
 : The account.
-
-**user_data**
-: User data set when the signal handler was connected.
-
-----
-
-#### account-disabled
-
-```c
-void user_function(PurpleAccount *account, gpointer user_data);
-```
-
-Emitted when an account is disabled.
-
-**Parameters:**
-
-**account**
-: The account that was disabled.
-
-**user_data**
-: User data set when the signal handler was connected.
-
-----
-
-#### account-enabled
-
-```c
-void user_function(PurpleAccount *account, gpointer user_data);
-```
-
-Emitted when an account is enabled.
-
-**Parameters**:
-
-**account**
-: The account that was enabled.
 
 **user_data**
 : User data set when the signal handler was connected.
