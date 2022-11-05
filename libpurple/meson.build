@@ -223,7 +223,7 @@ purple_resource = gnome.compile_resources('purpleresources',
 	c_name : 'purple')
 purple_coresources += purple_resource
 
-purple_filebase = 'purple-@0@'.format(purple_major_version)
+purple_filebase = f'purple-@purple_major_version@'
 purple_include_base = purple_filebase / 'libpurple'
 
 if IS_WIN32
@@ -283,7 +283,7 @@ enums_h = enums[1]
 
 PURPLE_H_INCLUDES = []
 foreach header : purple_coreheaders + purple_mediaheaders + ['version.h', 'purpleenums.h']
-	PURPLE_H_INCLUDES += '#include <libpurple/@0@>'.format(header)
+	PURPLE_H_INCLUDES += f'#include <libpurple/@header@>'
 endforeach
 purple_h_conf = configuration_data()
 purple_h_conf.set('PURPLE_H_INCLUDES', '\n'.join(PURPLE_H_INCLUDES))
@@ -356,8 +356,7 @@ if enable_introspection
 	    symbol_prefix : 'purple',
 	    identifier_prefix : 'Purple',
 	    export_packages : purple_filebase,
-	    nsversion : '@0@.@1@'.format(purple_major_version,
-	                                 purple_minor_version),
+	    nsversion : f'@purple_major_version@.@purple_minor_version@',
 	    dependencies: [gplugin_dep],
 	    install : true,
 	    extra_args : ['-DPURPLE_COMPILATION', '--quiet'])

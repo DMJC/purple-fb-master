@@ -4,12 +4,12 @@ ICONS = [
 
 foreach icon : ICONS
 	foreach size : [16, 24, 48, 64, 96, 128, 256, 512]
-		path = 'hicolor/@0@x@0@/apps'.format(size)
-		install_data(path / '@0@.png'.format(icon),
+		path = f'hicolor/@size@x@size@/apps'
+		install_data(path / f'@icon@.png',
 		    install_dir : get_option('datadir') / 'icons' / path)
 	endforeach
 	path = 'hicolor/scalable/apps'
-	install_data(path / '@0@.svg'.format(icon),
+	install_data(path / f'@icon@.svg',
 	    install_dir : get_option('datadir') / 'icons' / path)
 endforeach
 

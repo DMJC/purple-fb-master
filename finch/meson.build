@@ -73,7 +73,7 @@ if not ncurses_available
 	error('ncurses could not be found!')
 endif
 
-ncurses_header = '-DNCURSES_HEADER="@0@"'.format(ncurses_header)
+ncurses_header = f'-DNCURSES_HEADER="@ncurses_header@"'
 enable_consoleui = true
 
 
@@ -157,7 +157,7 @@ libfinch_built_headers += libfinch_enums[1]
 
 FINCH_H_INCLUDES = []
 foreach header : libfinch_headers + ['finchenums.h']
-	FINCH_H_INCLUDES += '#include <finch/@0@>'.format(header)
+	FINCH_H_INCLUDES += f'#include <finch/@header@>'
 endforeach
 finch_h_conf = configuration_data()
 finch_h_conf.set('FINCH_H_INCLUDES', '\n'.join(FINCH_H_INCLUDES))
@@ -198,8 +198,7 @@ if enable_introspection
 	    symbol_prefix : 'finch',
 	    identifier_prefix : 'Finch',
 	    export_packages : 'finch-3',
-	    nsversion : '@0@.@1@'.format(purple_major_version,
-	                                 purple_minor_version),
+	    nsversion : f'@purple_major_version@.@purple_minor_version@',
 	    dependencies: [libgnt_dep, gplugin_dep, libpurple_dep],
 	    install : true,
 	    extra_args : ['-DFINCH_COMPILATION', '--quiet'])
@@ -234,6 +233,6 @@ pkgconfig.generate(
     subdirs : 'finch-3',
     # NOTE: Don't use gnt from pkgconfig, as it might be a subproject.
     requires : ['gnt', libpurple],
-    variables : ['plugindir=${libdir}/finch-@0@'.format(purple_major_version)])
+    variables : [f'plugindir=${libdir}/finch-@purple_major_version@'])
 
 subdir('plugins')

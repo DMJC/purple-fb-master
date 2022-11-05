@@ -42,7 +42,7 @@ test_ui = static_library(
 testenv.set('XDG_CONFIG_HOME', meson.current_build_dir() / 'config')
 
 foreach prog : PROGS
-    e = executable('test_' + prog, 'test_@0@.c'.format(prog),
+    e = executable(f'test_@prog@', f'test_@prog@.c',
                    c_args : [
                        '-DTEST_DATA_DIR="@0@/data"'.format(meson.current_source_dir())
                    ],

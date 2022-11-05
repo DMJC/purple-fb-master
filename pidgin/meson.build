@@ -199,7 +199,7 @@ libpidgin_enums_h = libpidgin_enums[1]
 
 PIDGIN_H_INCLUDES = []
 foreach header : libpidgin_headers + libpidgin_prefs_headers + ['pidginenums.h']
-	PIDGIN_H_INCLUDES += '#include <pidgin/@0@>'.format(header)
+	PIDGIN_H_INCLUDES += f'#include <pidgin/@header@>'
 endforeach
 pidgin_h_conf = configuration_data()
 pidgin_h_conf.set('PIDGIN_H_INCLUDES', '\n'.join(PIDGIN_H_INCLUDES))
@@ -267,7 +267,7 @@ pkgconfig.generate(
     subdirs : pidgin_filebase,
     # NOTE: Don't use dependencies from subprojects.
     requires : [gtk, libadwaita, libpurple, 'talkatu', 'gplugin-gtk4'],
-    variables : ['plugindir=${libdir}/pidgin-@0@'.format(purple_major_version)])
+    variables : [f'plugindir=${libdir}/pidgin-@purple_major_version@'])
 
 PIDGIN_DESKTOP_FILE = 'im.pidgin.Pidgin3.desktop'
 i18n = import('i18n')
@@ -300,9 +300,8 @@ if enable_introspection
 		namespace : 'Pidgin',
 		symbol_prefix : 'pidgin',
 		identifier_prefix : 'Pidgin',
-		export_packages : 'pidgin-@0@'.format(purple_major_version),
-		nsversion : '@0@.@1@'.format(purple_major_version,
-		                             purple_minor_version),
+		export_packages : f'pidgin-@purple_major_version@',
+		nsversion : f'@purple_major_version@.@purple_minor_version@',
 		dependencies : [gplugin_dep, gplugin_gtk_dep, talkatu_dep, libpurple_dep],
 		install : true,
 		extra_args : ['-DPIDGIN_COMPILATION', '--quiet'])

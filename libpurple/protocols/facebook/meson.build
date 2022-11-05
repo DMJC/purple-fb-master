@@ -49,8 +49,7 @@ if DYNAMIC_FACEBOOK
 		    namespace : 'Facebook',
 		    symbol_prefix : 'fb',
 		    identifier_prefix : 'Fb',
-		    nsversion : '@0@.@1@'.format(purple_major_version,
-		                                 purple_minor_version),
+		    nsversion : f'@purple_major_version@.@purple_minor_version@',
 		    dependencies: [gplugin_dep, libpurple_dep],
 		    install : false,
 		    extra_args : ['-DPURPLE_COMPILATION', '--quiet'])

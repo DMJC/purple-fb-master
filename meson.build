@@ -46,7 +46,7 @@ add_project_arguments([
 	'-DVERSION="@0@"'.format(meson.project_version()),
 	'-DDISPLAY_VERSION="@0@"'.format(meson.project_version()),
 	'-DPURPLE_WEBSITE="https://pidgin.im/"',
-	'-DGETTEXT_PACKAGE="@0@"'.format(GETTEXT_PACKAGE)],
+	f'-DGETTEXT_PACKAGE="@GETTEXT_PACKAGE@"'],
 	language : 'c')
 conf = configuration_data()
 man_conf = configuration_data()
@@ -65,9 +65,7 @@ version_conf.set('PURPLE_EXTRA_VERSION', purple_extra_version)
 version_conf.set('PURPLE_VERSION', meson.project_version())
 version_conf.set('PURPLE_API_VERSION', purple_soversion)
 
-PURPLE_LIB_VERSION = '@0@.@1@.@2@'.format(purple_soversion,
-                                          purple_minor_version,
-                                          purple_micro_version)
+PURPLE_LIB_VERSION = f'@purple_soversion@.@purple_minor_version@.@purple_micro_version@'
 
 package_revision = vcs_tag(
     input : 'package_revision.h.in',
@@ -107,7 +105,7 @@ if host_machine.system() == 'windows'
 	conf.set('WIN32_LEAN_AND_MEAN', true)
 
 	conf.set('LIBPIDGIN_DLL_NAMEW',
-	    'L"libpidgin3-@0@.dll"'.format(purple_soversion))
+	    f'L"libpidgin3-@purple_soversion@.dll"')
 else
 	IS_WIN32 = false
 	ws2_32 = []
@@ -133,11 +131,11 @@ if IS_WIN32
 	endforeach
 
 	conf.set('PURPLE_LIBDIR',
-		 'wpurple_lib_dir("purple-@0@")'.format(purple_major_version))
+		 f'wpurple_lib_dir("purple-@purple_major_version@")')
 	conf.set('PIDGIN_LIBDIR',
-		 'wpurple_lib_dir("pidgin-@0@")'.format(purple_major_version))
+		 f'wpurple_lib_dir("pidgin-@purple_major_version@")')
 	conf.set('FINCH_LIBDIR',
-		 'wpurple_lib_dir("finch-@0@")'.format(purple_major_version))
+		 f'wpurple_lib_dir("finch-@purple_major_version@")')
 
 	conf.set('PURPLE_DATADIR', 'wpurple_data_dir()')
 	conf.set('PURPLE_SYSCONFDIR', 'wpurple_sysconf_dir()')
@@ -150,19 +148,19 @@ else
 
 	common_libdir = get_option('prefix') / get_option('libdir')
 	conf.set_quoted('PURPLE_LIBDIR',
-	                common_libdir / 'purple-@0@'.format(purple_major_version))
+	                common_libdir / f'purple-@purple_major_version@')
 	conf.set_quoted('PIDGIN_LIBDIR',
-	                common_libdir / 'pidgin-@0@'.format(purple_major_version))
+	                common_libdir / f'pidgin-@purple_major_version@')
 	conf.set_quoted('FINCH_LIBDIR',
-	                common_libdir / 'finch-@0@'.format(purple_major_version))
+	                common_libdir / f'finch-@purple_major_version@')
 endif
 
 abslibdir = get_option('prefix') / get_option('libdir')
-PURPLE_PLUGINDIR = abslibdir / 'purple-@0@'.format(purple_major_version)
+PURPLE_PLUGINDIR = abslibdir / f'purple-@purple_major_version@'
 conf.set_quoted('PURPLE_PLUGINDIR', PURPLE_PLUGINDIR)
-PIDGIN_PLUGINDIR = abslibdir / 'pidgin-@0@'.format(purple_major_version)
+PIDGIN_PLUGINDIR = abslibdir / f'pidgin-@purple_major_version@'
 conf.set_quoted('PIDGIN_PLUGINDIR', PIDGIN_PLUGINDIR)
-FINCH_PLUGINDIR = abslibdir / 'finch-@0@'.format(purple_major_version)
+FINCH_PLUGINDIR = abslibdir / f'finch-@purple_major_version@'
 conf.set_quoted('FINCH_PLUGINDIR', FINCH_PLUGINDIR)
 
 # Check for socklen_t (in Unix98)
@@ -188,7 +186,7 @@ endif
 # Some systems do not have sa_len field for struct sockaddr.
 conf.set('HAVE_STRUCT_SOCKADDR_SA_LEN',
     compiler.has_member('struct sockaddr', 'sa_len',
-        prefix : '#include <@0@>'.format(socket_header)))
+        prefix : f'#include <@socket_header@>'))
 
 # Windows and Haiku do not use libm for the math functions, they are part
 # of the C library
@@ -479,7 +477,7 @@ else
 		'-DHAVE_CONFIG_H=1',
 		'-DDISPLAY_VERSION="@0@"'.format(meson.project_version()),
 		'-DPURPLE_WEBSITE="https://pidgin.im/"',
-		'-DGETTEXT_PACKAGE="@0@"'.format(GETTEXT_PACKAGE)],
+		f'-DGETTEXT_PACKAGE="@GETTEXT_PACKAGE@"'],
 		language : 'cpp')
 
 	qt5 = import('qt5')
