@@ -327,21 +327,24 @@ version 3.0.0 (??/??/????):
 		* _PurpleSslConnection
 		* _XMLNodeType
 		* account-added signal. Use PurpleAccountManager::added instead.
-		* account-created signal. Use PurpleAccountManager::added instead.
-		* account-destroying signal. Use PurpleAccountManager::removed instead.
-		* account-disabled signal. Use
-		  PurpleAccountManager::account-changed::enabled instead.
-		* account-enabled signal. Use
-		  PurpleAccountManager::account-changed::enabled instead.
 		* account-alias-changed signal
 		* account-authorization-denied, account-authorization-granted,
 		  account-authorization-requested,
 		  account-authorization-requested-with-message signals
 		* account-connecting signal
 		* account-connection-error signal
+		* account-created signal. Use PurpleAccountManager::added instead.
+		* account-destroying signal. Use PurpleAccountManager::removed instead.
+		* account-disabled signal. Use
+		  PurpleAccountManager::account-changed::enabled instead.
+		* account-enabled signal. Use
+		  PurpleAccountManager::account-changed::enabled instead.
+		* account-error-changed signal. Use
+		  PurpleAccountManager::account-changed::error instead.
 		* account-removed signal. Use PurpleAccountManager::removed
 		  instead.
 		* account-setting-info, account-set-info signals
+		* account-status-changing signal.
 		* file-recv-accept, file-recv-cancel, file-recv-complete,
 		  file-recv-start, file-send-accept, file-send-cancel,
 		  file-send-complete, file-send-start signals. Use

@@ -127,6 +127,7 @@ enum
 	PROP_BUDDY_ICON_PATH,
 	PROP_REMEMBER_PASSWORD,
 	PROP_PROXY_INFO,
+	PROP_ERROR,
 	PROP_LAST
 };
 
@@ -508,16 +509,16 @@ void
 _purple_account_set_current_error(PurpleAccount *account,
 		PurpleConnectionErrorInfo *new_err)
 {
-	PurpleConnectionErrorInfo *old_err;
 	PurpleNotificationManager *manager = NULL;
 
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	old_err = account->current_error;
-
-	if(new_err == old_err)
+	if(new_err == account->current_error) {
 		return;
+	}
 
+	g_clear_pointer(&account->current_error,
+	                purple_connection_error_info_free);
 	account->current_error = new_err;
 
 	manager = purple_notification_manager_get_default();
@@ -535,12 +536,9 @@ _purple_account_set_current_error(PurpleAccount *account,
 		purple_notification_manager_add(manager, account->error_notification);
 	}
 
-	purple_signal_emit(purple_accounts_get_handle(),
-	                   "account-error-changed",
-	                   account, old_err, new_err);
-	purple_accounts_schedule_save();
+	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_ERROR]);
 
-	g_clear_pointer(&old_err, purple_connection_error_info_free);
+	purple_accounts_schedule_save();
 }
 
 /******************************************************************************
@@ -1040,6 +1038,20 @@ purple_account_class_init(PurpleAccountClass *klass)
 		"proxy-info", "proxy-info",
 		"The PurpleProxyInfo for this account.",
 		PURPLE_TYPE_PROXY_INFO,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAccount:error:
+	 *
+	 * The [type@GLib.Error] of the account. This is set when an account enters
+	 * an error state and is cleared when a connection attempt is made.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_ERROR] = g_param_spec_boxed(
+		"error", "error",
+		"The connection error info of the account",
+		PURPLE_TYPE_CONNECTION_ERROR_INFO,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, PROP_LAST, properties);

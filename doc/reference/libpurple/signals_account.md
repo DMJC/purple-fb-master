@@ -7,7 +7,6 @@ Slug: account-signals
 
 * [account-status-changed](#account-status-changed)
 * [account-actions-changed](#account-actions-changed)
-* [account-error-changed](#account-error-changed)
 * [account-signed-on](#account-signed-on)
 * [account-signed-off](#account-signed-off)
 
@@ -88,33 +87,6 @@ Emitted when the account actions are changed after initial connection.
 
 **account**
 : The account whose actions changed.
-
-**user_data**
-: User data set when the signal handler was connected.
-
-----
-
-#### account-error-changed
-
-```c
-void user_function(PurpleAccount *account,
-                   const PurpleConnectionErrorInfo *old_error,
-                   const PurpleConnectionErrorInfo *current_error,
-                   gpointer user_data);
-```
-
-Emitted when `account`'s error changes.  You should not call purple_account_clear_current_error() while this signal is being emitted.
-
-**Parameters:**
-
-**account**
-: The account whose error has changed.
-
-**old_error**
-: The account's previous error, or `NULL` if it had no error.  After this signal is emitted, `old_error` is not guaranteed to be a valid pointer.
-
-**new_error**
-: The account's new error, or `NULL` if it has no error. If not `NULL`, `new_error` will remain a valid until pointer just after the next time this signal is emitted for this `account`. See `purple_account_get_current_error()`.
 
 **user_data**
 : User data set when the signal handler was connected.
