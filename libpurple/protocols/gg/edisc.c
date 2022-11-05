@@ -65,9 +65,7 @@ struct _ggp_edisc_session_data
 struct _GGPXfer
 {
 	PurpleXfer parent;
-#if SOUP_MAJOR_VERSION >= 3
 	GCancellable *cancellable;
-#endif
 
 	gchar *filename;
 	gchar *ticket_id;
@@ -76,6 +74,7 @@ struct _GGPXfer
 
 	PurpleConnection *gc;
 	SoupMessage *msg;
+	gint handler;
 };
 
 typedef enum
@@ -267,31 +266,48 @@ ggp_ggdrive_auth_results(PurpleConnection *gc, gboolean success)
 }
 
 static void
-ggp_ggdrive_auth_done(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
-                      gpointer user_data)
+ggp_ggdrive_auth_done(GObject *source, GAsyncResult *async_result,
+                      gpointer data)
 {
-	PurpleConnection *gc = user_data;
+	PurpleConnection *gc = data;
 	ggp_edisc_session_data *sdata = ggp_edisc_get_sdata(gc);
+	GBytes *response_body = NULL;
+	const char *buffer = NULL;
+	gsize size = 0;
 	SoupStatus status_code;
 	JsonParser *parser;
 	JsonObject *result;
 	int status = -1;
+	GError *error = NULL;
 
 	g_return_if_fail(sdata != NULL);
 
-	sdata->auth_request = NULL;
-
-	status_code = soup_message_get_status(msg);
+	status_code = soup_message_get_status(sdata->auth_request);
 	if (!SOUP_STATUS_IS_SUCCESSFUL(status_code)) {
 		purple_debug_misc("gg",
 		                  "ggp_ggdrive_auth_done: authentication failed due to "
 		                  "unsuccessful request (code = %d)",
 		                  status_code);
+		g_clear_object(&sdata->auth_request);
 		ggp_ggdrive_auth_results(gc, FALSE);
 		return;
 	}
 
-	parser = ggp_json_parse(msg->response_body->data);
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  async_result, &error);
+	if(response_body == NULL) {
+		purple_debug_misc("gg",
+		                  "ggp_ggdrive_auth_done: authentication failed due to "
+		                  "unsuccessful request (%s)",
+		                  error->message);
+		g_error_free(error);
+		g_clear_object(&sdata->auth_request);
+		ggp_ggdrive_auth_results(gc, FALSE);
+		return;
+	}
+
+	buffer = g_bytes_get_data(response_body, &size);
+	parser = ggp_json_parse(buffer);
 	result = json_node_get_object(json_parser_get_root(parser));
 	result = json_object_get_object_member(result, "result");
 	if (json_object_has_member(result, "status"))
@@ -304,19 +320,23 @@ ggp_ggdrive_auth_done(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
 		                  "bad result (status=%d)",
 		                  status);
 		if (purple_debug_is_verbose()) {
-			purple_debug_misc("gg", "ggp_ggdrive_auth_done: result = %s",
-			                  msg->response_body->data);
+			purple_debug_misc("gg", "ggp_ggdrive_auth_done: result = %.*s",
+			                  (int)size, buffer);
 		}
+		g_bytes_unref(response_body);
+		g_clear_object(&sdata->auth_request);
 		ggp_ggdrive_auth_results(gc, FALSE);
 		return;
 	}
 
 	sdata->security_token = g_strdup(soup_message_headers_get_one(
-	        soup_message_get_response_headers(msg),
+	        soup_message_get_response_headers(sdata->auth_request),
 	        "X-gged-security-token"));
 	if (!sdata->security_token) {
 		purple_debug_misc("gg", "ggp_ggdrive_auth_done: authentication failed "
 		                        "due to missing security token header");
+		g_bytes_unref(response_body);
+		g_clear_object(&sdata->auth_request);
 		ggp_ggdrive_auth_results(gc, FALSE);
 		return;
 	}
@@ -325,6 +345,10 @@ ggp_ggdrive_auth_done(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
 		purple_debug_misc("gg", "ggp_ggdrive_auth_done: security_token=%s",
 		                  sdata->security_token);
 	}
+
+	g_clear_pointer(&response_body, g_bytes_unref);
+	g_clear_object(&sdata->auth_request);
+
 	ggp_ggdrive_auth_results(gc, TRUE);
 }
 
@@ -387,8 +411,9 @@ ggp_ggdrive_auth(PurpleConnection *gc, ggp_ggdrive_auth_cb cb,
 	soup_message_headers_replace(headers, "X-gged-client-metadata", metadata);
 	g_free(metadata);
 
-	soup_session_queue_message(sdata->session, msg, ggp_ggdrive_auth_done, gc);
 	sdata->auth_request = msg;
+	soup_session_send_and_read_async(sdata->session, msg, G_PRIORITY_DEFAULT,
+	                                 NULL, ggp_ggdrive_auth_done, gc);
 }
 
 static void
@@ -448,38 +473,59 @@ ggp_edisc_xfer_can_receive_file(PurpleProtocolXfer *prplxfer,
 }
 
 static void
-ggp_edisc_xfer_send_init_ticket_created(G_GNUC_UNUSED SoupSession *session,
-                                        SoupMessage *msg, gpointer _xfer)
+ggp_edisc_xfer_send_init_ticket_created(GObject *source, GAsyncResult *result,
+                                        gpointer data)
 {
-	PurpleXfer *xfer = _xfer;
+	PurpleXfer *xfer = data;
 	GGPXfer *edisc_xfer = GGP_XFER(xfer);
 	ggp_edisc_session_data *sdata = ggp_edisc_get_sdata(edisc_xfer->gc);
+	GBytes *response_body = NULL;
+	const char *buffer = NULL;
+	gsize size = 0;
 	ggp_edisc_xfer_ack_status ack_status;
 	JsonParser *parser;
 	JsonObject *ticket;
+	GError *error = NULL;
 
 	if (purple_xfer_is_cancelled(xfer))
 		return;
 
 	g_return_if_fail(sdata != NULL);
 
-	edisc_xfer->msg = NULL;
-
-	if (!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(msg))) {
-		int error_id = ggp_edisc_parse_error(msg->response_body->data);
-		if (error_id == 206) /* recipient not logged in */
-			ggp_edisc_xfer_error(xfer,
-				_("Recipient not logged in"));
-		else if (error_id == 207) /* bad sender recipient relation */
-			ggp_edisc_xfer_error(xfer, _("You aren't on the "
-                                "recipient's buddy list"));
-		else
-			ggp_edisc_xfer_error(xfer,
-				_("Unable to send file"));
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  result, &error);
+	if(response_body == NULL) {
+		purple_debug_error("gg",
+		                   "ggp_edisc_xfer_send_init_ticket_created: failed "
+		                   "to send file: %s", error->message);
+		g_clear_object(&edisc_xfer->msg);
+		ggp_edisc_xfer_error(xfer, _("Unable to send file"));
+		g_error_free(error);
 		return;
 	}
 
-	parser = ggp_json_parse(msg->response_body->data);
+	buffer = g_bytes_get_data(response_body, &size);
+
+	if(!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(edisc_xfer->msg))) {
+		int error_id = ggp_edisc_parse_error(buffer);
+
+		g_bytes_unref(response_body);
+		g_clear_object(&edisc_xfer->msg);
+
+		if(error_id == 206) {
+			/* recipient not logged in */
+			ggp_edisc_xfer_error(xfer, _("Recipient not logged in"));
+		} else if(error_id == 207) {
+			/* bad sender recipient relation */
+			ggp_edisc_xfer_error(xfer,
+			                     _("You aren't on the recipient's buddy list"));
+		} else {
+			ggp_edisc_xfer_error(xfer, _("Unable to send file"));
+		}
+		return;
+	}
+
+	parser = ggp_json_parse(buffer);
 	ticket = json_node_get_object(json_parser_get_root(parser));
 	ticket = json_object_get_object_member(ticket, "result");
 	ticket = json_object_get_object_member(ticket, "send_ticket");
@@ -490,6 +536,8 @@ ggp_edisc_xfer_send_init_ticket_created(G_GNUC_UNUSED SoupSession *session,
 	/* send_mode: "normal", "publink" (for legacy clients) */
 
 	g_object_unref(parser);
+	g_bytes_unref(response_body);
+	g_clear_object(&edisc_xfer->msg);
 
 	if (edisc_xfer->ticket_id == NULL) {
 		purple_debug_error("gg",
@@ -554,9 +602,11 @@ ggp_edisc_xfer_send_init_authenticated(PurpleConnection *gc, gboolean success,
 	                                         body);
 	g_bytes_unref(body);
 
-	soup_session_queue_message(sdata->session, msg,
-	                           ggp_edisc_xfer_send_init_ticket_created, xfer);
 	edisc_xfer->msg = msg;
+	soup_session_send_and_read_async(sdata->session, msg, G_PRIORITY_DEFAULT,
+	                                 edisc_xfer->cancellable,
+	                                 ggp_edisc_xfer_send_init_ticket_created,
+	                                 xfer);
 }
 
 static void
@@ -572,6 +622,70 @@ ggp_edisc_xfer_send_init(PurpleXfer *xfer)
 	ggp_ggdrive_auth(edisc_xfer->gc, ggp_edisc_xfer_send_init_authenticated,
 	                 xfer);
 }
+
+#if SOUP_MAJOR_VERSION >= 3
+
+static void
+ggp_edisc_xfer_send_done(GObject *source, GAsyncResult *async_result,
+                         gpointer data)
+{
+	PurpleXfer *xfer = data;
+	GGPXfer *edisc_xfer = GGP_XFER(xfer);
+	GBytes *response_body = NULL;
+	JsonParser *parser = NULL;
+	JsonObject *result = NULL;
+	int result_status = -1;
+	GError *error = NULL;
+
+	if(purple_xfer_is_cancelled(xfer)) {
+		return;
+	}
+
+	g_return_if_fail(edisc_xfer != NULL);
+
+	if(!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(edisc_xfer->msg))) {
+		g_clear_object(&edisc_xfer->msg);
+		ggp_edisc_xfer_error(xfer, _("Error while sending a file"));
+		return;
+	}
+
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  async_result, &error);
+	if(response_body == NULL) {
+		g_clear_object(&edisc_xfer->msg);
+		ggp_edisc_xfer_error(xfer, _("Error while sending a file"));
+		g_error_free(error);
+		return;
+	}
+
+	parser = ggp_json_parse(g_bytes_get_data(response_body, NULL));
+	result = json_node_get_object(json_parser_get_root(parser));
+	result = json_object_get_object_member(result, "result");
+	if(json_object_has_member(result, "status")) {
+		result_status = json_object_get_int_member(result, "status");
+	}
+	g_object_unref(parser);
+	g_clear_pointer(&response_body, g_bytes_unref);
+	g_clear_object(&edisc_xfer->msg);
+
+	if(result_status == 0) {
+		purple_xfer_set_completed(xfer, TRUE);
+		purple_xfer_end(xfer);
+	} else {
+		ggp_edisc_xfer_error(xfer, _("Error while sending a file"));
+	}
+}
+
+static void
+ggp_edisc_xfer_send_start_msg_cb(SoupMessage *msg, gpointer data) {
+	PurpleXfer *xfer = data;
+	GInputStream *stream = NULL;
+	/* TODO: Actually fill in stream with something. */
+	soup_message_set_request_body(msg, NULL, stream,
+	                              purple_xfer_get_size(xfer));
+}
+
+#else /* SOUP_MAJOR_VERSION >= 3 */
 
 static void
 ggp_edisc_xfer_send_reader(SoupMessage *msg, gpointer _xfer)
@@ -638,6 +752,8 @@ ggp_edisc_xfer_send_done(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
 	}
 }
 
+#endif /* SOUP_MAJOR_VERSION >= 3 */
+
 static void ggp_edisc_xfer_send_start(PurpleXfer *xfer)
 {
 	ggp_edisc_session_data *sdata;
@@ -668,18 +784,28 @@ static void ggp_edisc_xfer_send_start(PurpleXfer *xfer)
 	soup_message_headers_replace(headers, "X-gged-metadata",
 	                             "{\"node_type\": \"file\"}");
 
-	soup_message_set_flags(msg, SOUP_MESSAGE_CAN_REBUILD);
-	soup_message_body_set_accumulate(msg->request_body, FALSE);
 	soup_message_headers_set_content_length(headers,
 	                                        purple_xfer_get_size(xfer));
+	edisc_xfer->msg = msg;
+
+#if SOUP_MAJOR_VERSION >= 3
+	g_signal_connect(msg, "starting",
+	                 G_CALLBACK(ggp_edisc_xfer_send_start_msg_cb), xfer);
+	g_signal_connect(msg, "restarted",
+	                 G_CALLBACK(ggp_edisc_xfer_send_start_msg_cb), xfer);
+	soup_session_send_and_read_async(sdata->session, msg, G_PRIORITY_DEFAULT,
+	                                 edisc_xfer->cancellable,
+	                                 ggp_edisc_xfer_send_done, xfer);
+#else
+	soup_message_set_flags(msg, SOUP_MESSAGE_CAN_REBUILD);
+	soup_message_body_set_accumulate(msg->request_body, FALSE);
 	g_signal_connect(msg, "wrote-headers",
 	                 G_CALLBACK(ggp_edisc_xfer_send_reader), xfer);
 	g_signal_connect(msg, "wrote-chunk", G_CALLBACK(ggp_edisc_xfer_send_reader),
 	                 xfer);
-
 	soup_session_queue_message(sdata->session, msg, ggp_edisc_xfer_send_done,
 	                           xfer);
-	edisc_xfer->msg = msg;
+#endif
 }
 
 PurpleXfer * ggp_edisc_xfer_send_new(PurpleProtocolXfer *prplxfer, PurpleConnection *gc, const char *who)
@@ -742,26 +868,45 @@ ggp_edisc_xfer_recv_new(PurpleConnection *gc, const char *who)
 }
 
 static void
-ggp_edisc_xfer_recv_ack_done(G_GNUC_UNUSED SoupSession *session,
-                             SoupMessage *msg, gpointer _xfer)
+ggp_edisc_xfer_recv_ack_done(GObject *source, GAsyncResult *result,
+                             gpointer data)
 {
-	PurpleXfer *xfer = _xfer;
-	GGPXfer *edisc_xfer;
+	PurpleXfer *xfer = data;
+	GGPXfer *edisc_xfer = NULL;
+	GBytes *response_body = NULL;
+	const gchar *buffer = NULL;
+	gsize size = 0;
+	GError *error = NULL;
 
 	if (purple_xfer_is_cancelled(xfer)) {
 		g_return_if_reached();
 	}
 
 	edisc_xfer = GGP_XFER(xfer);
-	edisc_xfer->msg = NULL;
 
-	if (!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(msg))) {
+	if(!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(edisc_xfer->msg))) {
+		g_clear_object(&edisc_xfer->msg);
 		ggp_edisc_xfer_error(xfer, _("Cannot confirm file transfer."));
 		return;
 	}
 
-	purple_debug_info("gg", "ggp_edisc_xfer_recv_ack_done: [%s]\n",
-	                  msg->response_body->data);
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  result, &error);
+	if(response_body == NULL) {
+		purple_debug_error("gg", "ggp_edisc_xfer_recv_ack_done: failed: %s",
+		                   error->message);
+		g_error_free(error);
+		g_clear_object(&edisc_xfer->msg);
+		ggp_edisc_xfer_error(xfer, _("Cannot confirm file transfer."));
+		return;
+	}
+
+	buffer = g_bytes_get_data(response_body, &size);
+	purple_debug_info("gg", "ggp_edisc_xfer_recv_ack_done: [%.*s]", (int)size,
+	                  buffer);
+
+	g_bytes_unref(response_body);
+	g_clear_object(&edisc_xfer->msg);
 }
 
 static void ggp_edisc_xfer_recv_ack(PurpleXfer *xfer, gboolean accept)
@@ -785,13 +930,18 @@ static void ggp_edisc_xfer_recv_ack(PurpleXfer *xfer, gboolean accept)
 	soup_message_headers_replace(headers, "X-gged-ack-status",
 	                             accept ? "allow" : "reject");
 
-	soup_session_queue_message(sdata->session, msg,
-	                           accept ? ggp_edisc_xfer_recv_ack_done : NULL,
-	                           xfer);
-	edisc_xfer->msg = msg;
-
-	if (!accept) {
+	if(accept) {
+		edisc_xfer->msg = msg;
+		soup_session_send_and_read_async(sdata->session, msg,
+		                                 G_PRIORITY_DEFAULT,
+		                                 edisc_xfer->cancellable,
+		                                 ggp_edisc_xfer_recv_ack_done, xfer);
+	} else {
 		edisc_xfer->msg = NULL;
+		soup_session_send_and_read_async(sdata->session, msg,
+		                                 G_PRIORITY_DEFAULT,
+		                                 edisc_xfer->cancellable, NULL, NULL);
+		g_object_unref(msg);
 	}
 }
 
@@ -817,6 +967,113 @@ static void ggp_edisc_xfer_recv_ticket_completed(PurpleXfer *xfer)
 
 	purple_xfer_start(xfer, -1, NULL, 0);
 }
+
+#if SOUP_MAJOR_VERSION >= 3
+
+static gboolean
+ggp_edisc_xfer_recv_pollable_source_cb(GObject *pollable_stream, gpointer data)
+{
+	PurpleXfer *xfer = data;
+	GGPXfer *edisc_xfer = GGP_XFER(xfer);
+	guchar buf[4096];
+	gssize len;
+	gboolean stored;
+	GError *error = NULL;
+
+	do {
+		len = g_pollable_input_stream_read_nonblocking(
+		        G_POLLABLE_INPUT_STREAM(pollable_stream), buf, sizeof(buf),
+		        edisc_xfer->cancellable, &error);
+		if(len == 0) {
+			/* End of file */
+			if(purple_xfer_get_bytes_remaining(xfer) == 0) {
+				purple_xfer_set_completed(xfer, TRUE);
+				purple_xfer_end(xfer);
+			} else {
+				purple_debug_warning("gg", "ggp_edisc_xfer_recv_done: didn't "
+				                     "receive everything");
+				ggp_edisc_xfer_error(xfer, _("Error while receiving a file"));
+			}
+			edisc_xfer->handler = 0;
+			return G_SOURCE_REMOVE;
+
+		} else if(len < 0) {
+			/* Errors occurred */
+			if(error->code == G_IO_ERROR_WOULD_BLOCK) {
+				g_error_free(error);
+				return G_SOURCE_CONTINUE;
+			} else if(error->code == G_IO_ERROR_CANCELLED) {
+				g_error_free(error);
+			} else {
+				purple_debug_warning("gg", "ggp_edisc_xfer_recv_done: lost "
+				                     "connection with server: %s",
+				                     error->message);
+				ggp_edisc_xfer_error(xfer, _("Error while receiving a file"));
+				g_error_free(error);
+			}
+			edisc_xfer->handler = 0;
+			return G_SOURCE_REMOVE;
+		}
+
+		if(len > purple_xfer_get_bytes_remaining(xfer)) {
+			purple_debug_error("gg", "ggp_edisc_xfer_recv_writer: saved too "
+			                   "much (%" G_GSIZE_FORMAT
+			                   " > %" G_GOFFSET_FORMAT ")",
+			                   len, purple_xfer_get_bytes_remaining(xfer));
+			ggp_edisc_xfer_error(xfer, _("Error while receiving a file"));
+			edisc_xfer->handler = 0;
+			return G_SOURCE_REMOVE;
+		}
+
+		stored = purple_xfer_write_file(xfer, buf, len);
+		if(!stored) {
+			purple_debug_error("gg", "ggp_edisc_xfer_recv_writer: failed to save");
+			ggp_edisc_xfer_error(xfer, _("Error while receiving a file"));
+			edisc_xfer->handler = 0;
+			return G_SOURCE_REMOVE;
+		}
+	} while(len > 0);
+
+	return G_SOURCE_CONTINUE;
+}
+
+static void
+ggp_edisc_xfer_recv_done_cb(GObject *source, GAsyncResult *result,
+                            gpointer data)
+{
+	PurpleXfer *xfer = data;
+	GGPXfer *edisc_xfer = GGP_XFER(xfer);
+	GInputStream *input = NULL;
+	GSource *poll = NULL;
+	GError *error = NULL;
+
+	if(!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(edisc_xfer->msg))) {
+		g_clear_object(&edisc_xfer->msg);
+		ggp_edisc_xfer_error(xfer, _("Error while receiving a file"));
+		return;
+	}
+
+	input = soup_session_send_finish(SOUP_SESSION(source), result, &error);
+	if(input == NULL) {
+		purple_debug_warning("gg", "ggp_edisc_xfer_recv_done_cb: error "
+		                     "receiving file: %s", error->message);
+		g_error_free(error);
+		g_clear_object(&edisc_xfer->msg);
+		ggp_edisc_xfer_error(xfer, _("Error while receiving a file"));
+		return;
+	}
+
+	poll = g_pollable_input_stream_create_source(G_POLLABLE_INPUT_STREAM(input),
+	                                             edisc_xfer->cancellable);
+	g_source_set_callback(poll,
+	                      (GSourceFunc)ggp_edisc_xfer_recv_pollable_source_cb,
+	                      xfer, NULL);
+	edisc_xfer->handler = g_source_attach(poll, NULL);
+	g_source_unref(poll);
+	g_clear_object(&edisc_xfer->msg);
+}
+
+#else /* SOUP_MAJOR_VERSION >= 3 */
 
 static void
 ggp_edisc_xfer_recv_writer(SoupMessage *msg, SoupBuffer *chunk, gpointer _xfer)
@@ -873,6 +1130,8 @@ ggp_edisc_xfer_recv_done(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
 	}
 }
 
+#endif /* SOUP_MAJOR_VERSION >= 3 */
+
 static void
 ggp_edisc_xfer_recv_start(PurpleXfer *xfer)
 {
@@ -899,22 +1158,33 @@ ggp_edisc_xfer_recv_start(PurpleXfer *xfer)
 	ggp_edisc_set_defaults(msg);
 	// purple_http_request_set_max_len(msg, purple_xfer_get_size(xfer) + 1);
 
+	edisc_xfer->msg = msg;
+#if SOUP_MAJOR_VERSION >= 3
+	soup_session_send_async(sdata->session, msg, G_PRIORITY_DEFAULT,
+	                        edisc_xfer->cancellable,
+	                        ggp_edisc_xfer_recv_done_cb, xfer);
+#else
 	soup_message_body_set_accumulate(msg->response_body, FALSE);
 	g_signal_connect(msg, "got-chunk", G_CALLBACK(ggp_edisc_xfer_recv_writer),
 	                 xfer);
 
 	soup_session_queue_message(sdata->session, msg, ggp_edisc_xfer_recv_done,
 	                           xfer);
-	edisc_xfer->msg = msg;
+#endif
 }
 
 static void
-ggp_edisc_xfer_recv_ticket_update_got(G_GNUC_UNUSED SoupSession *session,
-                                      SoupMessage *msg, gpointer user_data)
+ggp_edisc_xfer_recv_ticket_update_got(GObject *source,
+                                      GAsyncResult *async_result,
+                                      gpointer data)
 {
-	PurpleConnection *gc = user_data;
+	SoupMessage *msg = data;
+	PurpleConnection *gc = NULL;
+	GBytes *response_body = NULL;
 	PurpleXfer *xfer;
 	GGPXfer *edisc_xfer;
+	const char *buffer = NULL;
+	gsize size = 0;
 	JsonParser *parser;
 	JsonObject *result;
 	int status = -1;
@@ -924,6 +1194,7 @@ ggp_edisc_xfer_recv_ticket_update_got(G_GNUC_UNUSED SoupSession *session,
 	uin_t sender, recipient;
 	int file_size;
 	SoupStatus status_code;
+	GError *error = NULL;
 
 	status_code = soup_message_get_status(msg);
 	if (!SOUP_STATUS_IS_SUCCESSFUL(status_code)) {
@@ -931,13 +1202,36 @@ ggp_edisc_xfer_recv_ticket_update_got(G_GNUC_UNUSED SoupSession *session,
 		                   "ggp_edisc_xfer_recv_ticket_update_got: cannot "
 		                   "fetch update for ticket (code=%d)",
 		                   status_code);
+		g_object_unref(msg);
 		return;
 	}
 
-	sdata = ggp_edisc_get_sdata(gc);
-	g_return_if_fail(sdata != NULL);
+	response_body = soup_session_send_and_read_finish(SOUP_SESSION(source),
+	                                                  async_result, &error);
+	if(response_body == NULL) {
+		purple_debug_error("gg",
+		                   "ggp_edisc_xfer_recv_ticket_update_got: cannot "
+		                   "fetch update for ticket (%s)",
+		                   error->message);
+		g_error_free(error);
+		g_object_unref(msg);
+		return;
+	}
 
-	parser = ggp_json_parse(msg->response_body->data);
+	gc = g_object_get_data(G_OBJECT(msg), "purple-connection");
+	sdata = ggp_edisc_get_sdata(gc);
+	if(sdata == NULL) {
+		g_bytes_unref(response_body);
+		g_object_unref(msg);
+		g_return_if_reached();
+		return;
+	}
+
+	buffer = g_bytes_get_data(response_body, &size);
+	parser = ggp_json_parse(buffer);
+	g_clear_pointer(&response_body, g_bytes_unref);
+	g_clear_object(&msg);
+
 	result = json_node_get_object(json_parser_get_root(parser));
 	result = json_object_get_object_member(result, "result");
 	if (json_object_has_member(result, "status"))
@@ -1041,8 +1335,11 @@ ggp_edisc_xfer_recv_ticket_update_authenticated(PurpleConnection *gc,
 	                             "X-gged-security-token",
 	                             sdata->security_token);
 
-	soup_session_queue_message(sdata->session, msg,
-	                           ggp_edisc_xfer_recv_ticket_update_got, gc);
+	g_object_set_data(G_OBJECT(msg), "purple-connection", gc);
+	soup_session_send_and_read_async(sdata->session, msg, G_PRIORITY_DEFAULT,
+	                                 NULL,
+	                                 ggp_edisc_xfer_recv_ticket_update_got,
+	                                 msg);
 }
 
 static void
@@ -1153,9 +1450,7 @@ ggp_xfer_start(PurpleXfer *xfer) {
 
 static void
 ggp_xfer_init(GGPXfer *xfer) {
-#if SOUP_MAJOR_VERSION >= 3
 	xfer->cancellable = g_cancellable_new();
-#endif
 }
 
 static void
@@ -1166,13 +1461,18 @@ ggp_xfer_finalize(GObject *obj) {
 	sdata = ggp_edisc_get_sdata(edisc_xfer->gc);
 
 	g_free(edisc_xfer->filename);
-#if SOUP_MAJOR_VERSION >= 3
 	g_cancellable_cancel(edisc_xfer->cancellable);
 	g_clear_object(&edisc_xfer->cancellable);
-#else
+#if SOUP_MAJOR_VERSION < 3
 	soup_session_cancel_message(sdata->session, edisc_xfer->msg,
 	                            SOUP_STATUS_CANCELLED);
 #endif
+	g_clear_object(&edisc_xfer->msg);
+
+	if(edisc_xfer->handler) {
+		g_source_remove(edisc_xfer->handler);
+		edisc_xfer->handler = 0;
+	}
 
 	if (edisc_xfer->ticket_id != NULL) {
 		g_hash_table_remove(sdata->xfers_initialized,
