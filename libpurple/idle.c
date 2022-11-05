@@ -21,12 +21,14 @@
  *
  */
 
+#include "idle.h"
+
 #include "connection.h"
 #include "conversations.h"
 #include "debug.h"
 #include "eventloop.h"
-#include "idle.h"
 #include "prefs.h"
+#include "purpleaccountmanager.h"
 #include "savedstatuses.h"
 #include "signals.h"
 
@@ -199,13 +201,16 @@ check_idleness(void)
 	}
 
 	/* Idle reporting stuff */
-	if (report_idle && (time_idle >= idle_poll_seconds))
-	{
-		GList *l;
-		for (l = purple_connections_get_all(); l != NULL; l = l->next)
-		{
-			PurpleConnection *gc = l->data;
-			set_account_idle(purple_connection_get_account(gc), time_idle);
+	if(report_idle && (time_idle >= idle_poll_seconds)) {
+		PurpleAccountManager *manager = NULL;
+		GList *accounts = NULL;
+
+		manager = purple_account_manager_get_default();
+		accounts = purple_account_manager_get_connected(manager);
+		while(accounts != NULL) {
+			set_account_idle(accounts->data, time_idle);
+
+			accounts = g_list_delete_link(accounts, accounts);
 		}
 	}
 	else if (!report_idle || (time_idle < idle_poll_seconds ))

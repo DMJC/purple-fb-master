@@ -257,6 +257,27 @@ purple_account_manager_get_disabled(PurpleAccountManager *manager) {
 	return disabled;
 }
 
+GList *
+purple_account_manager_get_connected(PurpleAccountManager *manager) {
+	GList *connected = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT_MANAGER(manager), NULL);
+
+	for(guint index = 0; index < manager->accounts->len; index++) {
+		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
+		PurpleConnection *connection = NULL;
+
+		connection = purple_account_get_connection(account);
+		if(PURPLE_IS_CONNECTION(connection) &&
+		   PURPLE_CONNECTION_IS_CONNECTED(connection))
+		{
+			connected = g_list_append(connected, account);
+		}
+	}
+
+	return connected;
+}
+
 void
 purple_account_manager_reorder(PurpleAccountManager *manager,
                                PurpleAccount *account,

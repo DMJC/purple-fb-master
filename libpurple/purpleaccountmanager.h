@@ -46,10 +46,8 @@ typedef void (*PurpleAccountManagerForeachFunc)(PurpleAccount *account, gpointer
 
 /**
  * PurpleAccountManager:
- * @get_idle_time: vfunc to get the time that the user interface has been idle.
  *
- * An interface that a user interface can implement to let the core determine
- * idle times.
+ * A manager that keeps track of all [class@Purple.Account]s.
  *
  * Since: 3.0.0
  */
@@ -135,6 +133,19 @@ GList *purple_account_manager_get_enabled(PurpleAccountManager *manager);
  * Since: 3.0.0
  */
 GList *purple_account_manager_get_disabled(PurpleAccountManager *manager);
+
+/**
+ * purple_account_manager_get_connected:
+ * @manager: The instance.
+ *
+ * Gets a list of all accounts that are currently connected.
+ *
+ * Returns: (transfer container) (element-type PurpleAccount): The list of all
+ *          connected accounts.
+ *
+ * Since: 3.0.0
+ */
+GList *purple_account_manager_get_connected(PurpleAccountManager *manager);
 
 /**
  * purple_account_manager_find_by_id:

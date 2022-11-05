@@ -1584,10 +1584,11 @@ void purple_blist_remove_chat(PurpleChat *chat)
 
 void purple_blist_remove_group(PurpleGroup *group)
 {
+	PurpleAccountManager *manager = NULL;
 	PurpleBuddyListClass *klass = NULL;
 	PurpleBuddyListPrivate *priv = NULL;
 	PurpleBlistNode *node;
-	GList *l;
+	GList *accounts = NULL;
 	gchar* key;
 
 	g_return_if_fail(PURPLE_IS_BUDDY_LIST(purplebuddylist));
@@ -1630,13 +1631,12 @@ void purple_blist_remove_group(PurpleGroup *group)
 			PURPLE_BLIST_NODE(group));
 
 	/* Remove the group from all accounts that are online */
-	for (l = purple_connections_get_all(); l != NULL; l = l->next)
-	{
-		PurpleConnection *gc = (PurpleConnection *)l->data;
+	manager = purple_account_manager_get_default();
+	accounts = purple_account_manager_get_connected(manager);
+	while(accounts != NULL) {
+		purple_account_remove_group(accounts->data, group);
 
-		if(purple_connection_get_state(gc) == PURPLE_CONNECTION_STATE_CONNECTED) {
-			purple_account_remove_group(purple_connection_get_account(gc), group);
-		}
+		accounts = g_list_delete_link(accounts, accounts);
 	}
 
 	/* Delete the node */

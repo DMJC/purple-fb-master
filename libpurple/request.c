@@ -26,6 +26,7 @@
 #include "purplemarkup.h"
 #include "request.h"
 #include "debug.h"
+#include "purpleaccountmanager.h"
 #include "purplekeyvaluepair.h"
 
 static PurpleRequestUiOps *request_ui_ops = NULL;
@@ -1743,10 +1744,14 @@ purple_request_field_account_new(const char *id, const char *text,
 
 	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_ACCOUNT);
 
-	if (account == NULL && purple_connections_get_all() != NULL)
-	{
-		account = purple_connection_get_account(
-			(PurpleConnection *)purple_connections_get_all()->data);
+	if(account == NULL) {
+		PurpleAccountManager *manager = purple_account_manager_get_default();
+		GList *accounts = purple_account_manager_get_connected(manager);
+
+		if(accounts != NULL) {
+			account = accounts->data;
+			g_list_free(accounts);
+		}
 	}
 
 	purple_request_field_account_set_default_value(field, account);
@@ -1789,19 +1794,23 @@ purple_request_field_account_set_show_all(PurpleRequestField *field,
 
 	field->u.account.show_all = show_all;
 
-	if (!show_all)
-	{
+	if(!show_all) {
+		PurpleAccountManager *manager = purple_account_manager_get_default();
+		GList *accounts = purple_account_manager_get_connected(manager);
+
 		if (purple_account_is_connected(field->u.account.default_account))
 		{
 			purple_request_field_account_set_default_value(field,
-				(PurpleAccount *)purple_connections_get_all()->data);
+			                                               accounts->data);
 		}
 
 		if (purple_account_is_connected(field->u.account.account))
 		{
 			purple_request_field_account_set_value(field,
-				(PurpleAccount *)purple_connections_get_all()->data);
+			                                       accounts->data);
 		}
+
+		g_list_free(accounts);
 	}
 }
 
