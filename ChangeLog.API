@@ -326,8 +326,9 @@ version 3.0.0 (??/??/????):
 		* _PurpleSoundEventID
 		* _PurpleSslConnection
 		* _XMLNodeType
-		* account-added signal. Use PurpleAccountManager::added
-		  instead.
+		* account-added signal. Use PurpleAccountManager::added instead.
+		* account-created signal. Use PurpleAccountManager::added instead.
+		* account-destroying signal. Use PurpleAccountManager::removed instead.
 		* account-disabled signal. Use
 		  PurpleAccountManager::account-changed::enabled instead.
 		* account-enabled signal. Use

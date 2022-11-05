@@ -870,9 +870,6 @@ purple_account_constructed(GObject *object)
 			"protocol-id", &protocol_id,
 			NULL);
 
-	purple_signal_emit(purple_accounts_get_handle(), "account-created",
-			account);
-
 	manager = purple_protocol_manager_get_default();
 	protocol = purple_protocol_manager_find(manager, protocol_id);
 	if (protocol == NULL) {
@@ -924,8 +921,6 @@ purple_account_finalize(GObject *object)
 	PurpleConversationManager *manager = NULL;
 
 	purple_debug_info("account", "Destroying account %p", account);
-	purple_signal_emit(purple_accounts_get_handle(), "account-destroying",
-	                   account);
 
 	manager = purple_conversation_manager_get_default();
 	l = purple_conversation_manager_get_all(manager);

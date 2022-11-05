@@ -5,8 +5,6 @@ Slug: account-signals
 
 ### Signal List
 
-* [account-created](#account-created)
-* [account-destroying](#account-destroying)
 * [account-status-changed](#account-status-changed)
 * [account-actions-changed](#account-actions-changed)
 * [account-error-changed](#account-error-changed)

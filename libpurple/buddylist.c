@@ -144,9 +144,25 @@ purple_blist_buddies_cache_add_account(PurpleAccount *account)
 }
 
 static void
+purple_buddy_list_account_added_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                                   PurpleAccount *account,
+                                   G_GNUC_UNUSED gpointer data)
+{
+	purple_blist_buddies_cache_add_account(account);
+}
+
+static void
 purple_blist_buddies_cache_remove_account(const PurpleAccount *account)
 {
 	g_hash_table_remove(buddies_cache, account);
+}
+
+static void
+purple_buddy_list_account_removed_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                                     PurpleAccount *account,
+                                     G_GNUC_UNUSED gpointer data)
+{
+	purple_blist_buddies_cache_remove_account(account);
 }
 
 /*********************************************************************
@@ -2202,16 +2218,6 @@ purple_blist_init(void)
 	purple_signal_register(handle, "buddy-caps-changed",
 			purple_marshal_VOID__POINTER_INT_INT, G_TYPE_NONE,
 			3, PURPLE_TYPE_BUDDY, G_TYPE_INT, G_TYPE_INT);
-
-	purple_signal_connect(purple_accounts_get_handle(), "account-created",
-			handle,
-			G_CALLBACK(purple_blist_buddies_cache_add_account),
-			NULL);
-
-	purple_signal_connect(purple_accounts_get_handle(), "account-destroying",
-			handle,
-			G_CALLBACK(purple_blist_buddies_cache_remove_account),
-			NULL);
 }
 
 static void
@@ -2277,13 +2283,23 @@ purple_blist_uninit(void)
 static void
 purple_buddy_list_init(PurpleBuddyList *blist)
 {
-	PurpleBuddyListPrivate *priv =
-			purple_buddy_list_get_instance_private(blist);
+	PurpleBuddyListPrivate *priv = NULL;
+	PurpleAccountManager *manager = NULL;
+
+	priv = purple_buddy_list_get_instance_private(blist);
 
 	priv->buddies = g_hash_table_new_full(
 					 (GHashFunc)_purple_blist_hbuddy_hash,
 					 (GEqualFunc)_purple_blist_hbuddy_equal,
 					 (GDestroyNotify)_purple_blist_hbuddy_free_key, NULL);
+
+	manager = purple_account_manager_get_default();
+	g_signal_connect_object(manager, "added",
+	                        G_CALLBACK(purple_buddy_list_account_added_cb),
+	                        blist, 0);
+	g_signal_connect_object(manager, "removed",
+	                        G_CALLBACK(purple_buddy_list_account_removed_cb),
+	                        blist, 0);
 }
 
 /* GObject finalize function */
