@@ -470,7 +470,7 @@ purple_accounts_delete_set(GObject *obj, GAsyncResult *res, gpointer d) {
 		g_clear_error(&error);
 	}
 
-	g_object_unref(G_OBJECT(account));
+	g_object_unref(account);
 }
 
 void
@@ -557,7 +557,7 @@ purple_accounts_delete(PurpleAccount *account)
 	cred_manager = purple_credential_manager_get_default();
 	purple_credential_manager_clear_password_async(cred_manager, account, NULL,
 	                                               purple_accounts_delete_set,
-	                                               NULL);
+	                                               g_object_ref(account));
 }
 
 static void
