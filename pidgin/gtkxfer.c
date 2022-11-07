@@ -382,7 +382,7 @@ toggle_keep_open_cb(GtkWidget *w, G_GNUC_UNUSED gpointer data)
 {
 	purple_prefs_set_bool(
 	        PIDGIN_PREFS_ROOT "/filetransfer/keep_open",
-	        !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)));
+	        !gtk_check_button_get_active(GTK_CHECK_BUTTON(w)));
 }
 
 static void
@@ -390,7 +390,7 @@ toggle_clear_finished_cb(GtkWidget *w, G_GNUC_UNUSED gpointer data)
 {
 	purple_prefs_set_bool(
 	        PIDGIN_PREFS_ROOT "/filetransfer/clear_finished",
-	        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)));
+	        gtk_check_button_get_active(GTK_CHECK_BUTTON(w)));
 }
 
 static void
@@ -541,14 +541,14 @@ pidgin_xfer_dialog_init(PidginXferDialog *dialog)
 	gtk_widget_init_template(GTK_WIDGET(dialog));
 
 	/* "Close this window when all transfers finish" */
-	gtk_toggle_button_set_active(
-	        GTK_TOGGLE_BUTTON(dialog->keep_open),
+	gtk_check_button_set_active(
+	        GTK_CHECK_BUTTON(dialog->keep_open),
 	        !purple_prefs_get_bool(PIDGIN_PREFS_ROOT
 	                               "/filetransfer/keep_open"));
 
 	/* "Clear finished transfers" */
-	gtk_toggle_button_set_active(
-	        GTK_TOGGLE_BUTTON(dialog->auto_clear),
+	gtk_check_button_set_active(
+	        GTK_CHECK_BUTTON(dialog->auto_clear),
 	        purple_prefs_get_bool(PIDGIN_PREFS_ROOT
 	                              "/filetransfer/clear_finished"));
 }
@@ -690,9 +690,9 @@ pidgin_xfer_dialog_cancel_xfer(PidginXferDialog *dialog,
 		return;
 	}
 
-	if (purple_xfer_get_status(xfer) == PURPLE_XFER_STATUS_CANCEL_LOCAL &&
-	    gtk_toggle_button_get_active(
-	            GTK_TOGGLE_BUTTON(dialog->auto_clear))) {
+	if(purple_xfer_get_status(xfer) == PURPLE_XFER_STATUS_CANCEL_LOCAL &&
+	   gtk_check_button_get_active(GTK_CHECK_BUTTON(dialog->auto_clear)))
+	{
 		pidgin_xfer_dialog_remove_xfer(dialog, xfer);
 		return;
 	}
@@ -766,9 +766,9 @@ pidgin_xfer_dialog_update_xfer(PidginXferDialog *dialog,
 	if (xfer == dialog->selected_xfer)
 		update_detailed_info(xfer_dialog, xfer);
 
-	if (purple_xfer_is_completed(xfer) &&
-	    gtk_toggle_button_get_active(
-	            GTK_TOGGLE_BUTTON(dialog->auto_clear))) {
+	if(purple_xfer_is_completed(xfer) &&
+	   gtk_check_button_get_active(GTK_CHECK_BUTTON(dialog->auto_clear)))
+	{
 		pidgin_xfer_dialog_remove_xfer(dialog, xfer);
 	} else {
 		update_buttons(dialog, xfer);
@@ -778,8 +778,7 @@ pidgin_xfer_dialog_update_xfer(PidginXferDialog *dialog,
 	 * If all transfers are finished, and the pref is set, then
 	 * close the dialog.  Otherwise just exit this function.
 	 */
-	if (!gtk_toggle_button_get_active(
-	            GTK_TOGGLE_BUTTON(dialog->keep_open))) {
+	if(!gtk_check_button_get_active(GTK_CHECK_BUTTON(dialog->keep_open))) {
 		return;
 	}
 
