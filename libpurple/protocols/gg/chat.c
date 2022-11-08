@@ -301,7 +301,7 @@ ggp_chat_info(PurpleProtocolChat *protocol_chat, PurpleConnection *gc) {
 	PurpleProtocolChatEntry *pce;
 
 	pce = g_new0(PurpleProtocolChatEntry, 1);
-	pce->label = _("_Conference identifier:");
+	pce->label = _("_Conference identifier");
 	pce->identifier = "id";
 	pce->required = FALSE;
 	m = g_list_append(m, pce);

@@ -1276,7 +1276,7 @@ fb_chat_info(PurpleProtocolChat *protocol_chat, PurpleConnection *connection)
 	PurpleProtocolChatEntry *pce;
 
 	pce = g_new0(PurpleProtocolChatEntry, 1);
-	pce->label = _("Chat _Name:");
+	pce->label = _("Chat _Name");
 	pce->identifier = "name";
 	pce->required = TRUE;
 	pces = g_list_prepend(pces, pce);

@@ -496,13 +496,13 @@ irc_chat_join_info(PurpleProtocolChat *protocol_chat, PurpleConnection *gc) {
 	PurpleProtocolChatEntry *pce;
 
 	pce = g_new0(PurpleProtocolChatEntry, 1);
-	pce->label = _("_Channel:");
+	pce->label = _("_Channel");
 	pce->identifier = "channel";
 	pce->required = TRUE;
 	m = g_list_append(m, pce);
 
 	pce = g_new0(PurpleProtocolChatEntry, 1);
-	pce->label = _("_Password:");
+	pce->label = _("_Password");
 	pce->identifier = "password";
 	pce->secret = TRUE;
 	m = g_list_append(m, pce);
