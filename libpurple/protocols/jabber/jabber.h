@@ -179,8 +179,6 @@ struct _JabberStream
 	GInputStream *input;
 	PurpleQueuedOutputStream *output;
 
-	gboolean registration;
-
 	char *initial_avatar_hash;
 	char *avatar_hash;
 	GSList *pending_avatar_requests;
@@ -205,10 +203,6 @@ struct _JabberStream
 	GString *sasl_mechs;
 
 	gchar *sasl_password;
-
-	gboolean unregistration;
-	PurpleAccountUnregistrationCb unregistration_cb;
-	void *unregistration_user_data;
 
 	gboolean vcard_fetched;
 
@@ -296,10 +290,6 @@ void jabber_process_packet(JabberStream *js, PurpleXmlNode **packet);
 void jabber_send(JabberStream *js, PurpleXmlNode *data);
 
 void jabber_stream_set_state(JabberStream *js, JabberStreamState state);
-
-void jabber_register_parse(JabberStream *js, const char *from,
-                           JabberIqType type, const char *id, PurpleXmlNode *query);
-void jabber_register_start(JabberStream *js);
 
 char *jabber_get_next_id(JabberStream *js);
 

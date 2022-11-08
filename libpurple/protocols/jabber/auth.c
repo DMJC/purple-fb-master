@@ -173,11 +173,6 @@ jabber_auth_start(JabberStream *js, PurpleXmlNode *packet)
 	JabberSaslState state;
 	char *msg = NULL;
 
-	if(js->registration) {
-		jabber_register_start(js);
-		return;
-	}
-
 	mechs = purple_xmlnode_get_child(packet, "mechanisms");
 	if(!mechs) {
 		purple_connection_error(js->gc,
@@ -387,11 +382,6 @@ void jabber_auth_start_old(JabberStream *js)
 		purple_connection_error(js->gc,
 			PURPLE_CONNECTION_ERROR_ENCRYPTION_ERROR,
 			_("You require encryption, but it is not available on this server."));
-		return;
-	}
-
-	if (js->registration) {
-		jabber_register_start(js);
 		return;
 	}
 

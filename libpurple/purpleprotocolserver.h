@@ -54,10 +54,6 @@ G_BEGIN_DECLS
 
 /**
  * PurpleProtocolServerInterface:
- * @register_user: Register a new user.
- * @unregister_user: Remove the user from the server. The account can either be
- *                   connected or disconnected. After the removal is finished,
- *                   the connection will stay open and has to be closed!
  * @set_info: Sets the user's profile.
  * @get_info: Should arrange for purple_notify_userinfo() to be called with the
  *            requested user's profile.
@@ -93,9 +89,6 @@ struct _PurpleProtocolServerInterface {
 	GTypeInterface parent;
 
 	/*< public >*/
-	void (*register_user)(PurpleProtocolServer *protocol_server, PurpleAccount *account);
-	void (*unregister_user)(PurpleProtocolServer *protocol_server, PurpleAccount *account, PurpleAccountUnregistrationCb cb, gpointer data);
-
 	void (*set_info)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *info);
 	void (*get_info)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who);
 
@@ -127,32 +120,6 @@ struct _PurpleProtocolServerInterface {
 	/*< private >*/
 	gpointer reserved[8];
 };
-
-/**
- * purple_protocol_server_register_user:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @account: The #PurpleAccount to register.
- *
- * Tell @protocol_server to register the new account described by @account.
- *
- * Since: 3.0.0
- */
-void purple_protocol_server_register_user(PurpleProtocolServer *protocol_server, PurpleAccount *account);
-
-/**
- * purple_protocol_server_unregister_user:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @account: The #PurpleAccount instance.
- * @cb: (scope call): A PurpleAccountUnregistrationCb function.
- * @data: User data to pass to @cb.
- *
- * Unregisters @account with @protocol_server. The account can either be
- * connected or disconnected. After the removal is finished, the connection
- * will stay open and has to be closed.
- *
- * Since: 3.0.0
- */
-void purple_protocol_server_unregister_user(PurpleProtocolServer *protocol_server, PurpleAccount *account, PurpleAccountUnregistrationCb cb, gpointer data);
 
 /**
  * purple_protocol_server_set_info:

@@ -36,38 +36,6 @@ purple_protocol_server_default_init(PurpleProtocolServerInterface *iface) {
  * Public API
  *****************************************************************************/
 void
-purple_protocol_server_register_user(PurpleProtocolServer *protocol_server,
-                                     PurpleAccount *account)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->register_user != NULL) {
-		iface->register_user(protocol_server, account);
-	}
-}
-
-void
-purple_protocol_server_unregister_user(PurpleProtocolServer *protocol_server,
-                                       PurpleAccount *account,
-                                       PurpleAccountUnregistrationCb cb,
-                                       gpointer data)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->unregister_user != NULL) {
-		iface->unregister_user(protocol_server, account, cb, data);
-	}
-}
-
-void
 purple_protocol_server_set_info(PurpleProtocolServer *protocol_server,
                                 PurpleConnection *connection,
                                 const gchar *info)

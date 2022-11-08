@@ -545,8 +545,6 @@ void jabber_iq_init(void)
 	jabber_iq_register_handler("query", NS_DISCO_ITEMS, jabber_disco_items_parse);
 	jabber_iq_register_handler("query", NS_LAST_ACTIVITY, jabber_iq_last_parse);
 	jabber_iq_register_handler("query", NS_OOB_IQ_DATA, jabber_oob_parse);
-	jabber_iq_register_handler("query", "jabber:iq:register",
-			jabber_register_parse);
 	jabber_iq_register_handler("query", "jabber:iq:roster",
 			jabber_roster_parse);
 	jabber_iq_register_handler("query", "jabber:iq:version",

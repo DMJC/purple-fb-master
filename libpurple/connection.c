@@ -921,61 +921,6 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 	g_object_class_install_properties(obj_class, PROP_LAST, properties);
 }
 
-void
-_purple_connection_new_unregister(PurpleAccount *account, const char *password,
-                                  PurpleAccountUnregistrationCb cb,
-                                  gpointer user_data)
-{
-	PurpleConnection *gc;
-	PurpleProtocol *protocol;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	protocol = purple_account_get_protocol(account);
-
-	if(protocol == NULL) {
-		gchar *message;
-
-		message = g_strdup_printf(_("Missing protocol for %s"),
-		                          purple_account_get_username(account));
-		purple_notify_error(NULL, _("Unregistration Error"), message,
-		                    NULL, purple_request_cpar_from_account(account));
-		g_free(message);
-		return;
-	}
-
-	if(!purple_account_is_disconnected(account)) {
-		purple_protocol_server_unregister_user(PURPLE_PROTOCOL_SERVER(protocol),
-		                                       account, cb, user_data);
-		return;
-	}
-
-	if(((password == NULL) || (*password == '\0')) &&
-	   !(purple_protocol_get_options(protocol) & OPT_PROTO_NO_PASSWORD) &&
-	   !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
-	{
-		purple_debug_error("connection", "Cannot connect to account %s "
-		                   "without a password.",
-		                   purple_account_get_username(account));
-
-		return;
-	}
-
-	gc = g_object_new(
-		PURPLE_TYPE_CONNECTION,
-		"protocol", protocol,
-		"account", account,
-		"password", password,
-		NULL);
-
-	g_return_if_fail(gc != NULL);
-
-	purple_debug_info("connection", "Unregistering.  gc = %p", gc);
-
-	purple_protocol_server_unregister_user(PURPLE_PROTOCOL_SERVER(protocol),
-	                                       account, cb, user_data);
-}
-
 gboolean
 purple_connection_connect(PurpleConnection *connection, GError **error) {
 	PurpleConnectionClass *klass = NULL;

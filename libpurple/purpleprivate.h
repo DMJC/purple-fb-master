@@ -83,21 +83,6 @@ void
 _purple_buddy_icons_blist_loaded_cb(void);
 
 /**
- * _purple_connection_new_unregister:
- * @account:  The account to unregister
- * @password: The password to use.
- * @cb: Optional callback to be called when unregistration is complete
- * @user_data: user data to pass to the callback
- *
- * Tries to unregister the account on the server. If the account is not
- * connected, also creates a new connection.
- *
- * Note: This function should only be called by purple_account_unregister()
- *       in account.c.
- */
-void _purple_connection_new_unregister(PurpleAccount *account, const char *password,
-                                       PurpleAccountUnregistrationCb cb, void *user_data);
-/**
  * _purple_connection_wants_to_die:
  * @gc:  The connection to check
  *

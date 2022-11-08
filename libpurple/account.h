@@ -34,8 +34,6 @@
 typedef struct _PurpleAccount       PurpleAccount;
 
 typedef gboolean (*PurpleFilterAccountFunc)(PurpleAccount *account);
-typedef void (*PurpleAccountRegistrationCb)(PurpleAccount *account, gboolean succeeded, void *user_data);
-typedef void (*PurpleAccountUnregistrationCb)(PurpleAccount *account, gboolean succeeded, void *user_data);
 
 #include "buddy.h"
 #include "connection.h"
@@ -135,47 +133,6 @@ const gchar *purple_account_get_id(PurpleAccount *account);
  * Connects to an account.
  */
 void purple_account_connect(PurpleAccount *account);
-
-/**
- * purple_account_set_register_callback:
- * @account:	      The account for which this callback should be used
- * @cb: (scope call): The callback
- * @user_data:	      The user data passed to the callback
- *
- * Sets the callback for successful registration.
- */
-void purple_account_set_register_callback(PurpleAccount *account, PurpleAccountRegistrationCb cb, void *user_data);
-
-/**
- * purple_account_register:
- * @account: The account to register.
- *
- * Registers an account.
- */
-void purple_account_register(PurpleAccount *account);
-
-/**
- * purple_account_register_completed:
- * @account: The account being registered.
- * @succeeded: Was the account registration successful?
- *
- * Registration of the account was completed.
- * Calls the registration call-back set with purple_account_set_register_callback().
- *
- * Since: 3.0.0
- */
-void purple_account_register_completed(PurpleAccount *account, gboolean succeeded);
-
-/**
- * purple_account_unregister:
- * @account: The account to unregister.
- * @cb: (scope call): Optional callback to be called when unregistration is
- *                    complete
- * @user_data:        user data to pass to the callback
- *
- * Unregisters an account (deleting it from the server).
- */
-void purple_account_unregister(PurpleAccount *account, PurpleAccountUnregistrationCb cb, void *user_data);
 
 /**
  * purple_account_disconnect:

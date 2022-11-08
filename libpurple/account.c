@@ -91,9 +91,6 @@ struct _PurpleAccount
 
 	PurplePresence *presence;     /* Presence.                            */
 
-	PurpleAccountRegistrationCb registration_cb;
-	void *registration_cb_user_data;
-
 	PurpleConnectionErrorInfo *current_error;	/* Errors */
 	PurpleNotification *error_notification;
 } PurpleAccountPrivate;
@@ -104,13 +101,6 @@ typedef struct
 	GValue value;
 
 } PurpleAccountSetting;
-
-typedef struct
-{
-	PurpleAccount *account;
-	GCallback cb;
-	gpointer data;
-} PurpleCallbackBundle;
 
 /* GObject Property enums */
 enum
@@ -176,101 +166,6 @@ purple_account_real_connect(PurpleAccount *account, const char *password) {
 
 	/* Finally remove our reference to the connection. */
 	g_object_unref(connection);
-}
-
-static void
-purple_account_register_got_password_cb(GObject *obj, GAsyncResult *res,
-                                        gpointer data)
-{
-	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(data);
-	GError *error = NULL;
-	gchar *password = NULL;
-
-	password = purple_credential_manager_read_password_finish(manager, res,
-	                                                          &error);
-	if(error != NULL) {
-		/* If we failed to read a password, just log it, as it could not be
-		 * stored yet, in which case we will just prompt the user later in the
-		 * connection process.
-		 */
-		purple_debug_warning("account", "failed to read password: %s",
-		                     error->message);
-		g_clear_error(&error);
-	}
-
-	purple_account_real_connect(account, password);
-
-	g_free(password);
-}
-
-void
-purple_account_register(PurpleAccount *account)
-{
-	PurpleCredentialManager *manager = NULL;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	purple_debug_info("account", "Registering account %s\n",
-					purple_account_get_username(account));
-
-	manager = purple_credential_manager_get_default();
-	purple_credential_manager_read_password_async(manager, account, NULL,
-	                                              purple_account_register_got_password_cb,
-	                                              account);
-}
-
-static void
-purple_account_unregister_got_password_cb(GObject *obj, GAsyncResult *res,
-                                          gpointer data)
-{
-	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
-	PurpleCallbackBundle *cbb = data;
-	PurpleAccountUnregistrationCb cb;
-	GError *error = NULL;
-	gchar *password = NULL;
-
-	cb = (PurpleAccountUnregistrationCb)cbb->cb;
-
-	password = purple_credential_manager_read_password_finish(manager, res,
-	                                                          &error);
-
-	if(error != NULL) {
-		purple_debug_warning("account", "failed to read password: %s",
-		                     error->message);
-
-		g_error_free(error);
-	}
-
-	_purple_connection_new_unregister(cbb->account, password, cb, cbb->data);
-
-	g_free(password);
-	g_free(cbb);
-}
-
-struct register_completed_closure
-{
-	PurpleAccount *account;
-	gboolean succeeded;
-};
-
-static gboolean
-purple_account_register_completed_cb(gpointer data)
-{
-	PurpleAccount *account = NULL;
-	struct register_completed_closure *closure = data;
-
-	account = closure->account;
-
-	if (account->registration_cb) {
-		(account->registration_cb)(closure->account, closure->succeeded,
-		                           account->registration_cb_user_data);
-	}
-
-	g_object_unref(closure->account);
-	g_free(closure);
-
-	return FALSE;
 }
 
 static void
@@ -1155,52 +1050,6 @@ purple_account_connect(PurpleAccount *account)
 	} else {
 		g_timeout_add_seconds(0, no_password_cb, account);
 	}
-}
-
-void
-purple_account_set_register_callback(PurpleAccount *account, PurpleAccountRegistrationCb cb, void *user_data)
-{
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	account->registration_cb = cb;
-	account->registration_cb_user_data = user_data;
-}
-
-void
-purple_account_register_completed(PurpleAccount *account, gboolean succeeded)
-{
-	struct register_completed_closure *closure;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	closure = g_new0(struct register_completed_closure, 1);
-	closure->account = g_object_ref(account);
-	closure->succeeded = succeeded;
-
-	g_timeout_add(0, purple_account_register_completed_cb, closure);
-}
-
-void
-purple_account_unregister(PurpleAccount *account,
-                          PurpleAccountUnregistrationCb cb, gpointer user_data)
-{
-	PurpleCallbackBundle *cbb;
-	PurpleCredentialManager *manager = NULL;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	purple_debug_info("account", "Unregistering account %s\n",
-					  purple_account_get_username(account));
-
-	cbb = g_new0(PurpleCallbackBundle, 1);
-	cbb->account = account;
-	cbb->cb = G_CALLBACK(cb);
-	cbb->data = user_data;
-
-	manager = purple_credential_manager_get_default();
-	purple_credential_manager_read_password_async(manager, account, NULL,
-	                                              purple_account_unregister_got_password_cb,
-	                                              cbb);
 }
 
 void
