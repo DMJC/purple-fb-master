@@ -33,7 +33,7 @@
 #define TEMPORARY_TICK_PLURAL_STR N_("Pruning connection in %d seconds...")
 #define TEMPORARY_DISCONNECT_STR N_("%s pruned the connection")
 
-static const gchar *contacts[] = {"Alice", "Bob", "Carlos", "Erin", NULL };
+static const gchar *contacts[] = {"Alice", "Bob", "Carlos", "Erin" };
 
 static void
 purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
@@ -41,15 +41,22 @@ purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
                                 G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account = NULL;
-	PurpleAccountManager *manager = NULL;
+	PurpleAccountManager *account_manager = NULL;
+	PurpleAddContactRequest *request = NULL;
+	PurpleNotification *notification = NULL;
+	PurpleNotificationManager *notification_manager = NULL;
 	const gchar *account_id = NULL;
 	static gint counter = 0;
 
 	account_id = g_variant_get_string(parameter, NULL);
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find_by_id(manager, account_id);
+	account_manager = purple_account_manager_get_default();
+	account = purple_account_manager_find_by_id(account_manager, account_id);
 
-	purple_account_request_add(account, contacts[counter], NULL, NULL);
+	request = purple_add_contact_request_new(account, contacts[counter]);
+	notification = purple_notification_new_from_add_contact_request(request);
+
+	notification_manager = purple_notification_manager_get_default();
+	purple_notification_manager_add(notification_manager, notification);
 
 	counter++;
 	if(counter >= G_N_ELEMENTS(contacts)) {
