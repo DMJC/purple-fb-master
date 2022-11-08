@@ -31,28 +31,27 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
     <signal name="response" handler="pidgin_add_buddy_dialog_response_cb" swapped="no"/>
     <child internal-child="content_area">
       <object class="GtkBox">
+        <property name="margin-bottom">24</property>
+        <property name="margin-end">24</property>
+        <property name="margin-start">24</property>
+        <property name="margin-top">24</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">12</property>
+        <property name="spacing">24</property>
         <child>
           <object class="GtkLabel">
-            <property name="label" translatable="1">Add a buddy.</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0</property>
+            <property name="css-classes">title-1</property>
+            <property name="label" translatable="1">Add a buddy</property>
           </object>
         </child>
         <child>
-          <object class="GtkLabel" id="spacer"/>
-        </child>
-        <child>
           <object class="GtkBox">
-            <property name="spacing">5</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="label" translatable="1">A_ccount:</property>
                 <property name="use-underline">1</property>
                 <property name="mnemonic-widget">account</property>
                 <property name="xalign">0</property>
-                <property name="yalign">0</property>
               </object>
             </child>
             <child>
@@ -77,95 +76,42 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           </object>
         </child>
         <child>
-          <object class="GtkBox">
-            <property name="spacing">5</property>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="1">Buddy information</property>
             <child>
-              <object class="GtkLabel" id="label2">
-                <property name="label" translatable="1">Buddy&apos;s _username:</property>
+              <object class="AdwEntryRow" id="username">
+                <property name="title" translatable="1">Buddy&apos;s _username</property>
                 <property name="use-underline">1</property>
-                <property name="mnemonic-widget">username</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkEntry" id="username">
-                <property name="hexpand">1</property>
-                <property name="focusable">1</property>
                 <property name="activates-default">1</property>
                 <signal name="changed" handler="pidgin_add_buddy_dialog_username_changed_cb" object="PidginAddBuddyDialog" swapped="no"/>
-                <accessibility>
-                  <relation name="labelled-by">label2</relation>
-                </accessibility>
               </object>
             </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="spacing">5</property>
             <child>
-              <object class="GtkLabel" id="label3">
-                <property name="label" translatable="1">(Optional) A_lias:</property>
+              <object class="AdwEntryRow" id="alias">
+                <property name="title" translatable="1">(Optional) A_lias</property>
                 <property name="use-underline">1</property>
-                <property name="mnemonic-widget">alias</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
               </object>
             </child>
             <child>
-              <object class="GtkEntry" id="alias">
-                <property name="hexpand">1</property>
-                <property name="focusable">1</property>
-                <accessibility>
-                  <relation name="labelled-by">label3</relation>
-                </accessibility>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="spacing">5</property>
-            <child>
-              <object class="GtkLabel" id="label4">
-                <property name="label" translatable="1">(Optional) _Invite message:</property>
+              <object class="AdwEntryRow" id="message">
+                <property name="title" translatable="1">(Optional) _Invite message</property>
                 <property name="use-underline">1</property>
-                <property name="mnemonic-widget">message</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkEntry" id="message">
-                <property name="hexpand">1</property>
                 <property name="sensitive">0</property>
-                <property name="focusable">1</property>
-                <accessibility>
-                  <relation name="labelled-by">label4</relation>
-                </accessibility>
               </object>
             </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="spacing">5</property>
             <child>
-              <object class="GtkLabel" id="label5">
-                <property name="label" translatable="1">Add buddy to _group:</property>
+              <object class="AdwActionRow">
+                <property name="activatable-widget">group</property>
+                <property name="focusable">0</property>
+                <property name="title" translatable="1">Add buddy to _group</property>
                 <property name="use-underline">1</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkComboBoxText" id="group">
-                <property name="hexpand">1</property>
-                <property name="has-entry">1</property>
-                <accessibility>
-                  <relation name="labelled-by">label5</relation>
-                </accessibility>
+                <child>
+                  <object class="GtkComboBoxText" id="group">
+                    <property name="hexpand">1</property>
+                    <property name="has-entry">1</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -186,21 +132,13 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
     </child>
     <child type="action">
       <object class="GtkButton" id="button2">
-        <property name="label" translatable="1">_Add</property>
-        <property name="sensitive">0</property>
+        <property name="css-classes">suggested-action</property>
         <property name="focusable">1</property>
+        <property name="label" translatable="1">_Add</property>
         <property name="receives-default">1</property>
+        <property name="sensitive">0</property>
         <property name="use-underline">1</property>
       </object>
     </child>
   </template>
-  <object class="GtkSizeGroup">
-    <widgets>
-      <widget name="label1"/>
-      <widget name="label2"/>
-      <widget name="label3"/>
-      <widget name="label4"/>
-      <widget name="label5"/>
-    </widgets>
-  </object>
 </interface>

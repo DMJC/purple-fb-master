@@ -37,14 +37,13 @@ struct _PidginAddChatDialog {
 	const gchar *default_name;
 
 	GtkWidget *account;
-	GtkWidget *dynamic_box;
+	GtkWidget *dynamic_group;
 	GtkWidget *alias;
 	GtkWidget *group;
 	GtkWidget *autojoin;
 	GtkWidget *persistent;
-	GtkSizeGroup *sg;
 
-	GList *inputs;
+	GList *rows;
 };
 
 G_DEFINE_TYPE(PidginAddChatDialog, pidgin_add_chat_dialog, GTK_TYPE_DIALOG)
@@ -58,18 +57,23 @@ static void pidgin_add_chat_dialog_input_changed_cb(GtkEditable *editable, gpoin
 static void
 pidgin_add_chat_dialog_validate_input(gpointer data, gpointer user_data) {
 	gboolean *valid = user_data;
+	gboolean required = FALSE;
 
-	if(!g_object_get_data(data, "integer")) {
-		gboolean required = FALSE;
+	required = GPOINTER_TO_INT(g_object_get_data(data, "required"));
+	if(required) {
+		const gchar *value = gtk_editable_get_text(GTK_EDITABLE(data));
 
-		required = GPOINTER_TO_INT(g_object_get_data(data, "required"));
-		if(required) {
-			const gchar *value = NULL;
+		if(value == NULL || *value == '\0') {
+			*valid = FALSE;
+		} else if(g_object_get_data(data, "integer")) {
+			gint int_value = atoi(value);
+			char *str_value = g_strdup_printf("%d", int_value);
 
-			value = gtk_editable_get_text(GTK_EDITABLE(data));
-			if(value == NULL || *value == '\0') {
+			if(!purple_strequal(value, str_value)) {
 				*valid = FALSE;
 			}
+
+			g_free(str_value);
 		}
 	}
 }
@@ -81,7 +85,7 @@ pidgin_add_chat_dialog_validate(PidginAddChatDialog *dialog) {
 	/* The callback should only set valid to FALSE if a field is invalid and
 	 * not set valid if the field is valid.
 	 */
-	g_list_foreach(dialog->inputs,
+	g_list_foreach(dialog->rows,
 	               pidgin_add_chat_dialog_validate_input,
 	               &valid);
 
@@ -94,16 +98,16 @@ pidgin_add_chat_dialog_update_components(PidginAddChatDialog *dialog) {
 	PurpleAccount *account = NULL;
 	PurpleConnection *connection = NULL;
 	PurpleProtocol *protocol = NULL;
-	GtkWidget *child = NULL;
 	GList *info = NULL;
 	GHashTable *defaults = NULL;
 	gboolean focus_set = FALSE;
 
-	/* Clean up the dynamic box and our list of entires. */
-	while((child = gtk_widget_get_first_child(dialog->dynamic_box)) != NULL) {
-		gtk_box_remove(GTK_BOX(dialog->dynamic_box), child);
+	/* Clean up the dynamic group and our list of rows. */
+	while(dialog->rows != NULL) {
+		adw_preferences_group_remove(ADW_PREFERENCES_GROUP(dialog->dynamic_group),
+		                             dialog->rows->data);
+		dialog->rows = g_list_delete_link(dialog->rows, dialog->rows);
 	}
-	g_clear_pointer(&dialog->inputs, g_list_free);
 
 	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(dialog->account));
 	if(!PURPLE_IS_ACCOUNT(account)) {
@@ -119,57 +123,48 @@ pidgin_add_chat_dialog_update_components(PidginAddChatDialog *dialog) {
 	                                              dialog->default_name);
 
 	while(info != NULL) {
-		GtkWidget *box = NULL, *label = NULL, *input = NULL;
+		GtkWidget *row = NULL;
 		PurpleProtocolChatEntry *pce = info->data;
+		char *value = NULL;
 
 		if(pce->is_int) {
-			GtkAdjustment *adjustment = gtk_adjustment_new(pce->min, pce->min,
-			                                               pce->max, 1, 10, 10);
-			input = gtk_spin_button_new(adjustment, 1, 0);
+			row = adw_entry_row_new();
+			adw_entry_row_set_input_purpose(ADW_ENTRY_ROW(row),
+			                                GTK_INPUT_PURPOSE_NUMBER);
+		} else if(pce->secret) {
+			row = adw_password_entry_row_new();
 		} else {
-			gchar *value = NULL;
-
-			input = gtk_entry_new();
-			g_signal_connect(input, "changed",
-			                 G_CALLBACK(pidgin_add_chat_dialog_input_changed_cb),
-			                 dialog);
-
-			value = g_hash_table_lookup(defaults, pce->identifier);
-			if(value != NULL) {
-				gtk_editable_set_text(GTK_EDITABLE(input), value);
-			}
-
-			if(pce->secret) {
-				gtk_entry_set_visibility(GTK_ENTRY(input), FALSE);
-				gtk_entry_set_input_purpose(GTK_ENTRY(input),
-				                            GTK_INPUT_PURPOSE_PASSWORD);
-			}
+			row = adw_entry_row_new();
 		}
 
-		box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-		gtk_box_append(GTK_BOX(dialog->dynamic_box), box);
+		value = g_hash_table_lookup(defaults, pce->identifier);
+		if(value != NULL) {
+			gtk_editable_set_text(GTK_EDITABLE(row), value);
+		}
 
-		label = gtk_label_new_with_mnemonic(pce->label);
-		gtk_label_set_xalign(GTK_LABEL(label), 0.0f);
-		gtk_label_set_yalign(GTK_LABEL(label), 0.0f);
-		gtk_box_append(GTK_BOX(box), label);
-		gtk_size_group_add_widget(dialog->sg, label);
+		g_signal_connect(row, "changed",
+		                 G_CALLBACK(pidgin_add_chat_dialog_input_changed_cb),
+		                 dialog);
 
-		gtk_widget_set_hexpand(input, TRUE);
-		gtk_box_append(GTK_BOX(box), input);
+		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), pce->label);
+		adw_preferences_row_set_use_underline(ADW_PREFERENCES_ROW(row), TRUE);
+
+		adw_preferences_group_add(ADW_PREFERENCES_GROUP(dialog->dynamic_group),
+		                          row);
+
 		if(!focus_set) {
-			gtk_widget_grab_focus(input);
+			gtk_widget_grab_focus(row);
 			focus_set = TRUE;
 		}
 
-		g_object_set_data(G_OBJECT(input), "identifier",
+		g_object_set_data(G_OBJECT(row), "identifier",
 		                  (gpointer)pce->identifier);
-		g_object_set_data(G_OBJECT(input), "integer",
+		g_object_set_data(G_OBJECT(row), "integer",
 		                  GINT_TO_POINTER(pce->is_int));
-		g_object_set_data(G_OBJECT(input), "required",
+		g_object_set_data(G_OBJECT(row), "required",
 		                  GINT_TO_POINTER(pce->required));
 
-		dialog->inputs = g_list_append(dialog->inputs, input);
+		dialog->rows = g_list_append(dialog->rows, row);
 
 		g_free(pce);
 
@@ -210,7 +205,8 @@ pidgin_add_chat_dialog_add_input_to_components(gpointer data,
 	identifier = g_strdup(g_object_get_data(data, "identifier"));
 
 	if(g_object_get_data(data, "integer")) {
-		gint int_value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data));
+		const char *str_value = gtk_editable_get_text(GTK_EDITABLE(data));
+		gint int_value = atoi(str_value);
 
 		value = g_strdup_printf("%d", int_value);
 	} else {
@@ -263,7 +259,7 @@ pidgin_add_chat_dialog_response_cb(GtkDialog *dialog, gint response_id,
 
 		components = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 		                                   g_free);
-		g_list_foreach(acdialog->inputs,
+		g_list_foreach(acdialog->rows,
 		               pidgin_add_chat_dialog_add_input_to_components,
 		               components);
 
@@ -287,11 +283,11 @@ pidgin_add_chat_dialog_response_cb(GtkDialog *dialog, gint response_id,
 
 			purple_blist_add_chat(chat, group, NULL);
 
-			if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(acdialog->autojoin))) {
+			if(gtk_switch_get_active(GTK_SWITCH(acdialog->autojoin))) {
 				purple_blist_node_set_bool(PURPLE_BLIST_NODE(chat),
 				                           "gtk-autojoin", TRUE);
 			}
-			if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(acdialog->persistent))) {
+			if(gtk_switch_get_active(GTK_SWITCH(acdialog->persistent))) {
 				purple_blist_node_set_bool(PURPLE_BLIST_NODE(chat),
 				                           "gtk-persistent", TRUE);
 			}
@@ -357,7 +353,7 @@ static void
 pidgin_add_chat_dialog_finalize(GObject *obj) {
 	PidginAddChatDialog *dialog = PIDGIN_ADD_CHAT_DIALOG(obj);
 
-	g_list_free(dialog->inputs);
+	g_list_free(dialog->rows);
 
 	G_OBJECT_CLASS(pidgin_add_chat_dialog_parent_class)->finalize(obj);
 }
@@ -394,7 +390,7 @@ pidgin_add_chat_dialog_class_init(PidginAddChatDialogClass *klass) {
 	gtk_widget_class_bind_template_child(widget_class, PidginAddChatDialog,
 	                                     account);
 	gtk_widget_class_bind_template_child(widget_class, PidginAddChatDialog,
-	                                     dynamic_box);
+	                                     dynamic_group);
 	gtk_widget_class_bind_template_child(widget_class, PidginAddChatDialog,
 	                                     alias);
 	gtk_widget_class_bind_template_child(widget_class, PidginAddChatDialog,
@@ -403,8 +399,6 @@ pidgin_add_chat_dialog_class_init(PidginAddChatDialogClass *klass) {
 	                                     autojoin);
 	gtk_widget_class_bind_template_child(widget_class, PidginAddChatDialog,
 	                                     persistent);
-	gtk_widget_class_bind_template_child(widget_class, PidginAddChatDialog,
-	                                     sg);
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_add_chat_dialog_response_cb);
