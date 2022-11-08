@@ -1465,6 +1465,20 @@ pidgin_blist_key_press_cb(G_GNUC_UNUSED GtkEventControllerKey *controller,
 }
 
 static gboolean
+pidgin_blist_popover_closed_idle_cb(gpointer data) {
+	gtk_widget_unparent(GTK_WIDGET(data));
+	return G_SOURCE_REMOVE;
+}
+
+static void
+pidgin_blist_popover_closed_cb(GtkPopover *self, G_GNUC_UNUSED gpointer data) {
+	/* We cannot unparent this immediately on close, as it will be garbage
+	 * collected, and the selected action will not run.
+	 */
+	g_idle_add(G_SOURCE_FUNC(pidgin_blist_popover_closed_idle_cb), self);
+}
+
+static gboolean
 pidgin_blist_show_context_menu(GtkWidget *tv, PurpleBlistNode *node,
                                gdouble x, gdouble y)
 {
@@ -1592,6 +1606,8 @@ pidgin_blist_show_context_menu(GtkWidget *tv, PurpleBlistNode *node,
 		                            &(const GdkRectangle){(gint)x, (gint)y, 1, 1});
 
 		gtk_popover_popup(GTK_POPOVER(popover_menu));
+		g_signal_connect(popover_menu, "closed",
+		                 G_CALLBACK(pidgin_blist_popover_closed_cb), NULL);
 
 		handled = TRUE;
 	}
