@@ -42,7 +42,6 @@
 #include "gtkwin32dep.h"
 #include "gtkblist.h"
 #include "gtkconv.h"
-#include "gtkconn.h"
 
 /*
  *  GLOBALS
@@ -50,9 +49,6 @@
 HINSTANCE exe_hInstance = 0;
 HINSTANCE dll_hInstance = 0;
 HWND messagewin_hwnd;
-
-static gboolean pwm_handles_connections = TRUE;
-
 
 /*
  *  PUBLIC CODE
@@ -74,35 +70,6 @@ HINSTANCE winpidgin_dll_hinstance(void) {
 #define PIDGIN_WM_FOCUS_REQUEST (WM_APP + 13)
 #define PIDGIN_WM_PROTOCOL_HANDLE (WM_APP + 14)
 
-static void*
-winpidgin_netconfig_changed_cb(GNetworkMonitor *monitor, gboolean available, gpointer data)
-{
-	pwm_handles_connections = FALSE;
-
-	return NULL;
-}
-
-static gboolean
-winpidgin_pwm_reconnect(G_GNUC_UNUSED gpointer data)
-{
-	g_signal_handlers_disconnect_by_func(g_network_monitor_get_default,
-	                                     G_CALLBACK(winpidgin_netconfig_changed_cb),
-	                                     NULL);
-	if (pwm_handles_connections == TRUE) {
-		PurpleConnectionUiOps *ui_ops = pidgin_connections_get_ui_ops();
-
-		purple_debug_info("winpidgin", "Resumed from standby, reconnecting accounts.\n");
-
-		if (ui_ops != NULL && ui_ops->network_connected != NULL)
-			ui_ops->network_connected();
-	} else {
-		purple_debug_info("winpidgin", "Resumed from standby, gtkconn will handle reconnecting.\n");
-		pwm_handles_connections = TRUE;
-	}
-
-	return FALSE;
-}
-
 static LRESULT CALLBACK message_window_handler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 	if (msg == PIDGIN_WM_FOCUS_REQUEST) {
@@ -118,30 +85,6 @@ static LRESULT CALLBACK message_window_handler(HWND hwnd, UINT msg, WPARAM wpara
 		purple_debug_info("winpidgin", "Got protocol handler request: %s\n", proto_msg ? proto_msg : "");
 		purple_got_protocol_handler_uri(proto_msg);
 		return TRUE;
-	} else if (msg == WM_POWERBROADCAST) {
-		if (wparam == PBT_APMQUERYSUSPEND) {
-			purple_debug_info("winpidgin", "Windows requesting permission to suspend.\n");
-			return TRUE;
-		} else if (wparam == PBT_APMSUSPEND) {
-			PurpleConnectionUiOps *ui_ops = pidgin_connections_get_ui_ops();
-
-			purple_debug_info("winpidgin", "Entering system standby, disconnecting accounts.\n");
-
-			if (ui_ops != NULL && ui_ops->network_disconnected != NULL)
-				ui_ops->network_disconnected();
-
-			g_signal_connect(g_network_monitor_get_default(),
-			                 "network-changed",
-			                 G_CALLBACK(winpidgin_netconfig_changed_cb),
-			                 NULL);
-
-			return TRUE;
-		} else if (wparam == PBT_APMRESUMESUSPEND) {
-			purple_debug_info("winpidgin", "Resuming from system standby.\n");
-			/* TODO: It seems like it'd be wise to use the NLA message, if possible, instead of this. */
-			g_timeout_add_seconds(1, winpidgin_pwm_reconnect, NULL);
-			return TRUE;
-		}
 	}
 
 	return DefWindowProc(hwnd, msg, wparam, lparam);
