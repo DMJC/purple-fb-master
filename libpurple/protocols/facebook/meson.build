@@ -18,14 +18,17 @@ FACEBOOK_SOURCES = [
 	'util.h'
 ]
 
+FACEBOOK_BUILT_SOURCES = []
+
 if DYNAMIC_FACEBOOK
 	facebook_resources = gnome.compile_resources('facebookresource',
 		'resources/facebook.gresource.xml',
 		source_dir : 'resources',
 		c_name : 'facebook')
-	FACEBOOK_SOURCES += facebook_resources
+	FACEBOOK_BUILT_SOURCES += facebook_resources
 
-	facebook_prpl = shared_library('facebook', FACEBOOK_SOURCES,
+	facebook_prpl = shared_library('facebook',
+	    FACEBOOK_SOURCES + FACEBOOK_BUILT_SOURCES,
 	    c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-Facebook"'],
 	    dependencies : [json, libpurple_dep, libsoup, glib],
 	    install : true, install_dir : PURPLE_PLUGINDIR)
