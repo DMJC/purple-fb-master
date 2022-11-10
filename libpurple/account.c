@@ -749,13 +749,16 @@ purple_account_constructed(GObject *object)
 
 	G_OBJECT_CLASS(purple_account_parent_class)->constructed(object);
 
-	/* If we didn't get an id, just generate a random one. */
+	/* If we didn't get an id, checksum the protocol id and the username. */
 	if(account->id == NULL) {
-		gchar *uuid = g_uuid_string_random();
+		GChecksum *checksum = g_checksum_new(G_CHECKSUM_SHA256);
 
-		purple_account_set_id(account, uuid);
+		g_checksum_update(checksum, (const guchar *)account->protocol_id, -1);
+		g_checksum_update(checksum, (const guchar *)account->username, -1);
 
-		g_free(uuid);
+		purple_account_set_id(account, g_checksum_get_string(checksum));
+
+		g_checksum_free(checksum);
 	}
 
 	g_object_get(object,
