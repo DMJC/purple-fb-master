@@ -119,6 +119,10 @@ purple_tags_add(PurpleTags *tags, const gchar *tag) {
 	g_return_if_fail(PURPLE_IS_TAGS(tags));
 	g_return_if_fail(tag != NULL);
 
+	/* Remove any existing tags with this value. */
+	purple_tags_remove(tags, tag);
+
+	/* Add the new tag. */
 	tags->tags = g_list_append(tags->tags, g_strdup(tag));
 }
 

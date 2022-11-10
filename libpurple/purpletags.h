@@ -95,7 +95,8 @@ const gchar *purple_tags_get(PurpleTags *tags, const gchar *name);
  * @tags: The instance.
  * @tag: The tag data.
  *
- * Adds @tag to @tags.
+ * Adds @tag to @tags. If the tag already exists, the existing tag will be
+ * replaced.
  *
  * Since: 3.0.0
  */

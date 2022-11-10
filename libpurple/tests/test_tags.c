@@ -86,7 +86,7 @@ test_purple_tags_add_duplicate_bare(void) {
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	purple_tags_add(tags, "tag1");
-	g_assert_cmpuint(purple_tags_get_count(tags), ==, 2);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	g_clear_object(&tags);
 }
@@ -122,7 +122,7 @@ test_purple_tags_add_duplicate_with_value(void) {
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	purple_tags_add(tags, "tag1:purple");
-	g_assert_cmpuint(purple_tags_get_count(tags), ==, 2);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	g_clear_object(&tags);
 }
