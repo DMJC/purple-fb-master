@@ -166,10 +166,6 @@ pidgin_plugins_menu_get_item_attributes(GMenuModel *model, gint index,
 	g_hash_table_insert(*attributes, G_MENU_ATTRIBUTE_LABEL,
 	                    g_variant_ref_sink(value));
 
-	value = g_variant_new_string(gplugin_plugin_info_get_id(info));
-	g_hash_table_insert(*attributes, G_MENU_ATTRIBUTE_ACTION_NAMESPACE,
-	                    g_variant_ref_sink(value));
-
 	g_object_unref(info);
 }
 
@@ -194,9 +190,23 @@ pidgin_plugins_menu_get_item_links(GMenuModel *model, gint index,
 	info = gplugin_plugin_get_info(plugin);
 	purple_info = PURPLE_PLUGIN_INFO(info);
 
+	/* We need to use a section for the ACTION_NAMESPACE attribute to work, so
+	 * create a menu, and add a new section item to it with the menu from the
+	 * plugin, then set the ACTION_NAMESPACE attribute. Finally return the menu
+	 * as the submenu.
+	 */
 	actions_model = purple_plugin_info_get_action_menu(purple_info);
 	if(G_IS_MENU_MODEL(actions_model)) {
-		g_hash_table_insert(*links, G_MENU_LINK_SUBMENU, actions_model);
+		GMenu *menu = NULL;
+		GMenuItem *section = NULL;
+
+		menu = g_menu_new();
+		section = g_menu_item_new_section(NULL, actions_model);
+		g_menu_item_set_attribute(section, G_MENU_ATTRIBUTE_ACTION_NAMESPACE,
+		                          "s", gplugin_plugin_info_get_id(info));
+		g_menu_append_item(menu, section);
+
+		g_hash_table_insert(*links, G_MENU_LINK_SUBMENU, menu);
 	}
 
 	g_object_unref(info);
