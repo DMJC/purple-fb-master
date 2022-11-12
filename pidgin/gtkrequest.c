@@ -1398,23 +1398,32 @@ field_custom_account_filter_cb(gpointer item, G_GNUC_UNUSED gpointer data) {
 static GtkWidget *
 create_account_field(PurpleRequestField *field)
 {
-	GtkWidget *widget;
-	PurpleAccount *account;
+	GtkWidget *widget = NULL;
+	PurpleAccount *account = NULL;
+	PurpleFilterAccountFunc account_filter = NULL;
 	GtkFilter *filter = NULL;
 
 	widget = pidgin_account_chooser_new();
 	account  = purple_request_field_account_get_default_value(field);
 
-	filter = GTK_FILTER(gtk_custom_filter_new(
-	        field_custom_account_filter_cb,
-	        purple_request_field_account_get_filter(field),
-	        NULL));
+	account_filter = purple_request_field_account_get_filter(field);
+	if(account_filter != NULL) {
+		GtkCustomFilter *custom_filter = NULL;
+
+		custom_filter = gtk_custom_filter_new(field_custom_account_filter_cb,
+		                                      account_filter, NULL);
+
+		filter = GTK_FILTER(custom_filter);
+	}
 
 	if(!purple_request_field_account_get_show_all(field)) {
 		GtkEveryFilter *every = NULL;
 
 		every = gtk_every_filter_new();
-		gtk_multi_filter_append(GTK_MULTI_FILTER(every), filter);
+
+		if(GTK_IS_FILTER(filter)) {
+			gtk_multi_filter_append(GTK_MULTI_FILTER(every), filter);
+		}
 
 		filter = pidgin_account_filter_connected_new();
 		gtk_multi_filter_append(GTK_MULTI_FILTER(every), filter);
@@ -1424,8 +1433,11 @@ create_account_field(PurpleRequestField *field)
 
 	pidgin_account_chooser_set_selected(PIDGIN_ACCOUNT_CHOOSER(widget),
 	                                    account);
-	pidgin_account_chooser_set_filter(PIDGIN_ACCOUNT_CHOOSER(widget), filter);
-	g_object_unref(filter);
+
+	if(GTK_IS_FILTER(filter)) {
+		pidgin_account_chooser_set_filter(PIDGIN_ACCOUNT_CHOOSER(widget), filter);
+		g_object_unref(filter);
+	}
 
 	g_signal_connect(widget, "notify::account", G_CALLBACK(field_account_cb),
 	                 field);
