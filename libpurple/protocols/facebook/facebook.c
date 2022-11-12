@@ -1629,18 +1629,20 @@ facebook_protocol_roomlist_iface_init(PurpleProtocolRoomlistInterface *iface)
 }
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
-        FacebookProtocol, facebook_protocol, PURPLE_TYPE_PROTOCOL, 0,
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
-                                      facebook_protocol_client_iface_init)
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
-                                      facebook_protocol_server_init)
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
-                                      facebook_protocol_im_iface_init)
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
-                                      facebook_protocol_chat_iface_init)
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ROOMLIST,
-                                      facebook_protocol_roomlist_iface_init));
+	FacebookProtocol,
+	facebook_protocol,
+	PURPLE_TYPE_PROTOCOL,
+	G_TYPE_FLAG_FINAL,
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
+	                              facebook_protocol_client_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
+	                              facebook_protocol_server_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
+	                              facebook_protocol_im_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
+	                              facebook_protocol_chat_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ROOMLIST,
+	                              facebook_protocol_roomlist_iface_init))
 
 static void
 fb_cmds_register(void)

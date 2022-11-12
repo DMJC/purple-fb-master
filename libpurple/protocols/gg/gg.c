@@ -1345,31 +1345,26 @@ ggp_protocol_xfer_iface_init(PurpleProtocolXferInterface *xfer_iface)
 }
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
-        GGPProtocol, ggp_protocol, PURPLE_TYPE_PROTOCOL, 0,
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ACTIONS,
-                                      ggp_protocol_actions_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
-                                      ggp_protocol_client_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
-                                      ggp_protocol_server_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
-                                      ggp_protocol_im_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
-                                      ggp_protocol_chat_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ROOMLIST,
-                                      ggp_protocol_roomlist_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_PRIVACY,
-                                      ggp_protocol_privacy_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_XFER,
-                                      ggp_protocol_xfer_iface_init));
+	GGPProtocol,
+	ggp_protocol,
+	PURPLE_TYPE_PROTOCOL,
+	G_TYPE_FLAG_FINAL,
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ACTIONS,
+	                              ggp_protocol_actions_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
+	                              ggp_protocol_client_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
+	                              ggp_protocol_server_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
+	                              ggp_protocol_im_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
+	                              ggp_protocol_chat_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ROOMLIST,
+	                              ggp_protocol_roomlist_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_PRIVACY,
+	                              ggp_protocol_privacy_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_XFER,
+	                              ggp_protocol_xfer_iface_init))
 
 static PurpleProtocol *
 ggp_protocol_new(void) {

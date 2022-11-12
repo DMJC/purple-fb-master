@@ -90,7 +90,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	PurpleDemoProtocol,
 	purple_demo_protocol,
 	PURPLE_TYPE_PROTOCOL,
-	0,
+	G_TYPE_FLAG_FINAL,
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ACTIONS,
 	                              purple_demo_protocol_actions_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
@@ -98,8 +98,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
 	                              purple_demo_protocol_im_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_MEDIA,
-	                              purple_demo_protocol_media_init)
-)
+	                              purple_demo_protocol_media_init))
 
 static void
 purple_demo_protocol_init(PurpleDemoProtocol *protocol) {

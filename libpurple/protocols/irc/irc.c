@@ -1161,28 +1161,24 @@ irc_protocol_xfer_iface_init(PurpleProtocolXferInterface *xfer_iface)
 }
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
-        IRCProtocol, irc_protocol, PURPLE_TYPE_PROTOCOL, 0,
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ACTIONS,
-                                      irc_protocol_actions_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
-                                      irc_protocol_client_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
-                                      irc_protocol_server_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
-                                      irc_protocol_im_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
-                                      irc_protocol_chat_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ROOMLIST,
-                                      irc_protocol_roomlist_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_XFER,
-                                      irc_protocol_xfer_iface_init));
+	IRCProtocol,
+	irc_protocol,
+	PURPLE_TYPE_PROTOCOL,
+	G_TYPE_FLAG_FINAL,
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ACTIONS,
+	                              irc_protocol_actions_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
+	                              irc_protocol_client_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
+	                              irc_protocol_server_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
+	                              irc_protocol_im_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
+	                              irc_protocol_chat_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ROOMLIST,
+	                              irc_protocol_roomlist_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_XFER,
+	                              irc_protocol_xfer_iface_init))
 
 static PurpleProtocol *
 irc_protocol_new(void) {

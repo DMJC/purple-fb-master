@@ -3606,22 +3606,20 @@ novell_protocol_privacy_iface_init(PurpleProtocolPrivacyInterface *privacy_iface
 }
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
-        NovellProtocol, novell_protocol, PURPLE_TYPE_PROTOCOL, 0,
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
-                                      novell_protocol_client_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
-                                      novell_protocol_server_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
-                                      novell_protocol_im_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
-                                      novell_protocol_chat_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_PRIVACY,
-                                      novell_protocol_privacy_iface_init));
+	NovellProtocol,
+	novell_protocol,
+	PURPLE_TYPE_PROTOCOL,
+	G_TYPE_FLAG_FINAL,
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
+	                              novell_protocol_client_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
+	                              novell_protocol_server_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
+	                              novell_protocol_im_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
+	                              novell_protocol_chat_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_PRIVACY,
+	                              novell_protocol_privacy_iface_init))
 
 static PurpleProtocol *
 novell_protocol_new(void) {

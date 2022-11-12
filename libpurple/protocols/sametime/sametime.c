@@ -5434,28 +5434,24 @@ mw_protocol_xfer_iface_init(PurpleProtocolXferInterface *xfer_iface)
 }
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
-        mwProtocol, mw_protocol, PURPLE_TYPE_PROTOCOL, 0,
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ACTIONS,
-                                      mw_protocol_actions_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
-                                      mw_protocol_client_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
-                                      mw_protocol_server_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
-                                      mw_protocol_im_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
-                                      mw_protocol_chat_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_PRIVACY,
-                                      mw_protocol_privacy_iface_init)
-
-        G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_XFER,
-                                      mw_protocol_xfer_iface_init));
+	mwProtocol,
+	mw_protocol,
+	PURPLE_TYPE_PROTOCOL,
+	G_TYPE_FLAG_FINAL,
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ACTIONS,
+	                              mw_protocol_actions_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CLIENT,
+	                              mw_protocol_client_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
+	                              mw_protocol_server_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
+	                              mw_protocol_im_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
+	                              mw_protocol_chat_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_PRIVACY,
+	                              mw_protocol_privacy_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_XFER,
+	                              mw_protocol_xfer_iface_init))
 
 static PurpleProtocol *
 mw_protocol_new(void) {
