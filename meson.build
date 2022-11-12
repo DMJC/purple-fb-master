@@ -308,13 +308,6 @@ gstreamer = dependency('gstreamer-1.0', version : '>=1.14')
 gstreamer_app = dependency('gstreamer-app-1.0')
 
 #######################################################################
-# Check for Meanwhile headers (for Sametime)
-#######################################################################
-meanwhile = dependency('meanwhile', version : ['>= 1.0.0', '< 2.0.0'], required : get_option('meanwhile'))
-gmime = dependency('gmime-3.0', version : '>= 3.0.0', required : get_option('meanwhile'))
-enable_meanwhile = meanwhile.found() and gmime.found()
-
-#######################################################################
 # Check for Native Avahi headers (for Bonjour)
 #######################################################################
 
@@ -353,8 +346,7 @@ Then rerun this Meson build
 endif
 
 
-DEFAULT_PRPLS = ['bonjour', 'demo', 'facebook', 'gg', 'irc', 'ircv3', 'jabber',
-                 'sametime']
+DEFAULT_PRPLS = ['bonjour', 'demo', 'facebook', 'gg', 'irc', 'ircv3', 'jabber']
 
 dynamic_list = get_option('dynamic-prpls').split(',')
 if dynamic_list == ['all']
@@ -364,8 +356,6 @@ DYNAMIC_PRPLS = []
 foreach prpl : dynamic_list
 	if prpl == ''
 		# The list was empty; do nothing.
-	elif prpl == 'sametime' and not enable_meanwhile
-		# Do nothing.
 	elif prpl == 'bonjour' and not enable_avahi
 		# Do nothing.
 	elif prpl == 'gg' and not libgadu.found()
@@ -382,7 +372,6 @@ DYNAMIC_GG  = DYNAMIC_PRPLS.contains('gg')
 DYNAMIC_IRC = DYNAMIC_PRPLS.contains('irc')
 DYNAMIC_IRCV3 = DYNAMIC_PRPLS.contains('ircv3')
 DYNAMIC_JABBER = DYNAMIC_PRPLS.contains('jabber')
-DYNAMIC_SAMETIME = DYNAMIC_PRPLS.contains('sametime')
 
 conf.set('HAVE_SYS_UTSNAME_H',
     compiler.has_header('sys/utsname.h'))

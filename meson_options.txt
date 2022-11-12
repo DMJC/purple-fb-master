@@ -40,9 +40,6 @@ option('dynamic-prpls', type : 'string', value: 'all',
 option('libgadu', type : 'feature',
        description : 'compile with libgadu (required for GaduGadu support)')
 
-option('meanwhile', type : 'feature',
-       description : 'compile with meanwhile')
-
 ##############################################################################
 # Pidgin Options
 

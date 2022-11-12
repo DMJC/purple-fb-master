@@ -160,9 +160,6 @@ libpurple/protocols/jabber/usernick.c
 libpurple/protocols/jabber/usertune.c
 libpurple/protocols/jabber/xdata.c
 libpurple/protocols/jabber/xmpp.c
-libpurple/protocols/sametime/im_mime.c
-libpurple/protocols/sametime/sametime.c
-libpurple/protocols/sametime/tests/test_sametime_im_mime.c
 libpurple/proxy.c
 libpurple/purpleaccountmanager.c
 libpurple/purpleaccountoption.c

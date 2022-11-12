@@ -259,7 +259,6 @@ static const struct {
 	const char *to;
 } disco_type_mappings[] = {
 	{ "gadu-gadu", "gadu-gadu" }, /* the protocol is gg, but list_icon returns "gadu-gadu" */
-	{ "sametime",  "meanwhile" },
 	{ "xmpp",      "jabber" }, /* jabber (mentioned in case the protocol is renamed so this line will match) */
 	{ NULL,        NULL }
 };
