@@ -160,17 +160,6 @@ libpurple/protocols/jabber/usernick.c
 libpurple/protocols/jabber/usertune.c
 libpurple/protocols/jabber/xdata.c
 libpurple/protocols/jabber/xmpp.c
-libpurple/protocols/novell/nmconference.c
-libpurple/protocols/novell/nmconn.c
-libpurple/protocols/novell/nmcontact.c
-libpurple/protocols/novell/nmevent.c
-libpurple/protocols/novell/nmfield.c
-libpurple/protocols/novell/nmmessage.c
-libpurple/protocols/novell/nmrequest.c
-libpurple/protocols/novell/nmrtf.c
-libpurple/protocols/novell/nmuser.c
-libpurple/protocols/novell/nmuserrecord.c
-libpurple/protocols/novell/novell.c
 libpurple/protocols/sametime/im_mime.c
 libpurple/protocols/sametime/sametime.c
 libpurple/protocols/sametime/tests/test_sametime_im_mime.c
