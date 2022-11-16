@@ -1439,15 +1439,6 @@ purple_account_clear_settings(PurpleAccount *account)
 }
 
 void
-purple_account_remove_setting(PurpleAccount *account, const char *setting)
-{
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-	g_return_if_fail(setting != NULL);
-
-	g_hash_table_remove(account->settings, setting);
-}
-
-void
 purple_account_set_int(PurpleAccount *account, const char *name, int value)
 {
 	PurpleAccountSetting *setting;

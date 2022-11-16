@@ -360,15 +360,6 @@ void purple_account_set_status_attrs(PurpleAccount *account,
 void purple_account_clear_settings(PurpleAccount *account);
 
 /**
- * purple_account_remove_setting:
- * @account: The account.
- * @setting: The setting to remove.
- *
- * Removes an account-specific setting by name.
- */
-void purple_account_remove_setting(PurpleAccount *account, const char *setting);
-
-/**
  * purple_account_set_int:
  * @account: The account.
  * @name:    The name of the setting.
