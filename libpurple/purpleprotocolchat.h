@@ -47,6 +47,31 @@
 G_DECLARE_INTERFACE(PurpleProtocolChat, purple_protocol_chat, PURPLE,
                     PROTOCOL_CHAT, PurpleProtocol)
 
+typedef struct _PurpleProtocolChatEntry PurpleProtocolChatEntry;
+
+/**
+ * PurpleProtocolChatEntry:
+ * @label:      User-friendly name of the entry
+ * @identifier: Used by the protocol to identify the option
+ * @required:   True if it's required
+ * @is_int:     True if the entry expects an integer
+ * @min:        Minimum value in case of integer
+ * @max:        Maximum value in case of integer
+ * @secret:     True if the entry is secret (password)
+ *
+ * Represents an entry containing information that must be supplied by the
+ * user when joining a chat.
+ */
+struct _PurpleProtocolChatEntry {
+	const char *label;
+	const char *identifier;
+	gboolean required;
+	gboolean is_int;
+	int min;
+	int max;
+	gboolean secret;
+};
+
 G_BEGIN_DECLS
 
 /**

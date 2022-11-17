@@ -38,37 +38,6 @@
 #include "server.h"
 #include "util.h"
 
-/**************************************************************************
- * GBoxed code for PurpleProtocolChatEntry
- **************************************************************************/
-
-static PurpleProtocolChatEntry *
-purple_protocol_chat_entry_copy(PurpleProtocolChatEntry *pce)
-{
-	PurpleProtocolChatEntry *pce_copy;
-
-	g_return_val_if_fail(pce != NULL, NULL);
-
-	pce_copy  = g_new(PurpleProtocolChatEntry, 1);
-	*pce_copy = *pce;
-
-	return pce_copy;
-}
-
-GType
-purple_protocol_chat_entry_get_type(void)
-{
-	static GType type = 0;
-
-	if (type == 0) {
-		type = g_boxed_type_register_static("PurpleProtocolChatEntry",
-				(GBoxedCopyFunc)purple_protocol_chat_entry_copy,
-				(GBoxedFreeFunc)g_free);
-	}
-
-	return type;
-}
-
 /**************************************************************************/
 /* Protocol API                                                           */
 /**************************************************************************/

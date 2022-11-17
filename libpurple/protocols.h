@@ -30,53 +30,11 @@
 /* Basic Protocol Information                                             */
 /**************************************************************************/
 
-typedef struct _PurpleProtocolChatEntry PurpleProtocolChatEntry;
-
 #include "media.h"
 #include "purpleprotocol.h"
 #include "status.h"
 
-#define PURPLE_TYPE_PROTOCOL_CHAT_ENTRY  (purple_protocol_chat_entry_get_type())
-
-/**
- * PurpleProtocolChatEntry:
- * @label:      User-friendly name of the entry
- * @identifier: Used by the protocol to identify the option
- * @required:   True if it's required
- * @is_int:     True if the entry expects an integer
- * @min:        Minimum value in case of integer
- * @max:        Maximum value in case of integer
- * @secret:     True if the entry is secret (password)
- *
- * Represents an entry containing information that must be supplied by the
- * user when joining a chat.
- */
-struct _PurpleProtocolChatEntry {
-	const char *label;
-	const char *identifier;
-	gboolean required;
-	gboolean is_int;
-	int min;
-	int max;
-	gboolean secret;
-};
-
 G_BEGIN_DECLS
-
-/**************************************************************************/
-/* Attention Type API                                                     */
-/**************************************************************************/
-
-/**************************************************************************/
-/* Protocol Chat Entry API                                                */
-/**************************************************************************/
-
-/**
- * purple_protocol_chat_entry_get_type:
- *
- * Returns: The #GType for the #PurpleProtocolChatEntry boxed structure.
- */
-GType purple_protocol_chat_entry_get_type(void);
 
 /**************************************************************************/
 /* Protocol API                                                           */
