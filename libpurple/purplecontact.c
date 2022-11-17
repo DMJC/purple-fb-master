@@ -18,6 +18,8 @@
 
 #include "purplecontact.h"
 
+#include "purpleenums.h"
+
 struct _PurpleContact {
 	GObject parent;
 
@@ -35,6 +37,8 @@ struct _PurpleContact {
 	PurpleTags *tags;
 
 	PurplePerson *person;
+
+	PurpleContactPermission permission;
 };
 
 enum {
@@ -48,6 +52,7 @@ enum {
 	PROP_PRESENCE,
 	PROP_TAGS,
 	PROP_PERSON,
+	PROP_PERMISSION,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -119,6 +124,9 @@ purple_contact_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_PERSON:
 			g_value_set_object(value, purple_contact_get_person(contact));
 			break;
+		case PROP_PERMISSION:
+			g_value_set_enum(value, purple_contact_get_permission(contact));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -152,6 +160,9 @@ purple_contact_set_property(GObject *obj, guint param_id, const GValue *value,
 			break;
 		case PROP_PERSON:
 			purple_contact_set_person(contact, g_value_get_object(value));
+			break;
+		case PROP_PERMISSION:
+			purple_contact_set_permission(contact, g_value_get_enum(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -206,11 +217,11 @@ static void
 purple_contact_class_init(PurpleContactClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
-	obj_class->get_property = purple_contact_get_property;
-	obj_class->set_property = purple_contact_set_property;
 	obj_class->constructed = purple_contact_constructed;
 	obj_class->dispose = purple_contact_dispose;
 	obj_class->finalize = purple_contact_finalize;
+	obj_class->get_property = purple_contact_get_property;
+	obj_class->set_property = purple_contact_set_property;
 
 	/**
 	 * PurpleContact:id:
@@ -332,6 +343,20 @@ purple_contact_class_init(PurpleContactClass *klass) {
 		"person", "person",
 		"The person this contact belongs to.",
 		PURPLE_TYPE_PERSON,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleContact:permission:
+	 *
+	 * The permission level for the contact.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_PERMISSION] = g_param_spec_enum(
+		"permission", "permission",
+		"The permission level of the contact",
+		PURPLE_TYPE_CONTACT_PERMISSION,
+		PURPLE_CONTACT_PERMISSION_UNSET,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
@@ -462,4 +487,23 @@ purple_contact_get_person(PurpleContact *contact) {
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
 	return contact->person;
+}
+
+PurpleContactPermission
+purple_contact_get_permission(PurpleContact *contact) {
+	g_return_val_if_fail(PURPLE_IS_CONTACT(contact),
+	                     PURPLE_CONTACT_PERMISSION_UNSET);
+
+	return contact->permission;
+}
+
+void
+purple_contact_set_permission(PurpleContact *contact,
+                              PurpleContactPermission permission)
+{
+	g_return_if_fail(PURPLE_IS_CONTACT(contact));
+
+	contact->permission = permission;
+
+	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_PERMISSION]);
 }

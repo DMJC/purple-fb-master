@@ -37,6 +37,25 @@ G_BEGIN_DECLS
 #define PURPLE_TYPE_CONTACT (purple_contact_get_type())
 G_DECLARE_FINAL_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT, GObject)
 
+/**
+ * PurpleContactPermission:
+ * @PURPLE_CONTACT_PERMISSION_UNSET: The value is unset.
+ * @PURPLE_CONTACT_PERMISSION_ALLOW: The contact is allowed to contact the
+ *                                   user.
+ * @PURPLE_CONTACT_PERMISSION_DENY: The contact is not allowed to contact the
+ *                                  user.
+ *
+ * A representation of whether or not a contact has permission to contact the
+ * user.
+ *
+ * Since: 3.0.0
+ */
+typedef enum {
+	PURPLE_CONTACT_PERMISSION_UNSET = 0,
+	PURPLE_CONTACT_PERMISSION_ALLOW,
+	PURPLE_CONTACT_PERMISSION_DENY,
+} PurpleContactPermission;
+
 #include <libpurple/purpleperson.h>
 
 /**
@@ -242,6 +261,29 @@ void purple_contact_set_person(PurpleContact *contact, PurplePerson *person);
  * Since: 3.0.0
  */
 PurplePerson *purple_contact_get_person(PurpleContact *contact);
+
+/**
+ * purple_contact_get_permission:
+ * @contact: The instance.
+ *
+ * Gets the [enum@Purple.ContactPermission] for @contact.
+ *
+ * Returns: The permission for @contact.
+ *
+ * Since: 3.0.0
+ */
+PurpleContactPermission purple_contact_get_permission(PurpleContact *contact);
+
+/**
+ * purple_contact_set_permission:
+ * @contact: The instance.
+ * @permission: The new permission of the contact.
+ *
+ * Sets the permission of @contact to @permission.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_set_permission(PurpleContact *contact, PurpleContactPermission permission);
 
 G_END_DECLS
 

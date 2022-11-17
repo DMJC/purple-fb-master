@@ -45,6 +45,7 @@ test_purple_contact_properties(void) {
 	PurpleAccount *account = NULL;
 	PurpleAccount *account1 = NULL;
 	PurpleContact *contact = NULL;
+	PurpleContactPermission permission;
 	PurplePerson *person = NULL;
 	PurplePerson *person1 = NULL;
 	PurplePresence *presence1 = NULL;
@@ -73,6 +74,7 @@ test_purple_contact_properties(void) {
 		"alias", "alias",
 		"avatar", avatar,
 		"person", person,
+		"permission", PURPLE_CONTACT_PERMISSION_ALLOW,
 		NULL);
 
 	/* Now use g_object_get to read all of the properties. */
@@ -86,6 +88,7 @@ test_purple_contact_properties(void) {
 		"presence", &presence1,
 		"tags", &tags,
 		"person", &person1,
+		"permission", &permission,
 		NULL);
 
 	/* Compare all the things. */
@@ -98,6 +101,7 @@ test_purple_contact_properties(void) {
 	g_assert_nonnull(presence1);
 	g_assert_nonnull(tags);
 	g_assert_true(person1 == person);
+	g_assert_true(permission == PURPLE_CONTACT_PERMISSION_ALLOW);
 
 	/* Free/unref all the things. */
 	g_clear_pointer(&id, g_free);
