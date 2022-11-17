@@ -21,6 +21,7 @@ tasks:
       - clang
       - debian-bookworm-amd64
       - fedora-36-amd64
+      - fedora-37-amd64
       - scanbuild
       - ubuntu-kinetic-amd64
 
@@ -90,6 +91,13 @@ plans:
 
   fedora-36-amd64:
     environment: [TARGET=fedora-36-amd64]
+    stages:
+      - tasks: [import, build]
+      - tasks: [export]
+        run: always
+
+  fedora-37-amd64:
+    environment: [TARGET=fedora-37-amd64]
     stages:
       - tasks: [import, build]
       - tasks: [export]
