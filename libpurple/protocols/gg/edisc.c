@@ -36,7 +36,6 @@
 #include <glib/gi18n-lib.h>
 
 #include <purple.h>
-#include "libpurple/soupcompat.h"
 
 #define GGP_EDISC_OS "WINNT x86-msvc"
 #define GGP_EDISC_TYPE "desktop"

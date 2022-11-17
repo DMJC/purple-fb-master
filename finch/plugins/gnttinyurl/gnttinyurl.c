@@ -27,8 +27,6 @@
 
 #include <purple.h>
 
-#include "soupcompat.h"
-
 #include <gnt.h>
 
 #include <finch.h>

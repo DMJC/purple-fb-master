@@ -30,7 +30,6 @@
 #include "avatar.h"
 
 #include "libpurple/glibcompat.h"
-#include "libpurple/soupcompat.h"
 
 #include "gg.h"
 #include "utils.h"

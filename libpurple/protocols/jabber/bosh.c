@@ -25,7 +25,6 @@
 #include <purple.h>
 
 #include <libsoup/soup.h>
-#include "libpurple/soupcompat.h"
 
 #include "bosh.h"
 

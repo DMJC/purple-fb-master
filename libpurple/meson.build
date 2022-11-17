@@ -342,7 +342,6 @@ pkgconfig.generate(
     requires : [glib, gdk_pixbuf, 'gplugin'],
     variables : [
       f'plugindir=${libdir}/@purple_filebase@',
-      f'soupapiversion=@soup_api_version@',
     ])
 
 if enable_introspection

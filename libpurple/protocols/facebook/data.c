@@ -24,7 +24,6 @@
 
 #include <purple.h>
 #include "libpurple/glibcompat.h"
-#include "libpurple/soupcompat.h"
 
 #include "api.h"
 #include "data.h"

@@ -25,8 +25,6 @@
 
 #include "http.h"
 
-#include "libpurple/soupcompat.h"
-
 GQuark
 fb_http_error_quark(void)
 {

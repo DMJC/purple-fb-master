@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "libpurple/glibcompat.h"
-#include "libpurple/soupcompat.h"
 
 #include "api.h"
 #include "http.h"

@@ -22,8 +22,6 @@
  */
 #include <purple.h>
 
-#include "libpurple/soupcompat.h"
-
 #include "jabber.h"
 #include "iq.h"
 #include "oob.h"

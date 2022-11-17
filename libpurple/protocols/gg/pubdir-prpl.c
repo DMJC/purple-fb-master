@@ -30,7 +30,6 @@
 #include <glib/gi18n-lib.h>
 
 #include <purple.h>
-#include "libpurple/soupcompat.h"
 
 #include "pubdir-prpl.h"
 #include "gg.h"
