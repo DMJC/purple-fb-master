@@ -28,6 +28,7 @@
 #include "purplechatconversation.h"
 #include "purpleenums.h"
 #include "purpleprivate.h"
+#include "request.h"
 #include "server.h"
 
 typedef struct {

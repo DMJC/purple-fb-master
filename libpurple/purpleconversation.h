@@ -29,11 +29,11 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <purplemessage.h>
-
 #define PURPLE_TYPE_CONVERSATION (purple_conversation_get_type())
 G_DECLARE_DERIVABLE_TYPE(PurpleConversation, purple_conversation, PURPLE,
                          CONVERSATION, GObject)
+
+#include <purplemessage.h>
 
 /**
  * PurpleConversationUpdateType:

@@ -32,9 +32,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "purpleconversation.h"
-#include "request-datasheet.h"
-
 #define PURPLE_TYPE_REQUEST_UI_OPS (purple_request_ui_ops_get_type())
 
 /**
@@ -68,6 +65,8 @@ typedef struct _PurpleRequestCommonParameters PurpleRequestCommonParameters;
 typedef struct _PurpleRequestUiOps PurpleRequestUiOps;
 
 #include "account.h"
+#include "purpleconversation.h"
+#include "request-datasheet.h"
 
 #define PURPLE_DEFAULT_ACTION_NONE	-1
 

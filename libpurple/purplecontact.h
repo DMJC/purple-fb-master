@@ -29,6 +29,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include <libpurple/account.h>
+#include <libpurple/purplepresence.h>
 #include <libpurple/purpletags.h>
 
 G_BEGIN_DECLS
