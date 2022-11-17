@@ -22,6 +22,7 @@
 
 #include "purpleircv3connection.h"
 #include "purpleircv3core.h"
+#include "purpleircv3protocolim.h"
 
 /******************************************************************************
  * PurpleProtocol Implementation
@@ -137,8 +138,13 @@ purple_ircv3_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_DYNAMIC_TYPE(PurpleIRCv3Protocol, purple_ircv3_protocol,
-                      PURPLE_TYPE_PROTOCOL)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(
+	PurpleIRCv3Protocol,
+	purple_ircv3_protocol,
+	PURPLE_TYPE_PROTOCOL,
+	G_TYPE_FLAG_DERIVABLE,
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
+	                              purple_ircv3_protocol_im_init))
 
 static void
 purple_ircv3_protocol_init(PurpleIRCv3Protocol *protocol) {

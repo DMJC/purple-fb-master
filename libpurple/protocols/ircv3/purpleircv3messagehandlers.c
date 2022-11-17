@@ -180,7 +180,7 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED GHashTable *tags,
 		if(target[0] == '#') {
 			conversation = purple_chat_conversation_new(account, target);
 		} else {
-			conversation = purple_im_conversation_new(account, target);
+			conversation = purple_im_conversation_new(account, source);
 		}
 
 		purple_conversation_manager_register(conversation_manager,
