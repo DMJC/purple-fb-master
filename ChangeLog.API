@@ -680,6 +680,10 @@ version 3.0.0 (??/??/????):
 		* purple_serv_set_permit_deny
 		* PurpleSetPublicAliasFailureCallback
 		* PurpleSetPublicAliasSuccessCallback
+		* purple_signal_connect_priority_vargs
+		* purple_signal_connect_vargs
+		* purple_signal_emit_vargs
+		* purple_signal_get_types
 		* purple_smiley_get_type
 		* purple_smiley_new
 		* purple_smiley_new_from_file

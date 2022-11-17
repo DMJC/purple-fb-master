@@ -179,38 +179,6 @@ purple_signals_unregister_by_instance(void *instance)
 	/* g_return_if_fail(found); */
 }
 
-void
-purple_signal_get_types(void *instance, const char *signal,
-					   GType *ret_type,
-					   int *num_values, GType **value_types)
-{
-	PurpleInstanceData *instance_data;
-	PurpleSignalData *signal_data;
-
-	g_return_if_fail(instance    != NULL);
-	g_return_if_fail(signal      != NULL);
-	g_return_if_fail(num_values  != NULL);
-	g_return_if_fail(value_types != NULL);
-
-	/* Get the instance data */
-	instance_data =
-		(PurpleInstanceData *)g_hash_table_lookup(instance_table, instance);
-
-	g_return_if_fail(instance_data != NULL);
-
-	/* Get the signal data */
-	signal_data =
-		(PurpleSignalData *)g_hash_table_lookup(instance_data->signals, signal);
-
-	g_return_if_fail(signal_data != NULL);
-
-	*num_values  = signal_data->num_values;
-	*value_types = signal_data->value_types;
-
-	if (ret_type != NULL)
-		*ret_type = signal_data->ret_type;
-}
-
 static gint handler_priority(void * a, void * b) {
 	PurpleSignalHandlerData *ah = (PurpleSignalHandlerData*)a;
 	PurpleSignalHandlerData *bh = (PurpleSignalHandlerData*)b;
@@ -281,20 +249,6 @@ purple_signal_connect(void *instance, const char *signal, void *handle,
 					GCallback func, void *data)
 {
 	return signal_connect_common(instance, signal, handle, func, data, PURPLE_SIGNAL_PRIORITY_DEFAULT, FALSE);
-}
-
-gulong
-purple_signal_connect_priority_vargs(void *instance, const char *signal, void *handle,
-						  GCallback func, void *data, int priority)
-{
-	return signal_connect_common(instance, signal, handle, func, data, priority, TRUE);
-}
-
-gulong
-purple_signal_connect_vargs(void *instance, const char *signal, void *handle,
-						  GCallback func, void *data)
-{
-	return signal_connect_common(instance, signal, handle, func, data, PURPLE_SIGNAL_PRIORITY_DEFAULT, TRUE);
 }
 
 void
@@ -398,23 +352,11 @@ purple_signals_disconnect_by_handle(void *handle)
 void
 purple_signal_emit(void *instance, const char *signal, ...)
 {
-	va_list args;
-
-	g_return_if_fail(instance != NULL);
-	g_return_if_fail(signal   != NULL);
-
-	va_start(args, signal);
-	purple_signal_emit_vargs(instance, signal, args);
-	va_end(args);
-}
-
-void
-purple_signal_emit_vargs(void *instance, const char *signal, va_list args)
-{
 	PurpleInstanceData *instance_data;
 	PurpleSignalData *signal_data;
 	PurpleSignalHandlerData *handler_data;
 	GList *l, *l_next;
+	va_list args;
 	va_list tmp;
 
 	g_return_if_fail(instance != NULL);
@@ -432,6 +374,8 @@ purple_signal_emit_vargs(void *instance, const char *signal, va_list args)
 		purple_debug_error("signals", "Signal data for %s not found!", signal);
 		return;
 	}
+
+	va_start(args, signal);
 
 	for (l = signal_data->handlers; l != NULL; l = l_next)
 	{
@@ -456,33 +400,19 @@ purple_signal_emit_vargs(void *instance, const char *signal, va_list args)
 
 		va_end(tmp);
 	}
-}
 
-void *
-purple_signal_emit_return_1(void *instance, const char *signal, ...)
-{
-	void *ret_val;
-	va_list args;
-
-	g_return_val_if_fail(instance != NULL, NULL);
-	g_return_val_if_fail(signal   != NULL, NULL);
-
-	va_start(args, signal);
-	ret_val = purple_signal_emit_vargs_return_1(instance, signal, args);
 	va_end(args);
-
-	return ret_val;
 }
 
 void *
-purple_signal_emit_vargs_return_1(void *instance, const char *signal,
-								va_list args)
-{
+purple_signal_emit_return_1(void *instance, const char *signal, ...) {
 	PurpleInstanceData *instance_data;
 	PurpleSignalData *signal_data;
 	PurpleSignalHandlerData *handler_data;
 	GList *l, *l_next;
+	va_list args;
 	va_list tmp;
+	void *ret_val = NULL;
 
 	g_return_val_if_fail(instance != NULL, NULL);
 	g_return_val_if_fail(signal   != NULL, NULL);
@@ -500,10 +430,9 @@ purple_signal_emit_vargs_return_1(void *instance, const char *signal,
 		return 0;
 	}
 
+	va_start(args, signal);
 	for (l = signal_data->handlers; l != NULL; l = l_next)
 	{
-		void *ret_val = NULL;
-
 		l_next = l->next;
 
 		handler_data = (PurpleSignalHandlerData *)l->data;
@@ -521,11 +450,14 @@ purple_signal_emit_vargs_return_1(void *instance, const char *signal,
 		}
 		va_end(tmp);
 
-		if (ret_val != NULL)
-			return ret_val;
+		if(ret_val != NULL) {
+			break;
+		}
 	}
 
-	return NULL;
+	va_end(args);
+
+	return ret_val;
 }
 
 void

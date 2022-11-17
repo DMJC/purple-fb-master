@@ -115,21 +115,6 @@ void purple_signal_unregister(void *instance, const char *signal);
 void purple_signals_unregister_by_instance(void *instance);
 
 /**
- * purple_signal_get_types:
- * @instance:           The instance the signal is registered to.
- * @signal:             The signal.
- * @ret_type: (out):    The return type.
- * @num_values: (out):  The returned number of parameters.
- * @param_types: (out): The returned list of parameter types.
- *
- * Outputs a list of value types used for a signal through the @ret_type,
- * @num_values and @param_types out parameters.
- */
-void purple_signal_get_types(void *instance, const char *signal,
-							GType *ret_type, int *num_values,
-							GType **param_types);
-
-/**
  * purple_signal_connect_priority:
  * @instance: The instance to connect to.
  * @signal:   The name of the signal to connect.
@@ -175,57 +160,6 @@ gulong purple_signal_connect(void *instance, const char *signal,
 	void *handle, GCallback func, void *data);
 
 /**
- * purple_signal_connect_priority_vargs:
- * @instance: The instance to connect to.
- * @signal:   The name of the signal to connect.
- * @handle:   The handle of the receiver.
- * @func: (scope notified):    The callback function.
- * @data:     The data to pass to the callback function.
- * @priority: The priority with which the handler should be called. Signal
- *                 handlers are called in ascending numerical order of
- *                 @priority from #PURPLE_SIGNAL_PRIORITY_LOWEST to
- *                 #PURPLE_SIGNAL_PRIORITY_HIGHEST.
- *
- * Connects a signal handler to a signal for a particular object.
- *
- * The signal handler will take a va_args of arguments, instead of
- * individual arguments.
- *
- * Take care not to register a handler function twice. Purple will
- * not correct any mistakes for you in this area.
- *
- * See purple_signal_disconnect()
- *
- * Returns: The signal handler ID.
- */
-gulong purple_signal_connect_priority_vargs(void *instance, const char *signal,
-	void *handle, GCallback func, void *data, int priority);
-
-/**
- * purple_signal_connect_vargs:
- * @instance: The instance to connect to.
- * @signal:   The name of the signal to connect.
- * @handle:   The handle of the receiver.
- * @func: (scope notified):    The callback function.
- * @data:     The data to pass to the callback function.
- *
- * Connects a signal handler to a signal for a particular object.
- * (Its priority defaults to 0, aka #PURPLE_SIGNAL_PRIORITY_DEFAULT.)
- *
- * The signal handler will take a va_args of arguments, instead of
- * individual arguments.
- *
- * Take care not to register a handler function twice. Purple will
- * not correct any mistakes for you in this area.
- *
- * See purple_signal_disconnect()
- *
- * Returns: The signal handler ID.
- */
-gulong purple_signal_connect_vargs(void *instance, const char *signal,
-	void *handle, GCallback func, void *data);
-
-/**
  * purple_signal_disconnect:
  * @instance: The instance to disconnect from.
  * @signal:   The name of the signal to disconnect.
@@ -260,18 +194,6 @@ void purple_signals_disconnect_by_handle(void *handle);
 void purple_signal_emit(void *instance, const char *signal, ...);
 
 /**
- * purple_signal_emit_vargs:
- * @instance: The instance emitting the signal.
- * @signal:   The signal being emitted.
- * @args:     The arguments list.
- *
- * Emits a signal, using a va_list of arguments.
- *
- * See purple_signal_connect(), purple_signal_disconnect()
- */
-void purple_signal_emit_vargs(void *instance, const char *signal, va_list args);
-
-/**
  * purple_signal_emit_return_1:
  * @instance: The instance emitting the signal.
  * @signal:   The signal being emitted.
@@ -285,22 +207,6 @@ void purple_signal_emit_vargs(void *instance, const char *signal, va_list args);
  * Returns: The first non-NULL return value
  */
 void *purple_signal_emit_return_1(void *instance, const char *signal, ...);
-
-/**
- * purple_signal_emit_vargs_return_1:
- * @instance: The instance emitting the signal.
- * @signal:   The signal being emitted.
- * @args:     The arguments list.
- *
- * Emits a signal and returns the first non-NULL return value.
- *
- * Further signal handlers are NOT called after a handler returns
- * something other than NULL.
- *
- * Returns: The first non-NULL return value
- */
-void *purple_signal_emit_vargs_return_1(void *instance, const char *signal,
-									  va_list args);
 
 /**
  * purple_signals_init:
