@@ -72,21 +72,6 @@ purple_contact_set_account(PurpleContact *contact, PurpleAccount *account) {
 	}
 }
 
-static void
-purple_contact_set_id(PurpleContact *contact, const gchar *id) {
-	g_return_if_fail(PURPLE_IS_CONTACT(contact));
-
-	g_free(contact->id);
-
-	if(id != NULL) {
-		contact->id = g_strdup(id);
-	} else {
-		contact->id = g_uuid_string_random();
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_ID]);
-}
-
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -234,7 +219,7 @@ purple_contact_class_init(PurpleContactClass *klass) {
 		"id", "id",
 		"The id of the contact",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleContact:account:
@@ -387,6 +372,16 @@ purple_contact_get_id(PurpleContact *contact) {
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
 	return contact->id;
+}
+
+void
+purple_contact_set_id(PurpleContact *contact, const gchar *id) {
+	g_return_if_fail(PURPLE_IS_CONTACT(contact));
+
+	g_free(contact->id);
+	contact->id = g_strdup(id);
+
+	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_ID]);
 }
 
 const gchar *

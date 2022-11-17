@@ -39,6 +39,7 @@ typedef gboolean (*PurpleFilterAccountFunc)(PurpleAccount *account);
 #include "connection.h"
 #include "group.h"
 #include "purpleconnectionerrorinfo.h"
+#include "purplecontact.h"
 #include "purpleprotocol.h"
 #include "purpleproxyinfo.h"
 #include "status.h"
@@ -946,6 +947,22 @@ void purple_account_set_require_password(PurpleAccount *account, gboolean requir
  * Since: 3.0.0
  */
 gboolean purple_account_get_require_password(PurpleAccount *account);
+
+/**
+ * purple_account_get_contact:
+ * @account: The instance.
+ *
+ * Gets the [class@Purple.Contact] for @account that represents the user of
+ * @account.
+ *
+ * This can be used by protocol plugins to store additional information about
+ * the account.
+ *
+ * Returns: (transfer none): The contact that represents @account.
+ *
+ * Since: 3.0.0
+ */
+PurpleContact *purple_account_get_contact(PurpleAccount *account);
 
 G_END_DECLS
 

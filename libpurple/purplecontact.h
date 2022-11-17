@@ -28,7 +28,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include <libpurple/account.h>
 #include <libpurple/purplepresence.h>
 #include <libpurple/purpletags.h>
 
@@ -56,6 +55,7 @@ typedef enum {
 	PURPLE_CONTACT_PERMISSION_DENY,
 } PurpleContactPermission;
 
+#include <libpurple/account.h>
 #include <libpurple/purpleperson.h>
 
 /**
@@ -107,6 +107,20 @@ PurpleAccount *purple_contact_get_account(PurpleContact *contact);
  * Since: 3.0.0
  */
 const gchar *purple_contact_get_id(PurpleContact *contact);
+
+/**
+ * purple_contact_set_id:
+ * @contact: The instance.
+ * @id: The new identifier.
+ *
+ * Sets the identifier of @contact to @id. Note, this should be used rarely if
+ * at all. The main intent of this, is for protocols to update the id of
+ * [property@Purple.Account:contact] when an account is connected if it is
+ * missing.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_set_id(PurpleContact *contact, const char *id);
 
 /**
  * purple_contact_get_username:

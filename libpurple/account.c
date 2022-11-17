@@ -93,6 +93,8 @@ struct _PurpleAccount
 
 	PurpleConnectionErrorInfo *current_error;	/* Errors */
 	PurpleNotification *error_notification;
+
+	PurpleContact *contact;
 } PurpleAccountPrivate;
 
 typedef struct
@@ -118,6 +120,7 @@ enum
 	PROP_REMEMBER_PASSWORD,
 	PROP_PROXY_INFO,
 	PROP_ERROR,
+	PROP_CONTACT,
 	PROP_LAST
 };
 
@@ -761,6 +764,21 @@ purple_account_constructed(GObject *object)
 		g_checksum_free(checksum);
 	}
 
+	/* Create the contact for the account and bind our properties to it. */
+	account->contact = purple_contact_new(account, NULL);
+	/* Skip id for now as it's construct only and exposing it is more work than
+	 * it's worth right now.
+	 */
+#if 0
+	g_object_bind_property(account, "id", account->contact, "id",
+	                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+#endif
+	g_object_bind_property(account, "username", account->contact, "username",
+	                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+	g_object_bind_property(account, "private-alias",
+	                       account->contact, "display-name",
+	                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+
 	g_object_get(object,
 			"username",    &username,
 			"protocol-id", &protocol_id,
@@ -805,6 +823,7 @@ purple_account_dispose(GObject *object)
 
 	g_clear_object(&account->gc);
 	g_clear_object(&account->presence);
+	g_clear_object(&account->contact);
 
 	G_OBJECT_CLASS(purple_account_parent_class)->dispose(object);
 }
@@ -857,11 +876,9 @@ purple_account_class_init(PurpleAccountClass *klass)
 {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
+	obj_class->constructed = purple_account_constructed;
 	obj_class->dispose = purple_account_dispose;
 	obj_class->finalize = purple_account_finalize;
-	obj_class->constructed = purple_account_constructed;
-
-	/* Setup properties */
 	obj_class->get_property = purple_account_get_property;
 	obj_class->set_property = purple_account_set_property;
 
@@ -951,6 +968,19 @@ purple_account_class_init(PurpleAccountClass *klass)
 		"The connection error info of the account",
 		PURPLE_TYPE_CONNECTION_ERROR_INFO,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAccount:contact:
+	 *
+	 * The [class@Purple.Contact] that represents this account.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_CONTACT] = g_param_spec_object(
+		"contact", "contact",
+		"The contact for this account",
+		PURPLE_TYPE_CONTACT,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, PROP_LAST, properties);
 }
@@ -2298,4 +2328,11 @@ purple_account_get_require_password(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
 
 	return account->require_password;
+}
+
+PurpleContact *
+purple_account_get_contact(PurpleAccount *account) {
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
+
+	return account->contact;
 }
