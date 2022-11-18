@@ -142,7 +142,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	PurpleIRCv3Protocol,
 	purple_ircv3_protocol,
 	PURPLE_TYPE_PROTOCOL,
-	G_TYPE_FLAG_DERIVABLE,
+	0,
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
 	                              purple_ircv3_protocol_im_init))
 
