@@ -72,8 +72,6 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                 <child>
                   <object class="PidginStatusPrimitiveChooser" id="primitive">
                     <property name="hexpand">1</property>
-                    <property name="id-column">0</property>
-                    <property name="model">primitive_store</property>
                   </object>
                 </child>
               </object>
@@ -160,5 +158,4 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
     </widgets>
   </object>
   <object class="TalkatuHtmlBuffer" id="buffer"/>
-  <object class="PidginStatusPrimitiveStore" id="primitive_store"/>
 </interface>

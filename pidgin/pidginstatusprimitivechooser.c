@@ -22,17 +22,81 @@
 
 #include <pidgin/pidginstatusprimitivechooser.h>
 
+#include <pidgin/pidginiconname.h>
+
 struct _PidginStatusPrimitiveChooser {
-	GtkComboBox parent;
+	AdwBin parent;
+
+	GtkDropDown *chooser;
 };
 
 G_DEFINE_TYPE(PidginStatusPrimitiveChooser, pidgin_status_primitive_chooser,
-              GTK_TYPE_COMBO_BOX)
+              ADW_TYPE_BIN)
+
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static PurpleStatusPrimitive
+pidgin_status_primitive_chooser_primitive_from_string(const char *str) {
+	if(purple_strequal(str, "offline")) {
+		return PURPLE_STATUS_OFFLINE;
+	} else if(purple_strequal(str, "available")) {
+		return PURPLE_STATUS_AVAILABLE;
+	} else if(purple_strequal(str, "unavailable")) {
+		return PURPLE_STATUS_UNAVAILABLE;
+	} else if(purple_strequal(str, "invisible")) {
+		return PURPLE_STATUS_INVISIBLE;
+	} else if(purple_strequal(str, "away")) {
+		return PURPLE_STATUS_AWAY;
+	} else if(purple_strequal(str, "extended-away")) {
+		return PURPLE_STATUS_EXTENDED_AWAY;
+	}
+
+	return PURPLE_STATUS_UNSET;
+}
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static char *
+pidgin_status_primitive_chooser_icon_name_cb(G_GNUC_UNUSED GObject *self,
+                                             GtkStringObject *object,
+                                             G_GNUC_UNUSED gpointer data)
+{
+	PurpleStatusPrimitive primitive = PURPLE_STATUS_UNSET;
+	const char *value = NULL;
+
+	if(!GTK_IS_STRING_OBJECT(object)) {
+		return NULL;
+	}
+
+	value = gtk_string_object_get_string(object);
+	primitive = pidgin_status_primitive_chooser_primitive_from_string(value);
+
+	return g_strdup(pidgin_icon_name_from_status_primitive(primitive, NULL));
+}
+
+static char *
+pidgin_status_primitive_chooser_label_cb(G_GNUC_UNUSED GObject *self,
+                                         GtkStringObject *object,
+                                         G_GNUC_UNUSED gpointer data)
+{
+	PurpleStatusPrimitive primitive = PURPLE_STATUS_UNSET;
+	const char *value = NULL;
+
+	if(!GTK_IS_STRING_OBJECT(object)) {
+		return NULL;
+	}
+
+	value = gtk_string_object_get_string(object);
+	primitive = pidgin_status_primitive_chooser_primitive_from_string(value);
+
+	return g_strdup(purple_primitive_get_name_from_type(primitive));
+}
 
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-
 static void
 pidgin_status_primitive_chooser_init(PidginStatusPrimitiveChooser *chooser) {
 	gtk_widget_init_template(GTK_WIDGET(chooser));
@@ -45,6 +109,15 @@ pidgin_status_primitive_chooser_class_init(PidginStatusPrimitiveChooserClass *kl
 	/* Widget template */
 	gtk_widget_class_set_template_from_resource(
 	        widget_class, "/im/pidgin/Pidgin3/statusprimitivechooser.ui");
+
+	gtk_widget_class_bind_template_child(widget_class,
+	                                     PidginStatusPrimitiveChooser,
+	                                     chooser);
+
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_status_primitive_chooser_icon_name_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_status_primitive_chooser_label_cb);
 }
 
 /******************************************************************************
@@ -57,25 +130,40 @@ pidgin_status_primitive_chooser_new(void) {
 
 PurpleStatusPrimitive
 pidgin_status_primitive_chooser_get_selected(PidginStatusPrimitiveChooser *chooser) {
-    const gchar *active_id = NULL;
+	GtkStringObject *selected = NULL;
+	const char *value = NULL;
 
-    g_return_val_if_fail(PIDGIN_IS_STATUS_PRIMITIVE_CHOOSER(chooser),
-                         PURPLE_STATUS_UNSET);
+	g_return_val_if_fail(PIDGIN_IS_STATUS_PRIMITIVE_CHOOSER(chooser),
+	                     PURPLE_STATUS_UNSET);
 
-    active_id = gtk_combo_box_get_active_id(GTK_COMBO_BOX(chooser));
+	selected = gtk_drop_down_get_selected_item(chooser->chooser);
+	value = gtk_string_object_get_string(selected);
 
-    return purple_primitive_get_type_from_id(active_id);
+	return pidgin_status_primitive_chooser_primitive_from_string(value);
 }
 
 void
 pidgin_status_primitive_chooser_set_selected(PidginStatusPrimitiveChooser *chooser,
                                              PurpleStatusPrimitive primitive)
 {
-    const gchar *active_id = NULL;
+	GListModel *model = NULL;
 
-    g_return_if_fail(PIDGIN_IS_STATUS_PRIMITIVE_CHOOSER(chooser));
+	g_return_if_fail(PIDGIN_IS_STATUS_PRIMITIVE_CHOOSER(chooser));
 
-    active_id = purple_primitive_get_id_from_type(primitive);
+	model = gtk_drop_down_get_model(chooser->chooser);
+	for(guint i = 0; i < g_list_model_get_n_items(model); i++) {
+		PurpleStatusPrimitive candidate = PURPLE_STATUS_UNSET;
+		GtkStringObject *str = NULL;
+		const char *value = NULL;
 
-    gtk_combo_box_set_active_id(GTK_COMBO_BOX(chooser), active_id);
+		str = g_list_model_get_item(model, i);
+		value = gtk_string_object_get_string(str);
+
+		candidate = pidgin_status_primitive_chooser_primitive_from_string(value);
+		g_clear_object(&str);
+
+		if(primitive == candidate) {
+			gtk_drop_down_set_selected(chooser->chooser, i);
+		}
+	}
 }

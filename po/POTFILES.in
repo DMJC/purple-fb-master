@@ -294,7 +294,6 @@ pidgin/pidginstatusbox.c
 pidgin/pidginstatuseditor.c
 pidgin/pidginstatusmanager.c
 pidgin/pidginstatusprimitivechooser.c
-pidgin/pidginstatusprimitivestore.c
 pidgin/pidgintalkatu.c
 pidgin/plugins/disco/gtkdisco.c
 pidgin/plugins/disco/resources/disco.ui

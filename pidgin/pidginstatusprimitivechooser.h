@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include <adwaita.h>
+
 #include <purple.h>
 
 G_BEGIN_DECLS
@@ -45,7 +47,7 @@ G_BEGIN_DECLS
 #define PIDGIN_TYPE_STATUS_PRIMITIVE_CHOOSER (pidgin_status_primitive_chooser_get_type())
 G_DECLARE_FINAL_TYPE(PidginStatusPrimitiveChooser,
                      pidgin_status_primitive_chooser, PIDGIN,
-                     STATUS_PRIMITIVE_CHOOSER, GtkComboBox)
+                     STATUS_PRIMITIVE_CHOOSER, AdwBin)
 
 /**
  * pidgin_status_primitive_chooser_new:
