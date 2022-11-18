@@ -96,31 +96,6 @@ int purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg)
 	return val;
 }
 
-void purple_serv_get_info(PurpleConnection *gc, const char *name)
-{
-	PurpleProtocol *protocol;
-
-	if (gc) {
-		protocol = purple_connection_get_protocol(gc);
-		purple_protocol_server_get_info(PURPLE_PROTOCOL_SERVER(protocol), gc,
-		                                name);
-	}
-}
-
-void purple_serv_set_info(PurpleConnection *gc, const char *info)
-{
-	PurpleProtocol *protocol;
-
-	if (gc) {
-		protocol = purple_connection_get_protocol(gc);
-
-		if (PURPLE_PROTOCOL_IMPLEMENTS(protocol, SERVER, set_info)) {
-			purple_protocol_server_set_info(PURPLE_PROTOCOL_SERVER(protocol),
-			                                gc, info);
-		}
-	}
-}
-
 /*
  * Set buddy's alias on server roster/list
  */

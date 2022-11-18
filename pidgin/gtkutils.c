@@ -139,19 +139,24 @@ aop_option_menu_select_by_data(GtkWidget *optmenu, gpointer data)
 	}
 }
 
-static void
-show_retrieveing_info(PurpleConnection *conn, const char *name)
-{
-	PurpleNotifyUserInfo *info = purple_notify_user_info_new();
-	purple_notify_user_info_add_pair_plaintext(info, _("Information"), _("Retrieving..."));
+void
+pidgin_retrieve_user_info(PurpleConnection *conn, const char *name) {
+	PurpleNotifyUserInfo *info = NULL;
+	PurpleProtocol *protocol = NULL;
+
+	protocol = purple_connection_get_protocol(conn);
+	if(!PURPLE_IS_PROTOCOL_SERVER(protocol)) {
+		return;
+	}
+
+	purple_protocol_server_get_info(PURPLE_PROTOCOL_SERVER(protocol), conn,
+	                                name);
+
+	info = purple_notify_user_info_new();
+	purple_notify_user_info_add_pair_plaintext(info, _("Information"),
+	                                           _("Retrieving..."));
 	purple_notify_userinfo(conn, name, info, NULL, NULL);
 	purple_notify_user_info_destroy(info);
-}
-
-void pidgin_retrieve_user_info(PurpleConnection *conn, const char *name)
-{
-	show_retrieveing_info(conn, name);
-	purple_serv_get_info(conn, name);
 }
 
 void pidgin_retrieve_user_info_in_chat(PurpleConnection *conn, const char *name, int chat)

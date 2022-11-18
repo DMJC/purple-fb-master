@@ -76,24 +76,6 @@ void purple_serv_move_buddy(PurpleBuddy *buddy, PurpleGroup *orig, PurpleGroup *
  */
 int  purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg);
 
-/**
- * purple_serv_get_info:
- * @gc:     The connection over which to send the typing notification.
- * @name:   The name of the buddy we were asking information from.
- *
- * Request user information from the server.
- */
-void purple_serv_get_info(PurpleConnection *gc, const char *name);
-
-/**
- * purple_serv_set_info:
- * @gc:     The connection over which to send the typing notification.
- * @info:   Information text to be sent to the server.
- *
- * Set user account information on the server.
- */
-void purple_serv_set_info(PurpleConnection *gc, const char *info);
-
 /******************************************************************************
  * Chat Interface
  *****************************************************************************/

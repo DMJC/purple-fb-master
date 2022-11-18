@@ -1105,13 +1105,24 @@ create_group_menu(GntMenu *menu, PurpleGroup *group)
 
 gpointer finch_retrieve_user_info(PurpleConnection *conn, const char *name)
 {
-	PurpleNotifyUserInfo *info = purple_notify_user_info_new();
+	PurpleProtocol *protocol = NULL;
+	PurpleNotifyUserInfo *info = NULL;
 	gpointer uihandle;
+
+	protocol = purple_connection_get_protocol(conn);
+
+	if(!PURPLE_IS_PROTOCOL_SERVER(protocol)) {
+		return;
+	}
+
+	purple_protocol_server_get_info(PURPLE_PROTOCOL_SERVER(protocol), conn,
+	                                name);
+
+	info = purple_notify_user_info_new();
 	purple_notify_user_info_add_pair_plaintext(info, _("Information"), _("Retrieving..."));
 	uihandle = purple_notify_userinfo(conn, name, info, NULL, NULL);
 	purple_notify_user_info_destroy(info);
 
-	purple_serv_get_info(conn, name);
 	return uihandle;
 }
 

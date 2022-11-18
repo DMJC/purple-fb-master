@@ -335,11 +335,16 @@ no_password_cb(gpointer data) {
 static void
 set_user_info_cb(PurpleAccount *account, const char *user_info)
 {
-	PurpleConnection *gc;
+	PurpleProtocol *protocol = NULL;
 
 	purple_account_set_user_info(account, user_info);
-	gc = purple_account_get_connection(account);
-	purple_serv_set_info(gc, user_info);
+
+	protocol = purple_account_get_protocol(account);
+	if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, SERVER, set_info)) {
+		PurpleConnection *connection = purple_account_get_connection(account);
+		purple_protocol_server_set_info(PURPLE_PROTOCOL_SERVER(protocol),
+		                                connection, user_info);
+	}
 }
 
 static void

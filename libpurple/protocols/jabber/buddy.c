@@ -559,6 +559,7 @@ jabber_format_info(PurpleConnection *gc, PurpleRequestFields *fields)
 {
 	PurpleXmlNode *vc_node;
 	PurpleRequestField *field;
+	PurpleProtocol *protocol = NULL;
 	const char *text;
 	char *p;
 	const struct vcard_template *vc_tp;
@@ -594,7 +595,11 @@ jabber_format_info(PurpleConnection *gc, PurpleRequestFields *fields)
 	purple_xmlnode_free(vc_node);
 
 	purple_account_set_user_info(purple_connection_get_account(gc), p);
-	purple_serv_set_info(gc, p);
+	protocol = purple_connection_get_protocol(gc);
+	if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, SERVER, set_info)) {
+		purple_protocol_server_set_info(PURPLE_PROTOCOL_SERVER(protocol),
+		                                gc, p);
+	}
 
 	g_free(p);
 }
