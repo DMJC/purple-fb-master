@@ -1112,7 +1112,7 @@ gpointer finch_retrieve_user_info(PurpleConnection *conn, const char *name)
 	protocol = purple_connection_get_protocol(conn);
 
 	if(!PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-		return;
+		return NULL;
 	}
 
 	purple_protocol_server_get_info(PURPLE_PROTOCOL_SERVER(protocol), conn,
