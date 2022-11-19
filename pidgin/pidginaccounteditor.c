@@ -1137,22 +1137,9 @@ pidgin_account_editor_dispose(GObject *obj) {
 
 static void
 pidgin_account_editor_init(PidginAccountEditor *editor) {
-	GtkCssProvider *css_provider = NULL;
-	GtkStyleContext *context = NULL;
 	GtkWidget *widget = GTK_WIDGET(editor);
 
 	gtk_widget_init_template(widget);
-
-	css_provider = gtk_css_provider_new();
-	gtk_css_provider_load_from_resource(css_provider,
-	                                    "/im/pidgin/Pidgin3/Accounts/entry.css");
-
-	context = gtk_widget_get_style_context(GTK_WIDGET(editor));
-	gtk_style_context_add_provider(context,
-	                               GTK_STYLE_PROVIDER(css_provider),
-	                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-	g_clear_object(&css_provider);
 
 	pidgin_account_editor_proxy_type_changed_cb(NULL, NULL, editor);
 }
