@@ -299,6 +299,42 @@ PurpleContactPermission purple_contact_get_permission(PurpleContact *contact);
  */
 void purple_contact_set_permission(PurpleContact *contact, PurpleContactPermission permission);
 
+/**
+ * purple_contact_get_name_for_display:
+ * @contact: The instance.
+ *
+ * Gets the name that should be displayed for @contact.
+ *
+ * If @contact is associated with a [class@Purple.Person], the value of
+ * [property@Purple.Person:alias] will be returned if it is set.
+ *
+ * Otherwise, this will return the first set property from the following list:
+ *
+ *  * [property@Purple.Contact:alias]
+ *  * [property@Purple.Contact:display-name]
+ *  * [property@Purple.Contact:username]
+ *  * [property@Purple.Contact:id]
+ *
+ * Returns: (transfer none): The name to display for @contact.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_contact_get_name_for_display(PurpleContact *contact);
+
+/**
+ * purple_contact_compare:
+ * @a: The first instance.
+ * @b: The second instance.
+ *
+ * Compares contacts @a and @b
+ *
+ * Returns: -1 if @a should be sorted before @b, 0 if they sorted equally, and
+ *          1 if @a should be sorted after @b.
+ *
+ * Since: 3.0.0
+ */
+int purple_contact_compare(PurpleContact *a, PurpleContact *b);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONTACT_H */

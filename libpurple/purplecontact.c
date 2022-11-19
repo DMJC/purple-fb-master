@@ -19,6 +19,7 @@
 #include "purplecontact.h"
 
 #include "purpleenums.h"
+#include "util.h"
 
 struct _PurpleContact {
 	GObject parent;
@@ -501,4 +502,71 @@ purple_contact_set_permission(PurpleContact *contact,
 	contact->permission = permission;
 
 	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_PERMISSION]);
+}
+
+const char *
+purple_contact_get_name_for_display(PurpleContact *contact) {
+	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
+
+	/* If contact is associated with a PurplePerson that has an alias set,
+	 * return the alias of that PurplePerson.
+	 */
+	if(contact->person != NULL) {
+		const char *alias = purple_person_get_alias(contact->person);
+
+		if(alias != NULL && alias[0] != '\0') {
+			return alias;
+		}
+	}
+
+	/* If the purple user set an alias for the contact, return that. */
+	if(contact->alias != NULL && contact->alias[0] != '\0') {
+		return contact->alias;
+	}
+
+	/* If the contact has a display name set, return that. */
+	if(contact->display_name != NULL && contact->display_name[0] != '\0') {
+		return contact->display_name;
+	}
+
+	/* Fallback to the username if that is set. */
+	if(contact->username != NULL && contact->username[0] != '\0') {
+		return contact->username;
+	}
+
+	/* Finally, in a last ditch effort, return the id of the contact. */
+	return contact->id;
+}
+
+int
+purple_contact_compare(PurpleContact *a, PurpleContact *b) {
+	PurplePerson *person_a = NULL;
+	PurplePerson *person_b = NULL;
+	const char *name_a = NULL;
+	const char *name_b = NULL;
+
+	/* Check for NULL values. */
+	if(a != NULL && b == NULL) {
+		return -1;
+	} else if(a == NULL && b != NULL) {
+		return 1;
+	} else if(a == NULL && b == NULL) {
+		return 0;
+	}
+
+	/* Check if the contacts have persons associated with them. */
+	person_a = purple_contact_get_person(a);
+	person_b = purple_contact_get_person(b);
+
+	if(person_a != NULL && person_b == NULL) {
+		return -1;
+	} else if(person_a == NULL && person_b != NULL) {
+		return 1;
+	}
+
+	/* Finally get the names for the displaying and compare those. */
+	name_a = purple_contact_get_name_for_display(a);
+	name_b = purple_contact_get_name_for_display(b);
+
+	return purple_utf8_strcasecmp(name_a, name_b);
 }

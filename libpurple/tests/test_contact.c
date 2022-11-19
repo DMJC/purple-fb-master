@@ -121,6 +121,228 @@ test_purple_contact_properties(void) {
 }
 
 /******************************************************************************
+ * get_name_for_display tests
+ *****************************************************************************/
+static void
+test_purple_contact_get_name_for_display_person_with_alias(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurplePerson *person = NULL;
+	const char *alias = NULL;
+
+	account = purple_account_new("test", "test");
+
+	person = purple_person_new();
+	purple_person_set_alias(person, "this is the alias");
+
+	contact = purple_contact_new(account, NULL);
+	purple_contact_set_person(contact, person);
+
+	alias = purple_contact_get_name_for_display(contact);
+	g_assert_cmpstr(alias, ==, "this is the alias");
+
+	g_clear_object(&account);
+	g_clear_object(&contact);
+	g_clear_object(&person);
+}
+
+static void
+test_purple_contact_get_name_for_display_contact_with_alias(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurplePerson *person = NULL;
+	const char *alias = NULL;
+
+	account = purple_account_new("test", "test");
+	person = purple_person_new();
+
+	contact = purple_contact_new(account, NULL);
+	purple_contact_set_person(contact, person);
+
+	purple_contact_set_alias(contact, "this is the alias");
+
+	alias = purple_contact_get_name_for_display(contact);
+	g_assert_cmpstr(alias, ==, "this is the alias");
+
+	g_clear_object(&account);
+	g_clear_object(&contact);
+	g_clear_object(&person);
+}
+
+static void
+test_purple_contact_get_name_for_display_contact_with_display_name(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurplePerson *person = NULL;
+	const char *alias = NULL;
+
+	account = purple_account_new("test", "test");
+	person = purple_person_new();
+
+	contact = purple_contact_new(account, NULL);
+	purple_contact_set_person(contact, person);
+
+	purple_contact_set_display_name(contact, "this is the display name");
+
+	alias = purple_contact_get_name_for_display(contact);
+	g_assert_cmpstr(alias, ==, "this is the display name");
+
+	g_clear_object(&account);
+	g_clear_object(&contact);
+	g_clear_object(&person);
+}
+
+static void
+test_purple_contact_get_name_for_display_username_fallback(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurplePerson *person = NULL;
+	const char *alias = NULL;
+
+	account = purple_account_new("test", "test");
+	person = purple_person_new();
+
+	contact = purple_contact_new(account, NULL);
+	purple_contact_set_username(contact, "username");
+	purple_contact_set_person(contact, person);
+
+	alias = purple_contact_get_name_for_display(contact);
+	g_assert_cmpstr(alias, ==, "username");
+
+	g_clear_object(&account);
+	g_clear_object(&contact);
+	g_clear_object(&person);
+}
+
+static void
+test_purple_contact_get_name_for_display_id_fallback(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurplePerson *person = NULL;
+	const char *alias = NULL;
+
+	account = purple_account_new("test", "test");
+	person = purple_person_new();
+
+	contact = purple_contact_new(account, "id");
+	purple_contact_set_person(contact, person);
+
+	alias = purple_contact_get_name_for_display(contact);
+	g_assert_cmpstr(alias, ==, "id");
+
+	g_clear_object(&account);
+	g_clear_object(&contact);
+	g_clear_object(&person);
+}
+
+/******************************************************************************
+ * purple_contact_compare tests
+ *****************************************************************************/
+static void
+test_purple_contact_compare_not_null__null(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
+
+	g_assert_cmpint(purple_contact_compare(contact, NULL), ==, -1);
+
+	g_clear_object(&account);
+	g_clear_object(&contact);
+}
+
+static void
+test_purple_contact_compare_null__not_null(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
+
+	g_assert_cmpint(purple_contact_compare(NULL, contact), ==, 1);
+
+	g_clear_object(&account);
+	g_clear_object(&contact);
+}
+
+static void
+test_purple_contact_compare_null__null(void) {
+	g_assert_cmpint(purple_contact_compare(NULL, NULL), ==, 0);
+}
+
+static void
+test_purple_contact_compare_person__no_person(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact_a = NULL;
+	PurpleContact *contact_b = NULL;
+	PurplePerson *person = NULL;
+
+	account = purple_account_new("test", "test");
+
+	contact_a = purple_contact_new(account, NULL);
+	person = purple_person_new();
+	purple_contact_set_person(contact_a, person);
+
+	contact_b = purple_contact_new(account, NULL);
+
+	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), ==, -1);
+
+	g_clear_object(&account);
+	g_clear_object(&contact_a);
+	g_clear_object(&contact_b);
+	g_clear_object(&person);
+}
+
+static void
+test_purple_contact_compare_no_person__person(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact_a = NULL;
+	PurpleContact *contact_b = NULL;
+	PurplePerson *person = NULL;
+
+	account = purple_account_new("test", "test");
+
+	contact_a = purple_contact_new(account, NULL);
+
+	contact_b = purple_contact_new(account, NULL);
+	person = purple_person_new();
+	purple_contact_set_person(contact_b, person);
+
+	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), ==, 1);
+
+	g_clear_object(&account);
+	g_clear_object(&contact_a);
+	g_clear_object(&contact_b);
+	g_clear_object(&person);
+}
+
+static void
+test_purple_contact_compare_name__name(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact_a = NULL;
+	PurpleContact *contact_b = NULL;
+
+	account = purple_account_new("test", "test");
+
+	contact_a = purple_contact_new(account, NULL);
+	purple_contact_set_username(contact_a, "aaa");
+
+	contact_b = purple_contact_new(account, NULL);
+	purple_contact_set_username(contact_b, "zzz");
+
+	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), ==, -1);
+	g_assert_cmpint(purple_contact_compare(contact_b, contact_a), ==, 1);
+
+	purple_contact_set_username(contact_b, "aaa");
+	g_assert_cmpint(purple_contact_compare(contact_b, contact_a), ==, 0);
+
+	g_clear_object(&account);
+	g_clear_object(&contact_a);
+	g_clear_object(&contact_b);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -133,6 +355,30 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_contact_new);
 	g_test_add_func("/contact/properties",
 	                test_purple_contact_properties);
+
+	g_test_add_func("/contact/get_name_for_display/person_with_alias",
+	                test_purple_contact_get_name_for_display_person_with_alias);
+	g_test_add_func("/contact/get_name_for_display/contact_with_alias",
+	                test_purple_contact_get_name_for_display_contact_with_alias);
+	g_test_add_func("/contact/get_name_for_display/contact_with_display_name",
+	                test_purple_contact_get_name_for_display_contact_with_display_name);
+	g_test_add_func("/contact/get_name_for_display/username_fallback",
+	                test_purple_contact_get_name_for_display_username_fallback);
+	g_test_add_func("/contact/get_name_for_display/id_fallback",
+	                test_purple_contact_get_name_for_display_id_fallback);
+
+	g_test_add_func("/contact/compare/not_null__null",
+	                test_purple_contact_compare_not_null__null);
+	g_test_add_func("/contact/compare/null__not_null",
+	                test_purple_contact_compare_null__not_null);
+	g_test_add_func("/contact/compare/null__null",
+	                test_purple_contact_compare_null__null);
+	g_test_add_func("/contact/compare/person__no_person",
+	                test_purple_contact_compare_person__no_person);
+	g_test_add_func("/contact/compare/no_person__person",
+	                test_purple_contact_compare_no_person__person);
+	g_test_add_func("/contact/compare/name__name",
+	                test_purple_contact_compare_name__name);
 
 	return g_test_run();
 }
