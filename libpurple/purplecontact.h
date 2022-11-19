@@ -328,8 +328,8 @@ const char *purple_contact_get_name_for_display(PurpleContact *contact);
  *
  * Compares contacts @a and @b
  *
- * Returns: -1 if @a should be sorted before @b, 0 if they sorted equally, and
- *          1 if @a should be sorted after @b.
+ * Returns: less than 0 if @a should be sorted before @b, 0 if they sorted
+ *          equally, and greater than 0 if @a should be sorted after @b.
  *
  * Since: 3.0.0
  */

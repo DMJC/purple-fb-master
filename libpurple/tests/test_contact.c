@@ -246,7 +246,7 @@ test_purple_contact_compare_not_null__null(void) {
 	account = purple_account_new("test", "test");
 	contact = purple_contact_new(account, NULL);
 
-	g_assert_cmpint(purple_contact_compare(contact, NULL), ==, -1);
+	g_assert_cmpint(purple_contact_compare(contact, NULL), <, 0);
 
 	g_clear_object(&account);
 	g_clear_object(&contact);
@@ -260,7 +260,7 @@ test_purple_contact_compare_null__not_null(void) {
 	account = purple_account_new("test", "test");
 	contact = purple_contact_new(account, NULL);
 
-	g_assert_cmpint(purple_contact_compare(NULL, contact), ==, 1);
+	g_assert_cmpint(purple_contact_compare(NULL, contact), >, 0);
 
 	g_clear_object(&account);
 	g_clear_object(&contact);
@@ -286,7 +286,7 @@ test_purple_contact_compare_person__no_person(void) {
 
 	contact_b = purple_contact_new(account, NULL);
 
-	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), ==, -1);
+	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), <, 0);
 
 	g_clear_object(&account);
 	g_clear_object(&contact_a);
@@ -309,7 +309,7 @@ test_purple_contact_compare_no_person__person(void) {
 	person = purple_person_new();
 	purple_contact_set_person(contact_b, person);
 
-	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), ==, 1);
+	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), >, 0);
 
 	g_clear_object(&account);
 	g_clear_object(&contact_a);
@@ -331,8 +331,8 @@ test_purple_contact_compare_name__name(void) {
 	contact_b = purple_contact_new(account, NULL);
 	purple_contact_set_username(contact_b, "zzz");
 
-	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), ==, -1);
-	g_assert_cmpint(purple_contact_compare(contact_b, contact_a), ==, 1);
+	g_assert_cmpint(purple_contact_compare(contact_a, contact_b), <, 0);
+	g_assert_cmpint(purple_contact_compare(contact_b, contact_a), >, 0);
 
 	purple_contact_set_username(contact_b, "aaa");
 	g_assert_cmpint(purple_contact_compare(contact_b, contact_a), ==, 0);
