@@ -36,6 +36,45 @@ G_DEFINE_TYPE(PurpleIRCv3Parser, purple_ircv3_parser, G_TYPE_OBJECT)
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static char *
+purple_ircv3_parser_unescape_tag_value(const char *value) {
+	GString *unescaped = g_string_new("");
+	gboolean escaping = FALSE;
+
+	/* Walk the string and replace escaped values according to
+	 * https://ircv3.net/specs/extensions/message-tags.html#escaping-values
+	 */
+	for(int i = 0; value[i] != '\0'; i++) {
+		if(escaping) {
+			/* Set the replacement to the current character which will fall
+			 * through for everything, including '\\'
+			 */
+			char replacement = value[i];
+
+			if(value[i] == ':') {
+				replacement = ';';
+			} else if(value[i] == 's') {
+				replacement = ' ';
+			} else if(value[i] == 'r') {
+				replacement = '\r';
+			} else if(value[i] == 'n') {
+				replacement = '\n';
+			}
+
+			g_string_append_c(unescaped, replacement);
+			escaping = FALSE;
+		} else {
+			if(value[i] == '\\') {
+				escaping = TRUE;
+			} else {
+				g_string_append_c(unescaped, value[i]);
+			}
+		}
+	}
+
+	return g_string_free(unescaped, FALSE);
+}
+
 static GHashTable *
 purple_ircv3_parser_parse_tags(PurpleIRCv3Parser *parser,
                                const gchar *tags_string, GError **error)
@@ -76,16 +115,20 @@ purple_ircv3_parser_parse_tags(PurpleIRCv3Parser *parser,
 	}
 
 	while(g_match_info_matches(info)) {
-		gchar *key = NULL;
-		gchar *value = NULL;
+		char *key = NULL;
+		char *value = NULL;
+		char *unescaped = NULL;
 
 		key = g_match_info_fetch_named(info, "key");
 		value = g_match_info_fetch_named(info, "value");
 
+		unescaped = purple_ircv3_parser_unescape_tag_value(value);
+		g_free(value);
+
 		/* the hash table is created with destroy notifies for both key and
 		 * value, so there's no need to free the allocated memory right now.
 		 */
-		g_hash_table_insert(tags, key, value);
+		g_hash_table_insert(tags, key, unescaped);
 		g_match_info_next(info, &local_error);
 
 		if(local_error != NULL) {

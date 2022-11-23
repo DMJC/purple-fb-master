@@ -255,8 +255,6 @@ test_purple_ircv3_parser_with_tags(void) {
 
 static void
 test_purple_ircv3_parser_with_escaped_tags(void) {
-#if 0
-/* Escaped tags aren't implemented yet. */
 	TestPurpleIRCv3ParserData data = {
 		.command = "foo",
 	};
@@ -268,7 +266,6 @@ test_purple_ircv3_parser_with_escaped_tags(void) {
 
 	test_purple_ircv3_parser("@a=b\\\\and\\nk;c=72\\s45;d=gh\\:764 foo",
 	                         &data);
-#endif
 }
 
 static void
@@ -452,8 +449,6 @@ test_purple_ircv3_command_only(void) {
 
 static void
 test_purple_ircv3_slashes_are_fun(void) {
-#if 0
-/* Escaped tags aren't implemented yet. */
 	TestPurpleIRCv3ParserData data = {
 		.command = "COMMAND",
 	};
@@ -462,7 +457,6 @@ test_purple_ircv3_slashes_are_fun(void) {
 	g_hash_table_insert(data.tags, "foo", "\\\\;\\s \r\n");
 
 	test_purple_ircv3_parser("@foo=\\\\\\\\\\:\\\\s\\s\\r\\n COMMAND", &data);
-#endif
 }
 
 static void
@@ -508,8 +502,6 @@ test_purple_ircv3_unreal_broken_3(void) {
 
 static void
 test_purple_ircv3_tag_escape_char_at_a_time(void) {
-#if 0
-/* Escaped tags aren't implemented yet. */
 	TestPurpleIRCv3ParserData data = {
 		.command = "COMMAND",
 	};
@@ -518,12 +510,10 @@ test_purple_ircv3_tag_escape_char_at_a_time(void) {
 	g_hash_table_insert(data.tags, "tag1", "value\\ntest");
 
 	test_purple_ircv3_parser("@tag1=value\\\\ntest COMMAND", &data);
-#endif
 }
 
 static void
 test_purple_ircv3_tag_drop_unnecessary_escapes(void) {
-#if 0
 	TestPurpleIRCv3ParserData data = {
 		.command = "COMMAND",
 	};
@@ -532,13 +522,10 @@ test_purple_ircv3_tag_drop_unnecessary_escapes(void) {
 	g_hash_table_insert(data.tags, "tag1", "value1");
 
 	test_purple_ircv3_parser("@tag1=value\\1 COMMAND", &data);
-#endif
 }
 
 static void
 test_purple_ircv3_tag_drop_trailing_slash(void) {
-#if 0
-/* Escaped tags aren't implemented yet. */
 	TestPurpleIRCv3ParserData data = {
 		.command = "COMMAND",
 	};
@@ -547,7 +534,6 @@ test_purple_ircv3_tag_drop_trailing_slash(void) {
 	g_hash_table_insert(data.tags, "tag1", "value1");
 
 	test_purple_ircv3_parser("@tag1=value1\\ COMMAND", &data);
-#endif
 }
 
 static void
