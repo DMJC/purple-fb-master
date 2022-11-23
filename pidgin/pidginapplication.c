@@ -357,6 +357,14 @@ pidgin_application_disable_account(GSimpleAction *simple, GVariant *parameter,
 }
 
 static void
+pidgin_application_donate(G_GNUC_UNUSED GSimpleAction *simple,
+                          G_GNUC_UNUSED GVariant *parameter,
+                          G_GNUC_UNUSED gpointer data)
+{
+	purple_notify_uri(NULL, "https://www.imfreedom.org/donate/");
+}
+
+static void
 pidgin_application_edit_account(GSimpleAction *simple, GVariant *parameter,
                                 gpointer data)
 {
@@ -543,6 +551,9 @@ static GActionEntry app_entries[] = {
 		.name = "disable-account",
 		.activate = pidgin_application_disable_account,
 		.parameter_type = "s",
+	}, {
+		.name = "donate",
+		.activate = pidgin_application_donate,
 	}, {
 		.name = "edit-account",
 		.activate = pidgin_application_edit_account,

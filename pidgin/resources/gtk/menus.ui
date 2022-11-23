@@ -208,6 +208,13 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           <attribute name="action">app.room-list</attribute>
         </item>
       </section>
+
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Debug Window</attribute>
+          <attribute name="action">app.debug</attribute>
+        </item>
+      </section>
     </submenu>
     <submenu>
       <attribute name="label" translatable="yes">_Plugins</attribute>
@@ -230,8 +237,8 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           <attribute name="action">app.online-help</attribute>
         </item>
         <item>
-          <attribute name="label" translatable="yes">_Debug Window</attribute>
-          <attribute name="action">app.debug</attribute>
+          <attribute name="label" translatable="yes">_Donate</attribute>
+          <attribute name="action">app.donate</attribute>
         </item>
         <item>
           <attribute name="label" translatable="yes">_About</attribute>
