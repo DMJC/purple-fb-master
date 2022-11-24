@@ -53,17 +53,6 @@ G_DECLARE_FINAL_TYPE(PurpleWhiteboardManager, purple_whiteboard_manager,
                      PURPLE, WHITEBOARD_MANAGER, GObject)
 
 /**
- * PurpleWhiteboardManagerForeachFunc:
- * @whiteboard: The #PurpleWhiteboard instance.
- * @data: User supplied data.
- *
- * A function to be used as a callback with purple_whiteboard_manager_foreach().
- *
- * Since: 3.0.0
- */
-typedef void (*PurpleWhiteboardManagerForeachFunc)(PurpleWhiteboard *whiteboard, gpointer data);
-
-/**
  * purple_whiteboard_manager_get_default:
  *
  * Gets the default #PurpleWhiteboardManager instance.
@@ -73,6 +62,18 @@ typedef void (*PurpleWhiteboardManagerForeachFunc)(PurpleWhiteboard *whiteboard,
  * Since: 3.0.0
  */
 PurpleWhiteboardManager *purple_whiteboard_manager_get_default(void);
+
+/**
+ * purple_whiteboard_manager_get_default_as_model:
+ *
+ * Gets the default manager as a [iface@Gio.ListModel].
+ *
+ * Returns: (transfer none): The default manager cast to a
+ *          [iface@Gio.ListModel].
+ *
+ * Since: 3.0.0
+ */
+GListModel *purple_whiteboard_manager_get_default_as_model(void);
 
 /**
  * purple_whiteboard_manager_register:
@@ -111,36 +112,11 @@ gboolean purple_whiteboard_manager_unregister(PurpleWhiteboardManager *manager, 
  *
  * Gets the #PurpleWhiteboard identified by @id if found, otherwise %NULL.
  *
- * Returns: (transfer full): The #PurpleWhiteboard identified by @id or %NULL.
+ * Returns: (transfer none): The #PurpleWhiteboard identified by @id or %NULL.
  *
  * Since: 3.0.0
  */
 PurpleWhiteboard *purple_whiteboard_manager_find(PurpleWhiteboardManager *manager, const gchar *id);
-
-/**
- * purple_whiteboard_manager_foreach:
- * @manager: The #PurpleWhiteboardManager instance.
- * @func: (scope call): The #PurpleWhiteboardManagerForeachFunc to call.
- * @data: User data to pass to @func.
- *
- * Calls @func for each #PurpleWhiteboard that @manager knows about.
- *
- * Since: 3.0.0
- */
-void purple_whiteboard_manager_foreach(PurpleWhiteboardManager *manager, PurpleWhiteboardManagerForeachFunc func, gpointer data);
-
-/**
- * purple_whiteboard_manager_get_model:
- * @manager: The #PurpleWhiteboardManager instance.
- *
- * Gets the backing model of @manager as a #GListModel.
- *
- * Returns: (transfer none) (element-type PurpleWhiteboard): The #GListModel
- *          containing all of the #PurpleWhiteboards registered with @manager.
- *
- * Since: 3.0.0
- */
-GListModel *purple_whiteboard_manager_get_model(PurpleWhiteboardManager *manager);
 
 G_END_DECLS
 
