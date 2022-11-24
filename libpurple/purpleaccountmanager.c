@@ -61,19 +61,19 @@ purple_account_manager_account_notify_cb(GObject *source, GParamSpec *pspec,
  * GListModel Implementation
  *****************************************************************************/
 static GType
-purple_account_get_item_type(G_GNUC_UNUSED GListModel *list) {
+purple_account_manager_get_item_type(G_GNUC_UNUSED GListModel *list) {
 	return PURPLE_TYPE_ACCOUNT;
 }
 
 static guint
-purple_account_get_n_items(GListModel *list) {
+purple_account_manager_get_n_items(GListModel *list) {
 	PurpleAccountManager *manager = PURPLE_ACCOUNT_MANAGER(list);
 
 	return manager->accounts->len;
 }
 
 static gpointer
-purple_account_get_item(GListModel *list, guint position) {
+purple_account_manager_get_item(GListModel *list, guint position) {
 	PurpleAccountManager *manager = PURPLE_ACCOUNT_MANAGER(list);
 	PurpleAccount *account = NULL;
 
@@ -87,16 +87,16 @@ purple_account_get_item(GListModel *list, guint position) {
 
 static void
 purple_account_manager_list_model_init(GListModelInterface *iface) {
-	iface->get_item_type = purple_account_get_item_type;
-	iface->get_n_items = purple_account_get_n_items;
-	iface->get_item = purple_account_get_item;
+	iface->get_item_type = purple_account_manager_get_item_type;
+	iface->get_n_items = purple_account_manager_get_n_items;
+	iface->get_item = purple_account_manager_get_item;
 }
 
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 G_DEFINE_TYPE_EXTENDED(PurpleAccountManager, purple_account_manager,
-                       G_TYPE_OBJECT, 0,
+                       G_TYPE_OBJECT, G_TYPE_FLAG_FINAL,
                        G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL,
                                              purple_account_manager_list_model_init))
 
@@ -199,6 +199,8 @@ void
 purple_account_manager_startup(void) {
 	if(!PURPLE_IS_ACCOUNT_MANAGER(default_manager)) {
 		default_manager = g_object_new(PURPLE_TYPE_ACCOUNT_MANAGER, NULL);
+		g_object_add_weak_pointer(G_OBJECT(default_manager),
+		                          (gpointer *)&default_manager);
 	}
 }
 
@@ -217,7 +219,11 @@ purple_account_manager_get_default(void) {
 
 GListModel *
 purple_account_manager_get_default_as_model(void) {
-	return G_LIST_MODEL(default_manager);
+	if(PURPLE_IS_ACCOUNT_MANAGER(default_manager)) {
+		return G_LIST_MODEL(default_manager);
+	}
+
+	return NULL;
 }
 
 void
