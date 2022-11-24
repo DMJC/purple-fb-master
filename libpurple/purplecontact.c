@@ -21,9 +21,7 @@
 #include "purpleenums.h"
 #include "util.h"
 
-struct _PurpleContact {
-	GObject parent;
-
+typedef struct  {
 	gchar *id;
 	PurpleAccount *account;
 
@@ -40,7 +38,7 @@ struct _PurpleContact {
 	PurplePerson *person;
 
 	PurpleContactPermission permission;
-};
+} PurpleContactPrivate;
 
 enum {
 	PROP_0,
@@ -58,19 +56,34 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PurpleContact, purple_contact, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE(PurpleContact, purple_contact, G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers
  *****************************************************************************/
 static void
 purple_contact_set_account(PurpleContact *contact, PurpleAccount *account) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	if(g_set_object(&contact->account, account)) {
+	priv = purple_contact_get_instance_private(contact);
+
+	if(g_set_object(&priv->account, account)) {
 		g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_ACCOUNT]);
 	}
+}
+
+static PurpleAccount *
+purple_contact_default_get_account(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
+
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->account;
 }
 
 /******************************************************************************
@@ -159,12 +172,13 @@ purple_contact_set_property(GObject *obj, guint param_id, const GValue *value,
 static void
 purple_contact_dispose(GObject *obj) {
 	PurpleContact *contact = PURPLE_CONTACT(obj);
+	PurpleContactPrivate *priv = purple_contact_get_instance_private(contact);
 
-	g_clear_object(&contact->account);
-	g_clear_object(&contact->avatar);
-	g_clear_object(&contact->presence);
-	g_clear_object(&contact->tags);
-	g_clear_object(&contact->person);
+	g_clear_object(&priv->account);
+	g_clear_object(&priv->avatar);
+	g_clear_object(&priv->presence);
+	g_clear_object(&priv->tags);
+	g_clear_object(&priv->person);
 
 	G_OBJECT_CLASS(purple_contact_parent_class)->dispose(obj);
 }
@@ -172,11 +186,12 @@ purple_contact_dispose(GObject *obj) {
 static void
 purple_contact_finalize(GObject *obj) {
 	PurpleContact *contact = PURPLE_CONTACT(obj);
+	PurpleContactPrivate *priv = purple_contact_get_instance_private(contact);
 
-	g_clear_pointer(&contact->id, g_free);
-	g_clear_pointer(&contact->username, g_free);
-	g_clear_pointer(&contact->display_name, g_free);
-	g_clear_pointer(&contact->alias, g_free);
+	g_clear_pointer(&priv->id, g_free);
+	g_clear_pointer(&priv->username, g_free);
+	g_clear_pointer(&priv->display_name, g_free);
+	g_clear_pointer(&priv->alias, g_free);
 
 	G_OBJECT_CLASS(purple_contact_parent_class)->finalize(obj);
 }
@@ -184,24 +199,31 @@ purple_contact_finalize(GObject *obj) {
 static void
 purple_contact_constructed(GObject *obj) {
 	PurpleContact *contact = NULL;
+	PurpleContactPrivate *priv = NULL;
 
 	G_OBJECT_CLASS(purple_contact_parent_class)->constructed(obj);
 
 	contact = PURPLE_CONTACT(obj);
-	if(contact->id == NULL) {
+	priv = purple_contact_get_instance_private(contact);
+
+	if(priv->id == NULL) {
 		purple_contact_set_id(contact, NULL);
 	}
 }
 
 static void
 purple_contact_init(PurpleContact *contact) {
-	contact->tags = purple_tags_new();
-	contact->presence = g_object_new(PURPLE_TYPE_PRESENCE, NULL);
+	PurpleContactPrivate *priv = purple_contact_get_instance_private(contact);
+
+	priv->tags = purple_tags_new();
+	priv->presence = g_object_new(PURPLE_TYPE_PRESENCE, NULL);
 }
 
 static void
 purple_contact_class_init(PurpleContactClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
+
+	klass->get_account = purple_contact_default_get_account;
 
 	obj_class->constructed = purple_contact_constructed;
 	obj_class->dispose = purple_contact_dispose;
@@ -355,7 +377,8 @@ PurpleContact *
 purple_contact_new(PurpleAccount *account, const gchar *id) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	return g_object_new(PURPLE_TYPE_CONTACT,
+	return g_object_new(
+		PURPLE_TYPE_CONTACT,
 		"account", account,
 		"id", id,
 		NULL);
@@ -363,156 +386,231 @@ purple_contact_new(PurpleAccount *account, const gchar *id) {
 
 PurpleAccount *
 purple_contact_get_account(PurpleContact *contact) {
+	PurpleContactClass *klass = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->account;
+	klass = PURPLE_CONTACT_GET_CLASS(contact);
+	if(klass != NULL && klass->get_account != NULL) {
+		return klass->get_account(contact);
+	}
+
+	return NULL;
 }
 
 const gchar *
 purple_contact_get_id(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->id;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->id;
 }
 
 void
 purple_contact_set_id(PurpleContact *contact, const gchar *id) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 
-	g_free(contact->id);
-	contact->id = g_strdup(id);
+	priv = purple_contact_get_instance_private(contact);
+
+	g_free(priv->id);
+	priv->id = g_strdup(id);
 
 	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_ID]);
 }
 
 const gchar *
 purple_contact_get_username(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->username;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->username;
 }
 
 void
 purple_contact_set_username(PurpleContact *contact, const gchar *username) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 	g_return_if_fail(username != NULL);
 
-	g_free(contact->username);
-	contact->username = g_strdup(username);
+	priv = purple_contact_get_instance_private(contact);
+
+	g_free(priv->username);
+	priv->username = g_strdup(username);
 
 	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_USERNAME]);
 }
 
 const gchar *
 purple_contact_get_display_name(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->display_name;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->display_name;
 }
 
 void
 purple_contact_set_display_name(PurpleContact *contact,
                                 const gchar *display_name)
 {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 
-	g_free(contact->display_name);
-	contact->display_name = g_strdup(display_name);
+	priv = purple_contact_get_instance_private(contact);
+
+	g_free(priv->display_name);
+	priv->display_name = g_strdup(display_name);
 
 	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_DISPLAY_NAME]);
 }
 
 const gchar *
 purple_contact_get_alias(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->alias;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->alias;
 }
 
 void
 purple_contact_set_alias(PurpleContact *contact, const gchar *alias) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 
-	g_free(contact->alias);
-	contact->alias = g_strdup(alias);
+	priv = purple_contact_get_instance_private(contact);
+
+	g_free(priv->alias);
+	priv->alias = g_strdup(alias);
 
 	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_ALIAS]);
 }
 
 GdkPixbuf *
 purple_contact_get_avatar(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->avatar;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->avatar;
 }
 
 void
 purple_contact_set_avatar(PurpleContact *contact, GdkPixbuf *avatar) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 
-	if(g_set_object(&contact->avatar, avatar)) {
+	priv = purple_contact_get_instance_private(contact);
+
+	if(g_set_object(&priv->avatar, avatar)) {
 		g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_AVATAR]);
 	}
 }
 
 PurplePresence *
 purple_contact_get_presence(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->presence;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->presence;
 }
 
 PurpleTags *
 purple_contact_get_tags(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->tags;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->tags;
 }
 
 void
 purple_contact_set_person(PurpleContact *contact, PurplePerson *person) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 
-	if(g_set_object(&contact->person, person)) {
+	priv = purple_contact_get_instance_private(contact);
+
+	if(g_set_object(&priv->person, person)) {
 		g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_PERSON]);
 	}
 }
 
 PurplePerson *
 purple_contact_get_person(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
-	return contact->person;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->person;
 }
 
 PurpleContactPermission
 purple_contact_get_permission(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact),
 	                     PURPLE_CONTACT_PERMISSION_UNSET);
 
-	return contact->permission;
+	priv = purple_contact_get_instance_private(contact);
+
+	return priv->permission;
 }
 
 void
 purple_contact_set_permission(PurpleContact *contact,
                               PurpleContactPermission permission)
 {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 
-	contact->permission = permission;
+	priv = purple_contact_get_instance_private(contact);
+
+	priv->permission = permission;
 
 	g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_PERMISSION]);
 }
 
 const char *
 purple_contact_get_name_for_display(PurpleContact *contact) {
+	PurpleContactPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
+
+	priv = purple_contact_get_instance_private(contact);
 
 	/* If contact is associated with a PurplePerson that has an alias set,
 	 * return the alias of that PurplePerson.
 	 */
-	if(contact->person != NULL) {
-		const char *alias = purple_person_get_alias(contact->person);
+	if(priv->person != NULL) {
+		const char *alias = purple_person_get_alias(priv->person);
 
 		if(alias != NULL && alias[0] != '\0') {
 			return alias;
@@ -520,22 +618,22 @@ purple_contact_get_name_for_display(PurpleContact *contact) {
 	}
 
 	/* If the purple user set an alias for the contact, return that. */
-	if(contact->alias != NULL && contact->alias[0] != '\0') {
-		return contact->alias;
+	if(priv->alias != NULL && priv->alias[0] != '\0') {
+		return priv->alias;
 	}
 
 	/* If the contact has a display name set, return that. */
-	if(contact->display_name != NULL && contact->display_name[0] != '\0') {
-		return contact->display_name;
+	if(priv->display_name != NULL && priv->display_name[0] != '\0') {
+		return priv->display_name;
 	}
 
 	/* Fallback to the username if that is set. */
-	if(contact->username != NULL && contact->username[0] != '\0') {
-		return contact->username;
+	if(priv->username != NULL && priv->username[0] != '\0') {
+		return priv->username;
 	}
 
 	/* Finally, in a last ditch effort, return the id of the contact. */
-	return contact->id;
+	return priv->id;
 }
 
 int

@@ -34,7 +34,8 @@
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CONTACT (purple_contact_get_type())
-G_DECLARE_FINAL_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT, GObject)
+G_DECLARE_DERIVABLE_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT,
+                         GObject)
 
 /**
  * PurpleContactPermission:
@@ -57,6 +58,26 @@ typedef enum {
 
 #include <libpurple/account.h>
 #include <libpurple/purpleperson.h>
+
+/**
+ * PurpleContactClass:
+ * @get_account: A virtual method whose sole purpose is to allow
+ *               [class@Purple.Account] to subclass [class@Purple.Contact].
+ *
+ * The class struct for [class@Purple.Contact].
+ *
+ * Since: 3.0.0
+ */
+struct _PurpleContactClass {
+	/*< private >*/
+	GObjectClass parent;
+
+	/*< public >*/
+	PurpleAccount *(*get_account)(PurpleContact *contact);
+
+	/*< private >*/
+	gpointer reserved[4];
+};
 
 /**
  * PurpleContact:
