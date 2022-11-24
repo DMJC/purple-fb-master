@@ -96,15 +96,10 @@ pidgin_notification_list_create_widget_func(gpointer item, gpointer data) {
  *****************************************************************************/
 static void
 pidgin_notification_list_init(PidginNotificationList *list) {
-	PurpleNotificationManager *manager = NULL;
-	GListModel *model = NULL;
-
 	gtk_widget_init_template(GTK_WIDGET(list));
 
-	manager = purple_notification_manager_get_default();
-	model = purple_notification_manager_get_model(manager);
-
-	gtk_list_box_bind_model(GTK_LIST_BOX(list->list_box), model,
+	gtk_list_box_bind_model(GTK_LIST_BOX(list->list_box),
+	                        purple_notification_manager_get_default_as_model(),
 	                        pidgin_notification_list_create_widget_func,
 	                        list, NULL);
 }

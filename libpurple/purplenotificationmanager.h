@@ -56,6 +56,17 @@ G_DECLARE_FINAL_TYPE(PurpleNotificationManager, purple_notification_manager,
 PurpleNotificationManager *purple_notification_manager_get_default(void);
 
 /**
+ * purple_notification_manager_get_default_as_model:
+ *
+ * Gets the default manager instance type casted to [iface@Gio.ListModel].
+ *
+ * Returns: (transfer none): The model.
+ *
+ * Since: 3.0.0
+ */
+GListModel *purple_notification_manager_get_default_as_model(void);
+
+/**
  * purple_notification_manager_add:
  * @manager: The instance.
  * @notification: (transfer full): The [class@Notification] to add.
@@ -107,17 +118,14 @@ void purple_notification_manager_remove_with_account(PurpleNotificationManager *
 guint purple_notification_manager_get_unread_count(PurpleNotificationManager *manager);
 
 /**
- * purple_notification_manager_get_model:
+ * purple_notification_manager_clear:
  * @manager: The instance.
  *
- * Gets a [iface@Gio.ListModel] of all the [class@Notification]'s in
- * @manager.
- *
- * Returns: (transfer full): The model.
+ * Removes all notifications from @manager.
  *
  * Since: 3.0.0
  */
-GListModel *purple_notification_manager_get_model(PurpleNotificationManager *manager);
+void purple_notification_manager_clear(PurpleNotificationManager *manager);
 
 G_END_DECLS
 

@@ -169,7 +169,7 @@ test_purple_notification_manager_remove_with_account_simple(void) {
 	GListModel *model = NULL;
 
 	manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
-	model = purple_notification_manager_get_model(manager);
+	model = G_LIST_MODEL(manager);
 	account = purple_account_new("test", "test");
 
 	/* Make sure that nothing happens on an empty list. */
@@ -182,7 +182,7 @@ test_purple_notification_manager_remove_with_account_simple(void) {
 	purple_notification_manager_add(manager, notification);
 	purple_notification_manager_remove_with_account(manager, account, TRUE);
 	g_assert_cmpuint(1, ==, g_list_model_get_n_items(model));
-	g_list_store_remove_all(G_LIST_STORE(model));
+	purple_notification_manager_clear(manager);
 	g_clear_object(&notification);
 
 	/* Add a single notification with the account */
@@ -191,7 +191,7 @@ test_purple_notification_manager_remove_with_account_simple(void) {
 	purple_notification_manager_add(manager, notification);
 	purple_notification_manager_remove_with_account(manager, account, TRUE);
 	g_assert_cmpuint(0, ==, g_list_model_get_n_items(model));
-	g_list_store_remove_all(G_LIST_STORE(model));
+	purple_notification_manager_clear(manager);
 	g_clear_object(&notification);
 
 	g_clear_object(&manager);
@@ -208,7 +208,7 @@ test_purple_notification_manager_remove_with_account_mixed(void) {
 	gint i = 0;
 
 	manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
-	model = purple_notification_manager_get_model(manager);
+	model = G_LIST_MODEL(manager);
 
 	accounts[0] = purple_account_new("account1", "account1");
 	accounts[1] = purple_account_new("account2", "account2");
@@ -255,20 +255,24 @@ test_purple_notification_manager_remove_with_account_all(void) {
 	 * and generic. We will also add a generic notification with no account, to
 	 * make sure notifications don't accidentally get removed.
 	 *
+	 * Since the notification manager prepends items and leaves sorting up to
+	 * the user interface, the order of the notifications will be the opposite
+	 * of the order they were added.
+	 *
 	 * This ordering is specifically done because we batch remove items from
 	 * the list. So by calling purple_notification_manager_remove_with_account
-	 * with `all` set to FALSE, we should remove the first and third items,
-	 * but leave the second and fourth items.
+	 * with `all` set to FALSE, we should remove the second and fourth items,
+	 * but leave the first and third items.
 	 *
 	 * We then call purple_notification_manager_remove_with_account with `all`
 	 * set to TRUE, which will remove the connection error notification which
-	 * is now the first item.
+	 * is now the second item.
 	 *
 	 * Finally, we empty the manager and verify that its count is at 0.
 	 */
 
 	manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
-	model = purple_notification_manager_get_model(manager);
+	model = G_LIST_MODEL(manager);
 	account = purple_account_new("test", "test");
 
 	/* Make sure that nothing happens on an empty list. */
@@ -299,7 +303,6 @@ test_purple_notification_manager_remove_with_account_all(void) {
 	purple_notification_manager_add(manager, notification);
 	g_clear_object(&notification);
 
-
 	/* Verify that we have all of the notifications in the manager. */
 	g_assert_cmpuint(4, ==, g_list_model_get_n_items(model));
 
@@ -307,8 +310,8 @@ test_purple_notification_manager_remove_with_account_all(void) {
 	purple_notification_manager_remove_with_account(manager, account, FALSE);
 	g_assert_cmpuint(2, ==, g_list_model_get_n_items(model));
 
-	/* Make sure that the first item is the connection error. */
-	notification = g_list_model_get_item(G_LIST_MODEL(model), 0);
+	/* Make sure that the second item is the connection error. */
+	notification = g_list_model_get_item(G_LIST_MODEL(model), 1);
 	g_assert_cmpint(purple_notification_get_notification_type(notification),
 	                ==, PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR);
 	g_clear_object(&notification);
@@ -318,7 +321,7 @@ test_purple_notification_manager_remove_with_account_all(void) {
 	g_assert_cmpuint(1, ==, g_list_model_get_n_items(model));
 
 	/* Remove the generic notification that's not tied to an account. */
-	g_list_store_remove_all(G_LIST_STORE(model));
+	purple_notification_manager_clear(manager);
 	g_assert_cmpuint(0, ==, g_list_model_get_n_items(model));
 
 	g_clear_object(&manager);

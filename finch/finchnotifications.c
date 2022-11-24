@@ -330,7 +330,6 @@ finch_notifications_activate_cb(G_GNUC_UNUSED GntWidget *w,
  ******************************************************************************/
 void
 finch_notifications_window_show(void) {
-	PurpleNotificationManager *manager = NULL;
 	GntWidget *wid, *box;
 	GListModel *model = NULL;
 
@@ -358,8 +357,7 @@ finch_notifications_window_show(void) {
 	                 G_CALLBACK(finch_notifications_activate_cb), NULL);
 
 	/* Get the notification manager to get the model and populate the list. */
-	manager = purple_notification_manager_get_default();
-	model = purple_notification_manager_get_model(manager);
+	model = purple_notification_manager_get_default_as_model();
 	finch_notifications_update(GNT_TREE(notifications.list), model);
 	g_signal_connect_object(model, "items-changed",
 	                        G_CALLBACK(finch_notifications_changed_cb),

@@ -41,13 +41,10 @@ static guint signals[N_SIGNALS] = { 0, };
 struct _PurpleNotificationManager {
 	GObject parent;
 
-	GListStore *notifications;
+	GPtrArray *notifications;
 
 	guint unread_count;
 };
-
-G_DEFINE_TYPE(PurpleNotificationManager, purple_notification_manager,
-              G_TYPE_OBJECT);
 
 static PurpleNotificationManager *default_manager = NULL;
 
@@ -114,8 +111,48 @@ purple_notification_manager_notify_cb(GObject *obj,
 }
 
 /******************************************************************************
+ * GListModel Implementation
+ *****************************************************************************/
+static GType
+purple_notification_manager_get_item_type(G_GNUC_UNUSED GListModel *list) {
+	return PURPLE_TYPE_NOTIFICATION;
+}
+
+static guint
+purple_notification_manager_get_n_items(GListModel *list) {
+	PurpleNotificationManager *manager = PURPLE_NOTIFICATION_MANAGER(list);
+
+	return manager->notifications->len;
+}
+
+static gpointer
+purple_notification_manager_get_item(GListModel *list, guint position) {
+	PurpleNotificationManager *manager = PURPLE_NOTIFICATION_MANAGER(list);
+	PurpleNotification *notification = NULL;
+
+	if(position < manager->notifications->len) {
+		notification = g_ptr_array_index(manager->notifications, position);
+		g_object_ref(notification);
+	}
+
+	return notification;
+}
+
+static void
+purple_notification_manager_list_model_init(GListModelInterface *iface) {
+	iface->get_item_type = purple_notification_manager_get_item_type;
+	iface->get_n_items = purple_notification_manager_get_n_items;
+	iface->get_item = purple_notification_manager_get_item;
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_TYPE_EXTENDED(PurpleNotificationManager, purple_notification_manager,
+                       G_TYPE_OBJECT, G_TYPE_FLAG_FINAL,
+                       G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL, purple_notification_manager_list_model_init));
+
+
 static void
 purple_notification_manager_get_property(GObject *obj, guint param_id,
                                          GValue *value, GParamSpec *pspec)
@@ -139,14 +176,16 @@ purple_notification_manager_finalize(GObject *obj) {
 
 	manager = PURPLE_NOTIFICATION_MANAGER(obj);
 
-	g_clear_object(&manager->notifications);
+	g_ptr_array_free(manager->notifications, TRUE);
+	manager->notifications = NULL;
 
 	G_OBJECT_CLASS(purple_notification_manager_parent_class)->finalize(obj);
 }
 
 static void
 purple_notification_manager_init(PurpleNotificationManager *manager) {
-	manager->notifications = g_list_store_new(PURPLE_TYPE_NOTIFICATION);
+	manager->notifications = g_ptr_array_new_full(0,
+	                                              (GDestroyNotify)g_object_unref);
 }
 
 static void
@@ -267,6 +306,8 @@ void
 purple_notification_manager_startup(void) {
 	if(default_manager == NULL) {
 		default_manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
+		g_object_add_weak_pointer(G_OBJECT(default_manager),
+		                          (gpointer *)&default_manager);
 	}
 }
 
@@ -283,6 +324,15 @@ purple_notification_manager_get_default(void) {
 	return default_manager;
 }
 
+GListModel *
+purple_notification_manager_get_default_as_model(void) {
+	if(PURPLE_IS_NOTIFICATION_MANAGER(default_manager)) {
+		return G_LIST_MODEL(default_manager);
+	}
+
+	return NULL;
+}
+
 void
 purple_notification_manager_add(PurpleNotificationManager *manager,
                                 PurpleNotification *notification)
@@ -290,7 +340,7 @@ purple_notification_manager_add(PurpleNotificationManager *manager,
 	g_return_if_fail(PURPLE_IS_NOTIFICATION_MANAGER(manager));
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	if(g_list_store_find(manager->notifications, notification, NULL)) {
+	if(g_ptr_array_find(manager->notifications, notification, NULL)) {
 		const gchar *id = purple_notification_get_id(notification);
 
 		g_warning("double add detected for notification %s", id);
@@ -298,9 +348,7 @@ purple_notification_manager_add(PurpleNotificationManager *manager,
 		return;
 	}
 
-	g_list_store_insert_sorted(manager->notifications, notification,
-	                           (GCompareDataFunc)purple_notification_compare,
-	                           NULL);
+	g_ptr_array_insert(manager->notifications, 0, g_object_ref(notification));
 
 	/* Connect to the notify signal for the read property only so we can
 	 * propagate out changes for any notification.
@@ -316,23 +364,25 @@ purple_notification_manager_add(PurpleNotificationManager *manager,
 	}
 
 	g_signal_emit(G_OBJECT(manager), signals[SIG_ADDED], 0, notification);
+	g_list_model_items_changed(G_LIST_MODEL(manager), 0, 0, 1);
 }
 
 void
 purple_notification_manager_remove(PurpleNotificationManager *manager,
                                    PurpleNotification *notification)
 {
-	guint position;
+	guint index = 0;
 
 	g_return_if_fail(PURPLE_IS_NOTIFICATION_MANAGER(manager));
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	if(g_list_store_find(manager->notifications, notification, &position)) {
+	if(g_ptr_array_find(manager->notifications, notification, &index)) {
 		/* Reference the notification so we can emit the signal after it's been
 		 * removed from the hash table.
 		 */
 		g_object_ref(notification);
 
+		g_ptr_array_remove_index(manager->notifications, index);
 		/* Remove the notify signal handler for the read state incase someone
 		 * else added a reference to the notification which would then mess
 		 * with our unread count accounting.
@@ -348,18 +398,17 @@ purple_notification_manager_remove(PurpleNotificationManager *manager,
 			purple_notification_manager_decrement_unread_count(manager);
 		}
 
-		g_list_store_remove(manager->notifications, position);
-
 		g_signal_emit(G_OBJECT(manager), signals[SIG_REMOVED], 0, notification);
+		g_list_model_items_changed(G_LIST_MODEL(manager), index, 1, 0);
 
 		g_object_unref(notification);
-
 	}
 }
 
 /*
 This function uses the following algorithm to optimally remove items from the
-GListStore. See the psuedo code below for an easier to follow version.
+g_ptr_array to minimize the number of calls to g_list_model_items_changed. See
+the pseudo code below for an easier to follow version.
 
 A
 A B C
@@ -397,6 +446,7 @@ purple_notification_manager_remove_with_account(PurpleNotificationManager *manag
                                                 PurpleAccount *account,
                                                 gboolean all)
 {
+	GListModel *model = NULL;
 	guint pos = 0, len = 0;
 	guint start = 0, count = 0;
 	gboolean have_same = FALSE;
@@ -404,15 +454,15 @@ purple_notification_manager_remove_with_account(PurpleNotificationManager *manag
 	g_return_if_fail(PURPLE_IS_NOTIFICATION_MANAGER(manager));
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	len = g_list_model_get_n_items(G_LIST_MODEL(manager->notifications));
-	for(pos = 0; pos < len; pos++) {
+	model = G_LIST_MODEL(manager);
+
+	for(pos = 0; pos < manager->notifications->len; pos++) {
 		PurpleAccount *account2 = NULL;
 		PurpleNotification *notification = NULL;
 		PurpleNotificationType type;
 		gboolean can_remove = TRUE;
 
-		notification = g_list_model_get_item(G_LIST_MODEL(manager->notifications),
-		                                     pos);
+		notification = g_ptr_array_index(manager->notifications, pos);
 
 		/* If the notification's type is connection error, set can_remove to
 		 * the value of the all parameter.
@@ -438,8 +488,8 @@ purple_notification_manager_remove_with_account(PurpleNotificationManager *manag
 		} else {
 			if(have_same) {
 				/* Remove the run of items from the list. */
-				g_list_store_splice(manager->notifications, start, count, NULL,
-				                    0);
+				g_ptr_array_remove_range(manager->notifications, start, count);
+				g_list_model_items_changed(model, start, count, 0);
 
 				/* Adjust pos and len for the items that we removed. */
 				pos = pos - count;
@@ -448,13 +498,12 @@ purple_notification_manager_remove_with_account(PurpleNotificationManager *manag
 				have_same = FALSE;
 			}
 		}
-
-		g_clear_object(&notification);
 	}
 
 	/* Clean up the last bit if the last item needs to be removed. */
 	if(have_same) {
-		g_list_store_splice(manager->notifications, start, count, NULL, 0);
+		g_ptr_array_remove_range(manager->notifications, start, count);
+		g_list_model_items_changed(model, start, count, 0);
 	}
 }
 
@@ -465,13 +514,23 @@ purple_notification_manager_get_unread_count(PurpleNotificationManager *manager)
 	return manager->unread_count;
 }
 
-GListModel *
-purple_notification_manager_get_model(PurpleNotificationManager *manager) {
-	g_return_val_if_fail(PURPLE_IS_NOTIFICATION_MANAGER(manager), NULL);
+void
+purple_notification_manager_clear(PurpleNotificationManager *manager) {
+	guint count = 0;
 
-	if(manager->notifications == NULL) {
-		return NULL;
+	g_return_if_fail(PURPLE_IS_NOTIFICATION_MANAGER(manager));
+
+	count = manager->notifications->len;
+
+	for(guint pos = 0; pos < count; pos++) {
+		PurpleNotification *notification = NULL;
+
+		notification = g_ptr_array_index(manager->notifications, pos);
+
+		g_signal_emit(manager, signals[SIG_REMOVED], 0, notification);
 	}
 
-	return G_LIST_MODEL(g_object_ref(manager->notifications));
+	g_ptr_array_remove_range(manager->notifications, 0, count);
+
+	g_list_model_items_changed(G_LIST_MODEL(manager), 0, count, 0);
 }
