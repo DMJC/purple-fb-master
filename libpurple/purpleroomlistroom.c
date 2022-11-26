@@ -251,7 +251,7 @@ purple_roomlist_room_set_category(PurpleRoomlistRoom *room,
 	g_object_notify_by_pspec(G_OBJECT(room), properties[PROP_CATEGORY]);
 }
 
-const guint
+guint
 purple_roomlist_room_get_user_count(PurpleRoomlistRoom *room) {
 	PurpleRoomlistRoomPrivate *priv = NULL;
 

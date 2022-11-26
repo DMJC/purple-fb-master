@@ -127,7 +127,7 @@ void purple_roomlist_room_set_category(PurpleRoomlistRoom *room, const gchar *ca
  *
  * Since: 3.0.0
  */
-const guint purple_roomlist_room_get_user_count(PurpleRoomlistRoom *room);
+guint purple_roomlist_room_get_user_count(PurpleRoomlistRoom *room);
 
 /**
  * purple_roomlist_room_set_user_count:
