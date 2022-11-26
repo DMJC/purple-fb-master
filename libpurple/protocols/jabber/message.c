@@ -553,7 +553,7 @@ void jabber_message_parse(JabberStream *js, PurpleXmlNode *packet)
 		} else if(purple_strequal(child->name, "body") && purple_strequal(xmlns, NS_XMPP_CLIENT)) {
 			if(!jm->body) {
 				char *msg = purple_xmlnode_get_data(child);
-				char *escaped = purple_markup_escape_text(msg, -1);
+				char *escaped = g_markup_escape_text(msg, -1);
 				jm->body = purple_strdup_withhtml(escaped);
 				g_free(escaped);
 				g_free(msg);

@@ -32,21 +32,6 @@
 G_BEGIN_DECLS
 
 /**
- * purple_markup_escape_text:
- * @text: The text to escape
- * @length: The length of the text, or -1 if #NULL terminated
- *
- * Escapes special characters in a plain-text string so they display
- * correctly as HTML.  For example, &amp; is replaced with &amp;amp; and &lt; is
- * replaced with &amp;lt;
- *
- * This is exactly the same as g_markup_escape_text(), except that it
- * does not change ' to &amp;apos; because &amp;apos; is not a valid HTML 4 entity,
- * and is displayed literally in IE7.
- */
-gchar *purple_markup_escape_text(const gchar *text, gssize length);
-
-/**
  * purple_markup_html_to_xhtml:
  * @html:       The HTML markup.
  * @dest_xhtml: The destination XHTML output.

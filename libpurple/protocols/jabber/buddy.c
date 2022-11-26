@@ -773,7 +773,7 @@ add_jbr_info(JabberBuddyInfo *jbi, const char *resource,
 		const char *status_name = jabber_buddy_state_get_name(jbr->state);
 
 		if (jbr->status) {
-			tmp = purple_markup_escape_text(jbr->status, -1);
+			tmp = g_markup_escape_text(jbr->status, -1);
 			purdy = purple_strdup_withhtml(tmp);
 			g_free(tmp);
 

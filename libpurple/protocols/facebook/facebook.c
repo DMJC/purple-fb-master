@@ -555,7 +555,7 @@ fb_cb_api_messages(FbApi *api, GSList *msgs, gpointer data)
 			text = msg->text;
 			html = NULL;
 		} else {
-			html = purple_markup_escape_text(msg->text, -1);
+			html = g_markup_escape_text(msg->text, -1);
 			text = html;
 		}
 

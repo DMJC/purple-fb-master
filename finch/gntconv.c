@@ -154,7 +154,7 @@ entry_key_pressed(GntWidget *w, FinchConv *ggconv)
 	}
 	else
 	{
-		char *escape = purple_markup_escape_text((*text == '/' ? text + 1 : text), -1);
+		char *escape = g_markup_escape_text((*text == '/' ? text + 1 : text), -1);
 		purple_conversation_send(ggconv->active_conv, escape);
 		g_free(escape);
 		purple_idle_touch();
