@@ -871,37 +871,3 @@ purple_conversation_get_message_history(PurpleConversation *conv) {
 
 	return priv->message_history;
 }
-
-gboolean
-purple_conversation_do_command(PurpleConversation *conv, const gchar *cmdline,
-                               const gchar *markup, gchar **error)
-{
-	gchar *mark = NULL, *err = NULL;
-	PurpleCmdStatus status;
-
-	if(markup == NULL || *markup == '\0') {
-		mark = g_markup_escape_text(cmdline, -1);
-	}
-
-	status = purple_cmd_do_command(conv, cmdline, mark ? mark : markup,
-	                               error ? error : &err);
-
-	g_free(mark);
-	g_free(err);
-
-	return (status == PURPLE_CMD_STATUS_OK);
-}
-
-gssize
-purple_conversation_get_max_message_size(PurpleConversation *conv) {
-	PurpleProtocol *protocol;
-
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), 0);
-
-	protocol = purple_connection_get_protocol(
-		purple_conversation_get_connection(conv));
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), 0);
-
-	return purple_protocol_client_get_max_message_size(PURPLE_PROTOCOL_CLIENT(protocol), conv);
-}

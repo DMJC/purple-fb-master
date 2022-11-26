@@ -362,32 +362,6 @@ void purple_conversation_send_confirm(PurpleConversation *conv, const gchar *mes
 GList * purple_conversation_get_extended_menu(PurpleConversation *conv);
 
 /**
- * purple_conversation_do_command:
- * @conv:    The conversation.
- * @cmdline: The entire command including the arguments.
- * @markup:  %NULL, or the formatted command line.
- * @error:   If the command failed errormsg is filled in with the appropriate error
- *                message, if not %NULL. It must be freed by the caller with g_free().
- *
- * Perform a command in a conversation. Similar to purple_cmd_do_command().
- *
- * Returns:  %TRUE if the command was executed successfully, %FALSE otherwise.
- */
-gboolean purple_conversation_do_command(PurpleConversation *conv, const gchar *cmdline, const gchar *markup, gchar **error);
-
-/**
- * purple_conversation_get_max_message_size:
- * @conv: The conversation to query.
- *
- * Gets the maximum message size in bytes for the conversation.
- *
- * See #PurpleProtocolClientInterface's <literal>get_max_message_size</literal>.
- *
- * Returns: Maximum message size, 0 if unspecified, -1 for infinite.
- */
-gssize purple_conversation_get_max_message_size(PurpleConversation *conv);
-
-/**
  * purple_conversation_present_error:
  * @who:     The user this error is about
  * @account: The account this error is on

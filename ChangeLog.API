@@ -457,6 +457,8 @@ version 3.0.0 (??/??/????):
 		* PurpleConversationType
 		* purple_conversation_add_smiley
 		* purple_conversation_close_logs
+		* purple_conversation_do_command
+		* purple_conversation_get_max_message_size
 		* purple_conversation_get_remote_smileys
 		* purple_conversation_get_smiley
 		* purple_conversation_is_logging
