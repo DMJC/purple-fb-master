@@ -40,7 +40,6 @@
 #include "gtkdialogs.h"
 #include "gtkutils.h"
 #include "pidgincore.h"
-#include "pidgindialog.h"
 
 struct _PidginGroupMergeObject {
 	PurpleGroup* parent;

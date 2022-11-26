@@ -31,7 +31,6 @@
 #include "pidginaccountchooser.h"
 #include "pidginaccountfilterconnected.h"
 #include "pidgincore.h"
-#include "pidgindialog.h"
 
 #include <gdk/gdkkeysyms.h>
 
@@ -1956,7 +1955,13 @@ pidgin_request_fields(const char *title, const char *primary,
 	data->cbs[0] = ok_cb;
 	data->cbs[1] = cancel_cb;
 
-	data->dialog = win = pidgin_dialog_new(title, 12, "multifield", TRUE) ;
+	data->dialog = win = gtk_dialog_new();
+	if(title != NULL) {
+		gtk_window_set_title(GTK_WINDOW(win), title);
+	} else {
+		gtk_window_set_title(GTK_WINDOW(win), PIDGIN_ALERT_TITLE);
+	}
+	gtk_window_set_resizable(GTK_WINDOW(win), TRUE);
 
 	g_signal_connect(G_OBJECT(win), "close-request",
 					 G_CALLBACK(destroy_multifield_cb), data);
