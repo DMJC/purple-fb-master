@@ -31,7 +31,7 @@ typedef struct {
 } MarkupTestData;
 
 static void
-test_util_markup_html_to_xhtml(void) {
+test_purple_markup_html_to_xhtml(void) {
 	gint i;
 	MarkupTestData data[] = {
 		{
@@ -220,6 +220,52 @@ test_util_markup_html_to_xhtml(void) {
 	}
 }
 
+static void
+test_purple_markup_strip_html(void) {
+	MarkupTestData data[] = {
+		{
+			.markup = "",
+			.plaintext = "",
+		}, {
+			.markup = "<a href=\"https://example.com/\">https://example.com/</a>",
+			.plaintext = "https://example.com/",
+		}, {
+			.markup = "<a href=\"https://example.com/\">example.com</a>",
+			.plaintext = "example.com (https://example.com/)",
+		}, {
+			.markup = "<script>/* this should be ignored */</script>",
+			.plaintext = "",
+		}, {
+			.markup = "<style>/* this should be ignored */</style>",
+			.plaintext = "",
+		}, {
+			.markup = "<table><tr><td>1</td><td>2</td></tr><tr><td>3</td><td>4</td></tr></table>",
+			.plaintext = "1\t2\n3\t4\n",
+		}, {
+			.markup = "<p>foo</p><p>bar</p><p>baz</p>",
+			.plaintext = "foo\nbar\nbaz",
+		}, {
+			.markup = "<div><p>foo</p><p>bar</p></div>",
+			.plaintext = "foo\nbar",
+		}, {
+			.markup = "<hr>",
+			.plaintext = "",
+		}, {
+			.markup = "<br>",
+			.plaintext = "\n",
+		}, {
+			.markup = NULL,
+		}
+	};
+
+	for(int i = 0; data[i].markup != NULL; i++) {
+		char *plaintext = purple_markup_strip_html(data[i].markup);
+
+		g_assert_cmpstr(plaintext, ==, data[i].plaintext);
+		g_free(plaintext);
+	}
+}
+
 /******************************************************************************
  * Main
  *****************************************************************************/
@@ -227,8 +273,10 @@ gint
 main(gint argc, gchar **argv) {
 	g_test_init(&argc, &argv, NULL);
 
-	g_test_add_func("/util/markup/html to xhtml",
-	                test_util_markup_html_to_xhtml);
+	g_test_add_func("/util/markup/html-to-xhtml",
+	                test_purple_markup_html_to_xhtml);
+	g_test_add_func("/util/markup/strip-html",
+	                test_purple_markup_strip_html);
 
 	return g_test_run();
 }
