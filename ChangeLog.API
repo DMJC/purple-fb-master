@@ -511,6 +511,7 @@ version 3.0.0 (??/??/????):
 		  purple_ipv6_address_is_valid. Use g_hostname_is_ip_address()
 		  or #GInetAddress instead.
 		* purple_markup_extract_info_field
+		* purple_markup_find_tag
 		* purple_markup_get_css_property
 		* purple_markup_is_rtl
 		* purple_marshal_BOOLEAN__INT_POINTER

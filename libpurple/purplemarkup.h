@@ -47,27 +47,6 @@ G_BEGIN_DECLS
 gchar *purple_markup_escape_text(const gchar *text, gssize length);
 
 /**
- * purple_markup_find_tag:
- * @needle:	  The name of the tag
- * @haystack:	  The null-delimited string to search in
- * @start:		  A pointer to the start of the tag if found
- * @end:		  A pointer to the end of the tag if found
- * @attributes:  The attributes, if the tag was found.  This should
- *                    be freed with g_datalist_clear().
- *
- * Finds an HTML tag matching the given name.
- *
- * This locates an HTML tag's start and end, and stores its attributes
- * in a GData hash table. The names of the attributes are lower-cased
- * in the hash table, and the name of the tag is case insensitive.
- *
- * Returns: TRUE if the tag was found
- */
-gboolean purple_markup_find_tag(const char *needle, const char *haystack,
-							  const char **start, const char **end,
-							  GData **attributes);
-
-/**
  * purple_markup_html_to_xhtml:
  * @html:       The HTML markup.
  * @dest_xhtml: The destination XHTML output.
