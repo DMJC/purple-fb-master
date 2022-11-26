@@ -267,7 +267,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 
 static gboolean
 purple_ircv3_connection_disconnect(PurpleConnection *purple_connection,
-                                   GError **error)
+                                   G_GNUC_UNUSED GError **error)
 {
 	PurpleIRCv3Connection *connection = NULL;
 
@@ -386,11 +386,11 @@ purple_ircv3_connection_constructed(GObject *obj) {
 }
 
 static void
-purple_ircv3_connection_init(PurpleIRCv3Connection *connection) {
+purple_ircv3_connection_init(G_GNUC_UNUSED PurpleIRCv3Connection *connection) {
 }
 
 static void
-purple_ircv3_connection_class_finalize(PurpleIRCv3ConnectionClass *klass) {
+purple_ircv3_connection_class_finalize(G_GNUC_UNUSED PurpleIRCv3ConnectionClass *klass) {
 }
 
 static void

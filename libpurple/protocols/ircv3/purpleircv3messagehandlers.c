@@ -25,10 +25,13 @@
  * Fallback
  *****************************************************************************/
 gboolean
-purple_ircv3_message_handler_fallback(GHashTable *tags, const char *source,
-                                      const char *command, guint n_params,
-                                      GStrv params, GError **error,
-                                      gpointer data)
+purple_ircv3_message_handler_fallback(G_GNUC_UNUSED GHashTable *tags,
+                                      const char *source,
+                                      const char *command,
+                                      G_GNUC_UNUSED guint n_params,
+                                      GStrv params,
+                                      G_GNUC_UNUSED GError **error,
+                                      G_GNUC_UNUSED gpointer data)
 {
 	gchar *joined = g_strjoinv(" ", params);
 
@@ -117,9 +120,12 @@ purple_ircv3_message_handler_cap(GHashTable *tags, const char *source,
  * General Commands
  *****************************************************************************/
 gboolean
-purple_ircv3_message_handler_ping(GHashTable *tags, const char *source,
-                                  const char *command, guint n_params,
-                                  GStrv params, GError **error,
+purple_ircv3_message_handler_ping(G_GNUC_UNUSED GHashTable *tags,
+                                  G_GNUC_UNUSED const char *source,
+                                  G_GNUC_UNUSED const char *command,
+                                  guint n_params,
+                                  GStrv params,
+                                  G_GNUC_UNUSED GError **error,
                                   gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;

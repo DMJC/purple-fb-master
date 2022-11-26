@@ -115,7 +115,7 @@ purple_ircv3_protocol_create_connection(PurpleProtocol *protocol,
 
 static GList *
 purple_ircv3_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
-                                   PurpleAccount *account)
+                                   G_GNUC_UNUSED PurpleAccount *account)
 {
 	PurpleStatusType *type = NULL;
 	GList *types = NULL;
@@ -147,11 +147,11 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	                              purple_ircv3_protocol_im_init))
 
 static void
-purple_ircv3_protocol_init(PurpleIRCv3Protocol *protocol) {
+purple_ircv3_protocol_init(G_GNUC_UNUSED PurpleIRCv3Protocol *protocol) {
 }
 
 static void
-purple_ircv3_protocol_class_finalize(PurpleIRCv3ProtocolClass *klass) {
+purple_ircv3_protocol_class_finalize(G_GNUC_UNUSED PurpleIRCv3ProtocolClass *klass) {
 }
 
 static void

@@ -144,7 +144,7 @@ purple_ircv3_parser_parse_tags(PurpleIRCv3Parser *parser,
 }
 
 static guint
-purple_ircv3_parser_extract_params(PurpleIRCv3Parser *parser,
+purple_ircv3_parser_extract_params(G_GNUC_UNUSED PurpleIRCv3Parser *parser,
                                    GStrvBuilder *builder, const gchar *str)
 {
 	gchar *ptr = NULL;

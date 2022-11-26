@@ -26,7 +26,7 @@
  * PurpleProtocolIM Implementation
  *****************************************************************************/
 static gint
-purple_ircv3_protocol_send_im(PurpleProtocolIM *im,
+purple_ircv3_protocol_send_im(G_GNUC_UNUSED PurpleProtocolIM *im,
                               PurpleConnection *conn,
                               PurpleMessage *message)
 {

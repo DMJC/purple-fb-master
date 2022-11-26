@@ -24,9 +24,11 @@ if DYNAMIC_IRCV3
 	IRCV3_SOURCES += ircv3_resources
 
 	ircv3_prpl = shared_library('ircv3', IRCV3_SOURCES + IRCV3_HEADERS,
-	    c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-IRCv3"'],
-	    dependencies : [sasl, libpurple_dep, glib, gio, ws2_32],
-	    install : true, install_dir : PURPLE_PLUGINDIR)
+		c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-IRCv3"'],
+		dependencies : [sasl, libpurple_dep, glib, gio, ws2_32],
+		install : true,
+		install_dir : PURPLE_PLUGINDIR,
+		override_options : ['c_std=c99', 'warning_level=2'])
 
 	devenv.append('PURPLE_PLUGIN_PATH', meson.current_build_dir())
 

@@ -87,7 +87,10 @@ purple_ircv3_load(GPluginPlugin *plugin, GError **error) {
 }
 
 static gboolean
-purple_ircv3_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
+purple_ircv3_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                    G_GNUC_UNUSED gboolean shutdown,
+                    GError **error)
+{
 	PurpleProtocolManager *manager = NULL;
 
 	if(!PURPLE_IS_PROTOCOL(ircv3_protocol)) {
