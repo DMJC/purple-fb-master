@@ -2469,6 +2469,7 @@ purple_account_thaw_notify_settings(PurpleAccount *account) {
 		names = g_slist_delete_link(names, names);
 		g_free(name);
 	}
+	account->freeze_queue->names = names;
 
 	purple_account_free_notify_settings(account);
 
