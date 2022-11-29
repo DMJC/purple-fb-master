@@ -109,63 +109,58 @@ test_purple_person_properties(void) {
 
 static void
 test_purple_person_contacts_single(void) {
-	PurpleAccount *account = NULL;
-	PurpleContact *contact = NULL;
+	PurpleContactInfo *info = NULL;
 	PurplePerson *person = NULL;
 	PurplePerson *person1 = NULL;
 	guint n_items = 0;
 	gboolean removed = FALSE;
 	gboolean changed = FALSE;
 
-	account = purple_account_new("test", "test");
-	contact = purple_contact_new(account, "username");
+	info = purple_contact_info_new("id");
 	person = purple_person_new();
 	g_signal_connect(person, "items-changed",
 	                 G_CALLBACK(test_purple_person_items_changed_cb), &changed);
 
 	n_items = g_list_model_get_n_items(G_LIST_MODEL(person));
 	g_assert_cmpuint(n_items, ==, 0);
-	purple_person_add_contact(person, contact);
+	purple_person_add_contact_info(person, info);
 	n_items = g_list_model_get_n_items(G_LIST_MODEL(person));
 	g_assert_cmpuint(n_items, ==, 1);
 	g_assert_true(changed);
 
-	person1 = purple_contact_get_person(contact);
+	person1 = purple_contact_info_get_person(info);
 	g_assert_true(person1 == person);
 
 	changed = FALSE;
 
-	removed = purple_person_remove_contact(person, contact);
+	removed = purple_person_remove_contact_info(person, info);
 	g_assert_true(removed);
 	n_items = g_list_model_get_n_items(G_LIST_MODEL(person));
 	g_assert_cmpuint(n_items, ==, 0);
 	g_assert_true(changed);
 
-	person1 = purple_contact_get_person(contact);
+	person1 = purple_contact_info_get_person(info);
 	g_assert_null(person1);
 
 	g_clear_object(&person);
-	g_clear_object(&account);
-	g_clear_object(&contact);
+	g_clear_object(&info);
 }
 
 static void
 test_purple_person_contacts_multiple(void) {
-	PurpleAccount *account = NULL;
 	PurplePerson *person = NULL;
-	GPtrArray *contacts = NULL;
+	GPtrArray *infos = NULL;
 	guint n_items = 0;
-	const gint n_contacts = 5;
+	const gint n_infos = 5;
 	gboolean changed = FALSE;
 
-	account = purple_account_new("test", "test");
 	person = purple_person_new();
 	g_signal_connect(person, "items-changed",
 	                 G_CALLBACK(test_purple_person_items_changed_cb), &changed);
 
-	contacts = g_ptr_array_new_full(n_contacts, g_object_unref);
-	for(gint i = 0; i < n_contacts; i++) {
-		PurpleContact *contact = NULL;
+	infos = g_ptr_array_new_full(n_infos, g_object_unref);
+	for(gint i = 0; i < n_infos; i++) {
+		PurpleContactInfo *info = NULL;
 		gchar *username = NULL;
 
 		changed = FALSE;
@@ -174,35 +169,36 @@ test_purple_person_contacts_multiple(void) {
 		g_assert_cmpuint(n_items, ==, i);
 
 		username = g_strdup_printf("username%d", i);
-		contact = purple_contact_new(account, username);
+		info = purple_contact_info_new(NULL);
+		purple_contact_info_set_username(info, username);
 		g_free(username);
 
-		/* Add the contact to the ptr array so we can remove it below. */
-		g_ptr_array_add(contacts, contact);
+		/* Add the contact info to the ptr array so we can remove it below. */
+		g_ptr_array_add(infos, info);
 
-		/* Add the contact to the person and make sure that all the magic
+		/* Add the contact info to the person and make sure that all the magic
 		 * happened.
 		 */
-		purple_person_add_contact(person, contact);
+		purple_person_add_contact_info(person, info);
 		n_items = g_list_model_get_n_items(G_LIST_MODEL(person));
 		g_assert_cmpuint(n_items, ==, i + 1);
 		g_assert_true(changed);
 	}
 
-	for(gint i = 0; i < n_contacts; i++) {
-		PurpleContact *contact = contacts->pdata[i];
+	for(gint i = 0; i < n_infos; i++) {
+		PurpleContactInfo *info = g_ptr_array_index(infos, i);
 		gboolean removed = FALSE;
 
 		changed = FALSE;
 
 		n_items = g_list_model_get_n_items(G_LIST_MODEL(person));
-		g_assert_cmpuint(n_items, ==, n_contacts - i);
+		g_assert_cmpuint(n_items, ==, n_infos - i);
 
-		removed = purple_person_remove_contact(person, contact);
+		removed = purple_person_remove_contact_info(person, info);
 		g_assert_true(removed);
 
 		n_items = g_list_model_get_n_items(G_LIST_MODEL(person));
-		g_assert_cmpuint(n_items, ==, n_contacts - (i + 1));
+		g_assert_cmpuint(n_items, ==, n_infos - (i + 1));
 
 		g_assert_true(changed);
 	}
@@ -211,37 +207,33 @@ test_purple_person_contacts_multiple(void) {
 	n_items = g_list_model_get_n_items(G_LIST_MODEL(person));
 	g_assert_cmpuint(n_items, ==, 0);
 
-	g_ptr_array_free(contacts, TRUE);
+	g_ptr_array_free(infos, TRUE);
 
 	g_clear_object(&person);
-	g_clear_object(&account);
 }
 
 static void
 test_purple_person_priority_single(void) {
-	PurpleAccount *account = NULL;
-	PurpleContact *contact = NULL;
-	PurpleContact *priority = NULL;
+	PurpleContactInfo *info = NULL;
+	PurpleContactInfo *priority = NULL;
 	PurplePerson *person = NULL;
 	PurplePresence *presence = NULL;
 	PurpleStatus *status = NULL;
 	PurpleStatusType *status_type = NULL;
 	gboolean called = FALSE;
 
-	account = purple_account_new("test", "test");
-
 	person = purple_person_new();
-	g_signal_connect(person, "notify::priority-contact",
+	g_signal_connect(person, "notify::priority-contact-info",
 	                 G_CALLBACK(test_purple_person_notify_cb), &called);
-	priority = purple_person_get_priority_contact(person);
+	priority = purple_person_get_priority_contact_info(person);
 	g_assert_null(priority);
 
 	/* Now create a real contact. */
-	contact = purple_contact_new(account, "username");
-	purple_person_add_contact(person, contact);
+	info = purple_contact_info_new(NULL);
+	purple_person_add_contact_info(person, info);
 
 	/* Set the status of the contact. */
-	presence = purple_contact_get_presence(contact);
+	presence = purple_contact_info_get_presence(info);
 	status_type = purple_status_type_new(PURPLE_STATUS_AVAILABLE, "available",
 	                                     "Available", FALSE);
 	status = purple_status_new(status_type, presence);
@@ -250,39 +242,36 @@ test_purple_person_priority_single(void) {
 
 	g_assert_true(called);
 
-	priority = purple_person_get_priority_contact(person);
-	g_assert_true(priority == contact);
+	priority = purple_person_get_priority_contact_info(person);
+	g_assert_true(priority == info);
 
 	purple_status_type_destroy(status_type);
-	g_clear_object(&account);
 	g_clear_object(&person);
-	g_clear_object(&contact);
+	g_clear_object(&info);
 	g_clear_object(&presence);
 }
 
 static void
 test_purple_person_priority_multiple_with_change(void) {
-	PurpleAccount *account = NULL;
-	PurpleContact *priority = NULL;
-	PurpleContact *first = NULL;
-	PurpleContact *sorted_contact = NULL;
+	PurpleContactInfo *priority = NULL;
+	PurpleContactInfo *first = NULL;
+	PurpleContactInfo *sorted_contact = NULL;
 	PurplePerson *person = NULL;
 	PurplePresence *sorted_presence = NULL;
 	PurpleStatus *status = NULL;
 	PurpleStatusType *available = NULL;
 	PurpleStatusType *offline = NULL;
 	gboolean changed = FALSE;
-	gint n_contacts = 5;
+	gint n_infos = 5;
 	guint n_items = 0;
 
-	/* This unit test is a bit complicated, but it adds 5 contacts to a person
-	 * all whose presences are set to offline. After adding all the contacts,
-	 * we verify that the first contact we added is the priority contact. Then
-	 * we flip the active status of the n_contacts - 2 contact to available.
-	 * This should make it the priority contact which we then assert.
+	/* This unit test is a bit complicated, but it adds 5 contact infos to a
+	 * person all whose presences are set to offline. After adding all the
+	 * contact infos, we verify that the first contact info we added is the
+	 * priority contact info. Then we flip the active status of the n_infos - 2
+	 * infos to available. This should make it the priority contact info which
+	 * we then assert.
 	 */
-
-	account = purple_account_new("test", "test");
 
 	/* Create our status types. */
 	available = purple_status_type_new(PURPLE_STATUS_AVAILABLE, "available",
@@ -294,14 +283,14 @@ test_purple_person_priority_multiple_with_change(void) {
 	 * priority-contact property.
 	 */
 	person = purple_person_new();
-	g_signal_connect(person, "notify::priority-contact",
+	g_signal_connect(person, "notify::priority-contact-info",
 	                 G_CALLBACK(test_purple_person_notify_cb), &changed);
-	priority = purple_person_get_priority_contact(person);
+	priority = purple_person_get_priority_contact_info(person);
 	g_assert_null(priority);
 
-	/* Create and add all contacts. */
-	for(gint i = 0; i < n_contacts; i++) {
-		PurpleContact *contact = NULL;
+	/* Create and add all contact infos. */
+	for(gint i = 0; i < n_infos; i++) {
+		PurpleContactInfo *info = NULL;
 		PurplePresence *presence = NULL;
 		gchar *username = NULL;
 
@@ -310,48 +299,49 @@ test_purple_person_priority_multiple_with_change(void) {
 
 		/* Now create a real contact. */
 		username = g_strdup_printf("username%d", i + 1);
-		contact = purple_contact_new(account, username);
+		info = purple_contact_info_new(NULL);
+		purple_contact_info_set_username(info, username);
 		g_free(username);
 
 		/* Set the status for the contact. */
-		presence = purple_contact_get_presence(contact);
+		presence = purple_contact_info_get_presence(info);
 		status = purple_status_new(offline, presence);
 		g_object_set(G_OBJECT(presence), "active-status", status, NULL);
 		g_clear_object(&status);
 
-		purple_person_add_contact(person, contact);
+		purple_person_add_contact_info(person, info);
 
 		if(i == 0) {
-			first = g_object_ref(contact);
+			first = g_object_ref(info);
 			g_assert_true(changed);
 		} else {
 			g_assert_false(changed);
 
-			if(i == n_contacts - 2) {
-				sorted_contact = g_object_ref(contact);
+			if(i == n_infos - 2) {
+				sorted_contact = g_object_ref(info);
 				sorted_presence = g_object_ref(presence);
 			}
 		}
 
-		g_clear_object(&contact);
+		g_clear_object(&info);
 	}
 
 	n_items = g_list_model_get_n_items(G_LIST_MODEL(person));
-	g_assert_cmpuint(n_items, ==, n_contacts);
+	g_assert_cmpuint(n_items, ==, n_infos);
 
-	priority = purple_person_get_priority_contact(person);
+	priority = purple_person_get_priority_contact_info(person);
 	g_assert_true(priority == first);
 	g_clear_object(&first);
 
-	/* Now set the second from the last contact's status to available, and
-	 * verify that that contact is now the priority contact.
+	/* Now set the second from the last contact info's status to available, and
+	 * verify that that contact info is now the priority contact info.
 	 */
 	changed = FALSE;
 	status = purple_status_new(available, sorted_presence);
 	g_object_set(G_OBJECT(sorted_presence), "active-status", status, NULL);
 	g_clear_object(&status);
 	g_assert_true(changed);
-	priority = purple_person_get_priority_contact(person);
+	priority = purple_person_get_priority_contact_info(person);
 	g_assert_true(priority == sorted_contact);
 
 	/* Cleanup. */
@@ -361,7 +351,6 @@ test_purple_person_priority_multiple_with_change(void) {
 	g_clear_object(&sorted_contact);
 	g_clear_object(&sorted_presence);
 
-	g_clear_object(&account);
 	g_clear_object(&person);
 }
 

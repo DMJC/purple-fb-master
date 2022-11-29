@@ -35,13 +35,13 @@ G_BEGIN_DECLS
 #define PURPLE_TYPE_PERSON (purple_person_get_type())
 G_DECLARE_FINAL_TYPE(PurplePerson, purple_person, PURPLE, PERSON, GObject)
 
-#include <libpurple/purplecontact.h>
+#include <libpurple/purplecontactinfo.h>
 
 /**
  * PurplePerson:
  *
- * A collection of [class@Purple.Contact] that contains a user selectable custom
- * avatar and alias.
+ * A collection of [class@Purple.ContactInfo] that contains a user selectable
+ * custom avatar and alias.
  *
  * Since: 3.0.0
  */
@@ -143,43 +143,42 @@ PurpleTags *purple_person_get_tags(PurplePerson *person);
 /**
  * purple_person_add_contact:
  * @person: The instance.
- * @contact: The contact to add.
+ * @info: The [class@Purple.ContactInfo] to add.
  *
- * Adds @contact to @person.
+ * Adds @info to @person.
  *
  * Duplicate contacts are currently allowed, but that may change at a later
  * time.
  *
  * Since: 3.0.0
  */
-void purple_person_add_contact(PurplePerson *person, PurpleContact *contact);
+void purple_person_add_contact_info(PurplePerson *person, PurpleContactInfo *info);
 
 /**
- * purple_person_remove_contact:
+ * purple_person_remove_contact_info:
  * @person: The instance.
- * @contact: The contact to remove.
+ * @info: The [class@Purple.ContactInfo] to remove.
  *
- * Removes @contact from @person.
+ * Removes @info from @person.
  *
- * Returns: %TRUE if @contact was found and removed otherwise %FALSE.
+ * Returns: %TRUE if @info was found and removed otherwise %FALSE.
  *
  * Since: 3.0.0
  */
-gboolean purple_person_remove_contact(PurplePerson *person, PurpleContact *contact);
+gboolean purple_person_remove_contact_info(PurplePerson *person, PurpleContactInfo *info);
 
 /**
- * purple_person_get_priority_contact:
+ * purple_person_get_priority_contact_info:
  * @person: The instance.
  *
- * Gets the priority contact for @person. A priority contact is the one that is
- * the most available.
+ * Gets the contact info for the most available contact info in @person.
  *
  * Returns: (transfer none) (nullable): The priority contact or %NULL if
  *          @person does not have any contacts.
  *
  * Since: 3.0.0
  */
-PurpleContact *purple_person_get_priority_contact(PurplePerson *person);
+PurpleContactInfo *purple_person_get_priority_contact_info(PurplePerson *person);
 
 G_END_DECLS
 

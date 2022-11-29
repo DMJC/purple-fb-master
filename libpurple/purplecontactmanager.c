@@ -46,26 +46,26 @@ static gboolean
 purple_contact_manager_find_with_username_helper(gconstpointer a,
                                                  gconstpointer b)
 {
-	PurpleContact *contact_a = (gpointer)a;
-	PurpleContact *contact_b = (gpointer)b;
+	PurpleContactInfo *info_a = PURPLE_CONTACT_INFO(a);
+	PurpleContactInfo *info_b = PURPLE_CONTACT_INFO(b);
 	const gchar *username_a = NULL;
 	const gchar *username_b = NULL;
 
-	username_a = purple_contact_get_username(contact_a);
-	username_b = purple_contact_get_username(contact_b);
+	username_a = purple_contact_info_get_username(info_a);
+	username_b = purple_contact_info_get_username(info_b);
 
 	return purple_strequal(username_a, username_b);
 }
 
 static gboolean
 purple_contact_manager_find_with_id_helper(gconstpointer a, gconstpointer b) {
-	PurpleContact *contact_a = (gpointer)a;
-	PurpleContact *contact_b = (gpointer)b;
+	PurpleContactInfo *info_a = PURPLE_CONTACT_INFO(a);
+	PurpleContactInfo *info_b = PURPLE_CONTACT_INFO(b);
 	const gchar *id_a = NULL;
 	const gchar *id_b = NULL;
 
-	id_a = purple_contact_get_id(contact_a);
-	id_b = purple_contact_get_id(contact_b);
+	id_a = purple_contact_info_get_id(info_a);
+	id_b = purple_contact_info_get_id(info_b);
 
 	return purple_strequal(id_a, id_b);
 }
@@ -260,8 +260,9 @@ purple_contact_manager_add(PurpleContactManager *manager,
 		added = TRUE;
 	} else {
 		if(g_list_store_find(contacts, contact, NULL)) {
-			const gchar *username = purple_contact_get_username(contact);
-			const gchar *id = purple_contact_get_id(contact);
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(contact);
+			const gchar *username = purple_contact_info_get_username(info);
+			const gchar *id = purple_contact_info_get_id(info);
 
 			g_warning("double add detected for contact %s:%s", id, username);
 
@@ -382,7 +383,7 @@ purple_contact_manager_find_with_username(PurpleContactManager *manager,
 	}
 
 	needle = purple_contact_new(account, NULL);
-	purple_contact_set_username(needle, username);
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(needle), username);
 	found = g_list_store_find_with_equal_func(contacts, needle,
 	                                          purple_contact_manager_find_with_username_helper,
 	                                          &position);
@@ -435,6 +436,7 @@ purple_contact_manager_add_buddy(PurpleContactManager *manager,
 {
 	PurpleAccount *account = NULL;
 	PurpleContact *contact = NULL;
+	PurpleContactInfo *info = NULL;
 	PurplePresence *buddy_presence = NULL;
 	PurplePresence *contact_presence = NULL;
 	const gchar *id = NULL;
@@ -446,6 +448,7 @@ purple_contact_manager_add_buddy(PurpleContactManager *manager,
 	account = purple_buddy_get_account(buddy);
 	id = purple_buddy_get_id(buddy);
 	contact = purple_contact_new(account, id);
+	info = PURPLE_CONTACT_INFO(contact);
 
 	/* Bind all of the properties. */
 	g_object_bind_property(buddy, "name", contact, "username",
@@ -456,7 +459,7 @@ purple_contact_manager_add_buddy(PurpleContactManager *manager,
 	                       G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
 	buddy_presence = purple_buddy_get_presence(buddy);
-	contact_presence = purple_contact_get_presence(contact);
+	contact_presence = purple_contact_info_get_presence(info);
 
 	g_object_bind_property(buddy_presence, "idle", contact_presence, "idle",
 	                       G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);

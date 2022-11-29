@@ -199,11 +199,11 @@ test_purple_contact_manager_find_with_username(void) {
 	account = purple_account_new("test", "test");
 
 	contact1 = purple_contact_new(account, NULL);
-	purple_contact_set_username(contact1, "user1");
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact1), "user1");
 	purple_contact_manager_add(manager, contact1);
 
 	contact2 = purple_contact_new(account, NULL);
-	purple_contact_set_username(contact2, "user2");
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact2), "user2");
 	purple_contact_manager_add(manager, contact2);
 
 	found = purple_contact_manager_find_with_username(manager, account,
@@ -265,6 +265,7 @@ test_purple_contact_manager_add_buddy(void) {
 	PurpleAccount *account = NULL;
 	PurpleBuddy *buddy = NULL;
 	PurpleContact *contact = NULL;
+	PurpleContactInfo *info = NULL;
 	PurpleContactManager *manager = NULL;
 	PurpleStatusType *type = NULL;
 	GList *statuses = NULL;
@@ -298,15 +299,17 @@ test_purple_contact_manager_add_buddy(void) {
 	g_assert_nonnull(contact);
 	g_assert_true(PURPLE_IS_CONTACT(contact));
 
+	info = PURPLE_CONTACT_INFO(contact);
+
 	/* Now check the alias and display name to make sure they were synced as
 	 * well.
 	 */
 	source = purple_buddy_get_local_alias(buddy);
-	destination = purple_contact_get_alias(contact);
+	destination = purple_contact_info_get_alias(info);
 	g_assert_cmpstr(destination, ==, source);
 
 	source = purple_buddy_get_server_alias(buddy);
-	destination = purple_contact_get_display_name(contact);
+	destination = purple_contact_info_get_display_name(info);
 	g_assert_cmpstr(destination, ==, source);
 
 	/* Now let's change the settings in the buddy and verify they made it to the
@@ -319,16 +322,16 @@ test_purple_contact_manager_add_buddy(void) {
 	*/
 
 	purple_buddy_set_local_alias(buddy, "guy-alias");
-	g_assert_cmpstr(purple_contact_get_alias(contact), ==, "guy-alias");
+	g_assert_cmpstr(purple_contact_info_get_alias(info), ==, "guy-alias");
 
 	purple_buddy_set_server_alias(buddy, "server-guy");
-	g_assert_cmpstr(purple_contact_get_display_name(contact), ==,
+	g_assert_cmpstr(purple_contact_info_get_display_name(info), ==,
 	                "server-guy");
 
-	purple_contact_set_alias(contact, "friend-alias");
+	purple_contact_info_set_alias(info, "friend-alias");
 	g_assert_cmpstr(purple_buddy_get_local_alias(buddy), ==, "friend-alias");
 
-	purple_contact_set_display_name(contact, "server-friend");
+	purple_contact_info_set_display_name(info, "server-friend");
 	g_assert_cmpstr(purple_buddy_get_server_alias(buddy), ==, "server-friend");
 
 	/* We can't verify the presences changes because PurpleBuddy has to be in

@@ -174,7 +174,7 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED GHashTable *tags,
 	                                                    source);
 	if(!PURPLE_IS_CONTACT(contact)) {
 		contact = purple_contact_new(account, NULL);
-		purple_contact_set_username(contact, source);
+		purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), source);
 		purple_contact_manager_add(contact_manager, contact);
 	}
 
