@@ -128,6 +128,38 @@ test_purple_tags_add_duplicate_with_value(void) {
 }
 
 static void
+test_purple_tags_add_with_value(void) {
+	PurpleTags *tags = purple_tags_new();
+	const char *value = NULL;
+	gboolean found = FALSE;
+
+	purple_tags_add_with_value(tags, "tag1", "purple");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
+
+	value = purple_tags_lookup(tags, "tag1", &found);
+	g_assert_cmpstr(value, ==, "purple");
+	g_assert_true(found);
+
+	g_clear_object(&tags);
+}
+
+static void
+test_purple_tags_add_with_value_null(void) {
+	PurpleTags *tags = purple_tags_new();
+	const char *value = NULL;
+	gboolean found = FALSE;
+
+	purple_tags_add_with_value(tags, "tag1", NULL);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
+
+	value = purple_tags_lookup(tags, "tag1", &found);
+	g_assert_null(value);
+	g_assert_true(found);
+
+	g_clear_object(&tags);
+}
+
+static void
 test_purple_tags_remove_non_existent_with_value(void) {
 	PurpleTags *tags = purple_tags_new();
 
@@ -302,6 +334,11 @@ main(gint argc, gchar **argv) {
 	                test_purple_tags_add_duplicate_bare);
 	g_test_add_func("/tags/remove-non-existent-bare",
 	                test_purple_tags_remove_non_existent_bare);
+
+	g_test_add_func("/tags/add-with-value",
+	                test_purple_tags_add_with_value);
+	g_test_add_func("/tags/add-with-value-null",
+	                test_purple_tags_add_with_value_null);
 
 	g_test_add_func("/tags/add-remove-with-value",
 	                test_purple_tags_add_remove_with_value);

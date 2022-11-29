@@ -126,6 +126,26 @@ purple_tags_add(PurpleTags *tags, const gchar *tag) {
 	tags->tags = g_list_append(tags->tags, g_strdup(tag));
 }
 
+void
+purple_tags_add_with_value(PurpleTags *tags, const char *name,
+                           const char *value)
+{
+	char *tag = NULL;
+
+	g_return_if_fail(PURPLE_IS_TAGS(tags));
+	g_return_if_fail(name != NULL);
+
+	if(value != NULL) {
+		tag = g_strdup_printf("%s:%s", name, value);
+	} else {
+		tag = g_strdup(name);
+	}
+
+	purple_tags_add(tags, tag);
+
+	g_free(tag);
+}
+
 gboolean
 purple_tags_remove(PurpleTags *tags, const gchar *tag) {
 	g_return_val_if_fail(PURPLE_IS_TAGS(tags), FALSE);

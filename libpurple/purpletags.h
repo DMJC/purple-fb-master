@@ -103,6 +103,19 @@ const gchar *purple_tags_get(PurpleTags *tags, const gchar *name);
 void purple_tags_add(PurpleTags *tags, const gchar *tag);
 
 /**
+ * purple_tags_add_with_value:
+ * @tags: The instance.
+ * @name: The name of the tag.
+ * @value: (nullable): The value of the tag.
+ *
+ * Formats @name and @value into a tag and adds it to @tags. If the tag already
+ * exists, the existing tag will be replaced.
+ *
+ * Since: 3.0.0
+ */
+void purple_tags_add_with_value(PurpleTags *tags, const char *name, const char *value);
+
+/**
  * purple_tags_remove:
  * @tags: The instance.
  * @tag: The tag data.
