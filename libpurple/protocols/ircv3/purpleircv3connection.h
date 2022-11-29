@@ -33,6 +33,8 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
                      PURPLE_IRCV3, CONNECTION, PurpleConnection)
 
+#include "purpleircv3capabilities.h"
+
 G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugin);
 
 G_GNUC_INTERNAL PurpleAccount *purple_ircv3_connection_get_account(PurpleIRCv3Connection *connection);
@@ -49,9 +51,7 @@ G_GNUC_INTERNAL void purple_ircv3_connection_writef(PurpleIRCv3Connection *conne
  *
  * Returns: The list of capabilities that the server supports.
  */
-const char *purple_ircv3_connection_get_capabilities(PurpleIRCv3Connection *connection);
-
-G_GNUC_INTERNAL void purple_ircv3_connection_append_capabilities(PurpleIRCv3Connection *connection, const char *capabilities);
+PurpleIRCv3Capabilities *purple_ircv3_connection_get_capabilities(PurpleIRCv3Connection *connection);
 
 G_END_DECLS
 

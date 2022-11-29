@@ -44,7 +44,7 @@ struct _PurpleIRCv3Connection {
 
 	PurpleIRCv3Parser *parser;
 
-	char *capabilities;
+	PurpleIRCv3Capabilities *capabilities;
 };
 
 G_DEFINE_DYNAMIC_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
@@ -104,6 +104,7 @@ purple_ircv3_connection_read_cb(GObject *source, GAsyncResult *result,
 	GError *error = NULL;
 	gchar *line = NULL;
 	gsize length;
+	gboolean parsed = FALSE;
 
 	line = g_data_input_stream_read_line_finish(istream, result, &length,
 	                                            &error);
@@ -126,7 +127,13 @@ purple_ircv3_connection_read_cb(GObject *source, GAsyncResult *result,
 		return;
 	}
 
-	purple_ircv3_parser_parse(connection->parser, line, &error, connection);
+	parsed = purple_ircv3_parser_parse(connection->parser, line, &error,
+	                                   connection);
+	if(!parsed) {
+		g_warning("failed to parse '%s': %s", line,
+		          error != NULL ? error->message : "unknown error");
+	}
+	g_clear_error(&error);
 
 	g_free(line);
 
@@ -314,22 +321,9 @@ purple_ircv3_connection_get_property(GObject *obj, guint param_id,
 			                   purple_ircv3_connection_get_cancellable(connection));
 			break;
 		case PROP_CAPABILITIES:
-			g_value_set_string(value,
+			g_value_set_object(value,
 			                   purple_ircv3_connection_get_capabilities(connection));
 			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
-	}
-}
-
-static void
-purple_ircv3_connection_set_property(GObject *obj, guint param_id,
-                                     const GValue *value, GParamSpec *pspec)
-{
-	// PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
-
-	switch(param_id) {
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -346,6 +340,7 @@ purple_ircv3_connection_dispose(GObject *obj) {
 	g_clear_object(&connection->output);
 	g_clear_object(&connection->connection);
 
+	g_clear_object(&connection->capabilities);
 	g_clear_object(&connection->parser);
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->dispose(obj);
@@ -356,8 +351,6 @@ purple_ircv3_connection_finalize(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
 
 	g_clear_pointer(&connection->server_name, g_free);
-
-	g_clear_pointer(&connection->capabilities, g_free);
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->finalize(obj);
 }
@@ -381,8 +374,9 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	connection->server_name = g_strdup(userparts[1]);
 	g_strfreev(userparts);
 
-	/* Finally create our cancellable. */
+	/* Finally create our objects. */
 	connection->cancellable = g_cancellable_new();
+	connection->capabilities = purple_ircv3_capabilities_new(connection);
 }
 
 static void
@@ -399,7 +393,6 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 	PurpleConnectionClass *connection_class = PURPLE_CONNECTION_CLASS(klass);
 
 	obj_class->get_property = purple_ircv3_connection_get_property;
-	obj_class->set_property = purple_ircv3_connection_set_property;
 	obj_class->constructed = purple_ircv3_connection_constructed;
 	obj_class->dispose = purple_ircv3_connection_dispose;
 	obj_class->finalize = purple_ircv3_connection_finalize;
@@ -430,10 +423,10 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 	 *
 	 * Since: 3.0.0
 	 */
-	properties[PROP_CAPABILITIES] = g_param_spec_string(
+	properties[PROP_CAPABILITIES] = g_param_spec_object(
 		"capabilities", "capabilities",
 		"The capabilities that the server supports",
-		NULL,
+		PURPLE_IRCV3_TYPE_CAPABILITIES,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
@@ -488,32 +481,9 @@ purple_ircv3_connection_writef(PurpleIRCv3Connection *connection,
 	g_bytes_unref(bytes);
 }
 
-const char *
+PurpleIRCv3Capabilities *
 purple_ircv3_connection_get_capabilities(PurpleIRCv3Connection *connection) {
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), NULL);
 
 	return connection->capabilities;
-}
-
-void
-purple_ircv3_connection_append_capabilities(PurpleIRCv3Connection *connection,
-                                            const char *capabilities)
-{
-	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
-	g_return_if_fail(capabilities != NULL);
-
-	if(connection->capabilities == NULL) {
-		connection->capabilities = g_strdup(capabilities);
-	} else {
-		char *tmp = connection->capabilities;
-
-		connection->capabilities = g_strdup_printf("%s %s",
-		                                           connection->capabilities,
-		                                           capabilities);
-
-		g_free(tmp);
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(connection),
-	                         properties[PROP_CAPABILITIES]);
 }

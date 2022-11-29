@@ -18,6 +18,7 @@
 
 #include "purpleircv3parser.h"
 
+#include "purpleircv3capabilities.h"
 #include "purpleircv3core.h"
 #include "purpleircv3messagehandlers.h"
 
@@ -398,7 +399,7 @@ purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser) {
 	                                         purple_ircv3_message_handler_fallback);
 
 	purple_ircv3_parser_add_handler(parser, "CAP",
-	                                purple_ircv3_message_handler_cap);
+	                                purple_ircv3_capabilities_message_handler);
 	purple_ircv3_parser_add_handler(parser, "NOTICE",
 	                                purple_ircv3_message_handler_privmsg);
 	purple_ircv3_parser_add_handler(parser, "PING",
