@@ -369,7 +369,7 @@ ensure_row_selected(PidginXferDialog *dialog)
  * Callbacks
  **************************************************************************/
 static gboolean
-close_request_cb(GtkWidget *w, gpointer d) {
+close_request_cb(G_GNUC_UNUSED GtkWidget *w, gpointer d) {
 	PidginXferDialog *dialog = (PidginXferDialog *)d;
 
 	pidgin_xfer_dialog_hide(dialog);
@@ -426,7 +426,7 @@ selection_changed_cb(GtkTreeSelection *selection, PidginXferDialog *dialog)
 }
 
 static void
-open_button_cb(GtkButton *button, PidginXferDialog *dialog)
+open_button_cb(G_GNUC_UNUSED GtkButton *button, PidginXferDialog *dialog)
 {
 	gchar *uri = NULL;
 
@@ -437,19 +437,19 @@ open_button_cb(GtkButton *button, PidginXferDialog *dialog)
 }
 
 static void
-remove_button_cb(GtkButton *button, PidginXferDialog *dialog)
+remove_button_cb(G_GNUC_UNUSED GtkButton *button, PidginXferDialog *dialog)
 {
 	pidgin_xfer_dialog_remove_xfer(dialog, dialog->selected_xfer);
 }
 
 static void
-stop_button_cb(GtkButton *button, PidginXferDialog *dialog)
+stop_button_cb(G_GNUC_UNUSED GtkButton *button, PidginXferDialog *dialog)
 {
 	purple_xfer_cancel_local(dialog->selected_xfer);
 }
 
 static void
-close_button_cb(GtkButton *button, PidginXferDialog *dialog)
+close_button_cb(G_GNUC_UNUSED GtkButton *button, PidginXferDialog *dialog)
 {
 	pidgin_xfer_dialog_hide(dialog);
 }

@@ -173,7 +173,7 @@ save_response_cb(GtkNativeDialog *self, gint response_id, gpointer data)
 }
 
 static void
-save_cb(GtkWidget *w, PidginDebugWindow *win)
+save_cb(G_GNUC_UNUSED GtkWidget *w, PidginDebugWindow *win)
 {
 	GtkFileChooserNative *filesel;
 
@@ -191,7 +191,7 @@ save_cb(GtkWidget *w, PidginDebugWindow *win)
 }
 
 static void
-clear_cb(GtkWidget *w, PidginDebugWindow *win)
+clear_cb(G_GNUC_UNUSED GtkWidget *w, PidginDebugWindow *win)
 {
 	gtk_text_buffer_set_text(win->buffer, "", 0);
 }
@@ -320,7 +320,8 @@ regex_toggle_filter(PidginDebugWindow *win, gboolean filter)
 }
 
 static void
-regex_pref_filter_cb(const gchar *name, PurplePrefType type,
+regex_pref_filter_cb(G_GNUC_UNUSED const gchar *name,
+                     G_GNUC_UNUSED PurplePrefType type,
 					 gconstpointer val, gpointer data)
 {
 	PidginDebugWindow *win = (PidginDebugWindow *)data;
@@ -337,7 +338,8 @@ regex_pref_filter_cb(const gchar *name, PurplePrefType type,
 }
 
 static void
-regex_pref_invert_cb(const gchar *name, PurplePrefType type,
+regex_pref_invert_cb(G_GNUC_UNUSED const gchar *name,
+                     G_GNUC_UNUSED PurplePrefType type,
 					 gconstpointer val, gpointer data)
 {
 	PidginDebugWindow *win = (PidginDebugWindow *)data;
@@ -351,7 +353,8 @@ regex_pref_invert_cb(const gchar *name, PurplePrefType type,
 }
 
 static void
-regex_pref_highlight_cb(const gchar *name, PurplePrefType type,
+regex_pref_highlight_cb(G_GNUC_UNUSED const gchar *name,
+                        G_GNUC_UNUSED PurplePrefType type,
 						gconstpointer val, gpointer data)
 {
 	PidginDebugWindow *win = (PidginDebugWindow *)data;
@@ -365,7 +368,7 @@ regex_pref_highlight_cb(const gchar *name, PurplePrefType type,
 }
 
 static void
-regex_changed_cb(GtkWidget *w, PidginDebugWindow *win) {
+regex_changed_cb(G_GNUC_UNUSED GtkWidget *w, PidginDebugWindow *win) {
 	const gchar *text;
 
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(win->filter))) {
@@ -459,7 +462,7 @@ debug_window_set_filter_level(PidginDebugWindow *win, int level)
 	gboolean scroll;
 	int i;
 
-	if (level != gtk_drop_down_get_selected(GTK_DROP_DOWN(win->filterlevel))) {
+	if (level != (int)gtk_drop_down_get_selected(GTK_DROP_DOWN(win->filterlevel))) {
 		gtk_drop_down_set_selected(GTK_DROP_DOWN(win->filterlevel), level);
 	}
 
@@ -476,7 +479,9 @@ debug_window_set_filter_level(PidginDebugWindow *win, int level)
 }
 
 static void
-filter_level_pref_changed(const char *name, PurplePrefType type, gconstpointer value, gpointer data)
+filter_level_pref_changed(G_GNUC_UNUSED const char *name,
+                          G_GNUC_UNUSED PurplePrefType type,
+                          gconstpointer value, gpointer data)
 {
 	PidginDebugWindow *win = data;
 	int level = GPOINTER_TO_INT(value);
@@ -681,7 +686,7 @@ static void
 debug_enabled_cb(G_GNUC_UNUSED const gchar *name,
                  G_GNUC_UNUSED PurplePrefType type,
                  gconstpointer value,
-                 gpointer data)
+                 G_GNUC_UNUSED gpointer data)
 {
 	debug_enabled_timer = g_timeout_add(0, debug_enabled_timeout_cb,
 	                                    (gpointer)value);

@@ -113,7 +113,8 @@ rebuild_block_list(PidginPrivacyDialog *dialog)
 }
 
 static void
-user_selected_cb(GtkTreeSelection *sel, PidginPrivacyDialog *dialog)
+user_selected_cb(G_GNUC_UNUSED GtkTreeSelection *sel,
+                 PidginPrivacyDialog *dialog)
 {
 	gtk_widget_set_sensitive(dialog->remove_button, TRUE);
 }
@@ -206,7 +207,7 @@ type_changed_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data) {
 }
 
 static void
-add_cb(GtkWidget *button, PidginPrivacyDialog *dialog)
+add_cb(G_GNUC_UNUSED GtkWidget *button, PidginPrivacyDialog *dialog)
 {
 	if (dialog->in_allow_list)
 		pidgin_request_add_permit(dialog->account, NULL);
@@ -215,7 +216,7 @@ add_cb(GtkWidget *button, PidginPrivacyDialog *dialog)
 }
 
 static void
-remove_cb(GtkWidget *button, PidginPrivacyDialog *dialog)
+remove_cb(G_GNUC_UNUSED GtkWidget *button, PidginPrivacyDialog *dialog)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
@@ -251,7 +252,7 @@ remove_cb(GtkWidget *button, PidginPrivacyDialog *dialog)
 }
 
 static void
-removeall_cb(GtkWidget *button, PidginPrivacyDialog *dialog)
+removeall_cb(G_GNUC_UNUSED GtkWidget *button, PidginPrivacyDialog *dialog)
 {
 	GSList *l;
 	if (dialog->in_allow_list)
@@ -371,7 +372,8 @@ destroy_request_data(PidginPrivacyRequestData *data)
 }
 
 static void
-confirm_permit_block_cb(PidginPrivacyRequestData *data, int option)
+confirm_permit_block_cb(PidginPrivacyRequestData *data,
+                        G_GNUC_UNUSED int option)
 {
 	if (data->block)
 		purple_account_privacy_deny(data->account, data->name);
@@ -469,14 +471,16 @@ pidgin_request_add_block(PurpleAccount *account, const char *name)
 }
 
 static void
-pidgin_permit_added_removed(PurpleAccount *account, const char *name)
+pidgin_permit_added_removed(G_GNUC_UNUSED PurpleAccount *account,
+                            G_GNUC_UNUSED const char *name)
 {
 	if (privacy_dialog != NULL)
 		rebuild_allow_list(privacy_dialog);
 }
 
 static void
-pidgin_deny_added_removed(PurpleAccount *account, const char *name)
+pidgin_deny_added_removed(G_GNUC_UNUSED PurpleAccount *account,
+                          G_GNUC_UNUSED const char *name)
 {
 	if (privacy_dialog != NULL)
 		rebuild_block_list(privacy_dialog);

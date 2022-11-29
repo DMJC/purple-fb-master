@@ -235,7 +235,8 @@ libpidgin = shared_library('pidgin3',
     include_directories : [toplevel_inc, include_directories('prefs')],
     version : PURPLE_LIB_VERSION,
     dependencies : _libpidgin_dependencies,
-    install : true)
+    install : true,
+    override_options : ['c_std=c99', 'warning_level=2'])
 libpidgin_dep = declare_dependency(
     include_directories : [toplevel_inc, libpidgin_inc],
     link_with : libpidgin,
@@ -248,7 +249,8 @@ pidgin = executable('pidgin3',
     include_directories : toplevel_inc,
     dependencies : IS_WIN32 ? [] : [libpurple_dep, libpidgin_dep],
     win_subsystem : 'windows',
-    install : true)
+    install : true,
+    override_options : ['c_std=c99', 'warning_level=2'])
 
 meson.override_dependency(pidgin_filebase, libpidgin_dep)
 

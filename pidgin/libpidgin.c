@@ -104,7 +104,8 @@ static void sighandler(int sig)
 }
 
 static gboolean
-mainloop_sighandler(GIOChannel *source, GIOCondition cond, gpointer data)
+mainloop_sighandler(GIOChannel *source, G_GNUC_UNUSED GIOCondition cond,
+                    G_GNUC_UNUSED gpointer data)
 {
 	GIOStatus stat;
 	int sig;

@@ -348,7 +348,7 @@ pidgin_display_window_selection_changed(GtkTreeSelection *selection,
 }
 
 static gboolean
-pidgin_display_window_key_pressed_cb(GtkEventControllerKey *controller,
+pidgin_display_window_key_pressed_cb(G_GNUC_UNUSED GtkEventControllerKey *controller,
                                      guint keyval,
                                      G_GNUC_UNUSED guint keycode,
                                      GdkModifierType state,

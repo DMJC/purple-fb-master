@@ -47,7 +47,7 @@ struct _PidginGroupMergeObject {
 };
 
 static void
-pidgin_dialogs_im_cb(gpointer data, PurpleRequestFields *fields)
+pidgin_dialogs_im_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 {
 	PurpleAccount *account;
 	const char *username;
@@ -59,8 +59,8 @@ pidgin_dialogs_im_cb(gpointer data, PurpleRequestFields *fields)
 }
 
 static gboolean
-pidgin_dialogs_im_name_validator(PurpleRequestField *field, gchar **errmsg,
-	void *_fields)
+pidgin_dialogs_im_name_validator(G_GNUC_UNUSED PurpleRequestField *field,
+                                 char **errmsg, gpointer _fields)
 {
 	PurpleRequestFields *fields = _fields;
 	PurpleAccount *account;
@@ -137,7 +137,8 @@ pidgin_dialogs_im_with_user(PurpleAccount *account, const char *username)
 }
 
 static void
-pidgin_dialogs_info_cb(gpointer data, PurpleRequestFields *fields)
+pidgin_dialogs_info_cb(G_GNUC_UNUSED gpointer data,
+                       PurpleRequestFields *fields)
 {
 	char *username;
 	PurpleAccount *account;

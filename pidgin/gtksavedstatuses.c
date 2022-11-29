@@ -104,8 +104,11 @@ saved_status_sort_alphabetically_func(gconstpointer a, gconstpointer b)
 				  purple_savedstatus_get_title(saved_status_b));
 }
 
-static gboolean pidgin_status_menu_add_primitive(GtkListStore *model, GtkWidget *w, PurpleStatusPrimitive primitive,
-	PurpleSavedStatus *current_status)
+static gboolean
+pidgin_status_menu_add_primitive(GtkListStore *model,
+                                 G_GNUC_UNUSED GtkWidget *w,
+                                 PurpleStatusPrimitive primitive,
+                                 PurpleSavedStatus *current_status)
 {
 	GtkTreeIter iter;
 	gboolean currently_selected = FALSE;

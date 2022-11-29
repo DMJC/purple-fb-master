@@ -73,7 +73,7 @@ pidgin_plugin_info_set_property(GObject *obj, guint param_id,
 }
 
 static void
-pidgin_plugin_info_init(PidginPluginInfo *info) {
+pidgin_plugin_info_init(G_GNUC_UNUSED PidginPluginInfo *info) {
 }
 
 static void

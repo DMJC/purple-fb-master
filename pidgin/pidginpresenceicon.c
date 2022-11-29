@@ -57,7 +57,8 @@ pidgin_presence_icon_update(PidginPresenceIcon *icon) {
 }
 
 static void
-pidgin_presence_icon_active_status_changed_cb(GObject *obj, GParamSpec *pspec,
+pidgin_presence_icon_active_status_changed_cb(G_GNUC_UNUSED GObject *obj,
+                                              G_GNUC_UNUSED GParamSpec *pspec,
                                               gpointer data)
 {
 	pidgin_presence_icon_update(PIDGIN_PRESENCE_ICON(data));

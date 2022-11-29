@@ -141,7 +141,7 @@ pidgin_attachment_set_property(GObject *obj, guint param_id, const GValue *value
 }
 
 static void
-pidgin_attachment_init(PidginAttachment *attachment) {
+pidgin_attachment_init(G_GNUC_UNUSED PidginAttachment *attachment) {
 }
 
 static void

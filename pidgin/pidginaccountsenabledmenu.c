@@ -156,7 +156,7 @@ pidgin_accounts_enabled_menu_disconnected_cb(PurpleAccount *account,
  * GMenuModel Implementation
  *****************************************************************************/
 static gboolean
-pidgin_accounts_enabled_menu_is_mutable(GMenuModel *model) {
+pidgin_accounts_enabled_menu_is_mutable(G_GNUC_UNUSED GMenuModel *model) {
 	return TRUE;
 }
 

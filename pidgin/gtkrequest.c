@@ -120,7 +120,8 @@ generic_response_start(PidginRequestData *data)
 }
 
 static void
-input_response_cb(GtkDialog *dialog, gint id, PidginRequestData *data)
+input_response_cb(G_GNUC_UNUSED GtkDialog *dialog, gint id,
+                  PidginRequestData *data)
 {
 	const char *value;
 	char *multiline_value = NULL;
@@ -162,7 +163,8 @@ input_response_cb(GtkDialog *dialog, gint id, PidginRequestData *data)
 }
 
 static void
-action_response_cb(GtkDialog *dialog, gint id, PidginRequestData *data)
+action_response_cb(G_GNUC_UNUSED GtkDialog *dialog, gint id,
+                   PidginRequestData *data)
 {
 	generic_response_start(data);
 
@@ -174,7 +176,7 @@ action_response_cb(GtkDialog *dialog, gint id, PidginRequestData *data)
 
 
 static void
-choice_response_cb(GtkDialog *dialog, gint id, PidginRequestData *data)
+choice_response_cb(G_GNUC_UNUSED GtkDialog *dialog, G_GNUC_UNUSED gint id, G_GNUC_UNUSED PidginRequestData *data)
 {
 #warning please rewrite me
 #if 0
@@ -224,7 +226,8 @@ field_string_focus_out_cb(GtkEventControllerFocus *controller,
 }
 
 static void
-req_field_changed_common(GtkWidget *widget, PurpleRequestField *field)
+req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
+                         PurpleRequestField *field)
 {
 	PurpleRequestFieldGroup *group;
 	PurpleRequestFields *fields;
@@ -277,7 +280,7 @@ field_choice_menu_cb(GtkComboBox *menu, PurpleRequestField *field)
 }
 
 static void
-field_choice_option_cb(GtkCheckButton *button, PurpleRequestField *field)
+field_choice_option_cb(G_GNUC_UNUSED GtkCheckButton *button, G_GNUC_UNUSED PurpleRequestField *field)
 {
 #warning please rewrite me
 #if 0
@@ -327,7 +330,7 @@ multifield_ok_cb(GtkWidget *button, PidginRequestData *data)
 }
 
 static void
-multifield_cancel_cb(GtkWidget *button, PidginRequestData *data)
+multifield_cancel_cb(G_GNUC_UNUSED GtkWidget *button, PidginRequestData *data)
 {
 	generic_response_start(data);
 
@@ -354,7 +357,7 @@ multifield_extra_cb(GtkWidget *button, PidginRequestData *data)
 }
 
 static gboolean
-destroy_multifield_cb(GtkWidget *self, PidginRequestData *data)
+destroy_multifield_cb(G_GNUC_UNUSED GtkWidget *self, PidginRequestData *data)
 {
 	multifield_cancel_cb(NULL, data);
 	return FALSE;
@@ -482,7 +485,7 @@ pidgin_request_dialog_icon(PurpleRequestType dialog_type,
 }
 
 static void
-pidgin_request_help_clicked(GtkButton *button, gpointer _unused)
+pidgin_request_help_clicked(GtkButton *button, G_GNUC_UNUSED gpointer _unused)
 {
 	PurpleRequestHelpCb cb;
 	gpointer data;
@@ -932,7 +935,7 @@ pidgin_request_action(const char *title, const char *primary,
 }
 
 static void
-wait_cancel_cb(GtkWidget *button, PidginRequestData *data)
+wait_cancel_cb(G_GNUC_UNUSED GtkWidget *button, PidginRequestData *data)
 {
 	generic_response_start(data);
 
@@ -1447,7 +1450,7 @@ create_account_field(PurpleRequestField *field)
 }
 
 static void
-select_field_list_item(GtkTreeModel *model, GtkTreePath *path,
+select_field_list_item(GtkTreeModel *model, G_GNUC_UNUSED GtkTreePath *path,
 					   GtkTreeIter *iter, gpointer data)
 {
 	PurpleRequestField *field = (PurpleRequestField *)data;
@@ -1620,6 +1623,7 @@ datasheet_get_selected_row(GtkWidget *sheet_widget)
 	return purple_request_datasheet_record_find(sheet, key);
 }
 
+#if 0
 static void
 datasheet_button_check_sens(GtkWidget *button, gpointer _sheet_widget)
 {
@@ -1636,9 +1640,10 @@ datasheet_button_check_sens(GtkWidget *button, gpointer _sheet_widget)
 		purple_request_datasheet_action_is_sensitive(act,
 			datasheet_get_selected_row(sheet_widget)));
 }
+#endif
 
 static void
-datasheet_selection_changed(GtkWidget *sheet_widget)
+datasheet_selection_changed(G_GNUC_UNUSED GtkWidget *sheet_widget)
 {
 #if 0
 	gpointer buttons_box;
@@ -1773,7 +1778,8 @@ datasheet_update(PurpleRequestDatasheet *sheet, gpointer key,
 
 
 static void
-datasheet_selection_changed_cb(GtkTreeSelection *sel, gpointer sheet_widget)
+datasheet_selection_changed_cb(G_GNUC_UNUSED GtkTreeSelection *sel,
+                               gpointer sheet_widget)
 {
 	datasheet_selection_changed(GTK_WIDGET(sheet_widget));
 }
@@ -2251,7 +2257,8 @@ pidgin_request_fields(const char *title, const char *primary,
 }
 
 static void
-file_ok_check_if_exists_cb(GtkWidget *widget, gint response, PidginRequestData *data)
+file_ok_check_if_exists_cb(G_GNUC_UNUSED GtkWidget *widget, gint response,
+                           PidginRequestData *data)
 {
 	GFile *current_path;
 
@@ -2283,8 +2290,9 @@ file_ok_check_if_exists_cb(GtkWidget *widget, gint response, PidginRequestData *
 
 static void *
 pidgin_request_file(const char *title, const char *filename,
-	gboolean savedialog, GCallback ok_cb, GCallback cancel_cb,
-	PurpleRequestCommonParameters *cpar, void *user_data)
+                    gboolean savedialog, GCallback ok_cb, GCallback cancel_cb,
+                    G_GNUC_UNUSED PurpleRequestCommonParameters *cpar,
+                    gpointer user_data)
 {
 	PidginRequestData *data;
 	GtkFileChooserNative *filesel;
@@ -2370,8 +2378,9 @@ pidgin_request_file(const char *title, const char *filename,
 
 static void *
 pidgin_request_folder(const char *title, const char *dirname, GCallback ok_cb,
-	GCallback cancel_cb, PurpleRequestCommonParameters *cpar,
-	void *user_data)
+                      GCallback cancel_cb,
+                      G_GNUC_UNUSED PurpleRequestCommonParameters *cpar,
+                      gpointer user_data)
 {
 	PidginRequestData *data;
 	GtkFileChooserNative *dirsel;

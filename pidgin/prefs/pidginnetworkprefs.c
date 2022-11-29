@@ -54,7 +54,7 @@ G_DEFINE_TYPE(PidginNetworkPrefs, pidgin_network_prefs,
  * Helpers
  *****************************************************************************/
 static void
-network_ip_changed(GtkEditable *editable, gpointer data)
+network_ip_changed(GtkEditable *editable, G_GNUC_UNUSED gpointer data)
 {
 	const gchar *text = gtk_editable_get_text(editable);
 	GtkWidget *widget = GTK_WIDGET(editable);

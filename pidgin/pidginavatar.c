@@ -198,8 +198,8 @@ pidgin_avatar_save_response_cb(GtkNativeDialog *native, gint response,
 }
 
 static void
-pidgin_avatar_save_cb(GSimpleAction *action, GVariant *parameter,
-                      gpointer data)
+pidgin_avatar_save_cb(G_GNUC_UNUSED GSimpleAction *action,
+                      G_GNUC_UNUSED GVariant *parameter, gpointer data)
 {
 	PidginAvatar *avatar = PIDGIN_AVATAR(data);
 	PurpleBuddy *buddy = NULL;
@@ -279,8 +279,8 @@ pidgin_avatar_set_custom_response_cb(GtkNativeDialog *native, gint response,
 }
 
 static void
-pidgin_avatar_set_custom_cb(GSimpleAction *action, GVariant *parameter,
-                            gpointer data)
+pidgin_avatar_set_custom_cb(G_GNUC_UNUSED GSimpleAction *action,
+                            G_GNUC_UNUSED GVariant *parameter, gpointer data)
 {
 	PidginAvatar *avatar = PIDGIN_AVATAR(data);
 	GtkFileChooserNative *native = NULL;
@@ -300,8 +300,8 @@ pidgin_avatar_set_custom_cb(GSimpleAction *action, GVariant *parameter,
 }
 
 static void
-pidgin_avatar_clear_custom_cb(GSimpleAction *action, GVariant *parameter,
-                              gpointer data)
+pidgin_avatar_clear_custom_cb(G_GNUC_UNUSED GSimpleAction *action,
+                              G_GNUC_UNUSED GVariant *parameter, gpointer data)
 {
 	PidginAvatar *avatar = PIDGIN_AVATAR(data);
 	PurpleBuddy *buddy = NULL;
@@ -367,7 +367,9 @@ pidgin_avatar_button_press_handler(G_GNUC_UNUSED GtkGestureClick *event,
  * cause issues if a buddy is changed but a conversation is not and vice versa.
  */
 static void
-pidgin_avatar_buddy_icon_updated(GObject *obj, GParamSpec *pspec, gpointer d) {
+pidgin_avatar_buddy_icon_updated(G_GNUC_UNUSED GObject *obj,
+                                 G_GNUC_UNUSED GParamSpec *pspec, gpointer d)
+{
 	PidginAvatar *avatar = PIDGIN_AVATAR(d);
 
 	pidgin_avatar_update(avatar);
@@ -380,7 +382,8 @@ pidgin_avatar_buddy_icon_updated(GObject *obj, GParamSpec *pspec, gpointer d) {
  * cause issues if a buddy is changed but a conversation is not and vice versa.
  */
 static void
-pidgin_avatar_conversation_updated(GObject *obj, GParamSpec *pspec, gpointer d)
+pidgin_avatar_conversation_updated(G_GNUC_UNUSED GObject *obj,
+                                   G_GNUC_UNUSED GParamSpec *pspec, gpointer d)
 {
 	PidginAvatar *avatar = PIDGIN_AVATAR(d);
 

@@ -268,7 +268,7 @@ pidgin_message_set_property(GObject *obj, guint param_id, const GValue *value,
 }
 
 static void
-pidgin_message_init(PidginMessage *message) {
+pidgin_message_init(G_GNUC_UNUSED PidginMessage *message) {
 }
 
 static void

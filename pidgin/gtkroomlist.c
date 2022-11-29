@@ -216,7 +216,7 @@ pidgin_roomlist_add_to_blist(PidginRoomlistDialog *dialog)
 
 static gboolean
 _search_func(GtkTreeModel *model, gint column, const gchar *key,
-             GtkTreeIter *iter, gpointer search_data)
+             GtkTreeIter *iter, G_GNUC_UNUSED gpointer search_data)
 {
 	gboolean result;
 	gchar *name, *fold, *fkey;
@@ -251,7 +251,7 @@ pidgin_roomlist_join(PidginRoomlistDialog *dialog)
  *****************************************************************************/
 static void
 pidgin_roomlist_add_to_blist_cb(G_GNUC_UNUSED GSimpleAction *action,
-				G_GNUC_UNUSED GVariant *parameter,
+                                G_GNUC_UNUSED GVariant *parameter,
                                 gpointer data)
 {
 	pidgin_roomlist_add_to_blist(data);
@@ -259,7 +259,8 @@ pidgin_roomlist_add_to_blist_cb(G_GNUC_UNUSED GSimpleAction *action,
 
 
 static void
-pidgin_roomlist_join_cb(GSimpleAction *action, GVariant *parameter,
+pidgin_roomlist_join_cb(G_GNUC_UNUSED GSimpleAction *action,
+                        G_GNUC_UNUSED GVariant *parameter,
                         gpointer data)
 {
 	pidgin_roomlist_join(data);
@@ -280,7 +281,7 @@ static GActionEntry actions[] = {
  *****************************************************************************/
 static void
 pidgin_roomlist_response_cb(GtkDialog *gtk_dialog, gint response_id,
-                            gpointer data)
+                            G_GNUC_UNUSED gpointer data)
 {
 	PidginRoomlistDialog *dialog = PIDGIN_ROOMLIST_DIALOG(gtk_dialog);
 
@@ -349,8 +350,8 @@ selection_changed_cb(GtkTreeSelection *selection,
 }
 
 static void
-row_activated_cb(GtkTreeView *tv, GtkTreePath *path, GtkTreeViewColumn *arg2,
-                 gpointer data)
+row_activated_cb(G_GNUC_UNUSED GtkTreeView *tv, GtkTreePath *path,
+                 G_GNUC_UNUSED GtkTreeViewColumn *arg2, gpointer data)
 {
 	PidginRoomlistDialog *dialog = data;
 	PidginRoomlist *grl = NULL;

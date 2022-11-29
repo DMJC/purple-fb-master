@@ -109,7 +109,7 @@ static const PidginDBusScreenSaverInfo screensavers[] = {
 };
 
 static time_t
-pidgin_idle_get_idle_time(PurpleIdleUi *ui) {
+pidgin_idle_get_idle_time(G_GNUC_UNUSED PurpleIdleUi *ui) {
 	static guint idx = 0;
 	GApplication *app;
 	GDBusConnection *conn;
@@ -204,11 +204,11 @@ G_DEFINE_TYPE_EXTENDED(
 );
 
 static void
-pidgin_idle_init(PidginIdle *idle) {
+pidgin_idle_init(G_GNUC_UNUSED PidginIdle *idle) {
 }
 
 static void
-pidgin_idle_class_init(PidginIdleClass *klass) {
+pidgin_idle_class_init(G_GNUC_UNUSED PidginIdleClass *klass) {
 }
 
 /******************************************************************************

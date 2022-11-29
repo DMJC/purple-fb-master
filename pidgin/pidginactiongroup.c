@@ -100,8 +100,8 @@ pidgin_action_group_setup_string(PidginActionGroup *group,
  * Preference Callbacks
  *****************************************************************************/
 static void
-pidgin_action_group_sort_method_callback(const gchar *name,
-                                         PurplePrefType type,
+pidgin_action_group_sort_method_callback(G_GNUC_UNUSED const gchar *name,
+                                         G_GNUC_UNUSED PurplePrefType type,
                                          gconstpointer value,
                                          gpointer data)
 {
@@ -116,8 +116,8 @@ pidgin_action_group_sort_method_callback(const gchar *name,
  * Action Callbacks
  *****************************************************************************/
 static void
-pidgin_action_group_sort_method(GSimpleAction *action, GVariant *value,
-                                gpointer data)
+pidgin_action_group_sort_method(G_GNUC_UNUSED GSimpleAction *action,
+                                GVariant *value, G_GNUC_UNUSED gpointer data)
 {
 	purple_prefs_set_string(PIDGIN_PREFS_ROOT "/blist/sort_type",
 	                        g_variant_get_string(value, NULL));

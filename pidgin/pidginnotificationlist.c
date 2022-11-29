@@ -65,7 +65,9 @@ pidgin_notification_list_unknown_notification(PurpleNotification *notification) 
 }
 
 static GtkWidget *
-pidgin_notification_list_create_widget_func(gpointer item, gpointer data) {
+pidgin_notification_list_create_widget_func(gpointer item,
+                                            G_GNUC_UNUSED gpointer data)
+{
 	PurpleNotification *notification = item;
 	GtkWidget *widget = NULL;
 

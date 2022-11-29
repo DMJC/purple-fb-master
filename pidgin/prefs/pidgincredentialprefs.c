@@ -85,7 +85,7 @@ pidgin_credential_prefs_sort_rows(GtkListBoxRow *row1, GtkListBoxRow *row2,
 }
 
 static void
-pidgin_credential_prefs_list_row_activated_cb(GtkListBox *box,
+pidgin_credential_prefs_list_row_activated_cb(G_GNUC_UNUSED GtkListBox *box,
                                               GtkListBoxRow *row,
                                               G_GNUC_UNUSED gpointer data)
 {
@@ -131,8 +131,8 @@ pidgin_credential_prefs_set_active_provider(PidginCredentialPrefs *prefs,
 }
 
 static void
-pidgin_credential_prefs_active_provider_changed_cb(PurpleCredentialManager *manager,
-                                                   PurpleCredentialProvider *previous,
+pidgin_credential_prefs_active_provider_changed_cb(G_GNUC_UNUSED PurpleCredentialManager *manager,
+                                                   G_GNUC_UNUSED PurpleCredentialProvider *previous,
                                                    PurpleCredentialProvider *current,
                                                    gpointer data)
 {

@@ -26,6 +26,9 @@
 #include <gtk/gtk.h>
 
 #include <math.h>
+#ifndef M_PI
+#define M_PI (3.14159265358979323846264338327950288)
+#endif
 
 #include <purple.h>
 
@@ -91,7 +94,7 @@ pidgin_whiteboard_rgb24_to_rgba(int color_rgb, GdkRGBA *color)
 }
 
 static gboolean
-whiteboard_close_cb(GtkWidget *widget, GdkEvent *event,
+whiteboard_close_cb(GtkWidget *widget, G_GNUC_UNUSED GdkEvent *event,
                     G_GNUC_UNUSED gpointer data)
 {
 	PidginWhiteboard *gtkwb = PIDGIN_WHITEBOARD(widget);
@@ -102,8 +105,8 @@ whiteboard_close_cb(GtkWidget *widget, GdkEvent *event,
 }
 
 static void
-pidgin_whiteboard_resize(GtkDrawingArea *self, gint width, gint height,
-                         gpointer data)
+pidgin_whiteboard_resize(G_GNUC_UNUSED GtkDrawingArea *self, gint width,
+                         gint height, gpointer data)
 {
 	PidginWhiteboard *gtkwb = (PidginWhiteboard*)data;
 	GdkRGBA white = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -122,8 +125,8 @@ pidgin_whiteboard_resize(GtkDrawingArea *self, gint width, gint height,
 }
 
 static gboolean
-pidgin_whiteboard_draw_event(GtkWidget *widget, cairo_t *cr,
-	gpointer _gtkwb)
+pidgin_whiteboard_draw_event(G_GNUC_UNUSED GtkWidget *widget, cairo_t *cr,
+                             gpointer _gtkwb)
 {
 	PidginWhiteboard *gtkwb = _gtkwb;
 
@@ -230,8 +233,8 @@ pidgin_whiteboard_draw_brush_line(PurpleWhiteboard *wb, int x0, int y0, int x1,
 }
 
 static void
-pidgin_whiteboard_brush_down(GtkGestureDrag* self, gdouble x, gdouble y,
-                             gpointer data)
+pidgin_whiteboard_brush_down(G_GNUC_UNUSED GtkGestureDrag* self, gdouble x,
+                             gdouble y, gpointer data)
 {
 	PidginWhiteboard *gtkwb = (PidginWhiteboard*)data;
 	PurpleWhiteboard *wb = gtkwb->wb;
@@ -263,8 +266,8 @@ pidgin_whiteboard_brush_down(GtkGestureDrag* self, gdouble x, gdouble y,
 }
 
 static void
-pidgin_whiteboard_brush_motion(GtkGestureDrag* self, gdouble x, gdouble y,
-                               gpointer data)
+pidgin_whiteboard_brush_motion(G_GNUC_UNUSED GtkGestureDrag* self, gdouble x,
+                               gdouble y, gpointer data)
 {
 	PidginWhiteboard *gtkwb = (PidginWhiteboard*)data;
 	PurpleWhiteboard *wb = gtkwb->wb;
@@ -298,7 +301,8 @@ pidgin_whiteboard_brush_motion(GtkGestureDrag* self, gdouble x, gdouble y,
 }
 
 static void
-pidgin_whiteboard_brush_up(GtkGestureDrag *self, gdouble x, gdouble y,
+pidgin_whiteboard_brush_up(G_GNUC_UNUSED GtkGestureDrag *self,
+                           G_GNUC_UNUSED gdouble x, G_GNUC_UNUSED gdouble y,
                            gpointer data)
 {
 	PidginWhiteboard *gtkwb = (PidginWhiteboard*)data;
@@ -353,8 +357,7 @@ static void pidgin_whiteboard_clear(PurpleWhiteboard *wb)
 }
 
 static void
-pidgin_whiteboard_clear_response(GtkDialog *self, guint response,
-                                 gpointer data)
+pidgin_whiteboard_clear_response(GtkDialog *self, gint response, gpointer data)
 {
 	PidginWhiteboard *gtkwb = (PidginWhiteboard *)data;
 
@@ -369,7 +372,9 @@ pidgin_whiteboard_clear_response(GtkDialog *self, guint response,
 }
 
 static void
-pidgin_whiteboard_button_clear_press(GtkWidget *widget, gpointer data) {
+pidgin_whiteboard_button_clear_press(G_GNUC_UNUSED GtkWidget *widget,
+                                     gpointer data)
+{
 	PidginWhiteboard *gtkwb = (PidginWhiteboard*)(data);
 
 	/* Confirm whether the user really wants to clear */
@@ -422,7 +427,8 @@ pidgin_whiteboard_save_response(GtkNativeDialog *self, gint response_id,
 
 
 static void
-pidgin_whiteboard_button_save_press(GtkWidget *widget, gpointer _gtkwb)
+pidgin_whiteboard_button_save_press(G_GNUC_UNUSED GtkWidget *widget,
+                                    gpointer _gtkwb)
 {
 	PidginWhiteboard *gtkwb = _gtkwb;
 	GtkFileChooserNative *chooser;

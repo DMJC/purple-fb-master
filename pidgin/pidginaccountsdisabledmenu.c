@@ -76,7 +76,7 @@ pidgin_accounts_disabled_menu_changed_cb(G_GNUC_UNUSED PurpleAccountManager *man
  * GMenuModel Implementation
  *****************************************************************************/
 static gboolean
-pidgin_accounts_disabled_menu_is_mutable(GMenuModel *model) {
+pidgin_accounts_disabled_menu_is_mutable(G_GNUC_UNUSED GMenuModel *model) {
 	return TRUE;
 }
 
@@ -158,7 +158,8 @@ pidgin_accounts_disabled_menu_get_item_attributes(GMenuModel *model,
 }
 
 static void
-pidgin_accounts_disabled_menu_get_item_links(GMenuModel *model, gint index,
+pidgin_accounts_disabled_menu_get_item_links(G_GNUC_UNUSED GMenuModel *model,
+                                             G_GNUC_UNUSED gint index,
                                              GHashTable **links)
 {
 	*links = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,

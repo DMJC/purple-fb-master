@@ -58,27 +58,32 @@ typedef struct
 static void pidgin_close_notify(PurpleNotifyType type, void *ui_handle);
 
 static void
-message_response_cb(GtkDialog *dialog, gint id, GtkWidget *widget)
+message_response_cb(G_GNUC_UNUSED GtkDialog *dialog, G_GNUC_UNUSED gint id,
+                    GtkWidget *widget)
 {
 	purple_notify_close(PURPLE_NOTIFY_MESSAGE, widget);
 }
 
 static gboolean
-formatted_close_cb(GtkWidget *win, GdkEvent *event, void *user_data)
+formatted_close_cb(GtkWidget *win, G_GNUC_UNUSED GdkEvent *event,
+                   G_GNUC_UNUSED gpointer user_data)
 {
 	purple_notify_close(PURPLE_NOTIFY_FORMATTED, win);
 	return FALSE;
 }
 
 static gboolean
-searchresults_close_cb(PidginNotifySearchResultsData *data, GdkEvent *event, gpointer user_data)
+searchresults_close_cb(PidginNotifySearchResultsData *data,
+                       G_GNUC_UNUSED GdkEvent *event,
+                       G_GNUC_UNUSED gpointer user_data)
 {
 	purple_notify_close(PURPLE_NOTIFY_SEARCHRESULTS, data);
 	return FALSE;
 }
 
 static void
-searchresults_callback_wrapper_cb(GtkWidget *widget, PidginNotifySearchResultsButtonData *bd)
+searchresults_callback_wrapper_cb(G_GNUC_UNUSED GtkWidget *widget,
+                                  PidginNotifySearchResultsButtonData *bd)
 {
 	PidginNotifySearchResultsData *data = bd->data;
 
@@ -225,7 +230,8 @@ pidgin_notify_message(PurpleNotifyMessageType type, const char *title,
 
 static gboolean
 formatted_input_cb(GtkWidget *win, guint keyval, G_GNUC_UNUSED guint keycode,
-                   G_GNUC_UNUSED GdkModifierType state, gpointer data)
+                   G_GNUC_UNUSED GdkModifierType state,
+                   G_GNUC_UNUSED gpointer data)
 {
 	if (keyval == GDK_KEY_Escape) {
 		purple_notify_close(PURPLE_NOTIFY_FORMATTED, win);

@@ -141,7 +141,7 @@ create_voice_pipeline(PidginVVPrefs *prefs)
 }
 
 static void
-on_volume_change_cb(GtkWidget *w, gdouble value, gpointer data)
+on_volume_change_cb(GtkWidget *w, G_GNUC_UNUSED gdouble value, gpointer data)
 {
 	PidginVVPrefs *prefs = PIDGIN_VV_PREFS(data);
 	GstElement *volume;
@@ -173,7 +173,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
 }
 
 static gboolean
-gst_bus_cb(GstBus *bus, GstMessage *msg, gpointer data)
+gst_bus_cb(G_GNUC_UNUSED GstBus *bus, GstMessage *msg, gpointer data)
 {
 	PidginVVPrefs *prefs = PIDGIN_VV_PREFS(data);
 
@@ -212,7 +212,7 @@ gst_bus_cb(GstBus *bus, GstMessage *msg, gpointer data)
 }
 
 static void
-voice_test_destroy_cb(GtkWidget *w, gpointer data)
+voice_test_destroy_cb(G_GNUC_UNUSED GtkWidget *w, gpointer data)
 {
 	PidginVVPrefs *prefs = PIDGIN_VV_PREFS(data);
 
@@ -262,7 +262,8 @@ toggle_voice_test_cb(GtkToggleButton *test, gpointer data)
 }
 
 static void
-volume_changed_cb(GtkScaleButton *button, gdouble value, gpointer data)
+volume_changed_cb(G_GNUC_UNUSED GtkScaleButton *button, gdouble value,
+                  G_GNUC_UNUSED gpointer data)
 {
 	purple_prefs_set_int("/purple/media/audio/volume/input", value * 100);
 }
@@ -338,7 +339,7 @@ create_video_pipeline(void)
 }
 
 static void
-video_test_destroy_cb(GtkWidget *w, gpointer data)
+video_test_destroy_cb(G_GNUC_UNUSED GtkWidget *w, gpointer data)
 {
 	PidginVVPrefs *prefs = PIDGIN_VV_PREFS(data);
 
@@ -389,7 +390,7 @@ toggle_video_test_cb(GtkToggleButton *test, gpointer data)
 }
 
 static void
-vv_device_changed_cb(const gchar *name, PurplePrefType type,
+vv_device_changed_cb(const gchar *name, G_GNUC_UNUSED PurplePrefType type,
                      gconstpointer value, gpointer data)
 {
 	PidginVVPrefs *prefs = PIDGIN_VV_PREFS(data);
@@ -465,7 +466,8 @@ bind_vv_frame(PidginVVPrefs *prefs, PidginPrefCombo *combo,
 }
 
 static void
-device_list_changed_cb(PurpleMediaManager *manager, GtkWidget *widget)
+device_list_changed_cb(G_GNUC_UNUSED PurpleMediaManager *manager,
+                       GtkWidget *widget)
 {
 	PidginPrefCombo *combo;
 	PurpleMediaElementType media_type;

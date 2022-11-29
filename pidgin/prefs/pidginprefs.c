@@ -51,7 +51,7 @@ G_DEFINE_TYPE(PidginPrefsWindow, pidgin_prefs_window, GTK_TYPE_DIALOG);
  * Helpers
  *****************************************************************************/
 static void
-update_spin_value(GtkWidget *w, GtkWidget *spin)
+update_spin_value(G_GNUC_UNUSED GtkWidget *w, GtkWidget *spin)
 {
 	const char *key = g_object_get_data(G_OBJECT(spin), "val");
 	int value;
@@ -475,7 +475,7 @@ pidgin_prefs_bind_expander_row(const gchar *key, GtkWidget *widget)
 }
 
 static void
-delete_prefs(GtkWidget *asdf, void *gdsa)
+delete_prefs(G_GNUC_UNUSED GtkWidget *asdf, G_GNUC_UNUSED void *gdsa)
 {
 	/* Close any request dialogs */
 	purple_request_close_with_handle(prefs);

@@ -128,7 +128,7 @@ pidgin_plugins_menu_plugin_unloaded_cb(G_GNUC_UNUSED GObject *manager,
  * GMenuModel Implementation
  *****************************************************************************/
 static gboolean
-pidgin_plugins_menu_is_mutable(GMenuModel *model) {
+pidgin_plugins_menu_is_mutable(G_GNUC_UNUSED GMenuModel *model) {
 	return TRUE;
 }
 

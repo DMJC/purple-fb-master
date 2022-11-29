@@ -37,7 +37,7 @@ entry_cb(GtkWidget *entry, gpointer data) {
 
 
 static void
-multiline_cb(GtkTextBuffer *buffer, gpointer data) {
+multiline_cb(GtkTextBuffer *buffer, G_GNUC_UNUSED gpointer data) {
 	gchar *pref = NULL, *text = NULL;
 
 	pref = g_object_get_data(G_OBJECT(buffer), "pref-key");

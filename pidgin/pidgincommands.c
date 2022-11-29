@@ -28,8 +28,9 @@
  * Command Implementations
  *****************************************************************************/
 static PurpleCmdRet
-say_command_cb(PurpleConversation *conv,
-              const char *cmd, char **args, char **error, void *data)
+say_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+               char **args, G_GNUC_UNUSED char **error,
+               G_GNUC_UNUSED gpointer data)
 {
 	purple_conversation_send(conv, args[0]);
 
@@ -37,8 +38,9 @@ say_command_cb(PurpleConversation *conv,
 }
 
 static PurpleCmdRet
-me_command_cb(PurpleConversation *conv,
-              const char *cmd, char **args, char **error, void *data)
+me_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+              char **args, G_GNUC_UNUSED char **error,
+              G_GNUC_UNUSED gpointer data)
 {
 	char *tmp;
 
@@ -50,8 +52,9 @@ me_command_cb(PurpleConversation *conv,
 }
 
 static PurpleCmdRet
-debug_command_cb(PurpleConversation *conv,
-                 const char *cmd, char **args, char **error, void *data)
+debug_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+                 char **args, G_GNUC_UNUSED char **error,
+                 G_GNUC_UNUSED gpointer data)
 {
 	char *tmp, *markup;
 
@@ -126,16 +129,18 @@ debug_command_cb(PurpleConversation *conv,
 }
 
 static PurpleCmdRet
-clear_command_cb(PurpleConversation *conv,
-                 const char *cmd, char **args, char **error, void *data)
+clear_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+                 G_GNUC_UNUSED char **args, G_GNUC_UNUSED char **error,
+                 G_GNUC_UNUSED gpointer data)
 {
 	purple_conversation_clear_message_history(conv);
 	return PURPLE_CMD_RET_OK;
 }
 
 static PurpleCmdRet
-clearall_command_cb(PurpleConversation *conv,
-                 const char *cmd, char **args, char **error, void *data)
+clearall_command_cb(G_GNUC_UNUSED PurpleConversation *conv,
+                    G_GNUC_UNUSED const char *cmd, G_GNUC_UNUSED char **args,
+                    G_GNUC_UNUSED char **error, G_GNUC_UNUSED gpointer data)
 {
 	PurpleConversationManager *manager;
 	GList *list;
@@ -155,8 +160,9 @@ clearall_command_cb(PurpleConversation *conv,
 }
 
 static PurpleCmdRet
-help_command_cb(PurpleConversation *conv,
-                 const char *cmd, char **args, char **error, void *data)
+help_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+                char **args, G_GNUC_UNUSED char **error,
+                G_GNUC_UNUSED gpointer data)
 {
 	GList *l, *text;
 	GString *s;

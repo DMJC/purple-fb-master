@@ -641,10 +641,10 @@ static void gtk_blist_renderer_editing_cancelled_cb(GtkCellRenderer *renderer, P
 	pidgin_blist_refresh(list);
 }
 
-static void gtk_blist_renderer_editing_started_cb(GtkCellRenderer *renderer,
-		GtkCellEditable *editable,
-		gchar *path_str,
-		gpointer user_data)
+static void
+gtk_blist_renderer_editing_started_cb(G_GNUC_UNUSED GtkCellRenderer *renderer,
+                                      GtkCellEditable *editable,
+                                      gchar *path_str, gpointer user_data)
 {
 	PidginBuddyList *gtkblist = PIDGIN_BUDDY_LIST(user_data);
 	GtkTreeIter iter;
@@ -785,8 +785,9 @@ gtk_blist_auto_personize(PurpleBlistNode *group, const char *alias)
 		g_list_free(merges);
 }
 
-static void gtk_blist_renderer_edited_cb(GtkCellRendererText *text_rend, char *arg1,
-					 char *arg2, PurpleBuddyList *list)
+static void
+gtk_blist_renderer_edited_cb(G_GNUC_UNUSED GtkCellRendererText *text_rend,
+                             char *arg1, char *arg2, PurpleBuddyList *list)
 {
 	PidginBuddyList *gtkblist = PIDGIN_BUDDY_LIST(list);
 	GtkTreeIter iter;
@@ -904,7 +905,8 @@ do_joinchat(GtkWidget *dialog, int id, PidginChatData *info)
  * strings are empty then don't allow the user to click on "OK."
  */
 static void
-set_sensitive_if_input_chat_cb(GtkWidget *entry, gpointer user_data)
+set_sensitive_if_input_chat_cb(G_GNUC_UNUSED GtkWidget *entry,
+                               gpointer user_data)
 {
 	PurpleProtocol *protocol;
 	PurpleConnection *gc;
@@ -984,9 +986,10 @@ pidgin_blist_joinchat_is_showable(void)
 
 static void
 make_blist_request_dialog(PidginBlistRequestData *data, PurpleAccount *account,
-	const char *title, const char *window_role, const char *label_text,
-	GCallback callback_func, GtkCustomFilterFunc filter_func,
-	GCallback response_cb)
+                          const char *title, const char *label_text,
+                          GCallback callback_func,
+                          GtkCustomFilterFunc filter_func,
+                          GCallback response_cb)
 {
 	GtkWidget *label;
 	GtkWidget *img;
@@ -1183,7 +1186,7 @@ pidgin_blist_joinchat_show(void)
 	data = g_new0(PidginChatData, 1);
 
 	make_blist_request_dialog((PidginBlistRequestData *)data, NULL,
-		_("Join a Chat"), "join_chat",
+		_("Join a Chat"),
 		_("Please enter the appropriate information about the chat "
 			"you would like to join.\n"),
 		G_CALLBACK(chat_select_account_cb),
@@ -1204,7 +1207,9 @@ pidgin_blist_joinchat_show(void)
 	gtk_widget_show(data->rq_data.window);
 }
 
-static void gtk_blist_row_expanded_cb(GtkTreeView *tv, GtkTreeIter *iter, GtkTreePath *path, gpointer user_data)
+static void
+gtk_blist_row_expanded_cb(G_GNUC_UNUSED GtkTreeView *tv, GtkTreeIter *iter,
+                          G_GNUC_UNUSED GtkTreePath *path, gpointer user_data)
 {
 	PidginBuddyList *gtkblist = PIDGIN_BUDDY_LIST(user_data);
 	PurpleBlistNode *node;
@@ -1227,7 +1232,9 @@ static void gtk_blist_row_expanded_cb(GtkTreeView *tv, GtkTreeIter *iter, GtkTre
 	}
 }
 
-static void gtk_blist_row_collapsed_cb(GtkTreeView *tv, GtkTreeIter *iter, GtkTreePath *path, gpointer user_data)
+static void
+gtk_blist_row_collapsed_cb(G_GNUC_UNUSED GtkTreeView *tv, GtkTreeIter *iter,
+                           G_GNUC_UNUSED GtkTreePath *path, gpointer user_data)
 {
 	PidginBuddyList *gtkblist = PIDGIN_BUDDY_LIST(user_data);
 	PurpleBlistNode *node;
@@ -1264,7 +1271,10 @@ static void gtk_blist_row_collapsed_cb(GtkTreeView *tv, GtkTreeIter *iter, GtkTr
 	}
 }
 
-static void gtk_blist_row_activated_cb(GtkTreeView *tv, GtkTreePath *path, GtkTreeViewColumn *col, gpointer data) {
+static void
+gtk_blist_row_activated_cb(G_GNUC_UNUSED GtkTreeView *tv, GtkTreePath *path,
+                           G_GNUC_UNUSED GtkTreeViewColumn *col, gpointer data)
+{
 	PidginBuddyList *gtkblist = PIDGIN_BUDDY_LIST(data);
 	PurpleBlistNode *node;
 	GtkTreeIter iter;
@@ -1311,7 +1321,8 @@ scroll_to_expanded_cell(gpointer data)
 }
 
 static void
-pidgin_blist_expand_contact_cb(GtkWidget *w, PurpleBlistNode *node)
+pidgin_blist_expand_contact_cb(G_GNUC_UNUSED GtkWidget *w,
+                               PurpleBlistNode *node)
 {
 	PidginBlistNode *gtknode;
 	GtkTreeIter iter, parent;
@@ -1347,7 +1358,8 @@ pidgin_blist_expand_contact_cb(GtkWidget *w, PurpleBlistNode *node)
 }
 
 static void
-pidgin_blist_collapse_contact_cb(GtkWidget *w, PurpleBlistNode *node)
+pidgin_blist_collapse_contact_cb(G_GNUC_UNUSED GtkWidget *w,
+                                 PurpleBlistNode *node)
 {
 	PurpleBlistNode *bnode;
 	PidginBlistNode *gtknode;
@@ -2476,7 +2488,8 @@ static char *pidgin_get_tooltip_text(PurpleBlistNode *node, gboolean full)
 
 static GHashTable *cached_emblems;
 
-static void _cleanup_cached_emblem(gpointer data, GObject *obj) {
+static void
+_cleanup_cached_emblem(gpointer data, G_GNUC_UNUSED GObject *obj) {
 	g_hash_table_remove(cached_emblems, data);
 }
 
@@ -2778,7 +2791,7 @@ static void pidgin_blist_hide_node(PurpleBuddyList *list, PurpleBlistNode *node,
 
 static void
 conversation_updated_cb(PurpleConversation *conv, PurpleConversationUpdateType type,
-                        PidginBuddyList *gtkblist)
+                        G_GNUC_UNUSED PidginBuddyList *gtkblist)
 {
 	PurpleAccount *account = purple_conversation_get_account(conv);
 
@@ -2807,7 +2820,8 @@ conversation_deleted_update_ui_cb(PurpleConversation *conv, PidginBlistNode *ui)
 }
 
 static void
-conversation_created_cb(PurpleConversation *conv, PidginBuddyList *gtkblist)
+conversation_created_cb(PurpleConversation *conv,
+                        G_GNUC_UNUSED PidginBuddyList *gtkblist)
 {
 	PurpleAccount *account = purple_conversation_get_account(conv);
 
@@ -2854,7 +2868,9 @@ pidgin_blist_node_free(PidginBlistNode *node) {
 }
 
 static void
-pidgin_blist_new_node(PurpleBuddyList *list, PurpleBlistNode *node) {
+pidgin_blist_new_node(G_GNUC_UNUSED PurpleBuddyList *list,
+                      PurpleBlistNode *node)
+{
 	PidginBlistNode *pidgin_node = NULL;
 
 	pidgin_node = g_new0(PidginBlistNode, 1);
@@ -2897,8 +2913,10 @@ pidgin_blist_setup_sort_methods(void)
 	pidgin_blist_sort_method_set(id);
 }
 
-static void _prefs_change_sort_method(const char *pref_name, PurplePrefType type,
-									  gconstpointer val, gpointer data)
+static void
+_prefs_change_sort_method(const char *pref_name,
+                          G_GNUC_UNUSED PurplePrefType type, gconstpointer val,
+                          G_GNUC_UNUSED gpointer data)
 {
 	if(purple_strequal(pref_name, PIDGIN_PREFS_ROOT "/blist/sort_type"))
 		pidgin_blist_sort_method_set(val);
@@ -3285,7 +3303,9 @@ static gboolean do_selection_changed(PurpleBlistNode *new_selection)
 	return FALSE;
 }
 
-static void pidgin_blist_selection_changed(GtkTreeSelection *selection, gpointer data)
+static void
+pidgin_blist_selection_changed(GtkTreeSelection *selection,
+                               G_GNUC_UNUSED gpointer data)
 {
 	PurpleBlistNode *new_selection = NULL;
 	GtkTreeIter iter;
@@ -3568,7 +3588,9 @@ static void pidgin_blist_update_contact(PurpleBuddyList *list, PurpleBlistNode *
 
 
 
-static void pidgin_blist_update_buddy(PurpleBuddyList *list, PurpleBlistNode *node, gboolean status_change)
+static void
+pidgin_blist_update_buddy(PurpleBuddyList *list, PurpleBlistNode *node,
+                          G_GNUC_UNUSED gboolean status_change)
 {
 	PurpleBuddy *buddy;
 	PidginBlistNode *gtkparentnode;
@@ -3691,7 +3713,8 @@ static void pidgin_blist_update(PurpleBuddyList *list, PurpleBlistNode *node)
 	}
 }
 
-static void pidgin_blist_set_visible(PurpleBuddyList *list, gboolean show)
+static void
+pidgin_blist_set_visible(G_GNUC_UNUSED PurpleBuddyList *list, gboolean show)
 {
 	if (!(gtkblist && gtkblist->window))
 		return;
@@ -3706,9 +3729,9 @@ static void pidgin_blist_set_visible(PurpleBuddyList *list, gboolean show)
 }
 
 static void
-pidgin_blist_request_add_buddy(PurpleBuddyList *list, PurpleAccount *account,
-                               const char *username, const char *group,
-                               const char *alias)
+pidgin_blist_request_add_buddy(G_GNUC_UNUSED PurpleBuddyList *list,
+                               PurpleAccount *account, const char *username,
+                               const char *group, const char *alias)
 {
 	GtkWidget *dialog = NULL;
 
@@ -3718,9 +3741,9 @@ pidgin_blist_request_add_buddy(PurpleBuddyList *list, PurpleAccount *account,
 }
 
 static void
-pidgin_blist_request_add_chat(PurpleBuddyList *list, PurpleAccount *account,
-                              PurpleGroup *group, const char *alias,
-                              const char *name)
+pidgin_blist_request_add_chat(G_GNUC_UNUSED PurpleBuddyList *list,
+                              PurpleAccount *account, PurpleGroup *group,
+                              const char *alias, const char *name)
 {
 	GtkWidget *dialog = NULL;
 
@@ -3730,7 +3753,8 @@ pidgin_blist_request_add_chat(PurpleBuddyList *list, PurpleAccount *account,
 }
 
 static void
-add_group_cb(PurpleConnection *gc, const char *group_name)
+add_group_cb(G_GNUC_UNUSED PurpleConnection *connection,
+             const char *group_name)
 {
 	PurpleGroup *group;
 
@@ -3742,7 +3766,7 @@ add_group_cb(PurpleConnection *gc, const char *group_name)
 }
 
 static void
-pidgin_blist_request_add_group(PurpleBuddyList *list)
+pidgin_blist_request_add_group(G_GNUC_UNUSED PurpleBuddyList *list)
 {
 	purple_request_input(NULL, _("Add Group"), NULL,
 					   _("Please enter the name of the group to be added."),
@@ -3758,7 +3782,8 @@ pidgin_blist_get_default_gtk_blist(void)
 	return gtkblist;
 }
 
-static gboolean autojoin_cb(PurpleConnection *gc, gpointer data)
+static gboolean
+autojoin_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account = purple_connection_get_account(gc);
 	PurpleBlistNode *gnode, *cnode;
@@ -3888,7 +3913,7 @@ pidgin_blist_uninit(void) {
  * GTK Buddy list GObject code
  **************************************************************************/
 static void
-pidgin_buddy_list_init(PidginBuddyList *self)
+pidgin_buddy_list_init(G_GNUC_UNUSED PidginBuddyList *self)
 {
 }
 
@@ -4000,7 +4025,9 @@ void pidgin_blist_sort_method_set(const char *id){
  ** Sort Methods
  ******************************************/
 
-static void sort_method_none(PurpleBlistNode *node, PurpleBuddyList *blist, GtkTreeIter parent_iter, GtkTreeIter *cur, GtkTreeIter *iter)
+static void
+sort_method_none(PurpleBlistNode *node, G_GNUC_UNUSED PurpleBuddyList *blist,
+                 GtkTreeIter parent_iter, GtkTreeIter *cur, GtkTreeIter *iter)
 {
 	PurpleBlistNode *sibling = node->prev;
 	GtkTreeIter sibling_iter;

@@ -151,7 +151,9 @@ pidgin_status_editor_response_cb(GtkDialog *dialog, gint response_id,
 }
 
 static void
-pidgin_status_editor_title_changed_cb(GtkEditable *editable, gpointer data) {
+pidgin_status_editor_title_changed_cb(G_GNUC_UNUSED GtkEditable *editable,
+                                      gpointer data)
+{
 	PidginStatusEditor *editor = data;
 	gboolean title_changed = FALSE, sensitive = FALSE;
 	const gchar *title = NULL;

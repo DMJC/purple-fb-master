@@ -116,7 +116,7 @@ enum {
 };
 
 static gboolean
-pidgin_media_close_request_cb(GtkWindow *window, gpointer data) {
+pidgin_media_close_request_cb(G_GNUC_UNUSED GtkWindow *window, gpointer data) {
 	PidginMedia *media = data;
 
 	if(media->priv->media) {
@@ -167,8 +167,9 @@ pidgin_media_class_init (PidginMediaClass *klass)
 }
 
 static void
-pidgin_media_hangup_activate_cb(GSimpleAction *action, GVariant *parameter,
-		gpointer user_data)
+pidgin_media_hangup_activate_cb(G_GNUC_UNUSED GSimpleAction *action,
+                                G_GNUC_UNUSED GVariant *parameter,
+                                gpointer user_data)
 {
 	PidginMedia *media = PIDGIN_MEDIA(user_data);
 
@@ -219,10 +220,25 @@ pidgin_media_pause_change_state_cb(GSimpleAction *action, GVariant *value,
 }
 
 static const GActionEntry media_action_entries[] = {
-	{ "Hangup", pidgin_media_hangup_activate_cb },
-	{ "Hold", NULL, NULL, "false", pidgin_media_hold_change_state_cb },
-	{ "Mute", NULL, NULL, "false", pidgin_media_mute_change_state_cb },
-	{ "Pause", NULL, NULL, "false", pidgin_media_pause_change_state_cb },
+	{
+		.name = "Hangup",
+		.activate = pidgin_media_hangup_activate_cb,
+	},
+	{
+		.name = "Hold",
+		.state = "false",
+		.change_state = pidgin_media_hold_change_state_cb,
+	},
+	{
+		.name = "Mute",
+		.state = "false",
+		.change_state = pidgin_media_mute_change_state_cb,
+	},
+	{
+		.name = "Pause",
+		.state =  "false",
+		.change_state = pidgin_media_pause_change_state_cb,
+	},
 };
 
 static void
@@ -327,8 +343,8 @@ pidgin_media_remove_widget(PidginMedia *gtkmedia,
 }
 
 static void
-level_message_cb(PurpleMedia *media, gchar *session_id, gchar *participant,
-		double level, PidginMedia *gtkmedia)
+level_message_cb(G_GNUC_UNUSED PurpleMedia *media, char *session_id,
+                 char *participant, double level, PidginMedia *gtkmedia)
 {
 	GtkWidget *progress = NULL;
 
@@ -412,7 +428,7 @@ pidgin_media_emit_message(PidginMedia *gtkmedia, const char *msg)
 }
 
 static void
-pidgin_media_error_cb(PidginMedia *media, const gchar *error,
+pidgin_media_error_cb(G_GNUC_UNUSED PidginMedia *media, const char *error,
                       PidginMedia *gtkmedia)
 {
 	PurpleConversation *conv;
@@ -439,14 +455,14 @@ pidgin_media_error_cb(PidginMedia *media, const gchar *error,
 }
 
 static void
-pidgin_media_accept_cb(PurpleMedia *media, int index)
+pidgin_media_accept_cb(PurpleMedia *media, G_GNUC_UNUSED int index)
 {
 	purple_media_stream_info(media, PURPLE_MEDIA_INFO_ACCEPT,
 			NULL, NULL, TRUE);
 }
 
 static void
-pidgin_media_reject_cb(PurpleMedia *media, int index)
+pidgin_media_reject_cb(PurpleMedia *media, G_GNUC_UNUSED int index)
 {
 	GList *iter = purple_media_get_session_ids(media);
 	for (; iter; iter = g_list_delete_link(iter, iter)) {
@@ -503,23 +519,23 @@ pidgin_request_timeout_cb(PidginMedia *gtkmedia)
 }
 
 static void
-pidgin_media_input_volume_changed(GtkScaleButton *range, double value,
-		PurpleMedia *media)
+pidgin_media_input_volume_changed(G_GNUC_UNUSED GtkScaleButton *range,
+                                  double value, PurpleMedia *media)
 {
 	double val = (double)value * 100.0;
 	purple_media_set_input_volume(media, NULL, val);
 }
 
 static void
-pidgin_media_output_volume_changed(GtkScaleButton *range, double value,
-		PurpleMedia *media)
+pidgin_media_output_volume_changed(G_GNUC_UNUSED GtkScaleButton *range,
+                                   double value, PurpleMedia *media)
 {
 	double val = (double)value * 100.0;
 	purple_media_set_output_volume(media, NULL, NULL, val);
 }
 
 static void
-destroy_parent_widget_cb(GtkWidget *widget, GtkWidget *parent)
+destroy_parent_widget_cb(G_GNUC_UNUSED GtkWidget *widget, GtkWidget *parent)
 {
 	g_return_if_fail(GTK_IS_WIDGET(parent));
 
@@ -590,7 +606,8 @@ pidgin_media_add_audio_widget(PidginMedia *gtkmedia,
 }
 
 static void
-pidgin_media_keypad_pressed_cb(PidginKeypad *keypad, guint key, gpointer data)
+pidgin_media_keypad_pressed_cb(G_GNUC_UNUSED PidginKeypad *keypad, guint key,
+                               gpointer data)
 {
 	PidginMedia *gtkmedia = data;
 	gchar *sid;
@@ -602,7 +619,8 @@ pidgin_media_keypad_pressed_cb(PidginKeypad *keypad, guint key, gpointer data)
 
 static GtkWidget *
 pidgin_media_add_dtmf_widget(PidginMedia *gtkmedia,
-		PurpleMediaSessionType type, const gchar *_sid)
+                             G_GNUC_UNUSED PurpleMediaSessionType type,
+                             const char *_sid)
 {
 	GtkApplicationWindow *win = GTK_APPLICATION_WINDOW(gtkmedia);
 	GtkWidget *keypad = NULL;
@@ -787,9 +805,11 @@ pidgin_media_state_changed_cb(PurpleMedia *media, PurpleMediaState state,
 }
 
 static void
-pidgin_media_stream_info_cb(PurpleMedia *media, PurpleMediaInfoType type,
-		gchar *sid, gchar *name, gboolean local,
-		PidginMedia *gtkmedia)
+pidgin_media_stream_info_cb(G_GNUC_UNUSED PurpleMedia *media,
+                            PurpleMediaInfoType type,
+                            G_GNUC_UNUSED gchar *sid,
+                            G_GNUC_UNUSED gchar *name, gboolean local,
+                            PidginMedia *gtkmedia)
 {
 	if (type == PURPLE_MEDIA_INFO_REJECT) {
 		pidgin_media_emit_message(gtkmedia,
@@ -876,8 +896,9 @@ pidgin_media_set_state(PidginMedia *gtkmedia, PidginMediaState state)
 }
 
 static gboolean
-pidgin_media_new_cb(PurpleMediaManager *manager, PurpleMedia *media,
-		PurpleAccount *account, gchar *screenname, gpointer nul)
+pidgin_media_new_cb(G_GNUC_UNUSED PurpleMediaManager *manager,
+                    PurpleMedia *media, PurpleAccount *account,
+                    char *screenname, G_GNUC_UNUSED gpointer data)
 {
 	PidginMedia *gtkmedia = NULL;
 	PurpleBuddy *buddy = NULL;

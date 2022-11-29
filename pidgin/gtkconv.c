@@ -95,7 +95,7 @@ close_this_sucker(gpointer data)
 }
 
 static gboolean
-close_conv_cb(GtkButton *button, PidginConversation *gtkconv)
+close_conv_cb(G_GNUC_UNUSED GtkButton *button, PidginConversation *gtkconv)
 {
 	/* We are going to destroy the conversations immediately only if the 'close immediately'
 	 * preference is selected. Otherwise, close the conversation after a reasonable timeout
@@ -234,7 +234,7 @@ check_for_and_do_command(PurpleConversation *conv)
 }
 
 static void
-send_cb(GtkWidget *widget, PidginConversation *gtkconv)
+send_cb(G_GNUC_UNUSED GtkWidget *widget, PidginConversation *gtkconv)
 {
 	PurpleConversation *conv = gtkconv->active_conv;
 	PurpleAccount *account;
@@ -624,7 +624,9 @@ handled:
 }
 
 static void
-activate_list_cb(GtkTreeView *list, GtkTreePath *path, GtkTreeViewColumn *column, PidginConversation *gtkconv)
+activate_list_cb(GtkTreeView *list, GtkTreePath *path,
+                 G_GNUC_UNUSED GtkTreeViewColumn *column,
+                 PidginConversation *gtkconv)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
@@ -1006,7 +1008,8 @@ get_chat_user_status_icon(PurpleChatConversation *chat, const char *name, Purple
 }
 
 static void
-add_chat_user_common(PurpleChatConversation *chat, PurpleChatUser *cb, const char *old_name)
+add_chat_user_common(PurpleChatConversation *chat, PurpleChatUser *cb,
+                     G_GNUC_UNUSED const char *old_name)
 {
 	PidginConversation *gtkconv;
 	PurpleConversation *conv;
@@ -1073,7 +1076,8 @@ add_chat_user_common(PurpleChatConversation *chat, PurpleChatUser *cb, const cha
 	g_free(alias_key);
 }
 
-static void topic_callback(GtkWidget *w, PidginConversation *gtkconv)
+static void
+topic_callback(G_GNUC_UNUSED GtkWidget *w, PidginConversation *gtkconv)
 {
 	PurpleProtocol *protocol = NULL;
 	PurpleConnection *gc;
@@ -1111,7 +1115,8 @@ static void topic_callback(GtkWidget *w, PidginConversation *gtkconv)
 }
 
 static gint
-sort_chat_users(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
+sort_chat_users(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b,
+                G_GNUC_UNUSED gpointer userdata)
 {
 	PurpleChatUserFlags f1 = 0, f2 = 0;
 	char *user1 = NULL, *user2 = NULL;
@@ -1153,7 +1158,9 @@ sort_chat_users(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer us
 }
 
 static void
-update_chat_alias(PurpleBuddy *buddy, PurpleChatConversation *chat, PurpleConnection *gc, PurpleProtocol *protocol)
+update_chat_alias(PurpleBuddy *buddy, PurpleChatConversation *chat,
+                  G_GNUC_UNUSED PurpleConnection *connection,
+                  G_GNUC_UNUSED PurpleProtocol *protocol)
 {
 	PidginConversation *gtkconv = PIDGIN_CONVERSATION(PURPLE_CONVERSATION(chat));
 	PurpleAccount *account = purple_conversation_get_account(PURPLE_CONVERSATION(chat));
@@ -1635,7 +1642,7 @@ ignore_middle_click(G_GNUC_UNUSED GtkGestureClick *click,
  * Conversation UI operations
  **************************************************************************/
 static void
-private_gtkconv_new(PurpleConversation *conv, gboolean hidden)
+private_gtkconv_new(PurpleConversation *conv, G_GNUC_UNUSED gboolean hidden)
 {
 	PidginConversation *gtkconv;
 	GtkWidget *tab_cont, *pane;
@@ -1712,8 +1719,10 @@ pidgin_conversation_detach(PurpleConversation *conv) {
 }
 
 static void
-received_im_msg_cb(PurpleAccount *account, char *sender, char *message,
-				   PurpleConversation *conv, PurpleMessageFlags flags)
+received_im_msg_cb(G_GNUC_UNUSED PurpleAccount *account,
+                   G_GNUC_UNUSED char *sender, G_GNUC_UNUSED char *message,
+                   PurpleConversation *conv,
+                   G_GNUC_UNUSED PurpleMessageFlags flags)
 {
 	guint timer;
 
@@ -1774,7 +1783,8 @@ pidgin_conv_destroy(PurpleConversation *conv)
 }
 
 static gboolean
-writing_msg(PurpleConversation *conv, PurpleMessage *msg, gpointer _unused)
+writing_msg(PurpleConversation *conv, PurpleMessage *msg,
+            G_GNUC_UNUSED gpointer _unused)
 {
 	PidginConversation *gtkconv;
 
@@ -1862,7 +1872,8 @@ static gboolean get_iter_from_chatuser(PurpleChatUser *cb, GtkTreeIter *iter)
 }
 
 static void
-pidgin_conv_chat_add_users(PurpleChatConversation *chat, GList *cbuddies, gboolean new_arrivals)
+pidgin_conv_chat_add_users(PurpleChatConversation *chat, GList *cbuddies,
+                           G_GNUC_UNUSED gboolean new_arrivals)
 {
 	PidginConversation *gtkconv;
 	GtkListStore *ls;
@@ -2193,8 +2204,10 @@ pidgin_conversations_get_conv_ui_ops(void)
  * Public conversation utility functions
  **************************************************************************/
 static void
-show_formatting_toolbar_pref_cb(const char *name, PurplePrefType type,
-								gconstpointer value, gpointer data)
+show_formatting_toolbar_pref_cb(G_GNUC_UNUSED const char *name,
+                                G_GNUC_UNUSED PurplePrefType type,
+                                gconstpointer value,
+                                G_GNUC_UNUSED gpointer data)
 {
 	GList *list;
 	PurpleConversation *conv;
@@ -2246,7 +2259,7 @@ get_gtkconv_with_contact(PurpleMetaContact *contact)
 }
 
 static void
-account_signed_off_cb(PurpleConnection *gc, gpointer event)
+account_signed_off_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer event)
 {
 	PurpleConversationManager *manager;
 	GList *list;
@@ -2357,7 +2370,8 @@ update_buddy_privacy_changed(PurpleBuddy *buddy)
 }
 
 static void
-update_buddy_idle_changed(PurpleBuddy *buddy, gboolean old, gboolean newidle)
+update_buddy_idle_changed(PurpleBuddy *buddy, G_GNUC_UNUSED gboolean old,
+                          G_GNUC_UNUSED gboolean newidle)
 {
 	PurpleConversation *im;
 	PurpleConversationManager *manager;
@@ -2440,7 +2454,8 @@ update_chat(PurpleChatConversation *chat)
 }
 
 static void
-update_chat_topic(PurpleChatConversation *chat, const char *old, const char *new)
+update_chat_topic(PurpleChatConversation *chat, G_GNUC_UNUSED const char *old,
+                  G_GNUC_UNUSED const char *new)
 {
 	pidgin_conv_update_fields(PURPLE_CONVERSATION(chat), PIDGIN_CONV_TOPIC);
 }

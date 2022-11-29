@@ -258,8 +258,8 @@ pidgin_application_actions_set_enabled(PidginApplication *application,
 }
 
 static void
-pidgin_application_about(GSimpleAction *simple, GVariant *parameter,
-                         gpointer data)
+pidgin_application_about(G_GNUC_UNUSED GSimpleAction *simple,
+                         G_GNUC_UNUSED GVariant *parameter, gpointer data)
 {
 	PidginApplication *application = data;
 	static GtkWidget *about = NULL;
@@ -273,8 +273,8 @@ pidgin_application_about(GSimpleAction *simple, GVariant *parameter,
 }
 
 static void
-pidgin_application_accounts(GSimpleAction *simple, GVariant *parameter,
-                            gpointer data)
+pidgin_application_accounts(G_GNUC_UNUSED GSimpleAction *simple,
+                            G_GNUC_UNUSED GVariant *parameter, gpointer data)
 {
 	PidginApplication *application = data;
 	static GtkWidget *manager = NULL;
@@ -289,29 +289,33 @@ pidgin_application_accounts(GSimpleAction *simple, GVariant *parameter,
 }
 
 static void
-pidgin_application_add_buddy(GSimpleAction *simple, GVariant *parameter,
-                             gpointer data)
+pidgin_application_add_buddy(G_GNUC_UNUSED GSimpleAction *simple,
+                             G_GNUC_UNUSED GVariant *parameter,
+                             G_GNUC_UNUSED gpointer data)
 {
 	purple_blist_request_add_buddy(NULL, NULL, NULL, NULL);
 }
 
 static void
-pidgin_application_add_chat(GSimpleAction *simple, GVariant *parameter,
-                            gpointer data)
+pidgin_application_add_chat(G_GNUC_UNUSED GSimpleAction *simple,
+                            G_GNUC_UNUSED GVariant *parameter,
+                            G_GNUC_UNUSED gpointer data)
 {
 	purple_blist_request_add_chat(NULL, NULL, NULL, NULL);
 }
 
 static void
-pidgin_application_add_group(GSimpleAction *simple, GVariant *parameter,
-                             gpointer data)
+pidgin_application_add_group(G_GNUC_UNUSED GSimpleAction *simple,
+                             G_GNUC_UNUSED GVariant *parameter,
+                             G_GNUC_UNUSED gpointer data)
 {
 	purple_blist_request_add_group();
 }
 
 static void
-pidgin_application_connect_account(GSimpleAction *simple, GVariant *parameter,
-                                   gpointer data)
+pidgin_application_connect_account(G_GNUC_UNUSED GSimpleAction *simple,
+                                   GVariant *parameter,
+                                   G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account = NULL;
 	PurpleAccountManager *manager = NULL;
@@ -328,8 +332,9 @@ pidgin_application_connect_account(GSimpleAction *simple, GVariant *parameter,
 }
 
 static void
-pidgin_application_debug(GSimpleAction *simple, GVariant *parameter,
-                         gpointer data)
+pidgin_application_debug(G_GNUC_UNUSED GSimpleAction *simple,
+                         G_GNUC_UNUSED GVariant *parameter,
+                         G_GNUC_UNUSED gpointer data)
 {
 	gboolean old = purple_prefs_get_bool(PIDGIN_PREFS_ROOT "/debug/enabled");
 	purple_prefs_set_bool(PIDGIN_PREFS_ROOT "/debug/enabled", !old);
@@ -337,8 +342,9 @@ pidgin_application_debug(GSimpleAction *simple, GVariant *parameter,
 
 
 static void
-pidgin_application_disable_account(GSimpleAction *simple, GVariant *parameter,
-                                   gpointer data)
+pidgin_application_disable_account(G_GNUC_UNUSED GSimpleAction *simple,
+                                   GVariant *parameter,
+                                   G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account = NULL;
 	PurpleAccountManager *manager = NULL;
@@ -365,8 +371,8 @@ pidgin_application_donate(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_application_edit_account(GSimpleAction *simple, GVariant *parameter,
-                                gpointer data)
+pidgin_application_edit_account(G_GNUC_UNUSED GSimpleAction *simple,
+                                GVariant *parameter, gpointer data)
 {
 	PidginApplication *application = data;
 	PurpleAccount *account = NULL;
@@ -387,8 +393,9 @@ pidgin_application_edit_account(GSimpleAction *simple, GVariant *parameter,
 }
 
 static void
-pidgin_application_enable_account(GSimpleAction *simple, GVariant *parameter,
-                                  gpointer data)
+pidgin_application_enable_account(G_GNUC_UNUSED GSimpleAction *simple,
+                                  GVariant *parameter,
+                                  G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account = NULL;
 	PurpleAccountManager *manager = NULL;
@@ -407,29 +414,33 @@ pidgin_application_enable_account(GSimpleAction *simple, GVariant *parameter,
 }
 
 static void
-pidgin_application_file_transfers(GSimpleAction *simple, GVariant *parameter,
-                                  gpointer data)
+pidgin_application_file_transfers(G_GNUC_UNUSED GSimpleAction *simple,
+                                  G_GNUC_UNUSED GVariant *parameter,
+                                  G_GNUC_UNUSED gpointer data)
 {
 	pidgin_xfer_dialog_show(NULL);
 }
 
 static void
-pidgin_application_get_user_info(GSimpleAction *simple, GVariant *parameter,
-                                 gpointer data)
+pidgin_application_get_user_info(G_GNUC_UNUSED GSimpleAction *simple,
+                                 G_GNUC_UNUSED GVariant *parameter,
+                                 G_GNUC_UNUSED gpointer data)
 {
 	pidgin_dialogs_info();
 }
 
 static void
-pidgin_application_join_chat(GSimpleAction *simple, GVariant *parameter,
-                             gpointer data)
+pidgin_application_join_chat(G_GNUC_UNUSED GSimpleAction *simple,
+                             G_GNUC_UNUSED GVariant *parameter,
+                             G_GNUC_UNUSED gpointer data)
 {
 	pidgin_blist_joinchat_show();
 }
 
 static void
-pidgin_application_new_message(GSimpleAction *simple, GVariant *parameter,
-                               gpointer data)
+pidgin_application_new_message(G_GNUC_UNUSED GSimpleAction *simple,
+                               G_GNUC_UNUSED GVariant *parameter,
+                               G_GNUC_UNUSED gpointer data)
 {
 	pidgin_dialogs_im();
 }
@@ -444,15 +455,16 @@ pidgin_application_new_status(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_application_online_help(GSimpleAction *simple, GVariant *parameter,
-                               gpointer data)
+pidgin_application_online_help(G_GNUC_UNUSED GSimpleAction *simple,
+                               G_GNUC_UNUSED GVariant *parameter,
+                               G_GNUC_UNUSED gpointer data)
 {
 	purple_notify_uri(NULL, PURPLE_WEBSITE "help");
 }
 
 static void
-pidgin_application_plugins(GSimpleAction *simple, GVariant *parameter,
-                           gpointer data)
+pidgin_application_plugins(G_GNUC_UNUSED GSimpleAction *simple,
+                           G_GNUC_UNUSED GVariant *parameter, gpointer data)
 {
 	PidginApplication *application = data;
 	static GtkWidget *dialog = NULL;
@@ -467,22 +479,25 @@ pidgin_application_plugins(GSimpleAction *simple, GVariant *parameter,
 }
 
 static void
-pidgin_application_preferences(GSimpleAction *simple, GVariant *parameter,
-                               gpointer data)
+pidgin_application_preferences(G_GNUC_UNUSED GSimpleAction *simple,
+                               G_GNUC_UNUSED GVariant *parameter,
+                               G_GNUC_UNUSED gpointer data)
 {
 	pidgin_prefs_show();
 }
 
 static void
-pidgin_application_privacy(GSimpleAction *simple, GVariant *parameter,
-                           gpointer data)
+pidgin_application_privacy(G_GNUC_UNUSED GSimpleAction *simple,
+                           G_GNUC_UNUSED GVariant *parameter,
+                           G_GNUC_UNUSED gpointer data)
 {
 	pidgin_privacy_dialog_show();
 }
 
 static void
-pidgin_application_quit(GSimpleAction *simple, GVariant *parameter,
-                        gpointer data)
+pidgin_application_quit(G_GNUC_UNUSED GSimpleAction *simple,
+                        G_GNUC_UNUSED GVariant *parameter,
+                        G_GNUC_UNUSED gpointer data)
 {
 	GPluginManager *manager = NULL;
 
@@ -498,22 +513,25 @@ pidgin_application_quit(GSimpleAction *simple, GVariant *parameter,
 }
 
 static void
-pidgin_application_room_list(GSimpleAction *simple, GVariant *parameter,
-                             gpointer data)
+pidgin_application_room_list(G_GNUC_UNUSED GSimpleAction *simple,
+                             G_GNUC_UNUSED GVariant *parameter,
+                             G_GNUC_UNUSED gpointer data)
 {
 	pidgin_roomlist_dialog_show();
 }
 
 static void
-pidgin_application_set_mood(GSimpleAction *simple, GVariant *parameter,
-                            gpointer data)
+pidgin_application_set_mood(G_GNUC_UNUSED GSimpleAction *simple,
+                            G_GNUC_UNUSED GVariant *parameter,
+                            G_GNUC_UNUSED gpointer data)
 {
 	pidgin_mood_dialog_show(NULL);
 }
 
 static void
-pidgin_application_show_status_manager(GSimpleAction *simple,
-                                       GVariant *parameter, gpointer data)
+pidgin_application_show_status_manager(G_GNUC_UNUSED GSimpleAction *simple,
+                                       G_GNUC_UNUSED GVariant *parameter,
+                                       gpointer data)
 {
 	PidginApplication *application = data;
 	static GtkWidget *manager = NULL;
@@ -667,7 +685,9 @@ pidgin_application_signed_on_cb(PurpleAccount *account, gpointer data) {
 }
 
 static void
-pidgin_application_signed_off_cb(PurpleAccount *account, gpointer data) {
+pidgin_application_signed_off_cb(G_GNUC_UNUSED PurpleAccount *account,
+                                 gpointer data)
+{
 	PidginApplication *application = PIDGIN_APPLICATION(data);
 	gboolean should_disable_chat = TRUE, should_disable_room_list = TRUE;
 	GList *connections = NULL, *l = NULL;
@@ -914,7 +934,7 @@ pidgin_application_startup(GApplication *application) {
 }
 
 static void
-pidgin_application_activate(GApplication *application) {
+pidgin_application_activate(G_GNUC_UNUSED GApplication *application) {
 	GtkWidget *convwin = pidgin_display_window_get_default();
 
 	if(GTK_IS_WINDOW(convwin)) {
@@ -947,7 +967,7 @@ pidgin_application_command_line(GApplication *application,
 }
 
 static gint
-pidgin_application_handle_local_options(GApplication *application,
+pidgin_application_handle_local_options(G_GNUC_UNUSED GApplication *application,
                                         GVariantDict *options)
 {
 	if (g_variant_dict_contains(options, "version")) {

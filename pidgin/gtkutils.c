@@ -193,8 +193,10 @@ pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l)
 	                               label, NULL, -1);
 }
 
-static gboolean buddyname_completion_match_func(GtkEntryCompletion *completion,
-		const gchar *key, GtkTreeIter *iter, gpointer user_data)
+static gboolean
+buddyname_completion_match_func(GtkEntryCompletion *completion,
+                                const char *key, GtkTreeIter *iter,
+                                G_GNUC_UNUSED gpointer user_data)
 {
 	GtkTreeModel *model;
 	GValue val1;
@@ -224,8 +226,10 @@ static gboolean buddyname_completion_match_func(GtkEntryCompletion *completion,
 	return FALSE;
 }
 
-static gboolean buddyname_completion_match_selected_cb(GtkEntryCompletion *completion,
-		GtkTreeModel *model, GtkTreeIter *iter, PidginCompletionData *data)
+static gboolean
+buddyname_completion_match_selected_cb(G_GNUC_UNUSED GtkEntryCompletion *completion,
+                                       GtkTreeModel *model, GtkTreeIter *iter,
+                                       PidginCompletionData *data)
 {
 	GValue val;
 	GtkWidget *optmenu = data->accountopt;
@@ -369,7 +373,7 @@ add_completion_list(PidginCompletionData *data)
 }
 
 static void
-repopulate_autocomplete(gpointer something, gpointer data)
+repopulate_autocomplete(G_GNUC_UNUSED gpointer something, gpointer data)
 {
 	add_completion_list(data);
 }
@@ -495,8 +499,10 @@ pidgin_screenname_autocomplete_default_filter(const PidginBuddyCompletionEntry *
  * is to add an extra column to the GtkTreeModel.  And this function is
  * used rarely, so it shouldn't matter TOO much.
  */
-gboolean pidgin_tree_view_search_equal_func(GtkTreeModel *model, gint column,
-			const gchar *key, GtkTreeIter *iter, gpointer data)
+gboolean
+pidgin_tree_view_search_equal_func(GtkTreeModel *model, gint column,
+                                   const char *key, GtkTreeIter *iter,
+                                   G_GNUC_UNUSED gpointer data)
 {
 	gchar *enteredstring;
 	gchar *tmp;
