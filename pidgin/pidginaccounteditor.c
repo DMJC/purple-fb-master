@@ -780,6 +780,8 @@ pidgin_account_editor_save_user_options(PidginAccountEditor *editor) {
 	const gchar *svalue = NULL;
 	gboolean bvalue = FALSE;
 
+	purple_account_freeze_notify_settings(editor->account);
+
 	/* Set the alias. */
 	svalue = gtk_editable_get_text(GTK_EDITABLE(editor->alias));
 	if(*svalue == '\0') {
@@ -800,10 +802,14 @@ pidgin_account_editor_save_user_options(PidginAccountEditor *editor) {
 	} else {
 		# warning set the global buddy icon when buddy icons do not suck so bad.
 	}
+
+	purple_account_thaw_notify_settings(editor->account);
 }
 
 static void
 pidgin_account_editor_save_advanced_options(PidginAccountEditor *editor) {
+	purple_account_freeze_notify_settings(editor->account);
+
 	for(GList *l = editor->advanced_entries; l != NULL; l = l->next) {
 		GtkWidget *widget = l->data;
 		PurpleAccountOption *option = NULL;
@@ -841,6 +847,8 @@ pidgin_account_editor_save_advanced_options(PidginAccountEditor *editor) {
 				break;
 		}
 	}
+
+	purple_account_thaw_notify_settings(editor->account);
 }
 
 static void

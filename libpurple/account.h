@@ -964,6 +964,38 @@ gboolean purple_account_get_require_password(PurpleAccount *account);
  */
 PurpleContact *purple_account_get_contact(PurpleAccount *account);
 
+/**
+ * purple_account_freeze_notify_settings:
+ * @account: The instance.
+ *
+ * Increment the freeze count for settings on @account. When the freeze count
+ * is greater than 0, the [signal@Purple.Account::setting-changed] signal will
+ * not be emitted until the freeze count returns to 0.
+ *
+ * This is intended to only notify once @account has reached a consistent
+ * state. Most user interfaces change all of the properties on an account at
+ * once and some of them may be co-dependent, so all values need to be updated
+ * before the change can be acted upon.
+ *
+ * Call [method@Purple.Account.thaw_notify_settings] to decrement the freeze
+ * counter.
+ *
+ * Since: 3.0.0
+ */
+void purple_account_freeze_notify_settings(PurpleAccount *account);
+
+/**
+ * purple_account_thaw_notify_settings:
+ * @account: The instance.
+ *
+ * Decrements the freeze count for settings on @account.
+ *
+ * See [method@Purple.Account.freeze_notify_settings] for more information.
+ *
+ * Since: 3.0.0
+ */
+void purple_account_thaw_notify_settings(PurpleAccount *account);
+
 G_END_DECLS
 
 #endif /* PURPLE_ACCOUNT_H */

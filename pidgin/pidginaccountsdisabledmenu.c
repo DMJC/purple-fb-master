@@ -64,6 +64,7 @@ pidgin_accounts_disabled_menu_refresh(PidginAccountsDisabledMenu *menu) {
 static void
 pidgin_accounts_disabled_menu_changed_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
                                          G_GNUC_UNUSED PurpleAccount *account,
+                                         G_GNUC_UNUSED GParamSpec *pspec,
                                          gpointer data)
 {
 	PidginAccountsDisabledMenu *menu = data;

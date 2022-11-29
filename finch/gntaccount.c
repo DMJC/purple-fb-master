@@ -871,6 +871,7 @@ account_removed_callback(G_GNUC_UNUSED PurpleAccountManager *manager,
 static void
 account_abled_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
                  PurpleAccount *account,
+                 G_GNUC_UNUSED GParamSpec *pspec,
                  G_GNUC_UNUSED gpointer data)
 {
 	if(accounts.window == NULL) {

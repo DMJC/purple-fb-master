@@ -44,6 +44,13 @@
 #include "signals.h"
 #include "util.h"
 
+typedef struct {
+	GSList *names;
+	guint ref_count;
+} PurpleAccountSettingFreezeQueue;
+
+G_LOCK_DEFINE_STATIC(setting_notify_lock);
+
 struct _PurpleAccount
 {
 	GObject gparent;
@@ -70,6 +77,7 @@ struct _PurpleAccount
 	gboolean disconnecting;     /* The account is currently disconnecting */
 
 	GHashTable *settings;       /* Protocol-specific settings.            */
+	PurpleAccountSettingFreezeQueue *freeze_queue;
 
 	PurpleProxyInfo *proxy_info;  /* Proxy information.  This will be set */
 								/*   to NULL when the account inherits      */
@@ -104,9 +112,7 @@ typedef struct
 
 } PurpleAccountSetting;
 
-/* GObject Property enums */
-enum
-{
+enum {
 	PROP_0,
 	PROP_ID,
 	PROP_USERNAME,
@@ -123,14 +129,51 @@ enum
 	PROP_CONTACT,
 	PROP_LAST
 };
+static GParamSpec *properties[PROP_LAST];
 
-static GParamSpec    *properties[PROP_LAST];
+enum {
+	SIG_SETTING_CHANGED,
+	N_SIGNALS
+};
+static guint signals[N_SIGNALS] = {0, };
 
 G_DEFINE_TYPE(PurpleAccount, purple_account, G_TYPE_OBJECT);
 
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static void
+purple_account_free_notify_settings(PurpleAccount *account) {
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	g_slist_free_full(account->freeze_queue->names, g_free);
+
+	g_slice_free(PurpleAccountSettingFreezeQueue, account->freeze_queue);
+	account->freeze_queue = NULL;
+}
+
+static void
+purple_account_setting_changed_emit(PurpleAccount *account, const char *name) {
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+	g_return_if_fail(name != NULL);
+
+	G_LOCK(setting_notify_lock);
+
+	if(account->freeze_queue != NULL) {
+		GSList *names = account->freeze_queue->names;
+
+		if(g_slist_find_custom(names, name, (GCompareFunc)g_strcmp0) == NULL) {
+			names = g_slist_prepend(names, g_strdup(name));
+			account->freeze_queue->names = names;
+		}
+	} else {
+		g_signal_emit(account, signals[SIG_SETTING_CHANGED],
+		              g_quark_from_string(name), name);
+	}
+
+	G_UNLOCK(setting_notify_lock);
+}
+
 static void
 purple_account_real_connect(PurpleAccount *account, const char *password) {
 	PurpleConnection *connection = NULL;
@@ -842,6 +885,8 @@ purple_account_finalize(GObject *object)
 
 	purple_debug_info("account", "Destroying account %p", account);
 
+	purple_account_free_notify_settings(account);
+
 	manager = purple_conversation_manager_get_default();
 	l = purple_conversation_manager_get_all(manager);
 	while(l != NULL) {
@@ -877,8 +922,7 @@ purple_account_finalize(GObject *object)
 }
 
 static void
-purple_account_class_init(PurpleAccountClass *klass)
-{
+purple_account_class_init(PurpleAccountClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
 	obj_class->constructed = purple_account_constructed;
@@ -988,6 +1032,33 @@ purple_account_class_init(PurpleAccountClass *klass)
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+
+	/**
+	 * PurpleAccount::setting-changed:
+	 * @account: The account whose setting changed.
+	 * @name: The name of the setting that changed.
+	 *
+	 * The ::setting-changed signal is emitted whenever an account setting is
+	 * changed.
+	 *
+	 * This signal supports details, so you can be notified when a single
+	 * setting changes. For example, say there's a setting named `foo`,
+	 * connecting to `setting-changed::foo` will only be called when the `foo`
+	 * setting is changed.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_SETTING_CHANGED] = g_signal_new_class_handler(
+		"setting-changed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		G_TYPE_STRING);
 }
 
 /******************************************************************************
@@ -1488,6 +1559,8 @@ purple_account_set_int(PurpleAccount *account, const char *name, int value)
 
 	g_hash_table_insert(account->settings, g_strdup(name), setting);
 
+	purple_account_setting_changed_emit(account, name);
+
 	purple_accounts_schedule_save();
 }
 
@@ -1507,6 +1580,8 @@ purple_account_set_string(PurpleAccount *account, const char *name,
 
 	g_hash_table_insert(account->settings, g_strdup(name), setting);
 
+	purple_account_setting_changed_emit(account, name);
+
 	purple_accounts_schedule_save();
 }
 
@@ -1524,6 +1599,8 @@ purple_account_set_bool(PurpleAccount *account, const char *name, gboolean value
 	g_value_set_boolean(&setting->value, value);
 
 	g_hash_table_insert(account->settings, g_strdup(name), setting);
+
+	purple_account_setting_changed_emit(account, name);
 
 	purple_accounts_schedule_save();
 }
@@ -2340,4 +2417,60 @@ purple_account_get_contact(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
 	return account->contact;
+}
+
+void
+purple_account_freeze_notify_settings(PurpleAccount *account) {
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	G_LOCK(setting_notify_lock);
+	if(account->freeze_queue == NULL) {
+		account->freeze_queue = g_slice_new0(PurpleAccountSettingFreezeQueue);
+	}
+
+	account->freeze_queue->ref_count++;
+
+	G_UNLOCK(setting_notify_lock);
+}
+
+void
+purple_account_thaw_notify_settings(PurpleAccount *account) {
+	GSList *names = NULL;
+
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	G_LOCK(setting_notify_lock);
+	if(G_UNLIKELY(account->freeze_queue->ref_count == 0)) {
+		G_UNLOCK(setting_notify_lock);
+
+		g_critical("purple_account_settings_thaw_notify called for account %s "
+		           "(%s) when not frozen",
+		           purple_account_get_username(account),
+		           purple_account_get_protocol_id(account));
+
+		return;
+	}
+
+	account->freeze_queue->ref_count--;
+	if(account->freeze_queue->ref_count > 0) {
+		G_UNLOCK(setting_notify_lock);
+
+		return;
+	}
+
+	/* This was the last ref, so fire off the signals. */
+	names = account->freeze_queue->names;
+	while(names != NULL) {
+		char *name = names->data;
+
+		g_signal_emit(account, signals[SIG_SETTING_CHANGED],
+		              g_quark_from_string(name), name);
+
+		names = g_slist_delete_link(names, names);
+		g_free(name);
+	}
+
+	purple_account_free_notify_settings(account);
+
+	G_UNLOCK(setting_notify_lock);
 }

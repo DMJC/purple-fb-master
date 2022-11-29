@@ -27,6 +27,7 @@ enum {
 	SIG_ADDED,
 	SIG_REMOVED,
 	SIG_ACCOUNT_CHANGED,
+	SIG_ACCOUNT_SETTING_CHANGED,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -54,7 +55,16 @@ purple_account_manager_account_notify_cb(GObject *source, GParamSpec *pspec,
 {
 	g_signal_emit(data, signals[SIG_ACCOUNT_CHANGED],
 	              g_param_spec_get_name_quark(pspec),
-	              source);
+	              source, pspec);
+}
+
+static void
+purple_account_manager_account_setting_changed_cb(PurpleAccount *account,
+                                                  const char *name,
+                                                  gpointer data)
+{
+	g_signal_emit(data, signals[SIG_ACCOUNT_SETTING_CHANGED],
+	              g_quark_from_string(name), account, name);
 }
 
 /******************************************************************************
@@ -168,6 +178,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 * PurpleAccountManager::account-changed:
 	 * @manager: The account manager instance.
 	 * @account: The account that was changed.
+	 * @pspec: The [class@GObject.ParamSpec] for the property that changed.
 	 *
 	 * This is a propagation of the notify signal from @account. This means
 	 * that your callback will be called for any account that @manager knows
@@ -188,8 +199,38 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 		NULL,
 		NULL,
 		G_TYPE_NONE,
-		1,
-		PURPLE_TYPE_ACCOUNT);
+		2,
+		PURPLE_TYPE_ACCOUNT,
+		G_TYPE_PARAM);
+
+	/**
+	 * PurpleAccountManager::account-setting-changed:
+	 * @manager: The account manager instance.
+	 * @account: The account that was changed.
+	 * @name: The name of the setting that was changed.
+	 *
+	 * This is a propagation of [signal@Purple.Account::setting-changed]
+	 * signal. This means that your callback will be called for any account
+	 * that @manager knows about.
+	 *
+	 * This also supports details, so you can specify the signal name as
+	 * something like `account-setting-changed::use-tls` and your callback will
+	 * only be called when the `use-tls` setting of @account has been changed.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_ACCOUNT_SETTING_CHANGED] = g_signal_new_class_handler(
+		"account-setting-changed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		2,
+		PURPLE_TYPE_ACCOUNT,
+		G_TYPE_STRING);
 }
 
 /******************************************************************************
@@ -248,6 +289,9 @@ purple_account_manager_add(PurpleAccountManager *manager,
 	/* Connect to the signals of the account that we want to propagate. */
 	g_signal_connect_object(account, "notify",
 	                        G_CALLBACK(purple_account_manager_account_notify_cb),
+	                        manager, 0);
+	g_signal_connect_object(account, "setting-changed",
+	                        G_CALLBACK(purple_account_manager_account_setting_changed_cb),
 	                        manager, 0);
 
 	purple_accounts_schedule_save();

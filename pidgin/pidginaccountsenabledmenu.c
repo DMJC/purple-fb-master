@@ -43,6 +43,7 @@ G_DEFINE_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
 static void
 pidgin_accounts_enabled_menu_changed_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
                                         PurpleAccount *account,
+                                        G_GNUC_UNUSED GParamSpec *pspec,
                                         gpointer data)
 {
 	PidginAccountsEnabledMenu *menu = data;
