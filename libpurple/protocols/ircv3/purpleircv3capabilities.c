@@ -28,6 +28,14 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
+/* Windows is does something weird with signal handling that includes defining
+ * SIG_ACK. We don't care about that here, so we undef it if we find it.
+ * See https://learn.microsoft.com/en-us/cpp/c-runtime-library/signal-action-constants?view=msvc-170
+ */
+#ifdef SIG_ACK
+# undef SIG_ACK
+#endif /* SIG_ACK */
+
 enum {
 	SIG_READY,
 	SIG_ACK,

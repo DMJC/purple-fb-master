@@ -132,7 +132,7 @@ void winpidgin_init(void) {
 		purple_debug_misc("winpidgin", "winpidgin_init start\n");
 
 	exchndl_dll_path = g_build_filename(wpurple_bin_dir(), "exchndl.dll", NULL);
-	MySetLogFile = (LPFNSETLOGFILE) wpurple_find_and_loadproc(exchndl_dll_path, "SetLogFile");
+	MySetLogFile = (gpointer)wpurple_find_and_loadproc(exchndl_dll_path, "SetLogFile");
 	g_free(exchndl_dll_path);
 	exchndl_dll_path = NULL;
 	if (MySetLogFile) {
@@ -168,7 +168,7 @@ void winpidgin_cleanup(void) {
 /* DLL initializer */
 /* suppress gcc "no previous prototype" warning */
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, G_GNUC_UNUSED DWORD fdwReason, G_GNUC_UNUSED LPVOID lpvReserved) {
 	dll_hInstance = hinstDLL;
 	return TRUE;
 }

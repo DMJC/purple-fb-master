@@ -41,6 +41,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+/* We can't include glib.h per the above warning, so we define our own unused
+ * parameter macro.
+ */
+#ifdef __GNUC__
+# define PIDGIN_WIN32_UNUSED __attribute__((unused))
+#else
+# define PIDGIN_WIN32_UNUSED
+#endif
+
 typedef int (__cdecl* LPFNPIDGINMAIN)(HINSTANCE, int, char**);
 typedef BOOL (WINAPI* LPFNSETDLLDIRECTORY)(LPCWSTR);
 typedef BOOL (WINAPI* LPFNATTACHCONSOLE)(DWORD);
@@ -175,9 +184,12 @@ static void handle_protocol(wchar_t *cmd) {
 }
 
 
-int _stdcall
-WinMain (struct HINSTANCE__ *hInstance, struct HINSTANCE__ *hPrevInstance,
-		char *lpszCmdLine, int nCmdShow) {
+int __stdcall
+WinMain(struct HINSTANCE__ *hInstance,
+        PIDGIN_WIN32_UNUSED struct HINSTANCE__ *hPrevInstance,
+        PIDGIN_WIN32_UNUSED char *lpszCmdLine,
+        PIDGIN_WIN32_UNUSED int nCmdShow)
+{
 	wchar_t errbuf[512];
 	wchar_t pidgin_dir[MAX_PATH];
 	wchar_t *pidgin_dir_start = NULL;
@@ -220,8 +232,7 @@ WinMain (struct HINSTANCE__ *hInstance, struct HINSTANCE__ *hPrevInstance,
 	/* Permanently enable DEP if the OS supports it */
 	if ((hmod = GetModuleHandleW(L"kernel32.dll"))) {
 		LPFNSETPROCESSDEPPOLICY MySetProcessDEPPolicy =
-			(LPFNSETPROCESSDEPPOLICY)
-			GetProcAddress(hmod, "SetProcessDEPPolicy");
+			(void *)GetProcAddress(hmod, "SetProcessDEPPolicy");
 		if (MySetProcessDEPPolicy)
 			MySetProcessDEPPolicy(1); //PROCESS_DEP_ENABLE
 	}
@@ -233,8 +244,7 @@ WinMain (struct HINSTANCE__ *hInstance, struct HINSTANCE__ *hPrevInstance,
 			LPFNATTACHCONSOLE MyAttachConsole = NULL;
 			if (hmod)
 				MyAttachConsole =
-					(LPFNATTACHCONSOLE)
-					GetProcAddress(hmod, "AttachConsole");
+					(void *)GetProcAddress(hmod, "AttachConsole");
 			if ((MyAttachConsole && MyAttachConsole(ATTACH_PARENT_PROCESS))
 					|| AllocConsole()) {
 				freopen("CONOUT$", "w", stdout);
@@ -274,7 +284,7 @@ WinMain (struct HINSTANCE__ *hInstance, struct HINSTANCE__ *hPrevInstance,
 				/* Temporarily override exchndl.dll's logfile
 				 * to something sane (Pidgin will override it
 				 * again when it initializes) */
-				MySetLogFile = (LPFNSETLOGFILE) GetProcAddress(hmod, "SetLogFile");
+				MySetLogFile = (void *)GetProcAddress(hmod, "SetLogFile");
 				if (MySetLogFile) {
 					if (GetTempPathA(sizeof(debug_dir), debug_dir) != 0) {
 						strcat(debug_dir, "pidgin.RPT");
@@ -285,7 +295,7 @@ WinMain (struct HINSTANCE__ *hInstance, struct HINSTANCE__ *hPrevInstance,
 				}
 				/* The function signature for SetDebugInfoDir is the same as SetLogFile,
 				 * so we can reuse the variable */
-				MySetLogFile = (LPFNSETLOGFILE) GetProcAddress(hmod, "SetDebugInfoDir");
+				MySetLogFile = (void *)GetProcAddress(hmod, "SetDebugInfoDir");
 				if (MySetLogFile) {
 					char *pidgin_dir_ansi = NULL;
 					/* Restore pidgin_dir to point to where the executable is */
@@ -330,7 +340,7 @@ WinMain (struct HINSTANCE__ *hInstance, struct HINSTANCE__ *hPrevInstance,
 			hmod = GetModuleHandleW(L"kernel32.dll");
 
 			if (hmod != NULL) {
-				MySetDllDirectory = (LPFNSETDLLDIRECTORY) GetProcAddress(hmod, "SetDllDirectoryW");
+				MySetDllDirectory = (void *)GetProcAddress(hmod, "SetDllDirectoryW");
 				if (MySetDllDirectory == NULL) {
 					DWORD dw = GetLastError();
 					const wchar_t *err_msg = get_win32_error_message(dw);
@@ -370,7 +380,7 @@ WinMain (struct HINSTANCE__ *hInstance, struct HINSTANCE__ *hPrevInstance,
 
 	/* Now we are ready for Pidgin .. */
 	if ((hmod = LoadLibraryW(LIBPIDGIN_DLL_NAMEW)))
-		pidgin_main = (LPFNPIDGINMAIN) GetProcAddress(hmod, "pidgin_main");
+		pidgin_main = (void *)GetProcAddress(hmod, "pidgin_main");
 
 	if (!pidgin_main) {
 		DWORD dw = GetLastError();

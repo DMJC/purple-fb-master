@@ -176,11 +176,13 @@ if IS_WIN32
 	    input : 'win32/pidgin_exe_rc.rc.in',
 	    output : 'pidgin_exe_rc.rc',
 	    configuration : version_conf)
+
+	pidgin_WIN32_RESOURCES = windows.compile_resources(pidgin_exe_rc,
+		include_directories : include_directories('win32'))
+
 	pidgin_SOURCES = [
-	    'win32/winpidgin.c',
-	    windows.compile_resources(pidgin_exe_rc,
-	        include_directories : include_directories('win32')
-	    )
+		'win32/winpidgin.c',
+		pidgin_WIN32_RESOURCES,
 	]
 endif
 
