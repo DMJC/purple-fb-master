@@ -53,6 +53,10 @@ purple_ircv3_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol
 	option = purple_account_option_bool_new(_("Use TLS"), "use-tls", TRUE);
 	options = g_list_append(options, option);
 
+	option = purple_account_option_string_new(_("Server password"),
+	                                          "server-password", "");
+	options = g_list_append(options, option);
+
 	option = purple_account_option_string_new(_("Ident name"), "ident", "");
 	options = g_list_append(options, option);
 

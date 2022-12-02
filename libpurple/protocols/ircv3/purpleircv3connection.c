@@ -60,6 +60,19 @@ G_DEFINE_DYNAMIC_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
  * Helpers
  *****************************************************************************/
 static void
+purple_ircv3_connection_send_pass_command(PurpleIRCv3Connection *connection) {
+	PurpleAccount *account = NULL;
+	const char *password = NULL;
+
+	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
+
+	password = purple_account_get_string(account, "server-password", "");
+	if(password != NULL && *password != '\0') {
+		purple_ircv3_connection_writef(connection, "PASS %s", password);
+	}
+}
+
+static void
 purple_ircv3_connection_send_user_command(PurpleIRCv3Connection *connection) {
 	PurpleAccount *account = NULL;
 	const char *identname = NULL;
@@ -221,6 +234,7 @@ purple_ircv3_connection_connected_cb(GObject *source, GAsyncResult *result,
 
 	/* Send our registration commands. */
 	purple_ircv3_capabilities_start(connection->capabilities);
+	purple_ircv3_connection_send_pass_command(connection);
 	purple_ircv3_connection_send_user_command(connection);
 	purple_ircv3_connection_send_nick_command(connection);
 }
