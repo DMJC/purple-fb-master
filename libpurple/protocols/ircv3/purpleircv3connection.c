@@ -31,6 +31,12 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
+enum {
+	SIG_REGISTRATION_COMPLETE,
+	N_SIGNALS,
+};
+static guint signals[N_SIGNALS] = {0, };
+
 struct _PurpleIRCv3Connection {
 	PurpleConnection parent;
 
@@ -189,9 +195,6 @@ purple_ircv3_connection_connected_cb(GObject *source, GAsyncResult *result,
 		return;
 	}
 
-	purple_connection_set_state(PURPLE_CONNECTION(connection),
-	                            PURPLE_CONNECTION_STATE_CONNECTED);
-
 	g_message("Successfully connected to %s", connection->server_name);
 
 	/* Save our connection and setup our input and outputs. */
@@ -217,10 +220,18 @@ purple_ircv3_connection_connected_cb(GObject *source, GAsyncResult *result,
 	                                    connection);
 
 	/* Send our registration commands. */
-	purple_ircv3_connection_writef(connection, "CAP LS %s",
-	                               PURPLE_IRCV3_CONNECTION_CAP_VERSION);
+	purple_ircv3_capabilities_start(connection->capabilities);
 	purple_ircv3_connection_send_user_command(connection);
 	purple_ircv3_connection_send_nick_command(connection);
+}
+
+static void
+purple_ircv3_connection_caps_done_cb(G_GNUC_UNUSED PurpleIRCv3Capabilities *caps,
+                                     gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+
+	g_signal_emit(connection, signals[SIG_REGISTRATION_COMPLETE], 0);
 }
 
 /******************************************************************************
@@ -306,6 +317,16 @@ purple_ircv3_connection_disconnect(PurpleConnection *purple_connection,
 	return TRUE;
 }
 
+static void
+purple_ircv3_connection_registration_complete_cb(PurpleIRCv3Connection *connection) {
+	/* Don't set our connection state to connected until we've completed
+	 * registration as connected implies that we can start chatting or join
+	 * rooms and other "online" activities.
+	 */
+	purple_connection_set_state(PURPLE_CONNECTION(connection),
+	                            PURPLE_CONNECTION_STATE_CONNECTED);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -376,7 +397,11 @@ purple_ircv3_connection_constructed(GObject *obj) {
 
 	/* Finally create our objects. */
 	connection->cancellable = g_cancellable_new();
+
 	connection->capabilities = purple_ircv3_capabilities_new(connection);
+	g_signal_connect_object(connection->capabilities, "done",
+	                        G_CALLBACK(purple_ircv3_connection_caps_done_cb),
+	                        connection, 0);
 }
 
 static void
@@ -430,6 +455,29 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
+
+	/* Signals */
+
+	/**
+	 * PurpleIRCv3Connection::registration-complete:
+	 * @connection: The instance.
+	 *
+	 * This signal is emitted after the registration process has been
+	 * completed. Plugins can use this to perform additional actions before
+	 * any channels are auto joined or similar.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_REGISTRATION_COMPLETE] = g_signal_new_class_handler(
+		"registration-complete",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		G_CALLBACK(purple_ircv3_connection_registration_complete_cb),
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		0);
 }
 
 /******************************************************************************

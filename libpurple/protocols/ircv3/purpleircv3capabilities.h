@@ -39,6 +39,8 @@ G_GNUC_INTERNAL void purple_ircv3_capabilities_register(GPluginNativePlugin *plu
 
 G_GNUC_INTERNAL PurpleIRCv3Capabilities *purple_ircv3_capabilities_new(PurpleIRCv3Connection *connection);
 
+G_GNUC_INTERNAL void purple_ircv3_capabilities_start(PurpleIRCv3Capabilities *capabilities);
+
 G_GNUC_INTERNAL gboolean purple_ircv3_capabilities_message_handler(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
 
 /**

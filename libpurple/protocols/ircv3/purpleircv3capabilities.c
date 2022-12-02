@@ -21,6 +21,8 @@
 #include "purpleircv3connection.h"
 #include "purpleircv3core.h"
 
+#define PURPLE_IRCV3_CAPABILITIES_VERSION "302"
+
 enum {
 	PROP_0,
 	PROP_CONNECTION,
@@ -40,6 +42,7 @@ enum {
 	SIG_READY,
 	SIG_ACK,
 	SIG_NAK,
+	SIG_DONE,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -66,6 +69,14 @@ purple_ircv3_capabilities_set_connection(PurpleIRCv3Capabilities *capabilities,
 		g_object_notify_by_pspec(G_OBJECT(capabilities),
 		                         properties[PROP_CONNECTION]);
 	}
+}
+
+static void
+purple_ircv3_capabilities_finish(PurpleIRCv3Capabilities *capabilities) {
+	purple_ircv3_connection_writef(capabilities->connection,
+	                               "CAP END");
+
+	g_signal_emit(capabilities, signals[SIG_DONE], 0);
 }
 
 /******************************************************************************
@@ -247,6 +258,26 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 		G_TYPE_NONE,
 		1,
 		G_TYPE_STRING);
+
+	/**
+	 * PurpleIRCv3Capabilities::done:
+	 * @capabilities: The instance.
+	 *
+	 * Emitted when all of the requested capabilities have been either ack'd or
+	 * nak'd by the server.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_DONE] = g_signal_new_class_handler(
+		"done",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		0);
 }
 
 /******************************************************************************
@@ -293,8 +324,7 @@ purple_ircv3_capabilities_handle_list(guint n_params,
 		 * we're done with capability negotiation.
 		 */
 		if(capabilities->requests->len == 0) {
-			purple_ircv3_connection_writef(capabilities->connection,
-			                               "CAP END");
+			purple_ircv3_capabilities_finish(capabilities);
 		}
 	}
 
@@ -327,7 +357,7 @@ purple_ircv3_capabilities_handle_ack_nak(PurpleIRCv3Capabilities *capabilities,
 	g_free(caps);
 
 	if(capabilities->requests->len == 0) {
-		purple_ircv3_connection_writef(capabilities->connection, "CAP END");
+		purple_ircv3_capabilities_finish(capabilities);
 	}
 
 	return ret;
@@ -347,6 +377,12 @@ purple_ircv3_capabilities_new(PurpleIRCv3Connection *connection) {
 		PURPLE_IRCV3_TYPE_CAPABILITIES,
 		"connection", connection,
 		NULL);
+}
+
+void
+purple_ircv3_capabilities_start(PurpleIRCv3Capabilities *capabilities) {
+	purple_ircv3_connection_writef(capabilities->connection, "CAP LS %s",
+	                               PURPLE_IRCV3_CAPABILITIES_VERSION);
 }
 
 gboolean
