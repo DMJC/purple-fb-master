@@ -46,8 +46,8 @@ static gboolean
 purple_contact_manager_find_with_username_helper(gconstpointer a,
                                                  gconstpointer b)
 {
-	PurpleContactInfo *info_a = PURPLE_CONTACT_INFO(a);
-	PurpleContactInfo *info_b = PURPLE_CONTACT_INFO(b);
+	PurpleContactInfo *info_a = PURPLE_CONTACT_INFO((gpointer)a);
+	PurpleContactInfo *info_b = PURPLE_CONTACT_INFO((gpointer)b);
 	const gchar *username_a = NULL;
 	const gchar *username_b = NULL;
 
@@ -59,8 +59,8 @@ purple_contact_manager_find_with_username_helper(gconstpointer a,
 
 static gboolean
 purple_contact_manager_find_with_id_helper(gconstpointer a, gconstpointer b) {
-	PurpleContactInfo *info_a = PURPLE_CONTACT_INFO(a);
-	PurpleContactInfo *info_b = PURPLE_CONTACT_INFO(b);
+	PurpleContactInfo *info_a = PURPLE_CONTACT_INFO((gpointer)a);
+	PurpleContactInfo *info_b = PURPLE_CONTACT_INFO((gpointer)b);
 	const gchar *id_a = NULL;
 	const gchar *id_b = NULL;
 
