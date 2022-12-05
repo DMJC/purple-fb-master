@@ -32,7 +32,6 @@
 #include "gtkconv.h"
 #include "gtkdialogs.h"
 #include "gtkxfer.h"
-#include "gtkprivacy.h"
 #include "gtkroomlist.h"
 #include "gtkutils.h"
 #include "pidgin/pidginaccountchooser.h"
@@ -355,38 +354,6 @@ pidgin_blist_menu_audio_call_cb(G_GNUC_UNUSED GSimpleAction *action,
 }
 
 static void
-pidgin_blist_menu_block_cb(GSimpleAction *action, GVariant *state,
-                           gpointer data)
-{
-	PidginBuddyList *blist = data;
-	PurpleBuddy *buddy;
-	PurpleAccount *account;
-	gboolean permitted;
-	const char *name;
-
-	buddy = pidgin_blist_get_selected_buddy(blist);
-
-	if (!PURPLE_IS_BUDDY(buddy))
-		return;
-
-	account = purple_buddy_get_account(buddy);
-	name = purple_buddy_get_name(buddy);
-
-	permitted = purple_account_privacy_check(account, name);
-
-	/* XXX: Perhaps ask whether to restore the previous lists where appropirate? */
-
-	if (permitted)
-		purple_account_privacy_deny(account, name);
-	else
-		purple_account_privacy_allow(account, name);
-
-	pidgin_blist_update(PURPLE_BUDDY_LIST(blist), PURPLE_BLIST_NODE(buddy));
-
-	g_simple_action_set_state(action, state);
-}
-
-static void
 pidgin_blist_menu_chat_settings_cb(G_GNUC_UNUSED GSimpleAction *action,
                                    G_GNUC_UNUSED GVariant *parameter,
                                    gpointer data)
@@ -594,11 +561,6 @@ static GActionEntry menu_actions[] = {
 	}, {
 		.name = "buddy-audio-call",
 		.activate = pidgin_blist_menu_audio_call_cb,
-	}, {
-		.name = "buddy-block",
-		.activate = pidgin_blist_toggle_action,
-		.state = "false",
-		.change_state = pidgin_blist_menu_block_cb,
 	}, {
 		.name = "buddy-get-info",
 		.activate = pidgin_blist_menu_info_cb,
@@ -1542,7 +1504,6 @@ pidgin_blist_show_context_menu(GtkWidget *tv, PurpleBlistNode *node,
 		PurpleBuddy *buddy = NULL;
 		PurpleConnection *connection = NULL;
 		PurpleProtocol *protocol = NULL;
-		GVariant *variant = NULL;
 		const gchar *buddy_name = NULL;
 
 		menu = gtk_application_get_menu_by_id(gtk_application, "buddy");
@@ -1594,12 +1555,6 @@ pidgin_blist_show_context_menu(GtkWidget *tv, PurpleBlistNode *node,
 			          (caps & PURPLE_MEDIA_CAPS_VIDEO);
 			g_simple_action_set_enabled(G_SIMPLE_ACTION(action), enabled);
 		}
-
-		/* Set the proper state of the block action. */
-		action = g_action_map_lookup_action(action_map, "buddy-block");
-		enabled = !purple_account_privacy_check(account, buddy_name);
-		variant = g_variant_new_boolean(enabled);
-		g_simple_action_set_state(G_SIMPLE_ACTION(action), variant);
 	}
 
 	action = g_action_map_lookup_action(action_map,
@@ -2554,12 +2509,6 @@ pidgin_blist_get_emblem(PurpleBlistNode *node)
 	g_return_val_if_fail(buddy != NULL, NULL);
 
 	account = purple_buddy_get_account(buddy);
-	if (!purple_account_privacy_check(account, purple_buddy_get_name(buddy))) {
-		path = g_build_filename(PURPLE_DATADIR, "pidgin", "icons",
-			"hicolor", "16x16", "emblems", "emblem-blocked.png",
-			NULL);
-		return _pidgin_blist_get_cached_emblem(path);
-	}
 
 	/* If we came through the contact code flow above, we didn't need
 	 * to get the presence until now. */

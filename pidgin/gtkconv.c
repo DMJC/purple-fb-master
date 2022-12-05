@@ -42,7 +42,6 @@
 #include "gtkblist.h"
 #include "gtkconv.h"
 #include "gtkdialogs.h"
-#include "gtkprivacy.h"
 #include "gtkutils.h"
 #include "pidginavatar.h"
 #include "pidgincolor.h"

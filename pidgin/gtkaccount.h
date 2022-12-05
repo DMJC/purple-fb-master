@@ -31,15 +31,6 @@
 G_BEGIN_DECLS
 
 /**
- * pidgin_accounts_get_ui_ops:
- *
- * Returns the GTK account UI ops
- *
- * Returns: The UI operations structure.
- */
-PurpleAccountUiOps *pidgin_accounts_get_ui_ops(void);
-
-/**
  * pidgin_accounts_init:
  *
  * Initializes the GTK account system

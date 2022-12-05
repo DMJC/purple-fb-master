@@ -63,26 +63,6 @@ typedef enum
 	PURPLE_ACCOUNT_RESPONSE_ACCEPT = 1
 } PurpleAccountRequestResponse;
 
-/**
- * PurpleAccountPrivacyType:
- * @PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL: Allow everything.
- * @PURPLE_ACCOUNT_PRIVACY_DENY_ALL: Deny everything.
- * @PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS: Allow specific users.
- * @PURPLE_ACCOUNT_PRIVACY_DENY_USERS: Deny specific users.
- * @PURPLE_ACCOUNT_PRIVACY_ALLOW_BUDDYLIST: Allow users found in the buddy
- *                                          list.
- *
- * Privacy data types.
- */
-typedef enum
-{
-	PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL = 1,
-	PURPLE_ACCOUNT_PRIVACY_DENY_ALL,
-	PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS,
-	PURPLE_ACCOUNT_PRIVACY_DENY_USERS,
-	PURPLE_ACCOUNT_PRIVACY_ALLOW_BUDDYLIST
-} PurpleAccountPrivacyType;
-
 G_BEGIN_DECLS
 
 /**************************************************************************/
@@ -282,15 +262,6 @@ void purple_account_set_enabled(PurpleAccount *account, gboolean value);
  * Sets the account's proxy information.
  */
 void purple_account_set_proxy_info(PurpleAccount *account, PurpleProxyInfo *info);
-
-/**
- * purple_account_set_privacy_type:
- * @account:      The account.
- * @privacy_type: The privacy type.
- *
- * Sets the account's privacy type.
- */
-void purple_account_set_privacy_type(PurpleAccount *account, PurpleAccountPrivacyType privacy_type);
 
 /**
  * purple_account_set_status_types:
@@ -547,159 +518,6 @@ gboolean purple_account_get_enabled(PurpleAccount *account);
  * Returns: (transfer none): The proxy information.
  */
 PurpleProxyInfo *purple_account_get_proxy_info(PurpleAccount *account);
-
-/**
- * purple_account_get_privacy_type:
- * @account:   The account.
- *
- * Returns the account's privacy type.
- *
- * Returns: The privacy type.
- */
-PurpleAccountPrivacyType purple_account_get_privacy_type(PurpleAccount *account);
-
-/**
- * purple_account_privacy_permit_add:
- * @account:    The account.
- * @name:       The name of the user to add to the list.
- * @local_only: If TRUE, only the local list is updated, and not
- *                   the server.
- *
- * Adds a user to the account's permit list.
- *
- * Returns: TRUE if the user was added successfully, or %FALSE otherwise.
- */
-gboolean purple_account_privacy_permit_add(PurpleAccount *account,
-								const char *name, gboolean local_only);
-
-/**
- * purple_account_privacy_permit_remove:
- * @account:    The account.
- * @name:       The name of the user to add to the list.
- * @local_only: If TRUE, only the local list is updated, and not
- *                   the server.
- *
- * Removes a user from the account's permit list.
- *
- * Returns: TRUE if the user was removed successfully, or %FALSE otherwise.
- */
-gboolean purple_account_privacy_permit_remove(PurpleAccount *account,
-									const char *name, gboolean local_only);
-
-/**
- * purple_account_privacy_deny_add:
- * @account:    The account.
- * @name:       The name of the user to add to the list.
- * @local_only: If TRUE, only the local list is updated, and not
- *                   the server.
- *
- * Adds a user to the account's deny list.
- *
- * Returns: TRUE if the user was added successfully, or %FALSE otherwise.
- */
-gboolean purple_account_privacy_deny_add(PurpleAccount *account,
-									const char *name, gboolean local_only);
-
-/**
- * purple_account_privacy_deny_remove:
- * @account:    The account.
- * @name:       The name of the user to add to the list.
- * @local_only: If TRUE, only the local list is updated, and not
- *                   the server.
- *
- * Removes a user from the account's deny list.
- *
- * Returns: TRUE if the user was removed successfully, or %FALSE otherwise.
- */
-gboolean purple_account_privacy_deny_remove(PurpleAccount *account,
-									const char *name, gboolean local_only);
-
-/**
- * purple_account_privacy_allow:
- * @account:	The account.
- * @who:		The name of the user.
- *
- * Allow a user to send messages. If current privacy setting for the account is:
- *		PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS:	The user is added to the allow-list.
- *		PURPLE_ACCOUNT_PRIVACY_DENY_USERS	:	The user is removed from the
- *		                                        deny-list.
- *		PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL	:	No changes made.
- *		PURPLE_ACCOUNT_PRIVACY_DENY_ALL	:	The privacy setting is changed to
- *									PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS and the
- *									user is added to the allow-list.
- *		PURPLE_ACCOUNT_PRIVACY_ALLOW_BUDDYLIST: No changes made if the user is
- *									already in the buddy-list. Otherwise the
- *									setting is changed to
- *		PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS, all the buddies are added to the
- *									allow-list, and the user is also added to
- *									the allow-list.
- *
- * The changes are reflected on the server. The previous allow/deny list is not
- * restored if the privacy setting is changed.
- */
-void purple_account_privacy_allow(PurpleAccount *account, const char *who);
-
-/**
- * purple_account_privacy_deny:
- * @account:	The account.
- * @who:		The name of the user.
- *
- * Block messages from a user. If current privacy setting for the account is:
- *		PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS:	The user is removed from the
- *											allow-list.
- *		PURPLE_ACCOUNT_PRIVACY_DENY_USERS:	The user is added to the deny-list.
- *		PURPLE_ACCOUNT_PRIVACY_DENY_ALL:	No changes made.
- *		PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL:	The privacy setting is changed to
- *									PURPLE_ACCOUNT_PRIVACY_DENY_USERS and the
- *									user is added to the deny-list.
- *		PURPLE_ACCOUNT_PRIVACY_ALLOW_BUDDYLIST: If the user is not in the
- *									buddy-list, then no changes made. Otherwise,
- *									the setting is changed to
- *									PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS, all
- *									the buddies are added to the allow-list, and
- *									this user is removed from the list.
- *
- * The changes are reflected on the server. The previous allow/deny list is not
- * restored if the privacy setting is changed.
- */
-void purple_account_privacy_deny(PurpleAccount *account, const char *who);
-
-/**
- * purple_account_privacy_get_permitted:
- * @account:	The account.
- *
- * Returns the account's permit list.
- *
- * Returns: (transfer none) (element-type utf8): A list of the permitted users
- *
- * Since: 3.0.0
- */
-GSList *purple_account_privacy_get_permitted(PurpleAccount *account);
-
-/**
- * purple_account_privacy_get_denied:
- * @account:	The account.
- *
- * Returns the account's deny list.
- *
- * Returns: (transfer none) (element-type utf8): A list of the denied users
- *
- * Since: 3.0.0
- */
-GSList *purple_account_privacy_get_denied(PurpleAccount *account);
-
-/**
- * purple_account_privacy_check:
- * @account:	The account.
- * @who:		The name of the user.
- *
- * Check the privacy-setting for a user.
- *
- * Returns: %FALSE if the specified account's privacy settings block the user
- *		or %TRUE otherwise. The meaning of "block" is protocol-dependent and
- *				generally relates to status and/or sending of messages.
- */
-gboolean purple_account_privacy_check(PurpleAccount *account, const char *who);
 
 /**
  * purple_account_get_active_status:

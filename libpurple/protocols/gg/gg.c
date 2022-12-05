@@ -227,6 +227,7 @@ ggp_action_buddylist_load(G_GNUC_UNUSED GSimpleAction *action,
 
 /* ----- BLOCK BUDDIES -------------------------------------------------- */
 
+#if 0
 static void ggp_add_deny(PurpleProtocolPrivacy *privacy, PurpleConnection *gc,
                          const char *who)
 {
@@ -250,6 +251,7 @@ static void ggp_remove_deny(PurpleProtocolPrivacy *privacy,
 	gg_remove_notify_ex(info->session, uin, GG_USER_BLOCKED);
 	gg_add_notify_ex(info->session, uin, GG_USER_NORMAL);
 }
+#endif
 
 /* ---------------------------------------------------------------------- */
 /* ----- INTERNAL CALLBACKS --------------------------------------------- */
@@ -1330,13 +1332,6 @@ ggp_protocol_roomlist_iface_init(PurpleProtocolRoomlistInterface *roomlist_iface
 }
 
 static void
-ggp_protocol_privacy_iface_init(PurpleProtocolPrivacyInterface *privacy_iface)
-{
-	privacy_iface->add_deny = ggp_add_deny;
-	privacy_iface->remove_deny = ggp_remove_deny;
-}
-
-static void
 ggp_protocol_xfer_iface_init(PurpleProtocolXferInterface *xfer_iface)
 {
 	xfer_iface->can_receive = ggp_edisc_xfer_can_receive_file;
@@ -1361,8 +1356,6 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	                              ggp_protocol_chat_iface_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ROOMLIST,
 	                              ggp_protocol_roomlist_iface_init)
-	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_PRIVACY,
-	                              ggp_protocol_privacy_iface_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_XFER,
 	                              ggp_protocol_xfer_iface_init))
 

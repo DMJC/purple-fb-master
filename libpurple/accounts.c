@@ -31,8 +31,6 @@
 #include "purpleenums.h"
 #include "purpleprivate.h"
 
-static PurpleAccountUiOps *account_ui_ops = NULL;
-
 static guint    save_timer = 0;
 static gboolean accounts_loaded = FALSE;
 
@@ -588,45 +586,6 @@ purple_accounts_restore_current_statuses(void) {
 	purple_account_manager_foreach(manager,
 	                               purple_accounts_restore_current_status,
 	                               NULL);
-}
-
-static PurpleAccountUiOps *
-purple_account_ui_ops_copy(PurpleAccountUiOps *ops)
-{
-	PurpleAccountUiOps *ops_new;
-
-	g_return_val_if_fail(ops != NULL, NULL);
-
-	ops_new = g_new(PurpleAccountUiOps, 1);
-	*ops_new = *ops;
-
-	return ops_new;
-}
-
-GType
-purple_account_ui_ops_get_type(void)
-{
-	static GType type = 0;
-
-	if (type == 0) {
-		type = g_boxed_type_register_static("PurpleAccountUiOps",
-				(GBoxedCopyFunc)purple_account_ui_ops_copy,
-				(GBoxedFreeFunc)g_free);
-	}
-
-	return type;
-}
-
-void
-purple_accounts_set_ui_ops(PurpleAccountUiOps *ops)
-{
-	account_ui_ops = ops;
-}
-
-PurpleAccountUiOps *
-purple_accounts_get_ui_ops(void)
-{
-	return account_ui_ops;
 }
 
 void *

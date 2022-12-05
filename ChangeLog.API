@@ -357,12 +357,10 @@ version 3.0.0 (??/??/????):
 		* network-configuration-changed signal
 		* PurpleAccount->ui_data
 		* PurpleAccountPrefsUiOps
+		* PurpleAccountPrivacyType
 		* PurpleAccountRequestAuthorizationCb
 		* PurpleAccountRequestType
-		* PurpleAccountUiOps:close_account_request
-		* PurpleAccountUiOps:request_add
-		* PurpleAccountUiOps:request_authorization
-		* PurpleAccountUiOps:status_changed
+		* PurpleAccountUiOps
 		* purple_account_add_buddies_with_invite
 		* purple_account_add_buddy_with_invite
 		* purple_account_destroy_log
@@ -371,11 +369,21 @@ version 3.0.0 (??/??/????):
 		* purple_account_get_password.  Use
 		  purple_credential_manager_read_password_async instead.
 		* purple_account_get_public_alias
+		* purple_account_get_privacy_type
 		* purple_account_get_silence_suppression
 		* purple_account_get_ui_int
 		* purple_account_get_ui_string
 		* purple_account_get_ui_bool
 		* purple_account_notify_added
+		* purple_account_privacy_allow
+		* purple_account_privacy_check
+		* purple_account_privacy_deny
+		* purple_account_privacy_deny_add
+		* purple_account_privacy_deny_remove
+		* purple_account_privacy_get_denied
+		* purple_account_privacy_get_permitted
+		* purple_account_privacy_permit_add
+		* purple_account_privacy_permit_remove
 		* purple_account_remove_setting
 		* purple_account_request_add. Use purple_add_contact_request_new
 		  instead.
@@ -385,6 +393,7 @@ version 3.0.0 (??/??/????):
 		* purple_account_set_current_error
 		* purple_account_set_password.  Use
 		  purple_credential_manager_write_password_async instead.
+		* purple_account_set_privacy_type
 		* purple_account_set_public_alias
 		* purple_account_set_silence_suppression
 		* purple_account_set_ui_int
@@ -394,8 +403,10 @@ version 3.0.0 (??/??/????):
 		* purple_accounts_find
 		* purple_accounts_get_all
 		* purple_accounts_get_all_active
+		* purple_accounts_get_ui_ops
 		* purple_accounts_remove
 		* purple_accounts_reorder
+		* purple_accounts_set_ui_ops
 		* PurpleAttentionType
 		* purple_attention_type_set_name
 		* purple_attention_type_set_incoming_desc
@@ -915,6 +926,7 @@ version 3.0.0 (??/??/????):
 		* gtk_imhtml_image_scale
 		* pidgin_account_dialog_show
 		* pidgin_accounts_get_handle
+		* pidgin_accounts_get_ui_ops
 		* pidgin_accounts_window_hide
 		* pidgin_accounts_window_show, use pidgin_account_manager_new instead.
 		* pidgin_append_blist_node_extended_menu
@@ -1109,7 +1121,12 @@ version 3.0.0 (??/??/????):
 		* pidgin_pounces_manager_show
 		* pidgin_prefs_labeled_entry
 		* pidgin_prefs_labeled_password
+		* pidgin_privacy_dialog_hide
+		* pidgin_privacy_dialog_show
+		* pidgin_privacy_init
 		* pidgin_protocol_option_menu_get_selected
+		* pidgin_request_add_permit
+		* pidgin_request_add_block
 		* pidgin_save_accels
 		* pidgin_save_accels_cb
 		* PidginScrollBook

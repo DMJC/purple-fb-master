@@ -61,12 +61,6 @@ buddy_typing_cb(PurpleAccount *acct, const char *name, void *data) {
 		return;
 	}
 
-	if(!purple_account_privacy_check(acct, name)) {
-		purple_debug_info("psychic", "user %s is blocked", name);
-		g_object_unref(settings);
-		return;
-	}
-
 	manager = purple_conversation_manager_get_default();
 	im = purple_conversation_manager_find_im(manager, acct, name);
 	if(im == NULL) {

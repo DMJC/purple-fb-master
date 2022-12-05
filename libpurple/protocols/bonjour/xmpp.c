@@ -1300,37 +1300,11 @@ xep_iq_new(void *data, XepIqType type, const char *to, const char *from, const c
 	return iq;
 }
 
-static gboolean
-check_if_blocked(PurpleBuddy *pb)
-{
-	gboolean blocked = FALSE;
-	GSList *l = NULL;
-	PurpleAccount *acc = purple_buddy_get_account(pb);
-	const gchar *name;
-
-	if(acc == NULL)
-		return FALSE;
-
-	l = purple_account_privacy_get_denied(acc);
-	name = purple_buddy_get_name(pb);
-
-	if(g_slist_find_custom(l, name, (GCompareFunc)purple_utf8_strcasecmp) != NULL) {
-		const gchar *username = bonjour_get_jid(acc);
-
-		purple_debug_info("bonjour", "%s has been blocked by %s.\n", name, username);
-		blocked = TRUE;
-	}
-	return blocked;
-}
-
 static void
 xep_iq_parse(PurpleXmlNode *packet, PurpleBuddy *pb)
 {
 	PurpleAccount *account;
 	PurpleConnection *gc;
-
-	if(check_if_blocked(pb))
-		return;
 
 	account = purple_buddy_get_account(pb);
 	gc = purple_account_get_connection(account);

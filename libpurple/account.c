@@ -37,7 +37,6 @@
 #include "purpleprivate.h"
 #include "purpleprotocolclient.h"
 #include "purpleprotocolmanager.h"
-#include "purpleprotocolprivacy.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
 #include "server.h"
@@ -82,18 +81,6 @@ struct _PurpleAccount
 	PurpleProxyInfo *proxy_info;  /* Proxy information.  This will be set */
 								/*   to NULL when the account inherits      */
 								/*   proxy settings from global prefs.      */
-
-	/*
-	 * TODO: Instead of linked lists for permit and deny, use a data
-	 * structure that allows fast lookups AND decent performance when
-	 * iterating through all items. Fast lookups should help performance
-	 * for protocols like MSN, where all your buddies exist in your permit
-	 * list therefore the permit list is large. Possibly GTree or
-	 * GHashTable.
-	 */
-	GSList *permit;             /* Permit list.                           */
-	GSList *deny;               /* Deny list.                             */
-	PurpleAccountPrivacyType privacy_type;  /* The permit/deny setting.   */
 
 	GList *status_types;        /* Status types.                          */
 
@@ -415,40 +402,6 @@ purple_account_get_state(PurpleAccount *account)
 	}
 
 	return purple_connection_get_state(gc);
-}
-
-/*
- * This makes sure your permit list contains all buddies from your
- * buddy list and ONLY buddies from your buddy list.
- */
-static void
-add_all_buddies_to_permit_list(PurpleAccount *account, gboolean local)
-{
-	GSList *list;
-
-	/* Remove anyone in the permit list who is not in the buddylist */
-	for (list = account->permit; list != NULL; ) {
-		char *person = list->data;
-		list = list->next;
-		if (!purple_blist_find_buddy(account, person))
-			purple_account_privacy_permit_remove(account, person, local);
-	}
-
-	/* Now make sure everyone in the buddylist is in the permit list */
-	list = purple_blist_find_buddies(account, NULL);
-	while (list != NULL)
-	{
-		PurpleBuddy *buddy = list->data;
-		const gchar *name = purple_buddy_get_name(buddy);
-
-		if (!g_slist_find_custom(account->permit, name,
-		                         (GCompareFunc)g_utf8_collate))
-		{
-			purple_account_privacy_permit_add(account, name, local);
-		}
-
-		list = g_slist_delete_link(list, list);
-	}
 }
 
 void
@@ -785,8 +738,6 @@ purple_account_init(PurpleAccount *account)
 {
 	account->settings = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	                                          delete_setting);
-
-	account->privacy_type = PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL;
 }
 
 static void
@@ -914,9 +865,6 @@ purple_account_finalize(GObject *object)
 	g_free(account->protocol_id);
 
 	g_hash_table_destroy(account->settings);
-
-	g_slist_free_full(account->deny, g_free);
-	g_slist_free_full(account->permit, g_free);
 
 	G_OBJECT_CLASS(purple_account_parent_class)->finalize(object);
 }
@@ -1469,14 +1417,6 @@ purple_account_set_proxy_info(PurpleAccount *account, PurpleProxyInfo *info)
 }
 
 void
-purple_account_set_privacy_type(PurpleAccount *account, PurpleAccountPrivacyType privacy_type)
-{
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	account->privacy_type = privacy_type;
-}
-
-void
 purple_account_set_status_types(PurpleAccount *account, GList *status_types)
 {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
@@ -1752,353 +1692,6 @@ purple_account_get_proxy_info(PurpleAccount *account)
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
 	return account->proxy_info;
-}
-
-PurpleAccountPrivacyType
-purple_account_get_privacy_type(PurpleAccount *account)
-{
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL);
-
-	return account->privacy_type;
-}
-
-gboolean
-purple_account_privacy_permit_add(PurpleAccount *account, const char *who,
-						gboolean local_only)
-{
-	char *name;
-	PurpleBuddy *buddy;
-	PurpleAccountUiOps *ui_ops = purple_accounts_get_ui_ops();
-
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
-	g_return_val_if_fail(who     != NULL, FALSE);
-
-	name = g_strdup(purple_normalize(account, who));
-
-	if (g_slist_find_custom(account->permit, name, (GCompareFunc)g_strcmp0) != NULL) {
-		/* This buddy already exists, so bail out */
-		g_free(name);
-		return FALSE;
-	}
-
-	account->permit = g_slist_append(account->permit, name);
-
-	if (!local_only && purple_account_is_connected(account)) {
-		PurpleConnection *connection = purple_account_get_connection(account);
-		PurpleProtocol *protocol = purple_connection_get_protocol(connection);
-		PurpleProtocolPrivacy *privacy = PURPLE_PROTOCOL_PRIVACY(protocol);
-
-		purple_protocol_privacy_add_permit(privacy, connection, who);
-	}
-
-	if (ui_ops != NULL && ui_ops->permit_added != NULL)
-		ui_ops->permit_added(account, who);
-
-	purple_blist_save_account(purple_blist_get_default(), account);
-
-	/* This lets the UI know a buddy has had its privacy setting changed */
-	buddy = purple_blist_find_buddy(account, name);
-	if (buddy != NULL) {
-		purple_signal_emit(purple_blist_get_handle(),
-                "buddy-privacy-changed", buddy);
-	}
-	return TRUE;
-}
-
-gboolean
-purple_account_privacy_permit_remove(PurpleAccount *account, const char *who,
-						   gboolean local_only)
-{
-	GSList *l;
-	const char *name;
-	PurpleBuddy *buddy;
-	char *del;
-	PurpleAccountUiOps *ui_ops = purple_accounts_get_ui_ops();
-
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
-	g_return_val_if_fail(who     != NULL, FALSE);
-
-	name = purple_normalize(account, who);
-
-	l = g_slist_find_custom(account->permit, name, (GCompareFunc)g_strcmp0);
-	if (l == NULL) {
-		/* We didn't find the buddy we were looking for, so bail out */
-		return FALSE;
-	}
-
-	/* We should not free l->data just yet. There can be occasions where
-	 * l->data == who. In such cases, freeing l->data here can cause crashes
-	 * later when who is used. */
-	del = l->data;
-	account->permit = g_slist_delete_link(account->permit, l);
-
-	if (!local_only && purple_account_is_connected(account)) {
-		PurpleConnection *connection = purple_account_get_connection(account);
-		PurpleProtocol *protocol = purple_connection_get_protocol(connection);
-		PurpleProtocolPrivacy *privacy = PURPLE_PROTOCOL_PRIVACY(protocol);
-
-		purple_protocol_privacy_remove_permit(privacy, connection, who);
-	}
-
-	if (ui_ops != NULL && ui_ops->permit_removed != NULL) {
-		ui_ops->permit_removed(account, who);
-	}
-
-	purple_blist_save_account(purple_blist_get_default(), account);
-
-	buddy = purple_blist_find_buddy(account, name);
-	if (buddy != NULL) {
-		purple_signal_emit(purple_blist_get_handle(),
-                "buddy-privacy-changed", buddy);
-	}
-	g_free(del);
-	return TRUE;
-}
-
-gboolean
-purple_account_privacy_deny_add(PurpleAccount *account, const char *who,
-					  gboolean local_only)
-{
-	char *name;
-	PurpleBuddy *buddy;
-	PurpleAccountUiOps *ui_ops = purple_accounts_get_ui_ops();
-
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
-	g_return_val_if_fail(who     != NULL, FALSE);
-
-	name = g_strdup(purple_normalize(account, who));
-
-	if (g_slist_find_custom(account->deny, name,
-	                        (GCompareFunc)g_strcmp0) != NULL)
-	{
-		/* This buddy already exists, so bail out */
-		g_free(name);
-		return FALSE;
-	}
-
-	account->deny = g_slist_append(account->deny, name);
-
-	if (!local_only && purple_account_is_connected(account)) {
-		PurpleConnection *connection = purple_account_get_connection(account);
-		PurpleProtocol *protocol = purple_connection_get_protocol(connection);
-		PurpleProtocolPrivacy *privacy = PURPLE_PROTOCOL_PRIVACY(protocol);
-
-		purple_protocol_privacy_add_deny(privacy, connection, who);
-	}
-
-	if (ui_ops != NULL && ui_ops->deny_added != NULL)
-		ui_ops->deny_added(account, who);
-
-	purple_blist_save_account(purple_blist_get_default(), account);
-
-	buddy = purple_blist_find_buddy(account, name);
-	if (buddy != NULL) {
-		purple_signal_emit(purple_blist_get_handle(),
-                "buddy-privacy-changed", buddy);
-	}
-	return TRUE;
-}
-
-gboolean
-purple_account_privacy_deny_remove(PurpleAccount *account, const char *who,
-						 gboolean local_only)
-{
-	GSList *l;
-	const char *normalized;
-	char *name;
-	PurpleBuddy *buddy;
-	PurpleAccountUiOps *ui_ops = purple_accounts_get_ui_ops();
-
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
-	g_return_val_if_fail(who     != NULL, FALSE);
-
-	normalized = purple_normalize(account, who);
-
-	l = g_slist_find_custom(account->deny, normalized, (GCompareFunc)g_strcmp0);
-	if (l == NULL) {
-		/* We didn't find the buddy we were looking for, so bail out */
-		return FALSE;
-	}
-
-	buddy = purple_blist_find_buddy(account, normalized);
-
-	name = l->data;
-	account->deny = g_slist_delete_link(account->deny, l);
-
-	if (!local_only && purple_account_is_connected(account)) {
-		PurpleConnection *connection = purple_account_get_connection(account);
-		PurpleProtocol *protocol = purple_connection_get_protocol(connection);
-		PurpleProtocolPrivacy *privacy = PURPLE_PROTOCOL_PRIVACY(protocol);
-
-		purple_protocol_privacy_remove_deny(privacy, connection, name);
-	}
-
-	if (ui_ops != NULL && ui_ops->deny_removed != NULL) {
-		ui_ops->deny_removed(account, who);
-	}
-
-	if (buddy != NULL) {
-		purple_signal_emit(purple_blist_get_handle(),
-                "buddy-privacy-changed", buddy);
-	}
-
-	g_free(name);
-
-	purple_blist_save_account(purple_blist_get_default(), account);
-
-	return TRUE;
-}
-
-void
-purple_account_privacy_allow(PurpleAccount *account, const char *who)
-{
-	GSList *list;
-	PurpleAccountPrivacyType type = purple_account_get_privacy_type(account);
-
-	switch (type) {
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL:
-			return;
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS:
-			purple_account_privacy_permit_add(account, who, FALSE);
-			break;
-		case PURPLE_ACCOUNT_PRIVACY_DENY_USERS:
-			purple_account_privacy_deny_remove(account, who, FALSE);
-			break;
-		case PURPLE_ACCOUNT_PRIVACY_DENY_ALL:
-			{
-				/* Empty the allow-list. */
-				const char *norm = purple_normalize(account, who);
-				for (list = account->permit; list != NULL;) {
-					char *person = list->data;
-					list = list->next;
-					if (!purple_strequal(norm, person))
-						purple_account_privacy_permit_remove(account, person, FALSE);
-				}
-				purple_account_privacy_permit_add(account, who, FALSE);
-				purple_account_set_privacy_type(account, PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS);
-			}
-			break;
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_BUDDYLIST:
-			if (!purple_blist_find_buddy(account, who)) {
-				add_all_buddies_to_permit_list(account, FALSE);
-				purple_account_privacy_permit_add(account, who, FALSE);
-				purple_account_set_privacy_type(account, PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS);
-			}
-			break;
-		default:
-			g_return_if_reached();
-	}
-
-	/* Notify the server if the privacy setting was changed */
-	if(type != purple_account_get_privacy_type(account) &&
-	   purple_account_is_connected(account))
-	{
-		PurpleProtocol *protocol = purple_account_get_protocol(account);
-
-		if(PURPLE_IS_PROTOCOL_PRIVACY(protocol)) {
-			PurpleConnection *connection = purple_account_get_connection(account);
-
-			purple_protocol_privacy_set_permit_deny(PURPLE_PROTOCOL_PRIVACY(protocol),
-			                                        connection);
-		}
-	}
-}
-
-void
-purple_account_privacy_deny(PurpleAccount *account, const char *who)
-{
-	GSList *list;
-	PurpleAccountPrivacyType type = purple_account_get_privacy_type(account);
-
-	switch (type) {
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL:
-			{
-				/* Empty the deny-list. */
-				const char *norm = purple_normalize(account, who);
-				for (list = account->deny; list != NULL; ) {
-					char *person = list->data;
-					list = list->next;
-					if (!purple_strequal(norm, person))
-						purple_account_privacy_deny_remove(account, person, FALSE);
-				}
-				purple_account_privacy_deny_add(account, who, FALSE);
-				purple_account_set_privacy_type(account, PURPLE_ACCOUNT_PRIVACY_DENY_USERS);
-			}
-			break;
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS:
-			purple_account_privacy_permit_remove(account, who, FALSE);
-			break;
-		case PURPLE_ACCOUNT_PRIVACY_DENY_USERS:
-			purple_account_privacy_deny_add(account, who, FALSE);
-			break;
-		case PURPLE_ACCOUNT_PRIVACY_DENY_ALL:
-			break;
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_BUDDYLIST:
-			if (purple_blist_find_buddy(account, who)) {
-				add_all_buddies_to_permit_list(account, FALSE);
-				purple_account_privacy_permit_remove(account, who, FALSE);
-				purple_account_set_privacy_type(account, PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS);
-			}
-			break;
-		default:
-			g_return_if_reached();
-	}
-
-	/* Notify the server if the privacy setting was changed */
-	if(type != purple_account_get_privacy_type(account) &&
-	   purple_account_is_connected(account))
-	{
-		PurpleProtocol *protocol = purple_account_get_protocol(account);
-
-		if(PURPLE_IS_PROTOCOL_PRIVACY(protocol)) {
-			PurpleConnection *connection = purple_account_get_connection(account);
-
-			purple_protocol_privacy_set_permit_deny(PURPLE_PROTOCOL_PRIVACY(protocol),
-			                                        connection);
-		}
-	}
-}
-
-GSList *
-purple_account_privacy_get_permitted(PurpleAccount *account)
-{
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return account->permit;
-}
-
-GSList *
-purple_account_privacy_get_denied(PurpleAccount *account)
-{
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return account->deny;
-}
-
-gboolean
-purple_account_privacy_check(PurpleAccount *account, const char *who)
-{
-	switch (purple_account_get_privacy_type(account)) {
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL:
-			return TRUE;
-
-		case PURPLE_ACCOUNT_PRIVACY_DENY_ALL:
-			return FALSE;
-
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_USERS:
-			who = purple_normalize(account, who);
-			return (g_slist_find_custom(account->permit, who, (GCompareFunc)g_strcmp0) != NULL);
-
-		case PURPLE_ACCOUNT_PRIVACY_DENY_USERS:
-			who = purple_normalize(account, who);
-			return (g_slist_find_custom(account->deny, who, (GCompareFunc)g_strcmp0) == NULL);
-
-		case PURPLE_ACCOUNT_PRIVACY_ALLOW_BUDDYLIST:
-			return (purple_blist_find_buddy(account, who) != NULL);
-
-		default:
-			g_return_val_if_reached(TRUE);
-	}
 }
 
 PurpleStatus *

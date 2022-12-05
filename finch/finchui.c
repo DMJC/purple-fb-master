@@ -169,7 +169,6 @@ finch_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
 
 static void
 finch_ui_stop(G_GNUC_UNUSED PurpleUi *ui) {
-	purple_accounts_set_ui_ops(NULL);
 	finch_accounts_uninit();
 
 	purple_connections_set_ui_ops(NULL);

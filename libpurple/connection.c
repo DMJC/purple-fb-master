@@ -30,7 +30,6 @@
 #include "proxy.h"
 #include "purpleenums.h"
 #include "purpleprivate.h"
-#include "purpleprotocolprivacy.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
 #include "server.h"
@@ -196,13 +195,6 @@ purple_connection_set_state(PurpleConnection *connection,
 		handle = purple_connections_get_handle();
 		purple_signal_emit(handle, "signed-on", connection);
 		purple_signal_emit_return_1(handle, "autojoin", connection);
-
-		if(PURPLE_IS_PROTOCOL_PRIVACY(priv->protocol)) {
-			PurpleProtocolPrivacy *privacy = NULL;
-
-			privacy = PURPLE_PROTOCOL_PRIVACY(priv->protocol);
-			purple_protocol_privacy_set_permit_deny(privacy, connection);
-		}
 
 		update_keepalive(connection, TRUE);
 

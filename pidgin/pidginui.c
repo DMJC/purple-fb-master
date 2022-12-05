@@ -38,7 +38,6 @@
 #include "gtkidle.h"
 #include "gtkmedia.h"
 #include "gtknotify.h"
-#include "gtkprivacy.h"
 #include "gtkroomlist.h"
 #include "gtkrequest.h"
 #include "gtkwhiteboard.h"
@@ -191,7 +190,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
 	pidgin_blist_init();
 	pidgin_conversations_init();
 	pidgin_commands_init();
-	pidgin_privacy_init();
 	pidgin_xfers_init();
 	pidgin_roomlist_init();
 	pidgin_medias_init();

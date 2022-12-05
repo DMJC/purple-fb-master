@@ -37,7 +37,6 @@
 
 #include "gtkblist.h"
 #include "gtkdialogs.h"
-#include "gtkprivacy.h"
 #include "gtkroomlist.h"
 #include "gtksavedstatuses.h"
 #include "gtkxfer.h"
@@ -201,7 +200,6 @@ static const gchar *pidgin_application_online_actions[] = {
 	"add-group",
 	"get-user-info",
 	"new-message",
-	"privacy",
 	"set-mood",
 };
 
@@ -487,14 +485,6 @@ pidgin_application_preferences(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_application_privacy(G_GNUC_UNUSED GSimpleAction *simple,
-                           G_GNUC_UNUSED GVariant *parameter,
-                           G_GNUC_UNUSED gpointer data)
-{
-	pidgin_privacy_dialog_show();
-}
-
-static void
 pidgin_application_quit(G_GNUC_UNUSED GSimpleAction *simple,
                         G_GNUC_UNUSED GVariant *parameter,
                         G_GNUC_UNUSED gpointer data)
@@ -607,9 +597,6 @@ static GActionEntry app_entries[] = {
 	}, {
 		.name = "preferences",
 		.activate = pidgin_application_preferences,
-	}, {
-		.name = "privacy",
-		.activate = pidgin_application_privacy,
 	}, {
 		.name = "quit",
 		.activate = pidgin_application_quit,

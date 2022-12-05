@@ -24,15 +24,6 @@
 #include "gtkaccount.h"
 #include "pidgincore.h"
 
-/* This still exists because gtkprivacy calls it to add the privacy ui ops */
-static PurpleAccountUiOps ui_ops = {};
-
-PurpleAccountUiOps *
-pidgin_accounts_get_ui_ops(void)
-{
-	return &ui_ops;
-}
-
 void
 pidgin_accounts_init(void)
 {

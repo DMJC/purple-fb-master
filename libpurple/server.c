@@ -35,7 +35,6 @@
 #include "purpleprotocol.h"
 #include "purpleprotocolchat.h"
 #include "purpleprotocolim.h"
-#include "purpleprotocolprivacy.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
 #include "signals.h"
@@ -337,12 +336,6 @@ void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
 	 */
 	flags |= PURPLE_MESSAGE_RECV;
 
-	if (!purple_account_privacy_check(account, who)) {
-		purple_signal_emit(purple_conversations_get_handle(), "blocked-im-msg",
-				account, who, msg, flags, (unsigned int)mtime);
-		return;
-	}
-
 	manager = purple_conversation_manager_get_default();
 
 	/*
@@ -496,12 +489,6 @@ void purple_serv_got_chat_invite(PurpleConnection *gc, const char *name,
 	g_return_if_fail(who != NULL);
 
 	account = purple_connection_get_account(gc);
-	if (!purple_account_privacy_check(account, who)) {
-		purple_signal_emit(purple_conversations_get_handle(), "chat-invite-blocked",
-				account, who, name, message, data);
-		return;
-	}
-
 	cid = g_new0(struct chat_invite_data, 1);
 
 	plugin_return = GPOINTER_TO_INT(purple_signal_emit_return_1(

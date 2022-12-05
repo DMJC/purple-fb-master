@@ -348,37 +348,7 @@ group_to_xmlnode(PurpleGroup *group)
 }
 
 static PurpleXmlNode *
-accountprivacy_to_xmlnode(PurpleAccount *account)
-{
-	PurpleXmlNode *node, *child;
-	GSList *cur;
-	char buf[10];
-
-	node = purple_xmlnode_new("account");
-	purple_xmlnode_set_attrib(node, "proto", purple_account_get_protocol_id(account));
-	purple_xmlnode_set_attrib(node, "name", purple_account_get_username(account));
-	g_snprintf(buf, sizeof(buf), "%d", purple_account_get_privacy_type(account));
-	purple_xmlnode_set_attrib(node, "mode", buf);
-
-	for (cur = purple_account_privacy_get_permitted(account); cur; cur = cur->next)
-	{
-		child = purple_xmlnode_new_child(node, "permit");
-		purple_xmlnode_insert_data(child, cur->data, -1);
-	}
-
-	for (cur = purple_account_privacy_get_denied(account); cur; cur = cur->next)
-	{
-		child = purple_xmlnode_new_child(node, "block");
-		purple_xmlnode_insert_data(child, cur->data, -1);
-	}
-
-	return node;
-}
-
-static PurpleXmlNode *
 blist_to_xmlnode(void) {
-	GListModel *manager_model = NULL;
-	guint n_items = 0;
 	PurpleXmlNode *node, *child, *grandchild;
 	PurpleBlistNode *gnode;
 	const gchar *localized_default;
@@ -406,17 +376,6 @@ blist_to_xmlnode(void) {
 			grandchild = group_to_xmlnode(PURPLE_GROUP(gnode));
 			purple_xmlnode_insert_child(child, grandchild);
 		}
-	}
-
-	/* Write privacy settings */
-	child = purple_xmlnode_new_child(node, "privacy");
-	manager_model = purple_account_manager_get_default_as_model();
-	n_items = g_list_model_get_n_items(manager_model);
-	for(guint index = 0; index < n_items; index++) {
-		PurpleAccount *account = g_list_model_get_item(manager_model, index);
-		grandchild = accountprivacy_to_xmlnode(account);
-		purple_xmlnode_insert_child(child, grandchild);
-		g_object_unref(account);
 	}
 
 	return node;
@@ -667,8 +626,7 @@ parse_group(PurpleXmlNode *groupnode)
 static void
 load_blist(void)
 {
-	PurpleAccountManager *manager = NULL;
-	PurpleXmlNode *purple, *blist, *privacy;
+	PurpleXmlNode *purple, *blist;
 
 	blist_loaded = TRUE;
 
@@ -677,8 +635,6 @@ load_blist(void)
 	if(purple == NULL) {
 		return;
 	}
-
-	manager = purple_account_manager_get_default();
 
 	blist = purple_xmlnode_get_child(purple, "blist");
 	if(blist) {
@@ -695,51 +651,6 @@ load_blist(void)
 	} else {
 		g_free(localized_default_group_name);
 		localized_default_group_name = NULL;
-	}
-
-	privacy = purple_xmlnode_get_child(purple, "privacy");
-	if(privacy) {
-		PurpleXmlNode *anode;
-		for(anode = privacy->child; anode; anode = anode->next) {
-			PurpleAccount *account;
-			PurpleXmlNode *x;
-			int imode;
-			const char *acct_name, *proto, *mode;
-
-			acct_name = purple_xmlnode_get_attrib(anode, "name");
-			proto = purple_xmlnode_get_attrib(anode, "proto");
-			mode = purple_xmlnode_get_attrib(anode, "mode");
-
-			if(!acct_name || !proto || !mode) {
-				continue;
-			}
-
-			account = purple_account_manager_find(manager, acct_name, proto);
-
-			if(!account) {
-				continue;
-			}
-
-			imode = atoi(mode);
-			purple_account_set_privacy_type(account, (imode != 0 ? imode : PURPLE_ACCOUNT_PRIVACY_ALLOW_ALL));
-
-			for(x = anode->child; x; x = x->next) {
-				char *name;
-				if(x->type != PURPLE_XMLNODE_TYPE_TAG) {
-					continue;
-				}
-
-				if(purple_strequal(x->name, "permit")) {
-					name = purple_xmlnode_get_data(x);
-					purple_account_privacy_permit_add(account, name, TRUE);
-					g_free(name);
-				} else if(purple_strequal(x->name, "block")) {
-					name = purple_xmlnode_get_data(x);
-					purple_account_privacy_deny_add(account, name, TRUE);
-					g_free(name);
-				}
-			}
-		}
 	}
 
 	purple_xmlnode_free(purple);

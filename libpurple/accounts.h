@@ -29,34 +29,6 @@
 #include "account.h"
 #include "status.h"
 
-#define PURPLE_TYPE_ACCOUNT_UI_OPS (purple_account_ui_ops_get_type())
-
-typedef struct _PurpleAccountUiOps  PurpleAccountUiOps;
-
-/**
- * PurpleAccountUiOps:
- * @status_changed:        This account's status changed.
- * @permit_added: Called during a call to purple_account_privacy_permit_add().
- * @permit_removed: Called during a call to
- *                  purple_account_privacy_permit_removed().
- * @deny_added: Called during a call to purple_account_privacy_deny_add().
- * @deny_removed: Called during a call to
- *                purple_account_privacy_deny_removed().
- *
- * Account UI operations, used to notify the user of status changes and when
- * buddies add this account to their buddy lists.
- */
-struct _PurpleAccountUiOps
-{
-	void (*permit_added)(PurpleAccount *account, const char *name);
-	void (*permit_removed)(PurpleAccount *account, const char *name);
-	void (*deny_added)(PurpleAccount *account, const char *name);
-	void (*deny_removed)(PurpleAccount *account, const char *name);
-
-	/*< private >*/
-	gpointer reserved[4];
-};
-
 G_BEGIN_DECLS
 
 /**************************************************************************/
@@ -87,36 +59,6 @@ void purple_accounts_delete(PurpleAccount *account);
  * what you're doing.
  */
 void purple_accounts_restore_current_statuses(void);
-
-
-/**************************************************************************/
-/* UI Registration Functions                                              */
-/**************************************************************************/
-
-/**
- * purple_account_ui_ops_get_type:
- *
- * Returns: The #GType for the #PurpleAccountUiOps boxed structure.
- */
-GType purple_account_ui_ops_get_type(void);
-
-/**
- * purple_accounts_set_ui_ops:
- * @ops: The UI operations structure.
- *
- * Sets the UI operations structure to be used for accounts.
- */
-void purple_accounts_set_ui_ops(PurpleAccountUiOps *ops);
-
-/**
- * purple_accounts_get_ui_ops:
- *
- * Returns the UI operations structure used for accounts.
- *
- * Returns: The UI operations structure in use.
- */
-PurpleAccountUiOps *purple_accounts_get_ui_ops(void);
-
 
 /**************************************************************************/
 /* Accounts Subsystem                                                     */

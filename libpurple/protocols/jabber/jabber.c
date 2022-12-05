@@ -1181,6 +1181,7 @@ void jabber_blocklist_parse_push(JabberStream *js, const char *from,
                                  JabberIqType type, const char *id,
                                  PurpleXmlNode *child)
 {
+#if 0
 	JabberIq *result;
 	PurpleXmlNode *item;
 	PurpleAccount *account;
@@ -1243,8 +1244,10 @@ void jabber_blocklist_parse_push(JabberStream *js, const char *from,
 	result = jabber_iq_new(js, JABBER_IQ_RESULT);
 	purple_xmlnode_set_attrib(result->node, "id", id);
 	jabber_iq_send(result);
+#endif
 }
 
+#if 0
 static void jabber_blocklist_parse(JabberStream *js, const char *from,
                                    JabberIqType type, const char *id,
                                    PurpleXmlNode *packet, gpointer data)
@@ -1277,9 +1280,11 @@ static void jabber_blocklist_parse(JabberStream *js, const char *from,
 		item = purple_xmlnode_get_next_twin(item);
 	}
 }
+#endif
 
 void jabber_request_block_list(JabberStream *js)
 {
+#if 0
 	JabberIq *iq;
 	PurpleXmlNode *blocklist;
 
@@ -1291,8 +1296,10 @@ void jabber_request_block_list(JabberStream *js)
 	jabber_iq_set_callback(iq, jabber_blocklist_parse, NULL);
 
 	jabber_iq_send(iq);
+#endif
 }
 
+#if 0
 static void
 jabber_add_deny(PurpleProtocolPrivacy *privacy, PurpleConnection *gc,
                 const char *who)
@@ -1353,6 +1360,7 @@ jabber_remove_deny(PurpleProtocolPrivacy *privacy, PurpleConnection *gc,
 
 	jabber_iq_send(iq);
 }
+#endif
 
 void jabber_add_feature(const char *namespace, JabberFeatureEnabled cb) {
 	JabberFeature *feat;
@@ -3536,13 +3544,6 @@ jabber_protocol_chat_iface_init(PurpleProtocolChatInterface *chat_iface)
 }
 
 static void
-jabber_protocol_privacy_iface_init(PurpleProtocolPrivacyInterface *privacy_iface)
-{
-	privacy_iface->add_deny = jabber_add_deny;
-	privacy_iface->remove_deny = jabber_remove_deny;
-}
-
-static void
 jabber_protocol_roomlist_iface_init(PurpleProtocolRoomlistInterface *roomlist_iface)
 {
 	roomlist_iface->get_list       = jabber_roomlist_get_list;
@@ -3580,8 +3581,6 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	                              jabber_protocol_im_iface_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CHAT,
 	                              jabber_protocol_chat_iface_init)
-	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_PRIVACY,
-	                              jabber_protocol_privacy_iface_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ROOMLIST,
 	                              jabber_protocol_roomlist_iface_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_MEDIA,
