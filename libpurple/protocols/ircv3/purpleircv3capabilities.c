@@ -43,6 +43,8 @@ enum {
 	SIG_ACK,
 	SIG_NAK,
 	SIG_DONE,
+	SIG_NEW,
+	SIG_DEL,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -77,6 +79,22 @@ purple_ircv3_capabilities_finish(PurpleIRCv3Capabilities *capabilities) {
 	                               "CAP END");
 
 	g_signal_emit(capabilities, signals[SIG_DONE], 0);
+}
+
+static void
+purple_ircv3_capabilities_add(PurpleIRCv3Capabilities *capabilities,
+                              const char *capability)
+{
+	char *equals = g_strstr_len(capability, -1, "=");
+
+	if(equals != NULL) {
+		char *key = g_strndup(capability, equals - capability);
+		char *value = g_strdup(equals + 1);
+
+		g_hash_table_insert(capabilities->caps, key, value);
+	} else {
+		g_hash_table_insert(capabilities->caps, g_strdup(capability), NULL);
+	}
 }
 
 /******************************************************************************
@@ -278,18 +296,71 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 		NULL,
 		G_TYPE_NONE,
 		0);
+
+	/**
+	 * PurpleIRCv3Capabilities::new:
+	 * @capabilities: The instance.
+	 * @added: The newly added capabilities.
+	 *
+	 * Emitted when the server sends the `CAP NEW` command. @added is a
+	 * [type@GLib.Strv] of the new capabilities the server added.
+	 *
+	 * There are two approaches to how you can use this signal. You can check
+	 * each item in @added for the values you need and parsing their values, or
+	 * you can call #purple_ircv3_capabilities_lookup to see if the
+	 * capabilities you're interested in have been added.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_NEW] = g_signal_new_class_handler(
+		"new",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		G_TYPE_STRV);
+
+	/**
+	 * PurpleIRCv3Capabilities::del:
+	 * @capabilities: The instance.
+	 * @removed: The capabilities that were removed.
+	 *
+	 * Emitted when the server sends the `CAP DEL` command. @removed is a
+	 * [type@GLib.Strv] of the capabilities that the server removed.
+	 *
+	 * There are two approaches to how you can use this signal. You can check
+	 * each item in @removed for the values you care about, or you can call
+	 * #purple_ircv3_capabilities_lookup to see if the capabilities you're
+	 * interested in have been removed.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_DEL] = g_signal_new_class_handler(
+		"del",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		G_TYPE_STRV);
 }
 
 /******************************************************************************
  * Command handlers
  *****************************************************************************/
 static gboolean
-purple_ircv3_capabilities_handle_list(guint n_params,
+purple_ircv3_capabilities_handle_list(PurpleIRCv3Capabilities *capabilities,
+                                      guint n_params,
                                       GStrv params,
-                                      G_GNUC_UNUSED GError **error,
-                                      gpointer data)
+                                      G_GNUC_UNUSED GError **error)
 {
-	PurpleIRCv3Capabilities *capabilities = data;
 	gboolean done = TRUE;
 	gchar **parts = NULL;
 
@@ -303,16 +374,7 @@ purple_ircv3_capabilities_handle_list(guint n_params,
 
 	/* Add each capability to our hash table, splitting the keys and values. */
 	for(int i = 0; parts[i] != NULL; i++) {
-		char *equals = g_strstr_len(parts[i], -1, "=");
-
-		if(equals != NULL) {
-			char *key = g_strndup(parts[i], equals - parts[i]);
-			char *value = g_strdup(equals + 1);
-
-			g_hash_table_insert(capabilities->caps, key, value);
-		} else {
-			g_hash_table_insert(capabilities->caps, g_strdup(parts[i]), NULL);
-		}
+		purple_ircv3_capabilities_add(capabilities, parts[i]);
 	}
 
 	g_strfreev(parts);
@@ -361,6 +423,36 @@ purple_ircv3_capabilities_handle_ack_nak(PurpleIRCv3Capabilities *capabilities,
 	}
 
 	return ret;
+}
+
+static gboolean
+purple_ircv3_capabilities_handle_new(PurpleIRCv3Capabilities *capabilities,
+                                     guint n_params,
+                                     GStrv params,
+                                     G_GNUC_UNUSED GError **error)
+{
+	for(guint i = 0; i < n_params; i++) {
+		purple_ircv3_capabilities_add(capabilities, params[i]);
+	}
+
+	g_signal_emit(capabilities, signals[SIG_NEW], 0, params);
+
+	return TRUE;
+}
+
+static gboolean
+purple_ircv3_capabilities_handle_del(PurpleIRCv3Capabilities *capabilities,
+                                     guint n_params,
+                                     GStrv params,
+                                     G_GNUC_UNUSED GError **error)
+{
+	for(guint i = 0; i < n_params; i++) {
+		g_hash_table_remove(capabilities->caps, params[i]);
+	}
+
+	g_signal_emit(capabilities, signals[SIG_DEL], 0, params);
+
+	return TRUE;
 }
 
 /******************************************************************************
@@ -429,8 +521,8 @@ purple_ircv3_capabilities_message_handler(G_GNUC_UNUSED GHashTable *tags,
 	if(purple_strequal(subcommand, "LS") ||
 	   purple_strequal(subcommand, "LIST"))
 	{
-		return purple_ircv3_capabilities_handle_list(n_subparams, subparams,
-		                                             error, capabilities);
+		return purple_ircv3_capabilities_handle_list(capabilities, n_subparams,
+		                                             subparams, error);
 	} else if(purple_strequal(subcommand, "ACK")) {
 		return purple_ircv3_capabilities_handle_ack_nak(capabilities,
 		                                                subparams,
@@ -443,6 +535,12 @@ purple_ircv3_capabilities_message_handler(G_GNUC_UNUSED GHashTable *tags,
 		                                                signals[SIG_NAK],
 		                                                "NAK",
 		                                                error);
+	} else if(purple_strequal(subcommand, "NEW")) {
+		return purple_ircv3_capabilities_handle_new(capabilities, n_subparams,
+		                                            subparams, error);
+	} else if(purple_strequal(subcommand, "DEL")) {
+		return purple_ircv3_capabilities_handle_del(capabilities, n_subparams,
+		                                            subparams, error);
 	}
 
 	g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
