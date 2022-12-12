@@ -614,6 +614,10 @@ version 3.0.0 (??/??/????):
 		* purple_plugins_unregister_unload_notify_cb
 		* purple_plugins_unload
 		* purple_plugins_unload_all
+		* PURPLE_PMP_LIFETIME
+		* PurplePmpType
+		* purple_pmp_create_map
+		* purple_pmp_destroy_map
 		* purple_pounce_action_get_attribute
 		* purple_pounce_action_is_enabled
 		* purple_pounce_action_register

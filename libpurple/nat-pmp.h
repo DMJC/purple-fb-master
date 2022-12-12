@@ -33,13 +33,6 @@
 
 #include <glib.h>
 
-#define PURPLE_PMP_LIFETIME	3600	/* 3600 seconds */
-
-typedef enum {
-	PURPLE_PMP_TYPE_UDP,
-	PURPLE_PMP_TYPE_TCP
-} PurplePmpType;
-
 G_BEGIN_DECLS
 
 /**
@@ -50,32 +43,6 @@ G_BEGIN_DECLS
 void purple_pmp_init(void);
 
 char *purple_pmp_get_public_ip(void);
-
-/**
- * purple_pmp_create_map:
- * @type:        The PurplePmpType
- * @privateport: The private port on which we are listening locally
- * @publicport:  The public port on which we are expecting a response
- * @lifetime:    The lifetime of the mapping. It is recommended that this
- *                    be PURPLE_PMP_LIFETIME.
- *
- * Remove the NAT-PMP mapping for a specified type on a specified port
- *
- * Returns: TRUE if successful; FALSE if unsuccessful
- */
-gboolean purple_pmp_create_map(PurplePmpType type, unsigned short privateport,
-                               unsigned short publicport, int lifetime);
-
-/**
- * purple_pmp_destroy_map:
- * @type:        The PurplePmpType
- * @privateport: The private port on which the mapping was previously made
- *
- * Remove the NAT-PMP mapping for a specified type on a specified port
- *
- * Returns: TRUE if successful; FALSE if unsuccessful
- */
-gboolean purple_pmp_destroy_map(PurplePmpType type, unsigned short privateport);
 
 G_END_DECLS
 

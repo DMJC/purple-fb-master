@@ -63,27 +63,6 @@ typedef struct {
 	guint32		address;
 } PurplePmpIpResponse;
 
-typedef struct {
-	guint8		version;
-	guint8		opcode;
-	char		reserved[2];
-	guint16		privateport;
-	guint16		publicport;
-	guint32		lifetime;
-} PurplePmpMapRequest;
-
-struct _PurplePmpMapResponse {
-	guint8		version;
-	guint8		opcode;
-	guint16		resultcode;
-	guint32		epoch;
-	guint16		privateport;
-	guint16		publicport;
-	guint32		lifetime;
-};
-
-typedef struct _PurplePmpMapResponse PurplePmpMapResponse;
-
 typedef enum {
 	PURPLE_PMP_STATUS_UNDISCOVERED = -1,
 	PURPLE_PMP_STATUS_UNABLE_TO_DISCOVER,
@@ -101,9 +80,6 @@ static PurplePmpInfo pmp_info = {PURPLE_PMP_STATUS_UNDISCOVERED, NULL};
 /*
  *	Thanks to R. Matthew Emerson for the fixes on this
  */
-
-#define PMP_MAP_OPCODE_UDP	1
-#define PMP_MAP_OPCODE_TCP	2
 
 #define PMP_VERSION			0
 #define PMP_PORT			5351
@@ -392,140 +368,12 @@ purple_pmp_get_public_ip(void)
 	return inet_ntoa(publicsockaddr->sin_addr);
 }
 
-gboolean
-purple_pmp_create_map(PurplePmpType type, unsigned short privateport, unsigned short publicport, int lifetime)
-{
-	struct sockaddr_in *gateway;
-	gboolean success = TRUE;
-	int sendfd;
-	struct timeval req_timeout;
-	PurplePmpMapRequest req;
-	PurplePmpMapResponse *resp;
-
-	gateway = default_gw();
-
-	if (!gateway)
-	{
-		purple_debug_info("nat-pmp", "Cannot create mapping on a NULL gateway!\n");
-		return FALSE;
-	}
-
-	/* Default port for NAT-PMP is 5351 */
-	if (gateway->sin_port != PMP_PORT)
-		gateway->sin_port = g_htons(PMP_PORT);
-
-	resp = g_new0(PurplePmpMapResponse, 1);
-
-	req_timeout.tv_sec = 0;
-	req_timeout.tv_usec = PMP_TIMEOUT;
-
-	sendfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-	/* Set up the req */
-	memset(&req, 0, sizeof(PurplePmpMapRequest));
-	req.version = 0;
-	req.opcode = ((type == PURPLE_PMP_TYPE_UDP) ? PMP_MAP_OPCODE_UDP : PMP_MAP_OPCODE_TCP);
-	req.privateport = g_htons(privateport); /* What a difference byte ordering makes...d'oh! */
-	req.publicport = g_htons(publicport);
-	req.lifetime = g_htonl(lifetime);
-
-	/* The NAT-PMP spec says we should attempt to contact the gateway 9 times, doubling the time we wait each time.
-	 * Even starting with a timeout of 0.1 seconds, that means that we have a total waiting of 204.6 seconds.
-	 * With the recommended timeout of 0.25 seconds, we're talking 511.5 seconds (8.5 minutes).
-	 *
-	 * This seems really silly... if this were nonblocking, a couple retries might be in order, but it's not at present.
-	 * XXX Make this nonblocking.
-	 * XXX This code looks like the pmp_get_public_ip() code. Can it be consolidated?
-	 */
-#ifdef PMP_DEBUG
-	purple_debug_info("nat-pmp", "Attempting to create a NAT-PMP mapping the private port %d, and the public port %d\n", privateport, publicport);
-	purple_debug_info("nat-pmp", "\tTimeout: %ds %dus\n", req_timeout.tv_sec, req_timeout.tv_usec);
-#endif
-
-	/* TODO: Non-blocking! */
-	success = (sendto(sendfd, &req, sizeof(req), 0, (struct sockaddr *)(gateway), sizeof(struct sockaddr)) >= 0);
-	if (!success)
-		purple_debug_info("nat-pmp", "There was an error sending the NAT-PMP mapping request! (%s)\n", g_strerror(errno));
-
-	if (success)
-	{
-		success = (setsockopt(sendfd, SOL_SOCKET, SO_RCVTIMEO, &req_timeout, sizeof(req_timeout)) >= 0);
-		if (!success)
-			purple_debug_info("nat-pmp", "There was an error setting the socket's options! (%s)\n", g_strerror(errno));
-	}
-
-	if (success)
-	{
-		/* The original code treats EAGAIN as a reason to iterate.. but I've removed iteration. This may be a problem */
-		/* TODO: Non-blocking! */
-		success = ((recvfrom(sendfd, resp, sizeof(PurplePmpMapResponse), 0, NULL, NULL) >= 0) ||
-				   (errno == EAGAIN));
-		if (!success)
-			purple_debug_info("nat-pmp", "There was an error receiving the response from the NAT-PMP device! (%s)\n", g_strerror(errno));
-	}
-
-	if (success)
-	{
-		success = (resp->opcode == (req.opcode + 128));
-		if (!success)
-			purple_debug_info("nat-pmp", "The opcode for the response from the NAT device (%i) does not match the request opcode (%i + 128 = %i)!\n",
-							  resp->opcode, req.opcode, req.opcode + 128);
-	}
-
-#ifdef PMP_DEBUG
-	if (success)
-	{
-		purple_debug_info("nat-pmp", "Response received from NAT-PMP device:\n");
-		purple_debug_info("nat-pmp", "version: %d\n", resp->version);
-		purple_debug_info("nat-pmp", "opcode: %d\n", resp->opcode);
-		purple_debug_info("nat-pmp", "resultcode: %d\n", g_ntohs(resp->resultcode));
-		purple_debug_info("nat-pmp", "epoch: %d\n", g_ntohl(resp->epoch));
-		purple_debug_info("nat-pmp", "privateport: %d\n", g_ntohs(resp->privateport));
-		purple_debug_info("nat-pmp", "publicport: %d\n", g_ntohs(resp->publicport));
-		purple_debug_info("nat-pmp", "lifetime: %d\n", g_ntohl(resp->lifetime));
-	}
-#endif
-
-	g_free(resp);
-	g_free(gateway);
-
-	/* XXX The private port may actually differ from the one we requested, according to the spec.
-	 * We don't handle that situation at present.
-	 *
-	 * TODO: Look at the result and verify it matches what we wanted; either return a failure if it doesn't,
-	 * or change network.c to know what to do if the desired private port shifts as a result of the nat-pmp operation.
-	 */
-	return success;
-}
-
-gboolean
-purple_pmp_destroy_map(PurplePmpType type, unsigned short privateport)
-{
-	gboolean success;
-
-	success = purple_pmp_create_map(((type == PURPLE_PMP_TYPE_UDP) ? PMP_MAP_OPCODE_UDP : PMP_MAP_OPCODE_TCP),
-							privateport, 0, 0);
-	if (!success)
-		purple_debug_warning("nat-pmp", "Failed to properly destroy mapping for %s port %d!\n",
-							 ((type == PURPLE_PMP_TYPE_UDP) ? "UDP" : "TCP"), privateport);
-
-	return success;
-}
-
 static void
 purple_pmp_network_config_changed_cb(GNetworkMonitor *monitor, gboolean available, gpointer data)
 {
 	pmp_info.status = PURPLE_PMP_STATUS_UNDISCOVERED;
 	g_free(pmp_info.publicip);
 	pmp_info.publicip = NULL;
-}
-
-static void*
-purple_pmp_get_handle(void)
-{
-	static int handle;
-
-	return &handle;
 }
 
 void
@@ -541,22 +389,6 @@ char *
 purple_pmp_get_public_ip(void)
 {
 	return NULL;
-}
-
-gboolean
-purple_pmp_create_map(G_GNUC_UNUSED PurplePmpType type,
-                      G_GNUC_UNUSED unsigned short privateport,
-                      G_GNUC_UNUSED unsigned short publicport,
-                      G_GNUC_UNUSED int lifetime)
-{
-	return FALSE;
-}
-
-gboolean
-purple_pmp_destroy_map(G_GNUC_UNUSED PurplePmpType type,
-                       G_GNUC_UNUSED unsigned short privateport)
-{
-	return FALSE;
 }
 
 void
