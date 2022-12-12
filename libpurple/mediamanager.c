@@ -444,8 +444,16 @@ purple_media_manager_get_private_media_by_account(PurpleMediaManager *manager,
 static void
 free_appdata_info_locked (PurpleMediaAppDataInfo *info)
 {
-	GstAppSrcCallbacks null_src_cb = { NULL, NULL, NULL, { NULL } };
-	GstAppSinkCallbacks null_sink_cb = { NULL, NULL, NULL , { NULL } };
+	GstAppSrcCallbacks null_src_cb = {
+		.need_data = NULL,
+		.enough_data = NULL,
+		.seek_data = NULL,
+	};
+	GstAppSinkCallbacks null_sink_cb = {
+		.eos = NULL,
+		.new_preroll = NULL,
+		.new_sample = NULL,
+	};
 
 	if (info->notify) {
 		info->notify(info->user_data);
@@ -788,8 +796,11 @@ create_send_appsrc(PurpleMediaElementInfo *element_info, PurpleMedia *media,
 	GstElement *appsrc = (GstElement *)info->appsrc;
 
 	if (appsrc == NULL) {
-		GstAppSrcCallbacks callbacks = {appsrc_need_data, appsrc_enough_data,
-										appsrc_seek_data, {NULL}};
+		GstAppSrcCallbacks callbacks = {
+			.need_data = appsrc_need_data,
+			.enough_data = appsrc_enough_data,
+			.seek_data = appsrc_seek_data,
+		};
 		GstCaps *caps = gst_caps_new_empty_simple ("application/octet-stream");
 
 		appsrc = gst_element_factory_make("appsrc", NULL);
@@ -934,8 +945,11 @@ create_recv_appsink(PurpleMediaElementInfo *element_info, PurpleMedia *media,
 	GstElement *appsink = (GstElement *)info->appsink;
 
 	if (appsink == NULL) {
-		GstAppSinkCallbacks callbacks = {appsink_eos, appsink_new_preroll,
-										 appsink_new_sample, {NULL}};
+		GstAppSinkCallbacks callbacks = {
+			.eos = appsink_eos,
+			.new_preroll = appsink_new_preroll,
+			.new_sample = appsink_new_sample,
+		};
 		GstCaps *caps = gst_caps_new_empty_simple ("application/octet-stream");
 
 		appsink = gst_element_factory_make("appsink", NULL);
