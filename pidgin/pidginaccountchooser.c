@@ -67,22 +67,23 @@ pidgin_account_chooser_label_cb(G_GNUC_UNUSED GObject *self,
                                 G_GNUC_UNUSED gpointer data)
 {
 	gchar *markup = NULL;
-	const gchar *alias = NULL;
+	const char *alias = NULL;
+	const char *protocol_name = NULL;
+	const char *username = NULL;
 
 	if(!PURPLE_IS_ACCOUNT(account)) {
 		return NULL;
 	}
 
 	alias = purple_account_get_private_alias(account);
+	protocol_name = purple_account_get_protocol_name(account);
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+
 	if(alias != NULL) {
-		markup = g_strdup_printf(_("%s (%s) (%s)"),
-		                         purple_account_get_username(account),
-		                         alias,
-		                         purple_account_get_protocol_name(account));
+		markup = g_strdup_printf(_("%s (%s) (%s)"), username, alias,
+		                         protocol_name);
 	} else {
-		markup = g_strdup_printf(_("%s (%s)"),
-		                         purple_account_get_username(account),
-		                         purple_account_get_protocol_name(account));
+		markup = g_strdup_printf(_("%s (%s)"), username, protocol_name);
 	}
 
 	return markup;

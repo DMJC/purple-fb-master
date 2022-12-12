@@ -135,7 +135,9 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 		/* The username will be split apart below and eventually set as the text
 		 * in the username entry.
 		 */
-		username = g_strdup(purple_account_get_username(editor->account));
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
+
+		username = g_strdup(purple_contact_info_get_username(info));
 	}
 
 	/* Filling out the user splits is a pain. If we have an account, we created
@@ -763,7 +765,9 @@ pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 		editor->account = purple_account_new(username->str, protocol_id);
 		new_account = TRUE;
 	} else {
-		purple_account_set_username(editor->account, username->str);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
+
+		purple_contact_info_set_username(info, username->str);
 		purple_account_set_protocol_id(editor->account, protocol_id);
 	}
 

@@ -222,6 +222,8 @@ update_title_progress(PidginXferDialog *dialog)
 static void
 update_detailed_info(PidginXferDialog *dialog, PurpleXfer *xfer)
 {
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
 	PidginXferUiData *data;
 	char *kbsec, *time_elapsed, *time_remaining;
 	char *status, *utf8;
@@ -257,11 +259,15 @@ update_detailed_info(PidginXferDialog *dialog, PurpleXfer *xfer)
 							 _("<b>Sending As:</b>"));
 	}
 
+	account = purple_xfer_get_account(xfer);
+	info = PURPLE_CONTACT_INFO(account);
+
 	gtk_label_set_text(GTK_LABEL(dialog->local_user_label),
-								 purple_account_get_username(purple_xfer_get_account(xfer)));
-	gtk_label_set_text(GTK_LABEL(dialog->remote_user_label), purple_xfer_get_remote_user(xfer));
+	                   purple_contact_info_get_username(info));
+	gtk_label_set_text(GTK_LABEL(dialog->remote_user_label),
+	                   purple_xfer_get_remote_user(xfer));
 	gtk_label_set_text(GTK_LABEL(dialog->protocol_label),
-								 purple_account_get_protocol_name(purple_xfer_get_account(xfer)));
+	                   purple_account_get_protocol_name(account));
 
 	if (purple_xfer_get_xfer_type(xfer) == PURPLE_XFER_TYPE_RECEIVE) {
 		gtk_label_set_text(GTK_LABEL(dialog->filename_label),

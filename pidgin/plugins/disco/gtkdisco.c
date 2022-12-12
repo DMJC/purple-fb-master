@@ -206,6 +206,7 @@ activate_browse(G_GNUC_UNUSED GSimpleAction *action,
 {
 	PidginDiscoDialog *dialog = data;
 	PurpleConnection *pc;
+	PurpleContactInfo *info = NULL;
 	PidginDiscoList *pdl;
 	const char *username;
 	const char *at, *slash;
@@ -234,7 +235,8 @@ activate_browse(G_GNUC_UNUSED GSimpleAction *action,
 
 	gtk_widget_set_sensitive(dialog->account_chooser, FALSE);
 
-	username = purple_account_get_username(dialog->account);
+	info = PURPLE_CONTACT_INFO(dialog->account);
+	username = purple_contact_info_get_username(info);
 	at = strchr(username, '@');
 	slash = strchr(username, '/');
 	if (at && !slash) {

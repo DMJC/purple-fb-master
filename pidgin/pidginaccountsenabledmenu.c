@@ -190,7 +190,7 @@ pidgin_accounts_enabled_menu_get_item_attributes(GMenuModel *model, gint index,
 		return;
 	}
 
-	account_name = purple_account_get_username(account);
+	account_name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 
 	/* Get the protocol from the account. */
 	protocol = purple_account_get_protocol(account);
@@ -240,7 +240,7 @@ pidgin_accounts_enabled_menu_get_item_links(GMenuModel *model, gint index,
 		return;
 	}
 
-	account_id = purple_account_get_id(account);
+	account_id = purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
 
 	connection = purple_account_get_connection(account);
 	if(PURPLE_IS_CONNECTION(connection)) {

@@ -114,6 +114,7 @@ pidgin_account_manager_refresh_account(PidginAccountManager *manager,
                                        PurpleAccount *account,
                                        GtkTreeIter *iter)
 {
+	PurpleContactInfo *info = NULL;
 	PurpleImage *image = NULL;
 	PurpleProtocol *protocol = NULL;
 	GdkPixbuf *avatar = NULL;
@@ -140,10 +141,11 @@ pidgin_account_manager_refresh_account(PidginAccountManager *manager,
 		protocol_name = _("Unknown");
 	}
 
+	info = PURPLE_CONTACT_INFO(account);
 	gtk_list_store_set(manager->model, iter,
 	                   COLUMN_ENABLED, purple_account_get_enabled(account),
 	                   COLUMN_AVATAR, avatar,
-	                   COLUMN_USERNAME, purple_account_get_username(account),
+	                   COLUMN_USERNAME, purple_contact_info_get_username(info),
 	                   COLUMN_PROTOCOL_ICON, protocol_icon,
 	                   COLUMN_PROTOCOL_NAME, protocol_name,
 	                   COLUMN_ACCOUNT, account,

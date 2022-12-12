@@ -89,12 +89,20 @@ static gchar *
 conversation_id(PurpleConversation *conv)
 {
 	PurpleAccount *account = purple_conversation_get_account(conv);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+	const char *type = "misc";
 
-	return g_strconcat((PURPLE_IS_IM_CONVERSATION(conv) ? "im" :
-				PURPLE_IS_CHAT_CONVERSATION(conv) ? "chat" : "misc"), ":",
-			purple_conversation_get_name(conv), ":",
-			purple_account_get_username(account), ":",
-			purple_account_get_protocol_id(account), NULL);
+	if(PURPLE_IS_IM_CONVERSATION(conv)) {
+		type = "im";
+	} else if(PURPLE_IS_CHAT_CONVERSATION(conv)) {
+		type = "chat";
+	}
+
+	return g_strdup_printf("%s:%s:%s:%s",
+	                       type,
+	                       purple_conversation_get_name(conv),
+	                       purple_contact_info_get_username(info),
+	                       purple_account_get_protocol_id(account));
 }
 
 static void

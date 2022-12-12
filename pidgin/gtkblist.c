@@ -1764,9 +1764,17 @@ static GdkPixbuf *pidgin_blist_get_buddy_icon(PurpleBlistNode *node,
 	buf = purple_gdk_pixbuf_from_data(data, len);
 	purple_buddy_icon_unref(icon);
 	if (!buf) {
+		const char *account_name = "(no account)";
+
+		if(PURPLE_IS_ACCOUNT(account)) {
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
+			account_name = purple_contact_info_get_username(info);
+		}
+
 		purple_debug_warning("gtkblist", "Couldn't load buddy icon on "
 			"account %s (%s); buddyname=%s; custom_img_size=%" G_GSIZE_FORMAT,
-			account ? purple_account_get_username(account) : "(no account)",
+			account_name,
 			account ? purple_account_get_protocol_id(account) : "(no account)",
 			buddy ? purple_buddy_get_name(buddy) : "(no buddy)",
 			custom_img ? purple_image_get_data_size(custom_img) : 0);
@@ -1886,6 +1894,7 @@ static gboolean buddy_is_displayable(PurpleBuddy *buddy)
 static void
 add_tip_for_account(GtkWidget *grid, gint row, PurpleAccount *account)
 {
+	PurpleContactInfo *info = NULL;
 	PurpleProtocol *protocol = NULL;
 	GtkWidget *image = NULL;
 	GtkWidget *name = NULL;
@@ -1898,7 +1907,8 @@ add_tip_for_account(GtkWidget *grid, gint row, PurpleAccount *account)
 	gtk_image_set_pixel_size(GTK_IMAGE(image), STATUS_SIZE);
 	gtk_grid_attach(GTK_GRID(grid), image, 0, row, 1, 1);
 
-	name = gtk_label_new(purple_account_get_username(account));
+	info = PURPLE_CONTACT_INFO(account);
+	name = gtk_label_new(purple_contact_info_get_username(info));
 	gtk_label_set_xalign(GTK_LABEL(name), 0);
 	gtk_label_set_yalign(GTK_LABEL(name), 0);
 	gtk_label_set_wrap(GTK_LABEL(name), TRUE);
@@ -2173,7 +2183,9 @@ static char *pidgin_get_tooltip_text(PurpleBlistNode *node, gboolean full)
 		connections = purple_connections_get_all();
 		if (connections && connections->next)
 		{
-			tmp = g_markup_escape_text(purple_account_get_username(account), -1);
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+			tmp = g_markup_escape_text(purple_contact_info_get_username(info),
+			                           -1);
 			g_string_append_printf(str, _("<b>Account:</b> %s"), tmp);
 			g_free(tmp);
 		}
@@ -2277,8 +2289,11 @@ static char *pidgin_get_tooltip_text(PurpleBlistNode *node, gboolean full)
 		connections = purple_connections_get_all();
 		if (full && connections && connections->next)
 		{
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+			const char *username = purple_contact_info_get_username(info);
+
 			purple_notify_user_info_add_pair_plaintext(user_info, _("Account"),
-					purple_account_get_username(account));
+			                                           username);
 		}
 
 		/* Alias */
