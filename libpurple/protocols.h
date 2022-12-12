@@ -54,18 +54,6 @@ void purple_protocol_got_account_idle(PurpleAccount *account, gboolean idle,
                                       time_t idle_time);
 
 /**
- * purple_protocol_got_account_login_time:
- * @account:    The account the user is on.
- * @login_time: The user's log-in time.
- *
- * Notifies Purple of our account's log-in time.
- *
- * This is meant to be called from protocols.
- */
-void purple_protocol_got_account_login_time(PurpleAccount *account,
-                                            time_t login_time);
-
-/**
  * purple_protocol_got_account_status:
  * @account: The account the user is on.
  * @status_id: The status ID.
@@ -124,19 +112,6 @@ void purple_protocol_got_account_actions(PurpleAccount *account);
  */
 void purple_protocol_got_user_idle(PurpleAccount *account, const char *name,
                                    gboolean idle, time_t idle_time);
-
-/**
- * purple_protocol_got_user_login_time:
- * @account:    The account the user is on.
- * @name:       The name of the buddy.
- * @login_time: The user's log-in time.
- *
- * Notifies Purple of a buddy's log-in time.
- *
- * This is meant to be called from protocols.
- */
-void purple_protocol_got_user_login_time(PurpleAccount *account,
-                                         const char *name, time_t login_time);
 
 /**
  * purple_protocol_got_user_status:

@@ -53,22 +53,6 @@ purple_protocol_got_account_idle(PurpleAccount *account, gboolean idle,
 }
 
 void
-purple_protocol_got_account_login_time(PurpleAccount *account, time_t login_time)
-{
-	PurplePresence *presence;
-
-	g_return_if_fail(account != NULL);
-	g_return_if_fail(purple_account_is_connected(account));
-
-	if (login_time == 0)
-		login_time = time(NULL);
-
-	presence = purple_account_get_presence(account);
-
-	purple_presence_set_login_time(presence, login_time);
-}
-
-void
 purple_protocol_got_account_status_with_attributes(PurpleAccount *account,
                                                    const gchar *status_id,
                                                    GHashTable *attributes)
@@ -133,36 +117,6 @@ purple_protocol_got_user_idle(PurpleAccount *account, const char *name,
 		presence = purple_buddy_get_presence(list->data);
 		list = g_slist_delete_link(list, list);
 		purple_presence_set_idle(presence, idle, idle_time);
-	}
-}
-
-void
-purple_protocol_got_user_login_time(PurpleAccount *account, const char *name,
-		time_t login_time)
-{
-	GSList *list;
-	PurplePresence *presence;
-
-	g_return_if_fail(account != NULL);
-	g_return_if_fail(name    != NULL);
-
-	if ((list = purple_blist_find_buddies(account, name)) == NULL)
-		return;
-
-	if (login_time == 0)
-		login_time = time(NULL);
-
-	while (list) {
-		PurpleBuddy *buddy = list->data;
-		presence = purple_buddy_get_presence(buddy);
-		list = g_slist_delete_link(list, list);
-
-		if (purple_presence_get_login_time(presence) != login_time)
-		{
-			purple_presence_set_login_time(presence, login_time);
-
-			purple_signal_emit(purple_blist_get_handle(), "buddy-got-login-time", buddy);
-		}
 	}
 }
 

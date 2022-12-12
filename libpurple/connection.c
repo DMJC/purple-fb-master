@@ -178,13 +178,16 @@ purple_connection_set_state(PurpleConnection *connection,
 
 	if(priv->state == PURPLE_CONNECTION_STATE_CONNECTED) {
 		PurplePresence *presence;
+		GDateTime *timestamp = NULL;
 		gboolean emit_online = FALSE;
 		gpointer handle = NULL;
 
 		presence = purple_account_get_presence(priv->account);
 
 		/* Set the time the account came online */
-		purple_presence_set_login_time(presence, time(NULL));
+		timestamp = g_date_time_new_now_utc();
+		purple_presence_set_login_time(presence, timestamp);
+		g_date_time_unref(timestamp);
 
 		if(ops != NULL && ops->connected != NULL) {
 			ops->connected(connection);

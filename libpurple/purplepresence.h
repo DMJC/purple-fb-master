@@ -113,11 +113,11 @@ void purple_presence_set_idle(PurplePresence *presence, gboolean idle, time_t id
 /**
  * purple_presence_set_login_time:
  * @presence: The #PurplePresence instance.
- * @login_time: The login time.
+ * @login_time: (transfer none): The login time.
  *
  * Sets the login time on a presence.
  */
-void purple_presence_set_login_time(PurplePresence *presence, time_t login_time);
+void purple_presence_set_login_time(PurplePresence *presence, GDateTime *login_time);
 
 /**
  * purple_presence_get_statuses:
@@ -227,9 +227,9 @@ time_t purple_presence_get_idle_time(PurplePresence *presence);
  *
  * Gets the login time of @presence.
  *
- * Returns: The login time of @presence.
+ * Returns: (transfer none): The login time of @presence.
  */
-time_t purple_presence_get_login_time(PurplePresence *presence);
+GDateTime *purple_presence_get_login_time(PurplePresence *presence);
 
 /**
  * purple_presence_compare:

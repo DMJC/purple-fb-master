@@ -2263,10 +2263,11 @@ static char *pidgin_get_tooltip_text(PurpleBlistNode *node, gboolean full)
 		PurpleBuddy *b;
 		PurplePresence *presence;
 		PurpleNotifyUserInfo *user_info;
+		GDateTime *signon = NULL;
 		GList *connections;
 		char *tmp;
 		gchar *alias;
-		time_t idle_secs, signon;
+		time_t idle_secs;
 
 		if (PURPLE_IS_META_CONTACT(node))
 		{
@@ -2321,27 +2322,31 @@ static char *pidgin_get_tooltip_text(PurpleBlistNode *node, gboolean full)
 
 		/* Logged In */
 		signon = purple_presence_get_login_time(presence);
-		if (full && PURPLE_BUDDY_IS_ONLINE(b) && signon > 0)
+		if (full && PURPLE_BUDDY_IS_ONLINE(b) && signon != NULL)
 		{
-			if (signon > time(NULL)) {
+			GDateTime *now = g_date_time_new_now_utc();
+			GTimeSpan duration = g_date_time_compare(now, signon);
+
+			if(duration < 0) {
 				/*
 				 * They signed on in the future?!  Our local clock
 				 * must be wrong, show the actual date instead of
 				 * "4 days", etc.
 				 */
-				GDateTime *dt = NULL, *local = NULL;
+				GDateTime *local = NULL;
 
-				dt = g_date_time_new_from_unix_utc(signon);
-				local = g_date_time_to_local(dt);
-				g_date_time_unref(dt);
+				local = g_date_time_to_local(signon);
 
 				tmp = g_date_time_format(local, _("%x %X"));
 				g_date_time_unref(local);
 			} else {
-				tmp = purple_str_seconds_to_string(time(NULL) - signon);
+				tmp = purple_str_seconds_to_string(duration / G_TIME_SPAN_SECOND);
 			}
+
 			purple_notify_user_info_add_pair_plaintext(user_info, _("Logged In"), tmp);
 			g_free(tmp);
+
+			g_date_time_unref(now);
 		}
 
 		/* Idle */

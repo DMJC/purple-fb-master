@@ -30,7 +30,7 @@
 typedef struct {
 	gboolean idle;
 	time_t idle_time;
-	time_t login_time;
+	GDateTime *login_time;
 
 	GHashTable *status_table;
 
@@ -89,13 +89,7 @@ purple_presence_set_property(GObject *obj, guint param_id, const GValue *value,
 #endif
 			break;
 		case PROP_LOGIN_TIME:
-#if SIZEOF_TIME_T == 4
-			purple_presence_set_login_time(presence, g_value_get_int(value));
-#elif SIZEOF_TIME_T == 8
-			purple_presence_set_login_time(presence, g_value_get_int64(value));
-#else
-#error Unknown size of time_t
-#endif
+			purple_presence_set_login_time(presence, g_value_get_boxed(value));
 			break;
 		case PROP_ACTIVE_STATUS:
 			purple_presence_set_active_status(presence,
@@ -127,13 +121,7 @@ purple_presence_get_property(GObject *obj, guint param_id, GValue *value,
 #endif
 			break;
 		case PROP_LOGIN_TIME:
-#if SIZEOF_TIME_T == 4
-			g_value_set_int(value, purple_presence_get_login_time(presence));
-#elif SIZEOF_TIME_T == 8
-			g_value_set_int64(value, purple_presence_get_login_time(presence));
-#else
-#error Unknown size of time_t
-#endif
+			g_value_set_boxed(value, purple_presence_get_login_time(presence));
 			break;
 		case PROP_ACTIVE_STATUS:
 			g_value_set_object(value, purple_presence_get_active_status(presence));
@@ -212,24 +200,11 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * The login-time of the presence.
 	 */
-	properties[PROP_LOGIN_TIME] =
-#if SIZEOF_TIME_T == 4
-		g_param_spec_int
-#elif SIZEOF_TIME_T == 8
-		g_param_spec_int64
-#else
-#error Unknown size of time_t
-#endif
-				("login-time", "Login time",
-				"The login time of the presence.",
-#if SIZEOF_TIME_T == 4
-				G_MININT, G_MAXINT, 0,
-#elif SIZEOF_TIME_T == 8
-				G_MININT64, G_MAXINT64, 0,
-#else
-#error Unknown size of time_t
-#endif
-				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+	properties[PROP_LOGIN_TIME] = g_param_spec_boxed(
+		"login-time", "Login time",
+		"The login time of the presence.",
+		G_TYPE_DATE_TIME,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurplePresence:active-status:
@@ -316,21 +291,31 @@ purple_presence_set_idle(PurplePresence *presence, gboolean idle,
 }
 
 void
-purple_presence_set_login_time(PurplePresence *presence, time_t login_time) {
+purple_presence_set_login_time(PurplePresence *presence, GDateTime *login_time)
+{
 	PurplePresencePrivate *priv = NULL;
 
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
 	priv = purple_presence_get_instance_private(presence);
 
-	if(priv->login_time == login_time) {
-		return;
+	if(priv->login_time != NULL && login_time != NULL) {
+		if(g_date_time_equal(priv->login_time, login_time)) {
+			return;
+		}
 	}
 
-	priv->login_time = login_time;
+	if(priv->login_time != NULL) {
+		g_date_time_unref(priv->login_time);
+	}
 
-	g_object_notify_by_pspec(G_OBJECT(presence),
-			properties[PROP_LOGIN_TIME]);
+	if(login_time != NULL) {
+		priv->login_time = g_date_time_ref(login_time);
+	} else {
+		priv->login_time = NULL;
+	}
+
+	g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_LOGIN_TIME]);
 }
 
 GList *
@@ -481,7 +466,7 @@ purple_presence_get_idle_time(PurplePresence *presence) {
 	return priv->idle_time;
 }
 
-time_t
+GDateTime *
 purple_presence_get_login_time(PurplePresence *presence) {
 	PurplePresencePrivate *priv = NULL;
 
@@ -489,7 +474,7 @@ purple_presence_get_login_time(PurplePresence *presence) {
 
 	priv = purple_presence_get_instance_private(presence);
 
-	return purple_presence_is_online(presence) ? priv->login_time : 0;
+	return priv->login_time;
 }
 
 gint
