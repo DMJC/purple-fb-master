@@ -226,7 +226,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 		"username", "username",
 		"The username of the contact",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleContactInfo:display-name:
@@ -381,7 +381,6 @@ purple_contact_info_set_username(PurpleContactInfo *info,
 	PurpleContactInfoPrivate *priv = NULL;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
-	g_return_if_fail(username != NULL);
 
 	priv = purple_contact_info_get_instance_private(info);
 

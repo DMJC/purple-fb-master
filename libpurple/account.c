@@ -52,13 +52,9 @@ G_LOCK_DEFINE_STATIC(setting_notify_lock);
 
 struct _PurpleAccount
 {
-	GObject gparent;
+	PurpleContactInfo parent;
 
-	gchar *id;
-
-	char *username;             /* The username.                          */
 	gboolean require_password;
-	char *alias;                /* How you appear to yourself.            */
 	char *user_info;            /* User information.                      */
 
 	char *buddy_icon_path;      /* The buddy icon's non-cached path.      */
@@ -88,8 +84,6 @@ struct _PurpleAccount
 
 	PurpleConnectionErrorInfo *current_error;	/* Errors */
 	PurpleNotification *error_notification;
-
-	PurpleContact *contact;
 } PurpleAccountPrivate;
 
 typedef struct
@@ -101,10 +95,7 @@ typedef struct
 
 enum {
 	PROP_0,
-	PROP_ID,
-	PROP_USERNAME,
 	PROP_REQUIRE_PASSWORD,
-	PROP_PRIVATE_ALIAS,
 	PROP_ENABLED,
 	PROP_CONNECTION,
 	PROP_PROTOCOL_ID,
@@ -113,7 +104,6 @@ enum {
 	PROP_REMEMBER_PASSWORD,
 	PROP_PROXY_INFO,
 	PROP_ERROR,
-	PROP_CONTACT,
 	PROP_LAST
 };
 static GParamSpec *properties[PROP_LAST];
@@ -124,7 +114,7 @@ enum {
 };
 static guint signals[N_SIGNALS] = {0, };
 
-G_DEFINE_TYPE(PurpleAccount, purple_account, G_TYPE_OBJECT);
+G_DEFINE_TYPE(PurpleAccount, purple_account, PURPLE_TYPE_CONTACT_INFO);
 
 /******************************************************************************
  * Helpers
@@ -133,10 +123,12 @@ static void
 purple_account_free_notify_settings(PurpleAccount *account) {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	g_slist_free_full(account->freeze_queue->names, g_free);
+	if(account->freeze_queue != NULL) {
+		g_slist_free_full(account->freeze_queue->names, g_free);
 
-	g_slice_free(PurpleAccountSettingFreezeQueue, account->freeze_queue);
-	account->freeze_queue = NULL;
+		g_slice_free(PurpleAccountSettingFreezeQueue, account->freeze_queue);
+		account->freeze_queue = NULL;
+	}
 }
 
 static void
@@ -570,9 +562,10 @@ _purple_account_to_xmlnode(PurpleAccount *account)
 
 	node = purple_xmlnode_new("account");
 
-	if(account->id != NULL) {
+	tmp = purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
+	if(tmp != NULL) {
 		child = purple_xmlnode_new_child(node, "id");
-		purple_xmlnode_insert_data(child, account->id, -1);
+		purple_xmlnode_insert_data(child, tmp, -1);
 	}
 
 	child = purple_xmlnode_new_child(node, "protocol");
@@ -591,8 +584,8 @@ _purple_account_to_xmlnode(PurpleAccount *account)
 	purple_xmlnode_insert_data(child, data, -1);
 	g_clear_pointer(&data, g_free);
 
-	if ((tmp = purple_account_get_private_alias(account)) != NULL)
-	{
+	tmp = purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
+	if(tmp != NULL) {
 		child = purple_xmlnode_new_child(node, "alias");
 		purple_xmlnode_insert_data(child, tmp, -1);
 	}
@@ -623,17 +616,6 @@ _purple_account_to_xmlnode(PurpleAccount *account)
 }
 
 /******************************************************************************
- * Helpers
- *****************************************************************************/
-static void
-purple_account_set_id(PurpleAccount *account, const gchar *id) {
-	g_free(account->id);
-	account->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_ID]);
-}
-
-/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 static void
@@ -643,18 +625,9 @@ purple_account_set_property(GObject *obj, guint param_id, const GValue *value,
 	PurpleAccount *account = PURPLE_ACCOUNT(obj);
 
 	switch (param_id) {
-		case PROP_ID:
-			purple_account_set_id(account, g_value_get_string(value));
-			break;
-		case PROP_USERNAME:
-			purple_account_set_username(account, g_value_get_string(value));
-			break;
 		case PROP_REQUIRE_PASSWORD:
 			purple_account_set_require_password(account,
 			                                    g_value_get_boolean(value));
-			break;
-		case PROP_PRIVATE_ALIAS:
-			purple_account_set_private_alias(account, g_value_get_string(value));
 			break;
 		case PROP_ENABLED:
 			purple_account_set_enabled(account, g_value_get_boolean(value));
@@ -692,18 +665,9 @@ purple_account_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleAccount *account = PURPLE_ACCOUNT(obj);
 
 	switch (param_id) {
-		case PROP_ID:
-			g_value_set_string(value, purple_account_get_id(account));
-			break;
-		case PROP_USERNAME:
-			g_value_set_string(value, purple_account_get_username(account));
-			break;
 		case PROP_REQUIRE_PASSWORD:
 			g_value_set_boolean(value,
 			                    purple_account_get_require_password(account));
-			break;
-		case PROP_PRIVATE_ALIAS:
-			g_value_set_string(value, purple_account_get_private_alias(account));
 			break;
 		case PROP_ENABLED:
 			g_value_set_boolean(value, purple_account_get_enabled(account));
@@ -746,6 +710,7 @@ purple_account_constructed(GObject *object)
 {
 	PurpleAccount *account = PURPLE_ACCOUNT(object);
 	gchar *username, *protocol_id;
+	const char *id = NULL;
 	PurpleProtocol *protocol = NULL;
 	PurpleProtocolManager *manager = NULL;
 	PurpleStatusType *status_type;
@@ -753,31 +718,22 @@ purple_account_constructed(GObject *object)
 	G_OBJECT_CLASS(purple_account_parent_class)->constructed(object);
 
 	/* If we didn't get an id, checksum the protocol id and the username. */
-	if(account->id == NULL) {
-		GChecksum *checksum = g_checksum_new(G_CHECKSUM_SHA256);
+	id = purple_contact_info_get_id(PURPLE_CONTACT_INFO(object));
+	if(id == NULL) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+		GChecksum *checksum = NULL;
+		const char *username = NULL;
+
+		checksum = g_checksum_new(G_CHECKSUM_SHA256);
+		username = purple_contact_info_get_username(info);
 
 		g_checksum_update(checksum, (const guchar *)account->protocol_id, -1);
-		g_checksum_update(checksum, (const guchar *)account->username, -1);
+		g_checksum_update(checksum, (const guchar *)username, -1);
 
-		purple_account_set_id(account, g_checksum_get_string(checksum));
+		purple_contact_info_set_id(info, g_checksum_get_string(checksum));
 
 		g_checksum_free(checksum);
 	}
-
-	/* Create the contact for the account and bind our properties to it. */
-	account->contact = purple_contact_new(account, NULL);
-	/* Skip id for now as it's construct only and exposing it is more work than
-	 * it's worth right now.
-	 */
-#if 0
-	g_object_bind_property(account, "id", account->contact, "id",
-	                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-#endif
-	g_object_bind_property(account, "username", account->contact, "username",
-	                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-	g_object_bind_property(account, "private-alias",
-	                       account->contact, "display-name",
-	                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 
 	g_object_get(object,
 			"username",    &username,
@@ -823,7 +779,6 @@ purple_account_dispose(GObject *object)
 
 	g_clear_object(&account->gc);
 	g_clear_object(&account->presence);
-	g_clear_object(&account->contact);
 
 	G_OBJECT_CLASS(purple_account_parent_class)->dispose(object);
 }
@@ -858,9 +813,6 @@ purple_account_finalize(GObject *object)
 	g_clear_pointer(&account->current_error, purple_connection_error_info_free);
 	g_clear_object(&account->error_notification);
 
-	g_free(account->id);
-	g_free(account->username);
-	g_free(account->alias);
 	g_free(account->user_info);
 	g_free(account->buddy_icon_path);
 	g_free(account->protocol_id);
@@ -881,23 +833,6 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	obj_class->set_property = purple_account_set_property;
 
 	/**
-	 * PurpleAccount::id
-	 *
-	 * An identifier for the account.
-	 *
-	 * Since: 3.0.0
-	 */
-	properties[PROP_ID] = g_param_spec_string(
-		"id", "id",
-		"The identifier of the account",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	properties[PROP_USERNAME] = g_param_spec_string("username", "Username",
-				"The username for the account.", NULL,
-				G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
-
-	/**
 	 * PurpleAccount:require-password:
 	 *
 	 * Whether or not this account should require a password. This is only used
@@ -911,11 +846,6 @@ purple_account_class_init(PurpleAccountClass *klass) {
 		"Whether or not to require a password for this account",
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	properties[PROP_PRIVATE_ALIAS] = g_param_spec_string("private-alias",
-				"Private Alias",
-				"The private alias for the account.", NULL,
-				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_USER_INFO] = g_param_spec_string("user-info",
 				"User information",
@@ -966,19 +896,6 @@ purple_account_class_init(PurpleAccountClass *klass) {
 		"The connection error info of the account",
 		PURPLE_TYPE_CONNECTION_ERROR_INFO,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleAccount:contact:
-	 *
-	 * The [class@Purple.Contact] that represents this account.
-	 *
-	 * Since: 3.0.0
-	 */
-	properties[PROP_CONTACT] = g_param_spec_object(
-		"contact", "contact",
-		"The contact for this account",
-		PURPLE_TYPE_CONTACT,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, PROP_LAST, properties);
 
@@ -1055,7 +972,7 @@ const gchar *
 purple_account_get_id(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	return account->id;
+	return purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
 }
 
 void
@@ -1279,10 +1196,7 @@ purple_account_set_username(PurpleAccount *account, const char *username)
 {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	g_free(account->username);
-	account->username = g_strdup(username);
-
-	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_USERNAME]);
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(account), username);
 
 	purple_accounts_schedule_save();
 
@@ -1294,26 +1208,17 @@ purple_account_set_username(PurpleAccount *account, const char *username)
 void
 purple_account_set_private_alias(PurpleAccount *account, const char *alias)
 {
+	const char *old_alias = NULL;
+
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	/*
-	 * Do nothing if alias and account->alias are both NULL.  Or if
-	 * they're the exact same string.
-	 */
-	if (alias == account->alias)
+	old_alias = purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
+	if(purple_strequal(old_alias, alias)) {
 		return;
-
-	if ((!alias && account->alias) || (alias && !account->alias) ||
-			g_utf8_collate(account->alias, alias))
-	{
-		g_free(account->alias);
-		account->alias = g_strdup(alias);
-
-		g_object_notify_by_pspec(G_OBJECT(account),
-						 properties[PROP_PRIVATE_ALIAS]);
-
-		purple_accounts_schedule_save();
 	}
+
+	purple_contact_info_set_alias(PURPLE_CONTACT_INFO(account), alias);
+	purple_accounts_schedule_save();
 }
 
 void
@@ -1569,7 +1474,7 @@ purple_account_get_username(PurpleAccount *account)
 {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	return account->username;
+	return purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 }
 
 const char *
@@ -1577,7 +1482,7 @@ purple_account_get_private_alias(PurpleAccount *account)
 {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	return account->alias;
+	return purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
 }
 
 const char *
@@ -1637,39 +1542,10 @@ purple_account_get_connection(PurpleAccount *account)
 }
 
 const gchar *
-purple_account_get_name_for_display(PurpleAccount *account)
-{
-	PurpleBuddy *self = NULL;
-	PurpleConnection *gc = NULL;
-	const gchar *name = NULL, *username = NULL, *displayname = NULL;
+purple_account_get_name_for_display(PurpleAccount *account) {
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(account), NULL);
 
-	name = purple_account_get_private_alias(account);
-
-	if (name) {
-		return name;
-	}
-
-	username = purple_account_get_username(account);
-	self = purple_blist_find_buddy((PurpleAccount *)account, username);
-
-	if (self) {
-		const gchar *calias= purple_buddy_get_contact_alias(self);
-
-		/* We don't want to return the buddy name if the buddy/contact
-		 * doesn't have an alias set. */
-		if (!purple_strequal(username, calias)) {
-			return calias;
-		}
-	}
-
-	gc = purple_account_get_connection(account);
-	displayname = purple_connection_get_display_name(gc);
-
-	if (displayname) {
-		return displayname;
-	}
-
-	return username;
+	return purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(account));
 }
 
 gboolean
@@ -2006,13 +1882,6 @@ purple_account_get_require_password(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
 
 	return account->require_password;
-}
-
-PurpleContact *
-purple_account_get_contact(PurpleAccount *account) {
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return account->contact;
 }
 
 void

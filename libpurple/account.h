@@ -39,7 +39,7 @@ typedef gboolean (*PurpleFilterAccountFunc)(PurpleAccount *account);
 #include "connection.h"
 #include "group.h"
 #include "purpleconnectionerrorinfo.h"
-#include "purplecontact.h"
+#include "purplecontactinfo.h"
 #include "purpleprotocol.h"
 #include "purpleproxyinfo.h"
 #include "status.h"
@@ -82,7 +82,8 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the Account object.
  */
-G_DECLARE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE, ACCOUNT, GObject)
+G_DECLARE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE, ACCOUNT,
+                     PurpleContactInfo)
 
 /**
  * purple_account_new:
@@ -105,6 +106,7 @@ PurpleAccount *purple_account_new(const char *username, const char *protocol_id)
  *
  * Since: 3.0.0
  */
+G_DEPRECATED_FOR(purple_contact_info_get_id)
 const gchar *purple_account_get_id(PurpleAccount *account);
 
 /**
@@ -188,6 +190,7 @@ void purple_account_request_change_user_info(PurpleAccount *account);
  *
  * Sets the account's username.
  */
+G_DEPRECATED_FOR(purple_contact_info_set_username)
 void purple_account_set_username(PurpleAccount *account, const char *username);
 
 /**
@@ -401,6 +404,7 @@ gboolean purple_account_is_disconnected(PurpleAccount *account);
  *
  * Returns: The username.
  */
+G_DEPRECATED_FOR(purple_contact_info_get_username)
 const char *purple_account_get_username(PurpleAccount *account);
 
 /**
@@ -487,6 +491,7 @@ PurpleConnection *purple_account_get_connection(PurpleAccount *account);
  *
  * Returns: The name to display.
  */
+G_DEPRECATED_FOR(purple_contact_info_get_name_for_display)
 const gchar *purple_account_get_name_for_display(PurpleAccount *account);
 
 /**
@@ -765,22 +770,6 @@ void purple_account_set_require_password(PurpleAccount *account, gboolean requir
  * Since: 3.0.0
  */
 gboolean purple_account_get_require_password(PurpleAccount *account);
-
-/**
- * purple_account_get_contact:
- * @account: The instance.
- *
- * Gets the [class@Purple.Contact] for @account that represents the user of
- * @account.
- *
- * This can be used by protocol plugins to store additional information about
- * the account.
- *
- * Returns: (transfer none): The contact that represents @account.
- *
- * Since: 3.0.0
- */
-PurpleContact *purple_account_get_contact(PurpleAccount *account);
 
 /**
  * purple_account_freeze_notify_settings:

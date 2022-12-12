@@ -116,9 +116,8 @@ const gchar *purple_contact_info_get_id(PurpleContactInfo *info);
  * @id: The new identifier.
  *
  * Sets the identifier of @info to @id. Note, this should be used rarely if
- * at all. The main intent of this, is for protocols to update the id of
- * [property@Purple.Account:contact] when an account is connected if it is
- * missing.
+ * at all. The main intent of this, is for protocols to update the id of an
+ * an account when it is connected if the id is missing.
  *
  * Since: 3.0.0
  */
