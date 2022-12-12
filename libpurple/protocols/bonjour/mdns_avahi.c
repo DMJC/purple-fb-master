@@ -102,11 +102,13 @@ _cleanup_resolver_data(AvahiSvcResolverData *rd) {
 
 
 static void
-_resolver_callback(AvahiServiceResolver *r, AvahiIfIndex interface, AvahiProtocol protocol,
-		  AvahiResolverEvent event, const char *name, const char *type, const char *domain,
-		  const char *host_name, const AvahiAddress *a, uint16_t port, AvahiStringList *txt,
-		  AvahiLookupResultFlags flags, void *userdata) {
-
+_resolver_callback(AvahiServiceResolver *r, AvahiIfIndex interface,
+                   AvahiProtocol protocol, AvahiResolverEvent event,
+                   const char *name, const char *type, const char *domain,
+                   G_GNUC_UNUSED const char *host_name, const AvahiAddress *a,
+                   uint16_t port, AvahiStringList *txt,
+                   G_GNUC_UNUSED AvahiLookupResultFlags flags, void *userdata)
+{
 	PurpleBuddy *pb;
 	BonjourBuddy *bb;
 	PurpleAccount *account = userdata;
@@ -235,10 +237,10 @@ _resolver_callback(AvahiServiceResolver *r, AvahiIfIndex interface, AvahiProtoco
 
 static void
 _browser_callback(AvahiServiceBrowser *b, AvahiIfIndex interface,
-		  AvahiProtocol protocol, AvahiBrowserEvent event,
-		  const char *name, const char *type, const char *domain,
-		  AvahiLookupResultFlags flags, void *userdata) {
-
+                  AvahiProtocol protocol, AvahiBrowserEvent event,
+                  const char *name, const char *type, const char *domain,
+                  G_GNUC_UNUSED AvahiLookupResultFlags flags, void *userdata)
+{
 	PurpleAccount *account = userdata;
 	PurpleBuddy *pb = NULL;
 
@@ -364,9 +366,16 @@ _entry_group_cb(AvahiEntryGroup *g, AvahiEntryGroupState state, void *userdata) 
 }
 
 static void
-_buddy_icon_record_cb(AvahiRecordBrowser *b, AvahiIfIndex interface, AvahiProtocol protocol,
-		      AvahiBrowserEvent event, const char *name, uint16_t clazz, uint16_t type,
-		      const void *rdata, size_t size, AvahiLookupResultFlags flags, void *userdata) {
+_buddy_icon_record_cb(AvahiRecordBrowser *b,
+                      G_GNUC_UNUSED AvahiIfIndex interface,
+                      G_GNUC_UNUSED AvahiProtocol protocol,
+                      AvahiBrowserEvent event, G_GNUC_UNUSED const char *name,
+                      G_GNUC_UNUSED uint16_t clazz,
+                      G_GNUC_UNUSED uint16_t type,
+                      const void *rdata, size_t size,
+                      G_GNUC_UNUSED AvahiLookupResultFlags flags,
+                      void *userdata)
+{
 	BonjourBuddy *buddy = userdata;
 	AvahiBuddyImplData *idata = buddy->mdns_impl_data;
 

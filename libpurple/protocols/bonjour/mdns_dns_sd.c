@@ -102,7 +102,9 @@ _cleanup_resolver_data(Win32SvcResolverData *rd) {
 }
 
 static void
-_mdns_handle_event(gpointer data, gint source, PurpleInputCondition condition) {
+_mdns_handle_event(gpointer data, G_GNUC_UNUSED gint source,
+                   G_GNUC_UNUSED PurpleInputCondition condition)
+{
 	DnsSDServiceRefHandlerData *srh = data;
 	DNSServiceErrorType errorCode = DNSServiceProcessResult(srh->sdRef);
 	if (errorCode != kDNSServiceErr_NoError) {
@@ -132,12 +134,15 @@ _mdns_parse_text_record(BonjourBuddy *buddy, const char *record, uint16_t record
 }
 
 static void DNSSD_API
-_mdns_record_query_callback(DNSServiceRef DNSServiceRef, DNSServiceFlags flags,
-	uint32_t interfaceIndex, DNSServiceErrorType errorCode, const char *fullname,
-	uint16_t rrtype, uint16_t rrclass, uint16_t rdlen, const void *rdata,
-	uint32_t ttl, void *context)
+_mdns_record_query_callback(G_GNUC_UNUSED DNSServiceRef DNSServiceRef,
+                            DNSServiceFlags flags,
+                            G_GNUC_UNUSED uint32_t interfaceIndex,
+                            DNSServiceErrorType errorCode,
+                            G_GNUC_UNUSED const char *fullname,
+                            uint16_t rrtype, G_GNUC_UNUSED uint16_t rrclass,
+                            uint16_t rdlen, const void *rdata,
+                            G_GNUC_UNUSED uint32_t ttl, void *context)
 {
-
 	if (errorCode != kDNSServiceErr_NoError) {
 		purple_debug_error("bonjour", "record query - callback error (%d).\n", errorCode);
 		/* TODO: Probably should remove the buddy when this happens */
@@ -166,10 +171,13 @@ _mdns_record_query_callback(DNSServiceRef DNSServiceRef, DNSServiceFlags flags,
 }
 
 static void DNSSD_API
-_mdns_resolve_host_callback(DNSServiceRef sdRef, DNSServiceFlags flags,
-	uint32_t interfaceIndex, DNSServiceErrorType errorCode,
-	const char *hostname, const struct sockaddr *address,
-	uint32_t ttl, void *context)
+_mdns_resolve_host_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
+                            G_GNUC_UNUSED DNSServiceFlags flags,
+                            G_GNUC_UNUSED uint32_t interfaceIndex,
+                            DNSServiceErrorType errorCode,
+                            G_GNUC_UNUSED const char *hostname,
+                            const struct sockaddr *address,
+                            G_GNUC_UNUSED uint32_t ttl, void *context)
 {
 	ResolveCallbackArgs *args = (ResolveCallbackArgs*) context;
 	Win32BuddyImplData *idata = args->bb->mdns_impl_data;
@@ -262,8 +270,14 @@ _mdns_resolve_host_callback(DNSServiceRef sdRef, DNSServiceFlags flags,
 }
 
 static void DNSSD_API
-_mdns_service_resolve_callback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex, DNSServiceErrorType errorCode,
-    const char *fullname, const char *hosttarget, uint16_t port, uint16_t txtLen, const unsigned char *txtRecord, void *context)
+_mdns_service_resolve_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
+                               G_GNUC_UNUSED DNSServiceFlags flags,
+                               uint32_t interfaceIndex,
+                               DNSServiceErrorType errorCode,
+                               const char *fullname, const char *hosttarget,
+                               uint16_t port, G_GNUC_UNUSED uint16_t txtLen,
+                               G_GNUC_UNUSED const unsigned char *txtRecord,
+                               void *context)
 {
 	ResolveCallbackArgs *args = (ResolveCallbackArgs*) context;
 	Win32BuddyImplData *idata = args->bb->mdns_impl_data;
@@ -321,9 +335,14 @@ _mdns_service_resolve_callback(DNSServiceRef sdRef, DNSServiceFlags flags, uint3
 }
 
 static void DNSSD_API
-_mdns_service_register_callback(DNSServiceRef sdRef, DNSServiceFlags flags, DNSServiceErrorType errorCode,
-				const char *name, const char *regtype, const char *domain, void *context) {
-
+_mdns_service_register_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
+                                G_GNUC_UNUSED DNSServiceFlags flags,
+                                DNSServiceErrorType errorCode,
+                                G_GNUC_UNUSED const char *name,
+                                G_GNUC_UNUSED const char *regtype,
+                                G_GNUC_UNUSED const char *domain,
+                                G_GNUC_UNUSED void *context)
+{
 	/* TODO: deal with collision */
 	if (errorCode != kDNSServiceErr_NoError)
 		purple_debug_error("bonjour", "service advertisement - callback error (%d).\n", errorCode);
@@ -332,8 +351,11 @@ _mdns_service_register_callback(DNSServiceRef sdRef, DNSServiceFlags flags, DNSS
 }
 
 static void DNSSD_API
-_mdns_service_browse_callback(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,
-    DNSServiceErrorType errorCode, const char *serviceName, const char *regtype, const char *replyDomain, void *context)
+_mdns_service_browse_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
+                              DNSServiceFlags flags, uint32_t interfaceIndex,
+                              DNSServiceErrorType errorCode,
+                              const char *serviceName, const char *regtype,
+                              const char *replyDomain, void *context)
 {
 	PurpleAccount *account = (PurpleAccount*)context;
 

@@ -56,24 +56,24 @@ gboolean dns_sd_available(void) {
 
 	if (!initialized) {
 		initialized = TRUE;
-		if ((_DNSServiceAddRecord = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceAddRecord"))
-				&& (_DNSServiceBrowse = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceBrowse"))
-				&& (_DNSServiceConstructFullName = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceConstructFullName"))
-				&& (_DNSServiceGetAddrInfo = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceGetAddrInfo"))
-				&& (_DNSServiceProcessResult = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceProcessResult"))
-				&& (_DNSServiceQueryRecord = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceQueryRecord"))
-				&& (_DNSServiceRefDeallocate = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRefDeallocate"))
-				&& (_DNSServiceRefSockFD = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRefSockFD"))
-				&& (_DNSServiceRegister = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRegister"))
-				&& (_DNSServiceResolve = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceResolve"))
-				&& (_DNSServiceRemoveRecord = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRemoveRecord"))
-				&& (_DNSServiceUpdateRecord = (void *) wpurple_find_and_loadproc("dnssd.dll", "DNSServiceUpdateRecord"))
-				&& (_TXTRecordCreate = (void *) wpurple_find_and_loadproc("dnssd.dll", "TXTRecordCreate"))
-				&& (_TXTRecordDeallocate = (void *) wpurple_find_and_loadproc("dnssd.dll", "TXTRecordDeallocate"))
-				&& (_TXTRecordGetBytesPtr = (void *) wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetBytesPtr"))
-				&& (_TXTRecordGetLength = (void *) wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetLength"))
-				&& (_TXTRecordGetValuePtr = (void *) wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetValuePtr"))
-				&& (_TXTRecordSetValue = (void *) wpurple_find_and_loadproc("dnssd.dll", "TXTRecordSetValue"))) {
+		if ((_DNSServiceAddRecord = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceAddRecord"))
+				&& (_DNSServiceBrowse = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceBrowse"))
+				&& (_DNSServiceConstructFullName = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceConstructFullName"))
+				&& (_DNSServiceGetAddrInfo = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceGetAddrInfo"))
+				&& (_DNSServiceProcessResult = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceProcessResult"))
+				&& (_DNSServiceQueryRecord = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceQueryRecord"))
+				&& (_DNSServiceRefDeallocate = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRefDeallocate"))
+				&& (_DNSServiceRefSockFD = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRefSockFD"))
+				&& (_DNSServiceRegister = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRegister"))
+				&& (_DNSServiceResolve = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceResolve"))
+				&& (_DNSServiceRemoveRecord = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRemoveRecord"))
+				&& (_DNSServiceUpdateRecord = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceUpdateRecord"))
+				&& (_TXTRecordCreate = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordCreate"))
+				&& (_TXTRecordDeallocate = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordDeallocate"))
+				&& (_TXTRecordGetBytesPtr = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetBytesPtr"))
+				&& (_TXTRecordGetLength = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetLength"))
+				&& (_TXTRecordGetValuePtr = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetValuePtr"))
+				&& (_TXTRecordSetValue = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordSetValue"))) {
 			loaded = TRUE;
 		}
 	}

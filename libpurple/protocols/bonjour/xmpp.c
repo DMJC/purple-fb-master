@@ -352,7 +352,7 @@ _send_data(PurpleBuddy *pb, char *message)
 		return -1;
 	}
 
-	if (ret < len) {
+	if ((gsize)ret < len) {
 		/* Don't interfere with the stream starting */
 		if (bconv->sent_stream_start == FULLY_SENT &&
 		    bconv->recv_stream_start && bconv->tx_handler == 0) {
@@ -361,7 +361,7 @@ _send_data(PurpleBuddy *pb, char *message)
 			                G_POLLABLE_OUTPUT_STREAM(bconv->output),
 			                bconv->cancellable);
 			g_source_set_callback(source,
-			                      (GSourceFunc)_send_data_write_cb,
+			                      G_SOURCE_FUNC(_send_data_write_cb),
 			                      pb, NULL);
 			bconv->tx_handler = g_source_attach(source, NULL);
 			g_source_unref(source);
@@ -513,7 +513,7 @@ _start_stream(GObject *stream, gpointer data)
 	}
 
 	/* This is EXTREMELY unlikely to happen */
-	if (G_UNLIKELY(ret < len)) {
+	if (G_UNLIKELY((gsize)ret < len)) {
 		char *tmp = g_strdup(ss->msg + ret);
 		g_free(ss->msg);
 		ss->msg = tmp;
@@ -597,7 +597,7 @@ bonjour_xmpp_send_stream_init(BonjourXMPPConversation *bconv,
 	}
 
 	/* This is unlikely to happen */
-	if (ret < len) {
+	if ((gsize)ret < len) {
 		GSource *source;
 		struct _stream_start_data *ss = g_new(struct _stream_start_data, 1);
 		ss->msg = g_strdup(stream_start + ret);
@@ -606,7 +606,7 @@ bonjour_xmpp_send_stream_init(BonjourXMPPConversation *bconv,
 		source = g_pollable_output_stream_create_source(
 		        G_POLLABLE_OUTPUT_STREAM(bconv->output),
 		        bconv->cancellable);
-		g_source_set_callback(source, (GSourceFunc)_start_stream, bconv,
+		g_source_set_callback(source, G_SOURCE_FUNC(_start_stream), bconv,
 		                      NULL);
 		bconv->tx_handler = g_source_attach(source, NULL);
 		g_source_unref(source);
@@ -678,7 +678,7 @@ bonjour_xmpp_stream_started(BonjourXMPPConversation *bconv)
 		GSource *source = g_pollable_output_stream_create_source(
 		        G_POLLABLE_OUTPUT_STREAM(bconv->output),
 		        bconv->cancellable);
-		g_source_set_callback(source, (GSourceFunc)_send_data_write_cb,
+		g_source_set_callback(source, G_SOURCE_FUNC(_send_data_write_cb),
 		                      bconv->pb, NULL);
 		bconv->tx_handler = g_source_attach(source, NULL);
 		g_source_unref(source);
@@ -692,8 +692,9 @@ bonjour_xmpp_stream_started(BonjourXMPPConversation *bconv)
 #endif
 
 static void
-_server_socket_handler(GSocketService *service, GSocketConnection *connection,
-                       GObject *source_object, gpointer data)
+_server_socket_handler(G_GNUC_UNUSED GSocketService *service,
+                       GSocketConnection *connection,
+                       G_GNUC_UNUSED GObject *source_object, gpointer data)
 {
 	BonjourXMPP *jdata = data;
 	GSocketAddress *their_addr; /* connector's address information */
@@ -748,7 +749,7 @@ _server_socket_handler(GSocketService *service, GSocketConnection *connection,
 	        g_io_stream_get_output_stream(G_IO_STREAM(bconv->socket)));
 	source = g_pollable_input_stream_create_source(
 	        G_POLLABLE_INPUT_STREAM(bconv->input), bconv->cancellable);
-	g_source_set_callback(source, (GSourceFunc)_client_socket_handler,
+	g_source_set_callback(source, G_SOURCE_FUNC(_client_socket_handler),
 	                      bconv, NULL);
 	bconv->rx_handler = g_source_attach(source, NULL);
 	g_source_unref(source);
@@ -913,7 +914,7 @@ _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 	rx_source = g_pollable_input_stream_create_source(
 	        G_POLLABLE_INPUT_STREAM(bb->conversation->input),
 	        bb->conversation->cancellable);
-	g_source_set_callback(rx_source, (GSourceFunc)_client_socket_handler,
+	g_source_set_callback(rx_source, G_SOURCE_FUNC(_client_socket_handler),
 	                      bb->conversation, NULL);
 	bb->conversation->rx_handler = g_source_attach(rx_source, NULL);
 	g_source_unref(rx_source);

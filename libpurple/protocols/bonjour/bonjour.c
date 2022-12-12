@@ -204,7 +204,7 @@ bonjour_close(G_GNUC_UNUSED PurpleProtocol *protocol,
 }
 
 static GList *
-bonjour_protocol_get_account_options(PurpleProtocol *protocol) {
+bonjour_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	PurpleAccountOption *option;
 	GList *opts = NULL;
 
@@ -234,14 +234,15 @@ bonjour_protocol_get_account_options(PurpleProtocol *protocol) {
 }
 
 static PurpleBuddyIconSpec *
-bonjour_protocol_get_buddy_icon_spec(PurpleProtocol *protocol) {
+bonjour_protocol_get_buddy_icon_spec(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	return purple_buddy_icon_spec_new("png,gif,jpeg",
 	                                  0, 0, 96, 96, 65535,
 	                                  PURPLE_ICON_SCALE_DISPLAY);
 }
 
 static int
-bonjour_send_im(PurpleProtocolIM *im, PurpleConnection *connection, PurpleMessage *msg)
+bonjour_send_im(G_GNUC_UNUSED PurpleProtocolIM *im,
+                PurpleConnection *connection, PurpleMessage *msg)
 {
 	BonjourData *bd = purple_connection_get_protocol_data(connection);
 
@@ -254,7 +255,7 @@ bonjour_send_im(PurpleProtocolIM *im, PurpleConnection *connection, PurpleMessag
 }
 
 static void
-bonjour_set_status(PurpleProtocolServer *protocol_server,
+bonjour_set_status(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                    PurpleAccount *account, PurpleStatus *status)
 {
 	PurpleConnection *gc;
@@ -297,9 +298,11 @@ bonjour_set_status(PurpleProtocolServer *protocol_server,
  * if there is no add_buddy callback.
  */
 static void
-bonjour_fake_add_buddy(PurpleProtocolServer *protocol_server,
-                       PurpleConnection *pc, PurpleBuddy *buddy,
-                       PurpleGroup *group, const gchar *message)
+bonjour_fake_add_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+                       G_GNUC_UNUSED PurpleConnection *connection,
+                       PurpleBuddy *buddy,
+                       G_GNUC_UNUSED PurpleGroup *group,
+                       G_GNUC_UNUSED const gchar *message)
 {
 	purple_debug_error("bonjour", "Buddy '%s' manually added; removing.  "
 				      "Bonjour buddies must be discovered and not manually added.\n",
@@ -313,9 +316,10 @@ bonjour_fake_add_buddy(PurpleProtocolServer *protocol_server,
 
 
 static void
-bonjour_remove_buddy(PurpleProtocolServer *protocol_server,
-                     PurpleConnection *pc, PurpleBuddy *buddy,
-                     PurpleGroup *group)
+bonjour_remove_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+                     G_GNUC_UNUSED PurpleConnection *connection,
+                     PurpleBuddy *buddy,
+                     G_GNUC_UNUSED PurpleGroup *group)
 {
 	BonjourBuddy *bb = purple_buddy_get_protocol_data(buddy);
 	if (bb) {
@@ -356,7 +360,7 @@ bonjour_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 }
 
 static void
-bonjour_convo_closed(PurpleProtocolClient *client,
+bonjour_convo_closed(G_GNUC_UNUSED PurpleProtocolClient *client,
                      PurpleConnection *connection, const char *who)
 {
 	PurpleBuddy *buddy = purple_blist_find_buddy(purple_connection_get_account(connection), who);
@@ -376,8 +380,9 @@ bonjour_convo_closed(PurpleProtocolClient *client,
 }
 
 static void
-bonjour_set_buddy_icon(PurpleProtocolServer *protocol_server,
-                       PurpleConnection *conn, PurpleImage *img)
+bonjour_set_buddy_icon(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+                       PurpleConnection *conn,
+                       G_GNUC_UNUSED PurpleImage *img)
 {
 	BonjourData *bd = purple_connection_get_protocol_data(conn);
 	bonjour_dns_sd_update_buddy_icon(bd->dns_sd_data);
@@ -385,7 +390,8 @@ bonjour_set_buddy_icon(PurpleProtocolServer *protocol_server,
 
 
 static char *
-bonjour_status_text(PurpleProtocolClient *client, PurpleBuddy *buddy)
+bonjour_status_text(G_GNUC_UNUSED PurpleProtocolClient *client,
+                    PurpleBuddy *buddy)
 {
 	PurplePresence *presence;
 	PurpleStatus *status;
@@ -406,8 +412,9 @@ bonjour_status_text(PurpleProtocolClient *client, PurpleBuddy *buddy)
 }
 
 static void
-bonjour_tooltip_text(PurpleProtocolClient *client, PurpleBuddy *buddy,
-                     PurpleNotifyUserInfo *user_info, gboolean full)
+bonjour_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client,
+                     PurpleBuddy *buddy, PurpleNotifyUserInfo *user_info,
+                     G_GNUC_UNUSED gboolean full)
 {
 	PurplePresence *presence;
 	PurpleStatus *status;
@@ -487,9 +494,9 @@ bonjour_do_group_change(PurpleBuddy *buddy, const char *new_group)
 }
 
 static void
-bonjour_group_buddy(PurpleProtocolServer *protocol_server,
-                    PurpleConnection *connection, const gchar *who,
-                    const gchar *old_group, const gchar *new_group)
+bonjour_group_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+                    PurpleConnection *connection, const char *who,
+                    G_GNUC_UNUSED const char *old_group, const char *new_group)
 {
 	PurpleBuddy *buddy = purple_blist_find_buddy(purple_connection_get_account(connection), who);
 
@@ -497,9 +504,9 @@ bonjour_group_buddy(PurpleProtocolServer *protocol_server,
 }
 
 static void
-bonjour_rename_group(PurpleProtocolServer *protocol_server,
-                     PurpleConnection *connection,
-                     const gchar *old_name, PurpleGroup *group,
+bonjour_rename_group(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+                     G_GNUC_UNUSED PurpleConnection *connection,
+                     G_GNUC_UNUSED const char *old_name, PurpleGroup *group,
                      GList *moved_buddies)
 {
 	const gchar *new_group;
@@ -510,7 +517,8 @@ bonjour_rename_group(PurpleProtocolServer *protocol_server,
 }
 
 static gboolean
-bonjour_can_receive_file(PurpleProtocolXfer *prplxfer, PurpleConnection *connection, const char *who)
+bonjour_can_receive_file(G_GNUC_UNUSED PurpleProtocolXfer *prplxfer,
+                         PurpleConnection *connection, const char *who)
 {
 	PurpleBuddy *buddy = purple_blist_find_buddy(purple_connection_get_account(connection), who);
 
@@ -518,7 +526,8 @@ bonjour_can_receive_file(PurpleProtocolXfer *prplxfer, PurpleConnection *connect
 }
 
 static gssize
-bonjour_get_max_message_size(PurpleProtocolClient *client, PurpleConversation *conv)
+bonjour_get_max_message_size(G_GNUC_UNUSED PurpleProtocolClient *client,
+                             G_GNUC_UNUSED PurpleConversation *conv)
 {
 	return -1; /* 5MB successfully tested. */
 }
@@ -670,7 +679,7 @@ initialize_default_account_values(void)
 }
 
 static void
-bonjour_protocol_init(BonjourProtocol *self)
+bonjour_protocol_init(G_GNUC_UNUSED BonjourProtocol *self)
 {
 }
 
@@ -755,7 +764,7 @@ bonjour_protocol_new(void) {
 }
 
 static GPluginPluginInfo *
-bonjour_query(GError **error)
+bonjour_query(G_GNUC_UNUSED GError **error)
 {
 	return purple_plugin_info_new(
 		"id",           "prpl-bonjour",
@@ -794,7 +803,8 @@ bonjour_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-bonjour_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+bonjour_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+               G_GNUC_UNUSED gboolean shutdown, GError **error)
 {
 	PurpleProtocolManager *manager = purple_protocol_manager_get_default();
 

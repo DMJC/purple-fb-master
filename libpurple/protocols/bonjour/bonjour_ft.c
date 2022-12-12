@@ -300,7 +300,8 @@ purple_xmlnode_free_tree(PurpleXmlNode *node)
 }
 
 PurpleXfer *
-bonjour_new_xfer(PurpleProtocolXfer *prplxfer, PurpleConnection *gc, const char *who)
+bonjour_new_xfer(G_GNUC_UNUSED PurpleProtocolXfer *prplxfer,
+                 PurpleConnection *gc, const char *who)
 {
 	PurpleXfer *xfer;
 	XepXfer *xep_xfer;
@@ -703,8 +704,9 @@ xep_bytestreams_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleBuddy *
 }
 
 static void
-bonjour_xfer_receive(PurpleConnection *pc, const char *id, const char *sid, const char *from,
-		     goffset filesize, const char *filename, int option)
+bonjour_xfer_receive(PurpleConnection *pc, const char *id, const char *sid,
+                     const char *from, goffset filesize, const char *filename,
+                     G_GNUC_UNUSED int option)
 {
 	PurpleXfer *xfer;
 	XepXfer *xf;
@@ -865,7 +867,7 @@ bonjour_sock5_read_client_version_cb(GObject *source, GAsyncResult *result,
 }
 
 static void
-bonjour_sock5_incoming_cb(GSocketService *service,
+bonjour_sock5_incoming_cb(G_GNUC_UNUSED GSocketService *service,
                           GSocketConnection *connection, GObject *source_object,
                           G_GNUC_UNUSED gpointer data)
 {
@@ -1185,8 +1187,7 @@ xep_xfer_finalize(GObject *obj) {
 }
 
 static void
-xep_xfer_class_finalize(XepXferClass *klass) {
-
+xep_xfer_class_finalize(G_GNUC_UNUSED XepXferClass *klass) {
 }
 
 static void

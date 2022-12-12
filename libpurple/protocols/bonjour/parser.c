@@ -47,9 +47,14 @@ parse_from_attrib_and_find_buddy(BonjourXMPPConversation *bconv, int nb_attribut
 
 static void
 bonjour_parser_element_start_libxml(void *user_data,
-				   const xmlChar *element_name, const xmlChar *prefix, const xmlChar *namespace,
-				   int nb_namespaces, const xmlChar **namespaces,
-				   int nb_attributes, int nb_defaulted, const xmlChar **attributes)
+                                    const xmlChar *element_name,
+                                    const xmlChar *prefix,
+                                    const xmlChar *namespace,
+                                    G_GNUC_UNUSED int nb_namespaces,
+                                    G_GNUC_UNUSED const xmlChar **namespaces,
+                                    int nb_attributes,
+                                    G_GNUC_UNUSED int nb_defaulted,
+                                    const xmlChar **attributes)
 {
 	BonjourXMPPConversation *bconv = user_data;
 
@@ -110,7 +115,8 @@ bonjour_parser_element_start_libxml(void *user_data,
 
 static void
 bonjour_parser_element_end_libxml(void *user_data, const xmlChar *element_name,
-				 const xmlChar *prefix, const xmlChar *namespace)
+                                  G_GNUC_UNUSED const xmlChar *prefix,
+                                  G_GNUC_UNUSED const xmlChar *namespace)
 {
 	BonjourXMPPConversation *bconv = user_data;
 
