@@ -225,7 +225,7 @@ purple_buddy_presence_finalize(GObject *obj) {
 }
 
 static void
-purple_buddy_presence_init(PurpleBuddyPresence *presence) {
+purple_buddy_presence_init(G_GNUC_UNUSED PurpleBuddyPresence *presence) {
 }
 
 static void

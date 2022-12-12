@@ -94,7 +94,7 @@ purple_plugin_info_set_action_menu(PurplePluginInfo *info,
  * GObject Implementation
  **************************************************************************/
 static void
-purple_plugin_info_init(PurplePluginInfo *info) {
+purple_plugin_info_init(G_GNUC_UNUSED PurplePluginInfo *info) {
 }
 
 static void

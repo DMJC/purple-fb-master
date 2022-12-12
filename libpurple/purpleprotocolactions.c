@@ -29,7 +29,8 @@ G_DEFINE_INTERFACE(PurpleProtocolActions, purple_protocol_actions,
                    PURPLE_TYPE_PROTOCOL)
 
 static void
-purple_protocol_actions_default_init(PurpleProtocolActionsInterface *iface) {
+purple_protocol_actions_default_init(G_GNUC_UNUSED PurpleProtocolActionsInterface *iface)
+{
 }
 
 /******************************************************************************

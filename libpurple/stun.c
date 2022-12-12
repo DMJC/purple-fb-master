@@ -136,7 +136,7 @@ static gboolean timeoutfunc(gpointer data) {
 }
 
 static gboolean
-reply_cb(GSocket *socket, GIOCondition condition, gpointer data)
+reply_cb(GSocket *socket, G_GNUC_UNUSED GIOCondition condition, gpointer data)
 {
 	struct stun_conn *sc = data;
 	gchar buffer[65536];

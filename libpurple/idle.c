@@ -224,36 +224,38 @@ check_idleness(void)
  * Check idle and set the timer to fire at the next idle-worth event
  */
 static gboolean
-check_idleness_timer(void)
-{
+check_idleness_timer(G_GNUC_UNUSED gpointer data) {
 	check_idleness();
-	if (time_until_next_idle_event == 0)
+	if (time_until_next_idle_event == 0) {
 		idle_timer = 0;
-	else
-	{
+	} else {
 		/* +1 for the boundary,
 		 * +1 more for g_timeout_add_seconds rounding. */
-		idle_timer = g_timeout_add_seconds(time_until_next_idle_event + 2, (GSourceFunc)check_idleness_timer, NULL);
+		idle_timer = g_timeout_add_seconds(time_until_next_idle_event + 2,
+		                                   G_SOURCE_FUNC(check_idleness_timer),
+		                                   NULL);
 	}
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
-im_msg_sent_cb(PurpleAccount *account, PurpleMessage *msg, void *data)
+im_msg_sent_cb(G_GNUC_UNUSED PurpleAccount *account,
+               G_GNUC_UNUSED PurpleMessage *msg, G_GNUC_UNUSED gpointer data)
 {
 	/* Check our idle time after an IM is sent */
 	check_idleness();
 }
 
 static void
-signing_on_cb(PurpleConnection *gc, void *data)
+signing_on_cb(G_GNUC_UNUSED PurpleConnection *connection,
+              G_GNUC_UNUSED gpointer data)
 {
 	/* When signing on a new account, check if the account should be idle */
 	check_idleness();
 }
 
 static void
-signing_off_cb(PurpleConnection *gc, void *data)
+signing_off_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account;
 
@@ -262,12 +264,14 @@ signing_off_cb(PurpleConnection *gc, void *data)
 }
 
 static void
-idle_reporting_cb(const char *name, PurplePrefType type, gconstpointer val, gpointer data)
+idle_reporting_cb(G_GNUC_UNUSED const char *name,
+                  G_GNUC_UNUSED PurplePrefType type,
+                  G_GNUC_UNUSED gconstpointer val, G_GNUC_UNUSED gpointer data)
 {
 	if (idle_timer)
 		g_source_remove(idle_timer);
 	idle_timer = 0;
-	check_idleness_timer();
+	check_idleness_timer(NULL);
 }
 
 void
@@ -279,7 +283,7 @@ purple_idle_touch(void)
 		if (idle_timer)
 			g_source_remove(idle_timer);
 		idle_timer = 0;
-		check_idleness_timer();
+		check_idleness_timer(NULL);
 	}
 }
 
@@ -310,12 +314,15 @@ purple_idle_get_handle(void)
 	return &handle;
 }
 
-static gboolean _do_purple_idle_touch_cb(gpointer data)
+static gboolean
+_do_purple_idle_touch_cb(G_GNUC_UNUSED gpointer data)
 {
 	int idle_poll_minutes = purple_prefs_get_int("/purple/away/mins_before_away");
 
 	 /* +1 more for g_timeout_add_seconds rounding. */
-	idle_timer = g_timeout_add_seconds((idle_poll_minutes * 60) + 2, (GSourceFunc)check_idleness_timer, NULL);
+	idle_timer = g_timeout_add_seconds((idle_poll_minutes * 60) + 2,
+	                                   G_SOURCE_FUNC(check_idleness_timer),
+	                                   NULL);
 
 	purple_idle_touch();
 

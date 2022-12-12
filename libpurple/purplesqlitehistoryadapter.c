@@ -295,7 +295,7 @@ purple_sqlite_history_adapter_activate(PurpleHistoryAdapter *adapter,
 
 static gboolean
 purple_sqlite_history_adapter_deactivate(PurpleHistoryAdapter *adapter,
-                                         GError **error)
+                                         G_GNUC_UNUSED GError **error)
 {
 	PurpleSqliteHistoryAdapter *sqlite_adapter = NULL;
 
@@ -570,7 +570,8 @@ purple_sqlite_history_adapter_finalize(GObject *obj) {
 }
 
 static void
-purple_sqlite_history_adapter_init(PurpleSqliteHistoryAdapter *adapter) {
+purple_sqlite_history_adapter_init(G_GNUC_UNUSED PurpleSqliteHistoryAdapter *adapter)
+{
 }
 
 static void

@@ -143,7 +143,7 @@ purple_whiteboard_get_property(GObject *obj, guint param_id, GValue *value,
 }
 
 static void
-purple_whiteboard_init(PurpleWhiteboard *whiteboard) {
+purple_whiteboard_init(G_GNUC_UNUSED PurpleWhiteboard *whiteboard) {
 }
 
 static void

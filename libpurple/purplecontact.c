@@ -94,7 +94,7 @@ purple_contact_dispose(GObject *obj) {
 }
 
 static void
-purple_contact_init(PurpleContact *contact) {
+purple_contact_init(G_GNUC_UNUSED PurpleContact *contact) {
 }
 
 static void

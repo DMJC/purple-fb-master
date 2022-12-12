@@ -544,13 +544,17 @@ purple_pmp_get_public_ip(void)
 }
 
 gboolean
-purple_pmp_create_map(PurplePmpType type, unsigned short privateport, unsigned short publicport, int lifetime)
+purple_pmp_create_map(G_GNUC_UNUSED PurplePmpType type,
+                      G_GNUC_UNUSED unsigned short privateport,
+                      G_GNUC_UNUSED unsigned short publicport,
+                      G_GNUC_UNUSED int lifetime)
 {
 	return FALSE;
 }
 
 gboolean
-purple_pmp_destroy_map(PurplePmpType type, unsigned short privateport)
+purple_pmp_destroy_map(G_GNUC_UNUSED PurplePmpType type,
+                       G_GNUC_UNUSED unsigned short privateport)
 {
 	return FALSE;
 }

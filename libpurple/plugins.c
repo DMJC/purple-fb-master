@@ -46,8 +46,8 @@ static GList *plugins_to_disable = NULL;
  * Plugin API
  **************************************************************************/
 static gboolean
-plugin_loading_cb(GObject *manager, PurplePlugin *plugin, GError **error,
-                  gpointer data)
+plugin_loading_cb(G_GNUC_UNUSED GObject *manager, PurplePlugin *plugin,
+                  GError **error, G_GNUC_UNUSED gpointer data)
 {
 	PurplePluginInfo *info;
 	const gchar *info_error = NULL;
@@ -76,7 +76,7 @@ plugin_loading_cb(GObject *manager, PurplePlugin *plugin, GError **error,
 }
 
 static void
-plugin_loaded_cb(GObject *manager, PurplePlugin *plugin)
+plugin_loaded_cb(G_GNUC_UNUSED GObject *manager, PurplePlugin *plugin)
 {
 	PurplePluginInfo *info;
 	gchar *filename;
@@ -96,8 +96,8 @@ plugin_loaded_cb(GObject *manager, PurplePlugin *plugin)
 }
 
 static gboolean
-plugin_unloading_cb(GObject *manager, PurplePlugin *plugin, GError **error,
-                    gpointer data)
+plugin_unloading_cb(G_GNUC_UNUSED GObject *manager, PurplePlugin *plugin,
+                    G_GNUC_UNUSED GError **error, G_GNUC_UNUSED gpointer data)
 {
 	PurplePluginInfo *info;
 	gchar *filename;
@@ -116,7 +116,7 @@ plugin_unloading_cb(GObject *manager, PurplePlugin *plugin, GError **error,
 }
 
 static void
-plugin_unloaded_cb(GObject *manager, PurplePlugin *plugin)
+plugin_unloaded_cb(G_GNUC_UNUSED GObject *manager, PurplePlugin *plugin)
 {
 	PurplePluginInfo *info;
 
@@ -254,7 +254,7 @@ purple_plugin_is_internal(PurplePlugin *plugin)
 }
 
 GSList *
-purple_plugin_get_dependent_plugins(PurplePlugin *plugin)
+purple_plugin_get_dependent_plugins(G_GNUC_UNUSED PurplePlugin *plugin)
 {
 #warning TODO: Implement this when GPlugin can return dependent plugins.
 	return NULL;

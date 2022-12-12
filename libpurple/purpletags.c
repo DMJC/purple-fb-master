@@ -49,7 +49,7 @@ purple_tags_dispose(GObject *obj) {
 }
 
 static void
-purple_tags_init(PurpleTags *tags) {
+purple_tags_init(G_GNUC_UNUSED PurpleTags *tags) {
 }
 
 static void

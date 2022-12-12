@@ -72,7 +72,7 @@ _purple_image_set_contents(PurpleImage *image, GBytes *bytes) {
  * Object stuff
  ******************************************************************************/
 static void
-purple_image_init(PurpleImage *image) {
+purple_image_init(G_GNUC_UNUSED PurpleImage *image) {
 }
 
 static void

@@ -264,7 +264,7 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 }
 
 static void
-purple_conversation_init(PurpleConversation *conv) {
+purple_conversation_init(G_GNUC_UNUSED PurpleConversation *conv) {
 }
 
 static void

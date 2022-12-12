@@ -222,7 +222,7 @@ purple_buddy_icon_data_uncache_file(const char *filename)
  */
 
 static gboolean
-value_equals(gpointer key, gpointer value, gpointer user_data)
+value_equals(G_GNUC_UNUSED gpointer key, gpointer value, gpointer user_data)
 {
 	return (value == user_data);
 }

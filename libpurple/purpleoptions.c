@@ -32,8 +32,10 @@
  * Callbacks
  *****************************************************************************/
 static gboolean
-purple_options_force_online_cb(const gchar *option_name, const gchar *value,
-                               gpointer data, GError **error)
+purple_options_force_online_cb(G_GNUC_UNUSED const char *option_name,
+                               G_GNUC_UNUSED const char *value,
+                               G_GNUC_UNUSED gpointer data,
+                               G_GNUC_UNUSED GError **error)
 {
 	purple_network_force_online();
 

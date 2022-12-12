@@ -125,7 +125,7 @@ purple_history_adapter_finalize(GObject *obj) {
 }
 
 static void
-purple_history_adapter_init(PurpleHistoryAdapter *adapter) {
+purple_history_adapter_init(G_GNUC_UNUSED PurpleHistoryAdapter *adapter) {
 }
 
 static void

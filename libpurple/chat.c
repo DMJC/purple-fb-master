@@ -221,7 +221,7 @@ purple_chat_get_property(GObject *obj, guint param_id, GValue *value,
 
 /* GObject initialization function */
 static void
-purple_chat_init(PurpleChat *chat)
+purple_chat_init(G_GNUC_UNUSED PurpleChat *chat)
 {
 }
 

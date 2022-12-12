@@ -29,7 +29,7 @@ G_DEFINE_INTERFACE(PurpleProtocolWhiteboard, purple_protocol_whiteboard,
                    PURPLE_TYPE_PROTOCOL)
 
 static void
-purple_protocol_whiteboard_default_init(PurpleProtocolWhiteboardInterface *iface)
+purple_protocol_whiteboard_default_init(G_GNUC_UNUSED PurpleProtocolWhiteboardInterface *iface)
 {
 }
 

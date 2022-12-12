@@ -230,7 +230,7 @@ sync_prefs(void)
 }
 
 static gboolean
-save_cb(gpointer data)
+save_cb(G_GNUC_UNUSED gpointer data)
 {
 	sync_prefs();
 	save_timer = 0;
@@ -252,12 +252,12 @@ schedule_prefs_save(void)
 static GList *prefs_stack = NULL;
 
 static void
-prefs_start_element_handler (GMarkupParseContext *context,
-		const gchar *element_name,
-		const gchar **attribute_names,
-		const gchar **attribute_values,
-		gpointer user_data,
-		GError **error)
+prefs_start_element_handler(G_GNUC_UNUSED GMarkupParseContext *context,
+                            const char *element_name,
+                            const char **attribute_names,
+                            const char **attribute_values,
+                            G_GNUC_UNUSED gpointer user_data,
+                            G_GNUC_UNUSED GError **error)
 {
 	PurplePrefType pref_type = PURPLE_PREF_NONE;
 	int i;
@@ -370,9 +370,10 @@ prefs_start_element_handler (GMarkupParseContext *context,
 }
 
 static void
-prefs_end_element_handler(GMarkupParseContext *context,
-						  const gchar *element_name,
-						  gpointer user_data, GError **error)
+prefs_end_element_handler(G_GNUC_UNUSED GMarkupParseContext *context,
+                          const gchar *element_name,
+                          G_GNUC_UNUSED gpointer user_data,
+                          G_GNUC_UNUSED GError **error)
 {
 	if(prefs_stack && purple_strequal(element_name, "pref")) {
 		g_free(prefs_stack->data);
@@ -461,11 +462,10 @@ purple_prefs_load(void)
 	return TRUE;
 }
 
-
-
 static void
-prefs_save_cb(const char *name, PurplePrefType type, gconstpointer val,
-			  gpointer user_data)
+prefs_save_cb(const char *name, G_GNUC_UNUSED PurplePrefType type,
+              G_GNUC_UNUSED gconstpointer val,
+              G_GNUC_UNUSED gpointer user_data)
 {
 
 	if(!prefs_loaded)
@@ -700,14 +700,15 @@ void
 purple_prefs_add_path_list(const char *name, GList *value)
 {
 	struct purple_pref *pref;
+	GList *copy = NULL;
 
 	pref = add_pref(PURPLE_PREF_PATH_LIST, name);
 
 	if(!pref)
 		return;
 
-	pref->value.stringlist = g_list_concat(pref->value.stringlist,
-	        g_list_copy_deep(value, (GCopyFunc)g_strdup, NULL));
+	copy = g_list_copy_deep(value, (GCopyFunc)(GCallback)g_strdup, NULL);
+	pref->value.stringlist = g_list_concat(pref->value.stringlist, copy);
 }
 
 static void
@@ -982,7 +983,9 @@ purple_prefs_set_path_list(const char *name, GList *value)
 		}
 
 		g_list_free_full(pref->value.stringlist, g_free);
-		pref->value.stringlist = g_list_copy_deep(value, (GCopyFunc)g_strdup, NULL);
+		pref->value.stringlist = g_list_copy_deep(value,
+		                                          (GCopyFunc)(GCallback)g_strdup,
+		                                          NULL);
 
 		do_callbacks(name, pref);
 
@@ -1095,7 +1098,8 @@ purple_prefs_get_string_list(const char *name)
 		return NULL;
 	}
 
-	return g_list_copy_deep(pref->value.stringlist, (GCopyFunc)g_strdup, NULL);
+	return g_list_copy_deep(pref->value.stringlist,
+	                        (GCopyFunc)(GCallback)g_strdup, NULL);
 }
 
 const char *
@@ -1135,7 +1139,8 @@ purple_prefs_get_path_list(const char *name)
 		return NULL;
 	}
 
-	return g_list_copy_deep(pref->value.stringlist, (GCopyFunc)g_strdup, NULL);
+	return g_list_copy_deep(pref->value.stringlist,
+	                        (GCopyFunc)(GCallback)g_strdup, NULL);
 }
 
 static void

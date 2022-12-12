@@ -292,7 +292,7 @@ purple_group_get_property(GObject *obj, guint param_id, GValue *value,
 
 /* GObject initialization function */
 static void
-purple_group_init(PurpleGroup *group) {
+purple_group_init(G_GNUC_UNUSED PurpleGroup *group) {
 }
 
 /* Called when done constructing */

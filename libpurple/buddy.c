@@ -159,7 +159,7 @@ purple_buddy_get_property(GObject *obj, guint param_id, GValue *value,
 }
 
 static void
-purple_buddy_init(PurpleBuddy *buddy) {
+purple_buddy_init(G_GNUC_UNUSED PurpleBuddy *buddy) {
 }
 
 static void

@@ -634,10 +634,15 @@ struct _xmlnode_parser_data {
 };
 
 static void
-purple_xmlnode_parser_element_start_libxml(void *user_data,
-				   const xmlChar *element_name, const xmlChar *prefix, const xmlChar *xmlns,
-				   int nb_namespaces, const xmlChar **namespaces,
-				   int nb_attributes, int nb_defaulted, const xmlChar **attributes)
+purple_xmlnode_parser_element_start_libxml(gpointer user_data,
+                                           const xmlChar *element_name,
+                                           const xmlChar *prefix,
+                                           const xmlChar *xmlns,
+                                           int nb_namespaces,
+                                           const xmlChar **namespaces,
+                                           int nb_attributes,
+                                           G_GNUC_UNUSED int nb_defaulted,
+                                           const xmlChar **attributes)
 {
 	struct _xmlnode_parser_data *xpd = user_data;
 	PurpleXmlNode *node;
@@ -685,8 +690,10 @@ purple_xmlnode_parser_element_start_libxml(void *user_data,
 }
 
 static void
-purple_xmlnode_parser_element_end_libxml(void *user_data, const xmlChar *element_name,
-				 const xmlChar *prefix, const xmlChar *xmlns)
+purple_xmlnode_parser_element_end_libxml(gpointer user_data,
+                                         const xmlChar *element_name,
+                                         G_GNUC_UNUSED const xmlChar *prefix,
+                                         G_GNUC_UNUSED const xmlChar *xmlns)
 {
 	struct _xmlnode_parser_data *xpd = user_data;
 

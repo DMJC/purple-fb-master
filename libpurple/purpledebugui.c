@@ -59,6 +59,6 @@ purple_debug_ui_print(PurpleDebugUi *ui, PurpleDebugLevel level,
 G_DEFINE_INTERFACE(PurpleDebugUi, purple_debug_ui, G_TYPE_OBJECT);
 
 static void
-purple_debug_ui_default_init(PurpleDebugUiInterface *iface) {
+purple_debug_ui_default_init(G_GNUC_UNUSED PurpleDebugUiInterface *iface) {
 }
 

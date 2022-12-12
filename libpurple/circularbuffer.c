@@ -238,7 +238,7 @@ purple_circular_buffer_get_input(PurpleCircularBuffer *buffer) {
  * Object Stuff
  *****************************************************************************/
 static void
-purple_circular_buffer_init(PurpleCircularBuffer *buffer)
+purple_circular_buffer_init(G_GNUC_UNUSED PurpleCircularBuffer *buffer)
 {
 }
 

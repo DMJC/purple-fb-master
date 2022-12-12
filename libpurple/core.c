@@ -297,7 +297,7 @@ purple_core_quit(void)
 }
 
 gboolean
-purple_core_quit_cb(gpointer unused)
+purple_core_quit_cb(G_GNUC_UNUSED gpointer unused)
 {
 	purple_core_quit();
 

@@ -156,7 +156,7 @@ purple_im_conversation_set_property(GObject *obj, guint param_id,
 }
 
 static void
-purple_im_conversation_init(PurpleIMConversation *im) {
+purple_im_conversation_init(G_GNUC_UNUSED PurpleIMConversation *im) {
 }
 
 static void

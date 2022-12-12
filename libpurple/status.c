@@ -1192,8 +1192,9 @@ purple_status_new(PurpleStatusType *status_type, PurplePresence *presence)
 * Status subsystem
 **************************************************************************/
 static void
-score_pref_changed_cb(const char *name, PurplePrefType type,
-					  gconstpointer value, gpointer data)
+score_pref_changed_cb(G_GNUC_UNUSED const char *name,
+                      G_GNUC_UNUSED PurplePrefType type, gconstpointer value,
+                      gpointer data)
 {
 	int index = GPOINTER_TO_INT(data);
 

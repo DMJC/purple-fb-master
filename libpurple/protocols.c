@@ -271,7 +271,8 @@ void purple_protocol_got_user_status_deactive(PurpleAccount *account, const char
 
 static void
 do_protocol_change_account_status(PurpleAccount *account,
-								PurpleStatus *old_status, PurpleStatus *new_status)
+                                  G_GNUC_UNUSED PurpleStatus *old_status,
+                                  PurpleStatus *new_status)
 {
 	PurpleProtocol *protocol;
 	PurpleProtocolManager *manager;

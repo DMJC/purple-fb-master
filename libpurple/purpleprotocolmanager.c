@@ -41,7 +41,7 @@ static PurpleProtocolManager *default_manager = NULL;
  * GListModel Implementation
  *****************************************************************************/
 static GType
-purple_protocol_manager_get_item_type(GListModel *list) {
+purple_protocol_manager_get_item_type(G_GNUC_UNUSED GListModel *list) {
 	return PURPLE_TYPE_PROTOCOL;
 }
 

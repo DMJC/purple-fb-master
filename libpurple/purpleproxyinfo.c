@@ -114,7 +114,7 @@ purple_proxy_info_finalize(GObject *obj) {
 }
 
 static void
-purple_proxy_info_init(PurpleProxyInfo *info) {
+purple_proxy_info_init(G_GNUC_UNUSED PurpleProxyInfo *info) {
 }
 
 static void

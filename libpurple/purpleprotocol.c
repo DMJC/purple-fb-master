@@ -259,7 +259,7 @@ purple_protocol_set_property(GObject *obj, guint param_id, const GValue *value,
 }
 
 static void
-purple_protocol_init(PurpleProtocol *protocol) {
+purple_protocol_init(G_GNUC_UNUSED PurpleProtocol *protocol) {
 }
 
 static void

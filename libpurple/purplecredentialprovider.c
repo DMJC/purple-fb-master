@@ -152,7 +152,8 @@ purple_credential_provider_finalize(GObject *obj) {
 }
 
 static void
-purple_credential_provider_init(PurpleCredentialProvider *provider) {
+purple_credential_provider_init(G_GNUC_UNUSED PurpleCredentialProvider *provider)
+{
 }
 
 static void

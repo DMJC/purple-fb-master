@@ -55,6 +55,7 @@ purple_history_query(const gchar *query, GError **error) {
 	return TRUE;
 }
 
+G_GNUC_UNUSED
 static gboolean
 purple_history_remove(const gchar *query, GError **error) {
 	PurpleHistoryManager *manager = purple_history_manager_get_default();

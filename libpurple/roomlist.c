@@ -228,7 +228,7 @@ purple_roomlist_get_property(GObject *obj, guint param_id, GValue *value,
 }
 
 static void
-purple_roomlist_init(PurpleRoomlist *list)
+purple_roomlist_init(G_GNUC_UNUSED PurpleRoomlist *list)
 {
 }
 

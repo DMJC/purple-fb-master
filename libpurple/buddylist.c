@@ -402,7 +402,7 @@ purple_blist_sync(void)
 }
 
 static gboolean
-save_cb(gpointer data)
+save_cb(G_GNUC_UNUSED gpointer data)
 {
 	purple_blist_sync();
 	save_timer = 0;
@@ -417,7 +417,8 @@ purple_blist_real_schedule_save(void)
 }
 
 static void
-purple_blist_real_save_account(PurpleBuddyList *list, PurpleAccount *account)
+purple_blist_real_save_account(G_GNUC_UNUSED PurpleBuddyList *list,
+                               G_GNUC_UNUSED PurpleAccount *account)
 {
 #if 1
 	purple_blist_real_schedule_save();
@@ -431,7 +432,8 @@ purple_blist_real_save_account(PurpleBuddyList *list, PurpleAccount *account)
 }
 
 static void
-purple_blist_real_save_node(PurpleBuddyList *list, PurpleBlistNode *node)
+purple_blist_real_save_node(G_GNUC_UNUSED PurpleBuddyList *list,
+                            G_GNUC_UNUSED PurpleBlistNode *node)
 {
 	purple_blist_real_schedule_save();
 }
@@ -725,7 +727,7 @@ purple_blist_get_root(PurpleBuddyList *list)
 }
 
 static void
-append_buddy(gpointer key, gpointer value, gpointer user_data)
+append_buddy(G_GNUC_UNUSED gpointer key, gpointer value, gpointer user_data)
 {
 	GSList **list = user_data;
 	*list = g_slist_prepend(*list, value);
@@ -1616,7 +1618,8 @@ PurpleBuddy *purple_blist_find_buddy_in_group(PurpleAccount *account, const char
 	return g_hash_table_lookup(priv->buddies, &hb);
 }
 
-static void find_acct_buddies(gpointer key, gpointer value, gpointer data)
+static void
+find_acct_buddies(G_GNUC_UNUSED gpointer key, gpointer value, gpointer data)
 {
 	PurpleBuddy *buddy = value;
 	GSList **list = data;

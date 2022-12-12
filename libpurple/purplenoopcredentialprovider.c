@@ -34,7 +34,7 @@ G_DEFINE_TYPE(PurpleNoopCredentialProvider, purple_noop_credential_provider,
  *****************************************************************************/
 static void
 purple_noop_credential_provider_read_password_async(PurpleCredentialProvider *provider,
-                                                    PurpleAccount *account,
+                                                    G_GNUC_UNUSED PurpleAccount *account,
                                                     GCancellable *cancellable,
                                                     GAsyncReadyCallback callback,
                                                     gpointer data)
@@ -48,7 +48,7 @@ purple_noop_credential_provider_read_password_async(PurpleCredentialProvider *pr
 }
 
 static gchar *
-purple_noop_credential_provider_read_password_finish(PurpleCredentialProvider *provider,
+purple_noop_credential_provider_read_password_finish(G_GNUC_UNUSED PurpleCredentialProvider *provider,
                                                      GAsyncResult *result,
                                                      GError **error)
 {
@@ -57,8 +57,8 @@ purple_noop_credential_provider_read_password_finish(PurpleCredentialProvider *p
 
 static void
 purple_noop_credential_provider_write_password_async(PurpleCredentialProvider *provider,
-                                                     PurpleAccount *account,
-                                                     const gchar *password,
+                                                     G_GNUC_UNUSED PurpleAccount *account,
+                                                     G_GNUC_UNUSED const char *password,
                                                      GCancellable *cancellable,
                                                      GAsyncReadyCallback callback,
                                                      gpointer data)
@@ -72,7 +72,7 @@ purple_noop_credential_provider_write_password_async(PurpleCredentialProvider *p
 }
 
 static gboolean
-purple_noop_credential_provider_write_password_finish(PurpleCredentialProvider *provider,
+purple_noop_credential_provider_write_password_finish(G_GNUC_UNUSED PurpleCredentialProvider *provider,
                                                       GAsyncResult *result,
                                                       GError **error)
 {
@@ -83,7 +83,8 @@ purple_noop_credential_provider_write_password_finish(PurpleCredentialProvider *
  * GObject Implementation
  *****************************************************************************/
 static void
-purple_noop_credential_provider_init(PurpleNoopCredentialProvider *provider) {
+purple_noop_credential_provider_init(G_GNUC_UNUSED PurpleNoopCredentialProvider *provider)
+{
 }
 
 static void

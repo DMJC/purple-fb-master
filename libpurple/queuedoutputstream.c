@@ -57,7 +57,7 @@ purple_queued_output_stream_push_bytes_async_cb(GObject *source,
 		/* Error occurred, return error */
 		g_task_return_error(task, error);
 		g_clear_object(&task);
-	} else if (size > written) {
+	} else if (size > (gsize)written) {
 		/* Partial write, prepare to send remaining data */
 		bytes = g_bytes_new_from_bytes(bytes, written, size - written);
 		g_task_set_task_data(task, bytes, (GDestroyNotify)g_bytes_unref);

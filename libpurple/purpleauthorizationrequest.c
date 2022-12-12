@@ -171,7 +171,8 @@ purple_authorization_request_finalize(GObject *obj) {
 }
 
 static void
-purple_authorization_request_init(PurpleAuthorizationRequest *request) {
+purple_authorization_request_init(G_GNUC_UNUSED PurpleAuthorizationRequest *request)
+{
 }
 
 static void

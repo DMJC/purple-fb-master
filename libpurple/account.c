@@ -271,7 +271,8 @@ request_password_ok_cb(PurpleAccount *account, PurpleRequestFields *fields)
 }
 
 static void
-request_password_cancel_cb(PurpleAccount *account, PurpleRequestFields *fields)
+request_password_cancel_cb(PurpleAccount *account,
+                           G_GNUC_UNUSED PurpleRequestFields *fields)
 {
 	/* Disable the account as the user has cancelled connecting */
 	purple_account_set_enabled(account, FALSE);
@@ -1865,7 +1866,9 @@ purple_account_add_buddies(PurpleAccount *account, GList *buddies, const char *m
 		GList *groups;
 
 		/* Make a list of what group each buddy is in */
-		groups = g_list_copy_deep(buddies, (GCopyFunc)purple_buddy_get_group, NULL);
+		groups = g_list_copy_deep(buddies,
+		                          (GCopyFunc)(GCallback)purple_buddy_get_group,
+		                          NULL);
 
 		if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
 			purple_protocol_server_add_buddies(PURPLE_PROTOCOL_SERVER(protocol),

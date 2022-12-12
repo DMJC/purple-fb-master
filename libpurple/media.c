@@ -475,7 +475,7 @@ purple_media_get_session_ids(PurpleMedia *media)
 }
 
 GstElement *
-purple_media_get_src(PurpleMedia *media, const gchar *sess_id)
+purple_media_get_src(PurpleMedia *media, G_GNUC_UNUSED const char *sess_id)
 {
 	g_return_val_if_fail(PURPLE_IS_MEDIA(media), NULL);
 
@@ -829,7 +829,7 @@ purple_media_param_is_supported(PurpleMedia *media, const gchar *param)
 }
 
 static void
-purple_media_new_local_candidate_cb(PurpleMediaBackend *backend,
+purple_media_new_local_candidate_cb(G_GNUC_UNUSED PurpleMediaBackend *backend,
 		const gchar *sess_id, const gchar *participant,
 		PurpleMediaCandidate *candidate, PurpleMedia *media)
 {
@@ -844,7 +844,7 @@ purple_media_new_local_candidate_cb(PurpleMediaBackend *backend,
 }
 
 static void
-purple_media_candidates_prepared_cb(PurpleMediaBackend *backend,
+purple_media_candidates_prepared_cb(G_GNUC_UNUSED PurpleMediaBackend *backend,
 		const gchar *sess_id, const gchar *name, PurpleMedia *media)
 {
 	PurpleMediaStream *stream_data;
@@ -861,7 +861,7 @@ purple_media_candidates_prepared_cb(PurpleMediaBackend *backend,
 /* callback called when a pair of transport candidates (local and remote)
  * has been established */
 static void
-purple_media_candidate_pair_established_cb(PurpleMediaBackend *backend,
+purple_media_candidate_pair_established_cb(G_GNUC_UNUSED PurpleMediaBackend *backend,
 		const gchar *sess_id, const gchar *name,
 		PurpleMediaCandidate *local_candidate,
 		PurpleMediaCandidate *remote_candidate,
@@ -916,7 +916,7 @@ purple_media_candidate_pair_established_cb(PurpleMediaBackend *backend,
 }
 
 static void
-purple_media_codecs_changed_cb(PurpleMediaBackend *backend,
+purple_media_codecs_changed_cb(G_GNUC_UNUSED PurpleMediaBackend *backend,
 		const gchar *sess_id, PurpleMedia *media)
 {
 	g_signal_emit(media, purple_media_signals[CODECS_CHANGED], 0, sess_id);
@@ -1208,15 +1208,19 @@ purple_media_accepted(PurpleMedia *media, const gchar *sess_id,
 	return accepted;
 }
 
-void purple_media_set_input_volume(PurpleMedia *media,
-		const gchar *session_id, double level)
+void
+purple_media_set_input_volume(PurpleMedia *media,
+                              G_GNUC_UNUSED const char *session_id,
+                              G_GNUC_UNUSED double level)
 {
 	g_return_if_fail(PURPLE_IS_MEDIA(media));
 }
 
-void purple_media_set_output_volume(PurpleMedia *media,
-		const gchar *session_id, const gchar *participant,
-		double level)
+void
+purple_media_set_output_volume(PurpleMedia *media,
+                               G_GNUC_UNUSED const char *session_id,
+                               G_GNUC_UNUSED const char *participant,
+                               G_GNUC_UNUSED double level)
 {
 	g_return_if_fail(PURPLE_IS_MEDIA(media));
 }
@@ -1252,8 +1256,8 @@ purple_media_remove_output_windows(PurpleMedia *media)
 }
 
 GstElement *
-purple_media_get_tee(PurpleMedia *media,
-		const gchar *session_id, const gchar *participant)
+purple_media_get_tee(PurpleMedia *media, G_GNUC_UNUSED const char *session_id,
+                     G_GNUC_UNUSED const char *participant)
 {
 	g_return_val_if_fail(PURPLE_IS_MEDIA(media), NULL);
 

@@ -24,7 +24,7 @@
 G_DEFINE_INTERFACE(PurpleIdleUi, purple_idle_ui, G_TYPE_INVALID)
 
 static void
-purple_idle_ui_default_init(PurpleIdleUiInterface *iface) {
+purple_idle_ui_default_init(G_GNUC_UNUSED PurpleIdleUiInterface *iface) {
 }
 
 /******************************************************************************

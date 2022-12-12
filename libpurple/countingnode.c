@@ -206,7 +206,7 @@ purple_counting_node_get_property(GObject *obj, guint param_id, GValue *value,
 }
 
 static void
-purple_counting_node_init(PurpleCountingNode *counter)
+purple_counting_node_init(G_GNUC_UNUSED PurpleCountingNode *counter)
 {
 }
 

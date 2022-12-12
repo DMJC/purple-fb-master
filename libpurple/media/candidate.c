@@ -351,7 +351,9 @@ purple_media_candidate_copy(PurpleMediaCandidate *candidate)
 GList *
 purple_media_candidate_list_copy(GList *candidates)
 {
-	return g_list_copy_deep(candidates, (GCopyFunc)purple_media_candidate_copy, NULL);
+	return g_list_copy_deep(candidates,
+	                        (GCopyFunc)(GCallback)purple_media_candidate_copy,
+	                        NULL);
 }
 
 void

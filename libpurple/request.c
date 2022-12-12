@@ -1889,7 +1889,7 @@ purple_request_field_datasheet_get_sheet(PurpleRequestField *field)
 
 gboolean
 purple_request_field_email_validator(PurpleRequestField *field, gchar **errmsg,
-	void *user_data)
+                                     G_GNUC_UNUSED gpointer user_data)
 {
 	const char *value;
 
@@ -2418,7 +2418,7 @@ purple_request_close_info(PurpleRequestInfo *info)
 }
 
 void
-purple_request_close(PurpleRequestType type, void *ui_handle)
+purple_request_close(G_GNUC_UNUSED PurpleRequestType type, void *ui_handle)
 {
 	GList *l;
 

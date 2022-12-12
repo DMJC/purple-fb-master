@@ -121,7 +121,8 @@ remove_temporary(gpointer _image)
 }
 
 static void
-cancel_temporary(gpointer key, gpointer value, gpointer _unused)
+cancel_temporary(gpointer key, G_GNUC_UNUSED gpointer value,
+                 G_GNUC_UNUSED gpointer data)
 {
 	g_source_remove(GPOINTER_TO_INT(key));
 }

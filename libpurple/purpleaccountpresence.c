@@ -55,7 +55,8 @@ purple_account_presence_set_account(PurpleAccountPresence *presence,
  * PurplePresence Implementation
  *****************************************************************************/
 static void
-purple_account_presence_update_idle(PurplePresence *presence, gboolean old_idle)
+purple_account_presence_update_idle(PurplePresence *presence,
+                                    G_GNUC_UNUSED gboolean old_idle)
 {
 	PurpleAccountPresence *account_presence = PURPLE_ACCOUNT_PRESENCE(presence);
 	PurpleConnection *gc = NULL;
@@ -142,7 +143,7 @@ purple_account_presence_finalize(GObject *obj) {
 }
 
 static void
-purple_account_presence_init(PurpleAccountPresence *presence) {
+purple_account_presence_init(G_GNUC_UNUSED PurpleAccountPresence *presence) {
 }
 
 static void

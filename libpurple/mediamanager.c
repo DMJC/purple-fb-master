@@ -227,7 +227,8 @@ purple_media_manager_get(void)
 }
 
 static gboolean
-pipeline_bus_call(GstBus *bus, GstMessage *msg, PurpleMediaManager *manager)
+pipeline_bus_call(G_GNUC_UNUSED GstBus *bus, GstMessage *msg,
+                  G_GNUC_UNUSED PurpleMediaManager *manager)
 {
 	switch(GST_MESSAGE_TYPE(msg)) {
 		case GST_MESSAGE_EOS:
@@ -553,7 +554,8 @@ ensure_app_data_info_and_lock (PurpleMediaManager *manager, PurpleMedia *media,
 
 
 static void
-request_pad_unlinked_cb(GstPad *pad, GstPad *peer, gpointer user_data)
+request_pad_unlinked_cb(GstPad *pad, G_GNUC_UNUSED GstPad *peer,
+                        G_GNUC_UNUSED gpointer user_data)
 {
 	GstElement *parent = GST_ELEMENT_PARENT(pad);
 	GstIterator *iter;
@@ -578,7 +580,8 @@ request_pad_unlinked_cb(GstPad *pad, GstPad *peer, gpointer user_data)
 }
 
 static void
-nonunique_src_unlinked_cb(GstPad *pad, GstPad *peer, gpointer user_data)
+nonunique_src_unlinked_cb(GstPad *pad, G_GNUC_UNUSED GstPad *peer,
+                          G_GNUC_UNUSED gpointer user_data)
 {
 	GstElement *element = GST_ELEMENT_PARENT(pad);
 	gst_element_set_locked_state(element, TRUE);
@@ -712,7 +715,8 @@ call_appsrc_writable_locked (PurpleMediaAppDataInfo *info)
 }
 
 static void
-appsrc_need_data (GstAppSrc *appsrc, guint length, gpointer user_data)
+appsrc_need_data(G_GNUC_UNUSED GstAppSrc *appsrc, G_GNUC_UNUSED guint length,
+                 gpointer user_data)
 {
 	PurpleMediaAppDataInfo *info = user_data;
 	PurpleMediaManager *manager = purple_media_manager_get ();
@@ -729,7 +733,7 @@ appsrc_need_data (GstAppSrc *appsrc, guint length, gpointer user_data)
 }
 
 static void
-appsrc_enough_data (GstAppSrc *appsrc, gpointer user_data)
+appsrc_enough_data(G_GNUC_UNUSED GstAppSrc *appsrc, gpointer user_data)
 {
 	PurpleMediaAppDataInfo *info = user_data;
 	PurpleMediaManager *manager = purple_media_manager_get ();
@@ -743,7 +747,8 @@ appsrc_enough_data (GstAppSrc *appsrc, gpointer user_data)
 }
 
 static gboolean
-appsrc_seek_data (GstAppSrc *appsrc, guint64 offset, gpointer user_data)
+appsrc_seek_data(G_GNUC_UNUSED GstAppSrc *appsrc, G_GNUC_UNUSED guint64 offset,
+                 G_GNUC_UNUSED gpointer user_data)
 {
 	return FALSE;
 }
@@ -770,9 +775,12 @@ appsrc_destroyed (PurpleMediaAppDataInfo *info)
 }
 
 static void
-media_established_cb (PurpleMedia *media,const gchar *session_id,
-	const gchar *participant, PurpleMediaCandidate *local_candidate,
-	PurpleMediaCandidate *remote_candidate, PurpleMediaAppDataInfo *info)
+media_established_cb(G_GNUC_UNUSED PurpleMedia *media,
+                     G_GNUC_UNUSED const char *session_id,
+                     G_GNUC_UNUSED const char *participant,
+                     G_GNUC_UNUSED PurpleMediaCandidate *local_candidate,
+                     G_GNUC_UNUSED PurpleMediaCandidate *remote_candidate,
+                     PurpleMediaAppDataInfo *info)
 {
 	PurpleMediaManager *manager = purple_media_manager_get ();
 
@@ -787,8 +795,9 @@ media_established_cb (PurpleMedia *media,const gchar *session_id,
 }
 
 static GstElement *
-create_send_appsrc(PurpleMediaElementInfo *element_info, PurpleMedia *media,
-		const gchar *session_id, const gchar *participant)
+create_send_appsrc(G_GNUC_UNUSED PurpleMediaElementInfo *element_info,
+                   PurpleMedia *media, const char *session_id,
+                   const char *participant)
 {
 	PurpleMediaManager *manager = purple_media_manager_get ();
 	PurpleMediaAppDataInfo * info = ensure_app_data_info_and_lock (manager,
@@ -820,12 +829,14 @@ create_send_appsrc(PurpleMediaElementInfo *element_info, PurpleMedia *media,
 }
 
 static void
-appsink_eos (GstAppSink *appsink, gpointer user_data)
+appsink_eos(G_GNUC_UNUSED GstAppSink *appsink,
+            G_GNUC_UNUSED gpointer user_data)
 {
 }
 
 static GstFlowReturn
-appsink_new_preroll (GstAppSink *appsink, gpointer user_data)
+appsink_new_preroll(G_GNUC_UNUSED GstAppSink *appsink,
+                    G_GNUC_UNUSED gpointer user_data)
 {
 	return GST_FLOW_OK;
 }
@@ -904,7 +915,7 @@ call_appsink_readable_locked (PurpleMediaAppDataInfo *info)
 }
 
 static GstFlowReturn
-appsink_new_sample (GstAppSink *appsink, gpointer user_data)
+appsink_new_sample(G_GNUC_UNUSED GstAppSink *appsink, gpointer user_data)
 {
 	PurpleMediaManager *manager = purple_media_manager_get ();
 	PurpleMediaAppDataInfo *info = user_data;
@@ -936,8 +947,9 @@ appsink_destroyed (PurpleMediaAppDataInfo *info)
 }
 
 static GstElement *
-create_recv_appsink(PurpleMediaElementInfo *element_info, PurpleMedia *media,
-		const gchar *session_id, const gchar *participant)
+create_recv_appsink(G_GNUC_UNUSED PurpleMediaElementInfo *element_info,
+                    PurpleMedia *media, const char *session_id,
+                    const char *participant)
 {
 	PurpleMediaManager *manager = purple_media_manager_get ();
 	PurpleMediaAppDataInfo * info = ensure_app_data_info_and_lock (manager,
@@ -1755,8 +1767,10 @@ gst_class_to_purple_element_type(const gchar *device_class)
 }
 
 static GstElement *
-gst_device_create_cb(PurpleMediaElementInfo *info, PurpleMedia *media,
-		const gchar *session_id, const gchar *participant)
+gst_device_create_cb(PurpleMediaElementInfo *info,
+                     G_GNUC_UNUSED PurpleMedia *media,
+                     G_GNUC_UNUSED const char *session_id,
+                     G_GNUC_UNUSED const char *participant)
 {
 	GstDevice *device;
 	GstElement *result;
@@ -1905,7 +1919,8 @@ purple_media_manager_unregister_gst_device(PurpleMediaManager *manager,
 }
 
 static gboolean
-device_monitor_bus_cb(GstBus *bus, GstMessage *message, gpointer user_data)
+device_monitor_bus_cb(G_GNUC_UNUSED GstBus *bus, GstMessage *message,
+                      gpointer user_data)
 {
 	PurpleMediaManager *manager = user_data;
 	GstMessageType message_type;
@@ -1973,8 +1988,10 @@ purple_media_manager_enumerate_elements(PurpleMediaManager *manager,
 }
 
 static GstElement *
-gst_factory_make_cb(PurpleMediaElementInfo *info, PurpleMedia *media,
-		const gchar *session_id, const gchar *participant)
+gst_factory_make_cb(PurpleMediaElementInfo *info,
+                    G_GNUC_UNUSED PurpleMedia *media,
+                    G_GNUC_UNUSED const char *session_id,
+                    G_GNUC_UNUSED const char *participant)
 {
 	gchar *id;
 	GstElement *element;
@@ -1989,15 +2006,18 @@ gst_factory_make_cb(PurpleMediaElementInfo *info, PurpleMedia *media,
 }
 
 static void
-autovideosink_child_added_cb (GstChildProxy *child_proxy, GObject *object,
-		gchar *name, gpointer user_data)
+autovideosink_child_added_cb(G_GNUC_UNUSED GstChildProxy *child_proxy,
+                             GObject *object, G_GNUC_UNUSED gchar *name,
+                             G_GNUC_UNUSED gpointer user_data)
 {
 	videosink_disable_last_sample(GST_ELEMENT(object));
 }
 
 static GstElement *
-default_video_sink_create_cb(PurpleMediaElementInfo *info, PurpleMedia *media,
-		const gchar *session_id, const gchar *participant)
+default_video_sink_create_cb(G_GNUC_UNUSED PurpleMediaElementInfo *info,
+                             G_GNUC_UNUSED PurpleMedia *media,
+                             G_GNUC_UNUSED const char *session_id,
+                             G_GNUC_UNUSED const char *participant)
 {
 	GstElement *videosink = gst_element_factory_make("autovideosink", NULL);
 
@@ -2008,8 +2028,10 @@ default_video_sink_create_cb(PurpleMediaElementInfo *info, PurpleMedia *media,
 }
 
 static GstElement *
-disabled_video_create_cb(PurpleMediaElementInfo *info, PurpleMedia *media,
-		const gchar *session_id, const gchar *participant)
+disabled_video_create_cb(G_GNUC_UNUSED PurpleMediaElementInfo *info,
+                         G_GNUC_UNUSED PurpleMedia *media,
+                         G_GNUC_UNUSED const char *session_id,
+                         G_GNUC_UNUSED const char *participant)
 {
 	GstElement *src = gst_element_factory_make("videotestsrc", NULL);
 
@@ -2020,8 +2042,10 @@ disabled_video_create_cb(PurpleMediaElementInfo *info, PurpleMedia *media,
 }
 
 static GstElement *
-test_video_create_cb(PurpleMediaElementInfo *info, PurpleMedia *media,
-		const gchar *session_id, const gchar *participant)
+test_video_create_cb(G_GNUC_UNUSED PurpleMediaElementInfo *info,
+                     G_GNUC_UNUSED PurpleMedia *media,
+                     G_GNUC_UNUSED const char *session_id,
+                     G_GNUC_UNUSED const char *participant)
 {
 	GstElement *src = gst_element_factory_make("videotestsrc", NULL);
 

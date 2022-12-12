@@ -71,10 +71,10 @@ purple_contact_manager_find_with_id_helper(gconstpointer a, gconstpointer b) {
 }
 
 static gboolean
-purple_contact_manager_convert_icon_to_avatar(GBinding *binding,
+purple_contact_manager_convert_icon_to_avatar(G_GNUC_UNUSED GBinding *binding,
                                               const GValue *from_value,
                                               GValue *to_value,
-                                              gpointer user_data)
+                                              G_GNUC_UNUSED gpointer user_data)
 {
 	PurpleBuddyIcon *icon = g_value_get_pointer(from_value);
 	GdkPixbuf *avatar = NULL;
@@ -96,10 +96,10 @@ purple_contact_manager_convert_icon_to_avatar(GBinding *binding,
 }
 
 static gboolean
-purple_contact_manager_convert_avatar_to_icon(GBinding *binding,
+purple_contact_manager_convert_avatar_to_icon(G_GNUC_UNUSED GBinding *binding,
                                               const GValue *from_value,
                                               GValue *to_value,
-                                              gpointer user_data)
+                                              G_GNUC_UNUSED gpointer user_data)
 {
 	PurpleBuddyIcon *icon = NULL;
 	GdkPixbuf *avatar = g_value_get_object(from_value);

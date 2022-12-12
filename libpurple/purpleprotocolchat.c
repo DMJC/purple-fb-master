@@ -29,7 +29,8 @@ G_DEFINE_INTERFACE(PurpleProtocolChat, purple_protocol_chat,
                    PURPLE_TYPE_PROTOCOL)
 
 static void
-purple_protocol_chat_default_init(PurpleProtocolChatInterface *iface) {
+purple_protocol_chat_default_init(G_GNUC_UNUSED PurpleProtocolChatInterface *iface)
+{
 }
 
 /******************************************************************************

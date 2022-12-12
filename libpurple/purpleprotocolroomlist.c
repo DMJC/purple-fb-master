@@ -29,7 +29,8 @@ G_DEFINE_INTERFACE(PurpleProtocolRoomlist, purple_protocol_roomlist,
                    PURPLE_TYPE_PROTOCOL)
 
 static void
-purple_protocol_roomlist_default_init(PurpleProtocolRoomlistInterface *iface) {
+purple_protocol_roomlist_default_init(G_GNUC_UNUSED PurpleProtocolRoomlistInterface *iface)
+{
 }
 
 /******************************************************************************

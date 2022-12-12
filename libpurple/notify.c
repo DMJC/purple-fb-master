@@ -679,7 +679,7 @@ purple_notify_is_valid_ui_handle(void *ui_handle, PurpleNotifyType *type)
 }
 
 void
-purple_notify_close(PurpleNotifyType type, void *ui_handle)
+purple_notify_close(G_GNUC_UNUSED PurpleNotifyType type, void *ui_handle)
 {
 	GList *l;
 	PurpleNotifyUiOps *ops;

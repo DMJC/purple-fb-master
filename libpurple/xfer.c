@@ -147,7 +147,7 @@ static guint signals[SIG_LAST] = {0};
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleXfer, purple_xfer, G_TYPE_OBJECT);
 
-static int purple_xfer_choose_file(PurpleXfer *xfer);
+static void purple_xfer_choose_file(PurpleXfer *xfer);
 
 static const gchar *
 purple_xfer_status_type_to_string(PurpleXferStatus type)
@@ -403,7 +403,8 @@ purple_xfer_choose_file_ok_cb(void *user_data, const char *filename)
 }
 
 static void
-purple_xfer_choose_file_cancel_cb(void *user_data, const char *filename)
+purple_xfer_choose_file_cancel_cb(void *user_data,
+                                  G_GNUC_UNUSED const char *filename)
 {
 	PurpleXfer *xfer = (PurpleXfer *)user_data;
 
@@ -415,7 +416,7 @@ purple_xfer_choose_file_cancel_cb(void *user_data, const char *filename)
 	g_object_unref(xfer);
 }
 
-static int
+static void
 purple_xfer_choose_file(PurpleXfer *xfer)
 {
 	purple_request_file(xfer, NULL, purple_xfer_get_filename(xfer),
@@ -424,8 +425,6 @@ purple_xfer_choose_file(PurpleXfer *xfer)
 		G_CALLBACK(purple_xfer_choose_file_cancel_cb),
 		purple_request_cpar_from_account(purple_xfer_get_account(xfer)),
 		xfer);
-
-	return 0;
 }
 
 static int
@@ -1313,7 +1312,7 @@ purple_xfer_read_file(PurpleXfer *xfer, guchar *buffer, gsize size)
 	g_return_val_if_fail(buffer != NULL, 0);
 
 	g_signal_emit(xfer, signals[SIG_READ_LOCAL], 0, buffer, size, &got_len);
-	if (got_len < 0 || got_len > size) {
+	if (got_len < 0 || (gsize)got_len > size) {
 		purple_debug_error("xfer", "Unable to read file.");
 		purple_xfer_cancel_local(xfer);
 		return -1;
@@ -1482,7 +1481,8 @@ do_transfer(PurpleXfer *xfer)
 }
 
 static void
-transfer_cb(gpointer data, gint source, PurpleInputCondition condition)
+transfer_cb(gpointer data, G_GNUC_UNUSED gint source,
+            G_GNUC_UNUSED PurpleInputCondition condition)
 {
 	PurpleXfer *xfer = data;
 	PurpleXferPrivate *priv = purple_xfer_get_instance_private(xfer);
@@ -2534,7 +2534,8 @@ G_DEFINE_INTERFACE(PurpleProtocolXfer, purple_protocol_xfer,
                    PURPLE_TYPE_PROTOCOL)
 
 static void
-purple_protocol_xfer_default_init(PurpleProtocolXferInterface *face) {
+purple_protocol_xfer_default_init(G_GNUC_UNUSED PurpleProtocolXferInterface *face)
+{
 }
 
 gboolean

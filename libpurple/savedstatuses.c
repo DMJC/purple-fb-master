@@ -343,7 +343,7 @@ sync_statuses(void)
 }
 
 static gboolean
-save_cb(gpointer data)
+save_cb(G_GNUC_UNUSED gpointer data)
 {
 	sync_statuses();
 	save_timer = 0;

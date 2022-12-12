@@ -28,7 +28,8 @@ G_DEFINE_INTERFACE(PurpleProtocolMedia, purple_protocol_media,
                    PURPLE_TYPE_PROTOCOL)
 
 static void
-purple_protocol_media_default_init(PurpleProtocolMediaInterface *iface) {
+purple_protocol_media_default_init(G_GNUC_UNUSED PurpleProtocolMediaInterface *iface)
+{
 }
 
 /******************************************************************************
@@ -58,14 +59,15 @@ purple_protocol_media_get_caps(PurpleProtocolMedia *media,
 {
 	PurpleProtocolMediaInterface *iface = NULL;
 
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_MEDIA(media), PURPLE_MEDIA_NONE);
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_MEDIA(media),
+	                     PURPLE_MEDIA_CAPS_NONE);
 
 	iface = PURPLE_PROTOCOL_MEDIA_GET_IFACE(media);
 	if(iface && iface->get_caps) {
 		return iface->get_caps(media, account, who);
 	}
 
-	return PURPLE_MEDIA_NONE;
+	return PURPLE_MEDIA_CAPS_NONE;
 }
 
 gboolean

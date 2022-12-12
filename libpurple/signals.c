@@ -309,7 +309,7 @@ purple_signal_disconnect(void *instance, const char *signal,
  *       to a handle.
  */
 static void
-disconnect_handle_from_signals(const char *signal,
+disconnect_handle_from_signals(G_GNUC_UNUSED const char *signal,
 							   PurpleSignalData *signal_data, void *handle)
 {
 	GList *l, *l_next;
@@ -332,7 +332,7 @@ disconnect_handle_from_signals(const char *signal,
 }
 
 static void
-disconnect_handle_from_instance(void *instance,
+disconnect_handle_from_instance(G_GNUC_UNUSED gpointer instance,
 								PurpleInstanceData *instance_data,
 								void *handle)
 {
@@ -483,15 +483,15 @@ purple_signals_uninit(void)
  * Marshallers
  **************************************************************************/
 void
-purple_marshal_VOID(GCallback cb, va_list args, void *data,
-				  void **return_val)
+purple_marshal_VOID(GCallback cb, G_GNUC_UNUSED va_list args, void *data,
+                    G_GNUC_UNUSED void **return_val)
 {
 	((void (*)(void *))cb)(data);
 }
 
 void
 purple_marshal_VOID__POINTER(GCallback cb, va_list args, void *data,
-						   void **return_val)
+                             G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 
@@ -499,8 +499,8 @@ purple_marshal_VOID__POINTER(GCallback cb, va_list args, void *data,
 }
 
 void
-purple_marshal_VOID__POINTER_UINT(GCallback cb, va_list args,
-										void *data, void **return_val)
+purple_marshal_VOID__POINTER_UINT(GCallback cb, va_list args, void *data,
+                                  G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	guint arg2 = va_arg(args, guint);
@@ -508,8 +508,9 @@ purple_marshal_VOID__POINTER_UINT(GCallback cb, va_list args,
 	((void (*)(void *, guint, void *))cb)(arg1, arg2, data);
 }
 
-void purple_marshal_VOID__POINTER_INT_INT(GCallback cb, va_list args,
-                                        void *data, void **return_val)
+void
+purple_marshal_VOID__POINTER_INT_INT(GCallback cb, va_list args, void *data,
+                                     G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	gint arg2 = va_arg(args, gint);
@@ -518,8 +519,9 @@ void purple_marshal_VOID__POINTER_INT_INT(GCallback cb, va_list args,
 	((void (*)(void *, gint, gint, void *))cb)(arg1, arg2, arg3, data);
 }
 
-void purple_marshal_VOID__POINTER_INT_POINTER(GCallback cb, va_list args,
-                                              void *data, void **return_val)
+void
+purple_marshal_VOID__POINTER_INT_POINTER(GCallback cb, va_list args, void *data,
+                                         G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	gint arg2 = va_arg(args, gint);
@@ -529,8 +531,8 @@ void purple_marshal_VOID__POINTER_INT_POINTER(GCallback cb, va_list args,
 }
 
 void
-purple_marshal_VOID__POINTER_POINTER(GCallback cb, va_list args,
-								   void *data, void **return_val)
+purple_marshal_VOID__POINTER_POINTER(GCallback cb, va_list args, void *data,
+                                     G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);
@@ -539,8 +541,8 @@ purple_marshal_VOID__POINTER_POINTER(GCallback cb, va_list args,
 }
 
 void
-purple_marshal_VOID__POINTER_POINTER_UINT(GCallback cb, va_list args,
-										void *data, void **return_val)
+purple_marshal_VOID__POINTER_POINTER_UINT(GCallback cb, va_list args, void *data,
+                                          G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);
@@ -551,7 +553,8 @@ purple_marshal_VOID__POINTER_POINTER_UINT(GCallback cb, va_list args,
 
 void
 purple_marshal_VOID__POINTER_POINTER_UINT_UINT(GCallback cb, va_list args,
-										     void *data, void **return_val)
+                                               void *data,
+                                               G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);
@@ -562,8 +565,8 @@ purple_marshal_VOID__POINTER_POINTER_UINT_UINT(GCallback cb, va_list args,
 }
 
 void
-purple_marshal_VOID__POINTER_UINT_UINT(GCallback cb, va_list args,
-										     void *data, void **return_val)
+purple_marshal_VOID__POINTER_UINT_UINT(GCallback cb, va_list args, void *data,
+                                       G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	guint arg2 = va_arg(args, guint);
@@ -574,7 +577,8 @@ purple_marshal_VOID__POINTER_UINT_UINT(GCallback cb, va_list args,
 
 void
 purple_marshal_VOID__POINTER_POINTER_POINTER(GCallback cb, va_list args,
-										   void *data, void **return_val)
+                                             void *data,
+                                             G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);
@@ -585,9 +589,8 @@ purple_marshal_VOID__POINTER_POINTER_POINTER(GCallback cb, va_list args,
 
 void
 purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER(GCallback cb,
-												   va_list args,
-												   void *data,
-												   void **return_val)
+                                                     va_list args, void *data,
+                                                     G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);
@@ -599,9 +602,9 @@ purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER(GCallback cb,
 
 void
 purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_POINTER(GCallback cb,
-														   va_list args,
-														   void *data,
-														   void **return_val)
+                                                             va_list args,
+                                                             void *data,
+                                                             G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);
@@ -614,9 +617,8 @@ purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_POINTER(GCallback cb,
 
 void
 purple_marshal_VOID__POINTER_POINTER_POINTER_UINT(GCallback cb,
-												   va_list args,
-												   void *data,
-												   void **return_val)
+                                                  va_list args, void *data,
+                                                  G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);
@@ -628,9 +630,9 @@ purple_marshal_VOID__POINTER_POINTER_POINTER_UINT(GCallback cb,
 
 void
 purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_UINT(GCallback cb,
-													    va_list args,
-													    void *data,
-													    void **return_val)
+                                                          va_list args,
+                                                          void *data,
+                                                          G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);
@@ -643,9 +645,9 @@ purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_UINT(GCallback cb,
 
 void
 purple_marshal_VOID__POINTER_POINTER_POINTER_UINT_UINT(GCallback cb,
-													 va_list args,
-													 void *data,
-													 void **return_val)
+                                                       va_list args,
+                                                       void *data,
+                                                       G_GNUC_UNUSED void **return_val)
 {
 	void *arg1 = va_arg(args, void *);
 	void *arg2 = va_arg(args, void *);

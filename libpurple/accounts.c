@@ -35,8 +35,9 @@ static guint    save_timer = 0;
 static gboolean accounts_loaded = FALSE;
 
 static void
-purple_accounts_network_changed_cb(GNetworkMonitor *m, gboolean available,
-                                   gpointer data)
+purple_accounts_network_changed_cb(G_GNUC_UNUSED GNetworkMonitor *m,
+                                   gboolean available,
+                                   G_GNUC_UNUSED gpointer data)
 {
 	if(available) {
 		purple_accounts_restore_current_statuses();
@@ -89,7 +90,7 @@ sync_accounts(void)
 }
 
 static gboolean
-save_cb(gpointer data)
+save_cb(G_GNUC_UNUSED gpointer data)
 {
 	sync_accounts();
 	save_timer = 0;
@@ -597,8 +598,7 @@ purple_accounts_get_handle(void)
 }
 
 static void
-signed_on_cb(PurpleConnection *gc,
-             gpointer unused)
+signed_on_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer unused)
 {
 	PurpleAccount *account = purple_connection_get_account(gc);
 
@@ -607,8 +607,7 @@ signed_on_cb(PurpleConnection *gc,
 }
 
 static void
-signed_off_cb(PurpleConnection *gc,
-              gpointer unused)
+signed_off_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer unused)
 {
 	PurpleAccount *account = purple_connection_get_account(gc);
 
@@ -620,7 +619,7 @@ static void
 connection_error_cb(PurpleConnection *gc,
                     PurpleConnectionError type,
                     const gchar *description,
-                    gpointer unused)
+                    G_GNUC_UNUSED gpointer unused)
 {
 	PurpleAccount *account;
 	PurpleConnectionErrorInfo *err;

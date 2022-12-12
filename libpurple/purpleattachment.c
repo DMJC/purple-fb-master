@@ -134,7 +134,7 @@ purple_attachment_finalize(GObject *obj) {
 }
 
 static void
-purple_attachment_init(PurpleAttachment *attachment) {
+purple_attachment_init(G_GNUC_UNUSED PurpleAttachment *attachment) {
 }
 
 static void

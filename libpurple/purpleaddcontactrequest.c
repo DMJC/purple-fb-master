@@ -160,7 +160,8 @@ purple_add_contact_request_finalize(GObject *obj) {
 }
 
 static void
-purple_add_contact_request_init(PurpleAddContactRequest *request) {
+purple_add_contact_request_init(G_GNUC_UNUSED PurpleAddContactRequest *request)
+{
 }
 
 static void

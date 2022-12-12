@@ -225,8 +225,8 @@ purple_proxy_get_proxy_resolver(PurpleAccount *account, GError **error)
 }
 
 static void
-proxy_pref_cb(const char *name, PurplePrefType type,
-			  gconstpointer value, gpointer data)
+proxy_pref_cb(const char *name, G_GNUC_UNUSED PurplePrefType type,
+              gconstpointer value, G_GNUC_UNUSED gpointer data)
 {
 	PurpleProxyInfo *info = purple_global_proxy_get_info();
 
