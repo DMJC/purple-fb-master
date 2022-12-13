@@ -49,7 +49,7 @@ purple_demo_protocol_login(G_GNUC_UNUSED PurpleProtocol *protocol,
 
 static GList *
 purple_demo_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
-                                  PurpleAccount *account)
+                                  G_GNUC_UNUSED PurpleAccount *account)
 {
 	PurpleStatusType *type = NULL;
 	GList *status_types = NULL;
@@ -101,11 +101,11 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	                              purple_demo_protocol_media_init))
 
 static void
-purple_demo_protocol_init(PurpleDemoProtocol *protocol) {
+purple_demo_protocol_init(G_GNUC_UNUSED PurpleDemoProtocol *protocol) {
 }
 
 static void
-purple_demo_protocol_class_finalize(PurpleDemoProtocolClass *klass) {
+purple_demo_protocol_class_finalize(G_GNUC_UNUSED PurpleDemoProtocolClass *klass) {
 }
 
 static void

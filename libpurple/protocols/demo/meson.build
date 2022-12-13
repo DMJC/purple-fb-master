@@ -26,7 +26,8 @@ if DYNAMIC_DEMO
 		c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-Demo"'],
 		dependencies : [glib, json, libpurple_dep],
 		install : false,
-		install_dir : PURPLE_PLUGINDIR)
+		install_dir : PURPLE_PLUGINDIR,
+		override_options : ['c_std=c99', 'warning_level=2'])
 
 	devenv.append('PURPLE_PLUGIN_PATH', meson.current_build_dir())
 endif

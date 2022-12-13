@@ -25,7 +25,7 @@
  * PurpleProtocolClient Implementation
  *****************************************************************************/
 static gchar *
-purple_demo_protocol_status_text(PurpleProtocolClient *client,
+purple_demo_protocol_status_text(G_GNUC_UNUSED PurpleProtocolClient *client,
                                  PurpleBuddy *buddy)
 {
 	PurplePresence *presence = NULL;

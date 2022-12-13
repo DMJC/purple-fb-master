@@ -46,7 +46,7 @@ purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
 	PurpleNotification *notification = NULL;
 	PurpleNotificationManager *notification_manager = NULL;
 	const gchar *account_id = NULL;
-	static gint counter = 0;
+	static guint counter = 0;
 
 	account_id = g_variant_get_string(parameter, NULL);
 	account_manager = purple_account_manager_get_default();
@@ -118,7 +118,7 @@ purple_demo_protocol_temporary_failure_cb(gpointer data) {
 }
 
 static void
-purple_demo_protocol_failure_action_activate(GSimpleAction *action,
+purple_demo_protocol_failure_action_activate(G_GNUC_UNUSED GSimpleAction *action,
                                              GVariant *parameter,
                                              const gchar *tick_str,
                                              const gchar *tick_plural_str,
@@ -192,8 +192,8 @@ purple_demo_protocol_get_prefix(G_GNUC_UNUSED PurpleProtocolActions *actions) {
 }
 
 static GActionGroup *
-purple_demo_protocol_get_action_group(PurpleProtocolActions *actions,
-                                      PurpleConnection *connection)
+purple_demo_protocol_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *actions,
+                                      G_GNUC_UNUSED PurpleConnection *connection)
 {
 	GSimpleActionGroup *group = NULL;
 	GActionEntry entries[] = {
@@ -222,7 +222,7 @@ purple_demo_protocol_get_action_group(PurpleProtocolActions *actions,
 }
 
 static GMenu *
-purple_demo_protocol_get_menu(PurpleProtocolActions *actions)
+purple_demo_protocol_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions)
 {
 	GMenu *menu = NULL;
 	GMenuItem *item = NULL;

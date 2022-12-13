@@ -26,9 +26,10 @@
  * Helpers
  *****************************************************************************/
 static void
-purple_demo_protocol_load_status(PurpleAccount *account, PurpleGroup *group,
-                                 PurpleMetaContact *contact, PurpleBuddy *buddy,
-                                 JsonObject *buddy_object)
+purple_demo_protocol_load_status(PurpleAccount *account,
+                                 G_GNUC_UNUSED PurpleGroup *group,
+                                 G_GNUC_UNUSED PurpleMetaContact *contact,
+                                 PurpleBuddy *buddy, JsonObject *buddy_object)
 {
 	JsonObject *status_object = NULL;
 	const gchar *id = NULL;

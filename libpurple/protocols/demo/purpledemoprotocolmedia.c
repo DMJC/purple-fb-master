@@ -40,7 +40,7 @@ purple_demo_protocol_media_get_caps(G_GNUC_UNUSED PurpleProtocolMedia *media,
 }
 
 static gboolean
-purple_demo_protocol_media_initiate_session(PurpleProtocolMedia *media,
+purple_demo_protocol_media_initiate_session(G_GNUC_UNUSED PurpleProtocolMedia *media,
                                             PurpleAccount *account,
                                             const gchar *who,
                                             PurpleMediaSessionType type)
