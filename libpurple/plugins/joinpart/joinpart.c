@@ -189,37 +189,6 @@ static gboolean clean_users_hash(GHashTable *users)
 	return TRUE;
 }
 
-static PurplePluginPrefFrame *
-get_plugin_pref_frame(PurplePlugin *plugin)
-{
-	PurplePluginPrefFrame *frame;
-	PurplePluginPref *ppref;
-
-	g_return_val_if_fail(plugin != NULL, FALSE);
-
-	frame = purple_plugin_pref_frame_new();
-
-	ppref = purple_plugin_pref_new_with_label(_("Hide Joins/Parts"));
-	purple_plugin_pref_frame_add(frame, ppref);
-
-	ppref = purple_plugin_pref_new_with_name_and_label(THRESHOLD_PREF,
-	                                                 /* Translators: Followed by an input request a number of people */
-	                                                 _("For rooms with more than this many people"));
-	purple_plugin_pref_set_bounds(ppref, 0, 1000);
-	purple_plugin_pref_frame_add(frame, ppref);
-
-	ppref = purple_plugin_pref_new_with_name_and_label(DELAY_PREF,
-	                                                 _("If user has not spoken in this many minutes"));
-	purple_plugin_pref_set_bounds(ppref, 0, 8 * 60); /* 8 Hours */
-	purple_plugin_pref_frame_add(frame, ppref);
-
-	ppref = purple_plugin_pref_new_with_name_and_label(HIDE_BUDDIES_PREF,
-	                                                 _("Apply hiding rules to buddies"));
-	purple_plugin_pref_frame_add(frame, ppref);
-
-	return frame;
-}
-
 static GPluginPluginInfo *
 join_part_query(GError **error)
 {
@@ -240,7 +209,7 @@ join_part_query(GError **error)
 		"authors",        authors,
 		"website",        PURPLE_WEBSITE,
 		"abi-version",    PURPLE_ABI_VERSION,
-		"pref-frame-cb",  get_plugin_pref_frame,
+		"settings-schema", SETTINGS_SCHEMA_ID,
 		NULL
 	);
 }

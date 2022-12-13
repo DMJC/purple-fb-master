@@ -246,6 +246,7 @@ notification_sound_query(G_GNUC_UNUSED GError **error) {
 		"authors", authors,
 		"action-group", group,
 		"action-menu", menu,
+		"settings-schema", SETTINGS_SCHEMA_ID,
 		NULL
 	);
 }

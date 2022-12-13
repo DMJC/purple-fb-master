@@ -251,44 +251,6 @@ context_menu(PurpleBlistNode *node, GList **menu, gpointer plugin)
 	(*menu) = g_list_prepend(*menu, action);
 }
 
-static PurplePluginPrefFrame *
-get_plugin_pref_frame(PurplePlugin *plugin)
-{
-	PurplePluginPrefFrame *frame;
-	PurplePluginPref *pref;
-
-	frame = purple_plugin_pref_frame_new();
-
-	/* XXX: Is there a better way than this? There really should be. */
-	pref = purple_plugin_pref_new_with_name_and_label(PREF_PATH, _("Path to save the files in\n"
-								"(Please provide the full path)"));
-	purple_plugin_pref_frame_add(frame, pref);
-
-	pref = purple_plugin_pref_new_with_name_and_label(PREF_STRANGER,
-					_("When a file-transfer request arrives from a user who is\n"
-                      "*not* on your buddy list:"));
-	purple_plugin_pref_set_pref_type(pref, PURPLE_PLUGIN_PREF_CHOICE);
-	purple_plugin_pref_add_choice(pref, _("Ask"), GINT_TO_POINTER(FT_ASK));
-	purple_plugin_pref_add_choice(pref, _("Auto Accept"), GINT_TO_POINTER(FT_ACCEPT));
-	purple_plugin_pref_add_choice(pref, _("Auto Reject"), GINT_TO_POINTER(FT_REJECT));
-	purple_plugin_pref_frame_add(frame, pref);
-
-	pref = purple_plugin_pref_new_with_name_and_label(PREF_NOTIFY,
-					_("Notify with a popup when an autoaccepted file transfer is complete\n"
-					  "(only when there's no conversation with the sender)"));
-	purple_plugin_pref_frame_add(frame, pref);
-
-	pref = purple_plugin_pref_new_with_name_and_label(PREF_NEWDIR,
-			_("Create a new directory for each user"));
-	purple_plugin_pref_frame_add(frame, pref);
-
-	pref = purple_plugin_pref_new_with_name_and_label(PREF_ESCAPE,
-			_("Escape the filenames"));
-	purple_plugin_pref_frame_add(frame, pref);
-
-	return frame;
-}
-
 static GPluginPluginInfo *
 auto_accept_query(GError **error)
 {
@@ -304,7 +266,7 @@ auto_accept_query(GError **error)
 		"authors",        authors,
 		"website",        PURPLE_WEBSITE,
 		"abi-version",    PURPLE_ABI_VERSION,
-		"pref-frame-cb",  get_plugin_pref_frame,
+		"settings-schema", SETTINGS_SCHEMA_ID,
 		NULL
 	);
 }

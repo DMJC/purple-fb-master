@@ -91,36 +91,6 @@ buddy_typing_cb(PurpleAccount *acct, const char *name, void *data) {
 }
 
 
-static PurplePluginPrefFrame *
-get_plugin_pref_frame(PurplePlugin *plugin) {
-
-  PurplePluginPrefFrame *frame;
-  PurplePluginPref *pref;
-
-  frame = purple_plugin_pref_frame_new();
-
-  pref = purple_plugin_pref_new_with_name(PREF_BUDDIES);
-  purple_plugin_pref_set_label(pref, _("Only enable for users on"
-				     " the buddy list"));
-  purple_plugin_pref_frame_add(frame, pref);
-
-  pref = purple_plugin_pref_new_with_name(PREF_STATUS);
-  purple_plugin_pref_set_label(pref, _("Disable when away"));
-  purple_plugin_pref_frame_add(frame, pref);
-
-  pref = purple_plugin_pref_new_with_name(PREF_NOTICE);
-  purple_plugin_pref_set_label(pref, _("Display notification message in"
-				     " conversations"));
-  purple_plugin_pref_frame_add(frame, pref);
-
-  pref = purple_plugin_pref_new_with_name(PREF_RAISE);
-  purple_plugin_pref_set_label(pref, _("Raise psychic conversations"));
-  purple_plugin_pref_frame_add(frame, pref);
-
-  return frame;
-}
-
-
 static GPluginPluginInfo *
 psychic_query(GError **error) {
   const gchar * const authors[] = PLUGIN_AUTHORS;
@@ -135,7 +105,7 @@ psychic_query(GError **error) {
     "authors",        authors,
     "website",        PURPLE_WEBSITE,
     "abi-version",    PURPLE_ABI_VERSION,
-    "pref-frame-cb",  get_plugin_pref_frame,
+    "settings-schema", SETTINGS_SCHEMA_ID,
     NULL
   );
 }
