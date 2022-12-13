@@ -200,6 +200,7 @@ void purple_account_set_username(PurpleAccount *account, const char *username);
  *
  * Sets the account's private alias.
  */
+G_DEPRECATED_FOR(purple_contact_info_set_alias)
 void purple_account_set_private_alias(PurpleAccount *account, const char *alias);
 
 /**
@@ -415,6 +416,7 @@ const char *purple_account_get_username(PurpleAccount *account);
  *
  * Returns: The alias.
  */
+G_DEPRECATED_FOR(purple_contact_info_get_alias)
 const char *purple_account_get_private_alias(PurpleAccount *account);
 
 /**
