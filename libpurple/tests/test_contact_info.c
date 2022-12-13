@@ -50,6 +50,7 @@ test_purple_contact_info_properties(void) {
 	gchar *username = NULL;
 	gchar *display_name = NULL;
 	gchar *alias = NULL;
+	gchar *color = NULL;
 
 	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
 	person = purple_person_new();
@@ -64,6 +65,7 @@ test_purple_contact_info_properties(void) {
 		"username", "username",
 		"display-name", "display-name",
 		"alias", "alias",
+		"color", "#e9c636",
 		"avatar", avatar,
 		"person", person,
 		"permission", PURPLE_CONTACT_INFO_PERMISSION_ALLOW,
@@ -75,6 +77,7 @@ test_purple_contact_info_properties(void) {
 		"username", &username,
 		"display-name", &display_name,
 		"alias", &alias,
+		"color", &color,
 		"avatar", &avatar1,
 		"presence", &presence1,
 		"tags", &tags,
@@ -87,6 +90,7 @@ test_purple_contact_info_properties(void) {
 	g_assert_cmpstr(username, ==, "username");
 	g_assert_cmpstr(display_name, ==, "display-name");
 	g_assert_cmpstr(alias, ==, "alias");
+	g_assert_cmpstr(color, ==, "#e9c636");
 	g_assert_true(avatar1 == avatar);
 	g_assert_nonnull(presence1);
 	g_assert_nonnull(tags);
@@ -98,6 +102,7 @@ test_purple_contact_info_properties(void) {
 	g_clear_pointer(&username, g_free);
 	g_clear_pointer(&display_name, g_free);
 	g_clear_pointer(&alias, g_free);
+	g_clear_pointer(&color, g_free);
 	g_clear_object(&avatar1);
 	g_clear_object(&presence1);
 	g_clear_object(&tags);

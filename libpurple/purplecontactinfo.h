@@ -203,6 +203,34 @@ const gchar *purple_contact_info_get_alias(PurpleContactInfo *info);
 void purple_contact_info_set_alias(PurpleContactInfo *info, const gchar *alias);
 
 /**
+ * purple_contact_info_get_color:
+ * @info: The instance.
+ *
+ * Gets the color that should be used to render this contact info. This is a
+ * RGB hex code in a string format.
+ *
+ * Returns: The RGB hex code.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_contact_info_get_color(PurpleContactInfo *info);
+
+/**
+ * purple_contact_info_set_color:
+ * @info: The instance.
+ * @color: The RGB hex code to set.
+ *
+ * Sets the color to use when rendering @info to @color.
+ *
+ * @color should start with a `#` and have a valid number of hex digits
+ * following it. Different user interfaces may be able to handle additional
+ * precision, but using `#RRGGBB` will have the highest compatibility.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_info_set_color(PurpleContactInfo *info, const char *color);
+
+/**
  * purple_contact_info_get_avatar:
  * @info: The instance.
  *

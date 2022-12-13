@@ -27,6 +27,7 @@ typedef struct  {
 	gchar *username;
 	gchar *display_name;
 	gchar *alias;
+	gchar *color;
 
 	GdkPixbuf *avatar;
 
@@ -45,6 +46,7 @@ enum {
 	PROP_USERNAME,
 	PROP_DISPLAY_NAME,
 	PROP_ALIAS,
+	PROP_COLOR,
 	PROP_AVATAR,
 	PROP_PRESENCE,
 	PROP_TAGS,
@@ -79,6 +81,9 @@ purple_contact_info_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_ALIAS:
 			g_value_set_string(value, purple_contact_info_get_alias(info));
+			break;
+		case PROP_COLOR:
+			g_value_set_string(value, purple_contact_info_get_color(info));
 			break;
 		case PROP_AVATAR:
 			g_value_set_object(value, purple_contact_info_get_avatar(info));
@@ -120,6 +125,9 @@ purple_contact_info_set_property(GObject *obj, guint param_id,
 			break;
 		case PROP_ALIAS:
 			purple_contact_info_set_alias(info, g_value_get_string(value));
+			break;
+		case PROP_COLOR:
+			purple_contact_info_set_color(info, g_value_get_string(value));
 			break;
 		case PROP_AVATAR:
 			purple_contact_info_set_avatar(info, g_value_get_object(value));
@@ -253,6 +261,22 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	properties[PROP_ALIAS] = g_param_spec_string(
 		"alias", "alias",
 		"The alias of the contact.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleContactInfo:color:
+	 *
+	 * The color for this contact. This is an RGB hex code that user interfaces
+	 * can use when rendering the contact. This may also be controlled via a
+	 * protocol plugin in the event that the protocol allows people to set a
+	 * highlight/branding color.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_COLOR] = g_param_spec_string(
+		"color", "color",
+		"The color to use when rendering the contact.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -440,6 +464,33 @@ purple_contact_info_set_alias(PurpleContactInfo *info, const gchar *alias) {
 	priv->alias = g_strdup(alias);
 
 	g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ALIAS]);
+}
+
+const char *
+purple_contact_info_get_color(PurpleContactInfo *info) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	return priv->color;
+}
+
+void
+purple_contact_info_set_color(PurpleContactInfo *info, const char *color) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	if(!purple_strequal(priv->color, color)) {
+		g_free(priv->color);
+		priv->color = g_strdup(color);
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_COLOR]);
+	}
 }
 
 GdkPixbuf *
