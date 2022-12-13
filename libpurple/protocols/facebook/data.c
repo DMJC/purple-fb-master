@@ -151,7 +151,7 @@ fb_data_image_class_init(FbDataImageClass *klass)
 }
 
 static void
-fb_data_image_init(FbDataImage *img)
+fb_data_image_init(G_GNUC_UNUSED FbDataImage *img)
 {
 }
 

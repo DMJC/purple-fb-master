@@ -61,7 +61,7 @@ fb_thrift_class_init(FbThriftClass *klass)
 }
 
 static void
-fb_thrift_init(FbThrift *thft)
+fb_thrift_init(G_GNUC_UNUSED FbThrift *thft)
 {
 }
 

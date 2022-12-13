@@ -183,7 +183,7 @@ fb_mqtt_message_class_init(FbMqttMessageClass *klass)
 }
 
 static void
-fb_mqtt_message_init(FbMqttMessage *msg)
+fb_mqtt_message_init(G_GNUC_UNUSED FbMqttMessage *msg)
 {
 }
 
