@@ -2,6 +2,7 @@ PROGS = [
     'account_option',
     'account_manager',
     'authorization_request',
+    'avatar',
     'circular_buffer',
     'contact',
     'contact_info',
