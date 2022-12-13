@@ -228,7 +228,9 @@ pidgin_account_editor_update_user_options(PidginAccountEditor *editor,
 
 	/* Determine our values. */
 	if(editor->account != NULL) {
-		svalue = purple_account_get_private_alias(editor->account);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
+
+		svalue = purple_contact_info_get_alias(info);
 		image = purple_buddy_icons_find_account_icon(editor->account);
 		use_global = purple_account_get_bool(editor->account,
 		                                     "use-global-buddyicon", TRUE);
@@ -781,6 +783,7 @@ pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 
 static void
 pidgin_account_editor_save_user_options(PidginAccountEditor *editor) {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
 	const gchar *svalue = NULL;
 	gboolean bvalue = FALSE;
 
@@ -791,7 +794,7 @@ pidgin_account_editor_save_user_options(PidginAccountEditor *editor) {
 	if(*svalue == '\0') {
 		svalue = NULL;
 	}
-	purple_account_set_private_alias(editor->account, svalue);
+	purple_contact_info_set_alias(info, svalue);
 
 	/* Set whether or not to use the global avatar. */
 	bvalue = gtk_switch_get_active(GTK_SWITCH(editor->use_custom_avatar));

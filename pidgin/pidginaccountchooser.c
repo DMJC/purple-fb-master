@@ -75,7 +75,7 @@ pidgin_account_chooser_label_cb(G_GNUC_UNUSED GObject *self,
 		return NULL;
 	}
 
-	alias = purple_account_get_private_alias(account);
+	alias = purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
 	protocol_name = purple_account_get_protocol_name(account);
 	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 
