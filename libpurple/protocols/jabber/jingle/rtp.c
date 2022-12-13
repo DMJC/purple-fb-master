@@ -132,8 +132,8 @@ jingle_rtp_candidates_prepared_cb(PurpleMedia *media,
 }
 
 static void
-jingle_rtp_codecs_changed_cb(PurpleMedia *media, gchar *sid,
-		JingleSession *session)
+jingle_rtp_codecs_changed_cb(G_GNUC_UNUSED PurpleMedia *media, char *sid,
+                             JingleSession *session)
 {
 	purple_debug_info("jingle-rtp", "jingle_rtp_codecs_changed_cb: "
 			"session_id: %s jingle_session: %p\n", sid, session);
@@ -141,7 +141,10 @@ jingle_rtp_codecs_changed_cb(PurpleMedia *media, gchar *sid,
 }
 
 static void
-jingle_rtp_new_candidate_cb(PurpleMedia *media, gchar *sid, gchar *name, PurpleMediaCandidate *candidate, JingleSession *session)
+jingle_rtp_new_candidate_cb(G_GNUC_UNUSED PurpleMedia *media, char *sid,
+                            G_GNUC_UNUSED char *name,
+                            PurpleMediaCandidate *candidate,
+                            JingleSession *session)
 {
 	JingleContent *content = jingle_session_find_content(session, sid, NULL);
 	JingleTransport *transport;
@@ -168,9 +171,10 @@ jingle_rtp_new_candidate_cb(PurpleMedia *media, gchar *sid, gchar *name, PurpleM
 }
 
 static void
-jingle_rtp_initiate_ack_cb(JabberStream *js, const char *from,
-                           JabberIqType type, const char *id,
-                           PurpleXmlNode *packet, gpointer data)
+jingle_rtp_initiate_ack_cb(G_GNUC_UNUSED JabberStream *js,
+                           G_GNUC_UNUSED const char *from, JabberIqType type,
+                           G_GNUC_UNUSED const char *id, PurpleXmlNode *packet,
+                           gpointer data)
 {
 	JingleSession *session = data;
 
@@ -182,8 +186,9 @@ jingle_rtp_initiate_ack_cb(JabberStream *js, const char *from,
 }
 
 static void
-jingle_rtp_state_changed_cb(PurpleMedia *media, PurpleMediaState state,
-		gchar *sid, gchar *name, JingleSession *session)
+jingle_rtp_state_changed_cb(G_GNUC_UNUSED PurpleMedia *media,
+                            PurpleMediaState state, char *sid, char *name,
+                            G_GNUC_UNUSED JingleSession *session)
 {
 	purple_debug_info("jingle-rtp", "state-changed: state %d "
 			"id: %s name: %s\n", state, sid ? sid : "(null)",
@@ -192,8 +197,8 @@ jingle_rtp_state_changed_cb(PurpleMedia *media, PurpleMediaState state,
 
 static void
 jingle_rtp_stream_info_cb(PurpleMedia *media, PurpleMediaInfoType type,
-		gchar *sid, gchar *name, gboolean local,
-		JingleSession *session)
+                          char *sid, char *name, G_GNUC_UNUSED gboolean local,
+                          JingleSession *session)
 {
 	purple_debug_info("jingle-rtp", "stream-info: type %d "
 			"id: %s name: %s\n", type, sid ? sid : "(null)",
@@ -684,7 +689,7 @@ jingle_rtp_handle_action_internal(JingleContent *content, PurpleXmlNode *xmlcont
  * GObject Stuff
  *****************************************************************************/
 static void
-jingle_rtp_init (JingleRtp *rtp)
+jingle_rtp_init(G_GNUC_UNUSED JingleRtp *rtp)
 {
 }
 
@@ -742,7 +747,7 @@ jingle_rtp_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 
 
 static void
-jingle_rtp_class_finalize(JingleRtpClass *klass) {
+jingle_rtp_class_finalize(G_GNUC_UNUSED JingleRtpClass *klass) {
 }
 
 static void

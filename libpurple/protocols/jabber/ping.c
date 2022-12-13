@@ -28,9 +28,12 @@
 #include "ping.h"
 #include "iq.h"
 
-static void jabber_keepalive_pong_cb(JabberStream *js, const char *from,
-                                     JabberIqType type, const char *id,
-                                     PurpleXmlNode *packet, gpointer data)
+static void
+jabber_keepalive_pong_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                         G_GNUC_UNUSED JabberIqType type,
+                         G_GNUC_UNUSED const char *id,
+                         G_GNUC_UNUSED PurpleXmlNode *packet,
+                         G_GNUC_UNUSED gpointer data)
 {
 	if (js->keepalive_timeout != 0) {
 		g_source_remove(js->keepalive_timeout);
@@ -39,8 +42,8 @@ static void jabber_keepalive_pong_cb(JabberStream *js, const char *from,
 }
 
 void
-jabber_ping_parse(JabberStream *js, const char *from,
-                  JabberIqType type, const char *id, PurpleXmlNode *ping)
+jabber_ping_parse(JabberStream *js, const char *from, JabberIqType type,
+                  const char *id, G_GNUC_UNUSED PurpleXmlNode *ping)
 {
 	if (type == JABBER_IQ_GET) {
 		JabberIq *iq = jabber_iq_new(js, JABBER_IQ_RESULT);
@@ -55,9 +58,12 @@ jabber_ping_parse(JabberStream *js, const char *from,
 	}
 }
 
-static void jabber_ping_result_cb(JabberStream *js, const char *from,
-                                  JabberIqType type, const char *id,
-                                  PurpleXmlNode *packet, gpointer data)
+static void
+jabber_ping_result_cb(G_GNUC_UNUSED JabberStream *js,
+                      G_GNUC_UNUSED const char *from, JabberIqType type,
+                      G_GNUC_UNUSED const char *id,
+                      G_GNUC_UNUSED PurpleXmlNode *packet,
+                      G_GNUC_UNUSED gpointer data)
 {
 	if (type == JABBER_IQ_RESULT)
 		purple_debug_info("jabber", "PONG!\n");

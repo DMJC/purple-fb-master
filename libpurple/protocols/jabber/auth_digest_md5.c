@@ -29,8 +29,9 @@
 #include "jabber.h"
 
 static JabberSaslState
-digest_md5_start(JabberStream *js, PurpleXmlNode *packet, PurpleXmlNode **response,
-                 char **error)
+digest_md5_start(G_GNUC_UNUSED JabberStream *js,
+                 G_GNUC_UNUSED PurpleXmlNode *packet, PurpleXmlNode **response,
+                 G_GNUC_UNUSED char **error)
 {
 	PurpleXmlNode *auth = purple_xmlnode_new("auth");
 	purple_xmlnode_set_namespace(auth, NS_XMPP_SASL);

@@ -32,8 +32,8 @@
 #include "data.h"
 
 GList *
-jabber_chat_info(PurpleProtocolChat *protocol_chat,
-                 PurpleConnection *connection)
+jabber_chat_info(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+                 G_GNUC_UNUSED PurpleConnection *connection)
 {
 	GList *m = NULL;
 	PurpleProtocolChatEntry *pce;
@@ -112,7 +112,7 @@ JabberChat *jabber_chat_find(JabberStream *js, const char *room,
 }
 
 static gboolean
-find_by_id_cb(gpointer key, gpointer value, gpointer user_data)
+find_by_id_cb(G_GNUC_UNUSED gpointer key, gpointer value, gpointer user_data)
 {
 	JabberChat *chat = value;
 
@@ -194,7 +194,9 @@ void jabber_chat_invite(PurpleConnection *gc, int id, const char *msg,
 void jabber_chat_member_free(JabberChatMember *jcm);
 
 gchar *
-jabber_get_chat_name(PurpleProtocolChat *protocol_chat, GHashTable *data) {
+jabber_get_chat_name(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+                     GHashTable *data)
+{
 	char *room, *server, *chat_name = NULL;
 
 	room = g_hash_table_lookup(data, "room");
@@ -212,9 +214,10 @@ static void insert_in_hash_table(gpointer key, gpointer value, gpointer user_dat
 	g_hash_table_insert(hash_table, g_strdup(key), g_strdup(value));
 }
 
-static JabberChat *jabber_chat_new(JabberStream *js, const char *room,
-                                   const char *server, const char *handle,
-                                   const char *password, GHashTable *data)
+static JabberChat *
+jabber_chat_new(JabberStream *js, const char *room, const char *server,
+                const char *handle, G_GNUC_UNUSED const char *password,
+                GHashTable *data)
 {
 	JabberChat *chat;
 	char *jid;
@@ -372,8 +375,8 @@ void jabber_chat_join(PurpleConnection *gc, GHashTable *data)
 }
 
 void
-jabber_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
-                  gint id)
+jabber_chat_leave(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+                  PurpleConnection *gc, gint id)
 {
 	JabberStream *js = purple_connection_get_protocol_data(gc);
 	JabberChat *chat = jabber_chat_find_by_id(js, id);
@@ -417,7 +420,7 @@ gboolean jabber_chat_find_buddy(PurpleChatConversation *conv, const char *name)
 }
 
 gchar *
-jabber_chat_user_real_name(PurpleProtocolChat *protocol_chat,
+jabber_chat_user_real_name(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
                            PurpleConnection *gc, gint id, const gchar *who)
 {
 	JabberStream *js = purple_connection_get_protocol_data(gc);
@@ -455,9 +458,11 @@ static void jabber_chat_room_configure_x_data_cb(JabberStream *js, PurpleXmlNode
 	jabber_iq_send(iq);
 }
 
-static void jabber_chat_room_configure_cb(JabberStream *js, const char *from,
-                                          JabberIqType type, const char *id,
-                                          PurpleXmlNode *packet, gpointer data)
+static void
+jabber_chat_room_configure_cb(JabberStream *js, const char *from,
+                              JabberIqType type, G_GNUC_UNUSED const char *id,
+                              PurpleXmlNode *packet,
+                              G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query, *x;
 	char *msg;
@@ -569,9 +574,12 @@ void jabber_chat_create_instant_room(JabberChat *chat) {
 }
 
 static void
-jabber_chat_register_x_data_result_cb(JabberStream *js, const char *from,
-                                      JabberIqType type, const char *id,
-                                      PurpleXmlNode *packet, gpointer data)
+jabber_chat_register_x_data_result_cb(JabberStream *js,
+                                      G_GNUC_UNUSED const char *from,
+                                      JabberIqType type,
+                                      G_GNUC_UNUSED const char *id,
+                                      PurpleXmlNode *packet,
+                                      G_GNUC_UNUSED gpointer data)
 {
 	if (type == JABBER_IQ_ERROR) {
 		char *msg = jabber_parse_error(js, packet, NULL);
@@ -605,9 +613,10 @@ static void jabber_chat_register_x_data_cb(JabberStream *js, PurpleXmlNode *resu
 	jabber_iq_send(iq);
 }
 
-static void jabber_chat_register_cb(JabberStream *js, const char *from,
-                                    JabberIqType type, const char *id,
-                                    PurpleXmlNode *packet, gpointer data)
+static void
+jabber_chat_register_cb(JabberStream *js, const char *from, JabberIqType type,
+                        G_GNUC_UNUSED const char *id, PurpleXmlNode *packet,
+                        G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query, *x;
 	char *msg;
@@ -701,7 +710,7 @@ void jabber_chat_change_topic(JabberChat *chat, const char *topic)
 }
 
 void
-jabber_chat_set_topic(PurpleProtocolChat *protocol_chat,
+jabber_chat_set_topic(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
                       PurpleConnection *gc, gint id, const gchar *topic)
 {
 	JabberStream *js = purple_connection_get_protocol_data(gc);
@@ -768,9 +777,10 @@ void jabber_chat_part(JabberChat *chat, const char *msg)
 	g_free(room_jid);
 }
 
-static void roomlist_disco_result_cb(JabberStream *js, const char *from,
-                                     JabberIqType type, const char *id,
-                                     PurpleXmlNode *packet, gpointer data)
+static void
+roomlist_disco_result_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                         JabberIqType type, G_GNUC_UNUSED const char *id,
+                         PurpleXmlNode *packet, G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query;
 	PurpleXmlNode *item;
@@ -826,7 +836,8 @@ static void roomlist_disco_result_cb(JabberStream *js, const char *from,
 	js->roomlist = NULL;
 }
 
-static void roomlist_cancel_cb(JabberStream *js, const char *server) {
+static void
+roomlist_cancel_cb(JabberStream *js, G_GNUC_UNUSED const char *server) {
 	if(js->roomlist) {
 		purple_roomlist_set_in_progress(js->roomlist, FALSE);
 		g_object_unref(js->roomlist);
@@ -861,7 +872,7 @@ static void roomlist_ok_cb(JabberStream *js, const char *server)
 }
 
 PurpleRoomlist *
-jabber_roomlist_get_list(PurpleProtocolRoomlist *protocol_roomlist,
+jabber_roomlist_get_list(G_GNUC_UNUSED PurpleProtocolRoomlist *protocol_roomlist,
                          PurpleConnection *gc)
 {
 	JabberStream *js = purple_connection_get_protocol_data(gc);
@@ -884,7 +895,7 @@ jabber_roomlist_get_list(PurpleProtocolRoomlist *protocol_roomlist,
 }
 
 void
-jabber_roomlist_cancel(PurpleProtocolRoomlist *protocol_roomlist,
+jabber_roomlist_cancel(G_GNUC_UNUSED PurpleProtocolRoomlist *protocol_roomlist,
                        PurpleRoomlist *list)
 {
 	PurpleAccount *account;
@@ -904,7 +915,7 @@ jabber_roomlist_cancel(PurpleProtocolRoomlist *protocol_roomlist,
 }
 
 char *
-jabber_roomlist_room_serialize(PurpleProtocolRoomlist *protocol_roomlist,
+jabber_roomlist_room_serialize(G_GNUC_UNUSED PurpleProtocolRoomlist *protocol_roomlist,
                                PurpleRoomlistRoom *room)
 {
 	const gchar *room_name = NULL, *server = NULL;
@@ -922,8 +933,10 @@ void jabber_chat_member_free(JabberChatMember *jcm)
 	g_free(jcm);
 }
 
-void jabber_chat_track_handle(JabberChat *chat, const char *handle,
-		const char *jid, const char *affiliation, const char *role)
+void
+jabber_chat_track_handle(JabberChat *chat, const char *handle, const char *jid,
+                         G_GNUC_UNUSED const char *affiliation,
+                         G_GNUC_UNUSED const char *role)
 {
 	JabberChatMember *jcm = g_new0(JabberChatMember, 1);
 
@@ -1011,8 +1024,10 @@ gboolean jabber_chat_affiliate_user(JabberChat *chat, const char *who, const cha
 }
 
 static void
-jabber_chat_affiliation_list_cb(JabberStream *js, const char *from,
-                                JabberIqType type, const char *id,
+jabber_chat_affiliation_list_cb(JabberStream *js,
+                                G_GNUC_UNUSED const char *from,
+                                JabberIqType type,
+                                G_GNUC_UNUSED const char *id,
                                 PurpleXmlNode *packet, gpointer data)
 {
 	JabberChat *chat;
@@ -1106,9 +1121,10 @@ gboolean jabber_chat_role_user(JabberChat *chat, const char *who,
 	return TRUE;
 }
 
-static void jabber_chat_role_list_cb(JabberStream *js, const char *from,
-                                     JabberIqType type, const char *id,
-                                     PurpleXmlNode *packet, gpointer data)
+static void
+jabber_chat_role_list_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                         JabberIqType type, G_GNUC_UNUSED const char *id,
+                         PurpleXmlNode *packet, gpointer data)
 {
 	JabberChat *chat;
 	PurpleXmlNode *query, *item;
@@ -1167,9 +1183,12 @@ gboolean jabber_chat_role_list(JabberChat *chat, const char *role)
 	return TRUE;
 }
 
-static void jabber_chat_disco_traffic_cb(JabberStream *js, const char *from,
-                                         JabberIqType type, const char *id,
-                                         PurpleXmlNode *packet, gpointer data)
+static void
+jabber_chat_disco_traffic_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                             G_GNUC_UNUSED JabberIqType type,
+                             G_GNUC_UNUSED const char *id,
+                             G_GNUC_UNUSED PurpleXmlNode *packet,
+                             gpointer data)
 {
 	JabberChat *chat;
 	int chat_id = GPOINTER_TO_INT(data);

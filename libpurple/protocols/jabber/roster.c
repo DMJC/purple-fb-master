@@ -45,9 +45,10 @@ static gchar *roster_groups_join(GSList *list)
 	return g_string_free(out, FALSE);
 }
 
-static void roster_request_cb(JabberStream *js, const char *from,
-                              JabberIqType type, const char *id,
-                              PurpleXmlNode *packet, gpointer data)
+static void
+roster_request_cb(JabberStream *js, const char *from, JabberIqType type,
+                  const char *id, PurpleXmlNode *packet,
+                  G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query;
 
@@ -336,9 +337,10 @@ static void jabber_roster_update(JabberStream *js, const char *name,
 }
 
 void
-jabber_roster_add_buddy(PurpleProtocolServer *protocol_server,
+jabber_roster_add_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                         PurpleConnection *gc, PurpleBuddy *buddy,
-                        PurpleGroup *group, const gchar *message)
+                        G_GNUC_UNUSED PurpleGroup *group,
+                        G_GNUC_UNUSED const char *message)
 {
 	JabberStream *js = purple_connection_get_protocol_data(gc);
 	char *who;
@@ -402,7 +404,7 @@ jabber_roster_add_buddy(PurpleProtocolServer *protocol_server,
 }
 
 void
-jabber_roster_alias_change(PurpleProtocolServer *protocol_server,
+jabber_roster_alias_change(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                            PurpleConnection *gc, const gchar *name,
                            const gchar *alias)
 {
@@ -419,7 +421,7 @@ jabber_roster_alias_change(PurpleProtocolServer *protocol_server,
 }
 
 void
-jabber_roster_group_change(PurpleProtocolServer *protocol_server,
+jabber_roster_group_change(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                            PurpleConnection *gc, const gchar *name,
                            const gchar *old_group, const gchar *new_group)
 {
@@ -458,7 +460,7 @@ jabber_roster_group_rename(PurpleProtocolServer *protocol_server,
 }
 
 void
-jabber_roster_remove_buddy(PurpleProtocolServer *protocol_server,
+jabber_roster_remove_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                            PurpleConnection *gc, PurpleBuddy *buddy,
                            PurpleGroup *group)
 {

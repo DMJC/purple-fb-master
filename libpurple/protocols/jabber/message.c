@@ -687,7 +687,7 @@ void jabber_message_parse(JabberStream *js, PurpleXmlNode *packet)
 		case JABBER_MESSAGE_OTHER:
 			purple_debug_info("jabber",
 					"Received message of unknown type: %s\n", type);
-			/* Fall-through is intentional */
+			G_GNUC_FALLTHROUGH;
 		case JABBER_MESSAGE_NORMAL:
 		case JABBER_MESSAGE_CHAT:
 			handle_chat(jm);
@@ -840,8 +840,9 @@ jabber_xhtml_plain_equal(const char *xhtml_escaped, const char *plain)
 	return ret;
 }
 
-int jabber_message_send_im(PurpleProtocolIM *pim, PurpleConnection *gc,
-                           PurpleMessage *msg)
+int
+jabber_message_send_im(G_GNUC_UNUSED PurpleProtocolIM *pim,
+                       PurpleConnection *gc, PurpleMessage *msg)
 {
 	JabberMessage *jm;
 	JabberBuddy *jb;
@@ -903,7 +904,7 @@ int jabber_message_send_im(PurpleProtocolIM *pim, PurpleConnection *gc,
 }
 
 gint
-jabber_message_send_chat(PurpleProtocolChat *protocol_chat,
+jabber_message_send_chat(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
                          PurpleConnection *gc, gint id, PurpleMessage *msg)
 {
 	JabberChat *chat;
@@ -943,8 +944,9 @@ jabber_message_send_chat(PurpleProtocolChat *protocol_chat,
 	return 1;
 }
 
-unsigned int jabber_send_typing(PurpleProtocolIM *pim, PurpleConnection *gc,
-                                const char *who, PurpleIMTypingState state)
+unsigned int
+jabber_send_typing(G_GNUC_UNUSED PurpleProtocolIM *pim, PurpleConnection *gc,
+                   const char *who, PurpleIMTypingState state)
 {
 	JabberStream *js;
 	JabberMessage *jm;

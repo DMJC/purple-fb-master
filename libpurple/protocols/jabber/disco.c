@@ -51,7 +51,8 @@ struct _jabber_disco_items_cb_data {
 
 static void
 jabber_disco_bytestream_server_cb(JabberStream *js, const char *from,
-                                  JabberIqType type, const char *id,
+                                  G_GNUC_UNUSED JabberIqType type,
+                                  G_GNUC_UNUSED const char *id,
                                   PurpleXmlNode *packet, gpointer data)
 {
 	JabberBytestreamsStreamhost *sh = data;
@@ -168,9 +169,10 @@ void jabber_disco_info_parse(JabberStream *js, const char *from,
 	}
 }
 
-static void jabber_disco_info_cb(JabberStream *js, const char *from,
-                                 JabberIqType type, const char *id,
-                                 PurpleXmlNode *packet, gpointer data)
+static void
+jabber_disco_info_cb(JabberStream *js, const char *from, JabberIqType type,
+                     G_GNUC_UNUSED const char *id, PurpleXmlNode *packet,
+                     gpointer data)
 {
 	struct _jabber_disco_info_cb_data *jdicd = data;
 	PurpleXmlNode *query;
@@ -420,8 +422,10 @@ jabber_disco_stun_srv_resolve_cb(GObject *sender, GAsyncResult *result, gpointer
 
 static void
 jabber_disco_server_info_result_cb(JabberStream *js, const char *from,
-                                   JabberIqType type, const char *id,
-                                   PurpleXmlNode *packet, gpointer data)
+                                   JabberIqType type,
+                                   G_GNUC_UNUSED const char *id,
+                                   PurpleXmlNode *packet,
+                                   G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query, *child;
 
@@ -503,8 +507,10 @@ jabber_disco_server_info_result_cb(JabberStream *js, const char *from,
 
 static void
 jabber_disco_server_items_result_cb(JabberStream *js, const char *from,
-                                    JabberIqType type, const char *id,
-                                    PurpleXmlNode *packet, gpointer data)
+                                    JabberIqType type,
+                                    G_GNUC_UNUSED const char *id,
+                                    PurpleXmlNode *packet,
+                                    G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query, *child;
 

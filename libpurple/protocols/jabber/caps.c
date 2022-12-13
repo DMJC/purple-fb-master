@@ -111,7 +111,7 @@ static void jabber_caps_store_client(gpointer key, gpointer value, gpointer user
 }
 
 static gboolean
-do_jabber_caps_store(gpointer data)
+do_jabber_caps_store(G_GNUC_UNUSED gpointer data)
 {
 	char *str;
 	int length = 0;
@@ -249,8 +249,10 @@ jabber_caps_get_info_complete(jabber_caps_cbplususerdata *userdata)
 }
 
 static void
-jabber_caps_client_iqcb(JabberStream *js, const char *from, JabberIqType type,
-                        const char *id, PurpleXmlNode *packet, gpointer data)
+jabber_caps_client_iqcb(G_GNUC_UNUSED JabberStream *js,
+                        G_GNUC_UNUSED const char *from, JabberIqType type,
+                        G_GNUC_UNUSED const char *id, PurpleXmlNode *packet,
+                        gpointer data)
 {
 	jabber_caps_cbplususerdata *userdata = data;
 	PurpleXmlNode *query = NULL;

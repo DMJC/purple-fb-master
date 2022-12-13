@@ -38,8 +38,9 @@ static GHashTable *local_data_by_cid = NULL;
 static GHashTable *remote_data_by_cid = NULL;
 
 JabberData *
-jabber_data_create_from_data(gconstpointer rawdata, gsize size, const char *type,
-	gboolean ephemeral, JabberStream *js)
+jabber_data_create_from_data(gconstpointer rawdata, gsize size,
+                             const char *type, gboolean ephemeral,
+                             G_GNUC_UNUSED JabberStream *js)
 {
 	JabberData *data;
 	gchar *checksum;
@@ -285,8 +286,9 @@ typedef struct {
 } JabberDataRequestData;
 
 static void
-jabber_data_request_cb(JabberStream *js, const char *from,
-	JabberIqType type, const char *id, PurpleXmlNode *packet, gpointer data)
+jabber_data_request_cb(JabberStream *js, const char *from, JabberIqType type, 
+                       G_GNUC_UNUSED const char *id, PurpleXmlNode *packet,
+                       gpointer data)
 {
 	JabberDataRequestData *request_data = (JabberDataRequestData *) data;
 	gpointer userdata = request_data->userdata;
@@ -414,8 +416,9 @@ jabber_data_associate_remote(JabberStream *js, const gchar *who, JabberData *dat
 
 /* Handles iq requests. */
 static void
-jabber_data_parse(JabberStream *js, const char *who, JabberIqType type,
-                  const char *id, PurpleXmlNode *data_node)
+jabber_data_parse(JabberStream *js, const char *who,
+                  G_GNUC_UNUSED JabberIqType type, const char *id,
+                  PurpleXmlNode *data_node)
 {
 	JabberIq *result = NULL;
 	const char *cid = purple_xmlnode_get_attrib(data_node, "cid");

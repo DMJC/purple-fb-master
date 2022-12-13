@@ -74,7 +74,8 @@ void jabber_pep_register_handler(const char *xmlns, JabberPEPHandler handlerfunc
 
 static void
 do_pep_iq_request_item_callback(JabberStream *js, const char *from,
-                                JabberIqType type, const char *id,
+                                JabberIqType type,
+                                G_GNUC_UNUSED const char *id,
                                 PurpleXmlNode *packet, gpointer data)
 {
 	PurpleXmlNode *pubsub;
@@ -115,7 +116,10 @@ void jabber_pep_request_item(JabberStream *js, const char *to, const char *node,
 	jabber_iq_send(iq);
 }
 
-gboolean jabber_pep_namespace_only_when_pep_enabled_cb(JabberStream *js, const gchar *namespace) {
+gboolean
+jabber_pep_namespace_only_when_pep_enabled_cb(JabberStream *js,
+                                              G_GNUC_UNUSED const char *namespace)
+{
 	return js->pep;
 }
 

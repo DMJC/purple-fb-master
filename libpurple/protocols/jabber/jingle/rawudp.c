@@ -275,7 +275,7 @@ jingle_rawudp_get_property (GObject *object, guint prop_id, GValue *value, GPara
 }
 
 static void
-jingle_rawudp_init (JingleRawUdp *rawudp)
+jingle_rawudp_init(G_GNUC_UNUSED JingleRawUdp *rawudp)
 {
 }
 
@@ -289,7 +289,7 @@ jingle_rawudp_finalize (GObject *rawudp)
 }
 
 static void
-jingle_rawudp_class_finalize(JingleRawUdpClass *klass) {
+jingle_rawudp_class_finalize(G_GNUC_UNUSED JingleRawUdpClass *klass) {
 }
 
 static void

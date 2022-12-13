@@ -44,13 +44,18 @@ jingle_transport_parse_internal(PurpleXmlNode *transport)
 }
 
 static void
-jingle_transport_add_local_candidate_internal(JingleTransport *transport, const gchar *id, guint generation, PurpleMediaCandidate *candidate)
+jingle_transport_add_local_candidate_internal(G_GNUC_UNUSED JingleTransport *transport,
+                                              G_GNUC_UNUSED const char *id,
+                                              G_GNUC_UNUSED guint generation,
+                                              G_GNUC_UNUSED PurpleMediaCandidate *candidate)
 {
 	/* Nothing to do */
 }
 
 static PurpleXmlNode *
-jingle_transport_to_xml_internal(JingleTransport *transport, PurpleXmlNode *content, JingleActionType action)
+jingle_transport_to_xml_internal(JingleTransport *transport,
+                                 PurpleXmlNode *content,
+                                 G_GNUC_UNUSED JingleActionType action)
 {
 	PurpleXmlNode *node = purple_xmlnode_new_child(content, "transport");
 	purple_xmlnode_set_namespace(node, jingle_transport_get_transport_type(transport));
@@ -58,7 +63,7 @@ jingle_transport_to_xml_internal(JingleTransport *transport, PurpleXmlNode *cont
 }
 
 static GList *
-jingle_transport_get_remote_candidates_internal(JingleTransport *transport)
+jingle_transport_get_remote_candidates_internal(G_GNUC_UNUSED JingleTransport *transport)
 {
 	return NULL;
 }
@@ -67,12 +72,12 @@ jingle_transport_get_remote_candidates_internal(JingleTransport *transport)
  * GObject Stuff
  *****************************************************************************/
 static void
-jingle_transport_init (JingleTransport *transport)
+jingle_transport_init(G_GNUC_UNUSED JingleTransport *transport)
 {
 }
 
 static void
-jingle_transport_class_finalize (JingleTransportClass *klass)
+jingle_transport_class_finalize(G_GNUC_UNUSED JingleTransportClass *klass)
 {
 }
 

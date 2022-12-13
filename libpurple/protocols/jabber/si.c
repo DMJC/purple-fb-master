@@ -745,7 +745,7 @@ jabber_si_compare_jid(gconstpointer a, gconstpointer b)
 }
 
 static void
-jabber_si_xfer_bytestreams_send_connected_cb(GSocketService *service,
+jabber_si_xfer_bytestreams_send_connected_cb(G_GNUC_UNUSED GSocketService *service,
                                              GSocketConnection *connection,
                                              GObject *source_object,
                                              G_GNUC_UNUSED gpointer data)
@@ -771,7 +771,7 @@ jabber_si_xfer_bytestreams_send_connected_cb(GSocketService *service,
 
 static void
 jabber_si_connect_proxy_cb(JabberStream *js, const char *from,
-                           JabberIqType type, const char *id,
+                           JabberIqType type, G_GNUC_UNUSED const char *id,
                            PurpleXmlNode *packet, gpointer data)
 {
 	PurpleXfer *xfer = data;
@@ -1252,9 +1252,11 @@ jabber_si_xfer_ibb_send_init(JabberStream *js, PurpleXfer *xfer)
 	}
 }
 
-static void jabber_si_xfer_send_method_cb(JabberStream *js, const char *from,
-                                          JabberIqType type, const char *id,
-                                          PurpleXmlNode *packet, gpointer data)
+static void
+jabber_si_xfer_send_method_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                              G_GNUC_UNUSED JabberIqType type,
+                              G_GNUC_UNUSED const char *id,
+                              PurpleXmlNode *packet, gpointer data)
 {
 	PurpleXfer *xfer = data;
 	PurpleXmlNode *si, *feature, *x, *field, *value;
@@ -1465,7 +1467,9 @@ static void jabber_si_xfer_send_disco_cb(JabberStream *js, const char *who,
 	}
 }
 
-static void resource_select_cancel_cb(PurpleXfer *xfer, PurpleRequestFields *fields)
+static void
+resource_select_cancel_cb(PurpleXfer *xfer,
+                          G_GNUC_UNUSED PurpleRequestFields *fields)
 {
 	purple_xfer_cancel_local(xfer);
 }
@@ -1645,7 +1649,9 @@ static void jabber_si_xfer_xfer_init(PurpleXfer *xfer)
 	}
 }
 
-PurpleXfer *jabber_si_new_xfer(PurpleProtocolXfer *prplxfer, PurpleConnection *gc, const char *who)
+PurpleXfer *
+jabber_si_new_xfer(G_GNUC_UNUSED PurpleProtocolXfer *prplxfer,
+                   PurpleConnection *gc, const char *who)
 {
 	JabberStream *js;
 	JabberSIXfer *jsx;
@@ -1696,8 +1702,9 @@ jabber_si_thumbnail_cb(JabberData *data, gchar *alt, gpointer userdata)
 #endif
 
 static void
-jabber_si_parse(JabberStream *js, const char *from, JabberIqType type,
-                const char *id, PurpleXmlNode *si)
+jabber_si_parse(JabberStream *js, const char *from,
+                G_GNUC_UNUSED JabberIqType type, const char *id,
+                PurpleXmlNode *si)
 {
 	JabberSIXfer *jsx;
 	PurpleXmlNode *file, *feature, *x, *field, *option, *value;
@@ -1859,7 +1866,7 @@ jabber_si_xfer_finalize(GObject *obj) {
 }
 
 static void
-jabber_si_xfer_class_finalize(JabberSIXferClass *klass) {
+jabber_si_xfer_class_finalize(G_GNUC_UNUSED JabberSIXferClass *klass) {
 }
 
 static void

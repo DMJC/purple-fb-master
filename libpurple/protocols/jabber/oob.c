@@ -318,8 +318,7 @@ jabber_oob_xfer_finalize(GObject *obj) {
 }
 
 static void
-jabber_oob_xfer_class_finalize(JabberOOBXferClass *klass) {
-
+jabber_oob_xfer_class_finalize(G_GNUC_UNUSED JabberOOBXferClass *klass) {
 }
 
 static void

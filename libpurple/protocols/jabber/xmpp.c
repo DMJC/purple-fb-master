@@ -33,7 +33,7 @@ struct _XMPPProtocol {
 };
 
 static GList *
-xmpp_protocol_get_account_options(PurpleProtocol *protocol) {
+xmpp_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	PurpleAccountOption *option;
 	PurpleKeyValuePair *kvp = NULL;
 	GList *opts = NULL, *encryption_values = NULL;
@@ -78,7 +78,7 @@ xmpp_protocol_get_account_options(PurpleProtocol *protocol) {
 }
 
 static GList *
-xmpp_protocol_get_user_splits(PurpleProtocol *protocol) {
+xmpp_protocol_get_user_splits(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	GList *splits = NULL;
 	PurpleAccountUserSplit *split;
 
@@ -97,7 +97,7 @@ xmpp_protocol_get_user_splits(PurpleProtocol *protocol) {
 }
 
 static void
-xmpp_protocol_init(XMPPProtocol *self) {
+xmpp_protocol_init(G_GNUC_UNUSED XMPPProtocol *self) {
 	purple_prefs_remove("/plugins/prpl/jabber");
 }
 

@@ -362,7 +362,7 @@ jingle_iceudp_get_property (GObject *object, guint prop_id, GValue *value, GPara
 }
 
 static void
-jingle_iceudp_init (JingleIceUdp *iceudp)
+jingle_iceudp_init(G_GNUC_UNUSED JingleIceUdp *iceudp)
 {
 }
 
@@ -386,7 +386,7 @@ jingle_iceudp_finalize (GObject *object)
 }
 
 static void
-jingle_iceudp_class_finalize (JingleIceUdpClass *klass)
+jingle_iceudp_class_finalize(G_GNUC_UNUSED JingleIceUdpClass *klass)
 {
 }
 

@@ -40,7 +40,7 @@ typedef enum {
 struct jabber_x_data_data {
 	GHashTable *fields;
 	GSList *values;
-	jabber_x_data_action_cb cb;
+	GCallback cb;
 	gpointer user_data;
 	JabberStream *js;
 	GList *actions;
@@ -49,7 +49,7 @@ struct jabber_x_data_data {
 
 static void jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestFields *fields) {
 	PurpleXmlNode *result = purple_xmlnode_new("x");
-	jabber_x_data_action_cb cb = data->cb;
+	GCallback cb = data->cb;
 	gpointer user_data = data->user_data;
 	JabberStream *js = data->js;
 	GList *groups, *flds;
@@ -146,17 +146,21 @@ static void jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestFi
 	g_list_free_full(data->actions, g_free);
 	g_free(data);
 
-	if (hasActions)
-		cb(js, result, actionhandle, user_data);
-	else
+	if(hasActions) {
+		((jabber_x_data_action_cb)cb)(js, result, actionhandle, user_data);
+	} else {
 		((jabber_x_data_cb)cb)(js, result, user_data);
+	}
 
 	g_free(actionhandle);
 }
 
-static void jabber_x_data_cancel_cb(struct jabber_x_data_data *data, PurpleRequestFields *fields) {
+static void
+jabber_x_data_cancel_cb(struct jabber_x_data_data *data,
+                        G_GNUC_UNUSED PurpleRequestFields *fields)
+{
 	PurpleXmlNode *result = purple_xmlnode_new("x");
-	jabber_x_data_action_cb cb = data->cb;
+	GCallback cb = data->cb;
 	gpointer user_data = data->user_data;
 	JabberStream *js = data->js;
 	gboolean hasActions = (data->actions != NULL);
@@ -168,15 +172,18 @@ static void jabber_x_data_cancel_cb(struct jabber_x_data_data *data, PurpleReque
 	purple_xmlnode_set_namespace(result, "jabber:x:data");
 	purple_xmlnode_set_attrib(result, "type", "cancel");
 
-	if (hasActions)
-		cb(js, result, NULL, user_data);
-	else
+	if(hasActions) {
+		((jabber_x_data_action_cb)cb)(js, result, NULL, user_data);
+	} else {
 		((jabber_x_data_cb)cb)(js, result, user_data);
+	}
 }
 
 void *jabber_x_data_request(JabberStream *js, PurpleXmlNode *packet, jabber_x_data_cb cb, gpointer user_data)
 {
-	return jabber_x_data_request_with_actions(js, packet, NULL, 0, (jabber_x_data_action_cb)cb, user_data);
+	return jabber_x_data_request_with_actions(js, packet, NULL, 0,
+	                                          (jabber_x_data_action_cb)(GCallback)cb,
+	                                          user_data);
 }
 
 void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet, GList *actions, int defaultaction, jabber_x_data_action_cb cb, gpointer user_data)
@@ -194,7 +201,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 
 	data->fields = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 	data->user_data = user_data;
-	data->cb = cb;
+	data->cb = G_CALLBACK(cb);
 	data->js = js;
 
 	fields = purple_request_fields_new();

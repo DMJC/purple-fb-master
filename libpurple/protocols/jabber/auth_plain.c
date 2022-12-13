@@ -74,7 +74,8 @@ static void disallow_plaintext_auth(PurpleAccount *account)
 }
 
 static JabberSaslState
-jabber_plain_start(JabberStream *js, PurpleXmlNode *packet, PurpleXmlNode **response, char **error)
+jabber_plain_start(JabberStream *js, G_GNUC_UNUSED PurpleXmlNode *packet,
+                   PurpleXmlNode **response, G_GNUC_UNUSED char **error)
 {
 	PurpleAccount *account = purple_connection_get_account(js->gc);
 	char *msg;

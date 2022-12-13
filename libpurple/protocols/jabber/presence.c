@@ -70,8 +70,9 @@ str_to_presence_type(const char *type)
 	return JABBER_PRESENCE_AVAILABLE;
 }
 
-static void chats_send_presence_foreach(gpointer key, gpointer val,
-		gpointer user_data)
+static void
+chats_send_presence_foreach(G_GNUC_UNUSED gpointer key, gpointer val,
+                            gpointer user_data)
 {
 	JabberChat *chat = val;
 	PurpleXmlNode *presence = user_data;
@@ -143,7 +144,7 @@ void jabber_presence_fake_to_self(JabberStream *js, PurpleStatus *status)
 }
 
 void
-jabber_set_status(PurpleProtocolServer *protocol_server,
+jabber_set_status(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                   PurpleAccount *account, PurpleStatus *status)
 {
 	PurpleConnection *gc;
@@ -367,7 +368,7 @@ authorize_add_cb(G_GNUC_UNUSED PurpleAuthorizationRequest *request,
 
 static void
 deny_add_cb(G_GNUC_UNUSED PurpleAuthorizationRequest *request,
-            const char *message, gpointer data)
+            G_GNUC_UNUSED const char *message, gpointer data)
 {
 	struct _jabber_add_permit *jap = data;
 
@@ -382,8 +383,9 @@ deny_add_cb(G_GNUC_UNUSED PurpleAuthorizationRequest *request,
 
 static void
 jabber_vcard_parse_avatar(JabberStream *js, const char *from,
-                          JabberIqType type, const char *id,
-                          PurpleXmlNode *packet, gpointer blah)
+                          G_GNUC_UNUSED JabberIqType type,
+                          G_GNUC_UNUSED const char *id, PurpleXmlNode *packet,
+                          G_GNUC_UNUSED gpointer data)
 {
 	JabberBuddy *jb = NULL;
 	PurpleXmlNode *vcard, *photo, *binval, *fn, *nick;
@@ -1109,7 +1111,8 @@ void purple_status_to_jabber(PurpleStatus *status, JabberBuddyState *state, char
 
 /* Incoming presence handlers */
 static void
-parse_priority(JabberStream *js, JabberPresence *presence, PurpleXmlNode *priority)
+parse_priority(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+               PurpleXmlNode *priority)
 {
 	char *p = purple_xmlnode_get_data(priority);
 
@@ -1125,7 +1128,8 @@ parse_priority(JabberStream *js, JabberPresence *presence, PurpleXmlNode *priori
 }
 
 static void
-parse_show(JabberStream *js, JabberPresence *presence, PurpleXmlNode *show)
+parse_show(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+           PurpleXmlNode *show)
 {
 	char *cdata;
 
@@ -1145,7 +1149,8 @@ parse_show(JabberStream *js, JabberPresence *presence, PurpleXmlNode *show)
 }
 
 static void
-parse_status(JabberStream *js, JabberPresence *presence, PurpleXmlNode *status)
+parse_status(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+             PurpleXmlNode *status)
 {
 	/* TODO: Check/track language attribute? */
 
@@ -1154,7 +1159,8 @@ parse_status(JabberStream *js, JabberPresence *presence, PurpleXmlNode *status)
 }
 
 static void
-parse_delay(JabberStream *js, JabberPresence *presence, PurpleXmlNode *delay)
+parse_delay(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+            PurpleXmlNode *delay)
 {
 	GTimeZone *tz = g_time_zone_new_utc();
 	const char *stamp = purple_xmlnode_get_attrib(delay, "stamp");
@@ -1166,7 +1172,8 @@ parse_delay(JabberStream *js, JabberPresence *presence, PurpleXmlNode *delay)
 }
 
 static void
-parse_idle(JabberStream *js, JabberPresence *presence, PurpleXmlNode *query)
+parse_idle(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+           PurpleXmlNode *query)
 {
 	const gchar *seconds = purple_xmlnode_get_attrib(query, "seconds");
 	if (seconds) {
@@ -1180,7 +1187,8 @@ parse_idle(JabberStream *js, JabberPresence *presence, PurpleXmlNode *query)
 }
 
 static void
-parse_caps(JabberStream *js, JabberPresence *presence, PurpleXmlNode *c)
+parse_caps(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+           PurpleXmlNode *c)
 {
 	/* TODO: Move the rest of the caps handling in here, after changing the
 	 * the "do we have details about this (node, ver) and exts" to not
@@ -1190,14 +1198,16 @@ parse_caps(JabberStream *js, JabberPresence *presence, PurpleXmlNode *c)
 }
 
 static void
-parse_nickname(JabberStream *js, JabberPresence *presence, PurpleXmlNode *nick)
+parse_nickname(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+               PurpleXmlNode *nick)
 {
 	g_free(presence->nickname);
 	presence->nickname = purple_xmlnode_get_data(nick);
 }
 
 static void
-parse_vcard_avatar(JabberStream *js, JabberPresence *presence, PurpleXmlNode *x)
+parse_vcard_avatar(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+                   PurpleXmlNode *x)
 {
 	PurpleXmlNode *photo = purple_xmlnode_get_child(x, "photo");
 
@@ -1210,7 +1220,8 @@ parse_vcard_avatar(JabberStream *js, JabberPresence *presence, PurpleXmlNode *x)
 }
 
 static void
-parse_muc_user(JabberStream *js, JabberPresence *presence, PurpleXmlNode *x)
+parse_muc_user(G_GNUC_UNUSED JabberStream *js, JabberPresence *presence,
+               PurpleXmlNode *x)
 {
 	PurpleXmlNode *status;
 

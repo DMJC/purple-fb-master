@@ -213,7 +213,7 @@ jingle_content_get_property (GObject *object, guint prop_id, GValue *value, GPar
 }
 
 static void
-jingle_content_init (JingleContent *content)
+jingle_content_init(G_GNUC_UNUSED JingleContent *content)
 {
 }
 
@@ -238,7 +238,7 @@ jingle_content_finalize (GObject *content)
 
 
 static void
-jingle_content_class_finalize (JingleContentClass *klass)
+jingle_content_class_finalize(G_GNUC_UNUSED JingleContentClass *klass)
 {
 }
 

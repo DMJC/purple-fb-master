@@ -252,7 +252,8 @@ err:
 }
 
 static gboolean
-parse_server_step2(JabberScramData *data, const char *challenge, gchar **out_verifier)
+parse_server_step2(G_GNUC_UNUSED JabberScramData *data, const char *challenge,
+                   char **out_verifier)
 {
 	char **tokens;
 	char *token;
@@ -354,7 +355,8 @@ static gchar *escape_username(const gchar *in)
 }
 
 static JabberSaslState
-scram_start(JabberStream *js, PurpleXmlNode *mechanisms, PurpleXmlNode **out, char **error)
+scram_start(JabberStream *js, G_GNUC_UNUSED PurpleXmlNode *mechanisms,
+            PurpleXmlNode **out, char **error)
 {
 	PurpleXmlNode *reply;
 	JabberScramData *data;

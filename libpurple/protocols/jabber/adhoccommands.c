@@ -43,7 +43,8 @@ jabber_adhoc_commands_free(JabberAdHocCommands *cmd)
 	g_free(cmd);
 }
 
-static void do_adhoc_ignoreme(JabberStream *js, ...) {
+static void
+do_adhoc_ignoreme(G_GNUC_UNUSED JabberStream *js, ...) {
 	/* we don't have to do anything */
 }
 
@@ -93,8 +94,8 @@ jabber_adhoc_got_buddy_list(JabberStream *js, const char *from, PurpleXmlNode *q
 
 void
 jabber_adhoc_disco_result_cb(JabberStream *js, const char *from,
-                             JabberIqType type, const char *id,
-                             PurpleXmlNode *packet, gpointer data)
+                             JabberIqType type, G_GNUC_UNUSED const char *id,
+                             PurpleXmlNode *packet, G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query;
 	const char *node;
@@ -147,9 +148,9 @@ static void do_adhoc_action_cb(JabberStream *js, PurpleXmlNode *result, const ch
 }
 
 static void
-jabber_adhoc_parse(JabberStream *js, const char *from,
-                   JabberIqType type, const char *id,
-                   PurpleXmlNode *packet, gpointer data)
+jabber_adhoc_parse(JabberStream *js, const char *from, JabberIqType type,
+                   G_GNUC_UNUSED const char *id, PurpleXmlNode *packet,
+                   G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *command = purple_xmlnode_get_child_with_namespace(packet, "command", "http://jabber.org/protocol/commands");
 	const char *status = purple_xmlnode_get_attrib(command,"status");
@@ -238,7 +239,8 @@ void jabber_adhoc_execute_action(PurpleBlistNode *node, gpointer data) {
 }
 
 static void
-jabber_adhoc_got_server_list(JabberStream *js, const char *from, PurpleXmlNode *query)
+jabber_adhoc_got_server_list(JabberStream *js, G_GNUC_UNUSED const char *from,
+                             PurpleXmlNode *query)
 {
 	PurpleXmlNode *item;
 
@@ -270,8 +272,10 @@ jabber_adhoc_got_server_list(JabberStream *js, const char *from, PurpleXmlNode *
 
 static void
 jabber_adhoc_server_got_list_cb(JabberStream *js, const char *from,
-                                JabberIqType type, const char *id,
-                                PurpleXmlNode *packet, gpointer data)
+                                G_GNUC_UNUSED JabberIqType type,
+                                G_GNUC_UNUSED const char *id,
+                                PurpleXmlNode *packet,
+                                G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query = purple_xmlnode_get_child_with_namespace(packet, "query",
 			NS_DISCO_ITEMS);

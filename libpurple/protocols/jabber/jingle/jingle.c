@@ -52,7 +52,8 @@ jingle_get_type(const gchar *type)
 }
 
 static void
-jingle_handle_unknown_type(JingleSession *session, PurpleXmlNode *jingle)
+jingle_handle_unknown_type(G_GNUC_UNUSED JingleSession *session,
+                           G_GNUC_UNUSED PurpleXmlNode *jingle)
 {
 	/* Send error */
 }
@@ -366,7 +367,7 @@ jingle_get_action_type(const gchar *action)
 
 void
 jingle_parse(JabberStream *js, const char *from, JabberIqType type,
-             const char *id, PurpleXmlNode *jingle)
+             G_GNUC_UNUSED const char *id, PurpleXmlNode *jingle)
 {
 	const gchar *action;
 	const gchar *sid;

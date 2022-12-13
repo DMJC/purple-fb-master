@@ -64,7 +64,10 @@ static void do_nick_set(JabberStream *js, const char *nick) {
 		(yay for well-defined memory management rules) */
 }
 
-static void do_nick_got_own_nick_cb(JabberStream *js, const char *from, PurpleXmlNode *items) {
+static void
+do_nick_got_own_nick_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                        PurpleXmlNode *items)
+{
 	char *oldnickname = NULL;
 	PurpleXmlNode *item = NULL;
 

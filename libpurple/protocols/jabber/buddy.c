@@ -439,8 +439,8 @@ static PurpleXmlNode *insert_tag_to_parent_tag(PurpleXmlNode *start, const char 
  * Send vCard info to Jabber server
  */
 void
-jabber_set_info(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
-                const gchar *info)
+jabber_set_info(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+                PurpleConnection *gc, const char *info)
 {
 	PurpleImage *img;
 	JabberIq *iq;
@@ -533,7 +533,7 @@ jabber_set_info(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
 }
 
 void
-jabber_set_buddy_icon(PurpleProtocolServer *protocol_server,
+jabber_set_buddy_icon(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                       PurpleConnection *gc, PurpleImage *img)
 {
 	PurpleAccount *account = purple_connection_get_account(gc);
@@ -900,9 +900,10 @@ static void jabber_buddy_info_remove_id(JabberBuddyInfo *jbi, const char *id)
 	}
 }
 
-static void jabber_vcard_save_mine(JabberStream *js, const char *from,
-                                   JabberIqType type, const char *id,
-                                   PurpleXmlNode *packet, gpointer data)
+static void
+jabber_vcard_save_mine(JabberStream *js, G_GNUC_UNUSED const char *from,
+                       JabberIqType type, G_GNUC_UNUSED const char *id,
+                       PurpleXmlNode *packet, G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *vcard, *photo, *binval;
 	char *txt, *vcard_hash = NULL;
@@ -1237,9 +1238,10 @@ static gboolean jbir_equal(gconstpointer v1, gconstpointer v2)
 	return purple_strequal(resource_1, resource_2);
 }
 
-static void jabber_version_parse(JabberStream *js, const char *from,
-                                 JabberIqType type, const char *id,
-                                 PurpleXmlNode *packet, gpointer data)
+static void
+jabber_version_parse(G_GNUC_UNUSED JabberStream *js, const char *from,
+                     JabberIqType type, const char *id, PurpleXmlNode *packet,
+                     gpointer data)
 {
 	JabberBuddyInfo *jbi = data;
 	PurpleXmlNode *query;
@@ -1356,9 +1358,10 @@ static void jabber_last_parse(JabberStream *js, const char *from,
 	jabber_buddy_info_show_if_ready(jbi);
 }
 
-static void jabber_last_offline_parse(JabberStream *js, const char *from,
-									  JabberIqType type, const char *id,
-									  PurpleXmlNode *packet, gpointer data)
+static void
+jabber_last_offline_parse(G_GNUC_UNUSED JabberStream *js,
+                          G_GNUC_UNUSED const char *from, JabberIqType type,
+                          const char *id, PurpleXmlNode *packet, gpointer data)
 {
 	JabberBuddyInfo *jbi = data;
 	PurpleXmlNode *query;
@@ -1385,9 +1388,10 @@ static void jabber_last_offline_parse(JabberStream *js, const char *from,
 	jabber_buddy_info_show_if_ready(jbi);
 }
 
-static void jabber_time_parse(JabberStream *js, const char *from,
-                              JabberIqType type, const char *id,
-                              PurpleXmlNode *packet, gpointer data)
+static void
+jabber_time_parse(G_GNUC_UNUSED JabberStream *js, const char *from,
+                  JabberIqType type, const char *id, PurpleXmlNode *packet,
+                  gpointer data)
 {
 	JabberBuddyInfo *jbi = data;
 	JabberBuddyResource *jbr;
@@ -1608,7 +1612,7 @@ static void jabber_buddy_get_info_for_jid(JabberStream *js, const char *jid)
 }
 
 void
-jabber_buddy_get_info(PurpleProtocolServer *protocol_server,
+jabber_buddy_get_info(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                       PurpleConnection *gc, const char *who)
 {
 	JabberStream *js = purple_connection_get_protocol_data(gc);
@@ -1662,7 +1666,8 @@ static void jabber_buddy_set_invisibility(JabberStream *js, const char *who,
 	purple_xmlnode_free(presence);
 }
 
-static void jabber_buddy_make_invisible(PurpleBlistNode *node, gpointer data)
+static void
+jabber_buddy_make_invisible(PurpleBlistNode *node, G_GNUC_UNUSED gpointer data)
 {
 	PurpleBuddy *buddy;
 	PurpleConnection *gc;
@@ -1677,7 +1682,8 @@ static void jabber_buddy_make_invisible(PurpleBlistNode *node, gpointer data)
 	jabber_buddy_set_invisibility(js, purple_buddy_get_name(buddy), TRUE);
 }
 
-static void jabber_buddy_make_visible(PurpleBlistNode *node, gpointer data)
+static void
+jabber_buddy_make_visible(PurpleBlistNode *node, G_GNUC_UNUSED gpointer data)
 {
 	PurpleBuddy *buddy;
 	PurpleConnection *gc;
@@ -1707,7 +1713,7 @@ static void cancel_presence_notification(gpointer data)
 
 static void
 jabber_buddy_cancel_presence_notification(PurpleBlistNode *node,
-                                          gpointer data)
+                                          G_GNUC_UNUSED gpointer data)
 {
 	PurpleBuddy *buddy;
 	PurpleAccount *account;
@@ -1730,7 +1736,8 @@ jabber_buddy_cancel_presence_notification(PurpleBlistNode *node,
 	g_free(msg);
 }
 
-static void jabber_buddy_rerequest_auth(PurpleBlistNode *node, gpointer data)
+static void
+jabber_buddy_rerequest_auth(PurpleBlistNode *node, G_GNUC_UNUSED gpointer data)
 {
 	PurpleBuddy *buddy;
 	PurpleConnection *gc;
@@ -1745,8 +1752,8 @@ static void jabber_buddy_rerequest_auth(PurpleBlistNode *node, gpointer data)
 	jabber_presence_subscription_set(js, purple_buddy_get_name(buddy), "subscribe");
 }
 
-
-static void jabber_buddy_unsubscribe(PurpleBlistNode *node, gpointer data)
+static void
+jabber_buddy_unsubscribe(PurpleBlistNode *node, G_GNUC_UNUSED gpointer data)
 {
 	PurpleBuddy *buddy;
 	PurpleConnection *gc;
@@ -1761,7 +1768,9 @@ static void jabber_buddy_unsubscribe(PurpleBlistNode *node, gpointer data)
 	jabber_presence_subscription_set(js, purple_buddy_get_name(buddy), "unsubscribe");
 }
 
-static void jabber_buddy_login(PurpleBlistNode *node, gpointer data) {
+static void
+jabber_buddy_login(PurpleBlistNode *node, G_GNUC_UNUSED gpointer data)
+{
 	if(PURPLE_IS_BUDDY(node)) {
 		/* simply create a directed presence of the current status */
 		PurpleBuddy *buddy = (PurpleBuddy *) node;
@@ -1787,7 +1796,9 @@ static void jabber_buddy_login(PurpleBlistNode *node, gpointer data) {
 	}
 }
 
-static void jabber_buddy_logout(PurpleBlistNode *node, gpointer data) {
+static void
+jabber_buddy_logout(PurpleBlistNode *node, G_GNUC_UNUSED gpointer data)
+{
 	if(PURPLE_IS_BUDDY(node)) {
 		/* simply create a directed unavailable presence */
 		PurpleBuddy *buddy = (PurpleBuddy *) node;
@@ -1893,7 +1904,8 @@ static GList *jabber_buddy_menu(PurpleBuddy *buddy)
 }
 
 GList *
-jabber_blist_node_menu(PurpleProtocolClient *client, PurpleBlistNode *node)
+jabber_blist_node_menu(G_GNUC_UNUSED PurpleProtocolClient *client,
+                       PurpleBlistNode *node)
 {
 	if(PURPLE_IS_BUDDY(node)) {
 		return jabber_buddy_menu((PurpleBuddy *) node);
@@ -1903,16 +1915,20 @@ jabber_blist_node_menu(PurpleProtocolClient *client, PurpleBlistNode *node)
 }
 
 
-static void user_search_result_add_buddy_cb(PurpleConnection *gc, GList *row, void *user_data)
+static void
+user_search_result_add_buddy_cb(PurpleConnection *gc, GList *row,
+                                G_GNUC_UNUSED gpointer user_data)
 {
 	/* XXX find out the jid */
 	purple_blist_request_add_buddy(purple_connection_get_account(gc),
 			g_list_nth_data(row, 0), NULL, NULL);
 }
 
-static void user_search_result_cb(JabberStream *js, const char *from,
-                                  JabberIqType type, const char *id,
-                                  PurpleXmlNode *packet, gpointer data)
+static void
+user_search_result_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                      G_GNUC_UNUSED JabberIqType type,
+                      G_GNUC_UNUSED const char *id, PurpleXmlNode *packet,
+                      G_GNUC_UNUSED gpointer data)
 {
 	PurpleNotifySearchResults *results;
 	PurpleNotifySearchColumn *column;
@@ -2052,7 +2068,9 @@ struct user_search_info {
 	char *directory_server;
 };
 
-static void user_search_cancel_cb(struct user_search_info *usi, PurpleRequestFields *fields)
+static void
+user_search_cancel_cb(struct user_search_info *usi,
+                      G_GNUC_UNUSED PurpleRequestFields *fields)
 {
 	g_free(usi->directory_server);
 	g_free(usi);
@@ -2090,9 +2108,11 @@ static void user_search_cb(struct user_search_info *usi, PurpleRequestFields *fi
 	g_free(usi);
 }
 
-static void user_search_fields_result_cb(JabberStream *js, const char *from,
-                                         JabberIqType type, const char *id,
-                                         PurpleXmlNode *packet, gpointer data)
+static void
+user_search_fields_result_cb(JabberStream *js, const char *from,
+                             JabberIqType type, G_GNUC_UNUSED const char *id,
+                             PurpleXmlNode *packet,
+                             G_GNUC_UNUSED gpointer data)
 {
 	PurpleXmlNode *query, *x;
 

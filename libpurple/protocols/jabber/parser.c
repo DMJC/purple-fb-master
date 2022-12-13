@@ -31,9 +31,13 @@
 
 static void
 jabber_parser_element_start_libxml(void *user_data,
-				   const xmlChar *element_name, const xmlChar *prefix, const xmlChar *namespace,
-				   int nb_namespaces, const xmlChar **namespaces,
-				   int nb_attributes, int nb_defaulted, const xmlChar **attributes)
+                                   const xmlChar *element_name,
+                                   const xmlChar *prefix,
+                                   const xmlChar *namespace, int nb_namespaces,
+                                   const xmlChar **namespaces,
+                                   int nb_attributes,
+                                   G_GNUC_UNUSED int nb_defaulted,
+                                   const xmlChar **attributes)
 {
 	JabberStream *js = user_data;
 	PurpleXmlNode *node;
@@ -142,7 +146,8 @@ jabber_parser_element_start_libxml(void *user_data,
 
 static void
 jabber_parser_element_end_libxml(void *user_data, const xmlChar *element_name,
-				 const xmlChar *prefix, const xmlChar *namespace)
+                                 G_GNUC_UNUSED const xmlChar *prefix,
+                                 G_GNUC_UNUSED const xmlChar *namespace)
 {
 	JabberStream *js = user_data;
 

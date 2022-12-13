@@ -75,8 +75,8 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 /******************************************************************************
  * Helpers
  *****************************************************************************/
-static gboolean find_by_jid_ghr(gpointer key,
-		gpointer value, gpointer user_data)
+static gboolean
+find_by_jid_ghr(G_GNUC_UNUSED gpointer key, gpointer value, gpointer user_data)
 {
 	JingleSession *session = (JingleSession *)value;
 	const gchar *jid = user_data;
@@ -222,7 +222,7 @@ jingle_session_get_property (GObject *object, guint prop_id, GValue *value, GPar
 }
 
 static void
-jingle_session_init (JingleSession *session)
+jingle_session_init(G_GNUC_UNUSED JingleSession *session)
 {
 }
 
@@ -245,7 +245,7 @@ jingle_session_finalize (GObject *session)
 }
 
 static void
-jingle_session_class_finalize (JingleSessionClass *klass)
+jingle_session_class_finalize(G_GNUC_UNUSED JingleSessionClass *klass)
 {
 }
 

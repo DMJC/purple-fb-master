@@ -170,7 +170,8 @@ void jabber_avatar_set(JabberStream *js, PurpleImage *img)
 }
 
 static void
-do_got_own_avatar_cb(JabberStream *js, const char *from, PurpleXmlNode *items)
+do_got_own_avatar_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                     PurpleXmlNode *items)
 {
 	PurpleXmlNode *item = NULL, *metadata = NULL, *info = NULL;
 	PurpleAccount *account = purple_connection_get_account(js->gc);

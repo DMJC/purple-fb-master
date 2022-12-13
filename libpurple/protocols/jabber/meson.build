@@ -101,7 +101,9 @@ if DYNAMIC_JABBER
 	    c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-XMPP"'],
 	    link_args : jabber_link_args,
 	    dependencies : [gstreamer, idn, libxml, sasl, libpurple_dep, libsoup, glib, gio, math, ws2_32],
-	    install : true, install_dir : PURPLE_PLUGINDIR)
+	    install : true,
+	    install_dir : PURPLE_PLUGINDIR,
+	    override_options : ['c_std=c99', 'warning_level=2'])
 
 	devenv.append('PURPLE_PLUGIN_PATH', meson.current_build_dir())
 

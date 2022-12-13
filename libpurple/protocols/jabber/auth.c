@@ -116,7 +116,8 @@ auth_old_pass_cb(PurpleConnection *gc, PurpleRequestFields *fields)
 }
 
 static void
-auth_no_pass_cb(PurpleConnection *gc, PurpleRequestFields *fields)
+auth_no_pass_cb(PurpleConnection *gc,
+                G_GNUC_UNUSED PurpleRequestFields *fields)
 {
 	/* TODO: the password prompt dialog doesn't get disposed if the account disconnects */
 	PURPLE_ASSERT_CONNECTION_IS_VALID(gc);
@@ -232,9 +233,10 @@ jabber_auth_start(JabberStream *js, PurpleXmlNode *packet)
 	g_free(msg);
 }
 
-static void auth_old_result_cb(JabberStream *js, const char *from,
-                               JabberIqType type, const char *id,
-                               PurpleXmlNode *packet, gpointer data)
+static void
+auth_old_result_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+                   JabberIqType type, G_GNUC_UNUSED const char *id,
+                   PurpleXmlNode *packet, G_GNUC_UNUSED gpointer data)
 {
 	if (type == JABBER_IQ_RESULT) {
 		jabber_stream_set_state(js, JABBER_STREAM_POST_AUTH);
@@ -270,9 +272,10 @@ static void auth_old_result_cb(JabberStream *js, const char *from,
 	}
 }
 
-static void auth_old_cb(JabberStream *js, const char *from,
-                        JabberIqType type, const char *id,
-                        PurpleXmlNode *packet, gpointer data)
+static void
+auth_old_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
+            JabberIqType type, G_GNUC_UNUSED const char *id,
+            PurpleXmlNode *packet, G_GNUC_UNUSED gpointer data)
 {
 	JabberIq *iq;
 	PurpleXmlNode *query, *x;

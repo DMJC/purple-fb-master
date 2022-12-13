@@ -61,7 +61,9 @@ static void start_cyrus_wrapper(JabberStream *js)
 
 /* Callbacks for Cyrus SASL */
 
-static int jabber_sasl_cb_realm(void *ctx, int id, const char **avail, const char **result)
+static int
+jabber_sasl_cb_realm(void *ctx, int id, G_GNUC_UNUSED const char **avail,
+                     const char **result)
 {
 	JabberStream *js = ctx;
 
@@ -169,7 +171,8 @@ static void auth_pass_cb(PurpleConnection *gc, PurpleRequestFields *fields)
 }
 
 static void
-auth_no_pass_cb(PurpleConnection *gc, PurpleRequestFields *fields)
+auth_no_pass_cb(PurpleConnection *gc,
+                G_GNUC_UNUSED PurpleRequestFields *fields)
 {
 	PurpleAccount *account;
 
@@ -400,7 +403,7 @@ jabber_auth_start_cyrus(JabberStream *js, PurpleXmlNode **reply, char **error)
 }
 
 static int
-jabber_sasl_cb_log(void *context, int level, const char *message)
+jabber_sasl_cb_log(G_GNUC_UNUSED void *context, int level, const char *message)
 {
 	if(level <= SASL_LOG_TRACE)
 		purple_debug_info("sasl", "%s\n", message);
@@ -610,7 +613,8 @@ jabber_cyrus_handle_success(JabberStream *js, PurpleXmlNode *packet,
 }
 
 static JabberSaslState
-jabber_cyrus_handle_failure(JabberStream *js, PurpleXmlNode *packet,
+jabber_cyrus_handle_failure(JabberStream *js,
+                            G_GNUC_UNUSED PurpleXmlNode *packet,
                             PurpleXmlNode **reply, char **error)
 {
 	if (js->auth_fail_count++ < 5) {

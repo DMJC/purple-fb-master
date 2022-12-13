@@ -148,9 +148,9 @@ void jabber_iq_free(JabberIq *iq)
 	g_free(iq);
 }
 
-static void jabber_iq_last_parse(JabberStream *js, const char *from,
-                                 JabberIqType type, const char *id,
-                                 PurpleXmlNode *packet)
+static void
+jabber_iq_last_parse(JabberStream *js, const char *from, JabberIqType type,
+                     const char *id, G_GNUC_UNUSED PurpleXmlNode *packet)
 {
 	JabberIq *iq;
 	PurpleXmlNode *query;
@@ -216,9 +216,9 @@ static void jabber_time_parse(JabberStream *js, const char *from,
 	}
 }
 
-static void jabber_iq_version_parse(JabberStream *js, const char *from,
-                                    JabberIqType type, const char *id,
-                                    PurpleXmlNode *packet)
+static void
+jabber_iq_version_parse(JabberStream *js, const char *from, JabberIqType type,
+                        const char *id, G_GNUC_UNUSED PurpleXmlNode *packet)
 {
 	JabberIq *iq;
 	PurpleXmlNode *query;

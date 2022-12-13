@@ -199,9 +199,11 @@ jabber_ibb_session_set_error_callback(JabberIBBSession *sess,
 }
 
 static void
-jabber_ibb_session_opened_cb(JabberStream *js, const char *from,
-                             JabberIqType type, const char *id,
-                             PurpleXmlNode *packet, gpointer data)
+jabber_ibb_session_opened_cb(G_GNUC_UNUSED JabberStream *js,
+                             G_GNUC_UNUSED const char *from,
+                             JabberIqType type, G_GNUC_UNUSED const char *id,
+                             G_GNUC_UNUSED PurpleXmlNode *packet,
+                             gpointer data)
 {
 	JabberIBBSession *sess = (JabberIBBSession *) data;
 
@@ -265,9 +267,12 @@ jabber_ibb_session_close(JabberIBBSession *sess)
 }
 
 static void
-jabber_ibb_session_send_acknowledge_cb(JabberStream *js, const char *from,
-                                       JabberIqType type, const char *id,
-                                       PurpleXmlNode *packet, gpointer data)
+jabber_ibb_session_send_acknowledge_cb(G_GNUC_UNUSED JabberStream *js,
+                                       G_GNUC_UNUSED const char *from,
+                                       JabberIqType type,
+                                       G_GNUC_UNUSED const char *id,
+                                       G_GNUC_UNUSED PurpleXmlNode *packet,
+                                       gpointer data)
 {
 	JabberIBBSession *sess = (JabberIBBSession *) data;
 
@@ -360,8 +365,9 @@ jabber_ibb_send_error_response(JabberStream *js, const char *to, const char *id)
 
 /* Handle incoming packet. */
 static void
-jabber_ibb_parse(JabberStream *js, const char *who, JabberIqType type,
-                 const char *id, PurpleXmlNode *child)
+jabber_ibb_parse(JabberStream *js, const char *who,
+                 G_GNUC_UNUSED JabberIqType type, const char *id,
+                 PurpleXmlNode *child)
 {
 	const char *name = child->name;
 	gboolean data  = purple_strequal(name, "data");

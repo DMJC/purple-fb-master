@@ -39,7 +39,8 @@ static PurpleXmlNode *finish_webex_authentication(JabberStream *js)
 }
 
 static JabberSaslState
-jabber_webex_start(JabberStream *js, PurpleXmlNode *packet, PurpleXmlNode **response, char **error)
+jabber_webex_start(JabberStream *js, G_GNUC_UNUSED PurpleXmlNode *packet,
+                   PurpleXmlNode **response, G_GNUC_UNUSED char **error)
 {
 	*response = finish_webex_authentication(js);
 	return JABBER_SASL_STATE_OK;
