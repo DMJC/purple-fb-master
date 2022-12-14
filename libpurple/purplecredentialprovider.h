@@ -65,8 +65,6 @@ G_DECLARE_DERIVABLE_TYPE(PurpleCredentialProvider, purple_credential_provider,
  * @write_password_finish: Finishes writing a password.
  * @clear_password_async: Clears a password from the provider.
  * @clear_password_finish: Finishes clearing a password from the provider.
- * @read_settings: Creates a #PurpleRequestFields for the available settings.
- * @write_settings: Updates the settings for provider.
  *
  * #PurpleCredentialProviderClass defines the interface for interacting with
  * credential providers like libsecret, kwallet, etc.
@@ -89,9 +87,6 @@ struct _PurpleCredentialProviderClass {
 
 	void (*clear_password_async)(PurpleCredentialProvider *provider, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*clear_password_finish)(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
-
-	PurpleRequestFields *(*read_settings)(PurpleCredentialProvider *provider);
-	gboolean (*write_settings)(PurpleCredentialProvider *provider, PurpleRequestFields *fields);
 
 	/*< private >*/
 
@@ -246,32 +241,6 @@ void purple_credential_provider_clear_password_async(PurpleCredentialProvider *p
  * Since: 3.0.0
  */
 gboolean purple_credential_provider_clear_password_finish(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
-
-/**
- * purple_credential_provider_read_settings:
- * @provider: The #PurpleCredentialProvider instance.
- *
- * Reads settings from @provider.
- *
- * Returns: (transfer full): New copy of current settings which must be free'd
- *                           with purple_request_fields_destroy().
- *
- * Since: 3.0.0
- */
-PurpleRequestFields *purple_credential_provider_read_settings(PurpleCredentialProvider *provider);
-
-/**
- * purple_credential_provider_write_settings:
- * @provider: The #PurpleCredentialProvider instance.
- * @fields: Modified settings from purple_credential_provider_read_settings().
- *
- * Write @fields to @provider.
- *
- * Returns: %TRUE if successful, %FALSE otherwise.
- *
- * Since: 3.0.0
- */
-gboolean purple_credential_provider_write_settings(PurpleCredentialProvider *provider, PurpleRequestFields *fields);
 
 G_END_DECLS
 

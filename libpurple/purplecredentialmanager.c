@@ -599,40 +599,6 @@ purple_credential_manager_clear_password_finish(PurpleCredentialManager *manager
 	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
-PurpleRequestFields *
-purple_credential_manager_read_settings(PurpleCredentialManager *manager,
-                                        GError **error)
-{
-	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_MANAGER(manager), FALSE);
-
-	if(manager->active != NULL) {
-		return purple_credential_provider_read_settings(manager->active);
-	}
-
-	g_set_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
-	            _("can not read settings, no active credential provider"));
-
-	return NULL;
-}
-
-gboolean
-purple_credential_manager_write_settings(PurpleCredentialManager *manager,
-                                         PurpleRequestFields *fields,
-                                         GError **error)
-{
-	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_MANAGER(manager), FALSE);
-
-	if(manager->active != NULL) {
-		return purple_credential_provider_write_settings(manager->active,
-		                                                 fields);
-	}
-
-	g_set_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
-	            _("can not write settings, no active credential provider"));
-
-	return FALSE;
-}
-
 void
 purple_credential_manager_foreach(PurpleCredentialManager *manager,
                                   PurpleCredentialManagerForeachFunc func,

@@ -418,34 +418,3 @@ purple_credential_provider_clear_password_finish(PurpleCredentialProvider *provi
 
 	return FALSE;
 }
-
-PurpleRequestFields *
-purple_credential_provider_read_settings(PurpleCredentialProvider *provider) {
-	PurpleCredentialProviderClass *klass = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider), NULL);
-
-	klass = PURPLE_CREDENTIAL_PROVIDER_GET_CLASS(provider);
-	if(klass && klass->read_settings) {
-		return klass->read_settings(provider);
-	}
-
-	return NULL;
-}
-
-gboolean
-purple_credential_provider_write_settings(PurpleCredentialProvider *provider,
-                                          PurpleRequestFields *fields)
-{
-	PurpleCredentialProviderClass *klass = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider), FALSE);
-	g_return_val_if_fail(fields != NULL, FALSE);
-
-	klass = PURPLE_CREDENTIAL_PROVIDER_GET_CLASS(provider);
-	if(klass && klass->write_settings) {
-		return klass->write_settings(provider, fields);
-	}
-
-	return FALSE;
-}

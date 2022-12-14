@@ -242,36 +242,6 @@ void purple_credential_manager_clear_password_async(PurpleCredentialManager *man
 gboolean purple_credential_manager_clear_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
 
 /**
- * purple_credential_manager_read_settings:
- * @manager: The #PurpleCredentialManager instance.
- * @error: Return address for a #GError, or %NULL.
- *
- * Reads settings from the active #PurpleCredentialProvider of @manager.
- *
- * Returns: (transfer full): New copy of current settings which must be free'd
- *                           with purple_request_fields_destroy().
- *
- * Since: 3.0.0
- */
-PurpleRequestFields *purple_credential_manager_read_settings(PurpleCredentialManager *manager, GError **error);
-
-/**
- * purple_credential_manager_write_settings:
- * @manager: The #PurpleCredentialManager instance.
- * @fields: (transfer full): Modified settings from
- *          purple_credential_manager_read_settings().
- * @error: Return address for a #GError, or %NULL.
- *
- * Write @fields to the active #PurpleCredentialProvider of @manager.
- *
- * Returns: %TRUE if successful, %FALSE otherwise.
- *
- * Since: 3.0.0
- */
-gboolean purple_credential_manager_write_settings(PurpleCredentialManager *manager, PurpleRequestFields *fields, GError **error);
-
-
-/**
  * purple_credential_manager_foreach:
  * @manager: The #PurpleCredentialManager instance.
  * @func: (scope call): The #PurpleCredentialManagerForeachFunc to call.

@@ -224,8 +224,6 @@ struct _TestPurpleCredentialProvider {
 	gboolean write_password_finish;
 	gboolean clear_password_async;
 	gboolean clear_password_finish;
-	gboolean read_settings;
-	gboolean write_settings;
 };
 
 G_DEFINE_TYPE(TestPurpleCredentialProvider,
@@ -320,26 +318,6 @@ test_purple_credential_provider_clear_password_finish(PurpleCredentialProvider *
 	return FALSE;
 }
 
-static PurpleRequestFields *
-test_purple_credential_provider_read_settings(PurpleCredentialProvider *p) {
-	TestPurpleCredentialProvider *provider = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
-
-	provider->read_settings = TRUE;
-
-	return NULL;
-}
-
-static gboolean
-test_purple_credential_provider_write_settings(PurpleCredentialProvider *p,
-                                               PurpleRequestFields *fields)
-{
-	TestPurpleCredentialProvider *provider = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
-
-	provider->write_settings = TRUE;
-
-	return FALSE;
-}
-
 static void
 test_purple_credential_provider_init(TestPurpleCredentialProvider *provider) {
 }
@@ -355,8 +333,6 @@ test_purple_credential_provider_class_init(TestPurpleCredentialProviderClass *kl
 	provider_class->write_password_finish = test_purple_credential_provider_write_password_finish;
 	provider_class->clear_password_async = test_purple_credential_provider_clear_password_async;
 	provider_class->clear_password_finish = test_purple_credential_provider_clear_password_finish;
-	provider_class->read_settings = test_purple_credential_provider_read_settings;
-	provider_class->write_settings = test_purple_credential_provider_write_settings;
 }
 
 static PurpleCredentialProvider *
@@ -428,8 +404,6 @@ test_purple_credential_provider_test_read(void) {
 	g_assert_false(tp->write_password_finish);
 	g_assert_false(tp->clear_password_async);
 	g_assert_false(tp->clear_password_finish);
-	g_assert_false(tp->read_settings);
-	g_assert_false(tp->write_settings);
 
 	g_object_unref(p);
 }
@@ -478,8 +452,6 @@ test_purple_credential_provider_test_write(void) {
 	g_assert_true(tp->write_password_finish);
 	g_assert_false(tp->clear_password_async);
 	g_assert_false(tp->clear_password_finish);
-	g_assert_false(tp->read_settings);
-	g_assert_false(tp->write_settings);
 
 	g_object_unref(G_OBJECT(p));
 }
@@ -528,50 +500,8 @@ test_purple_credential_provider_test_clear(void) {
 	g_assert_false(tp->write_password_finish);
 	g_assert_true(tp->clear_password_async);
 	g_assert_true(tp->clear_password_finish);
-	g_assert_false(tp->read_settings);
-	g_assert_false(tp->write_settings);
 
 	g_object_unref(p);
-}
-
-static void
-test_purple_credential_provider_test_read_settings(void) {
-	PurpleCredentialProvider *p = test_purple_credential_provider_new();
-	TestPurpleCredentialProvider *tp = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
-
-	purple_credential_provider_read_settings(p);
-
-	g_assert_false(tp->read_password_async);
-	g_assert_false(tp->read_password_finish);
-	g_assert_false(tp->write_password_async);
-	g_assert_false(tp->write_password_finish);
-	g_assert_false(tp->clear_password_async);
-	g_assert_false(tp->clear_password_finish);
-	g_assert_true(tp->read_settings);
-	g_assert_false(tp->write_settings);
-
-	g_object_unref(G_OBJECT(p));
-}
-
-static void
-test_purple_credential_provider_test_write_settings(void) {
-	PurpleCredentialProvider *p = test_purple_credential_provider_new();
-	TestPurpleCredentialProvider *tp = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
-	PurpleRequestFields *fields = purple_request_fields_new();
-
-	purple_credential_provider_write_settings(p, fields);
-	purple_request_fields_destroy(fields);
-
-	g_assert_false(tp->read_password_async);
-	g_assert_false(tp->read_password_finish);
-	g_assert_false(tp->write_password_async);
-	g_assert_false(tp->write_password_finish);
-	g_assert_false(tp->clear_password_async);
-	g_assert_false(tp->clear_password_finish);
-	g_assert_false(tp->read_settings);
-	g_assert_true(tp->write_settings);
-
-	g_object_unref(G_OBJECT(p));
 }
 
 /******************************************************************************
@@ -604,10 +534,6 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_credential_provider_test_write);
 	g_test_add_func("/credential-provider/functional/clear",
 	                test_purple_credential_provider_test_clear);
-	g_test_add_func("/credential-provider/functional/read_settings",
-	                test_purple_credential_provider_test_read_settings);
-	g_test_add_func("/credential-provider/functional/write_settings",
-	                test_purple_credential_provider_test_write_settings);
 
 	ret = g_test_run();
 
