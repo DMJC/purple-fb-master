@@ -802,15 +802,19 @@ handle_presence_contact(JabberStream *js, JabberPresence *presence)
 	 */
 	im = purple_conversation_manager_find_im(manager, account, buddy_name);
 	if (im) {
-		purple_debug_info("jabber", "Changed conversation binding from %s to %s\n",
+		purple_debug_info("jabber", "Changed conversation binding from %s to %s",
 				purple_conversation_get_name(im), buddy_name);
 		purple_conversation_set_name(im, buddy_name);
 	}
 
 	if (b == NULL) {
 		if (presence->jb != js->user_jb) {
-			purple_debug_warning("jabber", "Got presence for unknown buddy %s on account %s (%p)\n",
-					buddy_name, purple_account_get_username(account), account);
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+			purple_debug_warning("jabber",
+			                     "Got presence for unknown buddy %s on account %s (%p)",
+			                     buddy_name,
+			                     purple_contact_info_get_username(info),
+			                     account);
 			g_free(buddy_name);
 			return FALSE;
 		} else {

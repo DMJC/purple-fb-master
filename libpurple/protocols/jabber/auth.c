@@ -343,9 +343,11 @@ auth_old_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
 		} else if(purple_xmlnode_get_child(query, "password")) {
 			PurpleAccount *account = purple_connection_get_account(js->gc);
 			if(!jabber_stream_is_ssl(js) && !purple_account_get_bool(account,
-						"auth_plain_in_clear", FALSE)) {
+						"auth_plain_in_clear", FALSE))
+			{
+				PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 				char *msg = g_strdup_printf(_("%s requires plaintext authentication over an unencrypted connection.  Allow this and continue authentication?"),
-											purple_account_get_username(account));
+				                            purple_contact_info_get_username(info));
 				purple_request_yes_no(js->gc, _("Plaintext Authentication"),
 						_("Plaintext Authentication"),
 						msg,

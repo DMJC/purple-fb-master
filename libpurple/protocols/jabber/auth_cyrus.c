@@ -312,8 +312,9 @@ jabber_auth_start_cyrus(JabberStream *js, PurpleXmlNode **reply, char **error)
 				 */
 				/* XXX Should we just check for PLAIN/LOGIN being offered mechanisms? */
 				} else if (!plaintext) {
+					PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 					char *msg = g_strdup_printf(_("%s may require plaintext authentication over an unencrypted connection.  Allow this and continue authentication?"),
-							purple_account_get_username(account));
+					                            purple_contact_info_get_username(info));
 					purple_request_yes_no(js->gc, _("Plaintext Authentication"),
 							_("Plaintext Authentication"),
 							msg,

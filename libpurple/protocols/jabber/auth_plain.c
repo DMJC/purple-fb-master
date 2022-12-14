@@ -78,6 +78,7 @@ jabber_plain_start(JabberStream *js, G_GNUC_UNUSED PurpleXmlNode *packet,
                    PurpleXmlNode **response, G_GNUC_UNUSED char **error)
 {
 	PurpleAccount *account = purple_connection_get_account(js->gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	char *msg;
 
 	if (jabber_stream_is_ssl(js) || purple_account_get_bool(account, "auth_plain_in_clear", FALSE)) {
@@ -86,7 +87,7 @@ jabber_plain_start(JabberStream *js, G_GNUC_UNUSED PurpleXmlNode *packet,
 	}
 
 	msg = g_strdup_printf(_("%s requires plaintext authentication over an unencrypted connection.  Allow this and continue authentication?"),
-			purple_account_get_username(account));
+			purple_contact_info_get_username(info));
 	purple_request_yes_no(js->gc, _("Plaintext Authentication"),
 			_("Plaintext Authentication"),
 			msg,

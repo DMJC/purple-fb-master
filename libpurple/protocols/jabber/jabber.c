@@ -444,8 +444,10 @@ jabber_send_raw(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
 		}
 
 		username = purple_connection_get_display_name(gc);
-		if (!username)
-			username = purple_account_get_username(account);
+		if(username == NULL) {
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+			username = purple_contact_info_get_username(info);
+		}
 
 		purple_debug_misc("jabber", "Sending%s (%s): %s%s%s\n",
 				jabber_stream_is_ssl(js) ? " (ssl)" : "", username,
@@ -841,6 +843,7 @@ static JabberStream *
 jabber_stream_new(PurpleAccount *account)
 {
 	PurpleConnection *gc = purple_account_get_connection(account);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GProxyResolver *resolver;
 	GError *error = NULL;
 	JabberStream *js;
@@ -866,7 +869,7 @@ jabber_stream_new(PurpleAccount *account)
 	/* we might want to expose this at some point */
 	js->cancellable = g_cancellable_new();
 
-	user = g_strdup(purple_account_get_username(account));
+	user = g_strdup(purple_contact_info_get_username(info));
 	/* jabber_id_new doesn't accept "user@domain/" as valid */
 	slash = strchr(user, '/');
 	if (slash && *(slash + 1) == '\0')
@@ -2619,7 +2622,7 @@ jabber_cmd_chat_msg(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
 		return PURPLE_CMD_RET_FAILED;
 
 	account = purple_connection_get_account(pc);
-	me = purple_account_get_name_for_display(account);
+	me = purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(account));
 
 	who = g_strdup_printf("%s@%s/%s", chat->room, chat->server, args[0]);
 	pc = purple_conversation_get_connection(conv);

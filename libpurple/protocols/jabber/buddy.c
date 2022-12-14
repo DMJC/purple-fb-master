@@ -998,7 +998,11 @@ static void jabber_vcard_parse(JabberStream *js, const char *from,
 
 	user_info = jbi->user_info;
 	account = purple_connection_get_account(js->gc);
-	bare_jid = jabber_get_bare_jid(from ? from : purple_account_get_username(account));
+
+	if(from == NULL) {
+		from = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	}
+	bare_jid = jabber_get_bare_jid(from);
 
 	/* TODO: Is the query xmlns='vcard-temp' version of this still necessary? */
 	if((vcard = purple_xmlnode_get_child(packet, "vCard")) ||
