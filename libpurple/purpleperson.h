@@ -180,6 +180,18 @@ gboolean purple_person_remove_contact_info(PurplePerson *person, PurpleContactIn
  */
 PurpleContactInfo *purple_person_get_priority_contact_info(PurplePerson *person);
 
+/*
+ * purple_person_has_contacts:
+ * @person: The instance.
+ *
+ * Gets whether or not @person has any contacts.
+ *
+ * Returns: %TRUE if @person has at least one contact, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_person_has_contacts(PurplePerson *person);
+
 G_END_DECLS
 
 #endif /* PURPLE_PERSON_H */

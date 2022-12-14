@@ -347,6 +347,123 @@ test_purple_contact_manager_add_buddy(void) {
 	g_clear_object(&buddy);
 	g_clear_object(&contact);
 }
+
+/******************************************************************************
+ * Person Tests
+ *****************************************************************************/
+static void
+test_purple_contact_manager_person_add_remove(void) {
+	PurpleContactManager *manager = NULL;
+	PurplePerson *person = NULL;
+	GListModel *model = NULL;
+	int added_called = 0;
+	int removed_called = 0;
+
+	manager = g_object_new(PURPLE_TYPE_CONTACT_MANAGER, NULL);
+	model = G_LIST_MODEL(manager);
+
+	g_assert_true(PURPLE_IS_CONTACT_MANAGER(manager));
+
+	/* Wire up our signals. */
+	g_signal_connect(manager, "person-added",
+	                 G_CALLBACK(test_purple_contact_manager_increment_cb),
+	                 &added_called);
+	g_signal_connect(manager, "person-removed",
+	                 G_CALLBACK(test_purple_contact_manager_increment_cb),
+	                 &removed_called);
+
+	/* Create the person and add it to the manager. */
+	person = purple_person_new();
+	purple_contact_manager_add_person(manager, person);
+
+	/* Make sure the person is available. */
+	g_assert_cmpuint(g_list_model_get_n_items(model), ==, 1);
+
+	/* Make sure the added signal was called. */
+	g_assert_cmpint(added_called, ==, 1);
+
+	/* Remove the contact. */
+	purple_contact_manager_remove_person(manager, person, FALSE);
+	g_assert_cmpint(removed_called, ==, 1);
+
+	/* Make sure the person was removed. */
+	g_assert_cmpuint(g_list_model_get_n_items(model), ==, 0);
+
+	/* Clean up.*/
+	g_clear_object(&person);
+	g_clear_object(&manager);
+}
+
+static void
+test_purple_contact_manager_person_add_via_contact_remove_person_with_contacts(void)
+{
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
+	PurplePerson *person = NULL;
+	GListModel *contacts = NULL;
+	GListModel *model = NULL;
+	int contact_added_called = 0;
+	int contact_removed_called = 0;
+	int person_added_called = 0;
+	int person_removed_called = 0;
+
+	manager = g_object_new(PURPLE_TYPE_CONTACT_MANAGER, NULL);
+	model = G_LIST_MODEL(manager);
+
+	g_assert_true(PURPLE_IS_CONTACT_MANAGER(manager));
+
+	/* Wire up our signals. */
+	g_signal_connect(manager, "added",
+	                 G_CALLBACK(test_purple_contact_manager_increment_cb),
+	                 &contact_added_called);
+	g_signal_connect(manager, "removed",
+	                 G_CALLBACK(test_purple_contact_manager_increment_cb),
+	                 &contact_removed_called);
+	g_signal_connect(manager, "person-added",
+	                 G_CALLBACK(test_purple_contact_manager_increment_cb),
+	                 &person_added_called);
+	g_signal_connect(manager, "person-removed",
+	                 G_CALLBACK(test_purple_contact_manager_increment_cb),
+	                 &person_removed_called);
+
+	/* Create all of our objects. */
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, "foo");
+	person = purple_person_new();
+	purple_person_add_contact_info(person, contact);
+
+	/* Add the contact to the manager. */
+	purple_contact_manager_add(manager, contact);
+
+	/* Make sure the contact is available. */
+	contacts = purple_contact_manager_get_all(manager, account);
+	g_assert_nonnull(contacts);
+
+	/* Make sure the contact and the person were added. */
+	g_assert_cmpuint(g_list_model_get_n_items(contacts), ==, 1);
+	g_assert_cmpuint(g_list_model_get_n_items(model), ==, 1);
+
+	/* Make sure the added signals were called. */
+	g_assert_cmpint(contact_added_called, ==, 1);
+	g_assert_cmpint(person_added_called, ==, 1);
+
+	/* Remove the person and the contacts. */
+	purple_contact_manager_remove_person(manager, person, TRUE);
+	g_assert_cmpint(contact_removed_called, ==, 1);
+	g_assert_cmpint(person_removed_called, ==, 1);
+
+	/* Make sure the person and contact were removed. */
+	g_assert_cmpuint(g_list_model_get_n_items(model), ==, 0);
+	g_assert_cmpuint(g_list_model_get_n_items(contacts), ==, 0);
+
+	/* Clean up.*/
+	g_clear_object(&account);
+	g_clear_object(&contact);
+	g_clear_object(&person);
+	g_clear_object(&manager);
+}
+
 /******************************************************************************
  * Main
  *****************************************************************************/
@@ -375,6 +492,11 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/contact-manager/add-buddy",
 	                test_purple_contact_manager_add_buddy);
+
+	g_test_add_func("/contact-manager/person/add-remove",
+	                test_purple_contact_manager_person_add_remove);
+	g_test_add_func("/contact-manager/person/add-via-contact-remove-person-with-contacts",
+	                test_purple_contact_manager_person_add_via_contact_remove_person_with_contacts);
 
 	return g_test_run();
 }

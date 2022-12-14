@@ -452,3 +452,10 @@ purple_person_get_priority_contact_info(PurplePerson *person) {
 
 	return g_ptr_array_index(person->contacts, 0);
 }
+
+gboolean
+purple_person_has_contacts(PurplePerson *person) {
+	g_return_val_if_fail(PURPLE_IS_PERSON(person), FALSE);
+
+	return person->contacts->len > 0;
+}

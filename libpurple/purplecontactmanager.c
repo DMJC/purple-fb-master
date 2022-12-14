@@ -27,6 +27,8 @@
 enum {
 	SIG_ADDED,
 	SIG_REMOVED,
+	SIG_PERSON_ADDED,
+	SIG_PERSON_REMOVED,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -35,9 +37,16 @@ struct _PurpleContactManager {
 	GObject parent;
 
 	GHashTable *accounts;
+
+	GPtrArray *people;
 };
 
 static PurpleContactManager *default_manager = NULL;
+
+/* Necessary prototype. */
+static void purple_contact_manager_contact_person_changed_cb(GObject *obj,
+                                                             GParamSpec *pspec,
+                                                             gpointer data);
 
 /******************************************************************************
  * Helpers
@@ -127,9 +136,72 @@ purple_contact_manager_convert_avatar_to_icon(G_GNUC_UNUSED GBinding *binding,
 }
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+purple_contact_manager_contact_person_changed_cb(GObject *obj,
+                                                 G_GNUC_UNUSED GParamSpec *pspec,
+                                                 gpointer data)
+{
+	PurpleContact *contact = PURPLE_CONTACT(obj);
+	PurpleContactManager *manager = data;
+	PurplePerson *person = NULL;
+
+	person = purple_contact_info_get_person(PURPLE_CONTACT_INFO(contact));
+	/* If the person is now NULL, we leaving the existing person in place as
+	 * we don't want to potentially delete user data.
+	 */
+	if(!PURPLE_IS_PERSON(person)) {
+		return;
+	}
+
+	/* At this point the person changed or is new so we need to add the new
+	 * person.
+	 */
+	purple_contact_manager_add_person(manager, person);
+}
+
+/******************************************************************************
+ * GListModel Implementation
+ *****************************************************************************/
+static GType
+purple_contact_manager_get_item_type(G_GNUC_UNUSED GListModel *list) {
+	return PURPLE_TYPE_PERSON;
+}
+
+static guint
+purple_contact_manager_get_n_items(GListModel *list) {
+	PurpleContactManager *manager = PURPLE_CONTACT_MANAGER(list);
+
+	return manager->people->len;
+}
+
+static gpointer
+purple_contact_manager_get_item(GListModel *list, guint position) {
+	PurpleContactManager *manager = PURPLE_CONTACT_MANAGER(list);
+	PurpleContact *contact = NULL;
+
+	if(position < manager->people->len) {
+		contact = g_object_ref(g_ptr_array_index(manager->people, position));
+	}
+
+	return contact;
+}
+
+static void
+pidgin_contact_manager_list_model_iface_init(GListModelInterface *iface) {
+	iface->get_item_type = purple_contact_manager_get_item_type;
+	iface->get_n_items = purple_contact_manager_get_n_items;
+	iface->get_item = purple_contact_manager_get_item;
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleContactManager, purple_contact_manager, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE_WITH_CODE(PurpleContactManager, purple_contact_manager,
+                              G_TYPE_OBJECT,
+                              G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL,
+                                                    pidgin_contact_manager_list_model_iface_init))
 
 static void
 purple_contact_manager_dispose(GObject *obj) {
@@ -138,6 +210,11 @@ purple_contact_manager_dispose(GObject *obj) {
 	manager = PURPLE_CONTACT_MANAGER(obj);
 
 	g_hash_table_remove_all(manager->accounts);
+
+	if(manager->people != NULL) {
+		g_ptr_array_free(manager->people, TRUE);
+		manager->people = NULL;
+	}
 
 	G_OBJECT_CLASS(purple_contact_manager_parent_class)->dispose(obj);
 }
@@ -157,6 +234,12 @@ static void
 purple_contact_manager_init(PurpleContactManager *manager) {
 	manager->accounts = g_hash_table_new_full(g_direct_hash, g_direct_equal,
 	                                          g_object_unref, g_object_unref);
+
+	/* 100 Seems like a reasonable default of the number people on your contact
+	 * list. - gk 20221109
+	 */
+	manager->people = g_ptr_array_new_full(100,
+	                                       (GDestroyNotify)g_object_unref);
 }
 
 static void
@@ -207,6 +290,51 @@ purple_contact_manager_class_init(PurpleContactManagerClass *klass) {
 		G_TYPE_NONE,
 		1,
 		PURPLE_TYPE_CONTACT);
+
+	/**
+	 * PurpleContactManager::person-added:
+	 * @manager: The instance.
+	 * @person: The [class@Purple.Person] that was added.
+	 *
+	 * Emitted after @person has been added to @manager. This is typically done
+	 * when a contact is added via [method@Purple.ContactManager.add] but can
+	 * also happen if [method@Purple.ContactManager.add_person] is called.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_PERSON_ADDED] = g_signal_new_class_handler(
+		"person-added",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		PURPLE_TYPE_PERSON);
+
+	/**
+	 * PurpleContactManager::person-removed:
+	 * @manager: The instance.
+	 * @person: The [class@Purple.Person] that was removed.
+	 *
+	 * Emitted after @person has been removed from @manager. This typically
+	 * happens when [method@Purple.ContactManager.remove_person] is called.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_PERSON_REMOVED] = g_signal_new_class_handler(
+		"person-removed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		PURPLE_TYPE_PERSON);
 }
 
 /******************************************************************************
@@ -274,6 +402,21 @@ purple_contact_manager_add(PurpleContactManager *manager,
 	}
 
 	if(added) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(contact);
+		PurplePerson *person = purple_contact_info_get_person(info);
+
+		/* If the contact already has a person, add the person to our list of
+		 * people.
+		 */
+		if(PURPLE_IS_PERSON(person)) {
+			purple_contact_manager_add_person(manager, person);
+		}
+
+		/* Add a notify on the person property to track changes. */
+		g_signal_connect_object(contact, "notify::person",
+		                        G_CALLBACK(purple_contact_manager_contact_person_changed_cb),
+		                        manager, 0);
+
 		g_signal_emit(manager, signals[SIG_ADDED], 0, contact);
 	}
 }
@@ -485,3 +628,67 @@ purple_contact_manager_add_buddy(PurpleContactManager *manager,
 	/* purple_contact_manager_add adds its own reference, so free our copy. */
 	g_clear_object(&contact);
 }
+
+void
+purple_contact_manager_add_person(PurpleContactManager *manager,
+                                  PurplePerson *person)
+{
+	guint index = 0;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_MANAGER(manager));
+	g_return_if_fail(PURPLE_IS_PERSON(person));
+
+	/* If the person is already known, bail. */
+	if(g_ptr_array_find(manager->people, person, &index)) {
+		return;
+	}
+
+	/* Add the person and emit our signals. */
+	g_ptr_array_add(manager->people, g_object_ref(person));
+	g_list_model_items_changed(G_LIST_MODEL(manager), index, 0, 1);
+	g_signal_emit(manager, signals[SIG_PERSON_ADDED], 0, person);
+}
+
+void
+purple_contact_manager_remove_person(PurpleContactManager *manager,
+                                     PurplePerson *person,
+                                     gboolean remove_contacts)
+{
+	guint index = 0;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_MANAGER(manager));
+	g_return_if_fail(PURPLE_IS_PERSON(person));
+
+	if(!g_ptr_array_find(manager->people, person, &index)) {
+		return;
+	}
+
+	if(remove_contacts) {
+		guint n = g_list_model_get_n_items(G_LIST_MODEL(person));
+
+		for(guint i = 0; i < n; i++) {
+			PurpleContact *contact = NULL;
+
+			contact = g_list_model_get_item(G_LIST_MODEL(person), i);
+			if(PURPLE_IS_CONTACT(contact)) {
+				purple_contact_manager_remove(manager, contact);
+				g_object_unref(contact);
+			}
+		}
+	}
+
+	/* Add a ref to the person, so we can emit the removed signal after it
+	 * was actually removed, as our GPtrArray may be holding the last
+	 * reference.
+	 */
+	g_object_ref(person);
+
+	g_ptr_array_remove_index(manager->people, index);
+
+	g_list_model_items_changed(G_LIST_MODEL(manager), index, 1, 0);
+
+	/* Emit the removed signal and clear our temporary reference. */
+	g_signal_emit(manager, signals[SIG_PERSON_REMOVED], 0, person);
+	g_object_unref(person);
+}
+

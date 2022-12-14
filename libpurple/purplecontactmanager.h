@@ -158,6 +158,36 @@ PurpleContact *purple_contact_manager_find_with_id(PurpleContactManager *manager
 G_DEPRECATED
 void purple_contact_manager_add_buddy(PurpleContactManager *manager, PurpleBuddy *buddy);
 
+/**
+ * purple_contact_manager_add_person:
+ * @manager: The instance.
+ * @person: The [class@Purple.Person to add].
+ *
+ * Adds all of the contacts contained in @person to @manager.
+ *
+ * This function is mostly intended for unit testing and importing. You
+ * typically you won't need to call this directly as @manager will
+ * automatically add the [class@Purple.Person] instance when
+ * [method@Purple.ContactManager.add] is called.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_manager_add_person(PurpleContactManager *manager, PurplePerson *person);
+
+/**
+ * purple_contact_manager_remove_person:
+ * @manager: The instance.
+ * @person: The [class@Purple.Person] to remove.
+ * @remove_contacts: Whether or not the contacts should be removed from
+ *                   @manager.
+ *
+ * Removes @person from @manager optionally removing all of the contacts
+ * contained in @person as well if @remove_contacts is %TRUE.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_manager_remove_person(PurpleContactManager *manager, PurplePerson *person, gboolean remove_contacts);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONTACT_MANAGER_H */
