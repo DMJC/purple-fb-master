@@ -225,10 +225,12 @@ buddy_to_xmlnode(PurpleBuddy *buddy)
 {
 	PurpleXmlNode *node, *child;
 	PurpleAccount *account = purple_buddy_get_account(buddy);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	const char *alias = purple_buddy_get_local_alias(buddy);
 
 	node = purple_xmlnode_new("buddy");
-	purple_xmlnode_set_attrib(node, "account", purple_account_get_username(account));
+	purple_xmlnode_set_attrib(node, "account",
+	                          purple_contact_info_get_username(info));
 	purple_xmlnode_set_attrib(node, "proto", purple_account_get_protocol_id(account));
 
 	child = purple_xmlnode_new_child(node, "name");
@@ -287,13 +289,16 @@ chat_to_xmlnode(PurpleChat *chat)
 {
 	PurpleXmlNode *node, *child;
 	PurpleAccount *account = purple_chat_get_account(chat);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	gchar *alias;
 
 	g_object_get(chat, "alias", &alias, NULL);
 
 	node = purple_xmlnode_new("chat");
-	purple_xmlnode_set_attrib(node, "proto", purple_account_get_protocol_id(account));
-	purple_xmlnode_set_attrib(node, "account", purple_account_get_username(account));
+	purple_xmlnode_set_attrib(node, "proto",
+	                          purple_account_get_protocol_id(account));
+	purple_xmlnode_set_attrib(node, "account",
+	                          purple_contact_info_get_username(info));
 
 	if (alias != NULL)
 	{

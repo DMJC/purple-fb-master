@@ -425,6 +425,7 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
                                     PurpleMessage *message, GError **error)
 {
 	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
 	PurpleSqliteHistoryAdapter *sqlite_adapter = NULL;
 	sqlite3_stmt *prepared_statement = NULL;
 	gchar *timestamp = NULL;
@@ -457,12 +458,13 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
 	}
 
 	account = purple_conversation_get_account(conversation);
+	info = PURPLE_CONTACT_INFO(account);
 
 	sqlite3_bind_text(prepared_statement,
 	                  1, purple_account_get_protocol_name(account), -1,
 	                  SQLITE_STATIC);
 	sqlite3_bind_text(prepared_statement,
-	                  2, purple_account_get_username(account), -1,
+	                  2, purple_contact_info_get_username(info), -1,
 	                  SQLITE_STATIC);
 	sqlite3_bind_text(prepared_statement,
 	                  3, purple_conversation_get_name(conversation), -1,

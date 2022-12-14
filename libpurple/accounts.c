@@ -209,9 +209,10 @@ parse_proxy_info(PurpleXmlNode *node, PurpleAccount *account)
 			purple_proxy_info_set_proxy_type(proxy_info, PURPLE_PROXY_TYPE_USE_ENVVAR);
 		else
 		{
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 			purple_debug_error("accounts", "Invalid proxy type found when "
-							 "loading account information for %s\n",
-							 purple_account_get_username(account));
+			                   "loading account information for %s\n",
+			                   purple_contact_info_get_username(info));
 		}
 		g_free(data);
 	}
@@ -278,12 +279,14 @@ parse_current_error(PurpleXmlNode *node, PurpleAccount *account)
 	type = atoi(type_str);
 	g_free(type_str);
 
-	if (type > PURPLE_CONNECTION_ERROR_OTHER_ERROR)
-	{
+	if(type > PURPLE_CONNECTION_ERROR_OTHER_ERROR) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 		purple_debug_error("accounts",
-			"Invalid PurpleConnectionError value %d found when "
-			"loading account information for %s\n",
-			type, purple_account_get_username(account));
+		                   "Invalid PurpleConnectionError value %d found when "
+		                   "loading account information for %s\n",
+		                   type,
+		                   purple_contact_info_get_username(info));
 		type = PURPLE_CONNECTION_ERROR_OTHER_ERROR;
 	}
 
@@ -368,8 +371,9 @@ parse_account(PurpleXmlNode *node)
 	child = purple_xmlnode_get_child(node, "alias");
 	if ((child != NULL) && ((data = purple_xmlnode_get_data(child)) != NULL))
 	{
-		if (*data != '\0')
-			purple_account_set_private_alias(ret, data);
+		if (*data != '\0') {
+			purple_contact_info_set_alias(PURPLE_CONTACT_INFO(ret), data);
+		}
 		g_free(data);
 	}
 
@@ -461,9 +465,11 @@ purple_accounts_delete_set(GObject *obj, GAsyncResult *res, gpointer d) {
 
 	r = purple_credential_manager_clear_password_finish(manager, res, &error);
 	if(r != TRUE) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 		purple_debug_warning("accounts",
 		                     "Failed to remove password for account %s: %s",
-		                     purple_account_get_name_for_display(account),
+		                     purple_contact_info_get_name_for_display(info),
 		                     (error != NULL) ? error->message : "Unknown error");
 
 		g_clear_error(&error);

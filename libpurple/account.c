@@ -164,8 +164,10 @@ purple_account_real_connect(PurpleAccount *account, const char *password) {
 	connection = purple_protocol_create_connection(protocol, account, password,
 	                                               &error);
 	if(error != NULL) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 		purple_debug_warning("failed to create connection for %s: %s",
-		                     purple_account_get_username(account),
+		                     purple_contact_info_get_username(info),
 		                     error->message);
 		g_clear_error(&error);
 
@@ -208,7 +210,8 @@ request_password_write_cb(GObject *obj, GAsyncResult *res, gpointer data) {
 	g_object_set_data(G_OBJECT(account), "_tmp_password", NULL);
 
 	if(!purple_credential_manager_write_password_finish(manager, res, &error)) {
-		const gchar *name = purple_account_get_name_for_display(account);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+		const gchar *name = purple_contact_info_get_name_for_display(info);
 
 		/* we can't error an account without a connection, so we just drop a
 		 * debug message for now and continue to connect the account.
@@ -555,6 +558,7 @@ setting_to_xmlnode(gpointer key, gpointer value, gpointer user_data)
 PurpleXmlNode *
 _purple_account_to_xmlnode(PurpleAccount *account)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	PurpleXmlNode *node, *child;
 	gchar *data = NULL;
 	const char *tmp;
@@ -562,17 +566,19 @@ _purple_account_to_xmlnode(PurpleAccount *account)
 
 	node = purple_xmlnode_new("account");
 
-	tmp = purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
+	tmp = purple_contact_info_get_id(info);
 	if(tmp != NULL) {
 		child = purple_xmlnode_new_child(node, "id");
 		purple_xmlnode_insert_data(child, tmp, -1);
 	}
 
 	child = purple_xmlnode_new_child(node, "protocol");
-	purple_xmlnode_insert_data(child, purple_account_get_protocol_id(account), -1);
+	purple_xmlnode_insert_data(child, purple_account_get_protocol_id(account),
+	                           -1);
 
 	child = purple_xmlnode_new_child(node, "name");
-	purple_xmlnode_insert_data(child, purple_account_get_username(account), -1);
+	purple_xmlnode_insert_data(child, purple_contact_info_get_username(info),
+	                           -1);
 
 	child = purple_xmlnode_new_child(node, "require_password");
 	data = g_strdup_printf("%d", account->require_password);
@@ -584,7 +590,7 @@ _purple_account_to_xmlnode(PurpleAccount *account)
 	purple_xmlnode_insert_data(child, data, -1);
 	g_clear_pointer(&data, g_free);
 
-	tmp = purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
+	tmp = purple_contact_info_get_alias(info);
 	if(tmp != NULL) {
 		child = purple_xmlnode_new_child(node, "alias");
 		purple_xmlnode_insert_data(child, tmp, -1);
@@ -988,7 +994,7 @@ purple_account_connect(PurpleAccount *account)
 
 	purple_account_clear_current_error(account);
 
-	username = purple_account_get_username(account);
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 
 	if (!purple_account_get_enabled(account)) {
 		purple_debug_info("account",
@@ -1037,7 +1043,7 @@ purple_account_disconnect(PurpleAccount *account)
 	g_return_if_fail(!purple_account_is_disconnecting(account));
 	g_return_if_fail(!purple_account_is_disconnected(account));
 
-	username = purple_account_get_username(account);
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 	purple_debug_info("account", "Disconnecting account %s (%p)\n",
 	                  username ? username : "(null)", account);
 
@@ -1045,7 +1051,7 @@ purple_account_disconnect(PurpleAccount *account)
 
 	if(!purple_connection_disconnect(account->gc, &error)) {
 		g_warning("error while disconnecting account %s (%s): %s",
-		          purple_account_get_username(account),
+		          username,
 		          purple_account_get_protocol_id(account),
 		          (error != NULL) ? error->message : "unknown error");
 		g_clear_error(&error);
@@ -1087,7 +1093,7 @@ purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
 	/* Close any previous password request windows */
 	purple_request_close_with_handle(account);
 
-	username = purple_account_get_username(account);
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 	primary = g_strdup_printf(_("Enter password for %s (%s)"), username,
 								  purple_account_get_protocol_name(account));
 
@@ -1155,7 +1161,7 @@ purple_account_request_change_password(PurpleAccount *account)
 	purple_request_field_group_add_field(group, field);
 
 	g_snprintf(primary, sizeof(primary), _("Change password for %s"),
-			   purple_account_get_username(account));
+			   purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)));
 
 	/* I'm sticking this somewhere in the code: bologna */
 
@@ -1179,7 +1185,7 @@ purple_account_request_change_user_info(PurpleAccount *account)
 
 	g_snprintf(primary, sizeof(primary),
 			   _("Change user information for %s"),
-			   purple_account_get_username(account));
+			   purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)));
 
 	purple_request_input(gc, _("Set User Info"), primary, NULL,
 					   purple_account_get_user_info(account),
@@ -1359,12 +1365,15 @@ purple_account_set_status_attrs(PurpleAccount *account, const char *status_id,
 	g_return_if_fail(status_id != NULL);
 
 	status = purple_account_get_status(account, status_id);
-	if (status == NULL)
-	{
+	if(status == NULL) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 		purple_debug_error("account",
-				   "Invalid status ID '%s' for account %s (%s)\n",
-				   status_id, purple_account_get_username(account),
-				   purple_account_get_protocol_id(account));
+		                   "Invalid status ID '%s' for account %s (%s)\n",
+		                   status_id,
+		                   purple_contact_info_get_username(info),
+		                   purple_account_get_protocol_id(account));
+
 		return;
 	}
 
@@ -1910,7 +1919,7 @@ purple_account_thaw_notify_settings(PurpleAccount *account) {
 
 		g_critical("purple_account_settings_thaw_notify called for account %s "
 		           "(%s) when not frozen",
-		           purple_account_get_username(account),
+		           purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)),
 		           purple_account_get_protocol_id(account));
 
 		return;

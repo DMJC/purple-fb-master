@@ -92,7 +92,7 @@ common_send(PurpleConversation *conv, const gchar *message,
 	gc = purple_account_get_connection(account);
 	g_return_if_fail(PURPLE_IS_CONNECTION(gc));
 
-	me = purple_account_get_name_for_display(account);
+	me = purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(account));
 
 	/* Always linkify the text for display, unless we're explicitly asked to do
 	 * otherwise. */
@@ -644,22 +644,10 @@ _purple_conversation_write_common(PurpleConversation *conv,
 		   !(purple_protocol_get_options(protocol) & OPT_PROTO_UNIQUE_CHATNAME))
 		{
 			if(purple_message_get_flags(pmsg) & PURPLE_MESSAGE_SEND) {
+				PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 				const gchar *alias;
 
-				b = purple_blist_find_buddy(account,
-				                            purple_account_get_username(account));
-
-				if(purple_account_get_private_alias(account) != NULL) {
-					alias = purple_account_get_private_alias(account);
-				} else if (b != NULL && !purple_strequal(purple_buddy_get_name(b),
-					purple_buddy_get_contact_alias(b)))
-				{
-					alias = purple_buddy_get_contact_alias(b);
-				} else if (purple_connection_get_display_name(gc) != NULL) {
-					alias = purple_connection_get_display_name(gc);
-				} else {
-					alias = purple_account_get_username(account);
-				}
+				alias = purple_contact_info_get_name_for_display(info);
 
 				purple_message_set_author_alias(pmsg, alias);
 			} else if (purple_message_get_flags(pmsg) & PURPLE_MESSAGE_RECV) {

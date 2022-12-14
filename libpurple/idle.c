@@ -59,16 +59,19 @@ static time_t last_active_time = 0;
 static void
 set_account_idle(PurpleAccount *account, int time_idle)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	PurplePresence *presence;
 
 	presence = purple_account_get_presence(account);
 
-	if (purple_presence_is_idle(presence))
+	if(purple_presence_is_idle(presence)) {
 		/* This account is already idle! */
 		return;
+	}
 
 	purple_debug_info("idle", "Setting %s idle %d seconds\n",
-			   purple_account_get_username(account), time_idle);
+	                  purple_contact_info_get_username(info),
+	                  time_idle);
 	purple_presence_set_idle(presence, TRUE, time(NULL) - time_idle);
 	idled_accts = g_list_prepend(idled_accts, account);
 }
@@ -76,18 +79,20 @@ set_account_idle(PurpleAccount *account, int time_idle)
 static void
 set_account_unidle(PurpleAccount *account)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	PurplePresence *presence;
 
 	presence = purple_account_get_presence(account);
 
 	idled_accts = g_list_remove(idled_accts, account);
 
-	if (!purple_presence_is_idle(presence))
+	if(!purple_presence_is_idle(presence)) {
 		/* This account is already unidle! */
 		return;
+	}
 
 	purple_debug_info("idle", "Setting %s unidle\n",
-			   purple_account_get_username(account));
+	                  purple_contact_info_get_username(info));
 	purple_presence_set_idle(presence, FALSE, 0);
 }
 

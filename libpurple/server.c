@@ -482,6 +482,7 @@ void purple_serv_got_chat_invite(PurpleConnection *gc, const char *name,
 						  const char *who, const char *message, GHashTable *data)
 {
 	PurpleAccount *account;
+	PurpleContactInfo *info = NULL;
 	struct chat_invite_data *cid;
 	int plugin_return;
 
@@ -489,6 +490,7 @@ void purple_serv_got_chat_invite(PurpleConnection *gc, const char *name,
 	g_return_if_fail(who != NULL);
 
 	account = purple_connection_get_account(gc);
+	info = PURPLE_CONTACT_INFO(account);
 	cid = g_new0(struct chat_invite_data, 1);
 
 	plugin_return = GPOINTER_TO_INT(purple_signal_emit_return_1(
@@ -502,17 +504,18 @@ void purple_serv_got_chat_invite(PurpleConnection *gc, const char *name,
 	{
 		char *buf2;
 
-		if (message != NULL)
-		{
-			buf2 = g_strdup_printf(
-				   _("%s has invited %s to the chat room %s:\n%s"),
-				   who, purple_account_get_username(account), name, message);
+		if(message != NULL) {
+			buf2 = g_strdup_printf(_("%s has invited %s to the chat room "
+			                         "%s:\n%s"),
+			                       who,
+			                       purple_contact_info_get_username(info),
+			                       name, message);
+		} else {
+			buf2 = g_strdup_printf(_("%s has invited %s to the chat room %s\n"),
+			                       who,
+			                       purple_contact_info_get_username(info),
+			                       name);
 		}
-		else
-			buf2 = g_strdup_printf(
-				   _("%s has invited %s to the chat room %s\n"),
-				   who, purple_account_get_username(account), name);
-
 
 		purple_request_accept_cancel(gc, NULL,
 			_("Accept chat invitation?"), buf2,
@@ -653,8 +656,9 @@ void purple_serv_got_chat_in(PurpleConnection *g, int id, const char *who,
 		pmsg = purple_message_new_incoming(who, message, flags, mtime);
 	} else {
 		PurpleAccount *account = purple_connection_get_account(g);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		GDateTime *dt = g_date_time_new_from_unix_local((gint64)mtime);
-		const gchar *me = purple_account_get_name_for_display(account);
+		const gchar *me = purple_contact_info_get_name_for_display(info);
 
 		pmsg = purple_message_new_outgoing(me, who, message, flags);
 		purple_message_set_timestamp(pmsg, dt);

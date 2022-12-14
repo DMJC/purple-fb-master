@@ -173,13 +173,14 @@ purple_buddy_constructed(GObject *object) {
 		/* If there is no id for the user, generate a SHA256 based on the
 		 * account_id and the username.
 		 */
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(priv->account);
 		GChecksum *sum = g_checksum_new(G_CHECKSUM_SHA256);
 		const guchar *data = NULL;
 
 		data = (const guchar *)purple_account_get_protocol_id(priv->account);
 		g_checksum_update(sum, data, -1);
 
-		data = (const guchar *)purple_account_get_username(priv->account);
+		data = (const guchar *)purple_contact_info_get_username(info);
 		g_checksum_update(sum, data, -1);
 
 		data = (const guchar *)priv->name;

@@ -401,8 +401,11 @@ purple_account_manager_reorder(PurpleAccountManager *manager,
 			new_index--;
 		}
 	} else {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 		g_critical("Unregistered account (%s) found during reorder!",
-		           purple_account_get_username(account));
+		           purple_contact_info_get_username(info));
+
 		return;
 	}
 
@@ -422,8 +425,9 @@ purple_account_manager_find_by_id(PurpleAccountManager *manager,
 
 	for(guint index = 0; index < manager->accounts->len; index++) {
 		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 
-		if(purple_strequal(purple_account_get_id(account), id)) {
+		if(purple_strequal(purple_contact_info_get_id(info), id)) {
 			return account;
 		}
 	}
@@ -441,6 +445,7 @@ purple_account_manager_find(PurpleAccountManager *manager,
 
 	for(guint index = 0; index < manager->accounts->len; index++) {
 		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		gchar *normalized = NULL;
 		const gchar *existing_protocol_id = NULL;
 		const gchar *existing_username = NULL;
@@ -453,7 +458,7 @@ purple_account_manager_find(PurpleAccountManager *manager,
 		}
 
 		/* Finally verify the username. */
-		existing_username = purple_account_get_username(account);
+		existing_username = purple_contact_info_get_username(info);
 		normalized = g_strdup(purple_normalize(account, username));
 		existing_normalized = purple_normalize(account, existing_username);
 

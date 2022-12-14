@@ -206,7 +206,8 @@ purple_chat_conversation_constructed(GObject *obj) {
 	if(display_name != NULL) {
 		purple_chat_conversation_set_nick(chat, display_name);
 	} else {
-		const gchar *username = purple_account_get_username(account);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+		const gchar *username = purple_contact_info_get_username(info);
 
 		purple_chat_conversation_set_nick(chat, username);
 	}
@@ -415,18 +416,19 @@ purple_chat_conversation_new(PurpleAccount *account, const gchar *name) {
 
 	connection = purple_account_get_connection(account);
 	if(!PURPLE_IS_CONNECTION(connection)) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		purple_debug_warning("chat-conversation", "Refusing to create chat "
 		                     "for disconnected account %s",
-		                     purple_account_get_username(account));
+		                     purple_contact_info_get_username(info));
 		return NULL;
 	}
 
-	return PURPLE_CONVERSATION(g_object_new(
+	return g_object_new(
 		PURPLE_TYPE_CHAT_CONVERSATION,
 		"account", account,
 		"name", name,
 		"title", name,
-		NULL));
+		NULL);
 }
 
 GList *

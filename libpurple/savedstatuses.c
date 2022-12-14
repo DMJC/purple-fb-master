@@ -228,15 +228,21 @@ remove_old_transient_statuses(void)
 static PurpleXmlNode *
 substatus_to_xmlnode(PurpleSavedStatusSub *substatus)
 {
+	PurpleContactInfo *info = NULL;
 	PurpleXmlNode *node, *child;
+	const char *name = NULL;
+
+	info = PURPLE_CONTACT_INFO(substatus->account);
 
 	node = purple_xmlnode_new("substatus");
 
 	child = purple_xmlnode_new_child(node, "account");
 	purple_xmlnode_set_attrib(child, "protocol", purple_account_get_protocol_id(substatus->account));
-	purple_xmlnode_insert_data(child,
-			purple_normalize(substatus->account,
-				purple_account_get_username(substatus->account)), -1);
+
+	name = purple_normalize(substatus->account,
+	                        purple_contact_info_get_username(info));
+
+	purple_xmlnode_insert_data(child, name, -1);
 
 	child = purple_xmlnode_new_child(node, "state");
 	purple_xmlnode_insert_data(child, purple_status_type_get_id(substatus->type), -1);
