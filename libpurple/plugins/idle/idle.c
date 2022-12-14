@@ -57,21 +57,22 @@ idleable_filter(PurpleAccount *account)
 static void
 set_idle_time(PurpleAccount *acct, int mins_idle)
 {
-	time_t t;
 	PurpleConnection *gc = purple_account_get_connection(acct);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
 	PurplePresence *presence = purple_account_get_presence(acct);
+	time_t t;
 
 	if (!gc)
 		return;
 
-	purple_debug_info("idle",
-			"setting idle time for %s to %d\n",
-			purple_account_get_username(acct), mins_idle);
+	purple_debug_info("idle", "setting idle time for %s to %d\n",
+	                  purple_contact_info_get_username(info), mins_idle);
 
-	if (mins_idle)
+	if (mins_idle) {
 		t = time(NULL) - (60 * mins_idle); /* subtract seconds idle from current time */
-	else
+	} else {
 		t = 0; /* time idle is irrelevant */
+	}
 
 	purple_presence_set_idle(presence, mins_idle ? TRUE : FALSE, t);
 }
@@ -79,15 +80,14 @@ set_idle_time(PurpleAccount *acct, int mins_idle)
 static void
 idle_action_ok(void *ignored, PurpleRequestFields *fields)
 {
-	int tm = purple_request_fields_get_integer(fields, "mins");
 	PurpleAccount *acct = purple_request_fields_get_account(fields, "acct");
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
+	int tm = purple_request_fields_get_integer(fields, "mins");
 
 	/* only add the account to the GList if it's not already been idled */
-	if (!unidle_filter(acct))
-	{
-		purple_debug_misc("idle",
-				"%s hasn't been idled yet; adding to list.\n",
-				purple_account_get_username(acct));
+	if(!unidle_filter(acct)) {
+		purple_debug_misc("idle", "%s hasn't been idled yet; adding to list.",
+		                  purple_contact_info_get_username(info));
 		idled_accts = g_list_append(idled_accts, acct);
 	}
 
@@ -108,8 +108,10 @@ idle_all_action_ok(void *ignored, PurpleRequestFields *fields)
 		acct = (PurpleAccount *)(iter->data);
 
 		if(acct && idleable_filter(acct)) {
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
+
 			purple_debug_misc("idle", "Idling %s.\n",
-					purple_account_get_username(acct));
+			                  purple_contact_info_get_username(info));
 
 			set_idle_time(acct, tm);
 

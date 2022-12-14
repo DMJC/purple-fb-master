@@ -59,14 +59,17 @@ G_DEFINE_DYNAMIC_TYPE(PurpleWinCred, purple_wincred,
 static gunichar2 *
 wincred_get_target_name(PurpleAccount *account, GError **error)
 {
+	PurpleContactInfo *info = NULL;
 	gchar target_name_utf8[WINCRED_MAX_TARGET_NAME];
 	gunichar2 *target_name_utf16;
 
-	g_return_val_if_fail(account != NULL, NULL);
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
+
+	info = PURPLE_CONTACT_INFO(account);
 
 	g_snprintf(target_name_utf8, WINCRED_MAX_TARGET_NAME, "libpurple_%s_%s",
 		purple_account_get_protocol_id(account),
-		purple_account_get_username(account));
+		purple_contact_info_get_username(info));
 
 	target_name_utf16 =
 	        g_utf8_to_utf16(target_name_utf8, -1, NULL, NULL, error);
@@ -104,9 +107,10 @@ purple_wincred_read_password_async(PurpleCredentialProvider *provider,
 
 		if (error_code == ERROR_NOT_FOUND) {
 			if (purple_debug_is_verbose()) {
+				PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 				purple_debug_misc("keyring-wincred",
-					"No password found for account %s\n",
-					purple_account_get_username(account));
+				                  "No password found for account %s\n",
+				                  purple_contact_info_get_username(info));
 			}
 			error = g_error_new(PURPLE_WINCRED_ERROR,
 				error_code,
@@ -150,9 +154,10 @@ purple_wincred_read_password_async(PurpleCredentialProvider *provider,
 		g_object_unref(G_OBJECT(task));
 		return;
 	} else {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		purple_debug_misc("keyring-wincred",
-			_("Got password for account %s.\n"),
-			purple_account_get_username(account));
+		                  _("Got password for account %s.\n"),
+		                  purple_contact_info_get_username(info));
 	}
 
 	g_task_return_pointer(task, password, g_free);
@@ -176,8 +181,10 @@ purple_wincred_write_password_async(PurpleCredentialProvider *provider,
                                     GCancellable *cancellable,
                                     GAsyncReadyCallback callback, gpointer data)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = NULL;
 	GError *error = NULL;
+	const char *username_utf8 = NULL;
 	gunichar2 *target_name = NULL;
 	gunichar2 *username_utf16 = NULL;
 	gunichar2 *password_utf16 = NULL;
@@ -193,8 +200,8 @@ purple_wincred_write_password_async(PurpleCredentialProvider *provider,
 		return;
 	}
 
-	username_utf16 = g_utf8_to_utf16(purple_account_get_username(account), -1,
-	                                 NULL, NULL, &error);
+	username_utf8 = purple_contact_info_get_username(info);
+	username_utf16 = g_utf8_to_utf16(username_utf8, -1, NULL, NULL, &error);
 	if (username_utf16 == NULL) {
 		g_free(target_name);
 		purple_debug_error("keyring-wincred", "Couldn't convert username");
@@ -239,7 +246,7 @@ purple_wincred_write_password_async(PurpleCredentialProvider *provider,
 		}
 	} else {
 		purple_debug_misc("keyring-wincred", "Password updated for account %s.",
-		                  purple_account_get_username(account));
+		                  purple_contact_info_get_username(info));
 	}
 
 	g_free(target_name);
@@ -285,8 +292,10 @@ purple_wincred_clear_password_async(PurpleCredentialProvider *provider,
 	}
 
 	if (CredDeleteW(target_name, CRED_TYPE_GENERIC, 0)) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 		purple_debug_misc("keyring-wincred", "Password for account %s removed",
-		                  purple_account_get_username(account));
+		                  purple_contact_info_get_username(info));
 		g_task_return_boolean(task, TRUE);
 	} else {
 		DWORD error_code = GetLastError();

@@ -70,8 +70,10 @@ purple_kwallet_get_ui_name(void) {
 
 static QString
 purple_kwallet_provider_account_key(PurpleAccount *account) {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 	return QString(purple_account_get_protocol_id(account)) + ":" +
-	               purple_account_get_username(account);
+	               purple_contact_info_get_username(info);
 }
 
 /******************************************************************************

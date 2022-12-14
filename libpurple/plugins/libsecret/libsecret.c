@@ -147,11 +147,12 @@ purple_libsecret_read_password_async(PurpleCredentialProvider *provider,
                                      GAsyncReadyCallback callback,
                                      gpointer data)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
 
 	secret_password_lookup(&purple_libsecret_schema, cancellable,
                            purple_libsecret_read_password_callback, task,
-                           "user", purple_account_get_username(account),
+                           "user", purple_contact_info_get_username(info),
                            "protocol", purple_account_get_protocol_id(account),
                            NULL);
 }
@@ -175,12 +176,13 @@ purple_libsecret_write_password_async(PurpleCredentialProvider *provider,
                                       GAsyncReadyCallback callback,
                                       gpointer data)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = NULL;
 	gchar *label = NULL;
 	const gchar *username = NULL;
 
 	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
-	username = purple_account_get_username(account);
+	username = purple_contact_info_get_username(info);
 
 	label = g_strdup_printf(_("libpurple password for account %s"), username);
 	secret_password_store(&purple_libsecret_schema,
@@ -211,11 +213,12 @@ purple_libsecret_clear_password_async(PurpleCredentialProvider *provider,
                                       GAsyncReadyCallback callback,
                                       gpointer data)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
 
 	secret_password_clear(&purple_libsecret_schema, cancellable,
 	                      purple_libsecret_clear_password_callback, task,
-	                      "user", purple_account_get_username(account),
+	                      "user", purple_contact_info_get_username(info),
 	                      "protocol", purple_account_get_protocol_id(account),
 	                      NULL);
 }
