@@ -165,12 +165,16 @@ reset_account_list(PurpleAccount *account)
 		PurpleConnection *gc = list->data;
 
 		protocol = purple_connection_get_protocol(gc);
-		if (PURPLE_CONNECTION_IS_CONNECTED(gc) &&
-		        PURPLE_PROTOCOL_IMPLEMENTS(protocol, ROOMLIST, get_list)) {
+		if(PURPLE_CONNECTION_IS_CONNECTED(gc) &&
+		   PURPLE_PROTOCOL_IMPLEMENTS(protocol, ROOMLIST, get_list))
+		{
 			PurpleAccount *account = purple_connection_get_account(gc);
-			char *text = g_strdup_printf("%s (%s)",
-					purple_account_get_username(account),
-					purple_account_get_protocol_name(account));
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+			char *text = NULL;
+
+			text = g_strdup_printf("%s (%s)",
+			                       purple_contact_info_get_username(info),
+			                       purple_account_get_protocol_name(account));
 			gnt_combo_box_add_data(accounts, account, text);
 			g_free(text);
 		}

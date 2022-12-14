@@ -64,15 +64,17 @@ typedef struct
 static GList *accountdialogs;
 
 static void
-account_add(PurpleAccount *account)
-{
-	gnt_tree_add_choice(GNT_TREE(accounts.tree), account,
-			gnt_tree_create_row(GNT_TREE(accounts.tree),
-				purple_account_get_username(account),
-				purple_account_get_protocol_name(account)),
-			NULL, NULL);
+account_add(PurpleAccount *account) {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+	GntTreeRow *row = NULL;
+
+	row = gnt_tree_create_row(GNT_TREE(accounts.tree),
+	                          purple_contact_info_get_username(info),
+	                          purple_account_get_protocol_name(account));
+
+	gnt_tree_add_choice(GNT_TREE(accounts.tree), account, row, NULL, NULL);
 	gnt_tree_set_choice(GNT_TREE(accounts.tree), account,
-			purple_account_get_enabled(account));
+	                    purple_account_get_enabled(account));
 }
 
 static void
@@ -88,6 +90,7 @@ static void
 save_account_cb(AccountEditDialog *dialog)
 {
 	PurpleAccount *account;
+	PurpleContactInfo *info = NULL;
 	PurpleProtocol *protocol;
 	const char *value;
 	GString *username;
@@ -136,14 +139,17 @@ save_account_cb(AccountEditDialog *dialog)
 		PurpleAccountManager *manager = purple_account_manager_get_default();
 
 		account = purple_account_new(username->str, purple_protocol_get_id(protocol));
+		info = PURPLE_CONTACT_INFO(account);
 		purple_account_manager_add(manager, account);
 	} else {
 		account = dialog->account;
+		info = PURPLE_CONTACT_INFO(account);
 
 		/* Protocol */
 		if (purple_account_is_disconnected(account)) {
-			purple_account_set_protocol_id(account, purple_protocol_get_id(protocol));
-			purple_account_set_username(account, username->str);
+			purple_account_set_protocol_id(account,
+			                               purple_protocol_get_id(protocol));
+			purple_contact_info_set_username(info, username->str);
 		} else {
 			const char *old = purple_account_get_protocol_id(account);
 			char *oldproto;
@@ -159,7 +165,7 @@ save_account_cb(AccountEditDialog *dialog)
 				return;
 			}
 
-			oldproto = g_strdup(purple_normalize(account, purple_account_get_username(account)));
+			oldproto = g_strdup(purple_normalize(account, purple_contact_info_get_username(info)));
 			if (g_utf8_collate(oldproto, purple_normalize(account, username->str))) {
 				purple_notify_error(NULL, _("Error"),
 					_("Account was not modified"),
@@ -173,14 +179,14 @@ save_account_cb(AccountEditDialog *dialog)
 				return;
 			}
 			g_free(oldproto);
-			purple_account_set_username(account, username->str);
+			purple_contact_info_set_username(info, username->str);
 		}
 	}
 	g_string_free(username, TRUE);
 
 	/* Alias */
 	value = gnt_entry_get_text(GNT_ENTRY(dialog->alias));
-	purple_account_set_private_alias(account, value);
+	purple_contact_info_set_alias(info, value);
 
 	/* Remember password and require password */
 	purple_account_set_remember_password(account,
@@ -257,7 +263,7 @@ save_account_cb(AccountEditDialog *dialog)
 	 */
 	if (dialog->account != NULL && accounts.window) {
 		gnt_tree_change_text(GNT_TREE(accounts.tree), dialog->account,
-				0, purple_account_get_username(dialog->account));
+				0, purple_contact_info_get_username(info));
 		gnt_tree_change_text(GNT_TREE(accounts.tree), dialog->account,
 				1, purple_account_get_protocol_name(dialog->account));
 	}
@@ -291,7 +297,11 @@ update_user_splits(AccountEditDialog *dialog)
 	if (!protocol)
 		return;
 
-	username = dialog->account ? g_strdup(purple_account_get_username(dialog->account)) : NULL;
+	if(PURPLE_IS_ACCOUNT(dialog->account)) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(dialog->account);
+
+		username = g_strdup(purple_contact_info_get_username(info));
+	}
 
 	splits = purple_protocol_get_user_splits(protocol);
 	for (iter = splits; iter; iter = iter->next)
@@ -611,8 +621,12 @@ edit_account(PurpleAccount *account)
 	dialog->alias = entry = gnt_entry_new(NULL);
 	gnt_box_add_widget(GNT_BOX(hbox), gnt_label_new(_("Alias:")));
 	gnt_box_add_widget(GNT_BOX(hbox), entry);
-	if (account)
-		gnt_entry_set_text(GNT_ENTRY(entry), purple_account_get_private_alias(account));
+	if(PURPLE_IS_ACCOUNT(account)) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+		const char *alias = purple_contact_info_get_alias(info);
+
+		gnt_entry_set_text(GNT_ENTRY(entry), alias);
+	}
 
 	/* User options */
 	update_user_options(dialog);
@@ -688,15 +702,19 @@ really_delete_account(PurpleAccount *account)
 static void
 delete_account_cb(GntWidget *widget, GntTree *tree)
 {
-	PurpleAccount *account;
-	char *prompt;
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
+	char *prompt = NULL;
 
-	account  = gnt_tree_get_selection_data(tree);
-	if (!account)
+	account = gnt_tree_get_selection_data(tree);
+	if(!PURPLE_IS_ACCOUNT(account)) {
 		return;
+	}
+
+	info = PURPLE_CONTACT_INFO(account);
 
 	prompt = g_strdup_printf(_("Are you sure you want to delete %s?"),
-			purple_account_get_username(account));
+	                         purple_contact_info_get_username(info));
 
 	purple_request_action(account, _("Delete Account"), prompt, NULL,
 		PURPLE_DEFAULT_ACTION_NONE,

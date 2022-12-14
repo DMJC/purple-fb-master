@@ -157,7 +157,11 @@ static char *
 userinfo_hash(PurpleAccount *account, const char *who)
 {
 	char key[256];
-	g_snprintf(key, sizeof(key), "%s - %s", purple_account_get_username(account), purple_normalize(account, who));
+
+	g_snprintf(key, sizeof(key), "%s - %s",
+	           purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)),
+	           purple_normalize(account, who));
+
 	return g_utf8_strup(key, -1);
 }
 

@@ -516,10 +516,11 @@ create_list_field(PurpleRequestField *field)
 
 static void
 add_account_to_combo(GntWidget *combo, PurpleAccount *account) {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	char *text = NULL;
 
 	text = g_strdup_printf("%s (%s)",
-	                       purple_account_get_username(account),
+	                       purple_contact_info_get_username(info),
 	                       purple_account_get_protocol_name(account));
 	gnt_combo_box_add_data(GNT_COMBO_BOX(combo), account, text);
 	g_free(text);

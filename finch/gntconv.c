@@ -233,12 +233,13 @@ find_im_with_contact(PurpleAccount *account, const char *name)
 }
 
 static char *
-get_conversation_title(PurpleConversation *conv, PurpleAccount *account)
-{
+get_conversation_title(PurpleConversation *conv, PurpleAccount *account) {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 	return g_strdup_printf(_("%s (%s -- %s)"),
-		purple_conversation_get_title(conv),
-		purple_account_get_username(account),
-		purple_account_get_protocol_name(account));
+	                       purple_conversation_get_title(conv),
+	                       purple_contact_info_get_username(info),
+	                       purple_account_get_protocol_name(account));
 }
 
 static void
@@ -537,8 +538,10 @@ generate_send_to_menu(FinchConv *ggc)
 		PurplePresence *pre = list->data;
 		PurpleBuddy *buddy = purple_buddy_presence_get_buddy(PURPLE_BUDDY_PRESENCE(pre));
 		PurpleAccount *account = purple_buddy_get_account(buddy);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		gchar *name = g_strdup(purple_buddy_get_name(buddy));
-		gchar *text = g_strdup_printf("%s (%s)", purple_buddy_get_name(buddy), purple_account_get_username(account));
+		gchar *text = g_strdup_printf("%s (%s)", purple_buddy_get_name(buddy), purple_contact_info_get_username(info));
+
 		item = gnt_menuitem_new(text);
 		g_free(text);
 		gnt_menu_add_item(GNT_MENU(sub), item);

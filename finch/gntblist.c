@@ -254,12 +254,17 @@ static gboolean default_create_tooltip(gpointer selected_row, GString **body, ch
 
 		title = g_strdup(purple_group_get_name(group));
 	} else if (PURPLE_IS_CHAT(node)) {
-		PurpleChat *chat = (PurpleChat *)node;
-		PurpleAccount *account = purple_chat_get_account(chat);
+		PurpleAccount *account = NULL;
+		PurpleContactInfo *info = NULL;
+		PurpleChat *chat = NULL;
+
+		chat = PURPLE_CHAT(node);
+		account = purple_chat_get_account(chat);
+		info = PURPLE_CONTACT_INFO(account);
 
 		g_string_append_printf(str, _("Account: %s (%s)"),
-				purple_account_get_username(account),
-				purple_account_get_protocol_name(account));
+		                       purple_contact_info_get_username(info),
+		                       purple_account_get_protocol_name(account));
 
 		title = g_strdup(purple_chat_get_name(chat));
 	} else {
@@ -1544,16 +1549,18 @@ draw_context_menu(FinchBuddyList *ggblist)
 static void
 tooltip_for_buddy(PurpleBuddy *buddy, GString *str, gboolean full)
 {
-	PurpleProtocol *protocol;
-	PurpleAccount *account;
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
 	PurpleNotifyUserInfo *user_info;
-	PurplePresence *presence;
+	PurplePresence *presence = NULL;
+	PurpleProtocol *protocol = NULL;
 	const char *alias = purple_buddy_get_alias(buddy);
 	char *tmp, *strip;
 
 	user_info = purple_notify_user_info_new();
 
 	account = purple_buddy_get_account(buddy);
+	info = PURPLE_CONTACT_INFO(account);
 	presence = purple_buddy_get_presence(buddy);
 
 	if (!full || g_utf8_collate(purple_buddy_get_name(buddy), alias)) {
@@ -1561,8 +1568,8 @@ tooltip_for_buddy(PurpleBuddy *buddy, GString *str, gboolean full)
 	}
 
 	tmp = g_strdup_printf("%s (%s)",
-			purple_account_get_username(account),
-			purple_account_get_protocol_name(account));
+	                      purple_contact_info_get_username(info),
+	                      purple_account_get_protocol_name(account));
 	purple_notify_user_info_add_pair_plaintext(user_info, _("Account"), tmp);
 	g_free(tmp);
 
@@ -2413,7 +2420,8 @@ reconstruct_accounts_menu(void) {
 #if 0
 		/* TODO: port to PurpleProtocolActions */
 		if (PURPLE_PROTOCOL_IMPLEMENTS(protocol, CLIENT, get_actions)) {
-			item = gnt_menuitem_new(purple_account_get_username(account));
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+			item = gnt_menuitem_new(purple_contact_info_get_username(info));
 			gnt_menu_add_item(GNT_MENU(sub), item);
 			build_protocol_actions(item, protocol, gc);
 		}

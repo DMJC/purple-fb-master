@@ -334,36 +334,44 @@ save_savedstatus_cb(GntWidget *button, EditStatus *edit)
 static void
 add_substatus(EditStatus *edit, PurpleAccount *account)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+	PurpleSavedStatusSub *sub = NULL;
+	GntTreeRow *row = NULL;
 	char *name;
 	const char *type = NULL, *message = NULL;
-	PurpleSavedStatusSub *sub = NULL;
 	RowInfo *key;
 
-	if (!edit || !edit->tree)
+	if(!edit || !edit->tree) {
 		return;
+	}
 
-	if (edit->saved)
+	if(edit->saved) {
 		sub = purple_savedstatus_get_substatus(edit->saved, account);
+	}
 
 	key = g_new0(RowInfo, 1);
 	key->account = account;
 
-	if (sub)
-	{
+	if(sub) {
 		key->type = purple_savedstatus_substatus_get_status_type(sub);
 		type = purple_status_type_get_name(key->type);
 		message = purple_savedstatus_substatus_get_message(sub);
 		key->message = g_strdup(message);
 	}
 
-	name = g_strdup_printf("%s (%s)", purple_account_get_username(account),
-			purple_account_get_protocol_name(account));
-	gnt_tree_add_choice(GNT_TREE(edit->tree), key,
-			gnt_tree_create_row(GNT_TREE(edit->tree),
-				name, type ? type : "", message ? message : ""), NULL, NULL);
+	name = g_strdup_printf("%s (%s)",
+	                       purple_contact_info_get_username(info),
+	                       purple_account_get_protocol_name(account));
 
-	if (sub)
+	row = gnt_tree_create_row(GNT_TREE(edit->tree), name,
+	                          type ? type : "",
+	                          message ? message : "");
+	gnt_tree_add_choice(GNT_TREE(edit->tree), key, row, NULL, NULL);
+
+	if(sub) {
 		gnt_tree_set_choice(GNT_TREE(edit->tree), key, TRUE);
+	}
+
 	g_free(name);
 }
 
@@ -406,6 +414,7 @@ popup_substatus(GntTree *tree, const char *key, EditStatus *edit)
 	{
 		EditSubStatus *sub;
 		GntWidget *window, *combo, *entry, *box, *button, *l;
+		PurpleContactInfo *info = NULL;
 		PurpleSavedStatusSub *substatus = NULL;
 		GList *iter;
 		char *name;
@@ -442,8 +451,10 @@ popup_substatus(GntTree *tree, const char *key, EditStatus *edit)
 
 		box = gnt_hbox_new(FALSE);
 		gnt_box_add_widget(GNT_BOX(box), gnt_label_new(_("Account:")));
-		name = g_strdup_printf("%s (%s)", purple_account_get_username(account),
-				purple_account_get_protocol_name(account));
+		info = PURPLE_CONTACT_INFO(account);
+		name = g_strdup_printf("%s (%s)",
+		                       purple_contact_info_get_username(info),
+		                       purple_account_get_protocol_name(account));
 		gnt_box_add_widget(GNT_BOX(box), gnt_label_new(name));
 		g_free(name);
 		gnt_box_add_widget(GNT_BOX(window), box);
