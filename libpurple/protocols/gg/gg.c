@@ -102,10 +102,12 @@ const gchar * ggp_get_imtoken(PurpleConnection *gc)
 	return NULL;
 }
 
-uin_t ggp_own_uin(PurpleConnection *gc)
-{
-	return ggp_str_to_uin(purple_account_get_username(
-		purple_connection_get_account(gc)));
+uin_t
+ggp_own_uin(PurpleConnection *gc) {
+	PurpleAccount *account = purple_connection_get_account(gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
+	return ggp_str_to_uin(purple_contact_info_get_username(info));
 }
 
 /* ---------------------------------------------------------------------- */
@@ -132,9 +134,12 @@ static void ggp_callback_buddylist_save_ok(PurpleConnection *gc, const char *fil
 			_("Buddylist saved successfully!"), NULL,
 			purple_request_cpar_from_connection(gc));
 	} else {
-		gchar *primary = g_strdup_printf(
-			_("Couldn't write buddy list for %s to %s"),
-			purple_account_get_username(account), filename);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+		gchar *primary = NULL;
+
+		primary = g_strdup_printf(_("Couldn't write buddy list for %s to %s"),
+		                          purple_contact_info_get_username(info),
+		                          filename);
 		purple_notify_error(account, _("Save Buddylist..."),
 			primary, NULL, purple_request_cpar_from_connection(gc));
 		g_free(primary);
@@ -786,6 +791,7 @@ ggp_tooltip_text(PurpleProtocolClient *client, PurpleBuddy *b,
 static void
 ggp_login(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleAccount *account) {
 	PurpleConnection *gc = purple_account_get_connection(account);
+	PurpleContactInfo *contact_info = PURPLE_CONTACT_INFO(account);
 	struct gg_login_params *glp;
 	GGPInfo *info;
 	const char *address;
@@ -825,7 +831,7 @@ ggp_login(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleAccount *account) {
 	ggp_edisc_setup(gc, resolver);
 	g_object_unref(resolver);
 
-	glp->uin = ggp_str_to_uin(purple_account_get_username(account));
+	glp->uin = ggp_str_to_uin(purple_contact_info_get_username(contact_info));
 	glp->password =
 		ggp_convert_to_cp1250(purple_connection_get_password(gc));
 
@@ -977,14 +983,16 @@ ggp_add_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
               PurpleBuddy *buddy, PurpleGroup *group, const gchar *message)
 {
 	PurpleAccount *account = purple_connection_get_account(gc);
+	PurpleContactInfo *contact_info = PURPLE_CONTACT_INFO(account);
 	GGPInfo *info = purple_connection_get_protocol_data(gc);
 	const gchar *name = purple_buddy_get_name(buddy);
 
 	gg_add_notify(info->session, ggp_str_to_uin(name));
 
 	/* gg server won't tell us our status here */
-	if (purple_strequal(purple_account_get_username(account), name))
+	if(purple_strequal(purple_contact_info_get_username(contact_info), name)) {
 		ggp_status_fake_to_self(gc);
+	}
 
 	ggp_roster_add_buddy(protocol_server, gc, buddy, group, message);
 	ggp_pubdir_request_buddy_alias(gc, buddy);

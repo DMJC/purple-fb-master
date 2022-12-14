@@ -164,12 +164,15 @@ void ggp_image_recv(PurpleConnection *gc,
 void ggp_image_send(PurpleConnection *gc,
 	const struct gg_event_image_request *image_request)
 {
+	PurpleAccount *account = purple_connection_get_account(gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GGPInfo *accdata = purple_connection_get_protocol_data(gc);
 	ggp_image_session_data *sdata = ggp_image_get_sdata(gc);
 	ggp_image_sent *sent_image;
 	PurpleConversation *conv;
 	PurpleConversationManager *manager;
 	uint64_t id;
+	uin_t sender;
 	gchar *gg_filename;
 
 	purple_debug_info("gg", "ggp_image_send: got image request "
@@ -182,9 +185,8 @@ void ggp_image_send(PurpleConnection *gc,
 
 	sent_image = g_hash_table_lookup(sdata->sent_images, &id);
 
-	if (sent_image == NULL && image_request->sender == ggp_str_to_uin(
-		purple_account_get_username(purple_connection_get_account(gc))))
-	{
+	sender = ggp_str_to_uin(purple_contact_info_get_username(info));
+	if (sent_image == NULL && image_request->sender == sender) {
 		purple_debug_misc("gg", "ggp_image_send: requested image "
 			"not found, but this may be another session request\n");
 		return;

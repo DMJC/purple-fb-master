@@ -107,15 +107,17 @@ ggp_oauth_access_token_got(GObject *source, GAsyncResult *result,
 
 	if (data->sign_url) {
 		PurpleAccount *account;
+		PurpleContactInfo *info = NULL;
 		gchar *auth;
 
 		purple_debug_misc("gg", "ggp_oauth_access_token_got: got access token, "
 		                        "returning signed url");
 
 		account = purple_connection_get_account(data->gc);
+		info = PURPLE_CONTACT_INFO(account);
 		auth = gg_oauth_generate_header(
 		        data->sign_method, data->sign_url,
-		        purple_account_get_username(account),
+		        purple_contact_info_get_username(info),
 		        purple_connection_get_password(data->gc), token, token_secret);
 		data->callback(data->gc, auth, data->user_data);
 	} else {
@@ -136,6 +138,7 @@ ggp_oauth_authorization_done(GObject *source, GAsyncResult *result,
 {
 	ggp_oauth_data *data = user_data;
 	PurpleAccount *account;
+	PurpleContactInfo *info = NULL;
 	SoupStatus status_code;
 	char *auth;
 	SoupMessage *msg = NULL;
@@ -145,6 +148,7 @@ ggp_oauth_authorization_done(GObject *source, GAsyncResult *result,
 	PURPLE_ASSERT_CONNECTION_IS_VALID(data->gc);
 
 	account = purple_connection_get_account(data->gc);
+	info = PURPLE_CONTACT_INFO(account);
 
 	status_code = soup_message_get_status(data->msg);
 	if (status_code != 302) {
@@ -159,7 +163,7 @@ ggp_oauth_authorization_done(GObject *source, GAsyncResult *result,
 	                        "requesting access token...");
 
 	auth = gg_oauth_generate_header(method, url,
-	                                purple_account_get_username(account),
+	                                purple_contact_info_get_username(info),
 	                                purple_connection_get_password(data->gc),
 	                                data->token, data->token_secret);
 
@@ -240,7 +244,7 @@ ggp_oauth_request_token_got(GObject *source, GAsyncResult *result,
 	request_data = g_strdup_printf(
 		"callback_url=http://www.mojageneracja.pl&request_token=%s&"
 		"uin=%s&password=%s", data->token,
-		purple_account_get_username(account),
+		purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)),
 		purple_connection_get_password(data->gc));
 
 	g_clear_object(&data->msg);
@@ -274,7 +278,8 @@ ggp_oauth_request(PurpleConnection *gc, ggp_oauth_request_cb callback,
 	purple_debug_misc("gg", "ggp_oauth_request: requesting token...\n");
 
 	auth = gg_oauth_generate_header(
-	        method, url, purple_account_get_username(account),
+	        method, url,
+	        purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)),
 	        purple_connection_get_password(gc), NULL, NULL);
 
 	data = g_new0(ggp_oauth_data, 1);

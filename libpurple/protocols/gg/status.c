@@ -302,6 +302,7 @@ void ggp_status_set_disconnected(PurpleAccount *account)
 void ggp_status_fake_to_self(PurpleConnection *gc)
 {
 	PurpleAccount *account = purple_connection_get_account(gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	PurpleStatus *status = purple_presence_get_active_status(
 		purple_account_get_presence(account));
 	const char *status_msg = purple_status_get_attr_string(status,
@@ -315,7 +316,7 @@ void ggp_status_fake_to_self(PurpleConnection *gc)
 	}
 
 	purple_protocol_got_user_status(account,
-		purple_account_get_username(account),
+		purple_contact_info_get_username(info),
 		purple_status_get_id(status),
 		status_msg_gg ? "message" : NULL, status_msg_gg, NULL);
 
@@ -401,13 +402,14 @@ void ggp_status_got_others_buddy(PurpleConnection *gc, uin_t uin, int status,
 	const char *descr)
 {
 	PurpleAccount *account = purple_connection_get_account(gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	PurpleBuddy *buddy = purple_blist_find_buddy(account, ggp_uin_to_str(uin));
 	const gchar *purple_status = ggp_status_to_purplestatus(status);
 	gchar *status_message = NULL;
 	gboolean is_own;
 
 	is_own = (!g_strcmp0(ggp_uin_to_str(uin),
-		purple_account_get_username(account)));
+	                     purple_contact_info_get_username(info)));
 
 	if (!buddy) {
 		if (!is_own) {
@@ -429,7 +431,7 @@ void ggp_status_got_others_buddy(PurpleConnection *gc, uin_t uin, int status,
 		}
 	}
 
-	if (uin == ggp_str_to_uin(purple_account_get_username(account))) {
+	if (uin == ggp_str_to_uin(purple_contact_info_get_username(info))) {
 		purple_debug_info("gg", "ggp_status_got_others_buddy: "
 			"own status changed to %s [%s]\n",
 			purple_status, status_message ? status_message : "");

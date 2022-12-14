@@ -240,12 +240,14 @@ static void ggp_message_got_display(PurpleConnection *gc,
 	} else if (msg->type == GGP_MESSAGE_GOT_TYPE_MULTILOGON) {
 		GDateTime *dt = NULL;
 		PurpleAccount *account = NULL;
+		PurpleContactInfo *info = NULL;
 		PurpleConversation *im = ggp_message_get_conv(gc, msg->user);
 		PurpleMessage *pmsg;
 		const gchar *me = NULL;
 
 		account = purple_connection_get_account(gc);
-		me = purple_account_get_name_for_display(account);
+		info = PURPLE_CONTACT_INFO(account);
+		me = purple_contact_info_get_name_for_display(info);
 
 		pmsg = purple_message_new_outgoing(me, NULL, msg->text, 0);
 

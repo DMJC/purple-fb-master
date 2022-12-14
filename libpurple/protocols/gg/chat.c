@@ -217,10 +217,11 @@ void ggp_chat_got_event(PurpleConnection *gc, const struct gg_event *ev)
 			purple_debug_warning("gg", "ggp_chat_got_event: "
 				"unknown update type - %d", eciu->type);
 	} else if (ev->type == GG_EVENT_CHAT_CREATED) {
-		const struct gg_event_chat_created *ecc =
-			&ev->event.chat_created;
-		uin_t me = ggp_str_to_uin(purple_account_get_username(
-			purple_connection_get_account(gc)));
+		PurpleAccount *account = purple_connection_get_account(gc);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+		const struct gg_event_chat_created *ecc = &ev->event.chat_created;
+		uin_t me = ggp_str_to_uin(purple_contact_info_get_username(info));
+
 		chat = ggp_chat_new(gc, ecc->id);
 		ggp_chat_joined(chat, me);
 		ggp_chat_open_conv(chat);
@@ -263,6 +264,8 @@ static void ggp_chat_joined(ggp_chat_local_info *chat, uin_t uin)
 
 static void ggp_chat_left(ggp_chat_local_info *chat, uin_t uin)
 {
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
 	uin_t me;
 	int idx = ggp_chat_participant_find(chat, uin);
 
@@ -281,8 +284,9 @@ static void ggp_chat_left(ggp_chat_local_info *chat, uin_t uin)
 	if (chat->conv == NULL)
 		return;
 
-	me = ggp_str_to_uin(purple_account_get_username(
-		purple_connection_get_account(chat->gc)));
+	account = purple_connection_get_account(chat->gc);
+	info = PURPLE_CONTACT_INFO(account);
+	me = ggp_str_to_uin(purple_contact_info_get_username(info));
 
 	if (me == uin) {
 		purple_conversation_write_system_message(
@@ -434,6 +438,8 @@ void
 ggp_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
                gint local_id)
 {
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *contact_info = NULL;
 	GGPInfo *info = purple_connection_get_protocol_data(gc);
 	ggp_chat_local_info *chat;
 	uin_t me;
@@ -452,8 +458,9 @@ ggp_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
 	}
 	chat->conv = NULL;
 
-	me = ggp_str_to_uin(purple_account_get_username(
-		purple_connection_get_account(chat->gc)));
+	account = purple_connection_get_account(chat->gc);
+	contact_info = PURPLE_CONTACT_INFO(account);
+	me = ggp_str_to_uin(purple_contact_info_get_username(contact_info));
 
 	ggp_chat_left(chat, me);
 	chat->left = TRUE;
@@ -486,6 +493,8 @@ gint
 ggp_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
               gint local_id, PurpleMessage *msg)
 {
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *contact_info = NULL;
 	GGPInfo *info = purple_connection_get_protocol_data(gc);
 	GDateTime *dt = NULL;
 	PurpleConversation *conv;
@@ -514,7 +523,9 @@ ggp_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
 		succ = FALSE;
 	g_free(gg_msg);
 
-	me = purple_account_get_username(purple_connection_get_account(gc));
+	account = purple_connection_get_account(gc);
+	contact_info = PURPLE_CONTACT_INFO(account);
+	me = purple_contact_info_get_username(contact_info);
 	dt = purple_message_get_timestamp(msg);
 	purple_serv_got_chat_in(gc, chat->local_id, me,
 		purple_message_get_flags(msg),
@@ -528,11 +539,13 @@ void ggp_chat_got_message(PurpleConnection *gc, uint64_t chat_id,
 	const char *message, time_t time, uin_t who)
 {
 	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
 	ggp_chat_local_info *chat;
 	uin_t me;
 
 	account = purple_connection_get_account(gc);
-	me = ggp_str_to_uin(purple_account_get_username(account));
+	info = PURPLE_CONTACT_INFO(account);
+	me = ggp_str_to_uin(purple_contact_info_get_username(info));
 
 	chat = ggp_chat_get(gc, chat_id);
 	if (!chat) {
@@ -545,10 +558,12 @@ void ggp_chat_got_message(PurpleConnection *gc, uint64_t chat_id,
 	if (who == me) {
 		GDateTime *dt = NULL;
 		PurpleMessage *pmsg;
+		const char *username = NULL;
 
-		pmsg = purple_message_new_outgoing(
-			purple_account_get_name_for_display(account),
-			ggp_uin_to_str(who), message, 0);
+		username = purple_contact_info_get_name_for_display(info);
+
+		pmsg = purple_message_new_outgoing(username, ggp_uin_to_str(who),
+		                                   message, 0);
 
 		dt = g_date_time_new_from_unix_local((gint64)time);
 		purple_message_set_timestamp(pmsg, dt);

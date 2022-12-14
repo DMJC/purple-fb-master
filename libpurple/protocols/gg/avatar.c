@@ -181,7 +181,9 @@ ggp_avatar_buddy_update(PurpleConnection *gc, uin_t uin, time_t timestamp)
 	buddy = purple_blist_find_buddy(account, ggp_uin_to_str(uin));
 
 	if (!buddy) {
-		if (ggp_str_to_uin(purple_account_get_username(account)) == uin) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
+		if (ggp_str_to_uin(purple_contact_info_get_username(info)) == uin) {
 			purple_debug_misc(
 			        "gg",
 			        "ggp_avatar_buddy_update(%p): own avatar update requested, "
@@ -288,7 +290,8 @@ ggp_avatar_own_got_token(PurpleConnection *gc, const gchar *token,
 	PurpleImage *img = _img;
 	gchar *img_data, *uin_str;
 	PurpleAccount *account = purple_connection_get_account(gc);
-	uin_t uin = ggp_str_to_uin(purple_account_get_username(account));
+	PurpleContactInfo *contact_info = PURPLE_CONTACT_INFO(account);
+	uin_t uin = ggp_str_to_uin(purple_contact_info_get_username(contact_info));
 
 	if (img != avdata->own_img) {
 		purple_debug_warning("gg", "ggp_avatar_own_got_token: "

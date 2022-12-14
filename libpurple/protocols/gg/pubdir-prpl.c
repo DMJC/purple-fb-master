@@ -886,9 +886,10 @@ static void ggp_pubdir_set_info_got_token(PurpleConnection *gc,
 static void
 ggp_pubdir_set_info_request(PurpleConnection *gc, PurpleRequestFields *fields)
 {
+	PurpleAccount *account = purple_connection_get_account(gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	gchar *url;
-	uin_t uin = ggp_str_to_uin(
-	        purple_account_get_username(purple_connection_get_account(gc)));
+	uin_t uin = ggp_str_to_uin(purple_contact_info_get_username(info));
 	ggp_pubdir_record *record = g_new0(ggp_pubdir_record, 1);
 	gchar *birth_s;
 
@@ -1003,8 +1004,10 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 void
 ggp_pubdir_set_info(PurpleConnection *gc)
 {
+	PurpleAccount *account = purple_connection_get_account(gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+
 	ggp_pubdir_get_info(gc,
-	                    ggp_str_to_uin(purple_account_get_username(
-	                            purple_connection_get_account(gc))),
+	                    ggp_str_to_uin(purple_contact_info_get_username(info)),
 	                    ggp_pubdir_set_info_dialog, NULL);
 }

@@ -417,6 +417,7 @@ static void ggp_account_chpass_dialog(PurpleConnection *gc,
 {
 	ggp_account_chpass_data *chpass_data = _chpass_data;
 	PurpleAccount *account = purple_connection_get_account(chpass_data->gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	PurpleRequestFields *fields;
 	PurpleRequestFieldGroup *main_group, *password_group, *token_group;
 	PurpleRequestField *field, *field_password;
@@ -482,7 +483,7 @@ static void ggp_account_chpass_dialog(PurpleConnection *gc,
 	chpass_data->token = token;
 
 	primary = g_strdup_printf(_("Change password for %s"),
-		purple_account_get_username(account));
+	                          purple_contact_info_get_username(info));
 
 	purple_request_fields(gc, GGP_ACCOUNT_CHPASS_TITLE, primary,
 		_("Please enter your current password and your new password."),
@@ -498,6 +499,7 @@ static void ggp_account_chpass_dialog_ok(
 	ggp_account_chpass_data *chpass_data, PurpleRequestFields *fields)
 {
 	PurpleAccount *account = purple_connection_get_account(chpass_data->gc);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	struct gg_http *h;
 	uin_t uin;
 
@@ -544,7 +546,7 @@ static void ggp_account_chpass_dialog_ok(
 		return;
 	}
 
-	uin = ggp_str_to_uin(purple_account_get_username(account));
+	uin = ggp_str_to_uin(purple_contact_info_get_username(info));
 	purple_debug_info("gg", "ggp_account_chpass_dialog_ok: validation ok "
 		"[token id=%s, value=%s]\n",
 		chpass_data->token->id, chpass_data->token_value);
