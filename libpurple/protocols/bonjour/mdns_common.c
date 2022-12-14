@@ -251,8 +251,9 @@ void
 bonjour_dns_sd_set_jid(PurpleAccount *account, const char *hostname)
 {
 	PurpleConnection *conn = purple_account_get_connection(account);
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	BonjourData *bd = purple_connection_get_protocol_data(conn);
-	const char *tmp, *account_name = purple_account_get_username(account);
+	const char *tmp, *account_name = purple_contact_info_get_username(info);
 
 	/* Previously we allowed the hostname part of the jid to be set
 	 * explicitly when it should always be the current hostname.

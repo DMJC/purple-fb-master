@@ -238,7 +238,7 @@ fb_cb_api_contacts(FbApi *api, GSList *users, gboolean complete, gpointer data)
 	acct = purple_connection_get_account(gc);
 	grp = fb_get_group(TRUE);
 	grpn = fb_get_group(FALSE);
-	alias = purple_account_get_private_alias(acct);
+	alias = purple_contact_info_get_alias(PURPLE_CONTACT_INFO(acct));
 	state = purple_connection_get_state(gc);
 
 	g_value_init(&val, FB_TYPE_ID);
@@ -251,11 +251,15 @@ fb_cb_api_contacts(FbApi *api, GSList *users, gboolean complete, gpointer data)
 		FB_ID_TO_STR(user->uid, uid);
 
 		if (G_UNLIKELY(user->uid == muid)) {
+			PurpleContactInfo *info = NULL;
+
 			if (G_UNLIKELY(alias != NULL)) {
 				continue;
 			}
 
-			purple_account_set_private_alias(acct, user->name);
+			info = PURPLE_CONTACT_INFO(acct);
+			purple_contact_info_set_alias(info, user->name);
+
 			continue;
 		}
 
@@ -663,7 +667,7 @@ fb_cb_api_thread(G_GNUC_UNUSED FbApi *api, FbApiThread *thrd, gpointer data)
 	}
 
 	if (!active) {
-		name = purple_account_get_username(acct);
+		name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(acct));
 		purple_chat_conversation_add_user(chat, name, NULL, 0, FALSE);
 	}
 
@@ -1104,7 +1108,7 @@ fb_login(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleAccount *acct) {
 	                      fata);
 
 	if (!fb_data_load(fata) || !purple_account_get_remember_password(acct)) {
-		user = purple_account_get_username(acct);
+		user = purple_contact_info_get_username(PURPLE_CONTACT_INFO(acct));
 		pass = purple_connection_get_password(gc);
 		fb_api_auth(api, user, pass);
 		return;
@@ -1430,7 +1434,7 @@ fb_chat_send(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
 	fb_api_message(api, tid, TRUE, sext);
 	g_free(sext);
 
-	name = purple_account_get_username(acct);
+	name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(acct));
 	purple_serv_got_chat_in(gc, id, name,
 				purple_message_get_flags(msg),
 	                        purple_message_get_contents(msg),

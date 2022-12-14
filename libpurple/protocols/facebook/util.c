@@ -437,6 +437,7 @@ fb_util_serv_got_im(PurpleConnection *gc, const gchar *who, const gchar *text,
 	GDateTime *dt = NULL;
 	const gchar *name, *me;
 	PurpleAccount *acct;
+	PurpleContactInfo *info = NULL;
 	PurpleConversation *conv;
 	PurpleConversationManager *manager;
 	PurpleMessage *msg;
@@ -447,6 +448,7 @@ fb_util_serv_got_im(PurpleConnection *gc, const gchar *who, const gchar *text,
 	}
 
 	acct = purple_connection_get_account(gc);
+	info = PURPLE_CONTACT_INFO(acct);
 	manager = purple_conversation_manager_get_default();
 
 	conv = purple_conversation_manager_find_im(manager, acct, who);
@@ -455,8 +457,8 @@ fb_util_serv_got_im(PurpleConnection *gc, const gchar *who, const gchar *text,
 		conv = purple_im_conversation_new(acct, who);
 	}
 
-	me = purple_account_get_name_for_display(acct);
-	name = purple_account_get_username(acct);
+	me = purple_contact_info_get_name_for_display(info);
+	name = purple_contact_info_get_username(info);
 	msg = purple_message_new_outgoing(me, name, text, flags);
 
 	dt = g_date_time_new_from_unix_local((gint64)timestamp);
@@ -476,6 +478,7 @@ fb_util_serv_got_chat_in(PurpleConnection *gc, gint id, const gchar *who,
 	GDateTime *dt = NULL;
 	const gchar *name;
 	PurpleAccount *acct;
+	PurpleContactInfo *info = NULL;
 	PurpleConversation *conv;
 	PurpleConversationManager *manager;
 	PurpleMessage *msg;
@@ -487,12 +490,13 @@ fb_util_serv_got_chat_in(PurpleConnection *gc, gint id, const gchar *who,
 	}
 
 	acct = purple_connection_get_account(gc);
+	info = PURPLE_CONTACT_INFO(acct);
 	manager = purple_conversation_manager_get_default();
 
 	conv = purple_conversation_manager_find_chat_by_id(manager, acct, id);
 
-	me = purple_account_get_name_for_display(acct);
-	name = purple_account_get_username(acct);
+	me = purple_contact_info_get_name_for_display(info);
+	name = purple_contact_info_get_username(info);
 
 	msg = purple_message_new_outgoing(me, name, text, flags);
 

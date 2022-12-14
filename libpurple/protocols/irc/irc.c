@@ -75,7 +75,7 @@ irc_uri_handler_match_server(PurpleAccount *account, const gchar *match_server)
 		return 0;
 	}
 
-	username = purple_account_get_username(account);
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 	server = strchr(username, '@');
 
 	/* +1 to skip '@' */
@@ -529,9 +529,11 @@ irc_login(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleAccount *account) {
 	PurpleConnection *gc;
 	struct irc_conn *irc;
 	char **userparts;
-	const char *username = purple_account_get_username(account);
+	const char *username = NULL;
 	GSocketClient *client;
 	GError *error = NULL;
+
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 
 	gc = purple_account_get_connection(account);
 	purple_connection_set_flags(gc, PURPLE_CONNECTION_FLAG_NO_NEWLINES |

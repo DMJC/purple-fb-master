@@ -96,6 +96,7 @@ int irc_cmd_ctcp_action(struct irc_conn *irc, const char *cmd, const char *targe
 	gchar *action, *escaped, *dst, **newargs;
 	const gchar *src, *me;
 	gchar *msg;
+	PurpleContactInfo *info = NULL;
 	PurpleConversation *convo;
 	PurpleConversationManager *manager;
 	PurpleMessage *pmsg;
@@ -104,9 +105,11 @@ int irc_cmd_ctcp_action(struct irc_conn *irc, const char *cmd, const char *targe
 		return 0;
 	}
 
+	info = PURPLE_CONTACT_INFO(irc->account);
+	me = purple_contact_info_get_name_for_display(info);
+
 	manager = purple_conversation_manager_get_default();
 	convo = purple_conversation_manager_find(manager, irc->account, target);
-	me = purple_account_get_name_for_display(irc->account);
 
 	msg = g_strdup_printf("/me %s", args[0]);
 
@@ -544,13 +547,14 @@ int irc_cmd_query(struct irc_conn *irc, const char *cmd, const char *target, con
 
 	if (args[1]) {
 		PurpleMessage *message = NULL;
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(irc->account);
 		const gchar *me = NULL;
 		const gchar *recipient = NULL;
 
 		gc = purple_account_get_connection(irc->account);
 		irc_cmd_privmsg(irc, cmd, target, args);
 
-		me = purple_account_get_name_for_display(irc->account);
+		me = purple_contact_info_get_name_for_display(info);
 		recipient = purple_connection_get_display_name(gc);
 		message = purple_message_new_outgoing(me, recipient, args[1], 0);
 

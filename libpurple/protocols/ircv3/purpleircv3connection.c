@@ -402,7 +402,7 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
 
 	/* Split the username into nick and server and store the values. */
-	username = purple_account_get_username(account);
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 	userparts = g_strsplit(username, "@", 2);
 	purple_connection_set_display_name(PURPLE_CONNECTION(connection),
 	                                   userparts[0]);

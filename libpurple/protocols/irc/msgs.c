@@ -1533,8 +1533,10 @@ irc_auth_start_cyrus(struct irc_conn *irc)
 	sasl_security_properties_t secprops;
 	PurpleAccount *account = irc->account;
 	PurpleConnection *gc = purple_account_get_connection(account);
-
+	const char *username = NULL;
 	gboolean again = FALSE;
+
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 
 	/* Set up security properties and options */
 	secprops.min_ssf = 0;
@@ -1571,7 +1573,7 @@ irc_auth_start_cyrus(struct irc_conn *irc)
 			return;
 		}
 
-		sasl_setprop(irc->sasl_conn, SASL_AUTH_EXTERNAL, purple_account_get_username(irc->account));
+		sasl_setprop(irc->sasl_conn, SASL_AUTH_EXTERNAL, username);
 		sasl_setprop(irc->sasl_conn, SASL_SEC_PROPS, &secprops);
 
 		ret = sasl_client_start(irc->sasl_conn, irc->sasl_mechs->str, NULL, NULL, NULL, &irc->current_mech);

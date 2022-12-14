@@ -99,7 +99,7 @@ purple_ircv3_protocol_create_connection(PurpleProtocol *protocol,
 	/* Make sure the username (which includes the servername via usersplits),
 	 * does not contain any whitespace.
 	 */
-	username = purple_account_get_username(account);
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 	if(strpbrk(username, " \t\v\r\n") != NULL) {
 		g_set_error(error,
 		            PURPLE_CONNECTION_ERROR,
