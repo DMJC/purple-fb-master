@@ -72,7 +72,7 @@ pidgin_avatar_get_effective_buddy(PidginAvatar *avatar) {
 
 static GdkPixbufAnimation *
 pidgin_avatar_find_buddy_icon(PurpleBuddy *buddy,
-                              PurpleConversation *conversation)
+                              G_GNUC_UNUSED PurpleConversation *conversation)
 {
 	GdkPixbufAnimation *ret = NULL;
 	GInputStream *stream = NULL;
@@ -101,17 +101,6 @@ pidgin_avatar_find_buddy_icon(PurpleBuddy *buddy,
 	 */
 	if(!G_IS_INPUT_STREAM(stream)) {
 		PurpleBuddyIcon *icon = purple_buddy_get_icon(buddy);
-
-		if(icon != NULL) {
-			stream = purple_buddy_icon_get_stream(icon);
-		}
-	}
-
-	/* Finally if we still don't have icon, we fallback to asking the
-	 * conversation for one.
-	 */
-	if(!G_IS_INPUT_STREAM(stream) && PURPLE_IS_IM_CONVERSATION(conversation)) {
-		PurpleBuddyIcon *icon = purple_im_conversation_get_icon(PURPLE_IM_CONVERSATION(conversation));
 
 		if(icon != NULL) {
 			stream = purple_buddy_icon_get_stream(icon);

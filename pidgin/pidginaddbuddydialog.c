@@ -96,8 +96,6 @@ pidgin_add_buddy_dialog_response_cb(GtkDialog *dialog, gint response_id,
 	if(response_id == GTK_RESPONSE_OK) {
 		PurpleAccount *account = NULL;
 		PurpleBuddy *buddy = NULL;
-		PurpleConversation *im = NULL;
-		PurpleConversationManager *manager = NULL;
 		PurpleGroup *group = NULL;
 		const gchar *username = NULL, *alias = NULL, *message = NULL;
 		gchar *groupname = NULL;
@@ -167,18 +165,6 @@ pidgin_add_buddy_dialog_response_cb(GtkDialog *dialog, gint response_id,
 			gtk_blist_auto_personize(PURPLE_BLIST_NODE(group), alias);
 		}
 #endif
-
-		/* Finally update the icon for any open im's with this person. */
-		manager = purple_conversation_manager_get_default();
-		im = purple_conversation_manager_find_im(manager, account, username);
-		if(PURPLE_IS_IM_CONVERSATION(im)) {
-			PurpleBuddyIcon *icon = NULL;
-
-			icon = purple_im_conversation_get_icon(PURPLE_IM_CONVERSATION(im));
-			if(icon != NULL) {
-				purple_buddy_icon_update(icon);
-			}
-		}
 
 		g_free(groupname);
 	}

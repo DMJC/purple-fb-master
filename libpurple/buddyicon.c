@@ -379,8 +379,6 @@ purple_buddy_icon_unref(PurpleBuddyIcon *icon)
 void
 purple_buddy_icon_update(PurpleBuddyIcon *icon)
 {
-	PurpleConversation *im;
-	PurpleConversationManager *manager;
 	PurpleAccount *account;
 	const char *username;
 	PurpleBuddyIcon *icon_to_set;
@@ -440,13 +438,6 @@ purple_buddy_icon_update(PurpleBuddyIcon *icon)
 		g_free(old_icon);
 
 		buddies = g_slist_delete_link(buddies, buddies);
-	}
-
-	manager = purple_conversation_manager_get_default();
-	im = purple_conversation_manager_find_im(manager, account, username);
-	if(PURPLE_IS_IM_CONVERSATION(im)) {
-		purple_im_conversation_set_icon(PURPLE_IM_CONVERSATION(im),
-		                                icon_to_set);
 	}
 
 	/* icon's refcount was incremented above */

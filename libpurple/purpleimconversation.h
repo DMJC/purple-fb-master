@@ -55,7 +55,7 @@ typedef enum
 typedef struct _PurpleIMConversation           PurpleIMConversation;
 typedef struct _PurpleIMConversationClass      PurpleIMConversationClass;
 
-#include "buddyicon.h"
+#include "account.h"
 #include <purpleconversation.h>
 
 /**
@@ -96,30 +96,6 @@ GType purple_im_conversation_get_type(void);
  * Returns: The new conversation.
  */
 PurpleConversation *purple_im_conversation_new(PurpleAccount *account, const gchar *name);
-
-/**
- * purple_im_conversation_set_icon:
- * @im:   The IM.
- * @icon: The buddy icon.
- *
- * Sets the IM's buddy icon.
- *
- * This should only be called from within Purple. You probably want to
- * call purple_buddy_icon_set_data().
- *
- * See purple_buddy_icon_set_data().
- */
-void purple_im_conversation_set_icon(PurpleIMConversation *im, PurpleBuddyIcon *icon);
-
-/**
- * purple_im_conversation_get_icon:
- * @im: The IM.
- *
- * Returns the IM's buddy icon.
- *
- * Returns: (transfer none): The buddy icon.
- */
-PurpleBuddyIcon *purple_im_conversation_get_icon(PurpleIMConversation *im);
 
 /**
  * purple_im_conversation_set_typing_state:

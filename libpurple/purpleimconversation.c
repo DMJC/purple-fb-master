@@ -35,14 +35,11 @@ struct _PurpleIMConversation {
 	guint  typing_timeout;
 	time_t type_again;
 	guint  send_typed_timeout;
-
-	PurpleBuddyIcon *icon;
 };
 
 enum {
 	PROP_0 = 0,
 	PROP_TYPING_STATE,
-	PROP_ICON,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES];
@@ -126,9 +123,6 @@ purple_im_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 			g_value_set_enum(value,
 			                 purple_im_conversation_get_typing_state(im));
 			break;
-		case PROP_ICON:
-			g_value_set_pointer(value, purple_im_conversation_get_icon(im));
-			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -146,9 +140,6 @@ purple_im_conversation_set_property(GObject *obj, guint param_id,
 			purple_im_conversation_set_typing_state(im,
 			                                        g_value_get_enum(value));
 			break;
-		case PROP_ICON:
-			purple_im_conversation_set_icon(im, g_value_get_pointer(value));
-			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -157,39 +148,6 @@ purple_im_conversation_set_property(GObject *obj, guint param_id,
 
 static void
 purple_im_conversation_init(G_GNUC_UNUSED PurpleIMConversation *im) {
-}
-
-static void
-purple_im_conversation_constructed(GObject *object) {
-	PurpleIMConversation *im = PURPLE_IM_CONVERSATION(object);
-	PurpleAccount *account = NULL;
-	PurpleBuddyIcon *icon = NULL;
-	gchar *name = NULL;
-
-	G_OBJECT_CLASS(purple_im_conversation_parent_class)->constructed(object);
-
-	g_object_get(object,
-		"account", &account,
-		"name",    &name,
-		NULL);
-
-	if((icon = purple_buddy_icons_find(account, name))) {
-		purple_im_conversation_set_icon(im, icon);
-		/* purple_im_conversation_set_icon refs the icon. */
-		purple_buddy_icon_unref(icon);
-	}
-
-	g_object_unref(account);
-	g_free(name);
-}
-
-static void
-purple_im_conversation_dispose(GObject *obj) {
-	PurpleIMConversation *im = PURPLE_IM_CONVERSATION(obj);
-
-	g_clear_pointer(&im->icon, purple_buddy_icon_unref);
-
-	G_OBJECT_CLASS(purple_im_conversation_parent_class)->dispose(obj);
 }
 
 static void
@@ -224,9 +182,7 @@ purple_im_conversation_class_init(PurpleIMConversationClass *klass) {
 
 	obj_class->get_property = purple_im_conversation_get_property;
 	obj_class->set_property = purple_im_conversation_set_property;
-	obj_class->dispose = purple_im_conversation_dispose;
 	obj_class->finalize = purple_im_conversation_finalize;
-	obj_class->constructed = purple_im_conversation_constructed;
 
 	conv_class->write_message = im_conversation_write_message;
 
@@ -234,10 +190,6 @@ purple_im_conversation_class_init(PurpleIMConversationClass *klass) {
 		"typing-state", "Typing state",
 		"Status of the user's typing of a message.",
 		PURPLE_TYPE_IM_TYPING_STATE, PURPLE_IM_NOT_TYPING,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	properties[PROP_ICON] = g_param_spec_pointer(
-		"icon", "Buddy icon", "The buddy icon for the IM.",
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
@@ -269,31 +221,6 @@ purple_im_conversation_new(PurpleAccount *account, const char *name)
 		NULL);
 
 	return im;
-}
-
-void
-purple_im_conversation_set_icon(PurpleIMConversation *im,
-                                PurpleBuddyIcon *icon)
-{
-	g_return_if_fail(PURPLE_IS_IM_CONVERSATION(im));
-
-	if(im->icon != icon) {
-		purple_buddy_icon_unref(im->icon);
-
-		im->icon = (icon == NULL) ? NULL : purple_buddy_icon_ref(icon);
-
-		g_object_notify_by_pspec(G_OBJECT(im), properties[PROP_ICON]);
-	}
-
-	purple_conversation_update(PURPLE_CONVERSATION(im),
-	                           PURPLE_CONVERSATION_UPDATE_ICON);
-}
-
-PurpleBuddyIcon *
-purple_im_conversation_get_icon(PurpleIMConversation *im) {
-	g_return_val_if_fail(PURPLE_IS_IM_CONVERSATION(im), NULL);
-
-	return im->icon;
 }
 
 void
