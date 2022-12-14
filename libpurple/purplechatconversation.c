@@ -698,7 +698,8 @@ purple_chat_conversation_add_users(PurpleChatConversation *chat, GList *users,
 
 		if(!(purple_protocol_get_options(protocol) & OPT_PROTO_UNIQUE_CHATNAME)) {
 			if(purple_strequal(priv->nick, purple_normalize(account, user))) {
-				const gchar *alias2 = purple_account_get_private_alias(account);
+				PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+				const gchar *alias2 = purple_contact_info_get_alias(info);
 				if(alias2 != NULL) {
 					alias = alias2;
 				} else {
@@ -806,7 +807,7 @@ purple_chat_conversation_rename_user(PurpleChatConversation *chat,
 		is_me = TRUE;
 
 		if(!(purple_protocol_get_options(protocol) & OPT_PROTO_UNIQUE_CHATNAME)) {
-			alias = purple_account_get_private_alias(account);
+			alias = purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
 			if(alias != NULL) {
 				new_alias = alias;
 			} else {
