@@ -242,6 +242,19 @@ void purple_credential_provider_clear_password_async(PurpleCredentialProvider *p
  */
 gboolean purple_credential_provider_clear_password_finish(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
 
+/**
+ * purple_credential_provider_get_settings:
+ * @provider: The instance.
+ *
+ * Gets the [class@Gio.Settings] that @provider provides.
+ *
+ * Returns: (transfer none): The settings for @provider or %NULL if @provider
+ *          doesn't have any settings.
+ *
+ * Since: 3.0.0
+ */
+GSettings *purple_credential_provider_get_settings(PurpleCredentialProvider *provider);
+
 G_END_DECLS
 
 #endif /* PURPLE_CREDENTIAL_PROVIDER_H */

@@ -24,6 +24,8 @@ typedef struct {
 	gchar *id;
 	gchar *name;
 	gchar *description;
+
+	GSettings *settings;
 } PurpleCredentialProviderPrivate;
 
 enum {
@@ -31,6 +33,7 @@ enum {
 	PROP_ID,
 	PROP_NAME,
 	PROP_DESCRIPTION,
+	PROP_SETTINGS,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -83,6 +86,22 @@ purple_credential_provider_set_description(PurpleCredentialProvider *provider,
 	g_object_notify_by_pspec(G_OBJECT(provider), properties[PROP_DESCRIPTION]);
 }
 
+static void
+purple_credential_provider_set_settings(PurpleCredentialProvider *provider,
+                                        GSettings *settings)
+{
+	PurpleCredentialProviderPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider));
+
+	priv = purple_credential_provider_get_instance_private(provider);
+
+	if(g_set_object(&priv->settings, settings)) {
+		g_object_notify_by_pspec(G_OBJECT(provider),
+		                         properties[PROP_SETTINGS]);
+	}
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -104,6 +123,10 @@ purple_credential_provider_get_property(GObject *obj, guint param_id,
 		case PROP_DESCRIPTION:
 			g_value_set_string(value,
 			                   purple_credential_provider_get_description(provider));
+			break;
+		case PROP_SETTINGS:
+			g_value_set_object(value,
+			                   purple_credential_provider_get_settings(provider));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -130,6 +153,10 @@ purple_credential_provider_set_property(GObject *obj, guint param_id,
 			purple_credential_provider_set_description(provider,
 			                                           g_value_get_string(value));
 			break;
+		case PROP_SETTINGS:
+			purple_credential_provider_set_settings(provider,
+			                                        g_value_get_object(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -147,6 +174,8 @@ purple_credential_provider_finalize(GObject *obj) {
 	g_clear_pointer(&priv->id, g_free);
 	g_clear_pointer(&priv->name, g_free);
 	g_clear_pointer(&priv->description, g_free);
+
+	g_clear_object(&priv->settings);
 
 	G_OBJECT_CLASS(purple_credential_provider_parent_class)->finalize(obj);
 }
@@ -203,6 +232,20 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS
 	);
+
+	/**
+	 * PurpleCredentialProvider::settings:
+	 *
+	 * The [class@Gio.Settings] used to configure the provider. This may be
+	 * %NULL.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_SETTINGS] = g_param_spec_object(
+		"settings", "setings",
+		"The GSettings for the provider",
+		G_TYPE_SETTINGS,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
@@ -417,4 +460,15 @@ purple_credential_provider_clear_password_finish(PurpleCredentialProvider *provi
 	}
 
 	return FALSE;
+}
+
+GSettings *
+purple_credential_provider_get_settings(PurpleCredentialProvider *provider) {
+	PurpleCredentialProviderPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider), NULL);
+
+	priv = purple_credential_provider_get_instance_private(provider);
+
+	return priv->settings;
 }
