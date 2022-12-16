@@ -78,7 +78,7 @@ void purple_menu_walk(GMenuModel *model, PurpleMenuWalkFunc func, gpointer data)
  * For example, if you need to set the target to an account, you would set
  * the "dynamic-target" attribute of your menu item to "account" and then
  * call purple_menu_populate_dynamic_targets() with a property pair of
- * "account" and [method@Account.get_id].
+ * "account" and [method@Purple.ContactInfo.get_id].
  *
  * Since: 3.0.0
  */
@@ -99,7 +99,7 @@ void purple_menu_populate_dynamic_targets(GMenu *menu, const gchar *first_proper
  * For example, if you need to set the target to an account, you would set the
  * "dynamic-target" attribute of your menu item to "account" and then call
  * [func@Purple.menu_populate_dynamic_targetsv] with a hash table containing
- * the key `"account"` and value from [method@Account.get_id].
+ * the key `"account"` and value from [method@Purple.ContactInfo.get_id].
  *
  * Since: 3.0.0
  */

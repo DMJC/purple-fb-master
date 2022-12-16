@@ -97,19 +97,6 @@ G_DECLARE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE, ACCOUNT,
 PurpleAccount *purple_account_new(const char *username, const char *protocol_id);
 
 /**
- * purple_account_get_id:
- * @account: The account instance.
- *
- * Gets the identifier of @account.
- *
- * Returns: The identifier of @account.
- *
- * Since: 3.0.0
- */
-G_DEPRECATED_FOR(purple_contact_info_get_id)
-const gchar *purple_account_get_id(PurpleAccount *account);
-
-/**
  * purple_account_connect:
  * @account: The account to connect to.
  *
@@ -182,26 +169,6 @@ void purple_account_request_change_password(PurpleAccount *account);
  * user information.
  */
 void purple_account_request_change_user_info(PurpleAccount *account);
-
-/**
- * purple_account_set_username:
- * @account:  The account.
- * @username: The username.
- *
- * Sets the account's username.
- */
-G_DEPRECATED_FOR(purple_contact_info_set_username)
-void purple_account_set_username(PurpleAccount *account, const char *username);
-
-/**
- * purple_account_set_private_alias:
- * @account: The account.
- * @alias:   The alias.
- *
- * Sets the account's private alias.
- */
-G_DEPRECATED_FOR(purple_contact_info_set_alias)
-void purple_account_set_private_alias(PurpleAccount *account, const char *alias);
 
 /**
  * purple_account_set_user_info:
@@ -398,28 +365,6 @@ gboolean purple_account_is_connecting(PurpleAccount *account);
 gboolean purple_account_is_disconnected(PurpleAccount *account);
 
 /**
- * purple_account_get_username:
- * @account: The account.
- *
- * Returns the account's username.
- *
- * Returns: The username.
- */
-G_DEPRECATED_FOR(purple_contact_info_get_username)
-const char *purple_account_get_username(PurpleAccount *account);
-
-/**
- * purple_account_get_private_alias:
- * @account: The account.
- *
- * Returns the account's private alias.
- *
- * Returns: The alias.
- */
-G_DEPRECATED_FOR(purple_contact_info_get_alias)
-const char *purple_account_get_private_alias(PurpleAccount *account);
-
-/**
  * purple_account_get_user_info:
  * @account: The account.
  *
@@ -481,20 +426,6 @@ const char *purple_account_get_protocol_name(PurpleAccount *account);
  * Returns: (transfer none): The connection.
  */
 PurpleConnection *purple_account_get_connection(PurpleAccount *account);
-
-/**
- * purple_account_get_name_for_display:
- * @account: The account.
- *
- * Returns a name for this account appropriate for display to the user. In
- * order of preference: the account's alias; the contact or buddy alias (if
- * the account exists on its own buddy list); the connection's display name;
- * the account's username.
- *
- * Returns: The name to display.
- */
-G_DEPRECATED_FOR(purple_contact_info_get_name_for_display)
-const gchar *purple_account_get_name_for_display(PurpleAccount *account);
 
 /**
  * purple_account_get_remember_password:

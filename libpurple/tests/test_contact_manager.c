@@ -431,7 +431,7 @@ test_purple_contact_manager_person_add_via_contact_remove_person_with_contacts(v
 	account = purple_account_new("test", "test");
 	contact = purple_contact_new(account, "foo");
 	person = purple_person_new();
-	purple_person_add_contact_info(person, contact);
+	purple_person_add_contact_info(person, PURPLE_CONTACT_INFO(contact));
 
 	/* Add the contact to the manager. */
 	purple_contact_manager_add(manager, contact);

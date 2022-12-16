@@ -436,6 +436,24 @@ _purple_account_set_current_error(PurpleAccount *account,
 	purple_accounts_schedule_save();
 }
 
+static void
+purple_account_changed_cb(GObject *obj, GParamSpec *pspec,
+                          G_GNUC_UNUSED gpointer data)
+{
+	const char *name = NULL;
+
+	purple_accounts_schedule_save();
+
+	name = g_param_spec_get_name(pspec);
+	if(purple_strequal(name, "username")) {
+		/* if the username changes, we should re-write the buddy list to disk
+		 * with the new name.
+		  */
+		purple_blist_save_account(purple_blist_get_default(),
+		                          PURPLE_ACCOUNT(obj));
+	}
+}
+
 /******************************************************************************
  * XmlNode Helpers
  *****************************************************************************/
@@ -772,6 +790,10 @@ purple_account_constructed(GObject *object)
 
 	g_free(username);
 	g_free(protocol_id);
+
+	/* Connect to our own notify signal so we can update accounts.xml. */
+	g_signal_connect(object, "notify",
+	                 G_CALLBACK(purple_account_changed_cb), NULL);
 }
 
 static void
@@ -972,13 +994,6 @@ purple_account_new(const gchar *username, const gchar *protocol_id) {
 		NULL);
 
 	return account;
-}
-
-const gchar *
-purple_account_get_id(PurpleAccount *account) {
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
 }
 
 void
@@ -1195,36 +1210,6 @@ purple_account_request_change_user_info(PurpleAccount *account)
 					   _("Cancel"), NULL,
 					   purple_request_cpar_from_account(account),
 					   account);
-}
-
-void
-purple_account_set_username(PurpleAccount *account, const char *username)
-{
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	purple_contact_info_set_username(PURPLE_CONTACT_INFO(account), username);
-
-	purple_accounts_schedule_save();
-
-	/* if the name changes, we should re-write the buddy list
-	 * to disk with the new name */
-	purple_blist_save_account(purple_blist_get_default(), account);
-}
-
-void
-purple_account_set_private_alias(PurpleAccount *account, const char *alias)
-{
-	const char *old_alias = NULL;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	old_alias = purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
-	if(purple_strequal(old_alias, alias)) {
-		return;
-	}
-
-	purple_contact_info_set_alias(PURPLE_CONTACT_INFO(account), alias);
-	purple_accounts_schedule_save();
 }
 
 void
@@ -1479,22 +1464,6 @@ purple_account_is_disconnected(PurpleAccount *account)
 }
 
 const char *
-purple_account_get_username(PurpleAccount *account)
-{
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
-}
-
-const char *
-purple_account_get_private_alias(PurpleAccount *account)
-{
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
-}
-
-const char *
 purple_account_get_user_info(PurpleAccount *account)
 {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
@@ -1548,13 +1517,6 @@ purple_account_get_connection(PurpleAccount *account)
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
 	return account->gc;
-}
-
-const gchar *
-purple_account_get_name_for_display(PurpleAccount *account) {
-	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(account), NULL);
-
-	return purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(account));
 }
 
 gboolean
