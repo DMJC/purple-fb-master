@@ -296,14 +296,6 @@ purple_core_quit(void)
 	_core = NULL;
 }
 
-gboolean
-purple_core_quit_cb(G_GNUC_UNUSED gpointer unused)
-{
-	purple_core_quit();
-
-	return FALSE;
-}
-
 const char *
 purple_core_get_version(void)
 {
