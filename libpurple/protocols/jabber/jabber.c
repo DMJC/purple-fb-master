@@ -2038,11 +2038,6 @@ xmpp_protocol_actions_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *acti
 			.activate = jabber_password_change,
 			.parameter_type = "s",
 		},
-		{
-			.name = "search-users",
-			.activate = jabber_user_search_begin,
-			.parameter_type = "s",
-		},
 	};
 	gsize nentries = G_N_ELEMENTS(entries);
 
@@ -2078,12 +2073,6 @@ xmpp_protocol_actions_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions) {
 
 	item = g_menu_item_new(_("Change Password..."),
 	                       "prpl-xmpp.change-password");
-	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
-	                          "account");
-	g_menu_append_item(menu, item);
-	g_object_unref(item);
-
-	item = g_menu_item_new(_("Search for Users..."), "prpl-xmpp.search-users");
 	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
 	                          "account");
 	g_menu_append_item(menu, item);
