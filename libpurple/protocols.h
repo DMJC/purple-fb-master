@@ -41,48 +41,6 @@ G_BEGIN_DECLS
 /**************************************************************************/
 
 /**
- * purple_protocol_got_account_idle:
- * @account:   The account.
- * @idle:      The user's idle state.
- * @idle_time: The user's idle time.
- *
- * Notifies Purple that our account's idle state and time have changed.
- *
- * This is meant to be called from protocols.
- */
-void purple_protocol_got_account_idle(PurpleAccount *account, gboolean idle,
-                                      time_t idle_time);
-
-/**
- * purple_protocol_got_account_status:
- * @account: The account the user is on.
- * @status_id: The status ID.
- * @...: A NULL-terminated list of attribute IDs and values.
- *
- * Notifies Purple that our account's status has changed.
- *
- * This is meant to be called from protocols.
- */
-void purple_protocol_got_account_status(PurpleAccount *account,
-                                        const char *status_id, ...)
-                                        G_GNUC_NULL_TERMINATED;
-
-/**
- * purple_protocol_got_account_status_with_attributes: (rename-to purple_protocol_got_account_status):
- * @account: The account the user is on.
- * @status_id: The status ID.
- * @attributes: (element-type utf8 gpointer): A hash table of attribute IDs and
- *              their corresponding values.
- *
- * Notifies Purple that our account's status has changed.
- *
- * This is meant to be called from protocols.
- *
- * Since: 3.0.0
- */
-void purple_protocol_got_account_status_with_attributes(PurpleAccount *account, const gchar *status_id, GHashTable *attributes);
-
-/**
  * purple_protocol_got_account_actions:
  * @account:   The account.
  *

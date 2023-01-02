@@ -42,53 +42,6 @@
 /* Protocol API                                                           */
 /**************************************************************************/
 void
-purple_protocol_got_account_idle(PurpleAccount *account, gboolean idle,
-						   time_t idle_time)
-{
-	g_return_if_fail(account != NULL);
-	g_return_if_fail(purple_account_is_connected(account));
-
-	purple_presence_set_idle(purple_account_get_presence(account),
-						   idle, idle_time);
-}
-
-void
-purple_protocol_got_account_status_with_attributes(PurpleAccount *account,
-                                                   const gchar *status_id,
-                                                   GHashTable *attributes)
-{
-	PurplePresence *presence;
-	PurpleStatus *status;
-
-	g_return_if_fail(account != NULL);
-	g_return_if_fail(status_id != NULL);
-	g_return_if_fail(purple_account_is_connected(account));
-
-	presence = purple_account_get_presence(account);
-	status = purple_presence_get_status(presence, status_id);
-
-	g_return_if_fail(status != NULL);
-
-	purple_status_set_active_with_attributes(status, TRUE, attributes);
-}
-
-void
-purple_protocol_got_account_status(PurpleAccount *account, const char *status_id, ...)
-{
-	GHashTable *attributes = NULL;
-	va_list args;
-
-	va_start(args, status_id);
-	attributes = purple_attrs_from_vargs(args);
-	va_end(args);
-
-	purple_protocol_got_account_status_with_attributes(account, status_id,
-	                                                   attributes);
-
-	g_hash_table_destroy(attributes);
-}
-
-void
 purple_protocol_got_account_actions(PurpleAccount *account)
 {
 

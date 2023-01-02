@@ -663,6 +663,9 @@ version 3.0.0 (??/??/????):
 		* PurplePounceEvent
 		* PurplePounceOption
 		* PurplePrefsUiOps
+		* purple_protocol_got_account_idle
+		* purple_protocol_got_account_status
+		* purple_protocol_got_account_status_with_attributes
 		* PurpleProxyConnectData
 		* PurpleProxyConnectFunction
 		* purple_proxy_connect
