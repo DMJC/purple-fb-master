@@ -158,7 +158,6 @@ struct _JabberStream
 	GHashTable *chats;
 	GList *chat_servers;
 	PurpleRoomlist *roomlist;
-	GList *user_directories;
 
 	GHashTable *iq_callbacks;
 	int next_id;

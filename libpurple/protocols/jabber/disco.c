@@ -209,9 +209,6 @@ jabber_disco_info_cb(JabberStream *js, const char *from, JabberIqType type,
 					/* we found a groupchat or MUC server, add it to the list */
 					/* XXX: actually check for protocol/muc or gc-1.0 support */
 					js->chat_servers = g_list_prepend(js->chat_servers, g_strdup(from));
-				} else if(purple_strequal(category, "directory") && purple_strequal(type, "user")) {
-					/* we found a JUD */
-					js->user_directories = g_list_prepend(js->user_directories, g_strdup(from));
 				} else if(purple_strequal(category, "proxy") && purple_strequal(type, "bytestreams")) {
 					/* This is a bytestream proxy */
 					JabberIq *iq;

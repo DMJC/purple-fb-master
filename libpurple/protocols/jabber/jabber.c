@@ -1096,7 +1096,6 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 		g_hash_table_destroy(js->chats);
 
 	g_list_free_full(js->chat_servers, g_free);
-	g_list_free_full(js->user_directories, g_free);
 
 	g_list_free_full(js->bs_proxies, (GDestroyNotify)jabber_bytestreams_streamhost_free);
 
