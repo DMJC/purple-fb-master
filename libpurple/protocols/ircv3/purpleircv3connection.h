@@ -37,8 +37,6 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
 
 G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugin);
 
-G_GNUC_INTERNAL PurpleAccount *purple_ircv3_connection_get_account(PurpleIRCv3Connection *connection);
-
 G_GNUC_INTERNAL GCancellable *purple_ircv3_connection_get_cancellable(PurpleIRCv3Connection *connection);
 
 G_GNUC_INTERNAL void purple_ircv3_connection_writef(PurpleIRCv3Connection *connection, const char *format, ...) G_GNUC_PRINTF(2, 3);
