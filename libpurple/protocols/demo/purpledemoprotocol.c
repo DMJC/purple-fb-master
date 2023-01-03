@@ -21,12 +21,12 @@
 #include <glib/gi18n-lib.h>
 
 #include "purpledemoprotocol.h"
+
+#include "purpledemoconnection.h"
 #include "purpledemoprotocolactions.h"
 #include "purpledemoprotocolclient.h"
 #include "purpledemoprotocolim.h"
 #include "purpledemoprotocolmedia.h"
-
-#include "purpledemocontacts.h"
 
 struct _PurpleDemoProtocol {
 	PurpleProtocol parent;
@@ -35,16 +35,22 @@ struct _PurpleDemoProtocol {
 /******************************************************************************
  * PurpleProtocol Implementation
  *****************************************************************************/
-static void
-purple_demo_protocol_login(G_GNUC_UNUSED PurpleProtocol *protocol,
-                           PurpleAccount *account)
+static PurpleConnection *
+purple_demo_protocol_create_connection(PurpleProtocol *protocol,
+                                       PurpleAccount *account,
+                                       const char *password,
+                                       GError **error)
 {
-	PurpleConnection *connection = NULL;
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), NULL);
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	connection = purple_account_get_connection(account);
-	purple_connection_set_state(connection, PURPLE_CONNECTION_STATE_CONNECTED);
+	return g_object_new(
+		PURPLE_DEMO_TYPE_CONNECTION,
+		"protocol", protocol,
+		"account", account,
+		"password", password,
+		NULL);
 
-	purple_demo_contacts_load(account);
 }
 
 static GList *
@@ -112,8 +118,8 @@ static void
 purple_demo_protocol_class_init(PurpleDemoProtocolClass *klass) {
 	PurpleProtocolClass *protocol_class = PURPLE_PROTOCOL_CLASS(klass);
 
-	protocol_class->login = purple_demo_protocol_login;
 	protocol_class->status_types = purple_demo_protocol_status_types;
+	protocol_class->create_connection = purple_demo_protocol_create_connection;
 }
 
 /******************************************************************************

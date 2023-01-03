@@ -25,6 +25,8 @@
 #include <purple.h>
 
 #include "purpledemoplugin.h"
+
+#include "purpledemoconnection.h"
 #include "purpledemoprotocol.h"
 
 /******************************************************************************
@@ -70,6 +72,7 @@ purple_demo_plugin_load(GPluginPlugin *plugin, GError **error) {
 		return FALSE;
 	}
 
+	purple_demo_connection_register(GPLUGIN_NATIVE_PLUGIN(plugin));
 	purple_demo_protocol_register(GPLUGIN_NATIVE_PLUGIN(plugin));
 
 	manager = purple_protocol_manager_get_default();

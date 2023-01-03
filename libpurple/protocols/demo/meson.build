@@ -1,4 +1,6 @@
 DEMO_SOURCES = [
+	'purpledemoconnection.c',
+	'purpledemoconnection.h',
 	'purpledemocontacts.c',
 	'purpledemocontacts.h',
 	'purpledemoplugin.c',
