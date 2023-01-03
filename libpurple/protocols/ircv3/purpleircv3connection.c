@@ -495,7 +495,7 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 }
 
 /******************************************************************************
- * GObject Implementation
+ * Internal API
  *****************************************************************************/
 void
 purple_ircv3_connection_register(GPluginNativePlugin *plugin) {
@@ -509,6 +509,9 @@ purple_ircv3_connection_get_cancellable(PurpleIRCv3Connection *connection) {
 	return connection->cancellable;
 }
 
+/******************************************************************************
+ * Public API
+ *****************************************************************************/
 void
 purple_ircv3_connection_writef(PurpleIRCv3Connection *connection,
                                const char *format, ...)

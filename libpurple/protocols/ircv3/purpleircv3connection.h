@@ -39,7 +39,18 @@ G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugi
 
 G_GNUC_INTERNAL GCancellable *purple_ircv3_connection_get_cancellable(PurpleIRCv3Connection *connection);
 
-G_GNUC_INTERNAL void purple_ircv3_connection_writef(PurpleIRCv3Connection *connection, const char *format, ...) G_GNUC_PRINTF(2, 3);
+/**
+ * purple_ircv3_connection_writef:
+ * @connection: The instance.
+ * @format: The format string.
+ * @...: The arguments for @format.
+ *
+ * Similar to C `printf()` but writes the format string out to @connection.
+ *
+ * This will add the proper line termination, so you do not need to worry about
+ * that.
+ */
+void purple_ircv3_connection_writef(PurpleIRCv3Connection *connection, const char *format, ...) G_GNUC_PRINTF(2, 3);
 
 /**
  * purple_ircv3_connection_get_capabilities:
