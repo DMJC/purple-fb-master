@@ -214,16 +214,15 @@ purple_conversation_manager_register(PurpleConversationManager *manager,
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
+	/* g_hash_table_insert calls the key_destroy_func if the key already exists
+	 * which means we don't need to worry about the reference we're creating
+	 * during the insertion.
+	 */
 	registered = g_hash_table_insert(manager->conversations,
 	                                 g_object_ref(conversation), NULL);
+
 	if(registered) {
 		g_signal_emit(manager, signals[SIG_REGISTERED], 0, conversation);
-	} else {
-		/* We need to clean up the ref we created above if the insert failed as
-		 * the key destroy function won't be called until the manager is
-		 * destroyed which will leave the conversation floating around.
-		 */
-		g_object_unref(conversation);
 	}
 
 	return registered;
