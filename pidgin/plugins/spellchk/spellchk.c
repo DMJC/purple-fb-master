@@ -1808,14 +1808,13 @@ static void load_conf(void)
 			{
 				strncpy(good, buf + 5, 255);
 
-				if (*bad && *good && g_hash_table_lookup(hashes, bad) == NULL) {
+				if (*bad && *good && !g_hash_table_contains(hashes, bad)) {
 					GtkTreeIter iter;
 
 					/* We don't actually need to store the good string, since this
 					 * hash is just being used to eliminate duplicate bad strings.
-					 * The value has to be non-NULL so the lookup above will work.
 					 */
-					g_hash_table_insert(hashes, g_strdup(bad), GINT_TO_POINTER(1));
+					g_hash_table_add(hashes, g_strdup(bad));
 
 					if (!complete)
 						case_sensitive = TRUE;

@@ -1566,7 +1566,7 @@ purple_request_field_list_add_selected(PurpleRequestField *field, const char *it
 	field->u.list.selected = g_list_append(field->u.list.selected,
 										   g_strdup(item));
 
-	g_hash_table_insert(field->u.list.selected_table, g_strdup(item), NULL);
+	g_hash_table_add(field->u.list.selected_table, g_strdup(item));
 }
 
 void
@@ -1581,10 +1581,7 @@ purple_request_field_list_clear_selected(PurpleRequestField *field)
 		field->u.list.selected = NULL;
 	}
 
-	g_hash_table_destroy(field->u.list.selected_table);
-
-	field->u.list.selected_table =
-		g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+	g_hash_table_remove_all(field->u.list.selected_table);
 }
 
 void
@@ -1606,12 +1603,11 @@ purple_request_field_list_set_selected(PurpleRequestField *field, GList *items)
 		return;
 	}
 
-	for (l = items; l != NULL; l = l->next)
-	{
+	for (l = items; l != NULL; l = l->next) {
+		char *selected = l->data;
 		field->u.list.selected = g_list_append(field->u.list.selected,
-					g_strdup(l->data));
-		g_hash_table_insert(field->u.list.selected_table,
-							g_strdup((char *)l->data), NULL);
+		                                       g_strdup(selected));
+		g_hash_table_add(field->u.list.selected_table, g_strdup(selected));
 	}
 }
 
@@ -1623,8 +1619,7 @@ purple_request_field_list_is_selected(const PurpleRequestField *field,
 	g_return_val_if_fail(item  != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
 
-	return g_hash_table_lookup_extended(field->u.list.selected_table,
-										item, NULL, NULL);
+	return g_hash_table_contains(field->u.list.selected_table, item);
 }
 
 GList *

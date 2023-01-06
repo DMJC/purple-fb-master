@@ -214,12 +214,12 @@ purple_conversation_manager_register(PurpleConversationManager *manager,
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	/* g_hash_table_insert calls the key_destroy_func if the key already exists
+	/* g_hash_table_add calls the key_destroy_func if the key already exists
 	 * which means we don't need to worry about the reference we're creating
-	 * during the insertion.
+	 * during the addition.
 	 */
-	registered = g_hash_table_insert(manager->conversations,
-	                                 g_object_ref(conversation), NULL);
+	registered = g_hash_table_add(manager->conversations,
+	                              g_object_ref(conversation));
 
 	if(registered) {
 		g_signal_emit(manager, signals[SIG_REGISTERED], 0, conversation);
@@ -252,8 +252,7 @@ purple_conversation_manager_is_registered(PurpleConversationManager *manager,
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	return g_hash_table_lookup_extended(manager->conversations, conversation,
-	                                    NULL, NULL);
+	return g_hash_table_contains(manager->conversations, conversation);
 }
 
 void

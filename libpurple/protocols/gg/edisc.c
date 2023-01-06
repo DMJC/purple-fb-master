@@ -548,10 +548,8 @@ ggp_edisc_xfer_send_init_ticket_created(GObject *source, GAsyncResult *result,
 	purple_debug_info("gg", "ggp_edisc_xfer_send_init_ticket_created: "
 		"ticket \"%s\" created\n", edisc_xfer->ticket_id);
 
-	g_hash_table_insert(sdata->xfers_initialized,
-		edisc_xfer->ticket_id, xfer);
-	g_hash_table_insert(sdata->xfers_history,
-		g_strdup(edisc_xfer->ticket_id), GINT_TO_POINTER(1));
+	g_hash_table_insert(sdata->xfers_initialized, edisc_xfer->ticket_id, xfer);
+	g_hash_table_add(sdata->xfers_history, g_strdup(edisc_xfer->ticket_id));
 
 	if (ack_status != GGP_EDISC_XFER_ACK_STATUS_UNKNOWN)
 		ggp_edisc_xfer_send_ticket_changed(edisc_xfer->gc, xfer,
@@ -1298,8 +1296,7 @@ ggp_edisc_xfer_recv_ticket_update_got(GObject *source,
 	edisc_xfer = GGP_XFER(xfer);
 	edisc_xfer->ticket_id = g_strdup(ticket_id);
 	g_hash_table_insert(sdata->xfers_initialized, edisc_xfer->ticket_id, xfer);
-	g_hash_table_insert(sdata->xfers_history, g_strdup(ticket_id),
-	                    GINT_TO_POINTER(1));
+	g_hash_table_add(sdata->xfers_history, g_strdup(ticket_id));
 
 	g_object_unref(parser);
 }
@@ -1348,7 +1345,7 @@ ggp_edisc_xfer_recv_ticket_got(PurpleConnection *gc, const gchar *ticket_id)
 
 	g_return_if_fail(sdata != NULL);
 
-	if (g_hash_table_lookup(sdata->xfers_history, ticket_id)) {
+	if (g_hash_table_contains(sdata->xfers_history, ticket_id)) {
 		return;
 	}
 

@@ -421,7 +421,7 @@ fb_data_image_add(FbData *fata, const gchar *url, FbDataImageFunc func,
 	img->data = data;
 	img->dunc = dunc;
 
-	g_hash_table_insert(fata->imgs, img, img);
+	g_hash_table_add(fata->imgs, img);
 	return img;
 }
 
@@ -522,8 +522,8 @@ fb_data_image_queue(FbData *fata)
 	guint active = 0;
 
 	g_return_if_fail(FB_IS_DATA(fata));
-	g_hash_table_iter_init(&iter, fata->imgs);
 
+	g_hash_table_iter_init(&iter, fata->imgs);
 	while (g_hash_table_iter_next(&iter, (gpointer *) &img, NULL)) {
 		if (fb_data_image_get_active(img)) {
 			active++;
@@ -535,7 +535,6 @@ fb_data_image_queue(FbData *fata)
 	}
 
 	g_hash_table_iter_init(&iter, fata->imgs);
-
 	while (g_hash_table_iter_next(&iter, (gpointer *) &img, NULL)) {
 		SoupMessage *msg;
 
