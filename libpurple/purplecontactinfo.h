@@ -332,17 +332,8 @@ void purple_contact_info_set_permission(PurpleContactInfo *info, PurpleContactIn
  * purple_contact_info_get_name_for_display:
  * @info: The instance.
  *
- * Gets the name that should be displayed for @info.
- *
- * If @info is associated with a [class@Purple.Person], the value of
- * [property@Purple.Person:alias] will be returned if it is set.
- *
- * Otherwise, this will return the first set property from the following list:
- *
- *  * [property@Purple.ContactInfo:alias]
- *  * [property@Purple.ContactInfo:display-name]
- *  * [property@Purple.ContactInfo:username]
- *  * [property@Purple.ContactInfo:id]
+ * Gets the name that should be displayed for @info. See
+ * [property@Purple.ContactInfo:name-for-display] for more information.
  *
  * Returns: (transfer none): The name to display for @info.
  *

@@ -22,12 +22,14 @@
 #include "util.h"
 
 typedef struct  {
-	gchar *id;
+	char *id;
 
-	gchar *username;
-	gchar *display_name;
-	gchar *alias;
-	gchar *color;
+	char *username;
+	char *display_name;
+	char *alias;
+	char *color;
+
+	char *name_for_display;
 
 	GdkPixbuf *avatar;
 
@@ -52,12 +54,77 @@ enum {
 	PROP_TAGS,
 	PROP_PERSON,
 	PROP_PERMISSION,
+	PROP_NAME_FOR_DISPLAY,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleContactInfo, purple_contact_info,
                            G_TYPE_OBJECT)
+
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static void
+purple_contact_info_update_name_for_display(PurpleContactInfo *info) {
+	PurpleContactInfoPrivate *priv = NULL;
+	const char *name_for_display = NULL;
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	/* If the info has an alias set, use it. */
+	if(name_for_display == NULL && !purple_strempty(priv->alias)) {
+		name_for_display = priv->alias;
+	}
+
+	/* If info is associated with a PurplePerson that has an alias set, use the
+	 * alias of that PurplePerson.
+	 */
+	if(name_for_display == NULL && priv->person != NULL) {
+		const char *alias = purple_person_get_alias(priv->person);
+
+		if(!purple_strempty(alias)) {
+			name_for_display = alias;
+		}
+	}
+
+	/* If the info has a display name set, use it. */
+	if(name_for_display == NULL && !purple_strempty(priv->display_name)) {
+		name_for_display = priv->display_name;
+	}
+
+	/* Fallback to the username if that is set. */
+	if(name_for_display == NULL && !purple_strempty(priv->username)) {
+		name_for_display = priv->username;
+	}
+
+	/* Finally, in a last ditch effort, use the id of the info. */
+	if(name_for_display == NULL) {
+		name_for_display = priv->id;
+	}
+
+	if(!purple_strequal(name_for_display, priv->name_for_display)) {
+		/* If we have a new name for display, free the old one, dup the new one
+		 * into the struct, and then emit the notify signal.
+		 */
+		g_free(priv->name_for_display);
+		priv->name_for_display = g_strdup(name_for_display);
+
+		g_object_notify_by_pspec(G_OBJECT(info),
+		                         properties[PROP_NAME_FOR_DISPLAY]);
+	}
+}
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+purple_contact_info_person_alias_changed_cb(G_GNUC_UNUSED GObject *obj,
+                                            G_GNUC_UNUSED GParamSpec *pspec,
+                                            gpointer data)
+{
+	purple_contact_info_update_name_for_display(data);
+}
 
 /******************************************************************************
  * GObject Implementation
@@ -99,6 +166,10 @@ purple_contact_info_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_PERMISSION:
 			g_value_set_enum(value, purple_contact_info_get_permission(info));
+			break;
+		case PROP_NAME_FOR_DISPLAY:
+			g_value_set_string(value,
+			                   purple_contact_info_get_name_for_display(info));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -170,6 +241,7 @@ purple_contact_info_finalize(GObject *obj) {
 	g_clear_pointer(&priv->username, g_free);
 	g_clear_pointer(&priv->display_name, g_free);
 	g_clear_pointer(&priv->alias, g_free);
+	g_clear_pointer(&priv->name_for_display, g_free);
 
 	G_OBJECT_CLASS(purple_contact_info_parent_class)->finalize(obj);
 }
@@ -187,6 +259,8 @@ purple_contact_info_constructed(GObject *obj) {
 	if(priv->id == NULL) {
 		purple_contact_info_set_id(info, NULL);
 	}
+
+	purple_contact_info_update_name_for_display(info);
 }
 
 static void
@@ -348,6 +422,33 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 		PURPLE_CONTACT_INFO_PERMISSION_UNSET,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleContactInfo:name-for-display:
+	 *
+	 * The name that the user interface should display for this contact info.
+	 *
+	 * This will first check [property@Purple.ContactInfo:alias] and return
+	 * that if it is set.
+	 *
+	 * Next, if the [property@Purple.ContactInfo:person] points to a valid
+	 * [class@Purple.Person], the alias of [class@Purple.Person] will be
+	 * returned if it is set.
+	 *
+	 * Otherwise, this will be set to the first set property from the following
+	 * list:
+	 *
+	 *  * [property@Purple.ContactInfo:display-name]
+	 *  * [property@Purple.ContactInfo:username]
+	 *  * [property@Purple.ContactInfo:id]
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_NAME_FOR_DISPLAY] = g_param_spec_string(
+		"name-for-display", "name-for-display",
+		"The name that should be displayed for the contact info",
+		NULL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
@@ -376,15 +477,26 @@ purple_contact_info_get_id(PurpleContactInfo *info) {
 void
 purple_contact_info_set_id(PurpleContactInfo *info, const gchar *id) {
 	PurpleContactInfoPrivate *priv = NULL;
+	gboolean changed = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
 
 	priv = purple_contact_info_get_instance_private(info);
 
+	changed = !purple_strequal(priv->id, id);
+
 	g_free(priv->id);
 	priv->id = g_strdup(id);
 
-	g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ID]);
+	if(changed) {
+		g_object_freeze_notify(G_OBJECT(info));
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ID]);
+
+		purple_contact_info_update_name_for_display(info);
+
+		g_object_thaw_notify(G_OBJECT(info));
+	}
 }
 
 const gchar *
@@ -403,15 +515,26 @@ purple_contact_info_set_username(PurpleContactInfo *info,
                                  const gchar *username)
 {
 	PurpleContactInfoPrivate *priv = NULL;
+	gboolean changed = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
 
 	priv = purple_contact_info_get_instance_private(info);
 
+	changed = !purple_strequal(priv->username, username);
+
 	g_free(priv->username);
 	priv->username = g_strdup(username);
 
-	g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_USERNAME]);
+	if(changed) {
+		g_object_freeze_notify(G_OBJECT(info));
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_USERNAME]);
+
+		purple_contact_info_update_name_for_display(info);
+
+		g_object_thaw_notify(G_OBJECT(info));
+	}
 }
 
 const gchar *
@@ -430,15 +553,26 @@ purple_contact_info_set_display_name(PurpleContactInfo *info,
                                      const gchar *display_name)
 {
 	PurpleContactInfoPrivate *priv = NULL;
+	gboolean changed = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
 
 	priv = purple_contact_info_get_instance_private(info);
 
+	changed = !purple_strequal(priv->display_name, display_name);
+
 	g_free(priv->display_name);
 	priv->display_name = g_strdup(display_name);
 
-	g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_DISPLAY_NAME]);
+	if(changed) {
+		g_object_freeze_notify(G_OBJECT(info));
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_DISPLAY_NAME]);
+
+		purple_contact_info_update_name_for_display(info);
+
+		g_object_thaw_notify(G_OBJECT(info));
+	}
 }
 
 const gchar *
@@ -455,15 +589,26 @@ purple_contact_info_get_alias(PurpleContactInfo *info) {
 void
 purple_contact_info_set_alias(PurpleContactInfo *info, const gchar *alias) {
 	PurpleContactInfoPrivate *priv = NULL;
+	gboolean changed = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
 
 	priv = purple_contact_info_get_instance_private(info);
 
+	changed = !purple_strequal(priv->alias, alias);
+
 	g_free(priv->alias);
 	priv->alias = g_strdup(alias);
 
-	g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ALIAS]);
+	if(changed) {
+		g_object_freeze_notify(G_OBJECT(info));
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ALIAS]);
+
+		purple_contact_info_update_name_for_display(info);
+
+		g_object_thaw_notify(G_OBJECT(info));
+	}
 }
 
 const char *
@@ -548,7 +693,26 @@ purple_contact_info_set_person(PurpleContactInfo *info, PurplePerson *person) {
 	priv = purple_contact_info_get_instance_private(info);
 
 	if(g_set_object(&priv->person, person)) {
+		/* If we got a new person, we need to connect to the notify::alias
+		 * signal.
+		 */
+		if(PURPLE_IS_PERSON(priv->person)) {
+			g_signal_connect_object(priv->person, "notify::alias",
+			                        G_CALLBACK(purple_contact_info_person_alias_changed_cb),
+			                        info, 0);
+		}
+
+		/* Freeze notifications as the person update could change the
+		 * name-for-display property.
+		 */
+		g_object_freeze_notify(G_OBJECT(info));
+
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_PERSON]);
+
+		/* Update the name-for-display property */
+		purple_contact_info_update_name_for_display(info);
+
+		g_object_thaw_notify(G_OBJECT(info));
 	}
 }
 
@@ -598,34 +762,7 @@ purple_contact_info_get_name_for_display(PurpleContactInfo *info) {
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	/* If info is associated with a PurplePerson that has an alias set,
-	 * return the alias of that PurplePerson.
-	 */
-	if(priv->person != NULL) {
-		const char *alias = purple_person_get_alias(priv->person);
-
-		if(alias != NULL && alias[0] != '\0') {
-			return alias;
-		}
-	}
-
-	/* If the purple user set an alias for the info, return that. */
-	if(priv->alias != NULL && priv->alias[0] != '\0') {
-		return priv->alias;
-	}
-
-	/* If the info has a display name set, return that. */
-	if(priv->display_name != NULL && priv->display_name[0] != '\0') {
-		return priv->display_name;
-	}
-
-	/* Fallback to the username if that is set. */
-	if(priv->username != NULL && priv->username[0] != '\0') {
-		return priv->username;
-	}
-
-	/* Finally, in a last ditch effort, return the id of the info. */
-	return priv->id;
+	return priv->name_for_display;
 }
 
 int

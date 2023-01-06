@@ -46,11 +46,12 @@ test_purple_contact_info_properties(void) {
 	PurpleTags *tags = NULL;
 	GdkPixbuf *avatar = NULL;
 	GdkPixbuf *avatar1 = NULL;
-	gchar *id = NULL;
-	gchar *username = NULL;
-	gchar *display_name = NULL;
-	gchar *alias = NULL;
-	gchar *color = NULL;
+	char *id = NULL;
+	char *username = NULL;
+	char *display_name = NULL;
+	char *alias = NULL;
+	char *color = NULL;
+	char *name_for_display = NULL;
 
 	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
 	person = purple_person_new();
@@ -83,6 +84,7 @@ test_purple_contact_info_properties(void) {
 		"tags", &tags,
 		"person", &person1,
 		"permission", &permission,
+		"name-for-display", &name_for_display,
 		NULL);
 
 	/* Compare all the things. */
@@ -91,6 +93,7 @@ test_purple_contact_info_properties(void) {
 	g_assert_cmpstr(display_name, ==, "display-name");
 	g_assert_cmpstr(alias, ==, "alias");
 	g_assert_cmpstr(color, ==, "#e9c636");
+	g_assert_cmpstr(name_for_display, ==, "alias");
 	g_assert_true(avatar1 == avatar);
 	g_assert_nonnull(presence1);
 	g_assert_nonnull(tags);
@@ -103,6 +106,7 @@ test_purple_contact_info_properties(void) {
 	g_clear_pointer(&display_name, g_free);
 	g_clear_pointer(&alias, g_free);
 	g_clear_pointer(&color, g_free);
+	g_clear_pointer(&name_for_display, g_free);
 	g_clear_object(&avatar1);
 	g_clear_object(&presence1);
 	g_clear_object(&tags);
@@ -123,13 +127,18 @@ test_purple_contact_info_get_name_for_display_person_with_alias(void) {
 	const char *alias = NULL;
 
 	person = purple_person_new();
-	purple_person_set_alias(person, "this is the alias");
+	purple_person_set_alias(person, "person alias");
 
-	info = purple_contact_info_new(NULL);
+	info = purple_contact_info_new("id");
+	/* we don't set the alias on the contact info, as that takes priority over
+	 * the person's alias.
+	 */
+	purple_contact_info_set_username(info, "username");
+	purple_contact_info_set_display_name(info, "display name");
 	purple_contact_info_set_person(info, person);
 
 	alias = purple_contact_info_get_name_for_display(info);
-	g_assert_cmpstr(alias, ==, "this is the alias");
+	g_assert_cmpstr(alias, ==, "person alias");
 
 	g_clear_object(&info);
 	g_clear_object(&person);
@@ -142,14 +151,17 @@ test_purple_contact_info_get_name_for_display_contact_info_with_alias(void) {
 	const char *alias = NULL;
 
 	person = purple_person_new();
+	purple_person_set_alias(person, "person alias");
 
-	info = purple_contact_info_new(NULL);
+	info = purple_contact_info_new("id");
 	purple_contact_info_set_person(info, person);
+	purple_contact_info_set_alias(info, "contact alias");
+	purple_contact_info_set_username(info, "username");
+	purple_contact_info_set_display_name(info, "display name");
 
-	purple_contact_info_set_alias(info, "this is the alias");
 
 	alias = purple_contact_info_get_name_for_display(info);
-	g_assert_cmpstr(alias, ==, "this is the alias");
+	g_assert_cmpstr(alias, ==, "contact alias");
 
 	g_clear_object(&info);
 	g_clear_object(&person);
@@ -163,13 +175,14 @@ test_purple_contact_info_get_name_for_display_contact_info_with_display_name(voi
 
 	person = purple_person_new();
 
-	info = purple_contact_info_new(NULL);
+	info = purple_contact_info_new("id");
 	purple_contact_info_set_person(info, person);
 
-	purple_contact_info_set_display_name(info, "this is the display name");
+	purple_contact_info_set_display_name(info, "display name");
+	purple_contact_info_set_username(info, "username");
 
 	alias = purple_contact_info_get_name_for_display(info);
-	g_assert_cmpstr(alias, ==, "this is the display name");
+	g_assert_cmpstr(alias, ==, "display name");
 
 	g_clear_object(&info);
 	g_clear_object(&person);
@@ -183,7 +196,7 @@ test_purple_contact_info_get_name_for_display_username_fallback(void) {
 
 	person = purple_person_new();
 
-	info = purple_contact_info_new(NULL);
+	info = purple_contact_info_new("id");
 	purple_contact_info_set_username(info, "username");
 	purple_contact_info_set_person(info, person);
 

@@ -234,6 +234,21 @@ purple_strequal(const gchar *left, const gchar *right)
 }
 
 /**
+ * purple_strempty:
+ * @str: A string to check if it is empty.
+ *
+ * Determines if @str is empty. That is, if it is %NULL or an empty string.
+ *
+ * Returns: %TRUE if the @str is %NULL or an empty string.
+ *
+ * Since: 3.0.0
+ */
+static inline gboolean
+purple_strempty(const char *str) {
+	return (str == NULL || str[0] == '\0');
+}
+
+/**
  * purple_normalize:
  * @account:  The account the string belongs to, or NULL if you do
  *                 not know the account.  If you use NULL, the string
