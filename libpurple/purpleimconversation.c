@@ -165,8 +165,10 @@ purple_im_conversation_finalize(GObject *obj) {
 			purple_serv_send_typing(pc, name, PURPLE_IM_NOT_TYPING);
 		}
 
-		purple_protocol_client_convo_closed(PURPLE_PROTOCOL_CLIENT(protocol),
-		                                    pc, name);
+		if(PURPLE_IS_PROTOCOL_CLIENT(protocol)) {
+			purple_protocol_client_convo_closed(PURPLE_PROTOCOL_CLIENT(protocol),
+			                                    pc, name);
+		}
 	}
 
 	purple_im_conversation_stop_typing_timeout(im);
