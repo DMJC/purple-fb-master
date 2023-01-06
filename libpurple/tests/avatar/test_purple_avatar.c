@@ -24,61 +24,48 @@
  * Tests
  *****************************************************************************/
 static void
-test_purple_avatar_new(void) {
+test_purple_avatar_new_static(void) {
 	PurpleAvatar *avatar = NULL;
 	GdkPixbuf *pixbuf = NULL;
+	GError *error = NULL;
+	const char *resource = "/im/pidgin/libpurple/tests/avatar/static.png";
 
-	pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
-	avatar = purple_avatar_new("filename", pixbuf);
-
+	avatar = purple_avatar_new_from_resource(resource, &error);
+	g_assert_no_error(error);
 	g_assert_true(PURPLE_IS_AVATAR(avatar));
 
-	g_assert_cmpstr(purple_avatar_get_filename(avatar), ==, "filename");
-	g_assert_true(purple_avatar_get_pixbuf(avatar) == pixbuf);
+	g_assert_null(purple_avatar_get_filename(avatar));
+	g_assert_false(purple_avatar_get_animated(avatar));
+	g_assert_null(purple_avatar_get_animation(avatar));
+
+	pixbuf = purple_avatar_get_pixbuf(avatar);
+	g_assert_true(GDK_IS_PIXBUF(pixbuf));
 
 	g_clear_object(&avatar);
-	g_clear_object(&pixbuf);
 }
 
 static void
-test_purple_avatar_properties(void) {
+test_purple_avatar_new_animated(void) {
 	PurpleAvatar *avatar = NULL;
-	PurpleTags *tags = NULL;
 	GdkPixbuf *pixbuf = NULL;
-	GdkPixbuf *pixbuf1 = NULL;
-	gchar *filename = NULL;
+	GdkPixbufAnimation *animation = NULL;
+	GError *error = NULL;
+	const char *resource = "/im/pidgin/libpurple/tests/avatar/animated.gif";
 
-	pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	avatar = purple_avatar_new_from_resource(resource, &error);
+	g_assert_no_error(error);
+	g_assert_true(PURPLE_IS_AVATAR(avatar));
 
-	/* Use g_object_new so we can test setting properties by name. All of them
-	 * call the setter methods, so by doing it this way we exercise more of the
-	 * code.
-	 */
-	avatar = g_object_new(
-		PURPLE_TYPE_AVATAR,
-		"filename", "filename",
-		"pixbuf", pixbuf,
-		NULL);
+	g_assert_null(purple_avatar_get_filename(avatar));
+	g_assert_true(purple_avatar_get_animated(avatar));
 
-	/* Now use g_object_get to read all of the properties. */
-	g_object_get(avatar,
-		"filename", &filename,
-		"pixbuf", &pixbuf1,
-		"tags", &tags,
-		NULL);
+	pixbuf = purple_avatar_get_pixbuf(avatar);
+	g_assert_true(GDK_IS_PIXBUF(pixbuf));
 
-	/* Compare all the things. */
-	g_assert_cmpstr(filename, ==, "filename");
-	g_assert_true(pixbuf1 == pixbuf);
-	g_assert_nonnull(tags);
-
-	/* Free/unref all the things. */
-	g_clear_pointer(&filename, g_free);
-	g_clear_object(&pixbuf1);
-	g_clear_object(&tags);
+	animation = purple_avatar_get_animation(avatar);
+	g_assert_true(GDK_IS_PIXBUF_ANIMATION(animation));
 
 	g_clear_object(&avatar);
-	g_clear_object(&pixbuf);
 }
 
 /******************************************************************************
@@ -88,10 +75,10 @@ gint
 main(gint argc, gchar *argv[]) {
 	g_test_init(&argc, &argv, NULL);
 
-	g_test_add_func("/avatar/new",
-	                test_purple_avatar_new);
-	g_test_add_func("/avatar/properties",
-	                test_purple_avatar_properties);
+	g_test_add_func("/avatar/new/static",
+	                test_purple_avatar_new_static);
+	g_test_add_func("/avatar/new/animated",
+	                test_purple_avatar_new_animated);
 
 	return g_test_run();
 }

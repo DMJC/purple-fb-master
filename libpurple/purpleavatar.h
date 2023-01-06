@@ -45,17 +45,30 @@ G_DECLARE_FINAL_TYPE(PurpleAvatar, purple_avatar, PURPLE, AVATAR, GObject)
  */
 
 /**
- * purple_avatar_new:
- * @filename: (nullable): The filename for the avatar.
- * @pixbuf: (nullable): The [class@GdkPixbuf.Pixbuf] to use.
+ * purple_avatar_new_from_filename:
+ * @filename: The filename for the avatar.
+ * @error: Return address for a #GError, or %NULL.
  *
- * Creates a new avatar with @filename and @pixbuf.
+ * Creates a new avatar from @filename.
  *
  * Returns: (transfer full): The new instance.
  *
  * Since: 3.0.0
  */
-PurpleAvatar *purple_avatar_new(const char *filename, GdkPixbuf *pixbuf);
+PurpleAvatar *purple_avatar_new_from_filename(const char *filename, GError **error);
+
+/**
+ * purple_avatar_new_from_resource:
+ * @resource_path: The path of the resource file.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * Creates a new avatar from the resource at @resource_path.
+ *
+ * Returns: (transfer full): The new instance.
+ *
+ * Since: 3.0.0
+ */
+PurpleAvatar *purple_avatar_new_from_resource(const char *resource_path, GError **error);
 
 /**
  * purple_avatar_get_filename:
@@ -70,39 +83,45 @@ PurpleAvatar *purple_avatar_new(const char *filename, GdkPixbuf *pixbuf);
 const char *purple_avatar_get_filename(PurpleAvatar *avatar);
 
 /**
- * purple_avatar_set_filename:
- * @avatar: The instance.
- * @filename: The new filename.
- *
- * Sets the filename of @avatar to @filename.
- *
- * Since: 3.0.0
- */
-void purple_avatar_set_filename(PurpleAvatar *avatar, const char *filename);
-
-/**
  * purple_avatar_get_pixbuf:
  * @avatar: The instance.
  *
  * Gets the [class@GdkPixbuf.Pixbuf] of @avatar.
  *
- * Returns: The pixbuf of the avatar which could be %NULL.
+ * If [property@Purple.Avatar:animated] is %TRUE, this returns a single frame
+ * of the animation. To get the animation see
+ * [method@Purple.Avatar.get_animation].
+ *
+ * Returns: (transfer none): The pixbuf of the avatar which could be %NULL.
  *
  * Since: 3.0.0
  */
 GdkPixbuf *purple_avatar_get_pixbuf(PurpleAvatar *avatar);
 
 /**
- * purple_avatar_set_pixbuf:
+ * purple_avatar_get_animated:
  * @avatar: The instance.
- * @pixbuf: (nullable): The new [class@GdkPixbuf.Pixbuf].
  *
- * Sets the [class@GdkPixbuf.Pixbuf] for @avatar to @pixbuf. If @pixbuf is
- * %NULL, the pixbuf will be cleared.
+ * Gets whether or not @avatar is animated.
+ *
+ * Returns: %TRUE if @avatar is animated, %FALSE otherwise.
  *
  * Since: 3.0.0
  */
-void purple_avatar_set_pixbuf(PurpleAvatar *avatar, GdkPixbuf *pixbuf);
+gboolean purple_avatar_get_animated(PurpleAvatar *avatar);
+
+/**
+ * purple_avatar_get_animation:
+ * @avatar: The instance.
+ *
+ * Gets the [class@GdkPixbuf.PixbufAnimation] if
+ * [property@Purple.Avatar:animated] is %TRUE, otherwise %NULL.
+ *
+ * Returns: (transfer none): The animation or %NULL.
+ *
+ * Since: 3.0.0
+ */
+GdkPixbufAnimation *purple_avatar_get_animation(PurpleAvatar *avatar);
 
 /**
  * purple_avatar_get_tags:
@@ -115,36 +134,6 @@ void purple_avatar_set_pixbuf(PurpleAvatar *avatar, GdkPixbuf *pixbuf);
  * Since: 3.0.0
  */
 PurpleTags *purple_avatar_get_tags(PurpleAvatar *avatar);
-
-/**
- * purple_avatar_load:
- * @avatar: The instance.
- * @error: Return address for a #GError, or %NULL.
- *
- * Attempts to load @avatar from disk from [property@Purple.Avatar:filename].
- * If successful, %TRUE is returned, otherwise %FALSE will be returned with
- * @error potentially set.
- *
- * Returns: %TRUE on success or %FALSE on error with @error potentialy set.
- *
- * Since: 3.0.0
- */
-gboolean purple_avatar_load(PurpleAvatar *avatar, GError **error);
-
-/**
- * purple_avatar_save:
- * @avatar: The instance.
- * @error: Return address for a #GError, or %NULL.
- *
- * Attempts to save @avatar to disk using [property@Purple.Avatar:filename].
- * If successful, %TRUE is returned, otherwise %FALSE will be returned with
- * @error potentially set.
- *
- * Returns: %TRUE on success or %FALSE on error with @error potentialy set.
- *
- * Since: 3.0.0
- */
-gboolean purple_avatar_save(PurpleAvatar *avatar, GError **error);
 
 G_END_DECLS
 
