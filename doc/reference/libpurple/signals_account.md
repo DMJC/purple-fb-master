@@ -6,7 +6,6 @@ Slug: account-signals
 ### Signal List
 
 * [account-status-changed](#account-status-changed)
-* [account-actions-changed](#account-actions-changed)
 * [account-signed-on](#account-signed-on)
 * [account-signed-off](#account-signed-off)
 
@@ -69,24 +68,6 @@ Emitted when the status of an account changes (after the change).
 
 **new**
 : The status after change.
-
-**user_data**
-: User data set when the signal handler was connected.
-
-----
-
-#### account-actions-changed
-
-```c
-void user_function(PurpleAccount *account, gpointer user_data);
-```
-
-Emitted when the account actions are changed after initial connection.
-
-**Parameters:**
-
-**account**
-: The account whose actions changed.
 
 **user_data**
 : User data set when the signal handler was connected.

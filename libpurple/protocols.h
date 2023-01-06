@@ -41,20 +41,6 @@ G_BEGIN_DECLS
 /**************************************************************************/
 
 /**
- * purple_protocol_got_account_actions:
- * @account:   The account.
- *
- * Notifies Purple that our account's actions have changed. This is only
- * called after the initial connection. Emits the account-actions-changed
- * signal.
- *
- * This is meant to be called from protocols.
- *
- * See <link linkend="accounts-account-actions-changed"><literal>"account-actions-changed"</literal></link>
- */
-void purple_protocol_got_account_actions(PurpleAccount *account);
-
-/**
  * purple_protocol_got_user_idle:
  * @account:   The account the user is on.
  * @name:      The name of the buddy.

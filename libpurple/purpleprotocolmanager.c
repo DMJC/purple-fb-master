@@ -21,9 +21,12 @@
 #include "purpleprotocolmanager.h"
 #include "purpleprivate.h"
 
+#include "purpleprotocolactions.h"
+
 enum {
 	SIG_REGISTERED,
 	SIG_UNREGISTERED,
+	SIG_ACCOUNT_ACTIONS_CHANGED,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -36,6 +39,19 @@ struct _PurpleProtocolManager {
 };
 
 static PurpleProtocolManager *default_manager = NULL;
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+purple_protocol_manager_actions_changed_cb(PurpleProtocolActions *actions,
+                                           PurpleAccount *account,
+                                           gpointer data)
+{
+	/* Propagate the actions-changed signal. */
+	g_signal_emit(data, signals[SIG_ACCOUNT_ACTIONS_CHANGED], 0, actions,
+	              account);
+}
 
 /******************************************************************************
  * GListModel Implementation
@@ -145,6 +161,31 @@ purple_protocol_manager_class_init(PurpleProtocolManagerClass *klass) {
 		G_TYPE_NONE,
 		1,
 		PURPLE_TYPE_PROTOCOL);
+
+	/**
+	 * PurpleProtocolManager::account-actions-changed:
+	 * @manager: The instance.
+	 * @protocol: The [class@Protocol] whose actions changed.
+	 * @account: The [class@Account] whose actions changed.
+	 *
+	 * This is a propagation of the [signal@ProtocolActions::actions-changed]
+	 * signal and will only be emitted for protocols that implement
+	 * [iface@ProtocolActions].
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_ACCOUNT_ACTIONS_CHANGED] = g_signal_new_class_handler(
+		"account-actions-changed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		2,
+		PURPLE_TYPE_PROTOCOL,
+		PURPLE_TYPE_ACCOUNT);
 }
 
 /******************************************************************************
@@ -194,6 +235,13 @@ purple_protocol_manager_register(PurpleProtocolManager *manager,
 
 	g_signal_emit(G_OBJECT(manager), signals[SIG_REGISTERED], 0, protocol);
 
+	/* Connect the signals we want to propagate. */
+	if(PURPLE_IS_PROTOCOL_ACTIONS(protocol)) {
+		g_signal_connect_object(protocol, "actions-changed",
+		                        G_CALLBACK(purple_protocol_manager_actions_changed_cb),
+		                        manager, 0);
+	}
+
 	return TRUE;
 }
 
@@ -218,9 +266,19 @@ purple_protocol_manager_unregister(PurpleProtocolManager *manager,
 
 	if(g_hash_table_remove(manager->protocols, id)) {
 		guint position;
+
 		if(g_ptr_array_find(manager->list, protocol, &position)) {
 			g_ptr_array_remove_index(manager->list, position);
 			g_list_model_items_changed(G_LIST_MODEL(manager), position, 1, 0);
+
+			/* Disconnect our signal handlers for tracking changes if this is a
+			 * PurpleProtocolActions implementation.
+			 */
+			if(PURPLE_IS_PROTOCOL_ACTIONS(protocol)) {
+				g_signal_handlers_disconnect_by_func(protocol,
+				                                     purple_protocol_manager_actions_changed_cb,
+				                                     manager);
+			}
 		}
 
 		g_signal_emit(G_OBJECT(manager), signals[SIG_UNREGISTERED], 0,

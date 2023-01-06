@@ -39,7 +39,7 @@ static PurpleConnection *
 purple_demo_protocol_create_connection(PurpleProtocol *protocol,
                                        PurpleAccount *account,
                                        const char *password,
-                                       GError **error)
+                                       G_GNUC_UNUSED GError **error)
 {
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), NULL);
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);

@@ -266,8 +266,12 @@ jabber_adhoc_got_server_list(JabberStream *js, G_GNUC_UNUSED const char *from,
 		js->commands = g_list_append(js->commands,cmd);
 	}
 
-	if (js->state == JABBER_STREAM_CONNECTED)
-		purple_protocol_got_account_actions(purple_connection_get_account(js->gc));
+	if (js->state == JABBER_STREAM_CONNECTED) {
+		PurpleProtocol *protocol = purple_connection_get_protocol(js->gc);
+
+		purple_protocol_actions_changed(PURPLE_PROTOCOL_ACTIONS(protocol),
+		                                purple_connection_get_account(js->gc));
+	}
 }
 
 static void

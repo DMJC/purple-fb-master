@@ -38,6 +38,43 @@ G_DEFINE_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
               G_TYPE_MENU_MODEL)
 
 /******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static void
+pidgin_accounts_enabled_menu_update(PidginAccountsEnabledMenu *menu,
+                                    PurpleAccount *account)
+{
+	PurpleProtocol *protocol = NULL;
+	gint index = -1;
+
+	index = g_queue_index(menu->accounts, account);
+	if(index >= 0) {
+		/* Tell the model that the account needs to be updated. */
+		g_menu_model_items_changed(G_MENU_MODEL(menu), index, 0, 0);
+	}
+
+	/* If the protocol has actions add them to the application windows. */
+	protocol = purple_account_get_protocol(account);
+	if(PURPLE_IS_PROTOCOL_ACTIONS(protocol)) {
+		PurpleProtocolActions *actions = PURPLE_PROTOCOL_ACTIONS(protocol);
+		PurpleConnection *connection = NULL;
+		GActionGroup *action_group = NULL;
+
+		connection = purple_account_get_connection(account);
+		action_group = purple_protocol_actions_get_action_group(actions,
+		                                                        connection);
+		if(G_IS_ACTION_GROUP(action_group)) {
+			GApplication *application = g_application_get_default();
+			const gchar *prefix = purple_protocol_actions_get_prefix(actions);
+
+			pidgin_application_add_action_group(PIDGIN_APPLICATION(application),
+			                                    prefix, action_group);
+			g_object_unref(action_group);
+		}
+	}
+}
+
+/******************************************************************************
  * Callbacks
  *****************************************************************************/
 static void
@@ -72,35 +109,7 @@ pidgin_accounts_enabled_menu_changed_cb(G_GNUC_UNUSED PurpleAccountManager *mana
 static void
 pidgin_accounts_enabled_menu_connected_cb(PurpleAccount *account, gpointer data)
 {
-	PidginAccountsEnabledMenu *menu = data;
-	PurpleProtocol *protocol = NULL;
-	gint index = -1;
-
-	index = g_queue_index(menu->accounts, account);
-	if(index >= 0) {
-		/* Tell the model that the account needs to be updated. */
-		g_menu_model_items_changed(G_MENU_MODEL(menu), index, 0, 0);
-	}
-
-	/* If the protocol has actions add them to the application windows. */
-	protocol = purple_account_get_protocol(account);
-	if(PURPLE_IS_PROTOCOL_ACTIONS(protocol)) {
-		PurpleProtocolActions *actions = PURPLE_PROTOCOL_ACTIONS(protocol);
-		PurpleConnection *connection = NULL;
-		GActionGroup *action_group = NULL;
-
-		connection = purple_account_get_connection(account);
-		action_group = purple_protocol_actions_get_action_group(actions,
-		                                                        connection);
-		if(G_IS_ACTION_GROUP(action_group)) {
-			GApplication *application = g_application_get_default();
-			const gchar *prefix = purple_protocol_actions_get_prefix(actions);
-
-			pidgin_application_add_action_group(PIDGIN_APPLICATION(application),
-			                                    prefix, action_group);
-			g_object_unref(action_group);
-		}
-	}
+	pidgin_accounts_enabled_menu_update(data, account);
 }
 
 static void
@@ -150,6 +159,15 @@ pidgin_accounts_enabled_menu_disconnected_cb(PurpleAccount *account,
 			                                    prefix, NULL);
 		}
 	}
+}
+
+static void
+pidgin_accounts_enabled_menu_actions_changed_cb(G_GNUC_UNUSED PurpleProtocolManager *manager,
+                                                G_GNUC_UNUSED PurpleProtocol *protocol,
+                                                PurpleAccount *account,
+                                                gpointer data)
+{
+	pidgin_accounts_enabled_menu_update(data, account);
 }
 
 /******************************************************************************
@@ -313,6 +331,7 @@ pidgin_accounts_enabled_menu_constructed(GObject *obj) {
 static void
 pidgin_accounts_enabled_menu_init(PidginAccountsEnabledMenu *menu) {
 	PurpleAccountManager *manager = NULL;
+	PurpleProtocolManager *protocol_manager = NULL;
 	gpointer handle = NULL;
 
 	menu->accounts = g_queue_new();
@@ -334,6 +353,12 @@ pidgin_accounts_enabled_menu_init(PidginAccountsEnabledMenu *menu) {
 	purple_signal_connect(handle, "account-signed-off", menu,
 	                      G_CALLBACK(pidgin_accounts_enabled_menu_disconnected_cb),
 	                      menu);
+
+	/* We also need to know when the protocol actions have changed. */
+	protocol_manager = purple_protocol_manager_get_default();
+	g_signal_connect_object(protocol_manager, "account-actions-changed",
+	                        G_CALLBACK(pidgin_accounts_enabled_menu_actions_changed_cb),
+	                        menu, 0);
 }
 
 static void

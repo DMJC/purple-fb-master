@@ -22,6 +22,12 @@
 
 #include "purpleprotocolactions.h"
 
+enum {
+	SIG_ACTIONS_CHANGED,
+	N_SIGNALS,
+};
+static guint signals[N_SIGNALS] = {0, };
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -29,8 +35,28 @@ G_DEFINE_INTERFACE(PurpleProtocolActions, purple_protocol_actions,
                    PURPLE_TYPE_PROTOCOL)
 
 static void
-purple_protocol_actions_default_init(G_GNUC_UNUSED PurpleProtocolActionsInterface *iface)
-{
+purple_protocol_actions_default_init(PurpleProtocolActionsInterface *iface) {
+	/**
+	 * PurpleProtocolActions::actions-changed:
+	 * @self: The instance.
+	 * @account: The [class@Account] whose actions changed.
+	 *
+	 * A signal that is emitted to tell interested parties that the actions
+	 * have changed.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_ACTIONS_CHANGED] = g_signal_new_class_handler(
+		"actions-changed",
+		G_TYPE_FROM_INTERFACE(iface),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		PURPLE_TYPE_ACCOUNT);
 }
 
 /******************************************************************************
@@ -85,4 +111,14 @@ purple_protocol_actions_get_menu(PurpleProtocolActions *actions,
 	}
 
 	return NULL;
+}
+
+void
+purple_protocol_actions_changed(PurpleProtocolActions *actions,
+                                PurpleAccount *account)
+{
+	g_return_if_fail(PURPLE_IS_PROTOCOL_ACTIONS(actions));
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	g_signal_emit(actions, signals[SIG_ACTIONS_CHANGED], 0, account);
 }

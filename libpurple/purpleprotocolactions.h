@@ -119,6 +119,19 @@ GActionGroup *purple_protocol_actions_get_action_group(PurpleProtocolActions *ac
  */
 GMenu *purple_protocol_actions_get_menu(PurpleProtocolActions *actions, PurpleConnection *connection);
 
+/**
+ * purple_protocol_actions_changed:
+ * @actions: The instance.
+ * @account: The [class@Account] whose actions changed.
+ *
+ * Emits the [signal@ProtocolActions::actions-changed] signal. This is meant to
+ * be called by [iface@ProtocolActions] implementations when actions have
+ * changed.
+ *
+ * Since: 3.0.0
+ */
+void purple_protocol_actions_changed(PurpleProtocolActions *actions, PurpleAccount *account);
+
 G_END_DECLS
 
 #endif /* PURPLE_PROTOCOL_ACTIONS_H */
