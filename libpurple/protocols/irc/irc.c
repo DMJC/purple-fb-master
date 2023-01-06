@@ -473,7 +473,9 @@ irc_protocol_actions_get_action_group(PurpleProtocolActions *actions,
 }
 
 static GMenu *
-irc_protocol_actions_get_menu(PurpleProtocolActions *actions) {
+irc_protocol_actions_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
+                              G_GNUC_UNUSED PurpleConnection *connection)
+{
 	GMenu *menu = NULL;
 	GMenuItem *item = NULL;
 

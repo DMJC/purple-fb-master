@@ -1167,7 +1167,8 @@ ggp_protocol_actions_get_action_group(PurpleProtocolActions *actions,
 }
 
 static GMenu *
-ggp_protocol_actions_get_menu(PurpleProtocolActions *actions) {
+ggp_protocol_actions_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
+                              G_GNUC_UNUSED PurpleConnection *connection) {
 	GMenu *menu = NULL, *submenu = NULL;
 	GMenuItem *item = NULL;
 

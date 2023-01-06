@@ -73,7 +73,7 @@ struct _PurpleProtocolActionsInterface {
 
 	GActionGroup *(*get_action_group)(PurpleProtocolActions *actions, PurpleConnection *connection);
 
-	GMenu *(*get_menu)(PurpleProtocolActions *actions);
+	GMenu *(*get_menu)(PurpleProtocolActions *actions, PurpleConnection *connection);
 
 	/*< private >*/
 	gpointer reserved[4];
@@ -109,14 +109,15 @@ GActionGroup *purple_protocol_actions_get_action_group(PurpleProtocolActions *ac
 /**
  * purple_protocol_actions_get_menu:
  * @actions: The [iface@ProtocolActions] instance.
+ * @connection: (nullable): The [class@Connection] instance.
  *
- * Gets the menu used to display the protocol actions.
+ * Gets the menu used to display the protocol actions for @connection.
  *
  * Returns: (transfer full): The menu to display or %NULL.
  *
  * Since: 3.0.0
  */
-GMenu *purple_protocol_actions_get_menu(PurpleProtocolActions *actions);
+GMenu *purple_protocol_actions_get_menu(PurpleProtocolActions *actions, PurpleConnection *connection);
 
 G_END_DECLS
 

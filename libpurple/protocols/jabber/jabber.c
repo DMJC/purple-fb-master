@@ -2058,7 +2058,9 @@ xmpp_protocol_actions_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *acti
 }
 
 static GMenu *
-xmpp_protocol_actions_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions) {
+xmpp_protocol_actions_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
+                               G_GNUC_UNUSED PurpleConnection *connection)
+{
 	GMenu *menu = NULL;
 	GMenuItem *item = NULL;
 

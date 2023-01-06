@@ -258,7 +258,7 @@ pidgin_accounts_enabled_menu_get_item_links(GMenuModel *model, gint index,
 		PurpleProtocolActions *actions = PURPLE_PROTOCOL_ACTIONS(protocol);
 		GMenu *protocol_menu = NULL;
 
-		protocol_menu = purple_protocol_actions_get_menu(actions);
+		protocol_menu = purple_protocol_actions_get_menu(actions, connection);
 		if(G_IS_MENU(protocol_menu)) {
 			g_menu_insert_section(submenu, 1, NULL,
 			                      G_MENU_MODEL(protocol_menu));

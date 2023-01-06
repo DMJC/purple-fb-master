@@ -72,7 +72,8 @@ purple_protocol_actions_get_action_group(PurpleProtocolActions *actions,
 }
 
 GMenu *
-purple_protocol_actions_get_menu(PurpleProtocolActions *actions)
+purple_protocol_actions_get_menu(PurpleProtocolActions *actions,
+                                 PurpleConnection *connection)
 {
 	PurpleProtocolActionsInterface *iface = NULL;
 
@@ -80,7 +81,7 @@ purple_protocol_actions_get_menu(PurpleProtocolActions *actions)
 
 	iface = PURPLE_PROTOCOL_ACTIONS_GET_IFACE(actions);
 	if(iface != NULL && iface->get_menu != NULL) {
-		return iface->get_menu(actions);
+		return iface->get_menu(actions, connection);
 	}
 
 	return NULL;

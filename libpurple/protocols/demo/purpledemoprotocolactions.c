@@ -222,7 +222,8 @@ purple_demo_protocol_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *actio
 }
 
 static GMenu *
-purple_demo_protocol_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions)
+purple_demo_protocol_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
+                              G_GNUC_UNUSED PurpleConnection *connection)
 {
 	GMenu *menu = NULL;
 	GMenuItem *item = NULL;
