@@ -121,6 +121,11 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED GHashTable *tags,
 
 		purple_conversation_manager_register(conversation_manager,
 		                                     conversation);
+
+		/* The manager creates its own reference on our new conversation, so we
+		 * borrow it like we do above if it already exists.
+		 */
+		g_object_unref(conversation);
 	}
 
 	if(purple_strequal(command, "NOTICE")) {
@@ -132,7 +137,6 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED GHashTable *tags,
 	purple_conversation_write_message(conversation, message);
 
 	g_clear_object(&message);
-	g_clear_object(&conversation);
 
 	return TRUE;
 }
