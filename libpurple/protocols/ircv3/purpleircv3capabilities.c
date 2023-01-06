@@ -56,6 +56,8 @@ struct _PurpleIRCv3Capabilities {
 
 	GHashTable *caps;
 	GPtrArray *requests;
+
+	gatomicrefcount wait_counters;
 };
 
 /******************************************************************************
@@ -105,6 +107,9 @@ purple_ircv3_capabilities_default_ready_cb(PurpleIRCv3Capabilities *capabilities
 {
 	gboolean found = FALSE;
 
+	/* cap-notify is implied when we use CAP LS 302, so this is really just to
+	 * make sure it's requested.
+	 */
 	purple_ircv3_capabilities_lookup(capabilities, "cap-notify", &found);
 	if(found) {
 		purple_ircv3_capabilities_request(capabilities, "cap-notify");
@@ -175,6 +180,8 @@ purple_ircv3_capabilities_init(PurpleIRCv3Capabilities *capabilities) {
 	capabilities->caps = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	                                           g_free);
 	capabilities->requests = g_ptr_array_new_full(0, g_free);
+
+	g_atomic_ref_count_init(&capabilities->wait_counters);
 }
 
 static void
@@ -386,7 +393,7 @@ purple_ircv3_capabilities_handle_list(PurpleIRCv3Capabilities *capabilities,
 		 * we're done with capability negotiation.
 		 */
 		if(capabilities->requests->len == 0) {
-			purple_ircv3_capabilities_finish(capabilities);
+			purple_ircv3_capabilities_remove_wait(capabilities);
 		}
 	}
 
@@ -419,7 +426,7 @@ purple_ircv3_capabilities_handle_ack_nak(PurpleIRCv3Capabilities *capabilities,
 	g_free(caps);
 
 	if(capabilities->requests->len == 0) {
-		purple_ircv3_capabilities_finish(capabilities);
+		purple_ircv3_capabilities_remove_wait(capabilities);
 	}
 
 	return ret;
@@ -591,4 +598,20 @@ purple_ircv3_capabilities_lookup(PurpleIRCv3Capabilities *capabilities,
 	}
 
 	return value;
+}
+
+void
+purple_ircv3_capabilities_add_wait(PurpleIRCv3Capabilities *capabilities) {
+	g_return_if_fail(PURPLE_IRCV3_IS_CAPABILITIES(capabilities));
+
+	g_atomic_ref_count_inc(&capabilities->wait_counters);
+}
+
+void
+purple_ircv3_capabilities_remove_wait(PurpleIRCv3Capabilities *capabilities) {
+	g_return_if_fail(PURPLE_IRCV3_IS_CAPABILITIES(capabilities));
+
+	if(g_atomic_ref_count_dec(&capabilities->wait_counters)) {
+		purple_ircv3_capabilities_finish(capabilities);
+	}
 }

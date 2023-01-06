@@ -84,6 +84,32 @@ void purple_ircv3_capabilities_request(PurpleIRCv3Capabilities *capabilities, co
  */
 const char *purple_ircv3_capabilities_lookup(PurpleIRCv3Capabilities *capabilities, const char *name, gboolean *found);
 
+/**
+ * purple_ircv3_capabilties_add_wait:
+ * @capabilities: The instance.
+ *
+ * Adds a wait counter to @capabilities. This counter is used to delay the
+ * call of `CAP END` until all capability negotiation has completed. This is
+ * necessary for SASL and may be necessary for other capabilities as well.
+ *
+ * Since: 3.0.0
+ */
+void purple_ircv3_capabilities_add_wait(PurpleIRCv3Capabilities *capabilities);
+
+/**
+ * purple_ircv3_capabilties_remove_wait:
+ * @capabilities: The instance.
+ *
+ * Removes a wait counter from @capabilities. Only when this counter reaches 0,
+ * will `CAP END` be called and registration completed.
+ *
+ * This is necessary for SASL and may be necessary for other capabilities as
+ * well.
+ *
+ * Since: 3.0.0
+ */
+void purple_ircv3_capabilities_remove_wait(PurpleIRCv3Capabilities *capabilities);
+
 G_END_DECLS
 
 #endif /* PURPLE_IRCV3_CAPABILITIES_H */
