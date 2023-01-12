@@ -313,7 +313,7 @@ purple_builtheaders = [
 ]
 
 libpurple_inc = include_directories('.')
-libpurple = library('purple',
+libpurple = library('purple3',
                     purple_coresources + purple_builtsources +
                     purple_builtheaders,
                     'purpleprivate.h',
@@ -335,8 +335,8 @@ install_headers(purple_mediaheaders,
 
 pkgconfig.generate(
     libpurple,
-    name : 'libpurple',
-    description : 'libpurple is a GLib-based instant messenger library.',
+    name : 'libpurple3',
+    description : 'libpurple3 is a GLib-based instant messenger library.',
     version : meson.project_version(),
     filebase : purple_filebase,
 # TODO: Only use purple_filebase once everything is ported to only use purple.h

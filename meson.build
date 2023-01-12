@@ -23,7 +23,7 @@
 project('pidgin', 'c',
     version : '3.0.0-devel',
     meson_version : '>=0.58.0')
-purple_soversion = 20
+purple_soversion = 0
 
 parts = meson.project_version().split('-')
 if parts.length() > 1
