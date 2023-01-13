@@ -27,6 +27,7 @@ enum {
 	PROP_0,
 	PROP_CANCELLABLE,
 	PROP_CAPABILITIES,
+	PROP_REGISTERED,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -44,6 +45,7 @@ struct _PurpleIRCv3Connection {
 	GCancellable *cancellable;
 
 	gchar *server_name;
+	gboolean registered;
 
 	GDataInputStream *input;
 	PurpleQueuedOutputStream *output;
@@ -245,6 +247,8 @@ purple_ircv3_connection_caps_done_cb(G_GNUC_UNUSED PurpleIRCv3Capabilities *caps
 {
 	PurpleIRCv3Connection *connection = data;
 
+	connection->registered = TRUE;
+
 	g_signal_emit(connection, signals[SIG_REGISTRATION_COMPLETE], 0);
 }
 
@@ -359,6 +363,10 @@ purple_ircv3_connection_get_property(GObject *obj, guint param_id,
 			g_value_set_object(value,
 			                   purple_ircv3_connection_get_capabilities(connection));
 			break;
+		case PROP_REGISTERED:
+			g_value_set_boolean(value,
+			                    purple_ircv3_connection_get_registered(connection));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -468,6 +476,20 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 		PURPLE_IRCV3_TYPE_CAPABILITIES,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleIRCv3Connection:registered:
+	 *
+	 * Whether or not the connection has finished the registration portion of
+	 * the connection.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_REGISTERED] = g_param_spec_boolean(
+		"registered", "registered",
+		"Whether or not the connection has finished registration.",
+		FALSE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/* Signals */
@@ -551,4 +573,11 @@ purple_ircv3_connection_get_capabilities(PurpleIRCv3Connection *connection) {
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), NULL);
 
 	return connection->capabilities;
+}
+
+gboolean
+purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection) {
+	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), FALSE);
+
+	return connection->registered;
 }

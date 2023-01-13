@@ -62,6 +62,18 @@ void purple_ircv3_connection_writef(PurpleIRCv3Connection *connection, const cha
  */
 PurpleIRCv3Capabilities *purple_ircv3_connection_get_capabilities(PurpleIRCv3Connection *connection);
 
+/**
+ * purple_ircv3_connection_get_registered:
+ * @connection: The instance.
+ *
+ * Gets whether or not the connection has finished the registration process.
+ *
+ * Returns: %TRUE if registration has been completed otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection);
+
 G_END_DECLS
 
 #endif /* PURPLE_IRCV3_CONNECTION_H */
