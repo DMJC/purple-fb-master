@@ -580,6 +580,7 @@ purple_contact_manager_add_buddy(PurpleContactManager *manager,
 	PurpleAccount *account = NULL;
 	PurpleContact *contact = NULL;
 	PurpleContactInfo *info = NULL;
+	PurplePerson *person = NULL;
 	PurplePresence *buddy_presence = NULL;
 	PurplePresence *contact_presence = NULL;
 	const gchar *id = NULL;
@@ -592,6 +593,10 @@ purple_contact_manager_add_buddy(PurpleContactManager *manager,
 	id = purple_buddy_get_id(buddy);
 	contact = purple_contact_new(account, id);
 	info = PURPLE_CONTACT_INFO(contact);
+
+	person = purple_person_new();
+	purple_contact_info_set_person(info, person);
+	purple_person_add_contact_info(person, info);
 
 	/* Bind all of the properties. */
 	g_object_bind_property(buddy, "name", contact, "username",

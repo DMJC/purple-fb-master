@@ -235,7 +235,7 @@ conf.set('ENABLE_INTROSPECTION', enable_introspection)
 # Check Pidgin dependencies
 #######################################################################
 if get_option('gtkui')
-	gtk = dependency('gtk4', version : '>= 4.0.0')
+	gtk = dependency('gtk4', version : '>= 4.6.0')
 	libadwaita = dependency('libadwaita-1', version : '>= 1.2')
 
 	talkatu_dep = dependency('talkatu',

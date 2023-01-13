@@ -13,6 +13,7 @@
     <file compressed="true" preprocess="xml-stripblanks">Conversations/infopane.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/invite_dialog.ui</file>
     <file compressed="true">Conversations/tab-label.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">ContactList/widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Debug/debug.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Dialogs/addbuddy.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Dialogs/addchat.ui</file>
