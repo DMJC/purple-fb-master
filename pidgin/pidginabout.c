@@ -46,22 +46,16 @@
 struct _PidginAboutDialog {
 	GtkDialog parent;
 
-	GtkWidget *close_button;
 	GtkWidget *application_name;
-	GtkWidget *stack;
 
-	GtkWidget *main_scrolled_window;
 	GtkTextBuffer *main_buffer;
 
-	GtkWidget *developers_page;
 	GtkWidget *developers_treeview;
 	GtkTreeStore *developers_store;
 
-	GtkWidget *translators_page;
 	GtkWidget *translators_treeview;
 	GtkTreeStore *translators_store;
 
-	GtkWidget *build_info_page;
 	GtkWidget *build_info_treeview;
 	GtkTreeStore *build_info_store;
 };
@@ -517,33 +511,21 @@ pidgin_about_dialog_class_init(PidginAboutDialogClass *klass) {
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     close_button);
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     application_name);
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     stack);
 
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     main_scrolled_window);
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     main_buffer);
 
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     developers_page);
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     developers_store);
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     developers_treeview);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     translators_page);
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     translators_store);
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     translators_treeview);
 
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     build_info_page);
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     build_info_store);
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,

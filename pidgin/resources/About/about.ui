@@ -92,7 +92,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     <property name="name">main</property>
                     <property name="title" translatable="1">General</property>
                     <property name="child">
-                      <object class="GtkScrolledWindow" id="main_scrolled_window">
+                      <object class="GtkScrolledWindow">
                         <property name="focusable">1</property>
                         <property name="hscrollbar-policy">never</property>
                         <child>
@@ -114,7 +114,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     <property name="name">developers</property>
                     <property name="title" translatable="1">Developers</property>
                     <property name="child">
-                      <object class="GtkScrolledWindow" id="developers_page">
+                      <object class="GtkScrolledWindow">
                         <property name="focusable">1</property>
                         <property name="hscrollbar-policy">never</property>
                         <property name="child">
@@ -150,7 +150,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     <property name="name">translators</property>
                     <property name="title" translatable="1">Translators</property>
                     <property name="child">
-                      <object class="GtkScrolledWindow" id="translators_page">
+                      <object class="GtkScrolledWindow">
                         <property name="focusable">1</property>
                         <property name="child">
                           <object class="GtkTreeView" id="translators_treeview">
@@ -183,7 +183,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     <property name="name">build-info</property>
                     <property name="title" translatable="1">Build Information</property>
                     <property name="child">
-                      <object class="GtkScrolledWindow" id="build_info_page">
+                      <object class="GtkScrolledWindow">
                         <property name="focusable">1</property>
                         <property name="hscrollbar-policy">never</property>
                         <property name="child">
