@@ -33,7 +33,6 @@
     <file compressed="true" preprocess="xml-stripblanks">Prefs/prefs.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Prefs/proxy.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Prefs/vv.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Privacy/dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Protocols/chooser.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Protocols/detailed-view.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Roomlist/roomlist.ui</file>
