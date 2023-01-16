@@ -337,7 +337,6 @@ pidgin/resources/Prefs/network.ui
 pidgin/resources/Prefs/prefs.ui
 pidgin/resources/Prefs/proxy.ui
 pidgin/resources/Prefs/vv.ui
-pidgin/resources/Privacy/dialog.ui
 pidgin/resources/Protocols/chooser.ui
 pidgin/resources/Protocols/detailed-view.ui
 pidgin/resources/Roomlist/roomlist.ui
