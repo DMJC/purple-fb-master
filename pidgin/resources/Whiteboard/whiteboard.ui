@@ -26,7 +26,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   <template class="PidginWhiteboard" parent="GtkWindow">
     <property name="title" translatable="yes">Pidgin Whiteboard</property>
     <property name="resizable">0</property>
-    <signal name="delete-event" handler="whiteboard_close_cb" swapped="no"/>
+    <signal name="destroy" handler="whiteboard_destroy_cb" swapped="no"/>
     <property name="child">
       <object class="GtkBox">
         <property name="spacing">6</property>

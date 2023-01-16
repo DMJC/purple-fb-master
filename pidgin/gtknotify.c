@@ -64,21 +64,20 @@ message_response_cb(G_GNUC_UNUSED GtkDialog *dialog, G_GNUC_UNUSED gint id,
 	purple_notify_close(PURPLE_NOTIFY_MESSAGE, widget);
 }
 
-static gboolean
-formatted_close_cb(GtkWidget *win, G_GNUC_UNUSED GdkEvent *event,
+static void
+formatted_close_cb(GtkDialog *dialog, G_GNUC_UNUSED gint response,
                    G_GNUC_UNUSED gpointer user_data)
 {
-	purple_notify_close(PURPLE_NOTIFY_FORMATTED, win);
-	return FALSE;
+	purple_notify_close(PURPLE_NOTIFY_FORMATTED, dialog);
 }
 
-static gboolean
-searchresults_close_cb(PidginNotifySearchResultsData *data,
-                       G_GNUC_UNUSED GdkEvent *event,
-                       G_GNUC_UNUSED gpointer user_data)
+static void
+searchresults_close_cb(G_GNUC_UNUSED GtkDialog *dialog,
+                       G_GNUC_UNUSED gint response,
+                       gpointer user_data)
 {
+	PidginNotifySearchResultsData *data = user_data;
 	purple_notify_close(PURPLE_NOTIFY_SEARCHRESULTS, data);
-	return FALSE;
 }
 
 static void
@@ -262,8 +261,7 @@ pidgin_notify_formatted(const char *title, const char *primary,
 	gtk_window_set_title(GTK_WINDOW(window), title);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
-	g_signal_connect(G_OBJECT(window), "delete_event",
-					 G_CALLBACK(formatted_close_cb), NULL);
+	g_signal_connect(window, "response", G_CALLBACK(formatted_close_cb), NULL);
 
 	/* Setup the main vbox */
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(window));
@@ -303,8 +301,6 @@ pidgin_notify_formatted(const char *title, const char *primary,
 	button = gtk_dialog_add_button(GTK_DIALOG(window), _("Close"), GTK_RESPONSE_CLOSE);
 	gtk_widget_grab_focus(button);
 
-	g_signal_connect_swapped(G_OBJECT(button), "clicked",
-	                         G_CALLBACK(formatted_close_cb), window);
 	event = gtk_event_controller_key_new();
 	gtk_widget_add_controller(window, event);
 	g_signal_connect(G_OBJECT(event), "key-pressed",
@@ -367,7 +363,6 @@ pidgin_notify_searchresults(PurpleConnection *gc, const char *title,
 {
 	GtkWidget *window;
 	GtkWidget *treeview;
-	GtkWidget *close_button;
 	GType *col_types;
 	GtkListStore *model;
 	GtkCellRenderer *renderer;
@@ -395,8 +390,8 @@ pidgin_notify_searchresults(PurpleConnection *gc, const char *title,
 	gtk_window_set_title(GTK_WINDOW(window), title ? title :_("Search Results"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
-	g_signal_connect_swapped(G_OBJECT(window), "delete_event",
-							 G_CALLBACK(searchresults_close_cb), data);
+	g_signal_connect(window, "response", G_CALLBACK(searchresults_close_cb),
+	                 data);
 
 	/* Setup the main vbox */
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(window));
@@ -511,10 +506,7 @@ pidgin_notify_searchresults(PurpleConnection *gc, const char *title,
 	}
 
 	/* Add the Close button */
-	close_button = gtk_dialog_add_button(GTK_DIALOG(window), _("Close"), GTK_RESPONSE_CLOSE);
-
-	g_signal_connect_swapped(G_OBJECT(close_button), "clicked",
-	                         G_CALLBACK(searchresults_close_cb), data);
+	gtk_dialog_add_button(GTK_DIALOG(window), _("Close"), GTK_RESPONSE_CLOSE);
 
 	data->account = purple_connection_get_account(gc);
 	data->model = model;
@@ -584,7 +576,8 @@ pidgin_notify_userinfo(PurpleConnection *gc, const char *who,
 		char *primary = g_strdup_printf(_("Info for %s"), who);
 		ui_handle = pidgin_notify_formatted(_("Buddy Information"), primary, NULL, info);
 		g_signal_handlers_disconnect_by_func(G_OBJECT(ui_handle), G_CALLBACK(formatted_close_cb), NULL);
-		g_signal_connect(G_OBJECT(ui_handle), "destroy", G_CALLBACK(remove_userinfo), key);
+		g_signal_connect(ui_handle, "response", G_CALLBACK(remove_userinfo),
+		                 key);
 		g_free(primary);
 		pinfo = g_new0(PidginUserInfo, 1);
 		pinfo->window = ui_handle;

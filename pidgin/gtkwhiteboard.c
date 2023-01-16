@@ -93,15 +93,12 @@ pidgin_whiteboard_rgb24_to_rgba(int color_rgb, GdkRGBA *color)
 	color->alpha = 1.0f;
 }
 
-static gboolean
-whiteboard_close_cb(GtkWidget *widget, G_GNUC_UNUSED GdkEvent *event,
-                    G_GNUC_UNUSED gpointer data)
+static void
+whiteboard_destroy_cb(GtkWidget *widget, G_GNUC_UNUSED gpointer data)
 {
 	PidginWhiteboard *gtkwb = PIDGIN_WHITEBOARD(widget);
 
 	g_clear_object(&gtkwb->wb);
-
-	return FALSE;
 }
 
 static void
@@ -571,7 +568,7 @@ pidgin_whiteboard_class_init(PidginWhiteboardClass *klass)
 	                                     color_button);
 
 	gtk_widget_class_bind_template_callback(
-	        widget_class, whiteboard_close_cb);
+	        widget_class, whiteboard_destroy_cb);
 	gtk_widget_class_bind_template_callback(
 	        widget_class, pidgin_whiteboard_draw_event);
 	gtk_widget_class_bind_template_callback(
