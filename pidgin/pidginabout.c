@@ -496,6 +496,13 @@ pidgin_about_dialog_response_cb(GtkDialog *dialog, gint response_id,
 	}
 }
 
+static void
+pidgin_about_dialog_open_url_cb(G_GNUC_UNUSED TalkatuView *view,
+                                const char *url, gpointer data)
+{
+	gtk_show_uri(GTK_WINDOW(data), url, GDK_CURRENT_TIME);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -533,6 +540,8 @@ pidgin_about_dialog_class_init(PidginAboutDialogClass *klass) {
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_about_dialog_response_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_about_dialog_open_url_cb);
 }
 
 static void

@@ -5,16 +5,14 @@ Pidgin is a messaging client based on libpurple which is capable of connecting t
 ### Helpful Resources
 
  * [Website](https://pidgin.im)
- * [Frequently Asked Questions](https://developer.pidgin.im/wiki/FAQ)
+ * [Frequently Asked Questions](https://pidgin.im/help/)
  * IRC Channel: #pidgin on irc.libera.chat
  * XMPP MUC: devel@conference.pidgin.im
 
 **Help for Oracle Employees** is available from your normal internal helpdesk or IT department. The Pidgin developer and user communities cannot assist you in the configuration or use of Pidgin within Oracle, as we know nothing of Oracle's infrastructure.
 
-**Help from other Pidgin users** is available by e-mailing [support@pidgin.im](mailto:support@pidgin.im).
+**Help from other Pidgin users** is available on [our Discourse](https://discourse.imfreedom.org/c/pidgin/5).
 
-This is a **public** mailing list with a **public** [archive](https://pidgin.im/pipermail/support/).
+We can't help with third-party protocols or plugins, but you may be able to find support via the [Third Party Plugins Page](https://pidgin.im/plugins/).
 
-We can't help with third-party protocols or plugins, but you may be able to find support via the [ThirdPartyPlugins WIKI Page](https://developer.pidgin.im/wiki/ThirdPartyPlugins).
-
-The list's primary language is English.  You are welcome to post in another language, but the responses may be less helpful.
+The Discourse's primary language is English.  You are welcome to post in another language, but the responses may be less helpful.

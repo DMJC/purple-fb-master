@@ -103,6 +103,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                             <property name="margin-end">12</property>
                             <property name="wrap-mode">word</property>
                             <property name="buffer">main_buffer</property>
+                            <signal name="open-url" handler="pidgin_about_dialog_open_url_cb" swapped="no"/>
                           </object>
                         </child>
                       </object>
