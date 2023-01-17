@@ -26,23 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <object class="GtkTreeStore" id="developers_store">
-    <columns>
-      <!-- column-name markup -->
-      <column type="gchararray"/>
-      <!-- column-name align -->
-      <column type="gfloat"/>
-    </columns>
-  </object>
   <object class="TalkatuMarkdownBuffer" id="main_buffer"/>
-  <object class="GtkTreeStore" id="translators_store">
-    <columns>
-      <!-- column-name markup -->
-      <column type="gchararray"/>
-      <!-- column-name align -->
-      <column type="gfloat"/>
-    </columns>
-  </object>
   <template class="PidginAboutDialog" parent="GtkDialog">
     <property name="default-height">600</property>
     <signal name="response" handler="pidgin_about_dialog_response_cb" swapped="no"/>
@@ -107,33 +91,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     <property name="name">developers</property>
                     <property name="title" translatable="1">Developers</property>
                     <property name="child">
-                      <object class="GtkScrolledWindow">
-                        <property name="focusable">1</property>
-                        <property name="hscrollbar-policy">never</property>
-                        <property name="child">
-                          <object class="GtkTreeView" id="developers_treeview">
-                            <property name="focusable">1</property>
-                            <property name="model">developers_store</property>
-                            <property name="headers-visible">0</property>
-                            <property name="show-expanders">0</property>
-                            <child internal-child="selection">
-                              <object class="GtkTreeSelection"/>
-                            </child>
-                            <child>
-                              <object class="GtkTreeViewColumn" id="developers_column">
-                                <property name="resizable">1</property>
-                                <property name="sizing">autosize</property>
-                                <child>
-                                  <object class="GtkCellRendererText" id="developers_cell_renderer"/>
-                                  <attributes>
-                                    <attribute name="xalign">1</attribute>
-                                    <attribute name="markup">0</attribute>
-                                  </attributes>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </property>
+                      <object class="AdwPreferencesPage" id="developers_page">
                       </object>
                     </property>
                   </object>
@@ -143,30 +101,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     <property name="name">translators</property>
                     <property name="title" translatable="1">Translators</property>
                     <property name="child">
-                      <object class="GtkScrolledWindow">
-                        <property name="focusable">1</property>
-                        <property name="child">
-                          <object class="GtkTreeView" id="translators_treeview">
-                            <property name="focusable">1</property>
-                            <property name="model">translators_store</property>
-                            <property name="headers-visible">0</property>
-                            <property name="show-expanders">0</property>
-                            <child internal-child="selection">
-                              <object class="GtkTreeSelection"/>
-                            </child>
-                            <child>
-                              <object class="GtkTreeViewColumn" id="translators_column">
-                                <child>
-                                  <object class="GtkCellRendererText" id="translators_cell_renderer"/>
-                                  <attributes>
-                                    <attribute name="xalign">1</attribute>
-                                    <attribute name="markup">0</attribute>
-                                  </attributes>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </property>
+                      <object class="AdwPreferencesPage" id="translators_page">
                       </object>
                     </property>
                   </object>

@@ -51,11 +51,9 @@ struct _PidginAboutDialog {
 
 	GtkTextBuffer *main_buffer;
 
-	GtkWidget *developers_treeview;
-	GtkTreeStore *developers_store;
+	AdwPreferencesPage *developers_page;
 
-	GtkWidget *translators_treeview;
-	GtkTreeStore *translators_store;
+	AdwPreferencesPage *translators_page;
 
 	AdwPreferencesGroup *build_info_group;
 	AdwPreferencesGroup *runtime_info_group;
@@ -126,7 +124,9 @@ pidgin_about_dialog_group_add_row(AdwPreferencesGroup *group,
 }
 
 static void
-pidgin_about_dialog_load_json(GtkTreeStore *store, const gchar *json_section) {
+pidgin_about_dialog_load_json(AdwPreferencesPage *page,
+                              const char *json_section)
+{
 	GInputStream *istream = NULL;
 	GList *l = NULL, *sections = NULL;
 	GError *error = NULL;
@@ -154,35 +154,23 @@ pidgin_about_dialog_load_json(GtkTreeStore *store, const gchar *json_section) {
 	sections = json_array_get_elements(sections_array);
 
 	for(l = sections; l; l = l->next) {
-		GtkTreeIter section_iter;
 		JsonObject *section = json_node_get_object(l->data);
 		JsonArray *people = NULL;
-		gchar *markup = NULL;
 		const gchar *title = NULL;
-		guint idx = 0, n_people = 0;
+		AdwPreferencesGroup *group = NULL;
+		guint n_people = 0;
 
 		title = json_object_get_string_member(section, "title");
-		markup = g_strdup_printf("<b><big>%s</big></b>", title);
-
-		gtk_tree_store_append(store, &section_iter, NULL);
-		gtk_tree_store_set(store, &section_iter,
-		                   0, markup,
-		                   1, 0.5f,
-		                   -1);
-
-		g_free(markup);
+		group = ADW_PREFERENCES_GROUP(adw_preferences_group_new());
+		adw_preferences_group_set_title(group, title);
+		adw_preferences_page_add(page, group);
 
 		people = json_object_get_array_member(section, "people");
 		n_people = json_array_get_length(people);
 
-		for(idx = 0; idx < n_people; idx++) {
-			GtkTreeIter person_iter;
-
-			gtk_tree_store_append(store, &person_iter, &section_iter);
-			gtk_tree_store_set(store, &person_iter,
-			                   0, json_array_get_string_element(people, idx),
-			                   1, 0.5f,
-			                   -1);
+		for(guint idx = 0; idx < n_people; idx++) {
+			const char *name = json_array_get_string_element(people, idx);
+			pidgin_about_dialog_group_add_row(group, name, NULL);
 		}
 	}
 
@@ -196,12 +184,12 @@ pidgin_about_dialog_load_json(GtkTreeStore *store, const gchar *json_section) {
 
 static void
 pidgin_about_dialog_load_developers(PidginAboutDialog *about) {
-	pidgin_about_dialog_load_json(about->developers_store, "developers");
+	pidgin_about_dialog_load_json(about->developers_page, "developers");
 }
 
 static void
 pidgin_about_dialog_load_translators(PidginAboutDialog *about) {
-	pidgin_about_dialog_load_json(about->translators_store, "languages");
+	pidgin_about_dialog_load_json(about->translators_page, "languages");
 }
 
 static void
@@ -451,14 +439,10 @@ pidgin_about_dialog_class_init(PidginAboutDialogClass *klass) {
 	                                     main_buffer);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     developers_store);
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     developers_treeview);
+	                                     developers_page);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     translators_store);
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     translators_treeview);
+	                                     translators_page);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     build_info_group);
@@ -491,11 +475,9 @@ pidgin_about_dialog_init(PidginAboutDialog *about) {
 
 	/* setup the developers stuff */
 	pidgin_about_dialog_load_developers(about);
-	gtk_tree_view_expand_all(GTK_TREE_VIEW(about->developers_treeview));
 
 	/* setup the translators stuff */
 	pidgin_about_dialog_load_translators(about);
-	gtk_tree_view_expand_all(GTK_TREE_VIEW(about->translators_treeview));
 
 	/* setup the build info page */
 	pidgin_about_dialog_load_build_configuration(about);
