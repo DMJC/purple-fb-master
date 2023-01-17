@@ -72,8 +72,9 @@ purple_ircv3_sasl_callback(G_GNUC_UNUSED Gsasl *ctx, Gsasl_session *session,
 
 	switch(property) {
 		case GSASL_AUTHID:
-			res = gsasl_property_set(session, GSASL_AUTHID,
-			                         purple_ircv3_sasl_get_username(data->connection));
+			gsasl_property_set(session, GSASL_AUTHID,
+			                   purple_ircv3_sasl_get_username(data->connection));
+			res = GSASL_OK;
 			break;
 		case GSASL_AUTHZID:
 			/* AUTHZID is typically set to empty string because it's the user
@@ -84,11 +85,13 @@ purple_ircv3_sasl_callback(G_GNUC_UNUSED Gsasl *ctx, Gsasl_session *session,
 			 * See https://www.gnu.org/software/gsasl/manual/gsasl.html#PLAIN
 			 * for further explanation.
 			 */
-			res = gsasl_property_set(session, GSASL_AUTHZID, "");
+			gsasl_property_set(session, GSASL_AUTHZID, "");
+			res = GSASL_OK;
 			break;
 		case GSASL_PASSWORD:
-			res = gsasl_property_set(session, GSASL_PASSWORD,
-			                         purple_connection_get_password(data->connection));
+			gsasl_property_set(session, GSASL_PASSWORD,
+			                   purple_connection_get_password(data->connection));
+			res = GSASL_OK;
 			break;
 		default:
 			g_warning("Unknown property %d", property);
