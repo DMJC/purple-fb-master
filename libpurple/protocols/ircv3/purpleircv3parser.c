@@ -21,6 +21,7 @@
 #include "purpleircv3capabilities.h"
 #include "purpleircv3core.h"
 #include "purpleircv3messagehandlers.h"
+#include "purpleircv3sasl.h"
 
 struct _PurpleIRCv3Parser {
 	GObject parent;
@@ -398,6 +399,7 @@ purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser) {
 	purple_ircv3_parser_set_fallback_handler(parser,
 	                                         purple_ircv3_message_handler_fallback);
 
+	/* Core functionality. */
 	purple_ircv3_parser_add_handler(parser, "CAP",
 	                                purple_ircv3_capabilities_message_handler);
 	purple_ircv3_parser_add_handler(parser, "NOTICE",
@@ -406,4 +408,26 @@ purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser) {
 	                                purple_ircv3_message_handler_ping);
 	purple_ircv3_parser_add_handler(parser, "PRIVMSG",
 	                                purple_ircv3_message_handler_privmsg);
+
+	/* SASL stuff. */
+	purple_ircv3_parser_add_handler(parser, "900",
+	                                purple_ircv3_sasl_logged_in);
+	purple_ircv3_parser_add_handler(parser, "901",
+	                                purple_ircv3_sasl_logged_out);
+	purple_ircv3_parser_add_handler(parser, "902",
+	                                purple_ircv3_sasl_nick_locked);
+	purple_ircv3_parser_add_handler(parser, "903",
+	                                purple_ircv3_sasl_success);
+	purple_ircv3_parser_add_handler(parser, "904",
+	                                purple_ircv3_sasl_failed);
+	purple_ircv3_parser_add_handler(parser, "905",
+	                                purple_ircv3_sasl_message_too_long);
+	purple_ircv3_parser_add_handler(parser, "906",
+	                                purple_ircv3_sasl_aborted);
+	purple_ircv3_parser_add_handler(parser, "907",
+	                                purple_ircv3_sasl_already_authed);
+	purple_ircv3_parser_add_handler(parser, "908",
+	                                purple_ircv3_sasl_mechanisms);
+	purple_ircv3_parser_add_handler(parser, "AUTHENTICATE",
+	                                purple_ircv3_sasl_authenticate);
 }

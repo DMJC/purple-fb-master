@@ -20,6 +20,7 @@
 
 #include "purpleircv3connection.h"
 #include "purpleircv3core.h"
+#include "purpleircv3sasl.h"
 
 #define PURPLE_IRCV3_CAPABILITIES_VERSION "302"
 
@@ -105,7 +106,22 @@ purple_ircv3_capabilities_add(PurpleIRCv3Capabilities *capabilities,
 static void
 purple_ircv3_capabilities_default_ready_cb(PurpleIRCv3Capabilities *capabilities)
 {
+	PurpleAccount *account = NULL;
+	PurpleConnection *purple_connection = NULL;
 	gboolean found = FALSE;
+
+	purple_connection = PURPLE_CONNECTION(capabilities->connection);
+	account = purple_connection_get_account(purple_connection);
+
+	/* Don't request the sasl capability unless the user has selected the
+	 * require-password option.
+	 */
+	if(purple_account_get_require_password(account)) {
+		purple_ircv3_capabilities_lookup(capabilities, "sasl", &found);
+		if(found) {
+			purple_ircv3_sasl_request(capabilities);
+		}
+	}
 
 	/* cap-notify is implied when we use CAP LS 302, so this is really just to
 	 * make sure it's requested.

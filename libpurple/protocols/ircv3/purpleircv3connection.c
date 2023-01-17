@@ -151,7 +151,7 @@ purple_ircv3_connection_read_cb(GObject *source, GAsyncResult *result,
 	parsed = purple_ircv3_parser_parse(connection->parser, line, &error,
 	                                   connection);
 	if(!parsed) {
-		g_warning("failed to parse '%s': %s", line,
+		g_warning("failed to handle '%s': %s", line,
 		          error != NULL ? error->message : "unknown error");
 	}
 	g_clear_error(&error);

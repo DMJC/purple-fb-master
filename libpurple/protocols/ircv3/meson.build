@@ -6,6 +6,7 @@ IRCV3_SOURCES = [
 	'purpleircv3parser.c',
 	'purpleircv3protocol.c',
 	'purpleircv3protocolim.c',
+	'purpleircv3sasl.c',
 ]
 
 IRCV3_HEADERS = [
@@ -16,6 +17,7 @@ IRCV3_HEADERS = [
 	'purpleircv3parser.h',
 	'purpleircv3protocol.h',
 	'purpleircv3protocolim.h',
+	'purpleircv3sasl.h',
 ]
 
 if DYNAMIC_IRCV3
@@ -27,7 +29,7 @@ if DYNAMIC_IRCV3
 
 	ircv3_prpl = shared_library('ircv3', IRCV3_SOURCES + IRCV3_HEADERS,
 		c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-IRCv3"'],
-		dependencies : [sasl, libpurple_dep, glib, gio, ws2_32],
+		dependencies : [libpurple_dep, glib, gio, gsasl, ws2_32],
 		install : true,
 		install_dir : PURPLE_PLUGINDIR,
 		override_options : ['c_std=c99', 'warning_level=2'])
