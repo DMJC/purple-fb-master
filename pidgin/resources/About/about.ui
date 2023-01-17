@@ -48,12 +48,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             </child>
             <child>
               <object class="GtkLabel" id="application_name">
+                <property name="css-classes">title-1</property>
                 <property name="label" translatable="1">Pidgin</property>
                 <property name="justify">center</property>
                 <property name="selectable">1</property>
-                <attributes>
-                  <attribute name="weight" value="bold"></attribute>
-                </attributes>
               </object>
             </child>
             <child>
@@ -72,14 +70,25 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                         <property name="focusable">1</property>
                         <property name="hscrollbar-policy">never</property>
                         <child>
-                          <object class="TalkatuView" id="main_page">
-                            <property name="focusable">1</property>
-                            <property name="editable">0</property>
-                            <property name="margin-start">12</property>
-                            <property name="margin-end">12</property>
-                            <property name="wrap-mode">word</property>
-                            <property name="buffer">main_buffer</property>
-                            <signal name="open-url" handler="pidgin_about_dialog_open_url_cb" swapped="no"/>
+                          <object class="AdwClamp">
+                            <child>
+                              <object class="GtkFrame">
+                                <property name="css-classes">view</property>
+                                <child>
+                                  <object class="TalkatuView" id="main_page">
+                                    <property name="focusable">1</property>
+                                    <property name="editable">0</property>
+                                    <property name="margin-top">12</property>
+                                    <property name="margin-bottom">12</property>
+                                    <property name="margin-start">12</property>
+                                    <property name="margin-end">12</property>
+                                    <property name="wrap-mode">word</property>
+                                    <property name="buffer">main_buffer</property>
+                                    <signal name="open-url" handler="pidgin_about_dialog_open_url_cb" swapped="no"/>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
