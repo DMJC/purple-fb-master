@@ -4,6 +4,7 @@
     <file compressed="true" preprocess="xml-stripblanks">About/about.ui</file>
     <file compressed="true">About/about.md</file>
     <file compressed="true" preprocess="json-stripblanks">About/credits.json</file>
+    <file compressed="true" preprocess="xml-stripblanks">Accounts/account-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Accounts/chooser.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Accounts/editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Accounts/manager.ui</file>
