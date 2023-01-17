@@ -26,14 +26,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <object class="GtkTreeStore" id="build_info_store">
-    <columns>
-      <!-- column-name title -->
-      <column type="gchararray"/>
-      <!-- column-name value -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkTreeStore" id="developers_store">
     <columns>
       <!-- column-name markup -->
@@ -52,7 +44,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     </columns>
   </object>
   <template class="PidginAboutDialog" parent="GtkDialog">
-    <property name="resizable">0</property>
+    <property name="default-height">600</property>
     <signal name="response" handler="pidgin_about_dialog_response_cb" swapped="no"/>
     <child internal-child="content_area">
       <object class="GtkBox">
@@ -184,40 +176,38 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     <property name="name">build-info</property>
                     <property name="title" translatable="1">Build Information</property>
                     <property name="child">
-                      <object class="GtkScrolledWindow">
-                        <property name="focusable">1</property>
-                        <property name="hscrollbar-policy">never</property>
-                        <property name="child">
-                          <object class="GtkTreeView" id="build_info_treeview">
-                            <property name="focusable">1</property>
-                            <property name="model">build_info_store</property>
-                            <property name="headers-visible">0</property>
-                            <property name="show-expanders">0</property>
-                            <child internal-child="selection">
-                              <object class="GtkTreeSelection"/>
-                            </child>
-                            <child>
-                              <object class="GtkTreeViewColumn">
-                                <child>
-                                  <object class="GtkCellRendererText"/>
-                                  <attributes>
-                                    <attribute name="markup">0</attribute>
-                                  </attributes>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkTreeViewColumn">
-                                <child>
-                                  <object class="GtkCellRendererText"/>
-                                  <attributes>
-                                    <attribute name="markup">1</attribute>
-                                  </attributes>
-                                </child>
-                              </object>
-                            </child>
+                      <object class="AdwPreferencesPage">
+                        <child>
+                          <object class="AdwPreferencesGroup" id="build_info_group">
+                            <property name="title" translatable="1">Build Information</property>
                           </object>
-                        </property>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="runtime_info_group">
+                            <property name="title" translatable="1">Runtime Information</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="conf_path_info_group">
+                            <property name="title" translatable="1">Runtime Directories</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="gtk_settings_group">
+                            <property name="title" translatable="1">GTK Settings</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="plugin_search_paths_group">
+                            <property name="title" translatable="1">Plugin Search Paths</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="build_args_group">
+                            <property name="title" translatable="1">Meson Arguments</property>
+                            <property name="visible">0</property>
+                          </object>
+                        </child>
                       </object>
                     </property>
                   </object>

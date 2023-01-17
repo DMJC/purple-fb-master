@@ -34,6 +34,7 @@
 
 #include <json-glib/json-glib.h>
 
+#include <adwaita.h>
 #include <talkatu.h>
 
 #include "pidginabout.h"
@@ -56,8 +57,12 @@ struct _PidginAboutDialog {
 	GtkWidget *translators_treeview;
 	GtkTreeStore *translators_store;
 
-	GtkWidget *build_info_treeview;
-	GtkTreeStore *build_info_store;
+	AdwPreferencesGroup *build_info_group;
+	AdwPreferencesGroup *runtime_info_group;
+	AdwPreferencesGroup *gtk_settings_group;
+	AdwPreferencesGroup *plugin_search_paths_group;
+	AdwPreferencesGroup *conf_path_info_group;
+	AdwPreferencesGroup *build_args_group;
 };
 
 /******************************************************************************
@@ -101,6 +106,23 @@ pidgin_about_dialog_load_main_page(PidginAboutDialog *about) {
 	g_string_free(str, TRUE);
 
 	g_input_stream_close(istream, NULL, NULL);
+}
+
+static void
+pidgin_about_dialog_group_add_row(AdwPreferencesGroup *group,
+                                  const char *title, const char *value)
+{
+	GtkWidget *row = adw_action_row_new();
+
+	adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), title);
+
+	if(value != NULL) {
+		GtkWidget *label = gtk_label_new(NULL);
+		gtk_label_set_markup(GTK_LABEL(label), value);
+		adw_action_row_add_suffix(ADW_ACTION_ROW(row), label);
+	}
+
+	adw_preferences_group_add(group, row);
 }
 
 static void
@@ -183,96 +205,43 @@ pidgin_about_dialog_load_translators(PidginAboutDialog *about) {
 }
 
 static void
-pidgin_about_dialog_add_build_args(PidginAboutDialog *about, const gchar *title,
-                                   const gchar *build_args)
-{
-	GtkTreeIter section, value;
-	gchar **splits = NULL;
-	gchar *markup = NULL;
-	gint idx = 0;
-
-	markup = g_strdup_printf("<b>%s</b>", title);
-	gtk_tree_store_append(about->build_info_store, &section, NULL);
-	gtk_tree_store_set(about->build_info_store, &section,
-	                   0, markup,
-	                   -1);
-	g_free(markup);
-
-	/* now walk through the arguments and add them */
-	splits = g_strsplit(build_args, " ", -1);
-	for(idx = 0; splits[idx]; idx++) {
-		gchar **value_split = g_strsplit(splits[idx], "=", 2);
-
-		if(value_split[0] == NULL || value_split[0][0] == '\0') {
-			continue;
-		}
-
-		gtk_tree_store_append(about->build_info_store, &value, &section);
-		gtk_tree_store_set(about->build_info_store, &value, 0, value_split[0],
-		                   1, value_split[1] ? value_split[1] : "", -1);
-
-		g_strfreev(value_split);
-	}
-
-	g_strfreev(splits);
-}
-
-static void
-pidgin_about_dialog_build_info_add_version(GtkTreeStore *store,
-                                           GtkTreeIter *section,
+pidgin_about_dialog_build_info_add_version(AdwPreferencesGroup *group,
                                            const gchar *title,
                                            guint major,
                                            guint minor,
                                            guint micro)
 {
-	GtkTreeIter item;
 	gchar *version = g_strdup_printf("%u.%u.%u", major, minor, micro);
 
-	gtk_tree_store_append(store, &item, section);
-	gtk_tree_store_set(store, &item,
-	                   0, title,
-	                   1, version,
-	                   -1);
+	pidgin_about_dialog_group_add_row(group, title, version);
+
 	g_free(version);
 }
 
 static void
 pidgin_about_dialog_load_build_info(PidginAboutDialog *about) {
-	GtkTreeIter section, item;
-	gchar *markup = NULL;
-
-	/* create the section */
-	markup = g_strdup_printf("<b>%s</b>", _("Build Information"));
-	gtk_tree_store_append(about->build_info_store, &section, NULL);
-	gtk_tree_store_set(about->build_info_store, &section,
-	                   0, markup,
-	                   -1);
-	g_free(markup);
 
 	/* add the commit hash */
-	gtk_tree_store_append(about->build_info_store, &item, &section);
-	gtk_tree_store_set(about->build_info_store, &item,
-	                   0, "Commit Hash",
-	                   1, REVISION,
-	                   -1);
+	pidgin_about_dialog_group_add_row(about->build_info_group, "Commit Hash",
+	                                  REVISION);
 
 	/* add the purple version */
-	pidgin_about_dialog_build_info_add_version(about->build_info_store,
-	                                           &section, _("Purple Version"),
+	pidgin_about_dialog_build_info_add_version(about->build_info_group,
+	                                           _("Purple Version"),
 	                                           PURPLE_MAJOR_VERSION,
 	                                           PURPLE_MINOR_VERSION,
 	                                           PURPLE_MICRO_VERSION);
 
 	/* add the glib version */
-	pidgin_about_dialog_build_info_add_version(about->build_info_store,
-	                                           &section, _("GLib Version"),
+	pidgin_about_dialog_build_info_add_version(about->build_info_group,
+	                                           _("GLib Version"),
 	                                           GLIB_MAJOR_VERSION,
 	                                           GLIB_MINOR_VERSION,
 	                                           GLIB_MICRO_VERSION);
 
 	/* add the gtk version */
-	pidgin_about_dialog_build_info_add_version(about->build_info_store,
-	                                           &section, _("GTK Version"),
+	pidgin_about_dialog_build_info_add_version(about->build_info_group,
+	                                           _("GTK Version"),
 	                                           GTK_MAJOR_VERSION,
 	                                           GTK_MINOR_VERSION,
 	                                           GTK_MICRO_VERSION);
@@ -280,34 +249,23 @@ pidgin_about_dialog_load_build_info(PidginAboutDialog *about) {
 
 static void
 pidgin_about_dialog_load_runtime_info(PidginAboutDialog *about) {
-	GtkTreeIter section;
-	gchar *markup = NULL;
-
-	/* create the section */
-	markup = g_strdup_printf("<b>%s</b>", _("Runtime Information"));
-	gtk_tree_store_append(about->build_info_store, &section, NULL);
-	gtk_tree_store_set(about->build_info_store, &section,
-	                   0, markup,
-	                   -1);
-	g_free(markup);
-
 	/* add the purple version */
-	pidgin_about_dialog_build_info_add_version(about->build_info_store,
-	                                           &section, _("Purple Version"),
+	pidgin_about_dialog_build_info_add_version(about->runtime_info_group,
+	                                           _("Purple Version"),
 	                                           purple_major_version,
 	                                           purple_minor_version,
 	                                           purple_micro_version);
 
 	/* add the glib version */
-	pidgin_about_dialog_build_info_add_version(about->build_info_store,
-	                                           &section, _("GLib Version"),
+	pidgin_about_dialog_build_info_add_version(about->runtime_info_group,
+	                                           _("GLib Version"),
 	                                           glib_major_version,
 	                                           glib_minor_version,
 	                                           glib_micro_version);
 
 	/* add the gtk version */
-	pidgin_about_dialog_build_info_add_version(about->build_info_store,
-	                                           &section, _("GTK Version"),
+	pidgin_about_dialog_build_info_add_version(about->runtime_info_group,
+	                                           _("GTK Version"),
 	                                           gtk_get_major_version(),
 	                                           gtk_get_minor_version(),
 	                                           gtk_get_micro_version());
@@ -315,22 +273,12 @@ pidgin_about_dialog_load_runtime_info(PidginAboutDialog *about) {
 
 static void
 pidgin_about_dialog_load_gtk_settings(PidginAboutDialog *about) {
-	GtkTreeIter section, iter;
-	gchar *markup = NULL;
 	gchar *cursor_theme_name = NULL, *theme_name = NULL;
 	gchar *icon_theme_name = NULL;
 	gchar *im_module = NULL;
 	gchar *sound_theme_name = NULL;
 	gboolean enable_animations = FALSE;
 	gboolean shell_shows_app_menu = FALSE, shell_shows_menubar = FALSE;
-
-	/* create the section */
-	markup = g_strdup_printf("<b>%s</b>", _("GTK Settings"));
-	gtk_tree_store_append(about->build_info_store, &section, NULL);
-	gtk_tree_store_set(about->build_info_store, &section,
-	                   0, markup,
-	                   -1);
-	g_free(markup);
 
 	/* get the settings we're interested in */
 	g_object_get(
@@ -345,53 +293,45 @@ pidgin_about_dialog_load_gtk_settings(PidginAboutDialog *about) {
 		"gtk-theme-name", &theme_name,
 		NULL);
 
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, "gtk-cursor-theme-name",
-	                   1, (cursor_theme_name != NULL) ? cursor_theme_name : _("(not set)"),
-	                   -1);
+	pidgin_about_dialog_group_add_row(
+		about->gtk_settings_group,
+		"gtk-cursor-theme-name",
+		(cursor_theme_name != NULL) ? cursor_theme_name : _("(not set)"));
 
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, "gtk-enable-animations",
-	                   1, enable_animations ? _("yes") : _("no"),
-	                   -1);
+	pidgin_about_dialog_group_add_row(
+		about->gtk_settings_group,
+		"gtk-enable-animations",
+		enable_animations ? _("yes") : _("no"));
 
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, "gtk-icon-theme-name",
-	                   1, (icon_theme_name != NULL) ? icon_theme_name : _("(not set)"),
-	                   -1);
+	pidgin_about_dialog_group_add_row(
+		about->gtk_settings_group,
+		"gtk-icon-theme-name",
+		(icon_theme_name != NULL) ? icon_theme_name : _("(not set)"));
 
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, "gtk-im-module",
-	                   1, (im_module != NULL) ? im_module : _("(not set)"),
-	                   -1);
+	pidgin_about_dialog_group_add_row(
+		about->gtk_settings_group,
+		"gtk-im-module",
+		(im_module != NULL) ? im_module : _("(not set)"));
 
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, "gtk-shell-shows-app-menu",
-	                   1, shell_shows_app_menu ? _("yes") : _("no"),
-	                   -1);
+	pidgin_about_dialog_group_add_row(
+		about->gtk_settings_group,
+		"gtk-shell-shows-app-menu",
+		shell_shows_app_menu ? _("yes") : _("no"));
 
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, "gtk-shell-shows-menubar",
-	                   1, shell_shows_menubar ? _("yes") : _("no"),
-	                   -1);
+	pidgin_about_dialog_group_add_row(
+		about->gtk_settings_group,
+		"gtk-shell-shows-menubar",
+		shell_shows_menubar ? _("yes") : _("no"));
 
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, "gtk-sound-theme-name",
-	                   1, (sound_theme_name != NULL) ? sound_theme_name : _("(not set)"),
-	                   -1);
+	pidgin_about_dialog_group_add_row(
+		about->gtk_settings_group,
+		"gtk-sound-theme-name",
+		(sound_theme_name != NULL) ? sound_theme_name : _("(not set)"));
 
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, "gtk-theme-name",
-	                   1, (theme_name != NULL) ? theme_name : _("(not set)"),
-	                   -1);
+	pidgin_about_dialog_group_add_row(
+		about->gtk_settings_group,
+		"gtk-theme-name",
+		(theme_name != NULL) ? theme_name : _("(not set)"));
 
 	g_free(cursor_theme_name);
 	g_free(icon_theme_name);
@@ -402,28 +342,14 @@ pidgin_about_dialog_load_gtk_settings(PidginAboutDialog *about) {
 
 static void
 pidgin_about_dialog_load_plugin_search_paths(PidginAboutDialog *about) {
-	GtkTreeIter section;
 	GList *paths = NULL;
-	gchar *markup = NULL;
 	GPluginManager *manager = gplugin_manager_get_default();
-
-	/* create the section */
-	markup = g_strdup_printf("<b>%s</b>", _("Plugin Search Paths"));
-	gtk_tree_store_append(about->build_info_store, &section, NULL);
-	gtk_tree_store_set(about->build_info_store, &section,
-	                   0, markup,
-	                   -1);
-	g_free(markup);
 
 	/* add the search paths */
 	paths = gplugin_manager_get_paths(manager);
 	while(paths != NULL) {
-		GtkTreeIter iter;
-
-		gtk_tree_store_append(about->build_info_store, &iter, &section);
-		gtk_tree_store_set(about->build_info_store, &iter,
-		                   1, (gchar*)(paths->data),
-		                   -1);
+		pidgin_about_dialog_group_add_row(about->plugin_search_paths_group,
+		                                  paths->data, NULL);
 
 		paths = paths->next;
 	}
@@ -431,54 +357,55 @@ pidgin_about_dialog_load_plugin_search_paths(PidginAboutDialog *about) {
 
 static void
 pidgin_about_dialog_load_conf_path_info(PidginAboutDialog *about) {
-	GtkTreeIter section, iter;
-	gchar *markup = NULL;
-	const gchar *path = NULL;
-
-	/* create the section */
-	markup = g_strdup_printf("<b>%s</b>", _("Runtime Directories"));
-	gtk_tree_store_append(about->build_info_store, &section, NULL);
-	gtk_tree_store_set(about->build_info_store, &section,
-	                   0, markup,
-	                   -1);
-	g_free(markup);
-
 	/* add the cache directory path */
-	path = purple_cache_dir();
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, _("Cache"),
-	                   1, (gchar*)path,
-	                   -1);
+	pidgin_about_dialog_group_add_row(about->conf_path_info_group, _("Cache"),
+	                                  purple_cache_dir());
 
 	/* add the config directory path */
-	path = purple_config_dir();
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, _("Configuration"),
-	                   1, (gchar*)path,
-	                   -1);
+	pidgin_about_dialog_group_add_row(about->conf_path_info_group,
+	                                  _("Configuration"), purple_config_dir());
 
 	/* add the data directory path */
-	path = purple_data_dir();
-	gtk_tree_store_append(about->build_info_store, &iter, &section);
-	gtk_tree_store_set(about->build_info_store, &iter,
-	                   0, _("Data"),
-	                   1, (gchar*)path,
-	                   -1);
+	pidgin_about_dialog_group_add_row(about->conf_path_info_group, _("Data"),
+	                                  purple_data_dir());
+}
+
+static void
+pidgin_about_dialog_add_build_args(PidginAboutDialog *about,
+                                   const char *build_args)
+{
+	gchar **splits = NULL;
+
+	/* Walk through the arguments and add them */
+	splits = g_strsplit(build_args, " ", -1);
+	for(gint idx = 0; splits[idx]; idx++) {
+		gchar **value_split = g_strsplit(splits[idx], "=", 2);
+
+		if(value_split[0] == NULL || value_split[0][0] == '\0') {
+			continue;
+		}
+
+		pidgin_about_dialog_group_add_row(about->build_args_group,
+		                                  value_split[0], value_split[1]);
+
+		g_strfreev(value_split);
+	}
+
+	g_strfreev(splits);
 }
 
 static void
 pidgin_about_dialog_load_build_configuration(PidginAboutDialog *about) {
-#ifdef MESON_ARGS
-	pidgin_about_dialog_add_build_args(about, _("Meson Arguments"), MESON_ARGS);
-#endif /* MESON_ARGS */
-
 	pidgin_about_dialog_load_build_info(about);
 	pidgin_about_dialog_load_runtime_info(about);
 	pidgin_about_dialog_load_gtk_settings(about);
 	pidgin_about_dialog_load_plugin_search_paths(about);
 	pidgin_about_dialog_load_conf_path_info(about);
+
+#ifdef MESON_ARGS
+	pidgin_about_dialog_add_build_args(about, MESON_ARGS);
+	gtk_widget_set_visible(GTK_WIDGET(about->build_args_group), TRUE);
+#endif /* MESON_ARGS */
 }
 
 /******************************************************************************
@@ -534,9 +461,17 @@ pidgin_about_dialog_class_init(PidginAboutDialogClass *klass) {
 	                                     translators_treeview);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     build_info_store);
+	                                     build_info_group);
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     build_info_treeview);
+	                                     runtime_info_group);
+	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
+	                                     gtk_settings_group);
+	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
+	                                     plugin_search_paths_group);
+	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
+	                                     conf_path_info_group);
+	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
+	                                     build_args_group);
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_about_dialog_response_cb);
@@ -564,7 +499,6 @@ pidgin_about_dialog_init(PidginAboutDialog *about) {
 
 	/* setup the build info page */
 	pidgin_about_dialog_load_build_configuration(about);
-	gtk_tree_view_expand_all(GTK_TREE_VIEW(about->build_info_treeview));
 }
 
 /******************************************************************************
