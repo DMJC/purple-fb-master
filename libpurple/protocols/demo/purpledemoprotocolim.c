@@ -54,8 +54,6 @@ purple_demo_protocol_echo_im_cb(gpointer data)
 	                   purple_message_get_contents(info->message), flags,
 	                   g_date_time_to_unix(timestamp));
 
-	g_date_time_unref(timestamp);
-
 	return FALSE;
 }
 

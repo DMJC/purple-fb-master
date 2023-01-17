@@ -79,6 +79,40 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 	return texture;
 }
 
+static void
+pidgin_contact_list_activate_cb(GtkListView *self, guint position,
+                                G_GNUC_UNUSED gpointer data)
+{
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *manager = NULL;
+	PurplePerson *person = NULL;
+	GtkSelectionModel *model = NULL;
+	const char *name = NULL;
+
+	model = gtk_list_view_get_model(self);
+
+	person = g_list_model_get_item(G_LIST_MODEL(model), position);
+	if(!PURPLE_IS_PERSON(person)) {
+		g_warning("we seem to have activated a zombie.. RUN!!!!!!");
+
+		return;
+	}
+
+	info = purple_person_get_priority_contact_info(person);
+	account = purple_contact_get_account(PURPLE_CONTACT(info));
+	name = purple_contact_info_get_username(info);
+
+	manager = purple_conversation_manager_get_default();
+	conversation = purple_conversation_manager_find_im(manager, account, name);
+
+	if(!PURPLE_IS_CONVERSATION(conversation)) {
+		conversation = purple_im_conversation_new(account, name);
+		purple_conversation_manager_register(manager, conversation);
+	}
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -110,6 +144,8 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_contact_list_avatar_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_contact_list_activate_cb);
 }
 
 /******************************************************************************

@@ -70,6 +70,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             </property>
           </object>
         </property>
+        <signal name="activate" handler="pidgin_contact_list_activate_cb" swapped="no"/>
       </object>
     </child>
   </template>
