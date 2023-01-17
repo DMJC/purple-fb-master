@@ -235,6 +235,25 @@ pidgin_about_dialog_load_build_info(PidginAboutDialog *about) {
 	                                           GTK_MICRO_VERSION);
 }
 
+static char *
+pidgin_about_dialog_copy_build_info(void) {
+	char *info = NULL;
+
+	info = g_strdup_printf(
+		"Build Information\n"
+		"=================\n"
+		"Commit Hash: %s\n"
+		"Purple Version: %u.%u.%u\n"
+		"GLib Version: %u.%u.%u\n"
+		"GTK Version: %u.%u.%u\n",
+		REVISION,
+		PURPLE_MAJOR_VERSION, PURPLE_MINOR_VERSION, PURPLE_MICRO_VERSION,
+		GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION,
+		GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+
+	return info;
+}
+
 static void
 pidgin_about_dialog_load_runtime_info(PidginAboutDialog *about) {
 	/* add the purple version */
@@ -257,6 +276,23 @@ pidgin_about_dialog_load_runtime_info(PidginAboutDialog *about) {
 	                                           gtk_get_major_version(),
 	                                           gtk_get_minor_version(),
 	                                           gtk_get_micro_version());
+}
+
+static char *
+pidgin_about_dialog_copy_runtime_info(void) {
+	char *info = NULL;
+
+	info = g_strdup_printf(
+		"Runtime Information\n"
+		"===================\n"
+		"Purple Version: %u.%u.%u\n"
+		"GLib Version: %u.%u.%u\n"
+		"GTK Version: %u.%u.%u\n",
+		purple_major_version, purple_minor_version, purple_micro_version,
+		glib_major_version, glib_minor_version, glib_micro_version,
+		gtk_get_major_version(), gtk_get_minor_version(), gtk_get_micro_version());
+
+	return info;
 }
 
 static void
@@ -328,6 +364,69 @@ pidgin_about_dialog_load_gtk_settings(PidginAboutDialog *about) {
 	g_free(theme_name);
 }
 
+static char *
+pidgin_about_dialog_copy_gtk_settings(void) {
+	char *cursor_theme_name = NULL, *theme_name = NULL;
+	char *icon_theme_name = NULL;
+	char *im_module = NULL;
+	char *sound_theme_name = NULL;
+	gboolean enable_animations = FALSE;
+	gboolean shell_shows_app_menu = FALSE, shell_shows_menubar = FALSE;
+	GString *info = NULL;
+
+	/* get the settings we're interested in */
+	g_object_get(
+		gtk_settings_get_default(),
+		"gtk-cursor-theme-name", &cursor_theme_name,
+		"gtk-enable-animations", &enable_animations,
+		"gtk-icon-theme-name", &icon_theme_name,
+		"gtk-im-module", &im_module,
+		"gtk-shell-shows-app-menu", &shell_shows_app_menu,
+		"gtk-shell-shows-menubar", &shell_shows_menubar,
+		"gtk-sound-theme-name", &sound_theme_name,
+		"gtk-theme-name", &theme_name,
+		NULL);
+
+	info = g_string_new(
+		"GTK Settings\n"
+		"============\n");
+
+	g_string_append_printf(
+		info, "gtk-cursor-theme-name: %s\n",
+		(cursor_theme_name != NULL) ? cursor_theme_name : _("(not set)"));
+
+	g_string_append_printf(info, "gtk-enable-animations: %s\n",
+	                       enable_animations ? _("yes") : _("no"));
+
+	g_string_append_printf(
+		info, "gtk-icon-theme-name: %s\n",
+		(icon_theme_name != NULL) ? icon_theme_name : _("(not set)"));
+
+	g_string_append_printf(info, "gtk-im-module: %s\n",
+	                       (im_module != NULL) ? im_module : _("(not set)"));
+
+	g_string_append_printf(info, "gtk-shell-shows-app-menu: %s\n",
+	                       shell_shows_app_menu ? _("yes") : _("no"));
+
+	g_string_append_printf(info, "gtk-shell-shows-menubar: %s\n",
+	                       shell_shows_menubar ? _("yes") : _("no"));
+
+	g_string_append_printf(
+		info, "gtk-sound-theme-name: %s\n",
+		(sound_theme_name != NULL) ? sound_theme_name : _("(not set)"));
+
+	g_string_append_printf(info, "gtk-theme-name: %s\n",
+	                       (theme_name != NULL) ? theme_name : _("(not set)"));
+
+	g_free(cursor_theme_name);
+	g_free(icon_theme_name);
+	g_free(im_module);
+	g_free(sound_theme_name);
+	g_free(theme_name);
+
+	return g_string_free(info, FALSE);
+}
+
 static void
 pidgin_about_dialog_load_plugin_search_paths(PidginAboutDialog *about) {
 	GList *paths = NULL;
@@ -343,6 +442,27 @@ pidgin_about_dialog_load_plugin_search_paths(PidginAboutDialog *about) {
 	}
 }
 
+static char *
+pidgin_about_dialog_copy_plugin_search_paths(void) {
+	GList *paths = NULL;
+	GPluginManager *manager = gplugin_manager_get_default();
+	GString *info = NULL;
+
+	info = g_string_new(
+		"Plugin Search Paths\n"
+		"===================\n");
+
+	/* add the search paths */
+	paths = gplugin_manager_get_paths(manager);
+	while(paths != NULL) {
+		g_string_append_printf(info, "- %s\n", (char *)paths->data);
+
+		paths = paths->next;
+	}
+
+	return g_string_free(info, FALSE);
+}
+
 static void
 pidgin_about_dialog_load_conf_path_info(PidginAboutDialog *about) {
 	/* add the cache directory path */
@@ -356,6 +476,23 @@ pidgin_about_dialog_load_conf_path_info(PidginAboutDialog *about) {
 	/* add the data directory path */
 	pidgin_about_dialog_group_add_row(about->conf_path_info_group, _("Data"),
 	                                  purple_data_dir());
+}
+
+static char *
+pidgin_about_dialog_copy_conf_path_info(void) {
+	char *info = NULL;
+
+	info = g_strdup_printf(
+		"Runtime Directories\n"
+		"===================\n"
+		"Cache: %s\n"
+		"Configuration: %s\n"
+		"Data: %s\n",
+		purple_cache_dir(),
+		purple_config_dir(),
+		purple_data_dir());
+
+	return info;
 }
 
 static void
@@ -380,6 +517,42 @@ pidgin_about_dialog_add_build_args(PidginAboutDialog *about,
 	}
 
 	g_strfreev(splits);
+}
+
+static char *
+pidgin_about_dialog_copy_build_args(const char *build_args) {
+	char **splits = NULL;
+	GString *info = NULL;
+
+	info = g_string_new(
+		"Meson Arguments\n"
+		"===============\n");
+
+	/* Walk through the arguments and add them */
+	splits = g_strsplit(build_args, " ", -1);
+	for(gint idx = 0; splits[idx]; idx++) {
+		char **value_split = g_strsplit(splits[idx], "=", 2);
+		char *value = NULL;
+
+		if(value_split[0] == NULL || value_split[0][0] == '\0') {
+			continue;
+		}
+
+		if(value_split[1] != NULL) {
+			value = purple_unescape_text(value_split[1]);
+		} else {
+			value = NULL;
+		}
+
+		g_string_append_printf(info, "%s: %s\n", value_split[0], value);
+
+		g_free(value);
+		g_strfreev(value_split);
+	}
+
+	g_strfreev(splits);
+
+	return g_string_free(info, FALSE);
 }
 
 static void
@@ -416,6 +589,73 @@ pidgin_about_dialog_open_url_cb(G_GNUC_UNUSED TalkatuView *view,
                                 const char *url, gpointer data)
 {
 	gtk_show_uri(GTK_WINDOW(data), url, GDK_CURRENT_TIME);
+}
+
+static void
+pidgin_about_dialog_copy_button_cb(GtkButton *button,
+                                   gpointer data)
+{
+	PidginAboutDialog *about = NULL;
+	GdkClipboard *clipboard = NULL;
+	char *info = NULL;
+
+	about = PIDGIN_ABOUT_DIALOG(gtk_widget_get_root(GTK_WIDGET(button)));
+
+	if(data == about->build_info_group) {
+		info = pidgin_about_dialog_copy_build_info();
+	} else if(data == about->runtime_info_group) {
+		info = pidgin_about_dialog_copy_runtime_info();
+	} else if(data == about->gtk_settings_group) {
+		info = pidgin_about_dialog_copy_gtk_settings();
+	} else if(data == about->plugin_search_paths_group) {
+		info = pidgin_about_dialog_copy_plugin_search_paths();
+	} else if(data == about->conf_path_info_group) {
+		info = pidgin_about_dialog_copy_conf_path_info();
+#ifdef MESON_ARGS
+	} else if(data == about->build_args_group) {
+		info = pidgin_about_dialog_copy_build_args(MESON_ARGS);
+#endif
+	} else {
+		GString *everything = g_string_new(NULL);
+
+		info = pidgin_about_dialog_copy_build_info();
+		g_string_append(everything, info);
+		g_string_append_c(everything, '\n');
+		g_free(info);
+
+		info = pidgin_about_dialog_copy_runtime_info();
+		g_string_append(everything, info);
+		g_string_append_c(everything, '\n');
+		g_free(info);
+
+		info = pidgin_about_dialog_copy_conf_path_info();
+		g_string_append(everything, info);
+		g_string_append_c(everything, '\n');
+		g_free(info);
+
+		info = pidgin_about_dialog_copy_gtk_settings();
+		g_string_append(everything, info);
+		g_string_append_c(everything, '\n');
+		g_free(info);
+
+		info = pidgin_about_dialog_copy_plugin_search_paths();
+		g_string_append(everything, info);
+		g_free(info);
+
+#ifdef MESON_ARGS
+		g_string_append_c(everything, '\n');
+		info = pidgin_about_dialog_copy_build_args(MESON_ARGS);
+		g_string_append(everything, info);
+		g_free(info);
+#endif
+
+		info = g_string_free(everything, FALSE);
+	}
+
+	clipboard = gtk_widget_get_clipboard(GTK_WIDGET(about));
+	gdk_clipboard_set_text(clipboard, info);
+
+	g_free(info);
 }
 
 /******************************************************************************
@@ -461,6 +701,8 @@ pidgin_about_dialog_class_init(PidginAboutDialogClass *klass) {
 	                                        pidgin_about_dialog_response_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_about_dialog_open_url_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_about_dialog_copy_button_cb);
 }
 
 static void

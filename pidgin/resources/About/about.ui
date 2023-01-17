@@ -122,34 +122,93 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                     <property name="child">
                       <object class="AdwPreferencesPage">
                         <child>
+                          <object class="GtkButton" id="copy_all_button">
+                            <property name="css-classes">pill</property>
+                            <property name="halign">center</property>
+                            <property name="valign">end</property>
+                            <property name="child">
+                              <object class="AdwButtonContent">
+                                <property name="icon-name">edit-copy-symbolic</property>
+                                <property name="label" translatable="1">_Copy All</property>
+                                <property name="use-underline">1</property>
+                              </object>
+                            </property>
+                            <signal name="clicked" handler="pidgin_about_dialog_copy_button_cb" swapped="no"/>
+                          </object>
+                        </child>
+                        <!-- AdwPreferencesPage doesn't track non-AdwPreferencesGroup children, so manually remove when it's destroyed. -->
+                        <signal name="destroy" handler="gtk_widget_unparent" object="copy_all_button" swapped="yes"/>
+                        <child>
                           <object class="AdwPreferencesGroup" id="build_info_group">
                             <property name="title" translatable="1">Build Information</property>
+                            <child type="header-suffix">
+                              <object class="GtkButton">
+                                <property name="css-classes">flat</property>
+                                <property name="icon-name">edit-copy-symbolic</property>
+                                <signal name="clicked" handler="pidgin_about_dialog_copy_button_cb" object="build_info_group" swapped="no"/>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
                           <object class="AdwPreferencesGroup" id="runtime_info_group">
                             <property name="title" translatable="1">Runtime Information</property>
+                            <child type="header-suffix">
+                              <object class="GtkButton">
+                                <property name="css-classes">flat</property>
+                                <property name="icon-name">edit-copy-symbolic</property>
+                                <signal name="clicked" handler="pidgin_about_dialog_copy_button_cb" object="runtime_info_group" swapped="no"/>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
                           <object class="AdwPreferencesGroup" id="conf_path_info_group">
                             <property name="title" translatable="1">Runtime Directories</property>
+                            <child type="header-suffix">
+                              <object class="GtkButton">
+                                <property name="css-classes">flat</property>
+                                <property name="icon-name">edit-copy-symbolic</property>
+                                <signal name="clicked" handler="pidgin_about_dialog_copy_button_cb" object="conf_path_info_group" swapped="no"/>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
                           <object class="AdwPreferencesGroup" id="gtk_settings_group">
                             <property name="title" translatable="1">GTK Settings</property>
+                            <child type="header-suffix">
+                              <object class="GtkButton">
+                                <property name="css-classes">flat</property>
+                                <property name="icon-name">edit-copy-symbolic</property>
+                                <signal name="clicked" handler="pidgin_about_dialog_copy_button_cb" object="gtk_settings_group" swapped="no"/>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
                           <object class="AdwPreferencesGroup" id="plugin_search_paths_group">
                             <property name="title" translatable="1">Plugin Search Paths</property>
+                            <child type="header-suffix">
+                              <object class="GtkButton">
+                                <property name="css-classes">flat</property>
+                                <property name="icon-name">edit-copy-symbolic</property>
+                                <signal name="clicked" handler="pidgin_about_dialog_copy_button_cb" object="plugin_search_paths_group" swapped="no"/>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
                           <object class="AdwPreferencesGroup" id="build_args_group">
                             <property name="title" translatable="1">Meson Arguments</property>
                             <property name="visible">0</property>
+                            <child type="header-suffix">
+                              <object class="GtkButton">
+                                <property name="css-classes">flat</property>
+                                <property name="icon-name">edit-copy-symbolic</property>
+                                <signal name="clicked" handler="pidgin_about_dialog_copy_button_cb" object="build_args_group" swapped="no"/>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
