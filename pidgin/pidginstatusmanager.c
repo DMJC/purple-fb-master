@@ -44,8 +44,8 @@ enum {
 struct _PidginStatusManager {
 	GtkDialog parent;
 
-	GtkListStore *model;
-	GtkTreeSelection *selection;
+	GListStore *model;
+	GtkSingleSelection *selection;
 
 	GtkWidget *use_button;
 	GtkWidget *modify_button;
@@ -62,23 +62,15 @@ static void pidgin_status_editor_destroy_cb(GtkWidget *widget, gpointer data);
  *****************************************************************************/
 static void
 pidgin_status_manager_show_editor(PidginStatusManager *manager) {
+	GObject *wrapper = NULL;
 	PurpleSavedStatus *status = NULL;
 	GtkWidget *editor = NULL;
-	GtkTreeIter iter;
 
-	if(gtk_tree_selection_count_selected_rows(manager->selection) == 0) {
-		return;
-	}
-
-	gtk_tree_selection_get_selected(manager->selection, NULL, &iter);
-	gtk_tree_model_get(GTK_TREE_MODEL(manager->model), &iter,
-		COLUMN_STATUS, &status,
-		COLUMN_EDITOR, &editor,
-		-1);
+	wrapper = gtk_single_selection_get_selected_item(manager->selection);
+	status = g_object_get_data(wrapper, "savedstatus");
+	editor = g_object_get_data(wrapper, "editor");
 
 	if(status == NULL) {
-		g_clear_object(&editor);
-
 		return;
 	}
 
@@ -87,7 +79,7 @@ pidgin_status_manager_show_editor(PidginStatusManager *manager) {
 
 		gtk_window_set_transient_for(GTK_WINDOW(editor), GTK_WINDOW(manager));
 
-		gtk_list_store_set(manager->model, &iter, COLUMN_EDITOR, editor, -1);
+		g_object_set_data(wrapper, "editor", editor);
 		g_signal_connect_object(editor, "destroy",
 		                        G_CALLBACK(pidgin_status_editor_destroy_cb),
 		                        manager, 0);
@@ -100,24 +92,16 @@ pidgin_status_manager_show_editor(PidginStatusManager *manager) {
 
 static void
 pidgin_status_manager_remove_selected(PidginStatusManager *manager) {
+	GObject *wrapper = NULL;
 	PurpleSavedStatus *status = NULL;
 	GtkWidget *editor = NULL;
-	GtkTreeIter iter;
 
-	if(gtk_tree_selection_count_selected_rows(manager->selection) == 0) {
-		return;
-	}
-
-	gtk_tree_selection_get_selected(manager->selection, NULL, &iter);
-	gtk_tree_model_get(GTK_TREE_MODEL(manager->model), &iter,
-		COLUMN_STATUS, &status,
-		COLUMN_EDITOR, &editor,
-		-1);
+	wrapper = gtk_single_selection_get_selected_item(manager->selection);
+	status = g_object_get_data(wrapper, "savedstatus");
+	editor = g_object_get_data(wrapper, "editor");
 
 	if(GTK_IS_WIDGET(editor)) {
 		gtk_window_destroy(GTK_WINDOW(editor));
-
-		g_clear_object(&editor);
 	}
 
 	purple_savedstatus_delete_by_status(status);
@@ -125,17 +109,11 @@ pidgin_status_manager_remove_selected(PidginStatusManager *manager) {
 
 static PurpleSavedStatus *
 pidgin_status_manager_get_selected_status(PidginStatusManager *manager) {
+	GObject *wrapper = NULL;
 	PurpleSavedStatus *status = NULL;
-	GtkTreeIter iter;
 
-	if(gtk_tree_selection_count_selected_rows(manager->selection) == 0) {
-		return NULL;
-	}
-
-	gtk_tree_selection_get_selected(manager->selection, NULL, &iter);
-	gtk_tree_model_get(GTK_TREE_MODEL(manager->model), &iter,
-	                   COLUMN_STATUS, &status,
-	                   -1);
+	wrapper = gtk_single_selection_get_selected_item(manager->selection);
+	status = g_object_get_data(wrapper, "savedstatus");
 
 	return status;
 }
@@ -144,8 +122,8 @@ static void
 pidgin_status_manager_add(PidginStatusManager *manager,
                           PurpleSavedStatus *status)
 {
+	GObject *wrapper = NULL;
 	PurpleStatusPrimitive primitive;
-	GtkTreeIter iter;
 	gchar *message = NULL;
 	const gchar *icon_name = NULL, *type = NULL;
 
@@ -155,16 +133,20 @@ pidgin_status_manager_add(PidginStatusManager *manager,
 	icon_name = pidgin_icon_name_from_status_primitive(primitive, NULL);
 	type = purple_primitive_get_name_from_type(primitive);
 
-	gtk_list_store_append(manager->model, &iter);
-	gtk_list_store_set(manager->model, &iter,
-	                   COLUMN_TITLE, purple_savedstatus_get_title(status),
-	                   COLUMN_ICON_NAME, icon_name,
-	                   COLUMN_TYPE, type,
-	                   COLUMN_MESSAGE, message,
-	                   COLUMN_STATUS, status,
-	                   -1);
+	/* PurpleSavedStatus is a boxed type, so it can't be put in a GListModel;
+	 * instead create a wrapper GObject instance to hold its information. */
+	wrapper = g_object_new(G_TYPE_OBJECT, NULL);
+	g_object_set_data(wrapper, "savedstatus", status);
+	g_object_set_data_full(wrapper, "title",
+	                       g_strdup(purple_savedstatus_get_title(status)),
+	                       g_free);
+	g_object_set_data_full(wrapper, "icon-name", g_strdup(icon_name), g_free);
+	g_object_set_data_full(wrapper, "type", g_strdup(type), g_free);
+	g_object_set_data_full(wrapper, "message", g_strdup(message), g_free);
 
 	g_free(message);
+
+	g_list_store_append(manager->model, wrapper);
 }
 
 static void
@@ -181,7 +163,7 @@ static void
 pidgin_status_manager_refresh(PidginStatusManager *manager) {
 	GList *statuses = NULL;
 
-	gtk_list_store_clear(manager->model);
+	g_list_store_remove_all(manager->model);
 
 	statuses = purple_savedstatuses_get_all();
 	g_list_foreach(statuses, pidgin_status_manager_populate_helper, manager);
@@ -225,30 +207,52 @@ pidgin_status_manager_response_cb(GtkDialog *dialog, gint response_id,
 	}
 }
 
-static void
-pidgin_status_manager_row_activated_cb(G_GNUC_UNUSED GtkTreeView *tree_view,
-                                       GtkTreePath *path,
-                                       G_GNUC_UNUSED GtkTreeViewColumn *column,
-                                       gpointer data)
+static char *
+pidgin_status_manager_sort_data_cb(GObject *wrapper, const char *name,
+                                   G_GNUC_UNUSED gpointer data)
 {
-	PidginStatusManager *manager = data;
-	GtkTreeIter iter;
+	const char *value = NULL;
 
-	if(gtk_tree_model_get_iter(GTK_TREE_MODEL(manager->model), &iter, path)) {
-		gtk_tree_selection_select_iter(manager->selection, &iter);
-
-		pidgin_status_manager_show_editor(manager);
+	if(G_IS_OBJECT(wrapper)) {
+		value = g_object_get_data(wrapper, name);
 	}
+
+	/* NOTE: Most GTK widget properties don't care if you return NULL, but the
+	 * GtkStringSorter does some string comparisons without checking for NULL,
+	 * so we need to ensure that non-NULL is returned to prevent runtime
+	 * warnings. */
+	return g_strdup(value ? value : "");
+}
+
+/* A closure from within a GtkBuilderListItemFactory passes an extra first
+ * argument, so we need to drop that to re-use the above callback. */
+static char *
+pidgin_status_manager_lookup_text_data_cb(G_GNUC_UNUSED GObject *self,
+                                          GObject *wrapper, const char *name,
+                                          gpointer data)
+{
+	return pidgin_status_manager_sort_data_cb(wrapper, name, data);
 }
 
 static void
-pidgin_status_manager_selection_changed_cb(GtkTreeSelection *selection,
+pidgin_status_manager_row_activated_cb(G_GNUC_UNUSED GtkColumnView *self,
+                                       guint position, gpointer data)
+{
+	PidginStatusManager *manager = data;
+
+	gtk_single_selection_set_selected(manager->selection, position);
+	pidgin_status_manager_show_editor(manager);
+}
+
+static void
+pidgin_status_manager_selection_changed_cb(G_GNUC_UNUSED GObject *object,
+                                           G_GNUC_UNUSED GParamSpec *pspec,
                                            gpointer data)
 {
 	PidginStatusManager *manager = data;
 	gboolean sensitive = TRUE;
 
-	if(gtk_tree_selection_count_selected_rows(selection) == 0) {
+	if(g_list_model_get_n_items(G_LIST_MODEL(manager->model)) == 0) {
 		sensitive = FALSE;
 	}
 
@@ -300,32 +304,25 @@ pidgin_status_manager_savedstatus_updated_cb(G_GNUC_UNUSED PurpleSavedStatus *st
 static void
 pidgin_status_editor_destroy_cb(GtkWidget *widget, gpointer data) {
 	PidginStatusManager *manager = data;
-	GtkTreeIter iter;
+	GListModel *model = G_LIST_MODEL(manager->model);
+	guint n_items = 0;
 
-	if(!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(manager->model), &iter)) {
-		return;
-	}
-
-	do {
+	n_items = g_list_model_get_n_items(model);
+	for(guint index = 0; index < n_items; index++) {
+		GObject *wrapper = NULL;
 		GtkWidget *editor = NULL;
 
-		gtk_tree_model_get(GTK_TREE_MODEL(manager->model), &iter,
-			COLUMN_EDITOR, &editor,
-			-1);
+		wrapper = g_list_model_get_item(model, index);
+		editor = g_object_get_data(wrapper, "editor");
 
 		/* Check if editor is the widget being destroyed. */
 		if(editor == widget) {
-			/* It is, so set it back to NULL and unreference the copy we just
-			 * got.
-			 */
-			gtk_list_store_set(manager->model, &iter, COLUMN_EDITOR, NULL, -1);
-			g_clear_object(&editor);
+			/* It is, so set it back to NULL to remove it from the wrapper. */
+			g_object_set_data(wrapper, "editor", NULL);
 
 			break;
 		}
-
-		g_clear_object(&editor);
-	} while(gtk_tree_model_iter_next(GTK_TREE_MODEL(manager->model), &iter));
+	}
 }
 
 /******************************************************************************
@@ -386,6 +383,10 @@ pidgin_status_manager_class_init(PidginStatusManagerClass *klass) {
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_status_manager_response_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_status_manager_lookup_text_data_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_status_manager_sort_data_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_status_manager_row_activated_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
