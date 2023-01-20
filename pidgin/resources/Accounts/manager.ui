@@ -41,7 +41,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                 <property name="margin-start">24</property>
                 <property name="margin-top">24</property>
                 <property name="orientation">horizontal</property>
-                <property name="valign">center</property>
                 <child>
                   <object class="GtkListBox" id="list_box">
                     <property name="css-classes">boxed-list
