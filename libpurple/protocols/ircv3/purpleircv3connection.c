@@ -38,9 +38,7 @@ enum {
 };
 static guint signals[N_SIGNALS] = {0, };
 
-struct _PurpleIRCv3Connection {
-	PurpleConnection parent;
-
+typedef struct {
 	GSocketConnection *connection;
 	GCancellable *cancellable;
 
@@ -53,10 +51,13 @@ struct _PurpleIRCv3Connection {
 	PurpleIRCv3Parser *parser;
 
 	PurpleIRCv3Capabilities *capabilities;
-};
+} PurpleIRCv3ConnectionPrivate;
 
-G_DEFINE_DYNAMIC_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
-                      PURPLE_TYPE_CONNECTION)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleIRCv3Connection,
+                               purple_ircv3_connection,
+                               PURPLE_TYPE_CONNECTION,
+                               0,
+                               G_ADD_PRIVATE_DYNAMIC(PurpleIRCv3Connection))
 
 /******************************************************************************
  * Helpers
@@ -121,6 +122,7 @@ purple_ircv3_connection_read_cb(GObject *source, GAsyncResult *result,
                                 gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	GDataInputStream *istream = G_DATA_INPUT_STREAM(source);
 	GError *error = NULL;
 	gchar *line = NULL;
@@ -148,7 +150,9 @@ purple_ircv3_connection_read_cb(GObject *source, GAsyncResult *result,
 		return;
 	}
 
-	parsed = purple_ircv3_parser_parse(connection->parser, line, &error,
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	parsed = purple_ircv3_parser_parse(priv->parser, line, &error,
 	                                   connection);
 	if(!parsed) {
 		g_warning("failed to handle '%s': %s", line,
@@ -159,9 +163,9 @@ purple_ircv3_connection_read_cb(GObject *source, GAsyncResult *result,
 	g_free(line);
 
 	/* Call read_line_async again to continue reading lines. */
-	g_data_input_stream_read_line_async(connection->input,
+	g_data_input_stream_read_line_async(priv->input,
 	                                    G_PRIORITY_DEFAULT,
-	                                    connection->cancellable,
+	                                    priv->cancellable,
 	                                    purple_ircv3_connection_read_cb,
 	                                    connection);
 }
@@ -194,11 +198,14 @@ purple_ircv3_connection_connected_cb(GObject *source, GAsyncResult *result,
                                      gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	GError *error = NULL;
 	GInputStream *istream = NULL;
 	GOutputStream *ostream = NULL;
 	GSocketClient *client = G_SOCKET_CLIENT(source);
 	GSocketConnection *conn = NULL;
+
+	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	/* Finish the async method. */
 	conn = g_socket_client_connect_to_host_finish(client, result, &error);
@@ -210,32 +217,32 @@ purple_ircv3_connection_connected_cb(GObject *source, GAsyncResult *result,
 		return;
 	}
 
-	g_message("Successfully connected to %s", connection->server_name);
+	g_message("Successfully connected to %s", priv->server_name);
 
 	/* Save our connection and setup our input and outputs. */
-	connection->connection = conn;
+	priv->connection = conn;
 
 	/* Create our parser. */
-	connection->parser = purple_ircv3_parser_new();
-	purple_ircv3_parser_add_default_handlers(connection->parser);
+	priv->parser = purple_ircv3_parser_new();
+	purple_ircv3_parser_add_default_handlers(priv->parser);
 
 	ostream = g_io_stream_get_output_stream(G_IO_STREAM(conn));
-	connection->output = purple_queued_output_stream_new(ostream);
+	priv->output = purple_queued_output_stream_new(ostream);
 
 	istream = g_io_stream_get_input_stream(G_IO_STREAM(conn));
-	connection->input = g_data_input_stream_new(istream);
-	g_data_input_stream_set_newline_type(G_DATA_INPUT_STREAM(connection->input),
+	priv->input = g_data_input_stream_new(istream);
+	g_data_input_stream_set_newline_type(G_DATA_INPUT_STREAM(priv->input),
 	                                     G_DATA_STREAM_NEWLINE_TYPE_CR_LF);
 
 	/* Add our read callback. */
-	g_data_input_stream_read_line_async(connection->input,
+	g_data_input_stream_read_line_async(priv->input,
 	                                    G_PRIORITY_DEFAULT,
-	                                    connection->cancellable,
+	                                    priv->cancellable,
 	                                    purple_ircv3_connection_read_cb,
 	                                    connection);
 
 	/* Send our registration commands. */
-	purple_ircv3_capabilities_start(connection->capabilities);
+	purple_ircv3_capabilities_start(priv->capabilities);
 	purple_ircv3_connection_send_pass_command(connection);
 	purple_ircv3_connection_send_user_command(connection);
 	purple_ircv3_connection_send_nick_command(connection);
@@ -246,8 +253,11 @@ purple_ircv3_connection_caps_done_cb(G_GNUC_UNUSED PurpleIRCv3Capabilities *caps
                                      gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 
-	connection->registered = TRUE;
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	priv->registered = TRUE;
 
 	g_signal_emit(connection, signals[SIG_REGISTRATION_COMPLETE], 0);
 }
@@ -260,6 +270,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
                                 GError **error)
 {
 	PurpleIRCv3Connection *connection = NULL;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	GSocketClient *client = NULL;
 	gint default_port = PURPLE_IRCV3_DEFAULT_TLS_PORT;
@@ -269,6 +280,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(purple_connection), FALSE);
 
 	connection = PURPLE_IRCV3_CONNECTION(purple_connection);
+	priv = purple_ircv3_connection_get_instance_private(connection);
 	account = purple_connection_get_account(purple_connection);
 
 	client = purple_gio_socket_client_new(account, error);
@@ -291,8 +303,8 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	port = purple_account_get_int(account, "port", default_port);
 
 	/* Finally start the async connection. */
-	g_socket_client_connect_to_host_async(client, connection->server_name,
-	                                      port, connection->cancellable,
+	g_socket_client_connect_to_host_async(client, priv->server_name,
+	                                      port, priv->cancellable,
 	                                      purple_ircv3_connection_connected_cb,
 	                                      connection);
 
@@ -306,31 +318,33 @@ purple_ircv3_connection_disconnect(PurpleConnection *purple_connection,
                                    G_GNUC_UNUSED GError **error)
 {
 	PurpleIRCv3Connection *connection = NULL;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(purple_connection), FALSE);
 
 	connection = PURPLE_IRCV3_CONNECTION(purple_connection);
+	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	/* TODO: send QUIT command. */
 
 	/* Cancel the cancellable to tell everyone we're shutting down. */
-	if(G_IS_CANCELLABLE(connection->cancellable)) {
-		g_cancellable_cancel(connection->cancellable);
+	if(G_IS_CANCELLABLE(priv->cancellable)) {
+		g_cancellable_cancel(priv->cancellable);
 
-		g_clear_object(&connection->cancellable);
+		g_clear_object(&priv->cancellable);
 	}
 
-	if(G_IS_SOCKET_CONNECTION(connection->connection)) {
-		GInputStream *istream = G_INPUT_STREAM(connection->input);
-		GOutputStream *ostream = G_OUTPUT_STREAM(connection->output);
+	if(G_IS_SOCKET_CONNECTION(priv->connection)) {
+		GInputStream *istream = G_INPUT_STREAM(priv->input);
+		GOutputStream *ostream = G_OUTPUT_STREAM(priv->output);
 
-		purple_gio_graceful_close(G_IO_STREAM(connection->connection),
+		purple_gio_graceful_close(G_IO_STREAM(priv->connection),
 		                          istream, ostream);
 	}
 
-	g_clear_object(&connection->input);
-	g_clear_object(&connection->output);
-	g_clear_object(&connection->connection);
+	g_clear_object(&priv->input);
+	g_clear_object(&priv->output);
+	g_clear_object(&priv->connection);
 
 	return TRUE;
 }
@@ -376,15 +390,18 @@ purple_ircv3_connection_get_property(GObject *obj, guint param_id,
 static void
 purple_ircv3_connection_dispose(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 
-	g_clear_object(&connection->cancellable);
+	priv = purple_ircv3_connection_get_instance_private(connection);
 
-	g_clear_object(&connection->input);
-	g_clear_object(&connection->output);
-	g_clear_object(&connection->connection);
+	g_clear_object(&priv->cancellable);
 
-	g_clear_object(&connection->capabilities);
-	g_clear_object(&connection->parser);
+	g_clear_object(&priv->input);
+	g_clear_object(&priv->output);
+	g_clear_object(&priv->connection);
+
+	g_clear_object(&priv->capabilities);
+	g_clear_object(&priv->parser);
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->dispose(obj);
 }
@@ -392,8 +409,11 @@ purple_ircv3_connection_dispose(GObject *obj) {
 static void
 purple_ircv3_connection_finalize(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 
-	g_clear_pointer(&connection->server_name, g_free);
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	g_clear_pointer(&priv->server_name, g_free);
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->finalize(obj);
 }
@@ -401,12 +421,14 @@ purple_ircv3_connection_finalize(GObject *obj) {
 static void
 purple_ircv3_connection_constructed(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	gchar **userparts = NULL;
 	const gchar *username = NULL;
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->constructed(obj);
 
+	priv = purple_ircv3_connection_get_instance_private(connection);
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
 
 	/* Split the username into nick and server and store the values. */
@@ -414,14 +436,14 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	userparts = g_strsplit(username, "@", 2);
 	purple_connection_set_display_name(PURPLE_CONNECTION(connection),
 	                                   userparts[0]);
-	connection->server_name = g_strdup(userparts[1]);
+	priv->server_name = g_strdup(userparts[1]);
 	g_strfreev(userparts);
 
 	/* Finally create our objects. */
-	connection->cancellable = g_cancellable_new();
+	priv->cancellable = g_cancellable_new();
 
-	connection->capabilities = purple_ircv3_capabilities_new(connection);
-	g_signal_connect_object(connection->capabilities, "done",
+	priv->capabilities = purple_ircv3_capabilities_new(connection);
+	g_signal_connect_object(priv->capabilities, "done",
 	                        G_CALLBACK(purple_ircv3_connection_caps_done_cb),
 	                        connection, 0);
 }
@@ -526,9 +548,13 @@ purple_ircv3_connection_register(GPluginNativePlugin *plugin) {
 
 GCancellable *
 purple_ircv3_connection_get_cancellable(PurpleIRCv3Connection *connection) {
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), NULL);
 
-	return connection->cancellable;
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	return priv->cancellable;
 }
 
 /******************************************************************************
@@ -538,12 +564,15 @@ void
 purple_ircv3_connection_writef(PurpleIRCv3Connection *connection,
                                const char *format, ...)
 {
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	GBytes *bytes = NULL;
 	GString *msg = NULL;
 	va_list vargs;
 
 	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
 	g_return_if_fail(format != NULL);
+
+	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	/* Create our string and append our format to it. */
 	msg = g_string_new("");
@@ -559,9 +588,9 @@ purple_ircv3_connection_writef(PurpleIRCv3Connection *connection,
 	bytes = g_bytes_new_take(msg->str, msg->len);
 	g_string_free(msg, FALSE);
 
-	purple_queued_output_stream_push_bytes_async(connection->output, bytes,
+	purple_queued_output_stream_push_bytes_async(priv->output, bytes,
 	                                             G_PRIORITY_DEFAULT,
-	                                             connection->cancellable,
+	                                             priv->cancellable,
 	                                             purple_ircv3_connection_write_cb,
 	                                             connection);
 
@@ -570,14 +599,22 @@ purple_ircv3_connection_writef(PurpleIRCv3Connection *connection,
 
 PurpleIRCv3Capabilities *
 purple_ircv3_connection_get_capabilities(PurpleIRCv3Connection *connection) {
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), NULL);
 
-	return connection->capabilities;
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	return priv->capabilities;
 }
 
 gboolean
 purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection) {
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), FALSE);
 
-	return connection->registered;
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	return priv->registered;
 }

@@ -32,10 +32,18 @@
 G_BEGIN_DECLS
 
 #define PURPLE_IRCV3_TYPE_CONNECTION (purple_ircv3_connection_get_type())
-G_DECLARE_FINAL_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
-                     PURPLE_IRCV3, CONNECTION, PurpleConnection)
+G_DECLARE_DERIVABLE_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
+                         PURPLE_IRCV3, CONNECTION, PurpleConnection)
 
 #include "purpleircv3capabilities.h"
+
+struct _PurpleIRCv3ConnectionClass {
+	/*< private >*/
+	PurpleConnectionClass parent;
+
+	/*< private >*/
+	gpointer reserved[8];
+};
 
 G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugin);
 
