@@ -483,7 +483,7 @@ endif
 #######################################################################
 sasl = dependency('libsasl2', version : '>= 2.0')
 
-gsasl = dependency('libgsasl', version : '>= 1.10.0')
+gsasl = dependency('libgsasl', version : '>= 1.8.0')
 
 #AC_MSG_CHECKING(for me pot o' gold)
 #AC_MSG_RESULT(no)
