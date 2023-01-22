@@ -51,7 +51,6 @@ static gboolean force_online = FALSE;
 
 /* Cached IP addresses for STUN and TURN servers (set globally in prefs) */
 static gchar *stun_ip = NULL;
-static gchar *turn_ip = NULL;
 
 void
 purple_network_set_public_ip(const char *ip)
@@ -233,39 +232,10 @@ purple_network_set_stun_server(const gchar *stun_server)
 	}
 }
 
-void
-purple_network_set_turn_server(const gchar *turn_server)
-{
-	if (turn_server && turn_server[0] != '\0') {
-		if (purple_network_is_available()) {
-			GResolver *resolver = g_resolver_get_default();
-			g_resolver_lookup_by_name_async(resolver,
-			                                turn_server,
-			                                NULL,
-			                                purple_network_ip_lookup_cb,
-			                                &turn_ip);
-			g_object_unref(resolver);
-		} else {
-			purple_debug_info("network",
-				"network is unavailable, don't try to update TURN IP");
-		}
-	} else {
-		g_free(turn_ip);
-		turn_ip = NULL;
-	}
-}
-
-
 const gchar *
 purple_network_get_stun_ip(void)
 {
 	return stun_ip;
-}
-
-const gchar *
-purple_network_get_turn_ip(void)
-{
-	return turn_ip;
 }
 
 gboolean
@@ -316,13 +286,10 @@ purple_network_init(void)
 
 	purple_network_set_stun_server(
 		purple_prefs_get_string("/purple/network/stun_server"));
-	purple_network_set_turn_server(
-		purple_prefs_get_string("/purple/network/turn_server"));
 }
 
 void
 purple_network_uninit(void)
 {
 	g_free(stun_ip);
-	g_free(turn_ip);
 }

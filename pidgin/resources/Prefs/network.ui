@@ -33,16 +33,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="turn_port_tcp.adjustment">
-    <property name="upper">65535</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="turn_port_udp.adjustment">
-    <property name="upper">65535</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
-  </object>
   <template class="PidginNetworkPrefs" parent="AdwPreferencesPage">
     <child>
       <object class="AdwPreferencesGroup">
@@ -141,68 +131,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                 </child>
               </object>
             </child>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="AdwPreferencesGroup">
-        <property name="title" translatable="1">Relay Server (TURN)</property>
-        <child>
-          <object class="AdwEntryRow" id="turn_server">
-            <property name="title" translatable="1">_TURN server</property>
-            <property name="use-underline">1</property>
-            <child>
-              <object class="GtkEventControllerFocus">
-                <signal name="leave" handler="network_turn_server_changed_cb" object="turn_server" swapped="no"/>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">turn_port_udp</property>
-            <property name="title" translatable="1">_UDP Port</property>
-            <property name="use-underline">1</property>
-            <property name="focusable">0</property>
-            <child>
-              <object class="GtkSpinButton" id="turn_port_udp">
-                <property name="focusable">1</property>
-                <property name="hexpand">1</property>
-                <property name="valign">center</property>
-                <property name="adjustment">turn_port_udp.adjustment</property>
-                <property name="numeric">1</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">turn_port_tcp</property>
-            <property name="title" translatable="1">T_CP Port</property>
-            <property name="use-underline">1</property>
-            <property name="focusable">0</property>
-            <child>
-              <object class="GtkSpinButton" id="turn_port_tcp">
-                <property name="focusable">1</property>
-                <property name="hexpand">1</property>
-                <property name="valign">center</property>
-                <property name="adjustment">turn_port_tcp.adjustment</property>
-                <property name="numeric">1</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwEntryRow" id="turn_username">
-            <property name="title" translatable="1">Use_rname</property>
-            <property name="use-underline">1</property>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPasswordEntryRow" id="turn_password">
-            <property name="title" translatable="1">Pass_word</property>
-            <property name="use-underline">1</property>
           </object>
         </child>
       </object>

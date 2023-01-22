@@ -130,24 +130,6 @@ void purple_network_set_stun_server(const gchar *stun_server);
 const gchar *purple_network_get_stun_ip(void);
 
 /**
- * purple_network_set_turn_server:
- * @turn_server: The host name of the TURN server to set
- *
- * Update the TURN server IP given the host name
- * Will result in a DNS query being executed asynchronous
- */
-void purple_network_set_turn_server(const gchar *turn_server);
-
-/**
- * purple_network_get_turn_ip:
- *
- * Get the IP address of the TURN server as a string representation
- *
- * Returns: the IP address
- */
-const gchar *purple_network_get_turn_ip(void);
-
-/**
  * _purple_network_set_common_socket_flags:
  * @fd: The file descriptor for the socket.
  *

@@ -40,11 +40,6 @@ struct _PidginNetworkPrefs {
 	GtkWidget *ports_range_use;
 	GtkWidget *ports_range_start;
 	GtkWidget *ports_range_end;
-	GtkWidget *turn_server;
-	GtkWidget *turn_port_udp;
-	GtkWidget *turn_port_tcp;
-	GtkWidget *turn_username;
-	GtkWidget *turn_password;
 };
 
 G_DEFINE_TYPE(PidginNetworkPrefs, pidgin_network_prefs,
@@ -85,17 +80,6 @@ network_stun_server_changed_cb(G_GNUC_UNUSED GtkEventControllerFocus *focus,
 	purple_prefs_set_string("/purple/network/stun_server",
 	                        gtk_editable_get_text(editable));
 	purple_network_set_stun_server(gtk_editable_get_text(editable));
-}
-
-static void
-network_turn_server_changed_cb(G_GNUC_UNUSED GtkEventControllerFocus *focus,
-                               gpointer data)
-{
-	GtkEditable *editable = data;
-
-	purple_prefs_set_string("/purple/network/turn_server",
-	                        gtk_editable_get_text(editable));
-	purple_network_set_turn_server(gtk_editable_get_text(editable));
 }
 
 static void
@@ -161,23 +145,11 @@ pidgin_network_prefs_class_init(PidginNetworkPrefsClass *klass)
 	                                     ports_range_start);
 	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
 	                                     ports_range_end);
-	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
-	                                     turn_server);
-	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
-	                                     turn_port_udp);
-	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
-	                                     turn_port_tcp);
-	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
-	                                     turn_username);
-	gtk_widget_class_bind_template_child(widget_class, PidginNetworkPrefs,
-	                                     turn_password);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        network_stun_server_changed_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        auto_ip_button_clicked_cb);
 	gtk_widget_class_bind_template_callback(widget_class, network_ip_changed);
-	gtk_widget_class_bind_template_callback(widget_class,
-	                                        network_turn_server_changed_cb);
 }
 
 static void
@@ -203,21 +175,6 @@ pidgin_network_prefs_init(PidginNetworkPrefs *prefs)
 			prefs->ports_range_start);
 	pidgin_prefs_bind_spin_button("/purple/network/ports_range_end",
 			prefs->ports_range_end);
-
-	/* TURN server */
-	gtk_editable_set_text(GTK_EDITABLE(prefs->turn_server),
-	                      purple_prefs_get_string("/purple/network/turn_server"));
-
-	pidgin_prefs_bind_spin_button("/purple/network/turn_port",
-			prefs->turn_port_udp);
-
-	pidgin_prefs_bind_spin_button("/purple/network/turn_port_tcp",
-			prefs->turn_port_tcp);
-
-	pidgin_prefs_bind_entry("/purple/network/turn_username",
-			prefs->turn_username);
-	pidgin_prefs_bind_entry("/purple/network/turn_password",
-			prefs->turn_password);
 }
 
 /******************************************************************************

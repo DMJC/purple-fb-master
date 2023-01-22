@@ -575,6 +575,7 @@ version 3.0.0 (??/??/????):
 		* purple_network_get_my_ip
 		* purple_network_get_local_system_ip.  Use libnice instead.
 		* purple_network_get_port_from_fd
+		* purple_network_get_turn_ip
 		* purple_network_ip_atoi
 		* PurpleNetworkListenData
 		* PurpleNetworkListenCallback
@@ -585,6 +586,7 @@ version 3.0.0 (??/??/????):
 		* purple_network_listen_range
 		* purple_network_listen_range_family
 		* purple_network_remove_port_mapping
+		* purple_network_set_turn_server
 		* PurpleNotifyUiOps.notify_email
 		* PurpleNotifyUiOps.notify_emails
 		* purple_notify_email
