@@ -488,19 +488,6 @@ gsasl = dependency('libgsasl', version : '>= 1.10.0')
 #AC_MSG_CHECKING(for me pot o' gold)
 #AC_MSG_RESULT(no)
 
-# OpenBSD 6.7 and FreeBSD 12 require including sys/types.h before sys/sysctl.h.
-# NetBSD 9.0 doesn't care.
-if host_machine.system() in ['freebsd', 'openbsd']
-	prefix = '''
-#include <sys/types.h>
-'''
-
-	conf.set('HAVE_SYS_SYSCTL_H',
-	    compiler.has_header('sys/sysctl.h', prefix : prefix))
-	conf.set('HAVE_SYS_SOCKET_H',
-	    compiler.has_header('sys/socket.h'))
-endif
-
 #######################################################################
 # Documentation
 #######################################################################

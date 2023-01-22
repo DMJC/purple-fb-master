@@ -42,7 +42,6 @@
 
 #include "debug.h"
 #include "account.h"
-#include "nat-pmp.h"
 #include "network.h"
 #include "prefs.h"
 #include "stun.h"
@@ -131,12 +130,6 @@ purple_network_discover_my_ip(void)
 	if (stun != NULL && stun->status == PURPLE_STUN_STATUS_DISCOVERED) {
 		return;
 	}
-
-	/* Attempt to get the IP from a NAT device using NAT-PMP */
-	ip = purple_pmp_get_public_ip();
-	if (ip != NULL) {
-		return;
-	}
 }
 
 gchar *
@@ -157,12 +150,6 @@ purple_network_get_my_ip_from_gio(GSocketConnection *sockconn)
 		stun = purple_stun_discover(NULL);
 		if ((stun != NULL) && (stun->status == PURPLE_STUN_STATUS_DISCOVERED)) {
 			return g_strdup(stun->publicip);
-		}
-
-		/* Attempt to get the IP from a NAT device using NAT-PMP */
-		ip = purple_pmp_get_public_ip();
-		if (ip != NULL) {
-			return g_strdup(ip);
 		}
 	}
 
@@ -281,8 +268,6 @@ purple_network_init(void)
 	purple_prefs_add_bool  ("/purple/network/ports_range_use", FALSE);
 	purple_prefs_add_int   ("/purple/network/ports_range_start", 1024);
 	purple_prefs_add_int   ("/purple/network/ports_range_end", 2048);
-
-	purple_pmp_init();
 
 	purple_network_set_stun_server(
 		purple_prefs_get_string("/purple/network/stun_server"));

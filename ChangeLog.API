@@ -633,6 +633,8 @@ version 3.0.0 (??/??/????):
 		* PurplePmpType
 		* purple_pmp_create_map
 		* purple_pmp_destroy_map
+		* purple_pmp_init
+		* purple_pmp_get_public_ip
 		* purple_pounce_action_get_attribute
 		* purple_pounce_action_is_enabled
 		* purple_pounce_action_register
