@@ -297,48 +297,47 @@ got_info_cb(PurpleConnection *pc, const char *type, const char *id,
 	if (purple_strequal(type, "result") &&
 			(query = purple_xmlnode_get_child(iq, "query"))) {
 		PurpleXmlNode *identity = purple_xmlnode_get_child(query, "identity");
-		XmppDiscoService *service;
+		XmppDiscoService *service = NULL;
 		PurpleXmlNode *feature;
 
-		service = g_new0(XmppDiscoService, 1);
-		service->list = item_data->list;
-		purple_debug_info("xmppdisco", "parent for %s is %p\n", from, item_data->parent);
-		service->parent = item_data->parent;
-		service->flags = 0;
-		service->type = disco_service_type_from_identity(identity);
+		service = xmpp_disco_service_new(item_data->list);
+		purple_debug_info("xmppdisco", "parent for %s is %p", from, item_data->parent);
+		xmpp_disco_service_set_service_type(service,
+		                                    disco_service_type_from_identity(identity));
 
 		if (item_data->node) {
 			if (item_data->name) {
-				service->name = item_data->name;
-				item_data->name = NULL;
+				xmpp_disco_service_set_name(service, item_data->name);
+				g_clear_pointer(&item_data->name, g_free);
 			} else {
-				service->name = g_strdup(item_data->node);
+				xmpp_disco_service_set_name(service, item_data->node);
 			}
 
-			service->node = item_data->node;
-			item_data->node = NULL;
+			xmpp_disco_service_set_node(service, item_data->node);
+			g_clear_pointer(&item_data->node, g_free);
 
-			if (service->type == XMPP_DISCO_SERVICE_TYPE_PUBSUB_COLLECTION) {
-				service->flags |= XMPP_DISCO_BROWSE;
+			if(xmpp_disco_service_get_service_type(service) == XMPP_DISCO_SERVICE_TYPE_PUBSUB_COLLECTION) {
+				xmpp_disco_service_add_flags(service, XMPP_DISCO_BROWSE);
 			}
 		} else {
-			service->name = g_strdup(from);
+			xmpp_disco_service_set_name(service, from);
 		}
 
-		if (!service->node) {
+		if(!xmpp_disco_service_get_node(service)) {
 			/* Only support adding JIDs, not JID+node combos */
-			service->flags |= XMPP_DISCO_ADD;
+			xmpp_disco_service_add_flags(service, XMPP_DISCO_ADD);
 		}
 
 		if (item_data->name) {
-			service->description = item_data->name;
-			item_data->name = NULL;
+			xmpp_disco_service_set_description(service, item_data->name);
+			g_clear_pointer(&item_data->name, g_free);
 		} else if (identity) {
-			service->description = g_strdup(purple_xmlnode_get_attrib(identity, "name"));
+			xmpp_disco_service_set_description(service,
+			                                   purple_xmlnode_get_attrib(identity, "name"));
 		}
 
 		/* TODO: Overlap with service->name a bit */
-		service->jid = g_strdup(from);
+		xmpp_disco_service_set_jid(service, from);
 
 		for (feature = purple_xmlnode_get_child(query, "feature"); feature;
 				feature = purple_xmlnode_get_next_twin(feature)) {
@@ -348,21 +347,23 @@ got_info_cb(PurpleConnection *pc, const char *type, const char *id,
 			}
 
 			if (purple_strequal(var, NS_REGISTER)) {
-				service->flags |= XMPP_DISCO_REGISTER;
+				xmpp_disco_service_add_flags(service, XMPP_DISCO_REGISTER);
 			} else if (purple_strequal(var, NS_DISCO_ITEMS)) {
-				service->flags |= XMPP_DISCO_BROWSE;
+				xmpp_disco_service_add_flags(service, XMPP_DISCO_BROWSE);
 			} else if (purple_strequal(var, NS_MUC)) {
-				service->flags |= XMPP_DISCO_BROWSE;
-				service->type = XMPP_DISCO_SERVICE_TYPE_CHAT;
+				xmpp_disco_service_add_flags(service, XMPP_DISCO_BROWSE);
+				xmpp_disco_service_set_service_type(service,
+				                                    XMPP_DISCO_SERVICE_TYPE_CHAT);
 			}
 		}
 
-		if (service->type == XMPP_DISCO_SERVICE_TYPE_GATEWAY) {
-			service->gateway_type = g_strdup(disco_type_from_string(
+		if(xmpp_disco_service_get_service_type(service) == XMPP_DISCO_SERVICE_TYPE_GATEWAY) {
+			xmpp_disco_service_set_gateway_type(service,
+				disco_type_from_string(
 					purple_xmlnode_get_attrib(identity, "type")));
 		}
 
-		pidgin_disco_add_service(list, service, service->parent);
+		pidgin_disco_add_service(list, service, item_data->parent);
 	}
 
 out:
@@ -403,7 +404,7 @@ got_items_cb(PurpleConnection *pc, const char *type, const char *id,
 
 			has_items = TRUE;
 
-			if (item_data->parent->type == XMPP_DISCO_SERVICE_TYPE_CHAT) {
+			if(xmpp_disco_service_get_service_type(item_data->parent) == XMPP_DISCO_SERVICE_TYPE_CHAT) {
 				/* This is a hacky first-order approximation. Any MUC
 				 * component that has a >1 level hierarchy (a Yahoo MUC
 				 * transport component probably does) will violate this.
@@ -411,18 +412,18 @@ got_items_cb(PurpleConnection *pc, const char *type, const char *id,
 				 * On the other hand, this is better than querying all the
 				 * chats at conference.jabber.org to enumerate them.
 				 */
-				XmppDiscoService *service = g_new0(XmppDiscoService, 1);
-				service->list = item_data->list;
-				service->parent = item_data->parent;
-				service->flags = XMPP_DISCO_ADD;
-				service->type = XMPP_DISCO_SERVICE_TYPE_CHAT;
+				XmppDiscoService *service = xmpp_disco_service_new(item_data->list);
+				xmpp_disco_service_set_flags(service, XMPP_DISCO_ADD);
+				xmpp_disco_service_set_service_type(service,
+				                                    XMPP_DISCO_SERVICE_TYPE_CHAT);
 
-				service->name = g_strdup(name);
-				service->jid = g_strdup(jid);
-				service->node = g_strdup(node);
-				if (service->name == NULL) {
-					service->name = g_strdup(jid);
+				if(name != NULL) {
+					xmpp_disco_service_set_name(service, name);
+				} else {
+					xmpp_disco_service_set_name(service, jid);
 				}
+				xmpp_disco_service_set_jid(service, jid);
+				xmpp_disco_service_set_node(service, node);
 				pidgin_disco_add_service(list, service, item_data->parent);
 			} else {
 				struct item_data *item_data2 = g_new0(struct item_data, 1);
@@ -567,43 +568,51 @@ void xmpp_disco_start(PidginDiscoList *list)
 
 void xmpp_disco_service_expand(XmppDiscoService *service)
 {
+	PidginDiscoList *list = NULL;
 	struct item_data *item_data;
 
-	g_return_if_fail(service != NULL);
+	g_return_if_fail(XMPP_DISCO_IS_SERVICE(service));
 
-	if (service->expanded) {
+	if(xmpp_disco_service_get_expanded(service)) {
 		return;
 	}
 
+	list = xmpp_disco_service_get_list(service);
+
 	item_data = g_new0(struct item_data, 1);
-	item_data->list = service->list;
+	item_data->list = list;
 	item_data->parent = service;
 
-	++service->list->fetch_count;
-	pidgin_disco_list_ref(service->list);
+	++list->fetch_count;
+	pidgin_disco_list_ref(list);
 
-	pidgin_disco_list_set_in_progress(service->list, TRUE);
+	pidgin_disco_list_set_in_progress(list, TRUE);
 
-	xmpp_disco_items_do(service->list->pc, item_data, service->jid, service->node,
+	xmpp_disco_items_do(list->pc, item_data,
+	                    xmpp_disco_service_get_jid(service),
+	                    xmpp_disco_service_get_node(service),
 	                    got_items_cb);
-	service->expanded = TRUE;
+	xmpp_disco_service_set_expanded(service, TRUE);
 }
 
-void xmpp_disco_service_register(XmppDiscoService *service)
+void
+xmpp_disco_register_service(XmppDiscoService *service)
 {
+	PidginDiscoList *list = NULL;
 	PurpleXmlNode *iq, *query;
 	char *id = generate_next_id();
 
 	iq = purple_xmlnode_new("iq");
 	purple_xmlnode_set_attrib(iq, "type", "get");
-	purple_xmlnode_set_attrib(iq, "to", service->jid);
+	purple_xmlnode_set_attrib(iq, "to", xmpp_disco_service_get_jid(service));
 	purple_xmlnode_set_attrib(iq, "id", id);
 
 	query = purple_xmlnode_new_child(iq, "query");
 	purple_xmlnode_set_namespace(query, NS_REGISTER);
 
-	purple_signal_emit(purple_connection_get_protocol(service->list->pc),
-			"jabber-sending-xmlnode", service->list->pc, &iq);
+	list = xmpp_disco_service_get_list(service);
+	purple_signal_emit(purple_connection_get_protocol(list->pc),
+	                   "jabber-sending-xmlnode", list->pc, &iq);
 	if (iq != NULL) {
 		purple_xmlnode_free(iq);
 	}
@@ -684,6 +693,7 @@ xmpp_disco_load(GPluginPlugin *plugin, GError **error)
 		return FALSE;
 	}
 
+	xmpp_disco_service_register(plugin);
 	pidgin_disco_dialog_register(plugin);
 
 	purple_signal_connect(purple_connections_get_handle(), "signing-off",

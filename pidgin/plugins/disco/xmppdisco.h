@@ -22,8 +22,7 @@
 #ifndef PIDGIN_XMPP_DISCO_H
 #define PIDGIN_XMPP_DISCO_H
 
-typedef struct _XmppDiscoService XmppDiscoService;
-
+#include "xmppdiscoservice.h"
 #include "gtkdisco.h"
 
 #define XMPP_PROTOCOL_ID    "prpl-jabber"
@@ -38,73 +37,9 @@ typedef struct _XmppDiscoService XmppDiscoService;
 #include <purple.h>
 extern PurplePlugin *my_plugin;
 
-/**
- * The types of services.
- */
-typedef enum
-{
-	XMPP_DISCO_SERVICE_TYPE_UNSET,
-	/**
-	 * A registerable gateway to another protocol. An example would be
-	 * XMPP legacy transports.
-	 */
-	XMPP_DISCO_SERVICE_TYPE_GATEWAY,
-
-	/**
-	 * A directory (e.g. allows the user to search for other users).
-	 */
-	XMPP_DISCO_SERVICE_TYPE_DIRECTORY,
-
-	/**
-	 * A chat (multi-user conversation).
-	 */
-	XMPP_DISCO_SERVICE_TYPE_CHAT,
-
-	/**
-	 * A pubsub collection (contains nodes)
-	 */
-	XMPP_DISCO_SERVICE_TYPE_PUBSUB_COLLECTION,
-
-	/**
-	 * A pubsub leaf (contains stuff, not nodes).
-	 */
-	XMPP_DISCO_SERVICE_TYPE_PUBSUB_LEAF,
-
-	/**
-	 * Something else. Do we need more categories?
-	 */
-	XMPP_DISCO_SERVICE_TYPE_OTHER
-} XmppDiscoServiceType;
-
-/**
- * The flags of services.
- */
-typedef enum
-{
-	XMPP_DISCO_NONE          = 0x0000,
-	XMPP_DISCO_ADD           = 0x0001, /**< Supports an 'add' operation */
-	XMPP_DISCO_BROWSE        = 0x0002, /**< Supports browsing */
-	XMPP_DISCO_REGISTER      = 0x0004  /**< Supports a 'register' operation */
-} XmppDiscoServiceFlags;
-
-struct _XmppDiscoService {
-	PidginDiscoList *list;
-	gchar *name;
-	gchar *description;
-
-	gchar *gateway_type;
-	XmppDiscoServiceType type;
-	XmppDiscoServiceFlags flags;
-
-	XmppDiscoService *parent;
-	gchar *jid;
-	gchar *node;
-	gboolean expanded;
-};
-
 void xmpp_disco_start(PidginDiscoList *list);
 
 void xmpp_disco_service_expand(XmppDiscoService *service);
-void xmpp_disco_service_register(XmppDiscoService *service);
+void xmpp_disco_register_service(XmppDiscoService *service);
 
 #endif /* PIDGIN_XMPP_DISCO_H */
