@@ -36,7 +36,7 @@
 GList *dialogs = NULL;
 
 enum {
-	PIXBUF_COLUMN = 0,
+	ICON_NAME_COLUMN = 0,
 	NAME_COLUMN,
 	DESCRIPTION_COLUMN,
 	SERVICE_COLUMN,
@@ -103,45 +103,24 @@ void pidgin_disco_list_set_in_progress(PidginDiscoList *list, gboolean in_progre
 	}
 }
 
-static GdkPixbuf *
-pidgin_disco_load_icon(XmppDiscoService *service, const char *size)
+static char *
+pidgin_disco_get_icon_name(XmppDiscoService *service)
 {
-	GdkPixbuf *pixbuf = NULL;
-	char *filename = NULL;
-	gchar *tmp_size;
+	char *icon_name = NULL;
 
 	g_return_val_if_fail(service != NULL, NULL);
-	g_return_val_if_fail(size != NULL, NULL);
-
-	tmp_size = g_strdup_printf("%sx%s", size, size);
 
 	if (service->type == XMPP_DISCO_SERVICE_TYPE_GATEWAY && service->gateway_type) {
-		char *tmp = g_strconcat("im-", service->gateway_type,
-				".png", NULL);
-
-		filename = g_build_filename(PURPLE_DATADIR,
-			"pidgin", "icons", "hicolor", tmp_size, "apps",
-			tmp, NULL);
-		g_free(tmp);
+		icon_name = g_strconcat("im-", service->gateway_type, NULL);
 #if 0
 	} else if (service->type == XMPP_DISCO_SERVICE_TYPE_USER) {
-		filename = g_build_filename(PURPLE_DATADIR,
-			"pixmaps", "pidgin", "status", size, "person.png", NULL);
+		icon_name = g_strdup("person");
 #endif
 	} else if (service->type == XMPP_DISCO_SERVICE_TYPE_CHAT) {
-		filename = g_build_filename(PURPLE_DATADIR,
-			"pidgin", "icons", "hicolor", tmp_size, "status",
-			"chat.png", NULL);
+		icon_name = g_strdup("chat");
 	}
 
-	g_free(tmp_size);
-
-	if (filename) {
-		pixbuf = gdk_pixbuf_new_from_file(filename, NULL);
-		g_free(filename);
-	}
-
-	return pixbuf;
+	return icon_name;
 }
 
 static void
@@ -677,7 +656,7 @@ void pidgin_disco_add_service(PidginDiscoList *pdl, XmppDiscoService *service, X
 {
 	PidginDiscoDialog *dialog;
 	GtkTreeIter iter, parent_iter, child;
-	GdkPixbuf *pixbuf = NULL;
+	char *icon_name = NULL;
 	gboolean append = TRUE;
 
 	dialog = pdl->dialog;
@@ -745,14 +724,12 @@ void pidgin_disco_add_service(PidginDiscoList *pdl, XmppDiscoService *service, X
 		gtk_tree_path_free(path);
 	}
 
-	pixbuf = pidgin_disco_load_icon(service, "16");
+	icon_name = pidgin_disco_get_icon_name(service);
 
-	gtk_tree_store_set(dialog->model, &iter, PIXBUF_COLUMN, pixbuf,
+	gtk_tree_store_set(dialog->model, &iter, ICON_NAME_COLUMN, icon_name,
 	                   NAME_COLUMN, service->name, DESCRIPTION_COLUMN,
 	                   service->description, SERVICE_COLUMN, service, -1);
 
-	if (pixbuf) {
-		g_object_unref(pixbuf);
-	}
+	g_free(icon_name);
 }
 

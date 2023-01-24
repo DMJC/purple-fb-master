@@ -39,8 +39,8 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   </menu>
   <object class="GtkTreeStore" id="model">
     <columns>
-      <!-- column-name pixbuf -->
-      <column type="GdkPixbuf"/>
+      <!-- column-name icon-name -->
+      <column type="gchararray"/>
       <!-- column-name name -->
       <column type="gchararray"/>
       <!-- column-name description -->
@@ -123,7 +123,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                     <child>
                       <object class="GtkCellRendererPixbuf"/>
                       <attributes>
-                        <attribute name="pixbuf">0</attribute>
+                        <attribute name="icon-name">0</attribute>
                       </attributes>
                     </child>
                     <child>
