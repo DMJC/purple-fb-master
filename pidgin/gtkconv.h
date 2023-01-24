@@ -30,18 +30,6 @@
 
 typedef struct _PidginConversation PidginConversation;
 
-enum {
-	CHAT_USERS_ICON_COLUMN,
-	CHAT_USERS_ALIAS_COLUMN,
-	CHAT_USERS_ALIAS_KEY_COLUMN,
-	CHAT_USERS_NAME_COLUMN,
-	CHAT_USERS_FLAGS_COLUMN,
-	CHAT_USERS_COLOR_COLUMN,
-	CHAT_USERS_WEIGHT_COLUMN,
-	CHAT_USERS_ICON_NAME_COLUMN,
-	CHAT_USERS_COLUMNS
-};
-
 #define PIDGIN_CONVERSATION(conv) \
 	((PidginConversation *)g_object_get_data(G_OBJECT(conv), "pidgin"))
 

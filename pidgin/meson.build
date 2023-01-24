@@ -140,13 +140,6 @@ libpidgin_prefs_headers = [
 	'prefs/pidginvvprefs.h',
 ]
 
-libpidgin_enum_headers = [
-	'gtkaccount.h',
-	'gtkblist.h',
-	'gtkconv.h',
-	'gtkutils.h',
-]
-
 pidgin_SOURCES = [
 	'pidgin.c'
 ]
@@ -188,15 +181,8 @@ if IS_WIN32
 	]
 endif
 
-libpidgin_enums = gnome.mkenums_simple('pidginenums',
-	sources: libpidgin_enum_headers,
-	install_header: true,
-	install_dir: get_option('includedir') / pidgin_include_base)
-libpidgin_enums_c = libpidgin_enums[0]
-libpidgin_enums_h = libpidgin_enums[1]
-
 PIDGIN_H_INCLUDES = []
-foreach header : libpidgin_headers + libpidgin_prefs_headers + ['pidginenums.h']
+foreach header : libpidgin_headers + libpidgin_prefs_headers
 	PIDGIN_H_INCLUDES += f'#include <pidgin/@header@>'
 endforeach
 pidgin_h_conf = configuration_data()
@@ -223,12 +209,10 @@ _libpidgin_dependencies = [
 ]
 
 libpidgin_built_sources = [
-	libpidgin_enums_c,
 ]
 
 libpidgin_built_headers = [
 	pidgin_h,
-	libpidgin_enums_h,
 ]
 
 libpidgin_inc = include_directories('.')

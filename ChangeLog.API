@@ -934,6 +934,11 @@ version 3.0.0 (??/??/????):
 
 		Removed:
 		* account-modified (gtkaccount signal)
+		* CHAT_USERS_ALIAS_COLUMN, CHAT_USERS_ALIAS_KEY_COLUMN,
+		  CHAT_USERS_COLOR_COLUMN, CHAT_USERS_COLUMNS,
+		  CHAT_USERS_FLAGS_COLUMN, CHAT_USERS_ICON_COLUMN,
+		  CHAT_USERS_ICON_NAME_COLUMN, CHAT_USERS_NAME_COLUMN,
+		  CHAT_USERS_WEIGHT_COLUMN,
 		* conversation-dragging (gtkconv signal)
 		* conversation-timestamp (gtkconv signal)
 		* conversation-hiding (gtkconv signal)
@@ -1183,6 +1188,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_status_box_set_connecting
 		* pidgin_status_box_get_message
 		* pidgin_status_box_new_with_account
+		* PidginStatusIconSize enum and all values
 		* PIDGIN_IS_STATUS_ICON_THEME
 		* PIDGIN_IS_STATUS_ICON_THEME_CLASS
 		* PIDGIN_STATUS_ICON_THEME

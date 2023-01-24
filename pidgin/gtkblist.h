@@ -34,12 +34,6 @@
 
 typedef struct _PidginBuddyList PidginBuddyList;
 
-typedef enum {
-	PIDGIN_STATUS_ICON_LARGE,
-	PIDGIN_STATUS_ICON_SMALL
-
-} PidginStatusIconSize;
-
 /**************************************************************************
  * Structures
  **************************************************************************/
