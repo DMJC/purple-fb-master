@@ -267,7 +267,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	signals[SIG_ACK] = g_signal_new_class_handler(
 		"ack",
 		G_OBJECT_CLASS_TYPE(klass),
-		G_SIGNAL_RUN_LAST,
+		G_SIGNAL_DETAILED | G_SIGNAL_RUN_LAST,
 		NULL,
 		NULL,
 		NULL,
@@ -291,7 +291,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	signals[SIG_NAK] = g_signal_new_class_handler(
 		"nak",
 		G_OBJECT_CLASS_TYPE(klass),
-		G_SIGNAL_RUN_LAST,
+		G_SIGNAL_DETAILED | G_SIGNAL_RUN_LAST,
 		NULL,
 		NULL,
 		NULL,
@@ -428,7 +428,7 @@ purple_ircv3_capabilities_handle_ack_nak(PurpleIRCv3Capabilities *capabilities,
 	gboolean found = FALSE;
 	gboolean ret = TRUE;
 
-	g_signal_emit(capabilities, sig, 0, caps);
+	g_signal_emit(capabilities, sig, g_quark_from_string(caps), caps);
 
 	found = g_ptr_array_find_with_equal_func(capabilities->requests, caps,
 	                                         g_str_equal, &index);

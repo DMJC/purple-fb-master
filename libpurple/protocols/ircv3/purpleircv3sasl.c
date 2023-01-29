@@ -299,13 +299,10 @@ purple_ircv3_sasl_start(PurpleIRCv3Capabilities *caps) {
  * Callbacks
  *****************************************************************************/
 static void
-purple_ircv3_sasl_ack_cb(PurpleIRCv3Capabilities *caps, const char *capability,
+purple_ircv3_sasl_ack_cb(PurpleIRCv3Capabilities *caps,
+                         G_GNUC_UNUSED const char *capability,
                          G_GNUC_UNUSED gpointer data)
 {
-	if(!purple_strequal(capability, "sasl")) {
-		return;
-	}
-
 	purple_ircv3_sasl_start(caps);
 }
 
@@ -316,7 +313,7 @@ void
 purple_ircv3_sasl_request(PurpleIRCv3Capabilities *capabilities) {
 	purple_ircv3_capabilities_request(capabilities, "sasl");
 
-	g_signal_connect(capabilities, "ack",
+	g_signal_connect(capabilities, "ack::sasl",
 	                 G_CALLBACK(purple_ircv3_sasl_ack_cb), NULL);
 }
 
