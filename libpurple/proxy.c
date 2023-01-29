@@ -260,7 +260,7 @@ proxy_pref_cb(const char *name, G_GNUC_UNUSED PurplePrefType type,
 		purple_proxy_info_set_password(info, value);
 }
 
-void *
+static void *
 purple_proxy_get_handle(void)
 {
 	static int handle;

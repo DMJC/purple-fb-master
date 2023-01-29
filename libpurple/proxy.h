@@ -61,15 +61,6 @@ void purple_global_proxy_set_info(PurpleProxyInfo *info);
 /**************************************************************************/
 
 /**
- * purple_proxy_get_handle:
- *
- * Returns the proxy subsystem handle.
- *
- * Returns: The proxy subsystem handle.
- */
-void *purple_proxy_get_handle(void);
-
-/**
  * purple_proxy_init:
  *
  * Initializes the proxy subsystem.

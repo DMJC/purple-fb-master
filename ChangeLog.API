@@ -678,6 +678,7 @@ version 3.0.0 (??/??/????):
 		* purple_proxy_connect
 		* purple_proxy_connect_cancel
 		* purple_proxy_connect_cancel_with_handle
+		* purple_proxy_get_handle
 		* purple_prefs_get_ui_ops
 		* purple_prefs_set_generic
 		* purple_prefs_set_ui_ops
