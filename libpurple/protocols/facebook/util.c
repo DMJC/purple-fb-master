@@ -459,7 +459,7 @@ fb_util_serv_got_im(PurpleConnection *gc, const gchar *who, const gchar *text,
 
 	me = purple_contact_info_get_name_for_display(info);
 	name = purple_contact_info_get_username(info);
-	msg = purple_message_new_outgoing(me, name, text, flags);
+	msg = purple_message_new_outgoing(acct, me, name, text, flags);
 
 	dt = g_date_time_new_from_unix_local((gint64)timestamp);
 	purple_message_set_timestamp(msg, dt);
@@ -498,7 +498,7 @@ fb_util_serv_got_chat_in(PurpleConnection *gc, gint id, const gchar *who,
 	me = purple_contact_info_get_name_for_display(info);
 	name = purple_contact_info_get_username(info);
 
-	msg = purple_message_new_outgoing(me, name, text, flags);
+	msg = purple_message_new_outgoing(acct, me, name, text, flags);
 
 	dt = g_date_time_new_from_unix_local((gint64)timestamp);
 	purple_message_set_timestamp(msg, dt);

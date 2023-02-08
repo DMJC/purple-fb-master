@@ -116,12 +116,13 @@ int irc_cmd_ctcp_action(struct irc_conn *irc, const char *cmd, const char *targe
 	/* XXX: we'd prefer to keep this in conversation.c */
 	if (PURPLE_IS_IM_CONVERSATION(convo)) {
 		const gchar *conv_name = purple_conversation_get_name(convo);
-		pmsg = purple_message_new_outgoing(me, conv_name, msg, 0);
+		pmsg = purple_message_new_outgoing(irc->account, me, conv_name, msg,
+		                                   0);
 
 		purple_signal_emit(purple_conversations_get_handle(),
 			"sending-im-msg", irc->account, pmsg);
 	} else {
-		pmsg = purple_message_new_outgoing(me, NULL, msg, 0);
+		pmsg = purple_message_new_outgoing(irc->account, me, NULL, msg, 0);
 
 		purple_signal_emit(purple_conversations_get_handle(),
 			"sending-chat-msg", irc->account, pmsg,
@@ -556,7 +557,8 @@ int irc_cmd_query(struct irc_conn *irc, const char *cmd, const char *target, con
 
 		me = purple_contact_info_get_name_for_display(info);
 		recipient = purple_connection_get_display_name(gc);
-		message = purple_message_new_outgoing(me, recipient, args[1], 0);
+		message = purple_message_new_outgoing(irc->account, me, recipient,
+		                                      args[1], 0);
 
 		purple_conversation_write_message(im, message);
 

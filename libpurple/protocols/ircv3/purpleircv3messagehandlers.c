@@ -132,7 +132,8 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED GHashTable *tags,
 		flags |= PURPLE_MESSAGE_NOTIFY;
 	}
 
-	message = purple_message_new_incoming(source, params[1], flags, 0);
+	message = purple_message_new_incoming(account, source, params[1], flags,
+	                                      0);
 
 	purple_conversation_write_message(conversation, message);
 

@@ -2618,7 +2618,7 @@ jabber_cmd_chat_msg(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
 	pc = purple_conversation_get_connection(conv);
 	prpl = purple_connection_get_protocol(pc);
 
-	msg = purple_message_new_outgoing(me, who, args[1], 0);
+	msg = purple_message_new_outgoing(account, me, who, args[1], 0);
 
 	jabber_message_send_im(PURPLE_PROTOCOL_IM(prpl), pc, msg);
 

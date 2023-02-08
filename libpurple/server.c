@@ -377,7 +377,7 @@ void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
 		im = purple_im_conversation_new(account, name);
 	}
 
-	pmsg = purple_message_new_incoming(name, message, flags, mtime);
+	pmsg = purple_message_new_incoming(account, name, message, flags, mtime);
 	purple_conversation_write_message(im, pmsg);
 	g_free(message);
 	g_object_unref(G_OBJECT(pmsg));
@@ -653,14 +653,15 @@ void purple_serv_got_chat_in(PurpleConnection *g, int id, const char *who,
 					 who, message, chat, flags);
 
 	if (flags & PURPLE_MESSAGE_RECV) {
-		pmsg = purple_message_new_incoming(who, message, flags, mtime);
+		pmsg = purple_message_new_incoming(purple_connection_get_account(g),
+		                                   who, message, flags, mtime);
 	} else {
 		PurpleAccount *account = purple_connection_get_account(g);
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		GDateTime *dt = g_date_time_new_from_unix_local((gint64)mtime);
 		const gchar *me = purple_contact_info_get_name_for_display(info);
 
-		pmsg = purple_message_new_outgoing(me, who, message, flags);
+		pmsg = purple_message_new_outgoing(account, me, who, message, flags);
 		purple_message_set_timestamp(pmsg, dt);
 		g_date_time_unref(dt);
 	}

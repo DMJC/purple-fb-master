@@ -121,7 +121,8 @@ common_send(PurpleConversation *conv, const gchar *message,
 		PurpleMessage *msg = NULL;
 
 		name = purple_conversation_get_name(conv);
-		msg = purple_message_new_outgoing(me, name, sent, msgflags);
+		msg = purple_message_new_outgoing(priv->account, me, name, sent,
+		                                  msgflags);
 
 		purple_signal_emit(handle, "sending-im-msg", account, msg);
 
@@ -142,7 +143,8 @@ common_send(PurpleConversation *conv, const gchar *message,
 		PurpleMessage *msg;
 		gint id = purple_chat_conversation_get_id(PURPLE_CHAT_CONVERSATION(conv));
 
-		msg = purple_message_new_outgoing(me, NULL, sent, msgflags);
+		msg = purple_message_new_outgoing(priv->account, me, NULL, sent,
+		                                  msgflags);
 
 		purple_signal_emit(handle, "sending-chat-msg", account, msg, id);
 
@@ -717,8 +719,16 @@ purple_conversation_write_system_message(PurpleConversation *conv,
                                          const gchar *message,
                                          PurpleMessageFlags flags)
 {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+
+	priv = purple_conversation_get_instance_private(conv);
+
 	_purple_conversation_write_common(conv,
-	                                  purple_message_new_system(message, flags));
+	                                  purple_message_new_system(priv->account,
+	                                                            message,
+	                                                            flags));
 }
 
 void
