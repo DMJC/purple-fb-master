@@ -37,17 +37,6 @@
 G_BEGIN_DECLS
 
 /**
- * _purple_account_set_current_error:
- * @account:  The account to set the error for.
- * @new_err:  The #PurpleConnectionErrorInfo instance representing the
- *                 error.
- *
- * Sets an error for an account.
- */
-void _purple_account_set_current_error(PurpleAccount *account,
-                                       PurpleConnectionErrorInfo *new_err);
-
-/**
  * _purple_account_to_xmlnode:
  * @account:  The account
  *

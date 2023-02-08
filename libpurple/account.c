@@ -81,7 +81,7 @@ struct _PurpleAccount
 
 	PurplePresence *presence;     /* Presence.                            */
 
-	PurpleConnectionErrorInfo *current_error;	/* Errors */
+	PurpleConnectionErrorInfo *error;
 	PurpleNotification *error_notification;
 } PurpleAccountPrivate;
 
@@ -399,42 +399,6 @@ purple_account_get_state(PurpleAccount *account)
 	return purple_connection_get_state(gc);
 }
 
-void
-_purple_account_set_current_error(PurpleAccount *account,
-		PurpleConnectionErrorInfo *new_err)
-{
-	PurpleNotificationManager *manager = NULL;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	if(new_err == account->current_error) {
-		return;
-	}
-
-	g_clear_pointer(&account->current_error,
-	                purple_connection_error_info_free);
-	account->current_error = new_err;
-
-	manager = purple_notification_manager_get_default();
-
-	if(PURPLE_IS_NOTIFICATION(account->error_notification)) {
-		purple_notification_manager_remove(manager,
-		                                   account->error_notification);
-		g_clear_object(&account->error_notification);
-	}
-
-	if(new_err != NULL) {
-		account->error_notification =
-			purple_notification_new_from_connection_error(account, new_err);
-
-		purple_notification_manager_add(manager, account->error_notification);
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_ERROR]);
-
-	purple_accounts_schedule_save();
-}
-
 static void
 purple_account_changed_cb(GObject *obj, GParamSpec *pspec,
                           G_GNUC_UNUSED gpointer data)
@@ -632,7 +596,7 @@ _purple_account_to_xmlnode(PurpleAccount *account)
 		purple_xmlnode_insert_child(node, child);
 	}
 
-	child = current_error_to_xmlnode(account->current_error);
+	child = current_error_to_xmlnode(account->error);
 	purple_xmlnode_insert_child(node, child);
 
 	return node;
@@ -675,6 +639,9 @@ purple_account_set_property(GObject *obj, guint param_id, const GValue *value,
 		case PROP_PROXY_INFO:
 			purple_account_set_proxy_info(account, g_value_get_object(value));
 			break;
+		case PROP_ERROR:
+			purple_account_set_error(account, g_value_get_boxed(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -714,6 +681,9 @@ purple_account_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_PROXY_INFO:
 			g_value_set_object(value, purple_account_get_proxy_info(account));
+			break;
+		case PROP_ERROR:
+			g_value_set_boxed(value, purple_account_get_error(account));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -837,7 +807,7 @@ purple_account_finalize(GObject *object)
 
 	g_clear_object(&account->proxy_info);
 
-	g_clear_pointer(&account->current_error, purple_connection_error_info_free);
+	g_clear_pointer(&account->error, purple_connection_error_info_free);
 	g_clear_object(&account->error_notification);
 
 	g_free(account->user_info);
@@ -914,7 +884,11 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * PurpleAccount:error:
 	 *
 	 * The [type@GLib.Error] of the account. This is set when an account enters
-	 * an error state and is cleared when a connection attempt is made.
+	 * an error state and is automatically cleared when a connection attempt is
+	 * made.
+	 *
+	 * Setting this will not disconnect an account, but this will be set when
+	 * there is a connection failure.
 	 *
 	 * Since: 3.0.0
 	 */
@@ -995,7 +969,7 @@ purple_account_connect(PurpleAccount *account)
 
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	purple_account_clear_current_error(account);
+	purple_account_set_error(account, NULL);
 
 	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 
@@ -1806,17 +1780,47 @@ gboolean purple_account_supports_offline_message(PurpleAccount *account, PurpleB
 }
 
 const PurpleConnectionErrorInfo *
-purple_account_get_current_error(PurpleAccount *account)
+purple_account_get_error(PurpleAccount *account)
 {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	return account->current_error;
+	return account->error;
 }
 
 void
-purple_account_clear_current_error(PurpleAccount *account)
+purple_account_set_error(PurpleAccount *account,
+                         PurpleConnectionErrorInfo *info)
 {
-	_purple_account_set_current_error(account, NULL);
+	PurpleNotificationManager *manager = NULL;
+
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	if(info == account->error) {
+		return;
+	}
+
+	g_clear_pointer(&account->error,
+	                purple_connection_error_info_free);
+	account->error = info;
+
+	manager = purple_notification_manager_get_default();
+
+	if(PURPLE_IS_NOTIFICATION(account->error_notification)) {
+		purple_notification_manager_remove(manager,
+		                                   account->error_notification);
+		g_clear_object(&account->error_notification);
+	}
+
+	if(info != NULL) {
+		account->error_notification =
+			purple_notification_new_from_connection_error(account, info);
+
+		purple_notification_manager_add(manager, account->error_notification);
+	}
+
+	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_ERROR]);
+
+	purple_accounts_schedule_save();
 }
 
 void

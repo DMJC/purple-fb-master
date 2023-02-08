@@ -319,7 +319,7 @@ purple_account_manager_remove(PurpleAccountManager *manager,
 	/* Clearing the error ensures that account-error-changed is emitted,
 	 * which is the end of the guarantee that the error's pointer is valid.
 	 */
-	purple_account_clear_current_error(account);
+	purple_account_set_error(account, NULL);
 
 	g_signal_emit(manager, signals[SIG_REMOVED], 0, account);
 }

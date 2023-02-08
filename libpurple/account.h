@@ -658,7 +658,7 @@ void purple_account_change_password(PurpleAccount *account, const char *orig_pw,
 gboolean purple_account_supports_offline_message(PurpleAccount *account, PurpleBuddy *buddy);
 
 /**
- * purple_account_get_current_error:
+ * purple_account_get_error:
  * @account: The account whose error should be retrieved.
  *
  * Get the error that caused the account to be disconnected, or %NULL if the
@@ -669,15 +669,22 @@ gboolean purple_account_supports_offline_message(PurpleAccount *account, PurpleB
  *          pointer is guaranteed to remain valid until the @ref
  *          account-error-changed signal is emitted for @account.
  */
-const PurpleConnectionErrorInfo *purple_account_get_current_error(PurpleAccount *account);
+const PurpleConnectionErrorInfo *purple_account_get_error(PurpleAccount *account);
 
 /**
- * purple_account_clear_current_error:
- * @account: The account whose error state should be cleared.
+ * purple_account_set_error:
+ * @account: The account whose error should be set.
+ * @info: (nullable) (transfer full): The [struct@Purple.ConnectionErrorInfo]
+ *        to set.
  *
- * Clear an account's current error state, resetting it to %NULL.
+ * Sets the error of @account to @info. Note that setting this won't disconnect
+ * the account. This is intended to be called by libpurple when there is a
+ * connection failure, when invalid settings are entered in an account editor,
+ * or similar situations.
+ *
+ * Since: 3.0.0
  */
-void purple_account_clear_current_error(PurpleAccount *account);
+void purple_account_set_error(PurpleAccount *account, PurpleConnectionErrorInfo *info);
 
 /**
  * purple_account_set_require_password:

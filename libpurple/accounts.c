@@ -298,7 +298,7 @@ parse_current_error(PurpleXmlNode *node, PurpleAccount *account)
 	                                                 (description != NULL) ? description : "");
 	g_free(description);
 
-	_purple_account_set_current_error(account, current_error);
+	purple_account_set_error(account, current_error);
 }
 
 static PurpleAccount *
@@ -635,7 +635,7 @@ connection_error_cb(PurpleConnection *gc,
 	g_return_if_fail(account != NULL);
 
 	err = purple_connection_error_info_new(type, description);
-	_purple_account_set_current_error(account, err);
+	purple_account_set_error(account, err);
 }
 
 void

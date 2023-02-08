@@ -84,7 +84,7 @@ pidgin_account_row_refresh_status(PidginAccountRow *row) {
 		} else {
 			const PurpleConnectionErrorInfo *error_info = NULL;
 
-			error_info = purple_account_get_current_error(row->account);
+			error_info = purple_account_get_error(row->account);
 			if(error_info != NULL) {
 				status = error_info->description;
 				error = TRUE;
