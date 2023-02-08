@@ -27,7 +27,6 @@
 #include "network.h"
 #include "notify.h"
 #include "prefs.h"
-#include "purpleaccountmanager.h"
 #include "purpleaccountpresence.h"
 #include "purpleaddcontactrequest.h"
 #include "purpleconversationmanager.h"
@@ -974,26 +973,15 @@ purple_account_set_enabled_plain(PurpleAccount *account, gboolean enabled) {
  *****************************************************************************/
 PurpleAccount *
 purple_account_new(const gchar *username, const gchar *protocol_id) {
-	PurpleAccount *account;
-	PurpleAccountManager *manager = NULL;
-
 	g_return_val_if_fail(username != NULL, NULL);
 	g_return_val_if_fail(protocol_id != NULL, NULL);
 
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find(manager, username, protocol_id);
-	if(account != NULL) {
-		return account;
-	}
-
-	account = g_object_new(
+	return g_object_new(
 		PURPLE_TYPE_ACCOUNT,
 		"username", username,
 		"protocol-id", protocol_id,
 		"enabled", FALSE,
 		NULL);
-
-	return account;
 }
 
 void
