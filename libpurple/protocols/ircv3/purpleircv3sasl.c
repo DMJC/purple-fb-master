@@ -77,21 +77,36 @@ purple_ircv3_sasl_callback(G_GNUC_UNUSED Gsasl *ctx, Gsasl_session *session,
 			res = GSASL_OK;
 			break;
 		case GSASL_AUTHZID:
-			/* AUTHZID is typically set to empty string because it's the user
-			 * logging in on their own behalf. Since IRCv3 doesn't really let
-			 * an admin login as a normal user, we always set it to empty
-			 * string.
+			/* AUTHZID is only used implemented for the PLAIN mechanism. If we
+			 * return a value for SCRAM, it needs to match AUTHID, which we
+			 * always set which would be redundant.
+			 *
+			 * So instead, we just check if the mechanism is PLAIN and if so
+			 * set it to empty string because it's the user logging in on their
+			 * own behalf and IRCv3 doesn't really let an admin login as a
+			 * normal user.
 			 *
 			 * See https://www.gnu.org/software/gsasl/manual/gsasl.html#PLAIN
 			 * for further explanation.
 			 */
-			gsasl_property_set(session, GSASL_AUTHZID, "");
-			res = GSASL_OK;
+			if(purple_strequal(data->current_mechanism, "PLAIN")) {
+				gsasl_property_set(session, GSASL_AUTHZID, "");
+				res = GSASL_OK;
+			}
 			break;
 		case GSASL_PASSWORD:
 			gsasl_property_set(session, GSASL_PASSWORD,
 			                   purple_connection_get_password(data->connection));
 			res = GSASL_OK;
+			break;
+		case GSASL_SCRAM_SALTED_PASSWORD:
+			/* Ignored, we let gsasl figure it out from the password above. */
+			break;
+		case GSASL_CB_TLS_UNIQUE:
+		case GSASL_CB_TLS_EXPORTER:
+			/* TODO: implement these in the near future when we're implementing
+			 * EXTERNAL support for PIDGIN-17741.
+			 */
 			break;
 		default:
 			g_warning("Unknown property %d", property);
@@ -126,6 +141,8 @@ purple_ircv3_sasl_data_free(PurpleIRCv3SASLData *data) {
 	g_string_free(data->mechanisms, TRUE);
 	data->mechanisms = NULL;
 
+	g_string_free(data->server_in_buffer, TRUE);
+
 	g_free(data);
 }
 
@@ -147,6 +164,11 @@ purple_ircv3_sasl_data_add(PurpleConnection *connection, Gsasl *ctx,
 	data->connection = connection;
 	data->ctx = ctx;
 	gsasl_callback_set(data->ctx, purple_ircv3_sasl_callback);
+
+	/* We truncate the server_in_buffer when we need to so that we can minimize
+	 * allocations and simplify the logic involved with it.
+	 */
+	data->server_in_buffer = g_string_new("");
 
 	/* Create a GString for the mechanisms with a leading and trailing ` `.
 	 * This is so we can easily remove attempted mechanism by removing
@@ -637,11 +659,7 @@ purple_ircv3_sasl_authenticate(G_GNUC_UNUSED GHashTable *tags,
 
 	/* If the server sent us a payload, combine the chunks. */
 	if(payload[0] != '+') {
-		if(data->server_in_buffer == NULL) {
-			data->server_in_buffer = g_string_new(payload);
-		} else {
-			g_string_append(data->server_in_buffer, payload);
-		}
+		g_string_append(data->server_in_buffer, payload);
 
 		if(strlen(payload) < 400) {
 			done = TRUE;
@@ -659,11 +677,11 @@ purple_ircv3_sasl_authenticate(G_GNUC_UNUSED GHashTable *tags,
 		size_t client_out_length = 0;
 		int res = 0;
 
-		/* If we have a buffer, base64 decode it, and then free it. */
-		if(data->server_in_buffer != NULL) {
+		/* If we have a buffer, base64 decode it, and then truncate it. */
+		if(data->server_in_buffer->len > 0) {
 			server_in = (char *)g_base64_decode(data->server_in_buffer->str,
 			                                    &server_in_length);
-			g_string_free(data->server_in_buffer, TRUE);
+			g_string_truncate(data->server_in_buffer, 0);
 		}
 
 		/* Try to move to the next step of the sasl client. */
@@ -673,8 +691,13 @@ purple_ircv3_sasl_authenticate(G_GNUC_UNUSED GHashTable *tags,
 		/* We should be done with server_in, so free it.*/
 		g_clear_pointer(&server_in, g_free);
 
-		/* If we didn't get ok or continue, it's an error. */
-		if(res != GSASL_OK) {
+		/* If we didn't get ok or needs more, it's an error.
+		 *
+		 * We allow needs more as SCRAM will is client first and returns
+		 * GSASL_NEEDS_MORE on the first step. We could tie this now a bit
+		 * more, but this seems to be fine for now. -- GK 2023-01-28
+		 */
+		if(res != GSASL_OK && res != GSASL_NEEDS_MORE) {
 			g_set_error(error, PURPLE_CONNECTION_ERROR,
 			            PURPLE_CONNECTION_ERROR_AUTHENTICATION_IMPOSSIBLE,
 			            _("SASL authentication failed: %s"),
