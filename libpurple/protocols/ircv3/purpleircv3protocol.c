@@ -67,6 +67,10 @@ purple_ircv3_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol
 	                                          "sasl-login-name", "");
 	options = g_list_append(options, option);
 
+	option = purple_account_option_string_new(_("SASL mechanisms"),
+	                                          "sasl-mechanisms", "");
+	options = g_list_append(options, option);
+
 	option = purple_account_option_bool_new(_("Allow plaintext SASL auth over "
 	                                          "unencrypted connection"),
 	                                        "plain-sasl-in-clear", FALSE);

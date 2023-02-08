@@ -262,13 +262,15 @@ purple_ircv3_sasl_attempt(PurpleIRCv3Connection *connection) {
 static void
 purple_ircv3_sasl_start(PurpleIRCv3Capabilities *caps) {
 	PurpleIRCv3Connection *connection = NULL;
+	PurpleAccount *account = NULL;
 	PurpleConnection *purple_connection = NULL;
 	Gsasl *ctx = NULL;
-	const char *advertised = NULL;
+	const char *mechanisms = NULL;
 	gint res;
 
 	connection = purple_ircv3_capabilities_get_connection(caps);
 	purple_connection = PURPLE_CONNECTION(connection);
+	account = purple_connection_get_account(purple_connection);
 
 	res = gsasl_init(&ctx);
 	if(res != GSASL_OK) {
@@ -284,12 +286,16 @@ purple_ircv3_sasl_start(PurpleIRCv3Capabilities *caps) {
 	 */
 	purple_ircv3_capabilities_add_wait(caps);
 
-	/* Grab the mechanisms that the server advertised and save them on the
-	 * connection. */
-	advertised = purple_ircv3_capabilities_lookup(caps, "sasl", NULL);
+	mechanisms = purple_account_get_string(account, "sasl-mechanisms", "");
+	if(purple_strempty(mechanisms)) {
+		/* If the user didn't specify any mechanisms, grab the mechanisms that
+		 * the server advertised.
+		 */
+		mechanisms = purple_ircv3_capabilities_lookup(caps, "sasl", NULL);
+	}
 
 	/* Create our SASLData object, add it to the connection. */
-	purple_ircv3_sasl_data_add(purple_connection, ctx, advertised);
+	purple_ircv3_sasl_data_add(purple_connection, ctx, mechanisms);
 
 	/* Make it go! */
 	purple_ircv3_sasl_attempt(connection);
