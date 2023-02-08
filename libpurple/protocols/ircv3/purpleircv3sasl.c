@@ -28,6 +28,14 @@
 
 #define PURPLE_IRCV3_SASL_DATA_KEY ("sasl-data")
 
+/* Workarounds for old versions of gsasl. By defining these values when they're
+ * not yet defined, upgrades of gsasl should continue to work without needing
+ * to recompile this code.
+ */
+#ifndef GSASL_CB_TLS_EXPORTER
+# define GSASL_CB_TLS_EXPORTER (25)
+#endif
+
 typedef struct {
 	PurpleConnection *connection;
 
