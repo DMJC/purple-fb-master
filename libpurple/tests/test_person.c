@@ -67,6 +67,7 @@ test_purple_person_properties(void) {
 	PurpleTags *tags = NULL;
 	GdkPixbuf *avatar = NULL;
 	GdkPixbuf *avatar1 = NULL;
+	GdkPixbuf *avatar_for_display = NULL;
 	char *id = NULL;
 	char *alias = NULL;
 	char *name_for_display = NULL;
@@ -89,6 +90,7 @@ test_purple_person_properties(void) {
 		"id", &id,
 		"alias", &alias,
 		"avatar", &avatar1,
+		"avatar-for-display", &avatar_for_display,
 		"name-for-display", &name_for_display,
 		"tags", &tags,
 		NULL);
@@ -97,6 +99,7 @@ test_purple_person_properties(void) {
 	g_assert_nonnull(id);
 	g_assert_cmpstr(alias, ==, "alias");
 	g_assert_true(avatar1 == avatar);
+	g_assert_true(avatar1 == avatar_for_display);
 	g_assert_cmpstr(name_for_display, ==, "alias");
 	g_assert_nonnull(tags);
 
@@ -104,11 +107,54 @@ test_purple_person_properties(void) {
 	g_clear_pointer(&id, g_free);
 	g_clear_pointer(&alias, g_free);
 	g_clear_object(&avatar1);
+	g_clear_object(&avatar_for_display);
 	g_clear_pointer(&name_for_display, g_free);
 	g_clear_object(&tags);
 
 	g_clear_object(&avatar);
 	g_clear_object(&person);
+}
+
+static void
+test_purple_person_avatar_for_display_person(void) {
+	PurpleContactInfo *info = NULL;
+	PurplePerson *person = NULL;
+	GdkPixbuf *avatar = NULL;
+
+	person = purple_person_new();
+	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	purple_person_set_avatar(person, avatar);
+
+	info = purple_contact_info_new("id");
+	purple_person_add_contact_info(person, info);
+
+	/* Make sure the person's alias is overriding the contact info. */
+	g_assert_true(purple_person_get_avatar_for_display(person) == avatar);
+
+	g_clear_object(&info);
+	g_clear_object(&person);
+	g_clear_object(&avatar);
+}
+
+static void
+test_purple_person_avatar_for_display_contact(void) {
+	PurpleContactInfo *info = NULL;
+	PurplePerson *person = NULL;
+	GdkPixbuf *avatar = NULL;
+
+	person = purple_person_new();
+
+	info = purple_contact_info_new("id");
+	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	purple_contact_info_set_avatar(info, avatar);
+	purple_person_add_contact_info(person, info);
+
+	/* Make sure the person's alias is overriding the contact info. */
+	g_assert_true(purple_person_get_avatar_for_display(person) == avatar);
+
+	g_clear_object(&info);
+	g_clear_object(&person);
+	g_clear_object(&avatar);
 }
 
 static void
@@ -409,6 +455,11 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_person_new);
 	g_test_add_func("/person/properties",
 	                test_purple_person_properties);
+
+	g_test_add_func("/person/avatar-for-display/person",
+	                test_purple_person_avatar_for_display_person);
+	g_test_add_func("/person/avatar-for-display/contact",
+	                test_purple_person_avatar_for_display_contact);
 
 	g_test_add_func("/person/name-for-display/person",
 	                test_purple_person_name_for_display_person);

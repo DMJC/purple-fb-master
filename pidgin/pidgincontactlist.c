@@ -46,6 +46,12 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 	PurpleContact *contact = NULL;
 	PurpleBuddyIcon *icon = NULL;
 	GdkTexture *texture = NULL;
+	GdkPixbuf *pixbuf = NULL;
+
+	pixbuf = purple_person_get_avatar_for_display(person);
+	if(GDK_IS_PIXBUF(pixbuf)) {
+		return gdk_texture_new_for_pixbuf(pixbuf);
+	}
 
 	info = purple_person_get_priority_contact_info(person);
 

@@ -37,6 +37,7 @@ enum {
 	PROP_ID,
 	PROP_ALIAS,
 	PROP_AVATAR,
+	PROP_AVATAR_FOR_DISPLAY,
 	PROP_TAGS,
 	PROP_NAME_FOR_DISPLAY,
 	PROP_PRIORITY_CONTACT_INFO,
@@ -109,6 +110,14 @@ purple_person_sort_contacts(PurplePerson *person) {
 		g_object_freeze_notify(obj);
 		g_object_notify_by_pspec(obj, properties[PROP_NAME_FOR_DISPLAY]);
 		g_object_notify_by_pspec(obj, properties[PROP_PRIORITY_CONTACT_INFO]);
+
+		/* If the person doesn't have an avatar set, notify that the
+		 * avatar-for-display has changed.
+		 */
+		if(!GDK_IS_PIXBUF(person->avatar)) {
+			g_object_notify_by_pspec(obj, properties[PROP_AVATAR_FOR_DISPLAY]);
+		}
+
 		g_object_thaw_notify(obj);
 	}
 }
@@ -181,6 +190,9 @@ purple_person_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_AVATAR:
 			g_value_set_object(value, purple_person_get_avatar(person));
+			break;
+		case PROP_AVATAR_FOR_DISPLAY:
+			g_value_set_object(value, purple_person_get_avatar_for_display(person));
 			break;
 		case PROP_TAGS:
 			g_value_set_object(value, purple_person_get_tags(person));
@@ -315,6 +327,22 @@ purple_person_class_init(PurplePersonClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
+	 * PurplePerson:avatar-for-display
+	 *
+	 * The avatar to show for the person. If [property@Purple.Person:avatar] is
+	 * set, it will be returned. Otherwise the value of
+	 * [property@Purple.ContactInfo:avatar] for
+	 * [property@Purple.Person:priority-contact-info] will be returned.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_AVATAR_FOR_DISPLAY] = g_param_spec_object(
+		"avatar-for-display", "avatar-for-display",
+		"The avatar to display for this person",
+		GDK_TYPE_PIXBUF,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
 	 * PurplePerson:tags:
 	 *
 	 * The [class@Purple.Tags] for this person.
@@ -405,6 +433,24 @@ purple_person_set_alias(PurplePerson *person, const gchar *alias) {
 }
 
 GdkPixbuf *
+purple_person_get_avatar_for_display(PurplePerson *person) {
+	PurpleContactInfo *priority = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
+
+	if(GDK_IS_PIXBUF(person->avatar)) {
+		return person->avatar;
+	}
+
+	priority = purple_person_get_priority_contact_info(person);
+	if(PURPLE_IS_CONTACT_INFO(priority)) {
+		return purple_contact_info_get_avatar(priority);
+	}
+
+	return NULL;
+}
+
+GdkPixbuf *
 purple_person_get_avatar(PurplePerson *person) {
 	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
 
@@ -416,7 +462,12 @@ purple_person_set_avatar(PurplePerson *person, GdkPixbuf *avatar) {
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 
 	if(g_set_object(&person->avatar, avatar)) {
-		g_object_notify_by_pspec(G_OBJECT(person), properties[PROP_AVATAR]);
+		GObject *obj = G_OBJECT(person);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_AVATAR]);
+		g_object_notify_by_pspec(obj, properties[PROP_AVATAR_FOR_DISPLAY]);
+		g_object_thaw_notify(obj);
 	}
 }
 

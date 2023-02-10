@@ -101,6 +101,21 @@ const gchar *purple_person_get_alias(PurplePerson *person);
 void purple_person_set_alias(PurplePerson *person, const gchar *alias);
 
 /**
+ * purple_person_get_avatar_for_display:
+ * @person: The instance.
+ *
+ * Gets the avatar that should be displayed for @person. If @person has an
+ * avatar set, it will be returned, otherwise this will fallback to the value
+ * of [property@Purple.ContactInfo:avatar] for
+ * [property@Purple.Person:priority-contact-info].
+ *
+ * Returns: (transfer none) (nullable): The avatar to display.
+ *
+ * Since: 3.0.0
+ */
+GdkPixbuf *purple_person_get_avatar_for_display(PurplePerson *person);
+
+/**
  * purple_person_get_avatar:
  * @person: The instance.
  *
