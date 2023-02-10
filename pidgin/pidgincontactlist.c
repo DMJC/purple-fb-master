@@ -113,6 +113,16 @@ pidgin_contact_list_activate_cb(GtkListView *self, guint position,
 	}
 }
 
+static gboolean
+pidgin_contact_list_message_visible_cb(G_GNUC_UNUSED GtkListItem *item,
+                                       const char *message)
+{
+	/* If we have a message, return TRUE because this is bound to the label's
+	 * visibility.
+	 */
+	return (message != NULL);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -146,6 +156,8 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 	                                        pidgin_contact_list_avatar_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_contact_list_activate_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_contact_list_message_visible_cb);
 }
 
 /******************************************************************************
