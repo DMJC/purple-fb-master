@@ -18,6 +18,8 @@
 
 #include "purpleperson.h"
 
+#include "util.h"
+
 struct _PurplePerson {
 	GObject parent;
 
@@ -36,6 +38,7 @@ enum {
 	PROP_ALIAS,
 	PROP_AVATAR,
 	PROP_TAGS,
+	PROP_NAME_FOR_DISPLAY,
 	PROP_PRIORITY_CONTACT_INFO,
 	N_PROPERTIES
 };
@@ -79,8 +82,12 @@ purple_person_sort_contacts(PurplePerson *person) {
 	guint n_items = person->contacts->len;
 
 	if(n_items <= 1) {
-		g_object_notify_by_pspec(G_OBJECT(person),
-		                         properties[PROP_PRIORITY_CONTACT_INFO]);
+		GObject *obj = G_OBJECT(person);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_NAME_FOR_DISPLAY]);
+		g_object_notify_by_pspec(obj, properties[PROP_PRIORITY_CONTACT_INFO]);
+		g_object_thaw_notify(obj);
 
 		g_list_model_items_changed(G_LIST_MODEL(person), 0, n_items, n_items);
 
@@ -97,8 +104,12 @@ purple_person_sort_contacts(PurplePerson *person) {
 	/* See if the priority contact changed. */
 	new_priority = g_ptr_array_index(person->contacts, 0);
 	if(original_priority != new_priority) {
-		g_object_notify_by_pspec(G_OBJECT(person),
-		                         properties[PROP_PRIORITY_CONTACT_INFO]);
+		GObject *obj = G_OBJECT(person);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_NAME_FOR_DISPLAY]);
+		g_object_notify_by_pspec(obj, properties[PROP_PRIORITY_CONTACT_INFO]);
+		g_object_thaw_notify(obj);
 	}
 }
 
@@ -173,6 +184,10 @@ purple_person_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_TAGS:
 			g_value_set_object(value, purple_person_get_tags(person));
+			break;
+		case PROP_NAME_FOR_DISPLAY:
+			g_value_set_string(value,
+			                   purple_person_get_name_for_display(person));
 			break;
 		case PROP_PRIORITY_CONTACT_INFO:
 			g_value_set_object(value,
@@ -313,6 +328,25 @@ purple_person_class_init(PurplePersonClass *klass) {
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
+	 * PurplePerson:name-for-display:
+	 *
+	 * The name that should be displayed for this person.
+	 *
+	 * If [property@Purple.Person:alias] is set that will be returned. If not
+	 * the value of [method@Purple.ContactInfo.get_name_for_display] for
+	 * [property@Purple.Person:priority-contact-info] will be used. If
+	 * [property@Purple.Person:priority-contact-info] is %NULL, then %NULL will
+	 * be returned.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_NAME_FOR_DISPLAY] = g_param_spec_string(
+		"name-for-display", "name-for-display",
+		"The name that should be displayed for the person",
+		NULL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
 	 * PurplePerson:priority-contact-info:
 	 *
 	 * The [class@Purple.ContactInfo] that currently has the highest priority.
@@ -357,10 +391,17 @@ void
 purple_person_set_alias(PurplePerson *person, const gchar *alias) {
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 
-	g_free(person->alias);
-	person->alias = g_strdup(alias);
+	if(!purple_strequal(person->alias, alias)) {
+		GObject *obj = G_OBJECT(person);
 
-	g_object_notify_by_pspec(G_OBJECT(person), properties[PROP_ALIAS]);
+		g_free(person->alias);
+		person->alias = g_strdup(alias);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_ALIAS]);
+		g_object_notify_by_pspec(obj, properties[PROP_NAME_FOR_DISPLAY]);
+		g_object_thaw_notify(obj);
+	}
 }
 
 GdkPixbuf *
@@ -384,6 +425,24 @@ purple_person_get_tags(PurplePerson *person) {
 	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
 
 	return person->tags;
+}
+
+const char *
+purple_person_get_name_for_display(PurplePerson *person) {
+	PurpleContactInfo *priority = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
+
+	if(!purple_strempty(person->alias)) {
+		return person->alias;
+	}
+
+	priority = purple_person_get_priority_contact_info(person);
+	if(PURPLE_IS_CONTACT_INFO(priority)) {
+		return purple_contact_info_get_name_for_display(priority);
+	}
+
+	return NULL;
 }
 
 void

@@ -60,10 +60,8 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                 <property name="xalign">0</property>
                 <property name="use-markup">1</property>
                 <binding name="label">
-                  <lookup name="name-for-display" type="PurpleContactInfo">
-                    <lookup name="priority-contact-info" type="PurplePerson">
-                      <lookup name="item">GtkListItem</lookup>
-                    </lookup>
+                  <lookup name="name-for-display" type="PurplePerson">
+                    <lookup name="item">GtkListItem</lookup>
                   </lookup>
                 </binding>
               </object>

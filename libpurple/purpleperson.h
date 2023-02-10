@@ -141,6 +141,19 @@ void purple_person_set_avatar(PurplePerson *person, GdkPixbuf *avatar);
 PurpleTags *purple_person_get_tags(PurplePerson *person);
 
 /**
+ * purple_person_get_name_for_display:
+ * @person: The instance.
+ *
+ * Gets the name that should be displayed for @person. See
+ * [property@Purple.Person:name-for-display] for more information.
+ *
+ * Returns: (transfer none): The name to display for @person.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_person_get_name_for_display(PurplePerson *person);
+
+/**
  * purple_person_add_contact:
  * @person: The instance.
  * @info: The [class@Purple.ContactInfo] to add.
