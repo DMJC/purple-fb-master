@@ -22,9 +22,11 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "purplepresence.h"
+
 #include "internal.h"
 #include "debug.h"
-#include "purplepresence.h"
+#include "purpleenums.h"
 #include "purpleprivate.h"
 
 typedef struct {
@@ -43,6 +45,8 @@ enum {
 	PROP_IDLE_TIME,
 	PROP_LOGIN_TIME,
 	PROP_ACTIVE_STATUS,
+	PROP_PRIMITIVE,
+	PROP_MESSAGE,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES];
@@ -61,8 +65,13 @@ purple_presence_set_active_status(PurplePresence *presence,
 	priv = purple_presence_get_instance_private(presence);
 
 	if(g_set_object(&priv->active_status, status)) {
-		g_object_notify_by_pspec(G_OBJECT(presence),
-		                         properties[PROP_ACTIVE_STATUS]);
+		GObject *obj = G_OBJECT(presence);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_ACTIVE_STATUS]);
+		g_object_notify_by_pspec(obj, properties[PROP_PRIMITIVE]);
+		g_object_notify_by_pspec(obj, properties[PROP_MESSAGE]);
+		g_object_thaw_notify(obj);
 	}
 }
 
@@ -125,6 +134,12 @@ purple_presence_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_ACTIVE_STATUS:
 			g_value_set_object(value, purple_presence_get_active_status(presence));
+			break;
+		case PROP_PRIMITIVE:
+			g_value_set_enum(value, purple_presence_get_primitive(presence));
+			break;
+		case PROP_MESSAGE:
+			g_value_set_string(value, purple_presence_get_message(presence));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -216,12 +231,44 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 				"The active status for the presence.", PURPLE_TYPE_STATUS,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurplePresence:primitive:
+	 *
+	 * The [enum@Purple.StatusPrimitive] for this presence.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_PRIMITIVE] = g_param_spec_enum(
+		"primitive", "primitive",
+		"The primitive for the presence",
+		PURPLE_TYPE_STATUS_PRIMITIVE,
+		PURPLE_STATUS_UNSET,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurplePresence:message:
+	 *
+	 * The status message of the presence.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_MESSAGE] = g_param_spec_string(
+		"message", "message",
+		"The status message",
+		NULL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************
  * Public API
  *****************************************************************************/
+PurplePresence *
+purple_presence_new(void) {
+	return g_object_new(PURPLE_TYPE_PRESENCE, NULL);
+}
+
 void
 purple_presence_set_status_active(PurplePresence *presence,
                                   const gchar *status_id, gboolean active)
@@ -510,4 +557,32 @@ purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
 	}
 
 	return 0;
+}
+
+PurpleStatusPrimitive
+purple_presence_get_primitive(PurplePresence *presence) {
+	PurplePresencePrivate *priv = NULL;
+	PurpleStatusType *type = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), PURPLE_STATUS_UNSET);
+
+	priv = purple_presence_get_instance_private(presence);
+
+	type = purple_status_get_status_type(priv->active_status);
+	if(type != NULL) {
+		return purple_status_type_get_primitive(type);
+	}
+
+	return PURPLE_STATUS_UNSET;
+}
+
+const char *
+purple_presence_get_message(PurplePresence *presence) {
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), NULL);
+
+	priv = purple_presence_get_instance_private(presence);
+
+	return purple_status_get_attr_string(priv->active_status, "message");
 }

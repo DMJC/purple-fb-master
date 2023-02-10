@@ -17,6 +17,7 @@ PROGS = [
     'notification',
     'notification_manager',
     'person',
+    'presence',
     'protocol',
     'protocol_action',
     'protocol_xfer',

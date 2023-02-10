@@ -27,6 +27,9 @@
 #ifndef PURPLE_PRESENCE_H
 #define PURPLE_PRESENCE_H
 
+#include <glib.h>
+#include <glib-object.h>
+
 /**
  * PurplePresence:
  *
@@ -71,6 +74,17 @@ struct _PurplePresenceClass {
 #define PURPLE_TYPE_PRESENCE purple_presence_get_type()
 G_DECLARE_DERIVABLE_TYPE(PurplePresence, purple_presence, PURPLE, PRESENCE,
                          GObject)
+
+/**
+ * purple_presence_new:
+ *
+ * Creates a new presence instance.
+ *
+ * Returns: (transfer full): The new instance.
+ *
+ * Since: 3.0.0
+ */
+PurplePresence *purple_presence_new(void);
 
 /**
  * purple_presence_set_status_active:
@@ -245,6 +259,30 @@ GDateTime *purple_presence_get_login_time(PurplePresence *presence);
  * Since: 3.0.0
  */
 gint purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2);
+
+/**
+ * purple_presence_get_primitive:
+ * @presence: The instance.
+ *
+ * Gets the [enum@Purple.StatusPrimitive] for @presence.
+ *
+ * Returns: The current primitive.
+ *
+ * Since: 3.0.0
+ */
+PurpleStatusPrimitive purple_presence_get_primitive(PurplePresence *presence);
+
+/**
+ * purple_presence_get_message:
+ * @presence: The instance.
+ *
+ * Gets the status message for @presence if one is set.
+ *
+ * Returns: (nullable): The status message of @presence.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_presence_get_message(PurplePresence *presence);
 
 G_END_DECLS
 
