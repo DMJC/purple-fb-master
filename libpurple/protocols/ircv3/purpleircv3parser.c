@@ -267,8 +267,11 @@ purple_ircv3_parser_init(PurpleIRCv3Parser *parser) {
 	                                     0, 0, NULL);
 	g_assert(parser->regex_message != NULL);
 
-	parser->regex_tags = g_regex_new("(?:(?<key>[A-Za-z0-9-\\/]+)"
-	                                 "(?:=(?<value>[^\\r\\n;]*))?(?:;|$))",
+	parser->regex_tags = g_regex_new("(?<key>(?<client_prefix>\\+?)"
+	                                        "(?:(?<vendor>[A-Za-z0-9-\\.]+)\\/)?"
+	                                        "(?<key_name>[A-Za-z0-9-]+)"
+	                                 ")"
+	                                 "(?:=(?<value>[^\r\n;]*))?(?:;|$)",
 	                                 0, 0, NULL);
 	g_assert(parser->regex_tags != NULL);
 

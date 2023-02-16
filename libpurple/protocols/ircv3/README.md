@@ -16,5 +16,6 @@ This is a list of capabilities that we currently support. We'll do our best to
 keep this list up to date, but if you notice we've missed something please let
 us know!
 
-* sasl (right now just PLAIN works)
 * cap-notify
+* sasl (right now just PLAIN works)
+* message-tags

@@ -108,7 +108,6 @@ purple_ircv3_capabilities_default_ready_cb(PurpleIRCv3Capabilities *capabilities
 {
 	PurpleAccount *account = NULL;
 	PurpleConnection *purple_connection = NULL;
-	gboolean found = FALSE;
 
 	purple_connection = PURPLE_CONNECTION(capabilities->connection);
 	account = purple_connection_get_account(purple_connection);
@@ -117,7 +116,10 @@ purple_ircv3_capabilities_default_ready_cb(PurpleIRCv3Capabilities *capabilities
 	 * require-password option.
 	 */
 	if(purple_account_get_require_password(account)) {
+		gboolean found = FALSE;
+
 		purple_ircv3_capabilities_lookup(capabilities, "sasl", &found);
+
 		if(found) {
 			purple_ircv3_sasl_request(capabilities);
 		}
@@ -126,10 +128,12 @@ purple_ircv3_capabilities_default_ready_cb(PurpleIRCv3Capabilities *capabilities
 	/* cap-notify is implied when we use CAP LS 302, so this is really just to
 	 * make sure it's requested.
 	 */
-	purple_ircv3_capabilities_lookup(capabilities, "cap-notify", &found);
-	if(found) {
-		purple_ircv3_capabilities_request(capabilities, "cap-notify");
-	}
+	purple_ircv3_capabilities_lookup_and_request(capabilities, "cap-notify");
+
+	/* message-tags is used for a lot of stuff so we need to tell everyone we
+	 * do in fact support it.
+	 */
+	purple_ircv3_capabilities_lookup_and_request(capabilities, "message-tags");
 }
 
 /******************************************************************************
@@ -614,6 +618,23 @@ purple_ircv3_capabilities_lookup(PurpleIRCv3Capabilities *capabilities,
 	}
 
 	return value;
+}
+
+gboolean
+purple_ircv3_capabilities_lookup_and_request(PurpleIRCv3Capabilities *capabilities,
+                                             const char *name)
+{
+	gboolean found = FALSE;
+
+	g_return_val_if_fail(PURPLE_IRCV3_IS_CAPABILITIES(capabilities), FALSE);
+	g_return_val_if_fail(name != NULL, FALSE);
+
+	purple_ircv3_capabilities_lookup(capabilities, name, &found);
+	if(found) {
+		purple_ircv3_capabilities_request(capabilities, name);
+	}
+
+	return found;
 }
 
 void

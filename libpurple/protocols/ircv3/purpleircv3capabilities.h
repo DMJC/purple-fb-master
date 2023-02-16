@@ -85,6 +85,26 @@ void purple_ircv3_capabilities_request(PurpleIRCv3Capabilities *capabilities, co
 const char *purple_ircv3_capabilities_lookup(PurpleIRCv3Capabilities *capabilities, const char *name, gboolean *found);
 
 /**
+ * purple_ircv3_capabilities_lookup_and_request:
+ * @capabilities: The instance.
+ * @name: The name of the capability to look for.
+ *
+ * A helper function to call [method@PurpleIRCv3.Capabilities.Lookup] and if
+ * found, call [method@PurpleIRCv3.Capabilities.Request].
+ *
+ * This method ignores the advertised value, so to get that you'll need to call
+ * [method@PurpleIRCv3.Capabilities.Lookup] yourself.
+ *
+ * Also if you need to do something when the server ACK's or NAK's your
+ * request, you're probably better off just using the methods yourself.
+ *
+ * Returns: %TRUE if @name was found and requested, %FALSE otherwise.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_ircv3_capabilities_lookup_and_request(PurpleIRCv3Capabilities *capabilities, const char *name);
+
+/**
  * purple_ircv3_capabilties_add_wait:
  * @capabilities: The instance.
  *

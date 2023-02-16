@@ -594,6 +594,85 @@ test_purple_ircv3_special_mode_2(void) {
 }
 
 /******************************************************************************
+ * Message tags examples
+ *****************************************************************************/
+static void
+test_purple_ircv3_parser_message_tags_none(void) {
+	TestPurpleIRCv3ParserData data = {
+		.source = "nick!ident@host.com",
+		.command = "PRIVMSG",
+		.n_params = 2,
+		.params = {"me", "Hello"},
+	};
+	const char *msg = NULL;
+
+	msg = ":nick!ident@host.com PRIVMSG me :Hello";
+
+	test_purple_ircv3_parser(msg, &data);
+}
+
+static void
+test_purple_ircv3_parser_message_tags_3_tags(void) {
+	TestPurpleIRCv3ParserData data = {
+		.source = "nick!ident@host.com",
+		.command = "PRIVMSG",
+		.n_params = 2,
+		.params = {"me", "Hello"},
+	};
+	const char *msg = NULL;
+
+	data.tags = g_hash_table_new(g_str_hash, g_str_equal);
+	g_hash_table_insert(data.tags, "aaa", "bbb");
+	g_hash_table_insert(data.tags, "ccc", "");
+	g_hash_table_insert(data.tags, "example.com/ddd", "eee");
+
+	msg = "@aaa=bbb;ccc;example.com/ddd=eee :nick!ident@host.com PRIVMSG me "
+	      ":Hello";
+
+	test_purple_ircv3_parser(msg, &data);
+}
+
+static void
+test_purple_ircv3_parser_message_tags_client_only(void) {
+	TestPurpleIRCv3ParserData data = {
+		.source = "url_bot!bot@example.com",
+		.command = "PRIVMSG",
+		.n_params = 2,
+		.params = {"#channel", "Example.com: A News Story"},
+	};
+	const char *msg = NULL;
+
+	data.tags = g_hash_table_new(g_str_hash, g_str_equal);
+	g_hash_table_insert(data.tags, "+icon", "https://example.com/favicon.png");
+
+	msg = "@+icon=https://example.com/favicon.png :url_bot!bot@example.com "
+	      "PRIVMSG #channel :Example.com: A News Story";
+
+	test_purple_ircv3_parser(msg, &data);
+}
+
+static void
+test_purple_ircv3_parser_message_tags_labeled_response(void) {
+	TestPurpleIRCv3ParserData data = {
+		.source = "nick!user@example.com",
+		.command = "TAGMSG",
+		.n_params = 1,
+		.params = {"#channel"},
+	};
+	const char *msg = NULL;
+
+	data.tags = g_hash_table_new(g_str_hash, g_str_equal);
+	g_hash_table_insert(data.tags, "label", "123");
+	g_hash_table_insert(data.tags, "msgid", "abc");
+	g_hash_table_insert(data.tags, "+example-client-tag", "example-value");
+
+	msg = "@label=123;msgid=abc;+example-client-tag=example-value "
+	      ":nick!user@example.com TAGMSG #channel";
+
+	test_purple_ircv3_parser(msg, &data);
+
+}
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -685,6 +764,18 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_ircv3_special_mode_1);
 	g_test_add_func("/ircv3/parser/special-mode-2",
 	                test_purple_ircv3_special_mode_2);
+
+	/* These tests are the examples from the message-tags specification,
+	 * https://ircv3.net/specs/extensions/message-tags.html.
+	 */
+	g_test_add_func("/ircv3/parser/message-tags/none",
+	                test_purple_ircv3_parser_message_tags_none);
+	g_test_add_func("/ircv3/parser/message-tags/3-tags",
+	                test_purple_ircv3_parser_message_tags_3_tags);
+	g_test_add_func("/ircv3/parser/message-tags/client-only",
+	                test_purple_ircv3_parser_message_tags_client_only);
+	g_test_add_func("/ircv3/parser/message-tags/labeled-message",
+	                test_purple_ircv3_parser_message_tags_labeled_response);
 
 	return g_test_run();
 }
