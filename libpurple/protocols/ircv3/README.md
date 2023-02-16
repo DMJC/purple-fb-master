@@ -19,3 +19,4 @@ us know!
 * cap-notify
 * sasl (right now just PLAIN works)
 * message-tags
+* msgid

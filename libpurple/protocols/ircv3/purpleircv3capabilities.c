@@ -101,6 +101,18 @@ purple_ircv3_capabilities_add(PurpleIRCv3Capabilities *capabilities,
 }
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+ircv3_capabilities_message_tags_ack_cb(PurpleIRCv3Capabilities *capabilities,
+                                       G_GNUC_UNUSED const char *capability,
+                                       G_GNUC_UNUSED gpointer data)
+{
+	/* We have message tags so add the stuff we support that depends on it. */
+	purple_ircv3_capabilities_lookup_and_request(capabilities, "msgid");
+}
+
+/******************************************************************************
  * PurpleIRCv3Capabilities Implementation
  *****************************************************************************/
 static void
@@ -133,7 +145,13 @@ purple_ircv3_capabilities_default_ready_cb(PurpleIRCv3Capabilities *capabilities
 	/* message-tags is used for a lot of stuff so we need to tell everyone we
 	 * do in fact support it.
 	 */
-	purple_ircv3_capabilities_lookup_and_request(capabilities, "message-tags");
+	if(purple_ircv3_capabilities_lookup_and_request(capabilities,
+	                                                "message-tags"))
+	{
+		g_signal_connect(capabilities, "ack::message-tags",
+		                 G_CALLBACK(ircv3_capabilities_message_tags_ack_cb),
+		                 NULL);
+	}
 }
 
 /******************************************************************************

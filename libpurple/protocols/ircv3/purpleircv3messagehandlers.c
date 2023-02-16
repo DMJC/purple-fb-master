@@ -70,7 +70,7 @@ purple_ircv3_message_handler_ping(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED GHashTable *tags,
+purple_ircv3_message_handler_privmsg(GHashTable *tags,
                                      const char *source,
                                      const char *command,
                                      guint n_params,
@@ -86,6 +86,9 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED GHashTable *tags,
 	PurpleConversationManager *conversation_manager = NULL;
 	PurpleMessage *message = NULL;
 	PurpleMessageFlags flags = PURPLE_MESSAGE_RECV;
+	GDateTime *dt = NULL;
+	gpointer raw_id = NULL;
+	const char *id = NULL;
 	const char *target = NULL;
 
 	if(n_params != 2) {
@@ -128,12 +131,29 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED GHashTable *tags,
 		g_object_unref(conversation);
 	}
 
+	/* Grab the msgid if one was provided. */
+	if(g_hash_table_lookup_extended(tags, "msgid", NULL, &raw_id)) {
+		if(!purple_strempty(raw_id)) {
+			id = raw_id;
+		}
+	}
+
 	if(purple_strequal(command, "NOTICE")) {
 		flags |= PURPLE_MESSAGE_NOTIFY;
 	}
 
-	message = purple_message_new_incoming(account, source, params[1], flags,
-	                                      0);
+	dt = g_date_time_new_now_local();
+
+	message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
+		"author", source,
+		"contents", params[1],
+		"flags", flags,
+		"id", id,
+		"timestamp", dt,
+		NULL);
+
+	g_date_time_unref(dt);
 
 	purple_conversation_write_message(conversation, message);
 
