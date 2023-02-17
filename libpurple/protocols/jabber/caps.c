@@ -57,7 +57,7 @@ static gboolean jabber_caps_compare(gconstpointer v1, gconstpointer v2) {
 	       purple_strequal(name1->hash, name2->hash);
 }
 
-static void
+void
 jabber_caps_client_info_destroy(JabberCapsClientInfo *info)
 {
 	if (info == NULL)

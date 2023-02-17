@@ -97,4 +97,14 @@ void jabber_caps_broadcast_change(void);
  */
 JabberCapsClientInfo *jabber_caps_parse_client_info(PurpleXmlNode *query);
 
+/**
+ * Release memory of a JabberCapsClientInfo struct
+ * returned by jabber_caps_parse_client_info.
+ *
+ * Exposed for tests
+ *
+ * @param info The info object to free.
+ */
+void jabber_caps_client_info_destroy(JabberCapsClientInfo *info);
+
 #endif /* PURPLE_JABBER_CAPS_H */

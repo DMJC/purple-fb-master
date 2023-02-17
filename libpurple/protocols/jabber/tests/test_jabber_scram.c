@@ -15,6 +15,7 @@ static JabberScramHash sha1_mech = { "-SHA-1", G_CHECKSUM_SHA1 };
 	g_assert_cmpmem(result, 20, expected, 20); \
 	g_string_free(s, TRUE); \
 	g_string_free(p, TRUE); \
+	g_free(result); \
 }
 
 static void

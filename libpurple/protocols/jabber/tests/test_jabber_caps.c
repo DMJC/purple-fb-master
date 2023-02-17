@@ -33,6 +33,8 @@ _test_jabber_caps_match(GChecksumType hash_type, const gchar *in, const gchar *e
 
 	g_assert_cmpstr(expected, ==, got);
 	g_free(got);
+	jabber_caps_client_info_destroy(info);
+	purple_xmlnode_free(query);
 }
 
 static void

@@ -14,7 +14,11 @@ PurpleTestStringData test_jabber_util_get_resource_exists_data[] = {
 static void
 test_jabber_util_get_resource_exists(const PurpleTestStringData *data)
 {
-	g_assert_cmpstr(data->output, ==, jabber_get_resource(data->input));
+	char *resource;
+
+	resource = jabber_get_resource(data->input);
+	g_assert_cmpstr(data->output, ==, resource);
+	g_free(resource);
 }
 
 PurpleTestStringData test_jabber_util_get_resource_none_data[] = {
@@ -38,7 +42,11 @@ PurpleTestStringData test_jabber_util_get_bare_jid_data[] = {
 static void
 test_jabber_util_get_bare_jid(const PurpleTestStringData *data)
 {
-	g_assert_cmpstr(data->output, ==, jabber_get_bare_jid(data->input));
+	char *bare_jid;
+
+	bare_jid = jabber_get_bare_jid(data->input);
+	g_assert_cmpstr(data->output, ==, bare_jid);
+	g_free(bare_jid);
 }
 
 static void
