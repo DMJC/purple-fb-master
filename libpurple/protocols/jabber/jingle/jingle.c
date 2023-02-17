@@ -459,57 +459,34 @@ jingle_param_free(GValue *value)
 }
 
 GHashTable *
-jingle_get_params(JabberStream *js, const gchar *relay_ip, guint relay_udp,
-	guint relay_tcp, guint relay_ssltcp, const gchar *relay_username,
-	const gchar *relay_password)
+jingle_get_params(G_GNUC_UNUSED JabberStream *js, const gchar *relay_ip,
+                  guint relay_udp, guint relay_tcp, guint relay_ssltcp,
+                  const gchar *relay_username, const gchar *relay_password)
 {
-	/* don't set a STUN server if one is set globally in prefs, in that case
-	 this will be handled in media.c */
-	gboolean has_account_stun = js->stun_ip && !purple_network_get_stun_ip();
 	GHashTable *params = NULL;
 	GValue *value = NULL;
 
-	if (has_account_stun || relay_ip) {
+	if(relay_ip) {
+		GPtrArray *relay_info = g_ptr_array_new_full(1, (GDestroyNotify)gst_structure_free);
+
 		params = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, (GDestroyNotify)jingle_param_free);
 
-		if (has_account_stun) {
-			purple_debug_info("jabber",
-				"setting param stun-ip for stream using auto-config: %s\n",
-				js->stun_ip);
-			value = g_new(GValue, 1);
-			g_value_init(value, G_TYPE_STRING);
-			g_value_set_string(value, js->stun_ip);
-			g_hash_table_insert(params, "stun-ip", value);
-
-			purple_debug_info("jabber",
-				"setting param stun-port for stream using auto-config: %d\n",
-				js->stun_port);
-			value = g_new(GValue, 1);
-			g_value_init(value, G_TYPE_UINT);
-			g_value_set_uint(value, js->stun_port);
-			g_hash_table_insert(params, "stun-port", value);
+		if (relay_udp) {
+			jingle_create_relay_info(relay_ip, relay_udp, relay_username,
+				relay_password, "udp", relay_info);
 		}
-
-		if (relay_ip) {
-			GPtrArray *relay_info = g_ptr_array_new_full(1, (GDestroyNotify)gst_structure_free);
-
-			if (relay_udp) {
-				jingle_create_relay_info(relay_ip, relay_udp, relay_username,
-					relay_password, "udp", relay_info);
-			}
-			if (relay_tcp) {
-				jingle_create_relay_info(relay_ip, relay_tcp, relay_username,
-					relay_password, "tcp", relay_info);
-			}
-			if (relay_ssltcp) {
-				jingle_create_relay_info(relay_ip, relay_ssltcp, relay_username,
-					relay_password, "tls", relay_info);
-			}
-			value = g_new(GValue, 1);
-			g_value_init(value, G_TYPE_PTR_ARRAY);
-			g_value_take_boxed(value, relay_info);
-			g_hash_table_insert(params, "relay-info", value);
+		if (relay_tcp) {
+			jingle_create_relay_info(relay_ip, relay_tcp, relay_username,
+				relay_password, "tcp", relay_info);
 		}
+		if (relay_ssltcp) {
+			jingle_create_relay_info(relay_ip, relay_ssltcp, relay_username,
+				relay_password, "tls", relay_info);
+		}
+		value = g_new(GValue, 1);
+		g_value_init(value, G_TYPE_PTR_ARRAY);
+		g_value_take_boxed(value, relay_info);
+		g_hash_table_insert(params, "relay-info", value);
 	}
 
 	return params;

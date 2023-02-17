@@ -936,8 +936,6 @@ jabber_stream_new(PurpleAccount *account)
 	js->protocol_version.major = 1;
 	js->protocol_version.minor = 0;
 	js->sessions = NULL;
-	js->stun_ip = NULL;
-	js->stun_port = 0;
 
 	/* if we are idle, set idle-ness on the stream (this could happen if we get
 		disconnected and the reconnects while being idle. I don't think it makes
@@ -1142,8 +1140,6 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 
 	g_cancellable_cancel(js->cancellable);
 	g_object_unref(G_OBJECT(js->cancellable));
-
-	g_free(js->stun_ip);
 
 	g_free(js);
 

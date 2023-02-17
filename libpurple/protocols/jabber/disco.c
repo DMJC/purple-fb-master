@@ -381,43 +381,6 @@ jabber_disco_finish_server_info_result_cb(JabberStream *js)
 }
 
 static void
-jabber_disco_stun_srv_resolve_cb(GObject *sender, GAsyncResult *result, gpointer data) {
-	GError *error = NULL;
-	GList *services = NULL;
-	JabberStream *js = (JabberStream *) data;
-	gint results = 0;
-
-	services = g_resolver_lookup_service_finish(G_RESOLVER(sender),
-			result, &error);
-
-	if(error != NULL) {
-		purple_debug_info("jabber", "Failed to look up a STUN record : %s\n", error->message);
-
-		g_error_free(error);
-
-		return;
-	}
-
-	results = g_list_length(services);
-
-	purple_debug_info("jabber", "got %d SRV responses for STUN.\n", results);
-
-	if (results > 0) {
-		GSrvTarget *target = (GSrvTarget *)services->data;
-		const gchar *hostname = g_srv_target_get_hostname(target);
-
-		js->stun_ip = g_strdup(hostname);
-		js->stun_port = g_srv_target_get_port(target);
-
-		purple_debug_info("jabber", "set stun address to %s:%d\n",
-			hostname, js->stun_port);
-	}
-
-	g_resolver_free_targets(services);
-}
-
-
-static void
 jabber_disco_server_info_result_cb(JabberStream *js, const char *from,
                                    JabberIqType type,
                                    G_GNUC_UNUSED const char *id,
@@ -446,7 +409,7 @@ jabber_disco_server_info_result_cb(JabberStream *js, const char *from,
 
 	for (child = purple_xmlnode_get_child(query, "identity"); child;
 	     child = purple_xmlnode_get_next_twin(child)) {
-		const char *category, *type, *name, *stun_ip;
+		const char *category, *type, *name;
 		category = purple_xmlnode_get_attrib(child, "category");
 		type = purple_xmlnode_get_attrib(child, "type");
 		if(purple_strequal(category, "pubsub") && purple_strequal(type, "pep")) {
@@ -468,19 +431,6 @@ jabber_disco_server_info_result_cb(JabberStream *js, const char *from,
 
 		g_free(js->server_name);
 		js->server_name = g_strdup(name);
-		stun_ip = purple_network_get_stun_ip();
-		if (!stun_ip || !*stun_ip) {
-			GResolver *resolver = g_resolver_get_default();
-			g_resolver_lookup_service_async(resolver,
-			                                "stun",
-			                                "udp",
-			                                js->user->domain,
-			                                NULL,
-			                                jabber_disco_stun_srv_resolve_cb,
-			                                js);
-			g_object_unref(resolver);
-			/* TODO: add TURN support later... */
-		}
 	}
 
 	for (child = purple_xmlnode_get_child(query, "feature"); child;

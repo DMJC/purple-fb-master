@@ -245,9 +245,6 @@ struct _JabberStream
 
 	/* keep a hash table of JingleSessions */
 	GHashTable *sessions;
-
-	gchar *stun_ip;
-	int stun_port;
 };
 
 typedef gboolean (JabberFeatureEnabled)(JabberStream *js, const gchar *namespace);
