@@ -88,6 +88,10 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 		return NULL;
 	}
 
+	if(!PURPLE_IS_PERSON(person)) {
+		return NULL;
+	}
+
 	info = purple_person_get_priority_contact_info(person);
 
 	/* All of the contact info in the manager are PurpleContact's so this cast
