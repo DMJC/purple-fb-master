@@ -593,7 +593,7 @@ purple_person_matches(PurplePerson *person, const char *needle) {
 
 	/* Check if the person's alias matches. */
 	if(!purple_strempty(person->alias)) {
-		if(strstr(person->alias, needle) != NULL) {
+		if(purple_strmatches(needle, person->alias)) {
 			return TRUE;
 		}
 	}

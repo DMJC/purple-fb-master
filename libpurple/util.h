@@ -410,6 +410,24 @@ char *purple_str_seconds_to_string(guint sec);
  */
 void purple_str_wipe(gchar *str);
 
+/**
+ * purple_strmatches:
+ * @pattern: The pattern to search for.
+ * @str: The string to check.
+ *
+ * Checks if @pattern occurs in sequential order in @str in a caseless fashion,
+ * ignoring characters in between.
+ *
+ * For example, if @pattern was `Pg` and @str was `Pidgin`, this will return
+ * %TRUE.
+ *
+ * Returns: %TRUE if @pattern occurs in sequential order in @str, %FALSE
+ *          otherwise.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_strmatches(const char *pattern, const char *str);
+
 /**************************************************************************/
 /* URI/URL Functions                                                      */
 /**************************************************************************/

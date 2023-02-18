@@ -810,26 +810,20 @@ purple_contact_info_matches(PurpleContactInfo *info, const char *needle) {
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	if(!purple_strempty(priv->id)) {
-		if(strstr(priv->id, needle) != NULL) {
-			return TRUE;
-		}
-	}
-
 	if(!purple_strempty(priv->username)) {
-		if(strstr(priv->username, needle) != NULL) {
+		if(purple_strmatches(needle, priv->username)) {
 			return TRUE;
 		}
 	}
 
 	if(!purple_strempty(priv->alias)) {
-		if(strstr(priv->alias, needle) != NULL) {
+		if(purple_strmatches(needle, priv->alias)) {
 			return TRUE;
 		}
 	}
 
 	if(!purple_strempty(priv->display_name)) {
-		if(strstr(priv->display_name, needle) != NULL) {
+		if(purple_strmatches(needle, priv->display_name)) {
 			return TRUE;
 		}
 	}

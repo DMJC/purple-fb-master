@@ -361,6 +361,8 @@ int purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b);
  * @needle: (nullable): The string to match.
  *
  * This will determine if the alias, display name, or username matches @needle.
+ * The id is ignored because generally it is a UUID or hex string which will
+ * give very confusing results to end users.
  *
  * If @needle is %NULL or empty string, %TRUE will be returned.
  *

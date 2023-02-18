@@ -404,6 +404,68 @@ purple_str_wipe(gchar *str)
 	g_free(str);
 }
 
+gboolean
+purple_strmatches(const char *pattern, const char *str) {
+	char *normal_pattern = NULL;
+	char *normal_str = NULL;
+	char *cmp_pattern = NULL;
+	char *cmp_str = NULL;
+	char *idx_pattern = NULL;
+	char *idx_str = NULL;
+
+	g_return_val_if_fail(pattern != NULL, FALSE);
+
+	/* Short circuit on NULL and empty string. */
+	if(purple_strempty(str)) {
+		return FALSE;
+	}
+
+	normal_pattern = g_utf8_normalize(pattern, -1, G_NORMALIZE_ALL);
+	cmp_pattern = g_utf8_casefold(normal_pattern, -1);
+	g_free(normal_pattern);
+
+	normal_str = g_utf8_normalize(str, -1, G_NORMALIZE_ALL);
+	cmp_str = g_utf8_casefold(normal_str, -1);
+	g_free(normal_str);
+
+	idx_pattern = cmp_pattern;
+	idx_str = cmp_str;
+
+	/* I know while(TRUE)'s suck, but the alternative would be a multi-line for
+	 * loop that wouldn't have the additional comments, which is much better
+	 * IMHO. -- GK 2023-01-24.
+	 */
+	while(TRUE) {
+		gunichar character = g_utf8_get_char(idx_pattern);
+
+		/* If we've reached the end of the pattern, we're done. */
+		if(character == 0) {
+			break;
+		}
+
+		idx_str = g_utf8_strchr(idx_str, -1, character);
+		if(idx_str == NULL) {
+			g_free(cmp_pattern);
+			g_free(cmp_str);
+
+			return FALSE;
+		}
+
+		/* We found the current character in pattern, so move to the next. */
+		idx_pattern = g_utf8_next_char(idx_pattern);
+
+		/* move idx_str to the next character as well, because the current
+		 * character has already been matched.
+		 */
+		idx_str = g_utf8_next_char(idx_str);
+	};
+
+	g_free(cmp_pattern);
+	g_free(cmp_str);
+
+	return TRUE;
+}
+
 /**************************************************************************
  * URI/URL Functions
  **************************************************************************/
