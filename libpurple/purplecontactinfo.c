@@ -241,6 +241,7 @@ purple_contact_info_finalize(GObject *obj) {
 	g_clear_pointer(&priv->username, g_free);
 	g_clear_pointer(&priv->display_name, g_free);
 	g_clear_pointer(&priv->alias, g_free);
+	g_clear_pointer(&priv->color, g_free);
 	g_clear_pointer(&priv->name_for_display, g_free);
 
 	G_OBJECT_CLASS(purple_contact_info_parent_class)->finalize(obj);
