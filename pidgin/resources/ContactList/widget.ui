@@ -24,9 +24,23 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <template class="PidginContactList" parent="AdwBin">
+  <template class="PidginContactList" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkSearchBar" id="search_bar">
+        <property name="key-capture-widget">PidginContactList</property>
+        <property name="show-close-button">1</property>
+        <child>
+          <object class="GtkSearchEntry" id="search_entry">
+            <signal name="search-changed" handler="pidgin_contact_list_search_changed_cb"/>
+          </object>
+        </child>
+      </object>
+    </child>
     <child>
       <object class="GtkListView" id="view">
+        <property name="hexpand">1</property>
+        <property name="vexpand">1</property>
         <property name="factory">
           <object class="GtkBuilderListItemFactory">
             <property name="bytes">
@@ -105,7 +119,20 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             </property>
           </object>
         </property>
-        <signal name="activate" handler="pidgin_contact_list_activate_cb" swapped="no"/>
+        <property name="model">
+          <object class="GtkSingleSelection">
+            <property name="autoselect">1</property>
+            <property name="model">
+              <object class="GtkFilterListModel" id="filter_model">
+                <property name="incremental">0</property>
+                <property name="filter">
+                  <object class="GtkCustomFilter" id="search_filter"/>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+        <signal name="activate" handler="pidgin_contact_list_activate_cb"/>
       </object>
     </child>
   </template>

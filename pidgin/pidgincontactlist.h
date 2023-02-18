@@ -46,7 +46,7 @@ G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_CONTACT_LIST (pidgin_contact_list_get_type())
 G_DECLARE_FINAL_TYPE(PidginContactList, pidgin_contact_list, PIDGIN,
-                     CONTACT_LIST, AdwBin)
+                     CONTACT_LIST, GtkBox)
 
 /**
  * pidgin_contact_list_new:

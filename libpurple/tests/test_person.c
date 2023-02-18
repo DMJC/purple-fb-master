@@ -443,6 +443,53 @@ test_purple_person_priority_multiple_with_change(void) {
 }
 
 /******************************************************************************
+ * Matches tests
+ *****************************************************************************/
+static void
+test_purple_person_matches_accepts_null(void) {
+	PurplePerson *person = purple_person_new();
+
+	g_assert_true(purple_person_matches(person, NULL));
+
+	g_clear_object(&person);
+}
+
+static void
+test_purple_person_matches_empty_string(void) {
+	PurplePerson *person = purple_person_new();
+
+	g_assert_true(purple_person_matches(person, ""));
+
+	g_clear_object(&person);
+}
+
+static void
+test_purple_person_matches_alias(void) {
+	PurplePerson *person = purple_person_new();
+
+	purple_person_set_alias(person, "this is the alias");
+
+	g_assert_true(purple_person_matches(person, "the"));
+	g_assert_false(purple_person_matches(person, "what"));
+
+	g_clear_object(&person);
+}
+
+static void
+test_purple_person_matches_contact_info(void) {
+	PurplePerson *person = purple_person_new();
+	PurpleContactInfo *info = purple_contact_info_new(NULL);
+
+	purple_contact_info_set_username(info, "user1");
+	purple_person_add_contact_info(person, info);
+	g_clear_object(&info);
+
+	g_assert_true(purple_person_matches(person, "user1"));
+
+	g_clear_object(&person);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -475,6 +522,15 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_person_priority_single);
 	g_test_add_func("/person/priority/multiple-with-change",
 	                test_purple_person_priority_multiple_with_change);
+
+	g_test_add_func("/person/matches/accepts_null",
+	                test_purple_person_matches_accepts_null);
+	g_test_add_func("/person/matches/empty_string",
+	                test_purple_person_matches_empty_string);
+	g_test_add_func("/person/matches/alias",
+	                test_purple_person_matches_alias);
+	g_test_add_func("/person/matches/contact_info",
+	                test_purple_person_matches_contact_info);
 
 	return g_test_run();
 }

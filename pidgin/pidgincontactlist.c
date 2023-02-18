@@ -27,16 +27,44 @@
 #include "pidgin/pidgincontactlist.h"
 
 struct _PidginContactList {
-	AdwBin parent;
+	GtkBox parent;
 
+	GtkFilterListModel *filter_model;
+	GtkCustomFilter *search_filter;
+
+	GtkWidget *search_entry;
 	GtkWidget *view;
 };
 
-G_DEFINE_TYPE(PidginContactList, pidgin_contact_list, ADW_TYPE_BIN)
+G_DEFINE_TYPE(PidginContactList, pidgin_contact_list, GTK_TYPE_BOX)
+
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static gboolean
+pidgin_contact_list_search_filter(GObject *item, gpointer data) {
+	PidginContactList *list = data;
+	PurplePerson *person = PURPLE_PERSON(item);
+	const char *needle = NULL;
+
+	needle = gtk_editable_get_text(GTK_EDITABLE(list->search_entry));
+
+	return purple_person_matches(person, needle);
+}
 
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
+static void
+pidgin_contact_list_search_changed_cb(G_GNUC_UNUSED GtkSearchEntry *self,
+                                      gpointer data)
+{
+	PidginContactList *list = data;
+
+	gtk_filter_changed(GTK_FILTER(list->search_filter),
+	                   GTK_FILTER_CHANGE_DIFFERENT);
+}
+
 static GdkTexture *
 pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
                               PurplePerson *person,
@@ -51,6 +79,13 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 	pixbuf = purple_person_get_avatar_for_display(person);
 	if(GDK_IS_PIXBUF(pixbuf)) {
 		return gdk_texture_new_for_pixbuf(pixbuf);
+	}
+
+	/* When filtering we get called for rows that have been filtered out. I'm
+	 * not sure why, but this does appear to be the case.
+	 */
+	if(person == NULL) {
+		return NULL;
 	}
 
 	info = purple_person_get_priority_contact_info(person);
@@ -135,15 +170,15 @@ pidgin_contact_list_message_visible_cb(G_GNUC_UNUSED GtkListItem *item,
 static void
 pidgin_contact_list_init(PidginContactList *list) {
 	PurpleContactManager *manager = NULL;
-	GtkSingleSelection *selection = NULL;
 
 	gtk_widget_init_template(GTK_WIDGET(list));
 
 	manager = purple_contact_manager_get_default();
-	selection = gtk_single_selection_new(G_LIST_MODEL(manager));
+	gtk_filter_list_model_set_model(list->filter_model, G_LIST_MODEL(manager));
 
-	gtk_list_view_set_model(GTK_LIST_VIEW(list->view),
-	                        GTK_SELECTION_MODEL(selection));
+	gtk_custom_filter_set_filter_func(list->search_filter,
+	                                  (GtkCustomFilterFunc)pidgin_contact_list_search_filter,
+	                                  list, NULL);
 }
 
 static void
@@ -156,8 +191,17 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
+	                                     filter_model);
+	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
+	                                     search_filter);
+
+	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
+	                                     search_entry);
+	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
 	                                     view);
 
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_contact_list_search_changed_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_contact_list_avatar_cb);
 	gtk_widget_class_bind_template_callback(widget_class,

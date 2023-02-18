@@ -20,6 +20,8 @@
 
 #include "util.h"
 
+#include "util.h"
+
 struct _PurplePerson {
 	GObject parent;
 
@@ -120,6 +122,17 @@ purple_person_sort_contacts(PurplePerson *person) {
 
 		g_object_thaw_notify(obj);
 	}
+}
+
+/* This function is used by purple_person_matches to determine if a contact info
+ * matches the needle.
+ */
+static gboolean
+purple_person_matches_find_func(gconstpointer a, gconstpointer b) {
+	PurpleContactInfo *info = (gpointer)a;
+	const char *needle = b;
+
+	return purple_contact_info_matches(info, needle);
 }
 
 /******************************************************************************
@@ -568,4 +581,25 @@ purple_person_has_contacts(PurplePerson *person) {
 	g_return_val_if_fail(PURPLE_IS_PERSON(person), FALSE);
 
 	return person->contacts->len > 0;
+}
+
+gboolean
+purple_person_matches(PurplePerson *person, const char *needle) {
+	g_return_val_if_fail(PURPLE_IS_PERSON(person), FALSE);
+
+	if(purple_strempty(needle)) {
+		return TRUE;
+	}
+
+	/* Check if the person's alias matches. */
+	if(!purple_strempty(person->alias)) {
+		if(strstr(person->alias, needle) != NULL) {
+			return TRUE;
+		}
+	}
+
+	/* See if any of the contact infos match. */
+	return g_ptr_array_find_with_equal_func(person->contacts, needle,
+	                                        purple_person_matches_find_func,
+	                                        NULL);
 }

@@ -355,6 +355,22 @@ const char *purple_contact_info_get_name_for_display(PurpleContactInfo *info);
  */
 int purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b);
 
+/**
+ * purple_contact_info_matches:
+ * @info: The instance.
+ * @needle: (nullable): The string to match.
+ *
+ * This will determine if the alias, display name, or username matches @needle.
+ *
+ * If @needle is %NULL or empty string, %TRUE will be returned.
+ *
+ * Returns: %TRUE if @needle matches any of the above properties, otherwise
+ *          %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_contact_info_matches(PurpleContactInfo *info, const char *needle);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONTACT_INFO_H */

@@ -315,6 +315,82 @@ test_purple_contact_info_compare_name__name(void) {
 }
 
 /******************************************************************************
+ * Matches
+ *****************************************************************************/
+static void
+test_purple_contact_info_matches_accepts_null(void) {
+	PurpleContactInfo *info = purple_contact_info_new(NULL);
+
+	g_assert_true(purple_contact_info_matches(info, NULL));
+
+	g_clear_object(&info);
+}
+
+static void
+test_purple_contact_info_matches_empty_string(void) {
+	PurpleContactInfo *info = purple_contact_info_new(NULL);
+
+	g_assert_true(purple_contact_info_matches(info, ""));
+
+	g_clear_object(&info);
+}
+
+static void
+test_purple_contact_info_matches_id(void) {
+	PurpleContactInfo *info = purple_contact_info_new("this is an id");
+
+	g_assert_true(purple_contact_info_matches(info, "an"));
+
+	g_clear_object(&info);
+}
+
+static void
+test_purple_contact_info_matches_username(void) {
+	PurpleContactInfo *info = purple_contact_info_new(NULL);
+
+	purple_contact_info_set_username(info, "username");
+
+	g_assert_true(purple_contact_info_matches(info, "name"));
+
+	g_clear_object(&info);
+}
+
+static void
+test_purple_contact_info_matches_alias(void) {
+	PurpleContactInfo *info = purple_contact_info_new(NULL);
+
+	purple_contact_info_set_alias(info, "alias");
+
+	g_assert_true(purple_contact_info_matches(info, "lia"));
+
+	g_clear_object(&info);
+}
+
+static void
+test_purple_contact_info_matches_display_name(void) {
+	PurpleContactInfo *info = purple_contact_info_new(NULL);
+
+	purple_contact_info_set_display_name(info, "display name");
+
+	g_assert_true(purple_contact_info_matches(info, "play"));
+
+	g_clear_object(&info);
+}
+
+static void
+test_purple_contact_info_matches_none(void) {
+	PurpleContactInfo *info = purple_contact_info_new("id");
+
+	purple_contact_info_set_username(info, "username");
+	purple_contact_info_set_alias(info, "alias");
+	purple_contact_info_set_display_name(info, "display name");
+
+	g_assert_false(purple_contact_info_matches(info, "nothing"));
+
+	g_clear_object(&info);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -351,6 +427,21 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_contact_info_compare_no_person__person);
 	g_test_add_func("/contact-info/compare/name__name",
 	                test_purple_contact_info_compare_name__name);
+
+	g_test_add_func("/contact-info/matches/accepts_null",
+	                test_purple_contact_info_matches_accepts_null);
+	g_test_add_func("/contact-info/matches/emptry_string",
+	                test_purple_contact_info_matches_empty_string);
+	g_test_add_func("/contact-info/matches/id",
+	                test_purple_contact_info_matches_id);
+	g_test_add_func("/contact-info/matches/username",
+	                test_purple_contact_info_matches_username);
+	g_test_add_func("/contact-info/matches/alias",
+	                test_purple_contact_info_matches_alias);
+	g_test_add_func("/contact-info/matches/display_name",
+	                test_purple_contact_info_matches_display_name);
+	g_test_add_func("/contact-info/matches/none",
+	                test_purple_contact_info_matches_none);
 
 	return g_test_run();
 }

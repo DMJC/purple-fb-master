@@ -220,6 +220,23 @@ PurpleContactInfo *purple_person_get_priority_contact_info(PurplePerson *person)
  */
 gboolean purple_person_has_contacts(PurplePerson *person);
 
+/**
+ * purple_person_matches:
+ * @person: The instance.
+ * @needle: (nullable): The string to match on.
+ *
+ * Checks if the alias matches @needle. This also checks @needle against
+ * [method@Purple.ContactInfo.matches] for each [class@Purple.ContactInfo] that
+ * @person is tracking.
+ *
+ * If @needle is %NULL or empty string, %TRUE will be returned.
+ *
+ * Returns: %TRUE if @person matches @needle in any way.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_person_matches(PurplePerson *person, const char *needle);
+
 G_END_DECLS
 
 #endif /* PURPLE_PERSON_H */
