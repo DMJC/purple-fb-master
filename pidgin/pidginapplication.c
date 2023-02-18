@@ -839,9 +839,6 @@ pidgin_application_startup(GApplication *application) {
 	/* load plugins we had when we quit */
 	purple_plugins_load_saved(PIDGIN_PREFS_ROOT "/plugins/loaded");
 
-	/* gk 20201008: this needs to be moved to the buddy list initialization. */
-	pidgin_blist_setup_sort_methods();
-
 	gtk_window_set_default_icon_name("pidgin");
 
 	g_free(opt_config_dir_arg);

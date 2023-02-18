@@ -73,12 +73,13 @@ HINSTANCE winpidgin_dll_hinstance(void) {
 static LRESULT CALLBACK message_window_handler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 	if (msg == PIDGIN_WM_FOCUS_REQUEST) {
-		PidginBuddyList *blist;
-		purple_debug_info("winpidgin", "Got external Buddy List focus request.");
-		blist = pidgin_blist_get_default_gtk_blist();
-		if (blist != NULL && blist->window != NULL) {
-			gtk_window_present(GTK_WINDOW(blist->window));
-		}
+		GtkWidget *widget = NULL;
+
+		purple_debug_info("winpidgin", "Got external focus request.");
+
+		widget = pidgin_display_window_get_default();
+		gtk_window_present(GTK_WINDOW(widget));
+
 		return TRUE;
 	} else if (msg == PIDGIN_WM_PROTOCOL_HANDLE) {
 		char *proto_msg = (char *) lparam;

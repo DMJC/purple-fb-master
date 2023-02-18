@@ -1379,7 +1379,8 @@ setup_chat_topic(PidginConversation *gtkconv, GtkWidget *vbox)
 
 static gboolean
 pidgin_conv_userlist_query_tooltip(GtkWidget *widget, int x, int y,
-                                   gboolean keyboard_mode, GtkTooltip *tooltip,
+                                   gboolean keyboard_mode,
+                                   G_GNUC_UNUSED GtkTooltip *tooltip,
                                    gpointer userdata)
 {
 	PidginConversation *gtkconv = userdata;
@@ -1389,9 +1390,6 @@ pidgin_conv_userlist_query_tooltip(GtkWidget *widget, int x, int y,
 	GtkTreePath *path = NULL;
 	GtkTreeModel *model = NULL;
 	GtkTreeIter iter;
-	PurpleBlistNode *node = NULL;
-	PurpleProtocol *protocol = NULL;
-	char *who = NULL;
 
 	conv = gtkconv->active_conv;
 	account = purple_conversation_get_account(conv);
@@ -1422,20 +1420,6 @@ pidgin_conv_userlist_query_tooltip(GtkWidget *widget, int x, int y,
 		{
 			gtk_tree_path_free(path);
 			return FALSE;
-		}
-	}
-
-	gtk_tree_model_get(model, &iter, CHAT_USERS_NAME_COLUMN, &who, -1);
-
-	protocol = purple_connection_get_protocol(connection);
-	node = (PurpleBlistNode*)purple_blist_find_buddy(account, who);
-	g_free(who);
-
-	if (node && protocol && (purple_protocol_get_options(protocol) & OPT_PROTO_UNIQUE_CHATNAME)) {
-		if (pidgin_blist_query_tooltip_for_node(node, tooltip)) {
-			gtk_tree_view_set_tooltip_row(GTK_TREE_VIEW(widget), tooltip, path);
-			gtk_tree_path_free(path);
-			return TRUE;
 		}
 	}
 
@@ -2084,8 +2068,6 @@ pidgin_conv_update_fields(PurpleConversation *conv, PidginConvFields fields)
 	{
 		char *title;
 		PurpleAccount *account = purple_conversation_get_account(conv);
-		PurpleBuddy *buddy = NULL;
-		char *markup = NULL;
 
 		if ((account == NULL) ||
 			!purple_account_is_connected(account) ||
@@ -2094,43 +2076,6 @@ pidgin_conv_update_fields(PurpleConversation *conv, PidginConvFields fields)
 			title = g_strdup_printf("(%s)", purple_conversation_get_title(conv));
 		else
 			title = g_strdup(purple_conversation_get_title(conv));
-
-		if (PURPLE_IS_IM_CONVERSATION(conv)) {
-			buddy = purple_blist_find_buddy(account, purple_conversation_get_name(conv));
-			if (buddy) {
-				markup = pidgin_blist_get_name_markup(buddy, FALSE, FALSE);
-			} else {
-				markup = title;
-			}
-		} else if (PURPLE_IS_CHAT_CONVERSATION(conv)) {
-			const char *topic = gtkconv->topic_text
-				? gtk_editable_get_text(GTK_EDITABLE(gtkconv->topic_text))
-				: NULL;
-			const char *title = purple_conversation_get_title(conv);
-			const char *name = purple_conversation_get_name(conv);
-
-			char *topic_esc, *unaliased, *unaliased_esc, *title_esc;
-
-			topic_esc = topic ? g_markup_escape_text(topic, -1) : NULL;
-			unaliased = g_utf8_collate(title, name) ? g_strdup_printf("(%s)", name) : NULL;
-			unaliased_esc = unaliased ? g_markup_escape_text(unaliased, -1) : NULL;
-			title_esc = g_markup_escape_text(title, -1);
-
-			markup = g_strdup_printf("%s%s<span size='smaller'>%s</span>%s<span size='smaller'>%s</span>",
-						title_esc,
-						unaliased_esc ? " " : "",
-						unaliased_esc ? unaliased_esc : "",
-						topic_esc  && *topic_esc ? "\n" : "",
-						topic_esc ? topic_esc : "");
-
-			g_free(title_esc);
-			g_free(topic_esc);
-			g_free(unaliased);
-			g_free(unaliased_esc);
-		}
-
-		if (title != markup)
-			g_free(markup);
 
 		if (pidgin_display_window_conversation_is_selected(displaywin, conv)) {
 			const char* current_title = gtk_window_get_title(GTK_WINDOW(win));

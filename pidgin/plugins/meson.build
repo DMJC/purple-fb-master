@@ -1,6 +1,5 @@
 subdir('disco')
 subdir('gestures')
-subdir('gtkbuddynote')
 subdir('iconaway')
 subdir('notify')
 subdir('spellchk')
