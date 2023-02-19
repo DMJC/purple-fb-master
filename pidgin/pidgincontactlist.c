@@ -76,20 +76,17 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 	GdkTexture *texture = NULL;
 	GdkPixbuf *pixbuf = NULL;
 
+	/* When filtering we get called for rows that have been filtered out. We
+	 * also get called during finalization. I'm not sure why either of these
+	 * cases happen, but they do.
+	 */
+	if(!PURPLE_IS_PERSON(person)) {
+		return NULL;
+	}
+
 	pixbuf = purple_person_get_avatar_for_display(person);
 	if(GDK_IS_PIXBUF(pixbuf)) {
 		return gdk_texture_new_for_pixbuf(pixbuf);
-	}
-
-	/* When filtering we get called for rows that have been filtered out. I'm
-	 * not sure why, but this does appear to be the case.
-	 */
-	if(person == NULL) {
-		return NULL;
-	}
-
-	if(!PURPLE_IS_PERSON(person)) {
-		return NULL;
 	}
 
 	info = purple_person_get_priority_contact_info(person);
