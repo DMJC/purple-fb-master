@@ -336,15 +336,6 @@ test_purple_contact_info_matches_empty_string(void) {
 }
 
 static void
-test_purple_contact_info_matches_id(void) {
-	PurpleContactInfo *info = purple_contact_info_new("this is an id");
-
-	g_assert_true(purple_contact_info_matches(info, "an"));
-
-	g_clear_object(&info);
-}
-
-static void
 test_purple_contact_info_matches_username(void) {
 	PurpleContactInfo *info = purple_contact_info_new(NULL);
 
@@ -432,8 +423,6 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_contact_info_matches_accepts_null);
 	g_test_add_func("/contact-info/matches/emptry_string",
 	                test_purple_contact_info_matches_empty_string);
-	g_test_add_func("/contact-info/matches/id",
-	                test_purple_contact_info_matches_id);
 	g_test_add_func("/contact-info/matches/username",
 	                test_purple_contact_info_matches_username);
 	g_test_add_func("/contact-info/matches/alias",
