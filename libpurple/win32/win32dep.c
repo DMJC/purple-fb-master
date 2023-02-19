@@ -631,7 +631,10 @@ void wpurple_cleanup(void) {
 /* DLL initializer */
 /* suppress gcc "no previous prototype" warning */
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
+BOOL WINAPI
+DllMain(HINSTANCE hinstDLL, G_GNUC_UNUSED DWORD fdwReason,
+        G_GNUC_UNUSED LPVOID lpvReserved)
+{
 	libpurpledll_hInstance = hinstDLL;
 	return TRUE;
 }

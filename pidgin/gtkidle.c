@@ -50,7 +50,7 @@ struct _PidginIdle {
  *****************************************************************************/
 #ifdef _WIN32
 static time_t
-pidgin_idle_get_idle_time(PurpleIdleUi *ui) {
+pidgin_idle_get_idle_time(G_GNUC_UNUSED PurpleIdleUi *ui) {
 	return (GetTickCount() - winpidgin_get_lastactive()) / 1000;
 }
 #endif /* _WIN32 */
