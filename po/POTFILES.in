@@ -299,7 +299,6 @@ pidgin/plugins/disco/xmppdisco.c
 pidgin/plugins/gestures/gestures.c
 pidgin/plugins/gestures/stroke.c
 pidgin/plugins/gestures/stroke-draw.c
-pidgin/plugins/gtkbuddynote/gtkbuddynote.c
 pidgin/plugins/iconaway/iconaway.c
 pidgin/plugins/notify/notify.c
 pidgin/plugins/spellchk/spellchk.c
