@@ -461,13 +461,6 @@ conv_updated(PurpleConversation *conv, PurpleConversationUpdateType type)
 }
 
 static void
-clear_scrollback_cb(GntMenuItem *item, gpointer ggconv)
-{
-	FinchConv *ggc = ggconv;
-	purple_conversation_clear_message_history(ggc->active_conv);
-}
-
-static void
 send_file_cb(GntMenuItem *item, gpointer ggconv)
 {
 	FinchConv *ggc = ggconv;
@@ -579,10 +572,6 @@ gg_create_menu(FinchConv *ggc)
 
 	sub = gnt_menu_new(GNT_MENU_POPUP);
 	gnt_menuitem_set_submenu(item, GNT_MENU(sub));
-
-	item = gnt_menuitem_new(_("Clear Scrollback"));
-	gnt_menu_add_item(GNT_MENU(sub), item);
-	gnt_menuitem_set_callback(item, clear_scrollback_cb, ggc);
 
 	item = gnt_menuitem_check_new(_("Show Timestamps"));
 	gnt_menuitem_check_set_checked(GNT_MENU_ITEM_CHECK(item),
@@ -1166,15 +1155,6 @@ debug_command_cb(PurpleConversation *conv,
 
 /* Xerox */
 static PurpleCmdRet
-clear_command_cb(PurpleConversation *conv,
-                 const char *cmd, char **args, char **error, void *data)
-{
-	purple_conversation_clear_message_history(conv);
-	return PURPLE_CMD_RET_OK;
-}
-
-/* Xerox */
-static PurpleCmdRet
 help_command_cb(PurpleConversation *conv,
                  const char *cmd, char **args, char **error, void *data)
 {
@@ -1318,9 +1298,6 @@ finch_conversation_init(void)
 	purple_cmd_register("debug", "w", PURPLE_CMD_P_DEFAULT,
 	                  PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM, NULL,
 	                  debug_command_cb, _("debug &lt;option&gt;:  Send various debug information to the current conversation."), NULL);
-	purple_cmd_register("clear", "", PURPLE_CMD_P_DEFAULT,
-	                  PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM, NULL,
-	                  clear_command_cb, _("clear: Clears the conversation scrollback."), NULL);
 	purple_cmd_register("help", "w", PURPLE_CMD_P_DEFAULT,
 	                  PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM | PURPLE_CMD_FLAG_ALLOW_WRONG_ARGS, NULL,
 	                  help_command_cb, _("help &lt;command&gt;:  Help on a specific command."), NULL);

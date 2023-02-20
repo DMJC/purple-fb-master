@@ -48,7 +48,6 @@ typedef struct {
 	PurpleConversationUiOps *ui_ops;  /* UI-specific operations.           */
 
 	PurpleConnectionFlags features;   /* The supported features            */
-	GList *message_history; /* Message history, as a GList of PurpleMessages */
 } PurpleConversationPrivate;
 
 enum {
@@ -335,8 +334,6 @@ purple_conversation_finalize(GObject *object) {
 	purple_signal_emit(purple_conversations_get_handle(),
 	                   "deleting-conversation", conv);
 
-	purple_conversation_clear_message_history(conv);
-
 	if(ops != NULL && ops->destroy_conversation != NULL) {
 		ops->destroy_conversation(conv);
 	}
@@ -592,7 +589,6 @@ void
 _purple_conversation_write_common(PurpleConversation *conv,
                                   PurpleMessage *pmsg)
 {
-	PurpleConversationPrivate *priv = NULL;
 	PurpleProtocol *protocol = NULL;
 	PurpleConnection *gc = NULL;
 	PurpleAccount *account;
@@ -604,7 +600,6 @@ _purple_conversation_write_common(PurpleConversation *conv,
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 	g_return_if_fail(pmsg != NULL);
 
-	priv = purple_conversation_get_instance_private(conv);
 	ops = purple_conversation_get_ui_ops(conv);
 
 	account = purple_conversation_get_account(conv);
@@ -690,9 +685,6 @@ _purple_conversation_write_common(PurpleConversation *conv,
 			ops->write_conv(conv, pmsg);
 		}
 	}
-
-	g_object_ref(pmsg);
-	priv->message_history = g_list_prepend(priv->message_history, pmsg);
 
 	purple_signal_emit(purple_conversations_get_handle(),
 		(PURPLE_IS_IM_CONVERSATION(conv) ? "wrote-im-msg" : "wrote-chat-msg"),
@@ -841,31 +833,4 @@ purple_conversation_get_extended_menu(PurpleConversation *conv) {
 	                   "conversation-extended-menu", conv, &menu);
 
 	return menu;
-}
-
-void
-purple_conversation_clear_message_history(PurpleConversation *conv) {
-	PurpleConversationPrivate *priv = NULL;
-	GList *list;
-
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-
-	priv = purple_conversation_get_instance_private(conv);
-	list = priv->message_history;
-	g_list_free_full(list, g_object_unref);
-	priv->message_history = NULL;
-
-	purple_signal_emit(purple_conversations_get_handle(),
-	                   "cleared-message-history", conv);
-}
-
-GList *
-purple_conversation_get_message_history(PurpleConversation *conv) {
-	PurpleConversationPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
-
-	priv = purple_conversation_get_instance_private(conv);
-
-	return priv->message_history;
 }

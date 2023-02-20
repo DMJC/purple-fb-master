@@ -314,27 +314,6 @@ gboolean purple_conversation_has_focus(PurpleConversation *conv);
 void purple_conversation_update(PurpleConversation *conv, PurpleConversationUpdateType type);
 
 /**
- * purple_conversation_get_message_history:
- * @conv:   The conversation
- *
- * Retrieve the message history of a conversation.
- *
- * Returns: (element-type PurpleMessage) (transfer none):
- *          A GList of PurpleMessage's. You must not modify the
- *          list or the data within. The list contains the newest message at
- *          the beginning, and the oldest message at the end.
- */
-GList *purple_conversation_get_message_history(PurpleConversation *conv);
-
-/**
- * purple_conversation_clear_message_history:
- * @conv:  The conversation
- *
- * Clear the message history of a conversation.
- */
-void purple_conversation_clear_message_history(PurpleConversation *conv);
-
-/**
  * purple_conversation_send_confirm:
  * @conv:    The conversation.
  * @message: The message to send.

@@ -129,37 +129,6 @@ debug_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
 }
 
 static PurpleCmdRet
-clear_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
-                 G_GNUC_UNUSED char **args, G_GNUC_UNUSED char **error,
-                 G_GNUC_UNUSED gpointer data)
-{
-	purple_conversation_clear_message_history(conv);
-	return PURPLE_CMD_RET_OK;
-}
-
-static PurpleCmdRet
-clearall_command_cb(G_GNUC_UNUSED PurpleConversation *conv,
-                    G_GNUC_UNUSED const char *cmd, G_GNUC_UNUSED char **args,
-                    G_GNUC_UNUSED char **error, G_GNUC_UNUSED gpointer data)
-{
-	PurpleConversationManager *manager;
-	GList *list;
-
-	manager = purple_conversation_manager_get_default();
-	list = purple_conversation_manager_get_all(manager);
-
-	while(list != NULL) {
-		PurpleConversation *conv = PURPLE_CONVERSATION(list->data);
-
-		purple_conversation_clear_message_history(conv);
-
-		list = g_list_delete_link(list, list);
-	}
-
-	return PURPLE_CMD_RET_OK;
-}
-
-static PurpleCmdRet
 help_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
                 char **args, G_GNUC_UNUSED char **error,
                 G_GNUC_UNUSED gpointer data)
@@ -214,12 +183,6 @@ pidgin_commands_init(void) {
 	purple_cmd_register("debug", "w", PURPLE_CMD_P_DEFAULT,
 	                  PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM, NULL,
 	                  debug_command_cb, _("debug &lt;option&gt;:  Send various debug information to the current conversation."), NULL);
-	purple_cmd_register("clear", "", PURPLE_CMD_P_DEFAULT,
-	                  PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM, NULL,
-	                  clear_command_cb, _("clear: Clears the conversation scrollback."), NULL);
-	purple_cmd_register("clearall", "", PURPLE_CMD_P_DEFAULT,
-	                  PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM, NULL,
-	                  clearall_command_cb, _("clearall: Clears all conversation scrollbacks."), NULL);
 	purple_cmd_register("help", "w", PURPLE_CMD_P_DEFAULT,
 	                  PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM | PURPLE_CMD_FLAG_ALLOW_WRONG_ARGS, NULL,
 	                  help_command_cb, _("help &lt;command&gt;:  Help on a specific command."), NULL);
