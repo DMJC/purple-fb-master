@@ -62,8 +62,6 @@ purple_account_presence_update_idle(PurplePresence *presence,
 	PurpleConnection *gc = NULL;
 	PurpleProtocol *protocol = NULL;
 	gboolean idle = purple_presence_is_idle(presence);
-	time_t idle_time = purple_presence_get_idle_time(presence);
-	time_t current_time = time(NULL);
 
 	gc = purple_account_get_connection(account_presence->account);
 
@@ -72,7 +70,24 @@ purple_account_presence_update_idle(PurplePresence *presence,
 	}
 
 	if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-		purple_protocol_server_set_idle(PURPLE_PROTOCOL_SERVER(protocol), gc, (idle ? (current_time - idle_time) : 0));
+		gint idle_time = 0;
+
+		if(idle) {
+			GDateTime *idle_since = purple_presence_get_idle_time(presence);
+
+			if(idle_since != NULL) {
+				GDateTime *now = g_date_time_new_now_local();
+
+				idle_time = g_date_time_difference(now, idle_since);
+				idle_time = idle_time / G_TIME_SPAN_SECOND;
+
+				g_date_time_unref(now);
+				g_date_time_unref(idle_since);
+			}
+		}
+
+		purple_protocol_server_set_idle(PURPLE_PROTOCOL_SERVER(protocol), gc,
+		                                idle_time);
 	}
 }
 

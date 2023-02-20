@@ -47,6 +47,7 @@ purple_protocol_got_user_idle(PurpleAccount *account, const char *name,
 {
 	PurplePresence *presence;
 	GSList *list;
+	GDateTime *idle_date_time = NULL;
 
 	g_return_if_fail(account != NULL);
 	g_return_if_fail(name    != NULL);
@@ -55,11 +56,13 @@ purple_protocol_got_user_idle(PurpleAccount *account, const char *name,
 	if ((list = purple_blist_find_buddies(account, name)) == NULL)
 		return;
 
+	idle_date_time = g_date_time_new_from_unix_local(idle_time);
 	while (list) {
 		presence = purple_buddy_get_presence(list->data);
 		list = g_slist_delete_link(list, list);
-		purple_presence_set_idle(presence, idle, idle_time);
+		purple_presence_set_idle(presence, idle, idle_date_time);
 	}
+	g_date_time_unref(idle_date_time);
 }
 
 void

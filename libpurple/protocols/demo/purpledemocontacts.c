@@ -63,15 +63,20 @@ purple_demo_protocol_load_status(PurpleAccount *account,
 		}
 
 		if(json_object_has_member(status_object, "idle")) {
-			gint idle_seconds = 0;
-			time_t now;
+			PurplePresence *presence = NULL;
+			GDateTime *now = NULL;
+			GDateTime *idle_since = NULL;
+			gint idle_minutes = 0;
 
-			idle_seconds = json_object_get_int_member(status_object, "idle");
-			now = time(NULL);
+			idle_minutes = json_object_get_int_member(status_object, "idle");
+			now = g_date_time_new_now_local();
+			idle_since = g_date_time_add_minutes(now, -1 * idle_minutes);
 
-			purple_protocol_got_user_idle(account,
-			                              purple_buddy_get_name(buddy), TRUE,
-			                              now - idle_seconds);
+			presence = purple_buddy_get_presence(buddy);
+			purple_presence_set_idle(presence, TRUE, idle_since);
+
+			g_date_time_unref(idle_since);
+			g_date_time_unref(now);
 		}
 	}
 }

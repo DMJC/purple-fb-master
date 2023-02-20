@@ -116,13 +116,13 @@ void purple_presence_switch_status(PurplePresence *presence, const gchar *status
  * purple_presence_set_idle:
  * @presence: The #PurplePresence instance.
  * @idle: The idle state.
- * @idle_time: The idle time, if @idle is %TRUE.  This is the time at which the
- *             user became idle, in seconds since the epoch.  If this value is
- *             unknown then 0 should be used.
+ * @idle_time: (transfer none): The idle time, if @idle is %TRUE.  This is the
+ *             time at which the user became idle. If this value is unknown
+ *             then %NULL should be used.
  *
  * Sets the idle state and time of @presence.
  */
-void purple_presence_set_idle(PurplePresence *presence, gboolean idle, time_t idle_time);
+void purple_presence_set_idle(PurplePresence *presence, gboolean idle, GDateTime *idle_time);
 
 /**
  * purple_presence_set_login_time:
@@ -229,11 +229,12 @@ gboolean purple_presence_is_idle(PurplePresence *presence);
  * purple_presence_get_idle_time:
  * @presence: The #PurplePresence instance.
  *
- * Gets the idle time of @presence.
+ * Gets the idle time of @presence. This can be %NULL if the protocol doesn't
+ * support idle times or if the presence isn't in an idle state.
  *
- * Returns: The idle time of @presence.
+ * Returns: (nullable): The idle time of @presence or %NULL.
  */
-time_t purple_presence_get_idle_time(PurplePresence *presence);
+GDateTime *purple_presence_get_idle_time(PurplePresence *presence);
 
 /**
  * purple_presence_get_login_time:

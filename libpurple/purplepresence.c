@@ -24,14 +24,13 @@
 
 #include "purplepresence.h"
 
-#include "internal.h"
 #include "debug.h"
 #include "purpleenums.h"
 #include "purpleprivate.h"
 
 typedef struct {
 	gboolean idle;
-	time_t idle_time;
+	GDateTime *idle_time;
 	GDateTime *login_time;
 
 	GHashTable *status_table;
@@ -86,16 +85,11 @@ purple_presence_set_property(GObject *obj, guint param_id, const GValue *value,
 
 	switch (param_id) {
 		case PROP_IDLE:
-			purple_presence_set_idle(presence, g_value_get_boolean(value), 0);
+			purple_presence_set_idle(presence, g_value_get_boolean(value),
+			                         NULL);
 			break;
 		case PROP_IDLE_TIME:
-#if SIZEOF_TIME_T == 4
-			purple_presence_set_idle(presence, TRUE, g_value_get_int(value));
-#elif SIZEOF_TIME_T == 8
-			purple_presence_set_idle(presence, TRUE, g_value_get_int64(value));
-#else
-#error Unknown size of time_t
-#endif
+			purple_presence_set_idle(presence, TRUE, g_value_get_boxed(value));
 			break;
 		case PROP_LOGIN_TIME:
 			purple_presence_set_login_time(presence, g_value_get_boxed(value));
@@ -121,13 +115,7 @@ purple_presence_get_property(GObject *obj, guint param_id, GValue *value,
 			g_value_set_boolean(value, purple_presence_is_idle(presence));
 			break;
 		case PROP_IDLE_TIME:
-#if SIZEOF_TIME_T == 4
-			g_value_set_int(value, purple_presence_get_idle_time(presence));
-#elif SIZEOF_TIME_T == 8
-			g_value_set_int64(value, purple_presence_get_idle_time(presence));
-#else
-#error Unknown size of time_t
-#endif
+			g_value_set_boxed(value, purple_presence_get_idle_time(presence));
 			break;
 		case PROP_LOGIN_TIME:
 			g_value_set_boxed(value, purple_presence_get_login_time(presence));
@@ -166,6 +154,9 @@ purple_presence_finalize(GObject *obj) {
 	g_hash_table_destroy(priv->status_table);
 	g_clear_object(&priv->active_status);
 
+	g_clear_pointer(&priv->idle_time, g_date_time_unref);
+	g_clear_pointer(&priv->login_time, g_date_time_unref);
+
 	G_OBJECT_CLASS(purple_presence_parent_class)->finalize(obj);
 }
 
@@ -191,23 +182,10 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * The time when the presence went idle.
 	 */
-	properties[PROP_IDLE_TIME] =
-#if SIZEOF_TIME_T == 4
-		g_param_spec_int
-#elif SIZEOF_TIME_T == 8
-		g_param_spec_int64
-#else
-#error Unknown size of time_t
-#endif
-				("idle-time", "Idle time",
+	properties[PROP_IDLE_TIME] = g_param_spec_boxed(
+				"idle-time", "Idle time",
 				"The idle time of the presence",
-#if SIZEOF_TIME_T == 4
-				G_MININT, G_MAXINT, 0,
-#elif SIZEOF_TIME_T == 8
-				G_MININT64, G_MAXINT64, 0,
-#else
-#error Unknown size of time_t
-#endif
+				G_TYPE_DATE_TIME,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -306,7 +284,7 @@ purple_presence_switch_status(PurplePresence *presence, const gchar *status_id)
 
 void
 purple_presence_set_idle(PurplePresence *presence, gboolean idle,
-                         time_t idle_time)
+                         GDateTime *idle_time)
 {
 	PurplePresencePrivate *priv = NULL;
 	PurplePresenceClass *klass = NULL;
@@ -324,7 +302,11 @@ purple_presence_set_idle(PurplePresence *presence, gboolean idle,
 
 	old_idle = priv->idle;
 	priv->idle = idle;
-	priv->idle_time = (idle ? idle_time : 0);
+
+	g_clear_pointer(&priv->idle_time, g_date_time_unref);
+	if(idle && idle_time != NULL) {
+		priv->idle_time = g_date_time_ref(idle_time);
+	}
 
 	obj = G_OBJECT(presence);
 	g_object_freeze_notify(obj);
@@ -502,11 +484,11 @@ purple_presence_is_idle(PurplePresence *presence) {
 	return priv->idle;
 }
 
-time_t
+GDateTime *
 purple_presence_get_idle_time(PurplePresence *presence) {
 	PurplePresencePrivate *priv = NULL;
 
-	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), 0);
+	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), NULL);
 
 	priv = purple_presence_get_instance_private(presence);
 
@@ -526,8 +508,11 @@ purple_presence_get_login_time(PurplePresence *presence) {
 
 gint
 purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
-	time_t idle_time_1;
-	time_t idle_time_2;
+	GDateTime *idle1 = NULL;
+	GDateTime *idle2 = NULL;
+	GDateTime *now = NULL;
+	GTimeSpan diff1 = 0;
+	GTimeSpan diff2 = 0;
 
 	if(presence1 == presence2) {
 		return 0;
@@ -547,12 +532,25 @@ purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
 		return 1;
 	}
 
-	idle_time_1 = time(NULL) - purple_presence_get_idle_time(presence1);
-	idle_time_2 = time(NULL) - purple_presence_get_idle_time(presence2);
+	idle1 = purple_presence_get_idle_time(presence1);
+	idle2 = purple_presence_get_idle_time(presence2);
 
-	if(idle_time_1 > idle_time_2) {
+	if(idle1 == NULL && idle2 == NULL) {
+		return 0;
+	} else if(idle1 == NULL && idle2 != NULL) {
+		return -1;
+	} else if(idle1 != NULL && idle2 == NULL) {
 		return 1;
-	} else if (idle_time_1 < idle_time_2) {
+	}
+
+	now = g_date_time_new_now_local();
+	diff1 = g_date_time_difference(now, idle1);
+	diff2 = g_date_time_difference(now, idle2);
+	g_date_time_unref(now);
+
+	if(diff1 > diff2) {
+		return 1;
+	} else if (diff1 < diff2) {
 		return -1;
 	}
 

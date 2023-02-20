@@ -87,7 +87,8 @@ purple_buddy_presence_compare(PurpleBuddyPresence *buddy_presence1,
 {
 	PurplePresence *presence1 = PURPLE_PRESENCE(buddy_presence1);
 	PurplePresence *presence2 = PURPLE_PRESENCE(buddy_presence2);
-	time_t idle_time_1, idle_time_2;
+	GDateTime *now = NULL;
+	GTimeSpan idle1, idle2;
 	int score1 = 0, score2 = 0;
 	int idle_time_score = purple_prefs_get_int("/purple/status/scores/idle_time");
 
@@ -111,13 +112,18 @@ purple_buddy_presence_compare(PurpleBuddyPresence *buddy_presence1,
 	/* Compute the score of the second set of statuses. */
 	score2 = purple_buddy_presence_compute_score(buddy_presence2);
 
-	idle_time_1 = time(NULL) - purple_presence_get_idle_time(presence1);
-	idle_time_2 = time(NULL) - purple_presence_get_idle_time(presence2);
+	now = g_date_time_new_now_local();
+	idle1 = g_date_time_difference(now,
+	                               purple_presence_get_idle_time(presence1));
+	idle2 = g_date_time_difference(now,
+	                               purple_presence_get_idle_time(presence2));
+	g_date_time_unref(now);
 
-	if (idle_time_1 > idle_time_2)
+	if (idle1 > idle2) {
 		score1 += idle_time_score;
-	else if (idle_time_1 < idle_time_2)
+	} else if (idle1 < idle2) {
 		score2 += idle_time_score;
+	}
 
 	if (score1 < score2)
 		return 1;

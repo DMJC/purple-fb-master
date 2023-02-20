@@ -941,8 +941,14 @@ jabber_stream_new(PurpleAccount *account)
 		disconnected and the reconnects while being idle. I don't think it makes
 		sense to do this when registering a new account... */
 	presence = purple_account_get_presence(account);
-	if (purple_presence_is_idle(presence))
-		js->idle = purple_presence_get_idle_time(presence);
+	if (purple_presence_is_idle(presence)) {
+		GDateTime *idle = purple_presence_get_idle_time(presence);
+
+		js->idle = 0;
+		if(idle != NULL) {
+			js->idle = g_date_time_to_unix(idle);
+		}
+	}
 
 	return js;
 }

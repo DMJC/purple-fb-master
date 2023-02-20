@@ -117,8 +117,15 @@ void jabber_presence_fake_to_self(JabberStream *js, PurpleStatus *status)
 	} else {
 		jbr = jabber_buddy_track_resource(jb, js->user->resource, priority,
 				state, msg);
-		jbr->idle = purple_presence_is_idle(presence) ?
-				purple_presence_get_idle_time(presence) : 0;
+
+		jbr->idle = 0;
+		if(purple_presence_is_idle(presence)) {
+			GDateTime *idle_since = purple_presence_get_idle_time(presence);
+
+			if(idle_since != NULL) {
+				jbr->idle = g_date_time_to_unix(idle_since);
+			}
+		}
 	}
 
 	/*

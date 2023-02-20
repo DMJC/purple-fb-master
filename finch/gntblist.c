@@ -1581,9 +1581,18 @@ tooltip_for_buddy(PurpleBuddy *buddy, GString *str, gboolean full)
 	if (purple_prefs_get_bool("/finch/blist/idletime")) {
 		PurplePresence *pre = purple_buddy_get_presence(buddy);
 		if (purple_presence_is_idle(pre)) {
-			time_t idle = purple_presence_get_idle_time(pre);
-			if (idle > 0) {
-				char *st = purple_str_seconds_to_string(time(NULL) - idle);
+			GDateTime *idle = purple_presence_get_idle_time(pre);
+
+			if(idle != NULL) {
+				GDateTime *now = NULL;
+				GTimeSpan since = 0;
+				char *st = NULL;
+
+				now = g_date_time_new_now_local();
+				since = g_date_time_difference(now, idle);
+				g_date_time_unref(now);
+
+				st = purple_str_seconds_to_string(since / G_TIME_SPAN_SECOND);
 				purple_notify_user_info_add_pair_plaintext(user_info, _("Idle"), st);
 				g_free(st);
 			}

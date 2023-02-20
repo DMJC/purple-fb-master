@@ -61,6 +61,8 @@ set_account_idle(PurpleAccount *account, int time_idle)
 {
 	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	PurplePresence *presence;
+	GDateTime *idle_since = NULL;
+	GDateTime *now = NULL;
 
 	presence = purple_account_get_presence(account);
 
@@ -72,7 +74,14 @@ set_account_idle(PurpleAccount *account, int time_idle)
 	purple_debug_info("idle", "Setting %s idle %d seconds\n",
 	                  purple_contact_info_get_username(info),
 	                  time_idle);
-	purple_presence_set_idle(presence, TRUE, time(NULL) - time_idle);
+
+	now = g_date_time_new_now_local();
+	idle_since = g_date_time_add_seconds(now, -1 * time_idle);
+	g_date_time_unref(now);
+
+	purple_presence_set_idle(presence, TRUE, idle_since);
+	g_date_time_unref(idle_since);
+
 	idled_accts = g_list_prepend(idled_accts, account);
 }
 

@@ -60,7 +60,8 @@ set_idle_time(PurpleAccount *acct, int mins_idle)
 	PurpleConnection *gc = purple_account_get_connection(acct);
 	PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
 	PurplePresence *presence = purple_account_get_presence(acct);
-	time_t t;
+	GDateTime *idle_since = NULL;
+	gboolean idle = FALSE;
 
 	if (!gc)
 		return;
@@ -68,13 +69,17 @@ set_idle_time(PurpleAccount *acct, int mins_idle)
 	purple_debug_info("idle", "setting idle time for %s to %d\n",
 	                  purple_contact_info_get_username(info), mins_idle);
 
-	if (mins_idle) {
-		t = time(NULL) - (60 * mins_idle); /* subtract seconds idle from current time */
-	} else {
-		t = 0; /* time idle is irrelevant */
+	idle = mins_idle > 0;
+
+	if(idle) {
+		GDateTime *now = g_date_time_new_now_local();
+		idle_since = g_date_time_add_minutes(now, -1 * mins_idle);
+		g_date_time_unref(now);
 	}
 
-	purple_presence_set_idle(presence, mins_idle ? TRUE : FALSE, t);
+	purple_presence_set_idle(presence, idle, idle_since);
+
+	g_clear_pointer(&idle_since, g_date_time_unref);
 }
 
 static void
