@@ -52,29 +52,16 @@ struct _PidginConversation
 {
 	PurpleConversation *active_conv;
 	GList *convs;
-	GList *send_history;
 
 	GtkWidget *tab_cont;
 
-	PurpleMessageFlags last_flags;
 	GtkAdjustment *vadjustment;
 	GtkWidget *history;
 
 	GtkWidget *editor;
 	GtkWidget *entry;
 
-	guint32 typing_timer;
-	GtkWidget *count;
-	GtkWidget *list;
-	GtkWidget *topic_text;
-
-	time_t newday;
 	GtkWidget *infopane;
-
-	/* Used when attaching a PidginConversation to a PurpleConversation
-	 * with message history */
-	int attach_timer;
-	GList *attach_current;
 };
 
 G_BEGIN_DECLS
