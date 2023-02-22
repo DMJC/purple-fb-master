@@ -27,7 +27,9 @@
 #define ICONAWAY_PLUGIN_ID "gtk-iconaway"
 
 static void
-iconify_windows(PurpleAccount *account, PurpleStatus *old, PurpleStatus *newstatus)
+iconify_windows(G_GNUC_UNUSED PurpleAccount *account,
+                G_GNUC_UNUSED PurpleStatus *old,
+                PurpleStatus *newstatus)
 {
 	GApplication *application = NULL;
 	PurplePresence *presence;
@@ -51,7 +53,7 @@ iconify_windows(PurpleAccount *account, PurpleStatus *old, PurpleStatus *newstat
  */
 
 static GPluginPluginInfo *
-icon_away_query(GError **error)
+icon_away_query(G_GNUC_UNUSED GError **error)
 {
 	const gchar * const authors[] = {
 		"Eric Warmenhoven <eric@warmenhoven.org>",
@@ -75,7 +77,7 @@ icon_away_query(GError **error)
 }
 
 static gboolean
-icon_away_load(GPluginPlugin *plugin, GError **error)
+icon_away_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
 {
 	purple_signal_connect(purple_accounts_get_handle(), "account-status-changed",
 						plugin, G_CALLBACK(iconify_windows), NULL);
@@ -84,7 +86,9 @@ icon_away_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-icon_away_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+icon_away_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                 G_GNUC_UNUSED gboolean shutdown,
+                 G_GNUC_UNUSED GError **error)
 {
 	return TRUE;
 }

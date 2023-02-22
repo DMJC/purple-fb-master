@@ -186,7 +186,8 @@ xmppconsole_append_xmlnode(PidginXmppConsole *console, PurpleXmlNode *node,
 }
 
 static void
-purple_xmlnode_received_cb(PurpleConnection *gc, PurpleXmlNode **packet, gpointer null)
+purple_xmlnode_received_cb(PurpleConnection *gc, PurpleXmlNode **packet,
+                           G_GNUC_UNUSED gpointer data)
 {
 	GtkTextIter iter;
 
@@ -200,7 +201,8 @@ purple_xmlnode_received_cb(PurpleConnection *gc, PurpleXmlNode **packet, gpointe
 }
 
 static void
-purple_xmlnode_sent_cb(PurpleConnection *gc, char **packet, gpointer null)
+purple_xmlnode_sent_cb(PurpleConnection *gc, char **packet,
+                       G_GNUC_UNUSED gpointer data)
 {
 	GtkTextIter iter;
 	PurpleXmlNode *node;
@@ -344,7 +346,7 @@ load_text_and_set_caret(PidginXmppConsole *console, const gchar *pre_text,
 }
 
 static void
-iq_clicked_cb(GtkWidget *w, gpointer data)
+iq_clicked_cb(G_GNUC_UNUSED GtkWidget *w, gpointer data)
 {
 	PidginXmppConsole *console = data;
 	GtkStringObject *obj = NULL;
@@ -374,7 +376,7 @@ iq_clicked_cb(GtkWidget *w, gpointer data)
 }
 
 static void
-presence_clicked_cb(GtkWidget *w, gpointer data)
+presence_clicked_cb(G_GNUC_UNUSED GtkWidget *w, gpointer data)
 {
 	PidginXmppConsole *console = data;
 	GtkStringObject *obj = NULL;
@@ -435,7 +437,7 @@ presence_clicked_cb(GtkWidget *w, gpointer data)
 }
 
 static void
-message_clicked_cb(GtkWidget *w, gpointer data)
+message_clicked_cb(G_GNUC_UNUSED GtkWidget *w, gpointer data)
 {
 	PidginXmppConsole *console = data;
 	GtkStringObject *obj = NULL;
@@ -506,7 +508,7 @@ dropdown_changed_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
  * GObject Implementation
  *****************************************************************************/
 static void
-pidgin_xmpp_console_class_finalize(PidginXmppConsoleClass *klass) {
+pidgin_xmpp_console_class_finalize(G_GNUC_UNUSED PidginXmppConsoleClass *klass) {
 }
 
 static void
@@ -616,7 +618,7 @@ create_console(G_GNUC_UNUSED GSimpleAction *action,
 }
 
 static GPluginPluginInfo *
-xmpp_console_query(GError **error)
+xmpp_console_query(G_GNUC_UNUSED GError **error)
 {
 	GActionEntry entries[] = {
 		{
@@ -680,7 +682,9 @@ xmpp_console_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-xmpp_console_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+xmpp_console_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                    G_GNUC_UNUSED gboolean shutdown,
+                    G_GNUC_UNUSED GError **error)
 {
 	if (console) {
 		gtk_window_destroy(GTK_WINDOW(console));

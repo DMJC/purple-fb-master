@@ -200,14 +200,16 @@ unalert(PurpleConversation *conv)
 }
 
 static int
-unalert_cb(GtkWidget *widget, gpointer data, PurpleConversation *conv)
+unalert_cb(G_GNUC_UNUSED GtkWidget *widget, G_GNUC_UNUSED gpointer data,
+           PurpleConversation *conv)
 {
 	unalert(conv);
 	return 0;
 }
 
 static gboolean
-message_displayed_cb(PurpleConversation *conv, PurpleMessage *msg, gpointer _unused)
+message_displayed_cb(PurpleConversation *conv, PurpleMessage *msg,
+                     G_GNUC_UNUSED gpointer data)
 {
 	PurpleMessageFlags flags = purple_message_get_flags(msg);
 
@@ -222,7 +224,8 @@ message_displayed_cb(PurpleConversation *conv, PurpleMessage *msg, gpointer _unu
 }
 
 static void
-im_sent_im(PurpleAccount *account, PurpleMessage *msg, gpointer _unused)
+im_sent_im(PurpleAccount *account, PurpleMessage *msg,
+           G_GNUC_UNUSED gpointer data)
 {
 	PurpleConversation *im = NULL;
 	PurpleConversationManager *manager = NULL;
@@ -236,7 +239,7 @@ im_sent_im(PurpleAccount *account, PurpleMessage *msg, gpointer _unused)
 }
 
 static void
-chat_sent_im(PurpleAccount *account, PurpleMessage *msg, int id)
+chat_sent_im(PurpleAccount *account, G_GNUC_UNUSED PurpleMessage *msg, int id)
 {
 	PurpleConversation *chat = NULL;
 	PurpleConversationManager *manager = NULL;
@@ -264,8 +267,9 @@ deleting_conv(PurpleConversation *conv)
 }
 
 static void
-message_source_activated(MessagingMenuApp *app, const gchar *id,
-		gpointer user_data)
+message_source_activated(G_GNUC_UNUSED MessagingMenuApp *app,
+                         const gchar *id,
+                         G_GNUC_UNUSED gpointer user_data)
 {
 	gchar **sections = g_strsplit(id, ":", 0);
 	PurpleConversation *conv = NULL;
@@ -376,8 +380,9 @@ status_changed_cb(PurpleSavedStatus *saved_status)
 }
 
 static void
-messaging_menu_status_changed(MessagingMenuApp *mmapp,
-		MessagingMenuStatus mm_status, gpointer user_data)
+messaging_menu_status_changed(G_GNUC_UNUSED MessagingMenuApp *mmapp,
+                              MessagingMenuStatus mm_status,
+                              G_GNUC_UNUSED gpointer user_data)
 {
 	PurpleSavedStatus *saved_status;
 	PurpleStatusPrimitive primitive = PURPLE_STATUS_UNSET;
@@ -414,7 +419,7 @@ messaging_menu_status_changed(MessagingMenuApp *mmapp,
 }
 
 static void
-alert_config_cb(GtkWidget *widget, gpointer data)
+alert_config_cb(GtkWidget *widget, G_GNUC_UNUSED gpointer data)
 {
 	gboolean on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 	purple_prefs_set_bool("/plugins/gtk/unity/alert_chat_nick", on);
@@ -489,7 +494,7 @@ detach_signals(PurpleConversation *conv)
 }
 
 static GtkWidget *
-get_config_frame(PurplePlugin *plugin)
+get_config_frame(G_GNUC_UNUSED PurplePlugin *plugin)
 {
 	GtkWidget *ret = NULL, *frame = NULL;
 	GtkWidget *vbox = NULL, *toggle = NULL, *group = NULL;
@@ -572,7 +577,7 @@ get_config_frame(PurplePlugin *plugin)
 }
 
 static GPluginPluginInfo *
-unity_query(GError **error)
+unity_query(G_GNUC_UNUSED GError **error)
 {
 	const gchar * const authors[] = {
 		"Ankit Vani <a@nevitus.org>",
@@ -596,7 +601,7 @@ unity_query(GError **error)
 }
 
 static gboolean
-unity_load(GPluginPlugin *plugin, GError **error) {
+unity_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 	GList *convs = NULL;
 	PurpleConversationManager *manager = NULL;
 	PurpleSavedStatus *saved_status;
@@ -657,7 +662,10 @@ unity_load(GPluginPlugin *plugin, GError **error) {
 }
 
 static gboolean
-unity_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
+unity_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+             G_GNUC_UNUSED gboolean shutdown,
+             G_GNUC_UNUSED GError **error)
+{
 	GList *convs = NULL;
 	PurpleConversationManager *manager = NULL;
 

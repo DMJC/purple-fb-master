@@ -131,8 +131,8 @@ activate_register(G_GNUC_UNUSED GSimpleAction *action,
 	xmpp_disco_register_service(service);
 }
 
-static void discolist_cancel_cb(PidginDiscoList *pdl, const char *server)
-{
+static void
+discolist_cancel_cb(PidginDiscoList *pdl, G_GNUC_UNUSED const char *server) {
 	pdl->dialog->prompt_handle = NULL;
 
 	pidgin_disco_list_set_in_progress(pdl, FALSE);
@@ -311,8 +311,8 @@ selection_changed_cb(GtkTreeSelection *selection, PidginDiscoDialog *dialog)
 }
 
 static void
-row_expanded_cb(GtkTreeView *tree, GtkTreeIter *arg1, GtkTreePath *rg2,
-                gpointer user_data)
+row_expanded_cb(G_GNUC_UNUSED GtkTreeView *tree, GtkTreeIter *arg1,
+                G_GNUC_UNUSED GtkTreePath *rg2, gpointer user_data)
 {
 	PidginDiscoDialog *dialog = user_data;
 	XmppDiscoService *service;
@@ -326,10 +326,10 @@ row_expanded_cb(GtkTreeView *tree, GtkTreeIter *arg1, GtkTreePath *rg2,
 }
 
 static void
-row_activated_cb(GtkTreeView       *tree_view,
-                 GtkTreePath       *path,
-                 GtkTreeViewColumn *column,
-                 gpointer           user_data)
+row_activated_cb(G_GNUC_UNUSED GtkTreeView *tree_view,
+                 GtkTreePath *path,
+                 G_GNUC_UNUSED GtkTreeViewColumn *column,
+                 gpointer user_data)
 {
 	PidginDiscoDialog *dialog = user_data;
 	GtkTreeIter iter;
@@ -567,7 +567,7 @@ pidgin_disco_dialog_class_init(PidginDiscoDialogClass *klass)
 }
 
 static void
-pidgin_disco_dialog_class_finalize(PidginDiscoDialogClass *klass)
+pidgin_disco_dialog_class_finalize(G_GNUC_UNUSED PidginDiscoDialogClass *klass)
 {
 }
 

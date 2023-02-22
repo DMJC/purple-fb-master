@@ -93,7 +93,8 @@ generate_next_id(void)
 }
 
 static gboolean
-remove_iq_callbacks_by_pc(gpointer key, gpointer value, gpointer user_data)
+remove_iq_callbacks_by_pc(G_GNUC_UNUSED gpointer key, gpointer value,
+                          gpointer user_data)
 {
 	struct xmpp_iq_cb_data *cb_data = value;
 
@@ -281,8 +282,9 @@ disco_type_from_string(const gchar *str)
 }
 
 static void
-got_info_cb(PurpleConnection *pc, const char *type, const char *id,
-            const char *from, PurpleXmlNode *iq, gpointer data)
+got_info_cb(G_GNUC_UNUSED PurpleConnection *pc, const char *type,
+            G_GNUC_UNUSED const char *id, const char *from, PurpleXmlNode *iq,
+            gpointer data)
 {
 	struct item_data *item_data = data;
 	PidginDiscoList *list = item_data->list;
@@ -378,8 +380,9 @@ out:
 }
 
 static void
-got_items_cb(PurpleConnection *pc, const char *type, const char *id,
-             const char *from, PurpleXmlNode *iq, gpointer data)
+got_items_cb(PurpleConnection *pc, const char *type,
+             G_GNUC_UNUSED const char *id, G_GNUC_UNUSED const char *from,
+             PurpleXmlNode *iq, gpointer data)
 {
 	struct item_data *item_data = data;
 	PidginDiscoList *list = item_data->list;
@@ -454,8 +457,10 @@ out:
 }
 
 static void
-server_items_cb(PurpleConnection *pc, const char *type, const char *id,
-                const char *from, PurpleXmlNode *iq, gpointer data)
+server_items_cb(PurpleConnection *pc, const char *type,
+                G_GNUC_UNUSED const char *id,
+                G_GNUC_UNUSED const char *from, PurpleXmlNode *iq,
+                gpointer data)
 {
 	struct item_data *cb_data = data;
 	PidginDiscoList *list = cb_data->list;
@@ -498,7 +503,8 @@ server_items_cb(PurpleConnection *pc, const char *type, const char *id,
 }
 
 static void
-server_info_cb(PurpleConnection *pc, const char *type, const char *id,
+server_info_cb(PurpleConnection *pc, const char *type,
+               G_GNUC_UNUSED const char *id,
                const char *from, PurpleXmlNode *iq, gpointer data)
 {
 	struct item_data *cb_data = data;
@@ -628,7 +634,7 @@ create_dialog(G_GNUC_UNUSED GSimpleAction *action,
 }
 
 static void
-signed_off_cb(PurpleConnection *pc, gpointer unused)
+signed_off_cb(PurpleConnection *pc, G_GNUC_UNUSED gpointer data)
 {
 	/* Deal with any dialogs */
 	pidgin_disco_signed_off_cb(pc);
@@ -638,7 +644,7 @@ signed_off_cb(PurpleConnection *pc, gpointer unused)
 }
 
 static GPluginPluginInfo *
-xmpp_disco_query(GError **error)
+xmpp_disco_query(G_GNUC_UNUSED GError **error)
 {
 	GActionEntry entries[] = {
 		{
@@ -705,7 +711,8 @@ xmpp_disco_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-xmpp_disco_unload(GPluginPlugin *plugin, gboolean unload, GError **error)
+xmpp_disco_unload(GPluginPlugin *plugin, G_GNUC_UNUSED gboolean unload,
+                  G_GNUC_UNUSED GError **error)
 {
 	g_hash_table_destroy(iq_callbacks);
 	iq_callbacks = NULL;

@@ -339,7 +339,7 @@ new_conversation_cb(G_GNUC_UNUSED GtkApplication *application,
 	add_focus_controller_to_conv_win(GTK_WIDGET(window));
 }
 
-static void alpha_change(GtkWidget *w, gpointer data) {
+static void alpha_change(GtkWidget *w, G_GNUC_UNUSED gpointer data) {
 	GApplication *application = NULL;
 	GList *wins;
 	int imalpha = gtk_range_get_value(GTK_RANGE(w));
@@ -392,7 +392,7 @@ update_existing_convs(void) {
 }
 
 static GtkWidget *
-get_config_frame(PurplePlugin *plugin) {
+get_config_frame(G_GNUC_UNUSED PurplePlugin *plugin) {
 	GtkWidget *ret;
 	GtkWidget *imtransbox;
 	GtkWidget *hbox;
@@ -470,7 +470,7 @@ get_config_frame(PurplePlugin *plugin) {
 }
 
 static GPluginPluginInfo *
-transparency_query(GError **error) {
+transparency_query(G_GNUC_UNUSED GError **error) {
 	const gchar * const authors[] = {
 		"Pidgin Developers <devel@pidgin.im>",
 		NULL
@@ -492,7 +492,9 @@ transparency_query(GError **error) {
 }
 
 static gboolean
-transparency_load(GPluginPlugin *plugin, GError **error) {
+transparency_load(G_GNUC_UNUSED GPluginPlugin *plugin,
+                  G_GNUC_UNUSED GError **error)
+{
 	GApplication *application = NULL;
 
 	application = g_application_get_default();
@@ -507,7 +509,10 @@ transparency_load(GPluginPlugin *plugin, GError **error) {
 }
 
 static gboolean
-transparency_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
+transparency_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                    G_GNUC_UNUSED gboolean shutdown,
+                    G_GNUC_UNUSED GError **error)
+{
 	purple_debug_info(WINTRANS_PLUGIN_ID, "Unloading transparency plugin\n");
 
 	remove_convs_wintrans(TRUE);
