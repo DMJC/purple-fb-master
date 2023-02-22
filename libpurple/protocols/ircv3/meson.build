@@ -31,8 +31,7 @@ if DYNAMIC_IRCV3
 		c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-IRCv3"'],
 		dependencies : [libpurple_dep, glib, gio, gsasl, ws2_32],
 		install : true,
-		install_dir : PURPLE_PLUGINDIR,
-		override_options : ['c_std=c99', 'warning_level=2'])
+		install_dir : PURPLE_PLUGINDIR)
 
 	devenv.append('PURPLE_PLUGIN_PATH', meson.current_build_dir())
 

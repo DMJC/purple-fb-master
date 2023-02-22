@@ -322,8 +322,7 @@ libpurple = library('purple3',
                     dependencies : # static_link_libs
                         [dnsapi, ws2_32, glib, gio, gplugin_dep, libsoup,
                          libxml, gdk_pixbuf, gstreamer, gstreamer_app, json,
-                         sqlite3, math],
-                    override_options : ['c_std=c99', 'warning_level=2'])
+                         sqlite3, math])
 
 install_headers(purple_coreheaders,
                 subdir : purple_include_base)

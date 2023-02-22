@@ -32,8 +32,7 @@ if DYNAMIC_FACEBOOK
 	    c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-Facebook"'],
 	    dependencies : [json, libpurple_dep, libsoup, glib],
 	    install : true,
-	    install_dir : PURPLE_PLUGINDIR,
-	    override_options : ['c_std=c99', 'warning_level=2'])
+	    install_dir : PURPLE_PLUGINDIR)
 
 	# Used to produce docs.
 	facebook_inc = include_directories('.')

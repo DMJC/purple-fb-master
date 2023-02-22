@@ -102,8 +102,7 @@ if DYNAMIC_JABBER
 	    link_args : jabber_link_args,
 	    dependencies : [gstreamer, idn, libxml, sasl, libpurple_dep, libsoup, glib, gio, math, ws2_32],
 	    install : true,
-	    install_dir : PURPLE_PLUGINDIR,
-	    override_options : ['c_std=c99', 'warning_level=2'])
+	    install_dir : PURPLE_PLUGINDIR)
 
 	devenv.append('PURPLE_PLUGIN_PATH', meson.current_build_dir())
 
