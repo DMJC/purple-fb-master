@@ -45,13 +45,6 @@ G_DECLARE_FINAL_TYPE(PidginPrefsWindow, pidgin_prefs_window, PIDGIN,
 void pidgin_prefs_init(void);
 
 /**
- * pidgin_prefs_show:
- *
- * Shows the preferences dialog.
- */
-void pidgin_prefs_show(void);
-
-/**
  * pidgin_prefs_checkbox:
  * @title: The text to be displayed as the checkbox label
  * @key:   The key of the purple bool pref that will be represented by the checkbox

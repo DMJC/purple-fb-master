@@ -1171,6 +1171,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_pounces_manager_show
 		* pidgin_prefs_labeled_entry
 		* pidgin_prefs_labeled_password
+		* pidgin_prefs_show
 		* pidgin_privacy_dialog_hide
 		* pidgin_privacy_dialog_show
 		* pidgin_privacy_init

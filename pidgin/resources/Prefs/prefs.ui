@@ -28,7 +28,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
   <template class="PidginPrefsWindow" parent="GtkDialog">
     <property name="title" translatable="1">Preferences</property>
-    <signal name="destroy" handler="delete_prefs" swapped="no"/>
     <child internal-child="content_area">
       <object class="GtkBox">
         <property name="vexpand">1</property>

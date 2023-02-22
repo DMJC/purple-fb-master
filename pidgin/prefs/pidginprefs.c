@@ -42,9 +42,6 @@ struct _PidginPrefsWindow {
 	GtkDialog parent;
 };
 
-/* Main dialog */
-static PidginPrefsWindow *prefs = NULL;
-
 G_DEFINE_TYPE(PidginPrefsWindow, pidgin_prefs_window, GTK_TYPE_DIALOG);
 
 /******************************************************************************
@@ -475,19 +472,6 @@ pidgin_prefs_bind_expander_row(const gchar *key, GtkWidget *widget)
 }
 
 static void
-delete_prefs(G_GNUC_UNUSED GtkWidget *asdf, G_GNUC_UNUSED void *gdsa)
-{
-	/* Close any request dialogs */
-	purple_request_close_with_handle(prefs);
-	purple_notify_close_with_handle(prefs);
-
-	/* Unregister callbacks. */
-	purple_prefs_disconnect_by_handle(prefs);
-
-	prefs = NULL;
-}
-
-static void
 vv_test_switch_page_cb(GtkStack *stack, G_GNUC_UNUSED GParamSpec *pspec,
                        gpointer data)
 {
@@ -503,9 +487,19 @@ vv_test_switch_page_cb(GtkStack *stack, G_GNUC_UNUSED GParamSpec *pspec,
  * GObject Implementation
  *****************************************************************************/
 static void
+pidgin_prefs_window_finalize(GObject *obj) {
+	purple_prefs_disconnect_by_handle(obj);
+
+	G_OBJECT_CLASS(pidgin_prefs_window_parent_class)->finalize(obj);
+}
+
+static void
 pidgin_prefs_window_class_init(PidginPrefsWindowClass *klass)
 {
+	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+
+	obj_class->finalize = pidgin_prefs_window_finalize;
 
 	gtk_widget_class_set_template_from_resource(
 		widget_class,
@@ -513,7 +507,6 @@ pidgin_prefs_window_class_init(PidginPrefsWindowClass *klass)
 	);
 
 	/* Main window */
-	gtk_widget_class_bind_template_callback(widget_class, delete_prefs);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        vv_test_switch_page_cb);
 }
@@ -527,17 +520,6 @@ pidgin_prefs_window_init(PidginPrefsWindow *win)
 /******************************************************************************
  * API
  *****************************************************************************/
-void
-pidgin_prefs_show(void)
-{
-	if (prefs == NULL) {
-		prefs = PIDGIN_PREFS_WINDOW(g_object_new(
-					pidgin_prefs_window_get_type(), NULL));
-	}
-
-	gtk_window_present(GTK_WINDOW(prefs));
-}
-
 void
 pidgin_prefs_init(void)
 {

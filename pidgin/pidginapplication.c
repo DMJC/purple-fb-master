@@ -479,9 +479,19 @@ pidgin_application_plugins(G_GNUC_UNUSED GSimpleAction *simple,
 static void
 pidgin_application_preferences(G_GNUC_UNUSED GSimpleAction *simple,
                                G_GNUC_UNUSED GVariant *parameter,
-                               G_GNUC_UNUSED gpointer data)
+                               gpointer data)
 {
-	pidgin_prefs_show();
+	PidginApplication *application = data;
+	static GtkWidget *preferences = NULL;
+
+	if(!GTK_IS_WIDGET(preferences)) {
+		preferences = g_object_new(PIDGIN_TYPE_PREFS_WINDOW, NULL);
+		g_object_add_weak_pointer(G_OBJECT(preferences), (gpointer)&preferences);
+	}
+
+	pidgin_application_present_transient_window(application,
+	                                            GTK_WINDOW(preferences));
+
 }
 
 static void
