@@ -39,7 +39,9 @@
 
 
 static void
-buddy_typing_cb(PurpleAccount *acct, const char *name, void *data) {
+buddy_typing_cb(PurpleAccount *acct, const char *name,
+                G_GNUC_UNUSED gpointer data)
+{
 	GSettings *settings = NULL;
 	PurpleConversation *im;
 	PurpleConversationManager *manager;
@@ -92,7 +94,7 @@ buddy_typing_cb(PurpleAccount *acct, const char *name, void *data) {
 
 
 static GPluginPluginInfo *
-psychic_query(GError **error) {
+psychic_query(G_GNUC_UNUSED GError **error) {
   const gchar * const authors[] = PLUGIN_AUTHORS;
 
   return purple_plugin_info_new(
@@ -112,7 +114,7 @@ psychic_query(GError **error) {
 
 
 static gboolean
-psychic_load(GPluginPlugin *plugin, GError **error) {
+psychic_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 
   void *convs_handle;
 
@@ -126,8 +128,10 @@ psychic_load(GPluginPlugin *plugin, GError **error) {
 
 
 static gboolean
-psychic_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
-
+psychic_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+               G_GNUC_UNUSED gboolean shutdown,
+               G_GNUC_UNUSED GError **error)
+{
   return TRUE;
 }
 

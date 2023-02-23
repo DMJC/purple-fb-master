@@ -83,7 +83,7 @@ set_idle_time(PurpleAccount *acct, int mins_idle)
 }
 
 static void
-idle_action_ok(void *ignored, PurpleRequestFields *fields)
+idle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 {
 	PurpleAccount *acct = purple_request_fields_get_account(fields, "acct");
 	PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
@@ -100,7 +100,7 @@ idle_action_ok(void *ignored, PurpleRequestFields *fields)
 }
 
 static void
-idle_all_action_ok(void *ignored, PurpleRequestFields *fields)
+idle_all_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 {
 	PurpleAccountManager *manager = NULL;
 	PurpleAccount *acct = NULL;
@@ -129,7 +129,7 @@ idle_all_action_ok(void *ignored, PurpleRequestFields *fields)
 }
 
 static void
-unidle_action_ok(void *ignored, PurpleRequestFields *fields)
+unidle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 {
 	PurpleAccount *acct = purple_request_fields_get_account(fields, "acct");
 
@@ -140,7 +140,7 @@ unidle_action_ok(void *ignored, PurpleRequestFields *fields)
 }
 
 static void
-signing_off_cb(PurpleConnection *gc, void *data)
+signing_off_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account;
 
@@ -263,7 +263,7 @@ purple_idle_unset_all_accounts_idle_time(G_GNUC_UNUSED GSimpleAction *action,
  * GPlugin Exports
  *****************************************************************************/
 static GPluginPluginInfo *
-idle_query(GError **error)
+idle_query(G_GNUC_UNUSED GError **error)
 {
 	GSimpleActionGroup *group = NULL;
 	GActionEntry entries[] = {
@@ -319,7 +319,7 @@ idle_query(GError **error)
 }
 
 static gboolean
-idle_load(GPluginPlugin *plugin, GError **error)
+idle_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
 {
 	purple_signal_connect(purple_connections_get_handle(), "signing-off",
 						plugin,
@@ -329,7 +329,9 @@ idle_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-idle_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+idle_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+            G_GNUC_UNUSED gboolean shutdown,
+            G_GNUC_UNUSED GError **error)
 {
 	purple_idle_unset_all_accounts_idle_time(NULL, NULL, NULL);
 

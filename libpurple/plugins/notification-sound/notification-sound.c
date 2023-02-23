@@ -126,23 +126,23 @@ purple_notification_sound_play(const gchar *event_id) {
  * Callbacks
  *****************************************************************************/
 static void
-purple_notification_sound_im_message_received(PurpleAccount *account,
-                                              const gchar *sender,
-                                              const gchar *message,
-                                              PurpleConversation *conv,
-                                              PurpleMessageFlags flags,
-                                              gpointer data)
+purple_notification_sound_im_message_received(G_GNUC_UNUSED PurpleAccount *account,
+                                              G_GNUC_UNUSED const gchar *sender,
+                                              G_GNUC_UNUSED const gchar *message,
+                                              G_GNUC_UNUSED PurpleConversation *conv,
+                                              G_GNUC_UNUSED PurpleMessageFlags flags,
+                                              G_GNUC_UNUSED gpointer data)
 {
 	purple_notification_sound_play("message-new-instant");
 }
 
 static void
-purple_notification_sound_chat_message_received(PurpleAccount *account,
-                                                gchar *sender,
-                                                gchar *message,
-                                                PurpleConversation *conv,
-                                                PurpleMessageFlags flags,
-                                                gpointer data)
+purple_notification_sound_chat_message_received(G_GNUC_UNUSED PurpleAccount *account,
+                                                G_GNUC_UNUSED gchar *sender,
+                                                G_GNUC_UNUSED gchar *message,
+                                                G_GNUC_UNUSED PurpleConversation *conv,
+                                                G_GNUC_UNUSED PurpleMessageFlags flags,
+                                                G_GNUC_UNUSED gpointer data)
 {
 	purple_notification_sound_play("message-new-instant");
 }

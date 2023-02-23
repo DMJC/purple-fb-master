@@ -24,7 +24,8 @@
 #include <purple.h>
 
 static void
-dont_do_it_cb(PurpleBlistNode *node, const char *note)
+dont_do_it_cb(G_GNUC_UNUSED PurpleBlistNode *node,
+              G_GNUC_UNUSED const char *note)
 {
 }
 
@@ -35,7 +36,7 @@ do_it_cb(PurpleBlistNode *node, const char *note)
 }
 
 static void
-buddynote_edit_cb(PurpleBlistNode *node, gpointer data)
+buddynote_edit_cb(PurpleBlistNode *node, G_GNUC_UNUSED gpointer data)
 {
 	const char *note;
 
@@ -64,7 +65,7 @@ buddynote_extended_menu_cb(PurpleBlistNode *node, GList **m)
 }
 
 static GPluginPluginInfo *
-buddy_note_query(GError **error)
+buddy_note_query(G_GNUC_UNUSED GError **error)
 {
 	const gchar * const authors[] = {
 		"Stu Tomlinson <stu@nosnilmot.com>",
@@ -87,7 +88,7 @@ buddy_note_query(GError **error)
 }
 
 static gboolean
-buddy_note_load(GPluginPlugin *plugin, GError **error)
+buddy_note_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
 {
 
 	purple_signal_connect(purple_blist_get_handle(), "blist-node-extended-menu",
@@ -97,7 +98,9 @@ buddy_note_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-buddy_note_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+buddy_note_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                  G_GNUC_UNUSED gboolean shutdown,
+                  G_GNUC_UNUSED GError **error)
 {
 	return TRUE;
 }

@@ -396,7 +396,7 @@ purple_kwallet_read_password_async(PurpleCredentialProvider *provider,
 }
 
 static gchar *
-purple_kwallet_read_password_finish(PurpleCredentialProvider *provider,
+purple_kwallet_read_password_finish(G_GNUC_UNUSED PurpleCredentialProvider *provider,
                                     GAsyncResult *result, GError **error)
 {
 	return (gchar *)g_task_propagate_pointer(G_TASK(result), error);
@@ -428,7 +428,7 @@ purple_kwallet_write_password_async(PurpleCredentialProvider *provider,
 }
 
 static gboolean
-purple_kwallet_write_password_finish(PurpleCredentialProvider *provider,
+purple_kwallet_write_password_finish(G_GNUC_UNUSED PurpleCredentialProvider *provider,
                                      GAsyncResult *result, GError **error)
 {
 	return g_task_propagate_boolean(G_TASK(result), error);
@@ -459,7 +459,7 @@ purple_kwallet_clear_password_async(PurpleCredentialProvider *provider,
 }
 
 static gboolean
-purple_kwallet_clear_password_finish(PurpleCredentialProvider *provider,
+purple_kwallet_clear_password_finish(G_GNUC_UNUSED PurpleCredentialProvider *provider,
                                      GAsyncResult *result, GError **error)
 {
 	return g_task_propagate_boolean(G_TASK(result), error);
@@ -519,7 +519,7 @@ purple_kwallet_provider_class_init(PurpleKWalletProviderClass *klass) {
 }
 
 static void
-purple_kwallet_provider_class_finalize(PurpleKWalletProviderClass *klass) {
+purple_kwallet_provider_class_finalize(G_GNUC_UNUSED PurpleKWalletProviderClass *klass) {
 }
 
 /******************************************************************************

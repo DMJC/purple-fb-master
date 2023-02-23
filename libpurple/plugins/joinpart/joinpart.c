@@ -122,22 +122,25 @@ static gboolean should_hide_notice(PurpleConversation *conv, const char *name,
 	return TRUE;
 }
 
-static gboolean chat_user_leaving_cb(PurpleConversation *conv, const char *name,
-                               const char *reason, GHashTable *users)
+static gboolean
+chat_user_leaving_cb(PurpleConversation *conv, const char *name,
+                     G_GNUC_UNUSED const char *reason, GHashTable *users)
 {
 	return should_hide_notice(conv, name, users);
 }
 
-static gboolean chat_user_joining_cb(PurpleConversation *conv, const char *name,
-                                      PurpleChatUserFlags flags,
-                                      GHashTable *users)
+static gboolean
+chat_user_joining_cb(PurpleConversation *conv, const char *name,
+                     G_GNUC_UNUSED PurpleChatUserFlags flags,
+                     GHashTable *users)
 {
 	return should_hide_notice(conv, name, users);
 }
 
-static void received_chat_msg_cb(PurpleAccount *account, char *sender,
-                                 char *message, PurpleConversation *conv,
-                                 PurpleMessageFlags flags, GHashTable *users)
+static void
+received_chat_msg_cb(G_GNUC_UNUSED PurpleAccount *account, char *sender,
+                     G_GNUC_UNUSED char *message, PurpleConversation *conv,
+                     G_GNUC_UNUSED PurpleMessageFlags flags, GHashTable *users)
 {
 	struct joinpart_key key;
 	time_t *last_said;
@@ -190,7 +193,7 @@ static gboolean clean_users_hash(GHashTable *users)
 }
 
 static GPluginPluginInfo *
-join_part_query(GError **error)
+join_part_query(G_GNUC_UNUSED GError **error)
 {
 	const gchar * const authors[] = {
 		"Richard Laager <rlaager@pidgin.im>",
@@ -215,7 +218,7 @@ join_part_query(GError **error)
 }
 
 static gboolean
-join_part_load(GPluginPlugin *plugin, GError **error)
+join_part_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
 {
 	void *conv_handle;
 	GHashTable *users;
@@ -244,7 +247,9 @@ join_part_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-join_part_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+join_part_unload(GPluginPlugin *plugin,
+                 G_GNUC_UNUSED gboolean shutdown,
+                 G_GNUC_UNUSED GError **error)
 {
 	/* Destroy the hash table. The core plugin code will
 	 * disconnect the signals, and since Purple is single-threaded,

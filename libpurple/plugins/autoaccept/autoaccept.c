@@ -96,7 +96,7 @@ auto_accept_complete_cb(PurpleXfer *xfer, G_GNUC_UNUSED GParamSpec *pspec,
 }
 
 static void
-file_recv_request_cb(PurpleXfer *xfer, gpointer handle)
+file_recv_request_cb(PurpleXfer *xfer, G_GNUC_UNUSED gpointer data)
 {
 	GSettings *settings = NULL;
 	PurpleAccount *account;
@@ -252,7 +252,7 @@ context_menu(PurpleBlistNode *node, GList **menu, gpointer plugin)
 }
 
 static GPluginPluginInfo *
-auto_accept_query(GError **error)
+auto_accept_query(G_GNUC_UNUSED GError **error)
 {
 	const gchar * const authors[] = PLUGIN_AUTHORS;
 
@@ -272,7 +272,7 @@ auto_accept_query(GError **error)
 }
 
 static gboolean
-auto_accept_load(GPluginPlugin *plugin, GError **error)
+auto_accept_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
 {
 	GSettings *settings = NULL;
 	gchar *dirname;
@@ -306,7 +306,9 @@ auto_accept_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-auto_accept_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+auto_accept_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                   G_GNUC_UNUSED gboolean shutdown,
+                   G_GNUC_UNUSED GError **error)
 {
 	return TRUE;
 }

@@ -61,7 +61,7 @@ write_status(PurpleBuddy *buddy, const char *message)
 
 static void
 buddy_status_changed_cb(PurpleBuddy *buddy, PurpleStatus *old_status,
-                        PurpleStatus *status, void *data)
+                        PurpleStatus *status, G_GNUC_UNUSED gpointer data)
 {
 	GSettings *settings = NULL;
 	gboolean available, old_available;
@@ -89,7 +89,7 @@ buddy_status_changed_cb(PurpleBuddy *buddy, PurpleStatus *old_status,
 
 static void
 buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolean idle,
-                      void *data)
+                      G_GNUC_UNUSED gpointer data)
 {
 	GSettings *settings = NULL;
 
@@ -106,7 +106,7 @@ buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolean idle,
 }
 
 static void
-buddy_signon_cb(PurpleBuddy *buddy, void *data)
+buddy_signon_cb(PurpleBuddy *buddy, G_GNUC_UNUSED gpointer data)
 {
 	GSettings *settings = NULL;
 
@@ -119,7 +119,7 @@ buddy_signon_cb(PurpleBuddy *buddy, void *data)
 }
 
 static void
-buddy_signoff_cb(PurpleBuddy *buddy, void *data)
+buddy_signoff_cb(PurpleBuddy *buddy, G_GNUC_UNUSED gpointer data)
 {
 	GSettings *settings = NULL;
 
@@ -132,7 +132,7 @@ buddy_signoff_cb(PurpleBuddy *buddy, void *data)
 }
 
 static GPluginPluginInfo *
-state_notify_query(GError **error)
+state_notify_query(G_GNUC_UNUSED GError **error)
 {
 	const gchar * const authors[] = {
 		"Christian Hammond <chipx86@gnupdate.org>",
@@ -157,7 +157,7 @@ state_notify_query(GError **error)
 }
 
 static gboolean
-state_notify_load(GPluginPlugin *plugin, GError **error)
+state_notify_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
 {
 	void *blist_handle = purple_blist_get_handle();
 
@@ -174,7 +174,9 @@ state_notify_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-state_notify_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+state_notify_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                    G_GNUC_UNUSED gboolean shutdown,
+                    G_GNUC_UNUSED GError **error)
 {
 	return TRUE;
 }

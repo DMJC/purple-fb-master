@@ -74,7 +74,7 @@ purple_toast_show_notification(const gchar *title,
 static GIcon *
 purple_toast_find_icon(PurpleAccount *account,
                        PurpleBuddy *buddy,
-                       const gchar *sender)
+                       G_GNUC_UNUSED const gchar *sender)
 {
 	GIcon *icon = NULL;
 
@@ -126,9 +126,9 @@ static void
 purple_toast_im_message_received(PurpleAccount *account,
                                  const gchar *sender,
                                  const gchar *message,
-                                 PurpleConversation *conv,
-                                 PurpleMessageFlags flags,
-                                 gpointer data)
+                                 G_GNUC_UNUSED PurpleConversation *conv,
+                                 G_GNUC_UNUSED PurpleMessageFlags flags,
+                                 G_GNUC_UNUSED gpointer data)
 {
 	PurpleBuddy *buddy = NULL;
 	GIcon *icon = NULL;
@@ -150,8 +150,8 @@ purple_toast_chat_message_received(PurpleAccount *account,
                                    gchar *sender,
                                    gchar *message,
                                    PurpleConversation *conv,
-                                   PurpleMessageFlags flags,
-                                   gpointer data)
+                                   G_GNUC_UNUSED PurpleMessageFlags flags,
+                                   G_GNUC_UNUSED gpointer data)
 {
 	PurpleBuddy *buddy = NULL;
 	GIcon *icon = NULL;

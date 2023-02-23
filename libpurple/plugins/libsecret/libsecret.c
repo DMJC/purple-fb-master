@@ -77,8 +77,8 @@ G_DEFINE_DYNAMIC_TYPE(PurpleLibSecret, purple_libsecret,
  * Callbacks
  *****************************************************************************/
 static void
-purple_libsecret_read_password_callback(GObject *obj, GAsyncResult *result,
-                                        gpointer data)
+purple_libsecret_read_password_callback(G_GNUC_UNUSED GObject *obj,
+                                        GAsyncResult *result, gpointer data)
 {
 	GTask *task = G_TASK(data);
 	GError *error = NULL;
@@ -96,8 +96,8 @@ purple_libsecret_read_password_callback(GObject *obj, GAsyncResult *result,
 }
 
 static void
-purple_libsecret_write_password_callback(GObject *obj, GAsyncResult *result,
-                                         gpointer data)
+purple_libsecret_write_password_callback(G_GNUC_UNUSED GObject *obj,
+                                         GAsyncResult *result, gpointer data)
 {
 	GTask *task = G_TASK(data);
 	GError *error = NULL;
@@ -115,8 +115,8 @@ purple_libsecret_write_password_callback(GObject *obj, GAsyncResult *result,
 }
 
 static void
-purple_libsecret_clear_password_callback(GObject *obj, GAsyncResult *result,
-                                         gpointer data)
+purple_libsecret_clear_password_callback(G_GNUC_UNUSED GObject *obj,
+                                         GAsyncResult *result, gpointer data)
 {
 	GTask *task = G_TASK(data);
 	GError *error = NULL;
@@ -238,7 +238,7 @@ purple_libsecret_clear_password_finish(PurpleCredentialProvider *provider,
  * GObject Implementation
  *****************************************************************************/
 static void
-purple_libsecret_init(PurpleLibSecret *libsecret) {
+purple_libsecret_init(G_GNUC_UNUSED PurpleLibSecret *libsecret) {
 }
 
 static void
@@ -261,7 +261,7 @@ purple_libsecret_class_init(PurpleLibSecretClass *klass) {
 }
 
 static void
-purple_libsecret_class_finalize(PurpleLibSecretClass *klass) {
+purple_libsecret_class_finalize(G_GNUC_UNUSED PurpleLibSecretClass *klass) {
 }
 
 /******************************************************************************
