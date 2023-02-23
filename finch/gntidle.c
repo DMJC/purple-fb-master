@@ -30,7 +30,7 @@ struct _FinchIdle {
  * PurpleIdleUi implementation
  *****************************************************************************/
 static time_t
-finch_idle_get_idle_time(PurpleIdleUi *ui) {
+finch_idle_get_idle_time(G_GNUC_UNUSED PurpleIdleUi *ui) {
 	return gnt_wm_get_idle_time();
 }
 
@@ -54,11 +54,11 @@ G_DEFINE_TYPE_EXTENDED(
 );
 
 static void
-finch_idle_init(FinchIdle *idle) {
+finch_idle_init(G_GNUC_UNUSED FinchIdle *idle) {
 }
 
 static void
-finch_idle_class_init(FinchIdleClass *klass) {
+finch_idle_class_init(G_GNUC_UNUSED FinchIdleClass *klass) {
 }
 
 /******************************************************************************

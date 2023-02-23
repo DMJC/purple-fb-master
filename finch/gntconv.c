@@ -64,7 +64,7 @@ find_chat_for_conversation(PurpleConversation *conv)
 }
 
 static void
-send_typing_notification(GntWidget *w, FinchConv *ggconv)
+send_typing_notification(G_GNUC_UNUSED GntWidget *w, FinchConv *ggconv)
 {
 	const char *text = gnt_entry_get_text(GNT_ENTRY(ggconv->entry));
 	gboolean empty = (!text || !*text || (*text == '/'));
@@ -95,7 +95,7 @@ send_typing_notification(GntWidget *w, FinchConv *ggconv)
 }
 
 static void
-entry_key_pressed(GntWidget *w, FinchConv *ggconv)
+entry_key_pressed(G_GNUC_UNUSED GntWidget *w, FinchConv *ggconv)
 {
 	const char *text = gnt_entry_get_text(GNT_ENTRY(ggconv->entry));
 	if (*text == '/' && *(text + 1) != '/')
@@ -164,7 +164,7 @@ entry_key_pressed(GntWidget *w, FinchConv *ggconv)
 }
 
 static void
-closing_window(GntWidget *window, FinchConv *ggconv)
+closing_window(G_GNUC_UNUSED GntWidget *window, FinchConv *ggconv)
 {
 	GList *list = ggconv->list;
 	ggconv->window = NULL;
@@ -176,7 +176,8 @@ closing_window(GntWidget *window, FinchConv *ggconv)
 }
 
 static void
-size_changed_cb(GntWidget *widget, int width, int height)
+size_changed_cb(GntWidget *widget, G_GNUC_UNUSED int width,
+                G_GNUC_UNUSED int height)
 {
 	int w, h;
 	gnt_widget_get_size(widget, &w, &h);
@@ -185,7 +186,7 @@ size_changed_cb(GntWidget *widget, int width, int height)
 }
 
 static void
-save_position_cb(GntWidget *w, int x, int y)
+save_position_cb(G_GNUC_UNUSED GntWidget *w, int x, int y)
 {
 	purple_prefs_set_int(PREF_ROOT "/position/x", x);
 	purple_prefs_set_int(PREF_ROOT "/position/y", y);
@@ -243,7 +244,8 @@ get_conversation_title(PurpleConversation *conv, PurpleAccount *account) {
 }
 
 static void
-update_buddy_typing(PurpleAccount *account, const char *who, gpointer null)
+update_buddy_typing(PurpleAccount *account, const char *who,
+                    G_GNUC_UNUSED gpointer data)
 {
 	FinchConv *ggc;
 	PurpleConversation *conv;
@@ -286,14 +288,14 @@ update_buddy_typing(PurpleAccount *account, const char *who, gpointer null)
 }
 
 static void
-chat_left_cb(PurpleConversation *conv, gpointer null)
+chat_left_cb(PurpleConversation *conv, G_GNUC_UNUSED gpointer data)
 {
 	purple_conversation_write_system_message(conv,
 		_("You have left this chat."), 0);
 }
 
 static void
-buddy_signed_on_off(PurpleBuddy *buddy, gpointer null)
+buddy_signed_on_off(PurpleBuddy *buddy, G_GNUC_UNUSED gpointer data)
 {
 	PurpleConversation *im = find_im_with_contact(purple_buddy_get_account(buddy), purple_buddy_get_name(buddy));
 	if (im == NULL)
@@ -302,7 +304,7 @@ buddy_signed_on_off(PurpleBuddy *buddy, gpointer null)
 }
 
 static void
-account_signed_on_off(PurpleConnection *gc, gpointer null)
+account_signed_on_off(PurpleConnection *gc, G_GNUC_UNUSED gpointer data)
 {
 	PurpleConversationManager *manager;
 	GList *list, *l;
@@ -418,7 +420,8 @@ finch_conv_get_handle(void)
 }
 
 static void
-cleared_message_history_cb(PurpleConversation *conv, gpointer data)
+cleared_message_history_cb(PurpleConversation *conv,
+                           G_GNUC_UNUSED gpointer data)
 {
 	FinchConv *ggc = FINCH_CONV(conv);
 	if (ggc)
@@ -461,7 +464,7 @@ conv_updated(PurpleConversation *conv, PurpleConversationUpdateType type)
 }
 
 static void
-send_file_cb(GntMenuItem *item, gpointer ggconv)
+send_file_cb(G_GNUC_UNUSED GntMenuItem *item, gpointer ggconv)
 {
 	FinchConv *ggc = ggconv;
 	purple_serv_send_file(purple_conversation_get_connection(ggc->active_conv),
@@ -469,7 +472,7 @@ send_file_cb(GntMenuItem *item, gpointer ggconv)
 }
 
 static void
-get_info_cb(GntMenuItem *item, gpointer ggconv)
+get_info_cb(G_GNUC_UNUSED GntMenuItem *item, gpointer ggconv)
 {
 	FinchConv *ggc = ggconv;
 	finch_retrieve_user_info(purple_conversation_get_connection(ggc->active_conv),
@@ -477,14 +480,15 @@ get_info_cb(GntMenuItem *item, gpointer ggconv)
 }
 
 static void
-toggle_timestamps_cb(GntMenuItem *item, gpointer ggconv)
+toggle_timestamps_cb(G_GNUC_UNUSED GntMenuItem *item,
+                     G_GNUC_UNUSED gpointer data)
 {
 	purple_prefs_set_bool(PREF_ROOT "/timestamps",
 		!purple_prefs_get_bool(PREF_ROOT "/timestamps"));
 }
 
 static void
-send_to_cb(GntMenuItem *m, gpointer n)
+send_to_cb(GntMenuItem *m, G_GNUC_UNUSED gpointer n)
 {
 	PurpleAccount *account = g_object_get_data(G_OBJECT(m), "purple_account");
 	gchar *buddy = g_object_get_data(G_OBJECT(m), "purple_buddy_name");
@@ -545,7 +549,7 @@ generate_send_to_menu(FinchConv *ggc)
 }
 
 static void
-invite_cb(GntMenuItem *item, gpointer ggconv)
+invite_cb(G_GNUC_UNUSED GntMenuItem *item, gpointer ggconv)
 {
 	FinchConv *fc = ggconv;
 	PurpleChatConversation *chat = PURPLE_CHAT_CONVERSATION(fc->active_conv);
@@ -553,7 +557,8 @@ invite_cb(GntMenuItem *item, gpointer ggconv)
 }
 
 static void
-plugin_changed_cb(GObject *plugin_manager, GPluginPlugin *p, gpointer data)
+plugin_changed_cb(G_GNUC_UNUSED GObject *plugin_manager,
+                  G_GNUC_UNUSED GPluginPlugin *p, gpointer data)
 {
 	gg_extended_menu(data);
 }
@@ -644,7 +649,7 @@ create_conv_from_userlist(GntWidget *widget, FinchConv *fc)
 }
 
 static void
-gained_focus_cb(GntWindow *window, FinchConv *fc)
+gained_focus_cb(G_GNUC_UNUSED GntWindow *window, FinchConv *fc)
 {
 	GList *iter;
 	for (iter = fc->list; iter; iter = iter->next) {
@@ -682,8 +687,10 @@ gg_setup_commands(FinchConv *fconv, gboolean remove_first)
 }
 
 static void
-cmd_added_cb(const char *cmd, PurpleCmdPriority prior, PurpleCmdFlag flags,
-		FinchConv *fconv)
+cmd_added_cb(G_GNUC_UNUSED const char *cmd,
+             G_GNUC_UNUSED PurpleCmdPriority prior,
+             G_GNUC_UNUSED PurpleCmdFlag flags,
+             FinchConv *fconv)
 {
 	gg_setup_commands(fconv, TRUE);
 }
@@ -1081,8 +1088,9 @@ finch_conv_get_ui_ops(void)
 
 /* Xerox */
 static PurpleCmdRet
-say_command_cb(PurpleConversation *conv,
-              const char *cmd, char **args, char **error, void *data)
+say_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+               char **args, G_GNUC_UNUSED char **error,
+               G_GNUC_UNUSED gpointer data)
 {
 	purple_conversation_send(conv, args[0]);
 
@@ -1091,8 +1099,9 @@ say_command_cb(PurpleConversation *conv,
 
 /* Xerox */
 static PurpleCmdRet
-me_command_cb(PurpleConversation *conv,
-              const char *cmd, char **args, char **error, void *data)
+me_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+              char **args, G_GNUC_UNUSED char **error,
+              G_GNUC_UNUSED gpointer data)
 {
 	char *tmp;
 
@@ -1105,8 +1114,9 @@ me_command_cb(PurpleConversation *conv,
 
 /* Xerox */
 static PurpleCmdRet
-debug_command_cb(PurpleConversation *conv,
-                 const char *cmd, char **args, char **error, void *data)
+debug_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+                 char **args, G_GNUC_UNUSED char **error,
+                 G_GNUC_UNUSED gpointer data)
 {
 	char *tmp, *markup;
 
@@ -1155,8 +1165,9 @@ debug_command_cb(PurpleConversation *conv,
 
 /* Xerox */
 static PurpleCmdRet
-help_command_cb(PurpleConversation *conv,
-                 const char *cmd, char **args, char **error, void *data)
+help_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+                char **args, G_GNUC_UNUSED char **error,
+                G_GNUC_UNUSED gpointer data)
 {
 	GList *l, *text;
 	GString *s;
@@ -1195,7 +1206,9 @@ help_command_cb(PurpleConversation *conv,
 }
 
 static PurpleCmdRet
-cmd_show_window(PurpleConversation *conv, const char *cmd, char **args, char **error, gpointer data)
+cmd_show_window(G_GNUC_UNUSED PurpleConversation *conv,
+                G_GNUC_UNUSED const char *cmd, G_GNUC_UNUSED char **args,
+                G_GNUC_UNUSED char **error, gpointer data)
 {
 	void (*callback)(void) = data;
 	callback();
@@ -1203,7 +1216,9 @@ cmd_show_window(PurpleConversation *conv, const char *cmd, char **args, char **e
 }
 
 static PurpleCmdRet
-cmd_message_color(PurpleConversation *conv, const char *cmd, char **args, char **error, gpointer data)
+cmd_message_color(G_GNUC_UNUSED PurpleConversation *conv,
+                  G_GNUC_UNUSED const char *cmd, char **args, char **error,
+                  G_GNUC_UNUSED gpointer data)
 {
 	int *msgclass  = NULL;
 	int fg, bg;
@@ -1244,7 +1259,9 @@ cmd_message_color(PurpleConversation *conv, const char *cmd, char **args, char *
 }
 
 static PurpleCmdRet
-users_command_cb(PurpleConversation *conv, const char *cmd, char **args, char **error, gpointer data)
+users_command_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+                 G_GNUC_UNUSED char **args, G_GNUC_UNUSED char **error,
+                 G_GNUC_UNUSED gpointer data)
 {
 	FinchConv *fc = FINCH_CONV(conv);
 	FinchConvChat *ch;

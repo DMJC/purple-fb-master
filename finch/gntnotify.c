@@ -36,8 +36,9 @@ notify_msg_window_destroy_cb(GntWidget *window, PurpleNotifyType type)
 
 static void *
 finch_notify_common(PurpleNotifyType ntype, PurpleNotifyMessageType msgtype,
-	const char *title, const char *primary, const char *secondary,
-	PurpleRequestCommonParameters *cpar)
+                    const char *title, const char *primary,
+                    const char *secondary,
+                    G_GNUC_UNUSED PurpleRequestCommonParameters *cpar)
 {
 	GntWidget *window, *button;
 	GntTextFormatFlags pf = 0, sf = 0;
@@ -166,7 +167,7 @@ userinfo_hash(PurpleAccount *account, const char *who)
 }
 
 static void
-remove_userinfo(GntWidget *widget, gpointer key)
+remove_userinfo(G_GNUC_UNUSED GntWidget *widget, gpointer key)
 {
 	g_hash_table_remove(userinfo, key);
 }
@@ -269,8 +270,8 @@ notify_button_activated(GntWidget *widget, PurpleNotifySearchButton *b)
 }
 
 static void
-finch_notify_sr_new_rows(PurpleConnection *gc,
-		PurpleNotifySearchResults *results, void *data)
+finch_notify_sr_new_rows(G_GNUC_UNUSED PurpleConnection *gc,
+                         PurpleNotifySearchResults *results, gpointer data)
 {
 	GntWindow *window = GNT_WINDOW(data);
 	GntTree *tree = GNT_TREE(g_object_get_data(G_OBJECT(window), "tree-widget"));
@@ -289,7 +290,7 @@ finch_notify_sr_new_rows(PurpleConnection *gc,
 }
 
 static void
-notify_sr_destroy_cb(GntWidget *window, void *data)
+notify_sr_destroy_cb(GntWidget *window, G_GNUC_UNUSED gpointer data)
 {
 	purple_notify_close(PURPLE_NOTIFY_SEARCHRESULTS, window);
 }

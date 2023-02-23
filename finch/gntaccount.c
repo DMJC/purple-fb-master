@@ -527,7 +527,10 @@ update_user_options(AccountEditDialog *dialog)
 }
 
 static void
-protocol_changed_cb(GntWidget *combo, PurpleProtocol *old, PurpleProtocol *new, AccountEditDialog *dialog)
+protocol_changed_cb(G_GNUC_UNUSED GntWidget *combo,
+                    G_GNUC_UNUSED PurpleProtocol *old,
+                    G_GNUC_UNUSED PurpleProtocol *new,
+                    AccountEditDialog *dialog)
 {
 	update_user_splits(dialog);
 	add_account_options(dialog);
@@ -664,13 +667,13 @@ edit_account(PurpleAccount *account)
 }
 
 static void
-add_account_cb(GntWidget *widget, gpointer null)
+add_account_cb(G_GNUC_UNUSED GntWidget *widget, G_GNUC_UNUSED gpointer data)
 {
 	edit_account(NULL);
 }
 
 static void
-modify_account_cb(GntWidget *widget, GntTree *tree)
+modify_account_cb(G_GNUC_UNUSED GntWidget *widget, GntTree *tree)
 {
 	PurpleAccount *account = gnt_tree_get_selection_data(tree);
 	if (!account)
@@ -700,7 +703,7 @@ really_delete_account(PurpleAccount *account)
 }
 
 static void
-delete_account_cb(GntWidget *widget, GntTree *tree)
+delete_account_cb(G_GNUC_UNUSED GntWidget *widget, GntTree *tree)
 {
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *info = NULL;
@@ -724,7 +727,7 @@ delete_account_cb(GntWidget *widget, GntTree *tree)
 }
 
 static void
-account_toggled(GntWidget *widget, void *key, gpointer null)
+account_toggled(GntWidget *widget, void *key, G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account = key;
 	gboolean enabled = gnt_tree_get_choice(GNT_TREE(widget), key);
@@ -737,7 +740,8 @@ account_toggled(GntWidget *widget, void *key, gpointer null)
 }
 
 static gboolean
-account_list_key_pressed_cb(GntWidget *widget, const char *text, gpointer null)
+account_list_key_pressed_cb(GntWidget *widget, const char *text,
+                            G_GNUC_UNUSED gpointer data)
 {
 	GntTree *tree = GNT_TREE(widget);
 	PurpleAccountManager *manager = NULL;
@@ -788,7 +792,8 @@ account_list_key_pressed_cb(GntWidget *widget, const char *text, gpointer null)
 }
 
 static void
-reset_accounts_win(GntWidget *widget, gpointer null)
+reset_accounts_win(G_GNUC_UNUSED GntWidget *widget,
+                   G_GNUC_UNUSED gpointer data)
 {
 	accounts.window = NULL;
 	accounts.tree = NULL;

@@ -45,7 +45,8 @@ struct _FinchDebugUi
 };
 
 static gboolean
-handle_fprintf_stderr_cb(GIOChannel *source, GIOCondition cond, gpointer null)
+handle_fprintf_stderr_cb(GIOChannel *source, G_GNUC_UNUSED GIOCondition cond,
+                         G_GNUC_UNUSED gpointer data)
 {
 	gssize size;
 	char message[1024];
@@ -98,13 +99,13 @@ static struct
 } debug;
 
 static void
-reset_debug_win(GntWidget *w, gpointer null)
+reset_debug_win(G_GNUC_UNUSED GntWidget *w, G_GNUC_UNUSED gpointer data)
 {
 	debug.window = debug.tview = debug.search = NULL;
 }
 
 static void
-clear_debug_win(GntWidget *w, GntTextView *tv)
+clear_debug_win(G_GNUC_UNUSED GntWidget *w, GntTextView *tv)
 {
 	gnt_text_view_clear(tv);
 }
@@ -116,7 +117,7 @@ print_stderr(const char *string)
 }
 
 static void
-toggle_pause(GntWidget *w, gpointer n)
+toggle_pause(G_GNUC_UNUSED GntWidget *w, G_GNUC_UNUSED gpointer n)
 {
 	debug.paused = !debug.paused;
 }
@@ -203,7 +204,8 @@ finch_debug_g_log_handler(GLogLevelFlags log_level, const GLogField *fields,
 }
 
 static void
-size_changed_cb(GntWidget *widget, int oldw, int oldh)
+size_changed_cb(GntWidget *widget, G_GNUC_UNUSED int oldw,
+                G_GNUC_UNUSED int oldh)
 {
 	int w, h;
 	gnt_widget_get_size(widget, &w, &h);
@@ -219,7 +221,7 @@ for_real(gpointer entry)
 }
 
 static void
-update_filter_string(GntEntry *entry, gpointer null)
+update_filter_string(GntEntry *entry, G_GNUC_UNUSED gpointer data)
 {
 	int id = g_timeout_add_seconds(1, for_real, entry);
 	g_object_set_data_full(G_OBJECT(entry), "update-filter", GINT_TO_POINTER(id),
@@ -227,7 +229,8 @@ update_filter_string(GntEntry *entry, gpointer null)
 }
 
 static void
-file_save(GntFileSel *fs, const char *path, const char *file, GntTextView *tv)
+file_save(GntFileSel *fs, const char *path, G_GNUC_UNUSED const char *file,
+          GntTextView *tv)
 {
 	FILE *fp;
 	GDateTime *date = NULL;
@@ -251,7 +254,7 @@ file_save(GntFileSel *fs, const char *path, const char *file, GntTextView *tv)
 }
 
 static void
-save_debug_win(GntWidget *w, GntTextView *tv)
+save_debug_win(G_GNUC_UNUSED GntWidget *w, GntTextView *tv)
 {
 	GntWidget *window = gnt_file_sel_new();
 	GntFileSel *sel = GNT_FILE_SEL(window);

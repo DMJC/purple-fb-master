@@ -73,7 +73,7 @@ setup_default_callback(GntWidget *window, gpointer default_cb, gpointer data)
 }
 
 static void
-action_performed(GntWidget *button, gpointer data)
+action_performed(G_GNUC_UNUSED GntWidget *button, gpointer data)
 {
 	g_signal_handlers_disconnect_matched(data, G_SIGNAL_MATCH_FUNC,
 			0, 0, NULL,
@@ -139,12 +139,13 @@ notify_input_cb(GntWidget *button, GntWidget *entry)
 
 static void *
 finch_request_input(const char *title, const char *primary,
-		const char *secondary, const char *default_value,
-		gboolean multiline, gboolean masked, gchar *hint,
-		const char *ok_text, GCallback ok_cb,
-		const char *cancel_text, GCallback cancel_cb,
-		PurpleRequestCommonParameters *cpar,
-		void *user_data)
+                    const char *secondary, const char *default_value,
+                    G_GNUC_UNUSED gboolean multiline, gboolean masked,
+                    G_GNUC_UNUSED gchar *hint, const char *ok_text,
+                    GCallback ok_cb, const char *cancel_text,
+                    GCallback cancel_cb,
+                    G_GNUC_UNUSED  PurpleRequestCommonParameters *cpar,
+                    void *user_data)
 {
 	GntWidget *window, *box, *entry;
 
@@ -195,11 +196,11 @@ request_choice_cb(GntWidget *button, GntComboBox *combo)
 
 static void *
 finch_request_choice(const char *title, const char *primary,
-		const char *secondary, gpointer default_value,
-		const char *ok_text, GCallback ok_cb,
-		const char *cancel_text, GCallback cancel_cb,
-		PurpleRequestCommonParameters *cpar,
-		void *user_data, va_list choices)
+                     const char *secondary, gpointer default_value,
+                     const char *ok_text, GCallback ok_cb,
+                     const char *cancel_text, GCallback cancel_cb,
+                     G_GNUC_UNUSED PurpleRequestCommonParameters *cpar,
+                     void *user_data, va_list choices)
 {
 	GntWidget *window, *combo, *box;
 	const char *text;
@@ -241,10 +242,9 @@ request_action_cb(GntWidget *button, GntWidget *window)
 
 static void*
 finch_request_action(const char *title, const char *primary,
-		const char *secondary, int default_value,
-		PurpleRequestCommonParameters *cpar,
-		void *user_data, size_t actioncount,
-		va_list actions)
+                     const char *secondary, int default_value,
+                     G_GNUC_UNUSED PurpleRequestCommonParameters *cpar,
+                     void *user_data, size_t actioncount, va_list actions)
 {
 	GntWidget *window, *box, *button, *focus = NULL;
 	gsize i;
@@ -391,8 +391,9 @@ request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
 }
 
 static void
-update_selected_account(GntEntry *username, const char *start, const char *end,
-		GntComboBox *accountlist)
+update_selected_account(GntEntry *username, G_GNUC_UNUSED const char *start,
+                        G_GNUC_UNUSED const char *end,
+                        GntComboBox *accountlist)
 {
 	GList *accounts =
 		gnt_tree_get_rows(GNT_TREE(gnt_combo_box_get_dropdown(accountlist)));
@@ -727,7 +728,7 @@ finch_request_fields(const char *title, const char *primary,
 }
 
 static void
-file_cancel_cb(GntWidget *wid, gpointer fq)
+file_cancel_cb(G_GNUC_UNUSED GntWidget *wid, gpointer fq)
 {
 	FinchFileRequest *data = fq;
 	if (data->dialog == NULL) {
@@ -743,7 +744,8 @@ file_cancel_cb(GntWidget *wid, gpointer fq)
 }
 
 static void
-file_ok_cb(GntWidget *widget, const char *path, const char *file, gpointer fq)
+file_ok_cb(G_GNUC_UNUSED GntWidget *widget, const char *path, const char *file,
+           gpointer fq)
 {
 	FinchFileRequest *data = fq;
 	char *dir = g_path_get_dirname(path);
@@ -797,8 +799,9 @@ finch_file_request_window(const char *title, const char *path,
 
 static void *
 finch_request_file(const char *title, const char *filename, gboolean savedialog,
-	GCallback ok_cb, GCallback cancel_cb,
-	PurpleRequestCommonParameters *cpar, void *user_data)
+                   GCallback ok_cb, GCallback cancel_cb,
+                   G_GNUC_UNUSED PurpleRequestCommonParameters *cpar,
+                   void *user_data)
 {
 	FinchFileRequest *data;
 	const char *path;
@@ -816,8 +819,9 @@ finch_request_file(const char *title, const char *filename, gboolean savedialog,
 
 static void *
 finch_request_folder(const char *title, const char *dirname, GCallback ok_cb,
-	GCallback cancel_cb, PurpleRequestCommonParameters *cpar,
-	void *user_data)
+                     GCallback cancel_cb,
+                     G_GNUC_UNUSED PurpleRequestCommonParameters *cpar,
+                     gpointer user_data)
 {
 	FinchFileRequest *data;
 
@@ -856,7 +860,9 @@ finch_request_uninit(void)
 {
 }
 
-void finch_request_save_in_prefs(gpointer data, PurpleRequestFields *allfields)
+void
+finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
+                            PurpleRequestFields *allfields)
 {
 	GList *list;
 	for (list = purple_request_fields_get_groups(allfields); list; list = list->next) {

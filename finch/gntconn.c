@@ -83,8 +83,9 @@ do_signon(gpointer data)
 }
 
 static void
-finch_connection_report_disconnect(PurpleConnection *gc, PurpleConnectionError reason,
-		const char *text)
+finch_connection_report_disconnect(PurpleConnection *gc,
+                                   PurpleConnectionError reason,
+                                   G_GNUC_UNUSED const char *text)
 {
 	FinchAutoRecon *info;
 	PurpleAccount *account = purple_connection_get_account(gc);

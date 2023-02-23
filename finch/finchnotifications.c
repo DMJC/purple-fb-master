@@ -293,7 +293,9 @@ finch_notifications_changed_cb(GListModel *model,
 }
 
 static void
-finch_notifications_open_cb(G_GNUC_UNUSED GntWidget *w, gpointer data) {
+finch_notifications_open_cb(G_GNUC_UNUSED GntWidget *w,
+                            G_GNUC_UNUSED gpointer data)
+{
 	PurpleNotification *notification = NULL;
 
 	notification = gnt_tree_get_selection_data(GNT_TREE(notifications.list));
@@ -305,7 +307,9 @@ finch_notifications_open_cb(G_GNUC_UNUSED GntWidget *w, gpointer data) {
 }
 
 static void
-finch_notifications_delete_cb(G_GNUC_UNUSED GntWidget *widget, gpointer data) {
+finch_notifications_delete_cb(G_GNUC_UNUSED GntWidget *widget,
+                              G_GNUC_UNUSED gpointer data)
+{
 	PurpleNotification *notification = NULL;
 
 	notification = gnt_tree_get_selection_data(GNT_TREE(notifications.list));

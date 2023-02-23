@@ -241,7 +241,9 @@ url_fetched(GObject *source, GAsyncResult *result, gpointer user_data) {
 	purple_debug_info("TinyURL", "Conversation no longer exists... :(\n");
 }
 
-static gboolean writing_msg(PurpleConversation *conv, PurpleMessage *msg, gpointer _unused)
+static gboolean
+writing_msg(PurpleConversation *conv, PurpleMessage *msg,
+            G_GNUC_UNUSED gpointer data)
 {
 	GString *t;
 	GList *iter, *urls, *next;
@@ -294,8 +296,9 @@ static gboolean writing_msg(PurpleConversation *conv, PurpleMessage *msg, gpoint
 	return FALSE;
 }
 
-static void wrote_msg(PurpleConversation *conv, PurpleMessage *pmsg,
-	gpointer _unused)
+static void
+wrote_msg(PurpleConversation *conv, PurpleMessage *pmsg,
+          G_GNUC_UNUSED gpointer _unused)
 {
 	GList *urls;
 
@@ -485,8 +488,7 @@ tinyurl_notify_uri(const char *uri)
 }
 
 static PurplePluginPrefFrame *
-get_plugin_pref_frame(PurplePlugin *plugin) {
-
+get_plugin_pref_frame(G_GNUC_UNUSED PurplePlugin *plugin) {
   PurplePluginPrefFrame *frame;
   PurplePluginPref *pref;
 
@@ -504,7 +506,7 @@ get_plugin_pref_frame(PurplePlugin *plugin) {
 }
 
 static GPluginPluginInfo *
-tiny_url_query(GError **error) {
+tiny_url_query(G_GNUC_UNUSED GError **error) {
 	const gchar * const authors[] = {
 		"Richard Nelson <wabz@whatsbeef.net>",
 		NULL
@@ -527,7 +529,7 @@ tiny_url_query(GError **error) {
 }
 
 static gboolean
-tiny_url_load(GPluginPlugin *plugin, GError **error) {
+tiny_url_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 	PurpleNotifyUiOps *ops = purple_notify_get_ui_ops();
 
 	session = soup_session_new();
@@ -558,7 +560,9 @@ tiny_url_load(GPluginPlugin *plugin, GError **error) {
 }
 
 static gboolean
-tiny_url_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
+tiny_url_unload(GPluginPlugin *plugin, G_GNUC_UNUSED gboolean shutdown,
+                G_GNUC_UNUSED GError **error)
+{
 	PurpleNotifyUiOps *ops = purple_notify_get_ui_ops();
 	if (ops->notify_uri == tinyurl_notify_uri)
 		ops->notify_uri = g_object_get_data(G_OBJECT(plugin), "notify-uri");

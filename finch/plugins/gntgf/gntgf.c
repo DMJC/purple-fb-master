@@ -220,7 +220,7 @@ notify(PurpleConversation *conv, const char *fmt, ...)
 }
 
 static void
-buddy_signed_on(PurpleBuddy *buddy, gpointer null)
+buddy_signed_on(PurpleBuddy *buddy, G_GNUC_UNUSED gpointer data)
 {
 	GSettings *settings = NULL;
 
@@ -235,7 +235,7 @@ buddy_signed_on(PurpleBuddy *buddy, gpointer null)
 }
 
 static void
-buddy_signed_off(PurpleBuddy *buddy, gpointer null)
+buddy_signed_off(PurpleBuddy *buddy, G_GNUC_UNUSED gpointer data)
 {
 	GSettings *settings = NULL;
 
@@ -250,8 +250,10 @@ buddy_signed_off(PurpleBuddy *buddy, gpointer null)
 }
 
 static void
-received_im_msg(PurpleAccount *account, const char *sender, const char *msg,
-		PurpleIMConversation *im, PurpleMessageFlags flags, gpointer null)
+received_im_msg(G_GNUC_UNUSED PurpleAccount *account, const char *sender,
+                G_GNUC_UNUSED const char *msg, PurpleIMConversation *im,
+                G_GNUC_UNUSED PurpleMessageFlags flags,
+                G_GNUC_UNUSED gpointer data)
 {
 	GSettings *settings = NULL;
 
@@ -266,8 +268,10 @@ received_im_msg(PurpleAccount *account, const char *sender, const char *msg,
 }
 
 static void
-received_chat_msg(PurpleAccount *account, const char *sender, const char *msg,
-		PurpleChatConversation *chat, PurpleMessageFlags flags, gpointer null)
+received_chat_msg(G_GNUC_UNUSED PurpleAccount *account, const char *sender,
+                  const char *msg, PurpleChatConversation *chat,
+                  G_GNUC_UNUSED PurpleMessageFlags flags,
+                  G_GNUC_UNUSED gpointer data)
 {
 	const char *nick;
 	PurpleConversation *conv = PURPLE_CONVERSATION(chat);
@@ -309,8 +313,7 @@ static struct
 };
 
 static void
-pref_toggled(GntTree *tree, char *key, gpointer null)
-{
+pref_toggled(GntTree *tree, char *key, G_GNUC_UNUSED gpointer data) {
 	purple_prefs_set_bool(key, gnt_tree_get_choice(tree, key));
 }
 
@@ -364,8 +367,7 @@ config_frame(void)
 }
 
 static GPluginPluginInfo *
-gnt_gf_query(GError **error)
-{
+gnt_gf_query(G_GNUC_UNUSED GError **error) {
 	const gchar * const authors[] = {
 		"Sadrul H Chowdhury <sadrul@users.sourceforge.net>",
 		NULL
@@ -387,7 +389,7 @@ gnt_gf_query(GError **error)
 }
 
 static gboolean
-gnt_gf_load(GPluginPlugin *plugin, GError **error) {
+gnt_gf_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 	purple_signal_connect(purple_blist_get_handle(), "buddy-signed-on", plugin,
 			G_CALLBACK(buddy_signed_on), NULL);
 	purple_signal_connect(purple_blist_get_handle(), "buddy-signed-off", plugin,
@@ -404,7 +406,10 @@ gnt_gf_load(GPluginPlugin *plugin, GError **error) {
 }
 
 static gboolean
-gnt_gf_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
+gnt_gf_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+              G_GNUC_UNUSED gboolean shutdown,
+              G_GNUC_UNUSED GError **error)
+{
 	while (toasters)
 	{
 		GntToast *toast = toasters->data;

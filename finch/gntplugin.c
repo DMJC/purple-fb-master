@@ -107,7 +107,7 @@ finch_plugin_info_get_property(GObject *obj, guint param_id, GValue *value,
 }
 
 static void
-finch_plugin_info_init(FinchPluginInfo *info)
+finch_plugin_info_init(G_GNUC_UNUSED FinchPluginInfo *info)
 {
 }
 
@@ -216,7 +216,8 @@ finch_plugin_pref_close(PurplePlugin *plugin)
 }
 
 static void
-plugin_toggled_cb(GntWidget *tree, PurplePlugin *plugin, gpointer null)
+plugin_toggled_cb(GntWidget *tree, PurplePlugin *plugin,
+                  G_GNUC_UNUSED gpointer data)
 {
 	GError *error = NULL;
 
@@ -251,7 +252,8 @@ finch_plugins_save_loaded(void)
 }
 
 static void
-selection_changed(GntWidget *widget, gpointer old, gpointer current, gpointer null)
+selection_changed(GntWidget *widget, G_GNUC_UNUSED gpointer old,
+                  gpointer current, G_GNUC_UNUSED gpointer data)
 {
 	PurplePlugin *plugin = current;
 	const gchar *filename;
@@ -308,7 +310,8 @@ selection_changed(GntWidget *widget, gpointer old, gpointer current, gpointer nu
 }
 
 static void
-reset_plugin_window(GntWidget *window, gpointer null)
+reset_plugin_window(G_GNUC_UNUSED GntWidget *window,
+                    G_GNUC_UNUSED gpointer data)
 {
 	GList *list = g_object_get_data(G_OBJECT(plugins.tree), "seen-list");
 	purple_prefs_set_path_list("/finch/plugins/seen", list);
@@ -338,7 +341,7 @@ plugin_compare(PurplePlugin *p1, PurplePlugin *p2)
 }
 
 static void
-remove_confwin(GntWidget *window, gpointer _plugin)
+remove_confwin(G_GNUC_UNUSED GntWidget *window, gpointer _plugin)
 {
 	PurplePlugin *plugin = _plugin;
 	PurplePluginInfo *info = purple_plugin_get_info(plugin);
@@ -353,7 +356,8 @@ close_plugin_info_request_cb(PurplePluginInfo *info)
 }
 
 static void
-configure_plugin_cb(GntWidget *button, gpointer null)
+configure_plugin_cb(G_GNUC_UNUSED GntWidget *button,
+                    G_GNUC_UNUSED gpointer data)
 {
 	PurplePlugin *plugin;
 	PurplePluginInfo *info;

@@ -346,7 +346,7 @@ static FinchBlistManager nested_group =
 };
 
 static GPluginPluginInfo *
-grouping_query(GError **error) {
+grouping_query(G_GNUC_UNUSED GError **error) {
 	const gchar * const authors[] = {
 		"Sadrul H Chowdhury <sadrul@users.sourceforge.net>",
 		NULL
@@ -367,7 +367,7 @@ grouping_query(GError **error) {
 }
 
 static gboolean
-grouping_load(GPluginPlugin *plugin, GError **error) {
+grouping_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 	finch_grouping_node_register_type(G_TYPE_MODULE(plugin));
 
 	default_manager = finch_blist_manager_find("default");
@@ -383,7 +383,10 @@ grouping_load(GPluginPlugin *plugin, GError **error) {
 }
 
 static gboolean
-grouping_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
+grouping_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                G_GNUC_UNUSED gboolean shutdown,
+                G_GNUC_UNUSED GError **error)
+{
 	finch_blist_uninstall_manager(&on_offline);
 	finch_blist_uninstall_manager(&meebo_group);
 	finch_blist_uninstall_manager(&no_group);

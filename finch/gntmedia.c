@@ -138,7 +138,8 @@ finch_media_emit_message(FinchMedia *gntmedia, const char *msg)
 }
 
 static void
-finch_media_connected_cb(PurpleMedia *media, FinchMedia *gntmedia)
+finch_media_connected_cb(G_GNUC_UNUSED PurpleMedia *media,
+                         FinchMedia *gntmedia)
 {
 	GntWidget *parent;
 
@@ -161,7 +162,7 @@ finch_media_connected_cb(PurpleMedia *media, FinchMedia *gntmedia)
 }
 
 static void
-finch_media_wait_cb(PurpleMedia *media, FinchMedia *gntmedia)
+finch_media_wait_cb(G_GNUC_UNUSED PurpleMedia *media, FinchMedia *gntmedia)
 {
 	GntWidget *parent;
 
@@ -227,8 +228,12 @@ finch_media_state_changed_cb(PurpleMedia *media, PurpleMediaState state,
 }
 
 static void
-finch_media_stream_info_cb(PurpleMedia *media, PurpleMediaInfoType type,
-		gchar *sid, gchar *name, gboolean local, FinchMedia *gntmedia)
+finch_media_stream_info_cb(G_GNUC_UNUSED PurpleMedia *media,
+                           PurpleMediaInfoType type,
+                           G_GNUC_UNUSED gchar *sid,
+                           G_GNUC_UNUSED gchar *name,
+                           G_GNUC_UNUSED gboolean local,
+                           FinchMedia *gntmedia)
 {
 	if (type == PURPLE_MEDIA_INFO_REJECT) {
 		finch_media_emit_message(gntmedia,
@@ -237,21 +242,21 @@ finch_media_stream_info_cb(PurpleMedia *media, PurpleMediaInfoType type,
 }
 
 static void
-finch_media_accept_cb(PurpleMedia *media, GntWidget *widget)
+finch_media_accept_cb(PurpleMedia *media, G_GNUC_UNUSED GntWidget *widget)
 {
 	purple_media_stream_info(media, PURPLE_MEDIA_INFO_ACCEPT,
 			NULL, NULL, TRUE);
 }
 
 static void
-finch_media_hangup_cb(PurpleMedia *media, GntWidget *widget)
+finch_media_hangup_cb(PurpleMedia *media, G_GNUC_UNUSED GntWidget *widget)
 {
 	purple_media_stream_info(media, PURPLE_MEDIA_INFO_HANGUP,
 			NULL, NULL, TRUE);
 }
 
 static void
-finch_media_reject_cb(PurpleMedia *media, GntWidget *widget)
+finch_media_reject_cb(PurpleMedia *media, G_GNUC_UNUSED GntWidget *widget)
 {
 	purple_media_stream_info(media, PURPLE_MEDIA_INFO_REJECT,
 			NULL, NULL, TRUE);
@@ -317,7 +322,8 @@ finch_media_new(PurpleMedia *media)
 }
 
 static void
-gntmedia_message_cb(FinchMedia *gntmedia, const char *msg, PurpleConversation *conv)
+gntmedia_message_cb(G_GNUC_UNUSED FinchMedia *gntmedia, const char *msg,
+                    PurpleConversation *conv)
 {
 	if (PURPLE_IS_IM_CONVERSATION(conv)) {
 		purple_conversation_write_system_message(conv, msg, 0);
@@ -325,8 +331,9 @@ gntmedia_message_cb(FinchMedia *gntmedia, const char *msg, PurpleConversation *c
 }
 
 static gboolean
-finch_new_media(PurpleMediaManager *manager, PurpleMedia *media,
-		PurpleAccount *account, gchar *name, gpointer null)
+finch_new_media(G_GNUC_UNUSED PurpleMediaManager *manager, PurpleMedia *media,
+                PurpleAccount *account, gchar *name,
+                G_GNUC_UNUSED gpointer data)
 {
 	GntWidget *gntmedia;
 	PurpleConversation *conv;
@@ -341,8 +348,9 @@ finch_new_media(PurpleMediaManager *manager, PurpleMedia *media,
 }
 
 static PurpleCmdRet
-call_cmd_cb(PurpleConversation *conv, const char *cmd, char **args,
-		char **error, gpointer data)
+call_cmd_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+            G_GNUC_UNUSED char **args, G_GNUC_UNUSED char **error,
+            G_GNUC_UNUSED gpointer data)
 {
 	PurpleAccount *account = purple_conversation_get_account(conv);
 

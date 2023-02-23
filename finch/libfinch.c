@@ -40,7 +40,7 @@
 #include "package_revision.h"
 
 static gboolean
-start_with_debugwin(gpointer null)
+start_with_debugwin(G_GNUC_UNUSED gpointer data)
 {
 	finch_debug_window_show();
 	return FALSE;
@@ -69,7 +69,7 @@ finch_plugins_init(void) {
 }
 
 static int
-init_libpurple(int argc, char **argv)
+init_libpurple(G_GNUC_UNUSED int argc, char **argv)
 {
 	gboolean opt_nologin = FALSE;
 	gboolean opt_version = FALSE;

@@ -102,7 +102,7 @@ clipboard_changed(GntWM *wm, gchar *string)
 #endif
 
 static GPluginPluginInfo *
-gnt_clipboard_query(GError **error) {
+gnt_clipboard_query(G_GNUC_UNUSED GError **error) {
 	const gchar * const authors[] = {
 		"Richard Nelson <wabz@whatsbeef.net>",
 		NULL
@@ -124,7 +124,7 @@ gnt_clipboard_query(GError **error) {
 }
 
 static gboolean
-gnt_clipboard_load(GPluginPlugin *plugin, GError **error) {
+gnt_clipboard_load(G_GNUC_UNUSED GPluginPlugin *plugin, GError **error) {
 #ifdef HAVE_X11
 	if (!XOpenDisplay(NULL)) {
 		purple_debug_warning("gntclipboard", "Couldn't find X display\n");
@@ -148,7 +148,10 @@ gnt_clipboard_load(GPluginPlugin *plugin, GError **error) {
 }
 
 static gboolean
-gnt_clipboard_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
+gnt_clipboard_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                     G_GNUC_UNUSED gboolean shutdown,
+                     G_GNUC_UNUSED GError **error)
+{
 #ifdef HAVE_X11
 	if (child) {
 		kill(child, SIGTERM);

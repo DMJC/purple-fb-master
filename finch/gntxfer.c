@@ -116,7 +116,7 @@ update_title_progress(void)
  * Callbacks
  **************************************************************************/
 static void
-toggle_keep_open_cb(GntWidget *w)
+toggle_keep_open_cb(G_GNUC_UNUSED GntWidget *w)
 {
 	xfer_dialog->keep_open = !xfer_dialog->keep_open;
 	purple_prefs_set_bool("/finch/filetransfer/keep_open",
@@ -124,7 +124,7 @@ toggle_keep_open_cb(GntWidget *w)
 }
 
 static void
-toggle_clear_finished_cb(GntWidget *w)
+toggle_clear_finished_cb(G_GNUC_UNUSED GntWidget *w)
 {
 	xfer_dialog->auto_clear = !xfer_dialog->auto_clear;
 	purple_prefs_set_bool("/finch/filetransfer/clear_finished",
@@ -141,7 +141,7 @@ toggle_clear_finished_cb(GntWidget *w)
 }
 
 static void
-remove_button_cb(GntButton *button)
+remove_button_cb(G_GNUC_UNUSED GntButton *button)
 {
 	PurpleXfer *selected_xfer = gnt_tree_get_selection_data(GNT_TREE(xfer_dialog->tree));
 	if (selected_xfer && (purple_xfer_is_completed(selected_xfer) ||
@@ -151,7 +151,7 @@ remove_button_cb(GntButton *button)
 }
 
 static void
-stop_button_cb(GntButton *button)
+stop_button_cb(G_GNUC_UNUSED GntButton *button)
 {
 	PurpleXfer *selected_xfer = gnt_tree_get_selection_data(GNT_TREE(xfer_dialog->tree));
 	PurpleXferStatus status;

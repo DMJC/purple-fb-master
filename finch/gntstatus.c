@@ -65,7 +65,8 @@ typedef struct
 static GList *edits;  /* List of opened edit-status dialogs */
 
 static void
-reset_status_window(GntWidget *widget, gpointer null)
+reset_status_window(G_GNUC_UNUSED GntWidget *widget,
+                    G_GNUC_UNUSED gpointer data)
 {
 	statuses.window = NULL;
 	statuses.tree = NULL;
@@ -115,7 +116,8 @@ really_delete_status(PurpleSavedStatus *saved)
 }
 
 static void
-ask_before_delete(GntWidget *button, gpointer null)
+ask_before_delete(G_GNUC_UNUSED GntWidget *button,
+                  G_GNUC_UNUSED gpointer data)
 {
 	char *ask;
 	PurpleSavedStatus *saved;
@@ -134,7 +136,8 @@ ask_before_delete(GntWidget *button, gpointer null)
 }
 
 static void
-use_savedstatus_cb(GntWidget *widget, gpointer null)
+use_savedstatus_cb(G_GNUC_UNUSED GntWidget *widget,
+                   G_GNUC_UNUSED gpointer data)
 {
 	g_return_if_fail(statuses.tree != NULL);
 
@@ -142,7 +145,8 @@ use_savedstatus_cb(GntWidget *widget, gpointer null)
 }
 
 static void
-edit_savedstatus_cb(GntWidget *widget, gpointer null)
+edit_savedstatus_cb(G_GNUC_UNUSED GntWidget *widget,
+                    G_GNUC_UNUSED gpointer data)
 {
 	g_return_if_fail(statuses.tree != NULL);
 
@@ -212,13 +216,14 @@ finch_savedstatus_show_all(void)
 }
 
 static void
-destroy_substatus_win(PurpleAccount *account, EditSubStatus *sub, gpointer null)
+destroy_substatus_win(G_GNUC_UNUSED PurpleAccount *account, EditSubStatus *sub,
+                      G_GNUC_UNUSED gpointer data)
 {
 	gnt_widget_destroy(sub->window);   /* the "destroy" callback will remove entry from the hashtable */
 }
 
 static void
-free_key(gpointer key, gpointer n)
+free_key(gpointer key, G_GNUC_UNUSED gpointer n)
 {
 	RowInfo *row = key;
 	g_free(row->message);
@@ -227,7 +232,7 @@ free_key(gpointer key, gpointer n)
 
 
 static void
-update_edit_list(GntWidget *widget, EditStatus *edit)
+update_edit_list(G_GNUC_UNUSED GntWidget *widget, EditStatus *edit)
 {
 	edits = g_list_remove(edits, edit);
 	purple_notify_close_with_handle(edit);
@@ -250,7 +255,7 @@ set_substatuses(EditStatus *edit)
 
 
 static void
-use_trans_status_cb(GntWidget *button, EditStatus *edit)
+use_trans_status_cb(G_GNUC_UNUSED GntWidget *button, EditStatus *edit)
 {
 	const char *message;
 	PurpleStatusPrimitive prim;
@@ -376,14 +381,14 @@ add_substatus(EditStatus *edit, PurpleAccount *account)
 }
 
 static void
-substatus_window_destroy_cb(GntWidget *window, EditSubStatus *sub)
+substatus_window_destroy_cb(G_GNUC_UNUSED GntWidget *window, EditSubStatus *sub)
 {
 	g_hash_table_remove(sub->parent->hash, sub->key->account);
 	g_free(sub);
 }
 
 static void
-save_substatus_cb(GntWidget *widget, EditSubStatus *sub)
+save_substatus_cb(G_GNUC_UNUSED GntWidget *widget, EditSubStatus *sub)
 {
 	PurpleSavedStatus *saved = sub->parent->saved;
 	RowInfo *row = sub->key;

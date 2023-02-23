@@ -54,7 +54,7 @@ struct _FinchRoomlist
 typedef struct _FinchRoomlist FinchRoomlist;
 
 static void
-unset_roomlist(gpointer null)
+unset_roomlist(G_GNUC_UNUSED gpointer data)
 {
 	froomlist.window = NULL;
 	g_clear_object(&froomlist.roomlist);
@@ -62,15 +62,15 @@ unset_roomlist(gpointer null)
 	froomlist.tree = NULL;
 }
 
-static void fl_stop(GntWidget *button, gpointer null)
-{
+static void
+fl_stop(G_GNUC_UNUSED GntWidget *button, G_GNUC_UNUSED gpointer data) {
 	if (froomlist.roomlist &&
 			purple_roomlist_get_in_progress(froomlist.roomlist))
 		purple_roomlist_cancel_get_list(froomlist.roomlist);
 }
 
-static void fl_get_list(GntWidget *button, gpointer null)
-{
+static void
+fl_get_list(G_GNUC_UNUSED GntWidget *button, G_GNUC_UNUSED gpointer data) {
 	PurpleAccount *account = gnt_combo_box_get_selected_data(GNT_COMBO_BOX(froomlist.accounts));
 	PurpleConnection *gc = purple_account_get_connection(account);
 
@@ -82,8 +82,8 @@ static void fl_get_list(GntWidget *button, gpointer null)
 	gnt_box_give_focus_to_child(GNT_BOX(froomlist.window), froomlist.tree);
 }
 
-static void fl_add_chat(GntWidget *button, gpointer null)
-{
+static void
+fl_add_chat(G_GNUC_UNUSED GntWidget *button, G_GNUC_UNUSED gpointer data) {
 	char *name;
 	PurpleRoomlistRoom *room = gnt_tree_get_selection_data(GNT_TREE(froomlist.tree));
 	PurpleConnection *gc = purple_account_get_connection(froomlist.account);
@@ -105,7 +105,8 @@ static void fl_add_chat(GntWidget *button, gpointer null)
 	g_free(name);
 }
 
-static void fl_close(GntWidget *button, gpointer null)
+static void
+fl_close(G_GNUC_UNUSED GntWidget *button, G_GNUC_UNUSED gpointer data)
 {
 	gnt_widget_destroy(froomlist.window);
 }
@@ -121,7 +122,9 @@ roomlist_activated(GntWidget *widget)
 }
 
 static void
-roomlist_selection_changed(GntWidget *widget, gpointer old, gpointer current, gpointer null)
+roomlist_selection_changed(G_GNUC_UNUSED GntWidget *widget,
+                           G_GNUC_UNUSED gpointer old, gpointer current,
+                           G_GNUC_UNUSED gpointer data)
 {
 	PurpleRoomlistRoom *room = current;
 	GntTextView *tv = GNT_TEXT_VIEW(froomlist.details);
@@ -137,7 +140,9 @@ roomlist_selection_changed(GntWidget *widget, gpointer old, gpointer current, gp
 }
 
 static void
-roomlist_account_changed(GntWidget *widget, gpointer old, gpointer current, gpointer null)
+roomlist_account_changed(G_GNUC_UNUSED GntWidget *widget,
+                         G_GNUC_UNUSED gpointer old, gpointer current,
+                         G_GNUC_UNUSED gpointer data)
 {
 	if (froomlist.account == current) {
 		return;
@@ -155,7 +160,7 @@ roomlist_account_changed(GntWidget *widget, gpointer old, gpointer current, gpoi
 }
 
 static void
-reset_account_list(PurpleAccount *account)
+reset_account_list(G_GNUC_UNUSED PurpleAccount *account)
 {
 	GList *list;
 	GntComboBox *accounts = GNT_COMBO_BOX(froomlist.accounts);
@@ -182,7 +187,8 @@ reset_account_list(PurpleAccount *account)
 }
 
 static void
-size_changed_cb(GntWidget *widget, int oldw, int oldh)
+size_changed_cb(GntWidget *widget, G_GNUC_UNUSED int oldw,
+                G_GNUC_UNUSED int oldh)
 {
 	int w, h;
 	gnt_widget_get_size(widget, &w, &h);
@@ -293,7 +299,7 @@ fl_create(PurpleRoomlist *list)
 }
 
 static void
-fl_set_fields(PurpleRoomlist *list, GList *fields)
+fl_set_fields(G_GNUC_UNUSED PurpleRoomlist *list, G_GNUC_UNUSED GList *fields)
 {
 }
 

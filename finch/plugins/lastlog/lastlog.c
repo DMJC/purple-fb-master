@@ -52,7 +52,9 @@ window_kpress_cb(GntWidget *wid, const char *key, GntTextView *view)
 }
 
 static PurpleCmdRet
-lastlog_cb(PurpleConversation *conv, const char *cmd, char **args, char **error, gpointer null)
+lastlog_cb(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
+           char **args, G_GNUC_UNUSED char **error,
+           G_GNUC_UNUSED gpointer data)
 {
 	FinchConv *ggconv = FINCH_CONV(conv);
 	char **strings = g_strsplit(gnt_text_view_get_text(GNT_TEXT_VIEW(ggconv->tv)),
@@ -87,7 +89,7 @@ lastlog_cb(PurpleConversation *conv, const char *cmd, char **args, char **error,
 }
 
 static GPluginPluginInfo *
-gnt_last_log_query(GError **error) {
+gnt_last_log_query(G_GNUC_UNUSED GError **error) {
 	const gchar * const authors[] = {
 		"Sadrul H Chowdhury <sadrul@users.sourceforge.net>",
 		NULL
@@ -108,7 +110,9 @@ gnt_last_log_query(GError **error) {
 }
 
 static gboolean
-gnt_last_log_load(GPluginPlugin *plugin, GError **error) {
+gnt_last_log_load(G_GNUC_UNUSED GPluginPlugin *plugin,
+                  G_GNUC_UNUSED GError **error)
+{
 	cmd = purple_cmd_register("lastlog", "s", PURPLE_CMD_P_DEFAULT,
 			PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM, NULL,
 			/* Translators: The "backlog" here refers to the the conversation buffer/history. */
@@ -117,7 +121,10 @@ gnt_last_log_load(GPluginPlugin *plugin, GError **error) {
 }
 
 static gboolean
-gnt_last_log_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
+gnt_last_log_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                    G_GNUC_UNUSED gboolean shutdown,
+                    G_GNUC_UNUSED GError **error)
+{
 	purple_cmd_unregister(cmd);
 	return TRUE;
 }
