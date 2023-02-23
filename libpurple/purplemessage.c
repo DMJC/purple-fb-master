@@ -172,6 +172,7 @@ purple_message_finalize(GObject *obj) {
 
 	g_free(message->id);
 	g_free(message->author);
+	g_free(message->author_name_color);
 	g_free(message->author_alias);
 	g_free(message->recipient);
 	g_free(message->contents);
