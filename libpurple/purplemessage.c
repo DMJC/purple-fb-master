@@ -42,6 +42,8 @@ struct _PurpleMessage {
 	GDateTime *timestamp;
 	PurpleMessageFlags flags;
 
+	GError *error;
+
 	GHashTable *attachments;
 };
 
@@ -56,6 +58,7 @@ enum {
 	PROP_CONTENT_TYPE,
 	PROP_TIMESTAMP,
 	PROP_FLAGS,
+	PROP_ERROR,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES];
@@ -119,6 +122,9 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 		case PROP_FLAGS:
 			g_value_set_flags(value, purple_message_get_flags(message));
 			break;
+		case PROP_ERROR:
+			g_value_set_boxed(value, purple_message_get_error(message));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
 			break;
@@ -160,6 +166,9 @@ purple_message_set_property(GObject *object, guint param_id,
 		case PROP_FLAGS:
 			purple_message_set_flags(message, g_value_get_flags(value));
 			break;
+		case PROP_ERROR:
+			purple_message_set_error(message, g_value_get_boxed(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
 			break;
@@ -176,6 +185,8 @@ purple_message_finalize(GObject *obj) {
 	g_free(message->author_alias);
 	g_free(message->recipient);
 	g_free(message->contents);
+
+	g_clear_error(&message->error);
 
 	if(message->timestamp != NULL) {
 		g_date_time_unref(message->timestamp);
@@ -315,6 +326,20 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		"flags", "Flags",
 		"Bitwise set of #PurpleMessageFlags flags",
 		PURPLE_TYPE_MESSAGE_FLAGS, 0,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:error:
+	 *
+	 * An error that this message encountered. This could be something like a
+	 * failed delivery, or failed redaction, or rate limited, etc.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_ERROR] = g_param_spec_boxed(
+		"error", "error",
+		"An error that the message encountered",
+		G_TYPE_ERROR,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
@@ -572,6 +597,25 @@ purple_message_get_flags(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
 
 	return message->flags;
+}
+
+void
+purple_message_set_error(PurpleMessage *message, GError *error) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	g_clear_error(&message->error);
+	if(error != NULL) {
+		g_propagate_error(&message->error, error);
+	}
+
+	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ERROR]);
+}
+
+GError *
+purple_message_get_error(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
+
+	return message->error;
 }
 
 gboolean

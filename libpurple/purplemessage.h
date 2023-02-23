@@ -378,6 +378,29 @@ void purple_message_set_flags(PurpleMessage *message, PurpleMessageFlags flags);
 PurpleMessageFlags purple_message_get_flags(PurpleMessage *message);
 
 /**
+ * purple_message_set_error:
+ * @message: The instance.
+ * @error: (nullable) (transfer full): The error to set.
+ *
+ * Sets the error of @message to at @error.
+ *
+ * Since: 3.0.0
+ */
+void purple_message_set_error(PurpleMessage *message, GError *error);
+
+/**
+ * purple_message_get_error:
+ * @message: The instance.
+ *
+ * Gets the error from @message.
+ *
+ * Returns: (nullable) (transfer none): The error from @message or %NULL.
+ *
+ * Since: 3.0.0
+ */
+GError *purple_message_get_error(PurpleMessage *message);
+
+/**
  * purple_message_add_attachment:
  * @message: The #PurpleMessage instance.
  * @attachment: The #PurpleAttachment instance.

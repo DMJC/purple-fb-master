@@ -14,6 +14,7 @@ PROGS = [
     'keyvaluepair',
     'markup',
     'menu',
+    'message',
     'notification',
     'notification_manager',
     'person',
