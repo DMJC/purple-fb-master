@@ -50,6 +50,39 @@ typedef struct _PurplePresence PurplePresence;
 
 #include "status.h"
 
+/**
+ * PurplePresencePrimitive:
+ * @PURPLE_PRESENCE_PRIMITIVE_OFFLINE: The presence is offline or otherwise
+ *                                     unknown.
+ * @PURPLE_PRESENCE_PRIMITIVE_AVAILABLE: The presence is online or available.
+ * @PURPLE_PRESENCE_PRIMITIVE_IDLE: The presence is online but is idle. This
+ *                                  state is typically set by the client
+ *                                  directly and not the user.
+ * @PURPLE_PRESENCE_PRIMITIVE_INVISIBLE: The presence is online, but not
+ *                                       visible to others.
+ * @PURPLE_PRESENCE_PRIMITIVE_AWAY: The presence is online, but the user is
+ *                                  away from their device.
+ * @PURPLE_PRESENCE_PRIMITIVE_EXTENDED_AWAY: Similar to
+ *                                           @PURPLE_PRESENCE_PRIMITIVE_AWAY,
+ *                                           but typically means the user does
+ *                                           not want to be disturbed.
+ * @PURPLE_PRESENCE_PRIMITIVE_STREAMING: The presence is online but is
+ *                                       streaming.
+ *
+ * An enum that is used to determine the type of a [class@Purple.Presence].
+ *
+ * Since: 3.0.0
+ */
+typedef enum {
+	PURPLE_PRESENCE_PRIMITIVE_OFFLINE,
+	PURPLE_PRESENCE_PRIMITIVE_AVAILABLE,
+	PURPLE_PRESENCE_PRIMITIVE_IDLE,
+	PURPLE_PRESENCE_PRIMITIVE_INVISIBLE,
+	PURPLE_PRESENCE_PRIMITIVE_AWAY,
+	PURPLE_PRESENCE_PRIMITIVE_EXTENDED_AWAY,
+	PURPLE_PRESENCE_PRIMITIVE_STREAMING,
+} PurplePresencePrimitive;
+
 G_BEGIN_DECLS
 
 /**
