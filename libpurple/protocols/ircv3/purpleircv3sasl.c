@@ -18,7 +18,7 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <gsasl.h>
+#include <hasl.h>
 
 #include "purpleircv3sasl.h"
 
@@ -28,22 +28,10 @@
 
 #define PURPLE_IRCV3_SASL_DATA_KEY ("sasl-data")
 
-/* Workarounds for old versions of gsasl. By defining these values when they're
- * not yet defined, upgrades of gsasl should continue to work without needing
- * to recompile this code.
- */
-#ifndef GSASL_CB_TLS_EXPORTER
-# define GSASL_CB_TLS_EXPORTER (25)
-#endif
-
 typedef struct {
 	PurpleConnection *connection;
 
-	Gsasl *ctx;
-	Gsasl_session *session;
-
-	char *current_mechanism;
-	GString *mechanisms;
+	HaslContext *ctx;
 
 	GString *server_in_buffer;
 } PurpleIRCv3SASLData;
@@ -67,87 +55,11 @@ purple_ircv3_sasl_get_username(PurpleConnection *connection) {
 }
 
 /******************************************************************************
- * SASL Callbacks
- *****************************************************************************/
-static int
-purple_ircv3_sasl_callback(G_GNUC_UNUSED Gsasl *ctx, Gsasl_session *session,
-                           Gsasl_property property)
-{
-	PurpleIRCv3SASLData *data = NULL;
-	int res = GSASL_NO_CALLBACK;
-
-	data = gsasl_session_hook_get(session);
-
-	switch(property) {
-		case GSASL_AUTHID:
-			gsasl_property_set(session, GSASL_AUTHID,
-			                   purple_ircv3_sasl_get_username(data->connection));
-			res = GSASL_OK;
-			break;
-		case GSASL_AUTHZID:
-			/* AUTHZID is only used implemented for the PLAIN mechanism. If we
-			 * return a value for SCRAM, it needs to match AUTHID, which we
-			 * always set which would be redundant.
-			 *
-			 * So instead, we just check if the mechanism is PLAIN and if so
-			 * set it to empty string because it's the user logging in on their
-			 * own behalf and IRCv3 doesn't really let an admin login as a
-			 * normal user.
-			 *
-			 * See https://www.gnu.org/software/gsasl/manual/gsasl.html#PLAIN
-			 * for further explanation.
-			 */
-			if(purple_strequal(data->current_mechanism, "PLAIN")) {
-				gsasl_property_set(session, GSASL_AUTHZID, "");
-				res = GSASL_OK;
-			}
-			break;
-		case GSASL_PASSWORD:
-			gsasl_property_set(session, GSASL_PASSWORD,
-			                   purple_connection_get_password(data->connection));
-			res = GSASL_OK;
-			break;
-		case GSASL_SCRAM_SALTED_PASSWORD:
-			/* Ignored, we let gsasl figure it out from the password above. */
-			break;
-		case GSASL_CB_TLS_UNIQUE:
-		case GSASL_CB_TLS_EXPORTER:
-			/* TODO: implement these in the near future when we're implementing
-			 * EXTERNAL support for PIDGIN-17741.
-			 */
-			break;
-		default:
-			g_warning("Unknown property %d", property);
-			break;
-	}
-
-	return res;
-}
-
-/******************************************************************************
  * SASL Helpers
  *****************************************************************************/
 static void
-purple_ircv3_sasl_connection_error(PurpleConnection *connection, int res,
-                                   int err, const char *msg)
-{
-	GError *error = NULL;
-
-	error = g_error_new(PURPLE_CONNECTION_ERROR, err, "%s: %s", msg,
-	                    gsasl_strerror(res));
-
-	purple_connection_take_error(connection, error);
-}
-
-static void
 purple_ircv3_sasl_data_free(PurpleIRCv3SASLData *data) {
-	g_clear_object(&data->connection);
-	g_clear_pointer(&data->session, gsasl_finish);
-	g_clear_pointer(&data->ctx, gsasl_done);
-	g_clear_pointer(&data->current_mechanism, g_free);
-
-	g_string_free(data->mechanisms, TRUE);
-	data->mechanisms = NULL;
+	g_clear_object(&data->ctx);
 
 	g_string_free(data->server_in_buffer, TRUE);
 
@@ -155,11 +67,8 @@ purple_ircv3_sasl_data_free(PurpleIRCv3SASLData *data) {
 }
 
 static void
-purple_ircv3_sasl_data_add(PurpleConnection *connection, Gsasl *ctx,
-                           const char *mechanisms)
-{
+purple_ircv3_sasl_data_add(PurpleConnection *connection, HaslContext *ctx) {
 	PurpleIRCv3SASLData *data = NULL;
-	GStrv parts = NULL;
 
 	data = g_new0(PurpleIRCv3SASLData, 1);
 	g_object_set_data_full(G_OBJECT(connection), PURPLE_IRCV3_SASL_DATA_KEY,
@@ -171,122 +80,41 @@ purple_ircv3_sasl_data_add(PurpleConnection *connection, Gsasl *ctx,
 	 */
 	data->connection = connection;
 	data->ctx = ctx;
-	gsasl_callback_set(data->ctx, purple_ircv3_sasl_callback);
 
 	/* We truncate the server_in_buffer when we need to so that we can minimize
 	 * allocations and simplify the logic involved with it.
 	 */
 	data->server_in_buffer = g_string_new("");
-
-	/* Create a GString for the mechanisms with a leading and trailing ` `.
-	 * This is so we can easily remove attempted mechanism by removing
-	 * ` <attempted_mechanism> ` from the string which will make sure we're
-	 * always removing the proper mechanism. This is necessary because some
-	 * mechanisms have the same prefix, and others have the same suffix, which
-	 * could lead to incorrect removals.
-	 *
-	 * For example, if the list contains `EAP-AES128-PLUS EAP-AES128` and we
-	 * try `EAP-AES128` first, that means we would remove `EAP-AES128` from the
-	 * list which would first find `EAP-AES128-PLUS` and replace it with an
-	 * empty string, leaving the list as `-PLUS EAP-AES128` which is obviously
-	 * wrong. Instead the additional spaces mean our replace can be
-	 * ` EAP-AES128 `, which will get the proper value and update the
-	 * list to just contain ` EAP-AES128-PLUS `.
-	 *
-	 * For a list of mechanisms see
-	 * https://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml
-	 *
-	 */
-	data->mechanisms = g_string_new("");
-
-	parts = g_strsplit(mechanisms, ",", -1);
-	for(int i = 0; parts[i] != NULL; i++) {
-		g_string_append_printf(data->mechanisms, " %s ", parts[i]);
-	}
-	g_strfreev(parts);
-}
-
-static void
-purple_ircv3_sasl_attempt_mechanism(PurpleIRCv3Connection *connection,
-                                    PurpleIRCv3SASLData *data,
-                                    const char *next_mechanism)
-{
-	int res = GSASL_OK;
-
-	g_free(data->current_mechanism);
-	data->current_mechanism = g_strdup(next_mechanism);
-
-	res = gsasl_client_start(data->ctx, next_mechanism, &data->session);
-	if(res != GSASL_OK) {
-		purple_ircv3_sasl_connection_error(PURPLE_CONNECTION(connection),
-		                                   res,
-		                                   PURPLE_CONNECTION_ERROR_AUTHENTICATION_IMPOSSIBLE,
-		                                   _("Failed to setup SASL client"));
-		return;
-	}
-	gsasl_session_hook_set(data->session, data);
-
-	purple_ircv3_connection_writef(connection, "AUTHENTICATE %s",
-	                               next_mechanism);
 }
 
 static void
 purple_ircv3_sasl_attempt(PurpleIRCv3Connection *connection) {
 	PurpleIRCv3SASLData *data = NULL;
-	PurpleAccount *account = NULL;
 	const char *next_mechanism = NULL;
-	gboolean allow_plain = TRUE;
-	gboolean good_mechanism = FALSE;
+	const char *current = NULL;
 
 	data = g_object_get_data(G_OBJECT(connection), PURPLE_IRCV3_SASL_DATA_KEY);
 
-	/* If this is not our first attempt, remove the previous mechanism from the
-	 * list of mechanisms to try.
-	 */
-	if(data->current_mechanism != NULL) {
-		char *to_remove = g_strdup_printf(" %s ", data->current_mechanism);
-
-		g_message("SASL '%s' mechanism failed", data->current_mechanism);
-
-		g_string_replace(data->mechanisms, to_remove, "", 0);
-		g_free(to_remove);
+	current = hasl_context_get_current_mechanism(data->ctx);
+	if(current != NULL) {
+		g_message("SASL '%s' mechanism failed", current);
 	}
 
-	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
-	if(!purple_account_get_bool(account, "use-tls", TRUE)) {
-		if(!purple_account_get_bool(account, "plain-sasl-in-clear", FALSE)) {
-			allow_plain = FALSE;
-		}
-	}
+	next_mechanism = hasl_context_next(data->ctx);
+	if(next_mechanism == NULL) {
+		GError *error = g_error_new(PURPLE_CONNECTION_ERROR,
+		                            PURPLE_CONNECTION_ERROR_AUTHENTICATION_IMPOSSIBLE,
+		                            _("No valid SASL mechanisms found"));
 
-	while(!good_mechanism) {
-		good_mechanism = TRUE;
+		purple_connection_take_error(PURPLE_CONNECTION(connection), error);
 
-		next_mechanism = gsasl_client_suggest_mechanism(data->ctx,
-		                                                data->mechanisms->str);
-
-		if(next_mechanism == NULL) {
-			GError *error = g_error_new(PURPLE_CONNECTION_ERROR,
-			                            PURPLE_CONNECTION_ERROR_AUTHENTICATION_IMPOSSIBLE,
-			                            _("No valid SASL mechanisms found"));
-
-			purple_connection_take_error(PURPLE_CONNECTION(connection), error);
-
-			return;
-		}
-
-		if(purple_strequal(next_mechanism, "PLAIN") && !allow_plain) {
-			g_message("skipping SASL 'PLAIN' as it's not allowed without tls");
-
-			good_mechanism = FALSE;
-
-			g_string_replace(data->mechanisms, " PLAIN ", "", 0);
-		}
+		return;
 	}
 
 	g_message("trying SASL '%s' mechanism", next_mechanism);
 
-	purple_ircv3_sasl_attempt_mechanism(connection, data, next_mechanism);
+	purple_ircv3_connection_writef(connection, "AUTHENTICATE %s",
+	                               next_mechanism);
 }
 
 static void
@@ -294,28 +122,22 @@ purple_ircv3_sasl_start(PurpleIRCv3Capabilities *caps) {
 	PurpleIRCv3Connection *connection = NULL;
 	PurpleAccount *account = NULL;
 	PurpleConnection *purple_connection = NULL;
-	Gsasl *ctx = NULL;
+	HaslContext *ctx = NULL;
 	const char *mechanisms = NULL;
-	gint res;
+	gboolean toggle = FALSE;
 
 	connection = purple_ircv3_capabilities_get_connection(caps);
 	purple_connection = PURPLE_CONNECTION(connection);
 	account = purple_connection_get_account(purple_connection);
 
-	res = gsasl_init(&ctx);
-	if(res != GSASL_OK) {
-		purple_ircv3_sasl_connection_error(purple_connection, res,
-		                                   PURPLE_CONNECTION_ERROR_AUTHENTICATION_IMPOSSIBLE,
-		                                   _("Failed to initialize SASL"));
+	ctx = hasl_context_new();
 
-		return;
-	}
-
-	/* At this point we are ready to start our sasl negotiation, so add a wait
+	/* At this point we are ready to start our SASL negotiation, so add a wait
 	 * counter to the capabilities and start the negotiations!
 	 */
 	purple_ircv3_capabilities_add_wait(caps);
 
+	/* Determine what mechanisms we're allowing and tell the context. */
 	mechanisms = purple_account_get_string(account, "sasl-mechanisms", "");
 	if(purple_strempty(mechanisms)) {
 		/* If the user didn't specify any mechanisms, grab the mechanisms that
@@ -323,9 +145,20 @@ purple_ircv3_sasl_start(PurpleIRCv3Capabilities *caps) {
 		 */
 		mechanisms = purple_ircv3_capabilities_lookup(caps, "sasl", NULL);
 	}
+	hasl_context_set_allowed_mechanisms(ctx, mechanisms);
+
+	/* Add the values we know to the context. */
+	hasl_context_set_username(ctx, purple_ircv3_sasl_get_username(purple_connection));
+	hasl_context_set_password(ctx, purple_connection_get_password(purple_connection));
+
+	toggle = purple_account_get_bool(account, "use-tls", TRUE);
+	hasl_context_set_tls(ctx, toggle);
+
+	toggle = purple_account_get_bool(account, "plain-sasl-in-clear", FALSE);
+	hasl_context_set_allow_clear_text(ctx, toggle);
 
 	/* Create our SASLData object, add it to the connection. */
-	purple_ircv3_sasl_data_add(purple_connection, ctx, mechanisms);
+	purple_ircv3_sasl_data_add(purple_connection, ctx);
 
 	/* Make it go! */
 	purple_ircv3_sasl_attempt(connection);
@@ -477,7 +310,7 @@ purple_ircv3_sasl_success(G_GNUC_UNUSED GHashTable *tags,
 	purple_ircv3_capabilities_remove_wait(capabilities);
 
 	g_message("successfully authenticated with SASL '%s' mechanism.",
-	          data->current_mechanism);
+	          hasl_context_get_current_mechanism(data->ctx));
 
 	return TRUE;
 }
@@ -679,49 +512,49 @@ purple_ircv3_sasl_authenticate(G_GNUC_UNUSED GHashTable *tags,
 	}
 
 	if(done) {
-		char *server_in = NULL;
-		char *client_out = NULL;
+		HaslMechanismResult res = 0;
+		GError *local_error = NULL;
+		guint8 *server_in = NULL;
+		guint8 *client_out = NULL;
 		gsize server_in_length = 0;
 		size_t client_out_length = 0;
-		int res = 0;
 
 		/* If we have a buffer, base64 decode it, and then truncate it. */
 		if(data->server_in_buffer->len > 0) {
-			server_in = (char *)g_base64_decode(data->server_in_buffer->str,
-			                                    &server_in_length);
+			server_in = g_base64_decode(data->server_in_buffer->str,
+			                            &server_in_length);
 			g_string_truncate(data->server_in_buffer, 0);
 		}
 
 		/* Try to move to the next step of the sasl client. */
-		res = gsasl_step(data->session, server_in, server_in_length,
-		                 &client_out, &client_out_length);
+		res = hasl_context_step(data->ctx, server_in, server_in_length,
+		                        &client_out, &client_out_length, &local_error);
 
 		/* We should be done with server_in, so free it.*/
 		g_clear_pointer(&server_in, g_free);
 
-		/* If we didn't get ok or needs more, it's an error.
-		 *
-		 * We allow needs more as SCRAM will is client first and returns
-		 * GSASL_NEEDS_MORE on the first step. We could tie this now a bit
-		 * more, but this seems to be fine for now. -- GK 2023-01-28
-		 */
-		if(res != GSASL_OK && res != GSASL_NEEDS_MORE) {
-			g_set_error(error, PURPLE_CONNECTION_ERROR,
-			            PURPLE_CONNECTION_ERROR_AUTHENTICATION_IMPOSSIBLE,
-			            _("SASL authentication failed: %s"),
-			            gsasl_strerror(res));
+		if(res == HASL_MECHANISM_RESULT_ERROR) {
+			g_propagate_error(error, local_error);
 
 			return FALSE;
 		}
 
+		if(local_error != NULL) {
+			g_warning("hasl_context_step returned an error without an error "
+			          "status: %s", local_error->message);
+
+			g_clear_error(&local_error);
+		}
+
 		/* If we got an output for the client, write it out. */
 		if(client_out_length > 0) {
-			char *encoded = g_base64_encode((guchar *)client_out,
-			                                client_out_length);
+			char *encoded = NULL;
+
+			encoded = g_base64_encode(client_out, client_out_length);
+			g_clear_pointer(&client_out, g_free);
 
 			purple_ircv3_connection_writef(connection, "AUTHENTICATE %s",
 			                               encoded);
-
 			g_free(encoded);
 		} else {
 			purple_ircv3_connection_writef(connection, "AUTHENTICATE +");

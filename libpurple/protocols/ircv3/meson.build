@@ -29,7 +29,7 @@ if DYNAMIC_IRCV3
 
 	ircv3_prpl = shared_library('ircv3', IRCV3_SOURCES + IRCV3_HEADERS,
 		c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-IRCv3"'],
-		dependencies : [libpurple_dep, glib, gio, gsasl, ws2_32],
+		dependencies : [libpurple_dep, glib, gio, hasl, ws2_32],
 		install : true,
 		install_dir : PURPLE_PLUGINDIR)
 

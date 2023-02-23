@@ -482,9 +482,9 @@ endif
 #######################################################################
 # Check for Cyrus-SASL (for xmpp/irc)
 #######################################################################
-sasl = dependency('libsasl2', version : '>= 2.0')
+hasl = dependency('hasl', version : '>= 0.1.0')
 
-gsasl = dependency('libgsasl', version : '>= 1.8.0')
+sasl = dependency('libsasl2', version : '>= 2.0')
 
 #AC_MSG_CHECKING(for me pot o' gold)
 #AC_MSG_RESULT(no)
