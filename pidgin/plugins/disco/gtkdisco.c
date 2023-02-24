@@ -303,7 +303,9 @@ row_expanded_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
 }
 
 static void
-list_row_notify_cb(GObject *obj, GParamSpec *pspec, gpointer data) {
+list_row_notify_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
+                   G_GNUC_UNUSED gpointer data)
+{
 	GtkTreeListRow *row = NULL;
 
 	row = gtk_tree_expander_get_list_row(GTK_TREE_EXPANDER(obj));
