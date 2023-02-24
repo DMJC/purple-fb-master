@@ -240,8 +240,8 @@ irc_view_motd(G_GNUC_UNUSED GSimpleAction *action,
 }
 
 static int
-irc_send_raw(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
-             const gchar *buf, gint len)
+irc_send_raw(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+             PurpleConnection *gc, const gchar *buf, gint len)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	if (len == -1) {
@@ -276,8 +276,8 @@ int irc_send(struct irc_conn *irc, const char *buf)
     return irc_send_len(irc, buf, strlen(buf));
 }
 
-int irc_send_len(struct irc_conn *irc, const char *buf, int buflen)
-{
+int
+irc_send_len(struct irc_conn *irc, const char *buf, G_GNUC_UNUSED int buflen) {
  	char *tosend = g_strdup(buf);
 	int len;
 	GBytes *data;
@@ -348,7 +348,9 @@ void irc_buddy_query(struct irc_conn *irc)
 	g_string_free(string, TRUE);
 }
 
-static void irc_ison_buddy_init(char *name, struct irc_buddy *ib, GList **list)
+static void
+irc_ison_buddy_init(G_GNUC_UNUSED char *name, struct irc_buddy *ib,
+                    GList **list)
 {
 	*list = g_list_append(*list, ib);
 }
@@ -370,7 +372,7 @@ static void irc_ison_one(struct irc_conn *irc, struct irc_buddy *ib)
 }
 
 static GList *
-irc_protocol_get_account_options(PurpleProtocol *protocol) {
+irc_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	PurpleAccountOption *option;
 	GList *opts = NULL;
 
@@ -415,7 +417,7 @@ irc_protocol_get_account_options(PurpleProtocol *protocol) {
 }
 
 static GList *
-irc_protocol_get_user_splits(PurpleProtocol *protocol) {
+irc_protocol_get_user_splits(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	PurpleAccountUserSplit *split;
 
 	split = purple_account_user_split_new(_("Server"), IRC_DEFAULT_SERVER,
@@ -426,7 +428,7 @@ irc_protocol_get_user_splits(PurpleProtocol *protocol) {
 
 static GList *
 irc_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
-                 PurpleAccount *account)
+                 G_GNUC_UNUSED PurpleAccount *account)
 {
 	PurpleStatusType *type;
 	GList *types = NULL;
@@ -447,13 +449,13 @@ irc_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 }
 
 static const gchar *
-irc_protocol_actions_get_prefix(PurpleProtocolActions *actions) {
+irc_protocol_actions_get_prefix(G_GNUC_UNUSED PurpleProtocolActions *actions) {
 	return "prpl-irc";
 }
 
 static GActionGroup *
-irc_protocol_actions_get_action_group(PurpleProtocolActions *actions,
-                                      PurpleConnection *connection)
+irc_protocol_actions_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *actions,
+                                      G_GNUC_UNUSED PurpleConnection *connection)
 {
 	GSimpleActionGroup *group = NULL;
 	GActionEntry entries[] = {
@@ -493,7 +495,9 @@ irc_protocol_actions_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
 }
 
 static GList *
-irc_chat_join_info(PurpleProtocolChat *protocol_chat, PurpleConnection *gc) {
+irc_chat_join_info(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+                   G_GNUC_UNUSED PurpleConnection *gc)
+{
 	GList *m = NULL;
 	PurpleProtocolChatEntry *pce;
 
@@ -513,7 +517,8 @@ irc_chat_join_info(PurpleProtocolChat *protocol_chat, PurpleConnection *gc) {
 }
 
 static GHashTable *
-irc_chat_info_defaults(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
+irc_chat_info_defaults(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+                       G_GNUC_UNUSED PurpleConnection *gc,
                        const gchar *chat_name)
 {
 	GHashTable *defaults;
@@ -727,7 +732,9 @@ irc_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 	g_free(irc);
 }
 
-static int irc_im_send(PurpleProtocolIM *im, PurpleConnection *gc, PurpleMessage *msg)
+static int
+irc_im_send(G_GNUC_UNUSED PurpleProtocolIM *im, PurpleConnection *gc,
+            PurpleMessage *msg)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	char *plain;
@@ -745,8 +752,8 @@ static int irc_im_send(PurpleProtocolIM *im, PurpleConnection *gc, PurpleMessage
 }
 
 static void
-irc_get_info(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
-             const gchar *who)
+irc_get_info(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+             PurpleConnection *gc, const gchar *who)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	const char *args[2];
@@ -756,8 +763,8 @@ irc_get_info(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
 }
 
 static void
-irc_set_status(PurpleProtocolServer *protocol_server, PurpleAccount *account,
-               PurpleStatus *status)
+irc_set_status(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+               PurpleAccount *account, PurpleStatus *status)
 {
 	PurpleConnection *gc = purple_account_get_connection(account);
 	struct irc_conn *irc;
@@ -783,8 +790,10 @@ irc_set_status(PurpleProtocolServer *protocol_server, PurpleAccount *account,
 }
 
 static void
-irc_add_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
-              PurpleBuddy *buddy, PurpleGroup *group, const gchar *message)
+irc_add_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+              PurpleConnection *gc, PurpleBuddy *buddy,
+              G_GNUC_UNUSED PurpleGroup *group,
+              G_GNUC_UNUSED const gchar *message)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	struct irc_buddy *ib;
@@ -810,8 +819,9 @@ irc_add_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
 }
 
 static void
-irc_remove_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
-                 PurpleBuddy *buddy, PurpleGroup *group)
+irc_remove_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+                 PurpleConnection *gc, PurpleBuddy *buddy,
+                 G_GNUC_UNUSED PurpleGroup *group)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	struct irc_buddy *ib;
@@ -872,8 +882,8 @@ irc_read_input_cb(GObject *source, GAsyncResult *res, gpointer data)
 }
 
 static void
-irc_chat_join(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
-              GHashTable *data)
+irc_chat_join(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+              PurpleConnection *gc, GHashTable *data)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	const char *args[2];
@@ -884,13 +894,16 @@ irc_chat_join(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
 }
 
 static gchar *
-irc_get_chat_name(PurpleProtocolChat *protocol_chat, GHashTable *data) {
+irc_get_chat_name(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+                  GHashTable *data)
+{
 	return g_strdup(g_hash_table_lookup(data, "channel"));
 }
 
 static void
-irc_chat_invite(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
-                gint id, const gchar *message, const gchar *name)
+irc_chat_invite(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+                PurpleConnection *gc, gint id,
+                G_GNUC_UNUSED const gchar *message, const gchar *name)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	PurpleConversation *convo;
@@ -912,8 +925,8 @@ irc_chat_invite(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
 
 
 static void
-irc_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
-               gint id)
+irc_chat_leave(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+               PurpleConnection *gc, gint id)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	PurpleConversation *convo;
@@ -935,8 +948,8 @@ irc_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
 }
 
 static gint
-irc_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *gc, gint id,
-              PurpleMessage *msg)
+irc_chat_send(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+              PurpleConnection *gc, gint id, PurpleMessage *msg)
 {
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	PurpleConversation *convo;
@@ -991,8 +1004,8 @@ static void irc_buddy_free(struct irc_buddy *ib)
 }
 
 static void
-irc_chat_set_topic(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
-                   gint id, const gchar *topic)
+irc_chat_set_topic(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
+                   PurpleConnection *gc, gint id, const gchar *topic)
 {
 	PurpleConversation *conv;
 	PurpleConversationManager *manager;
@@ -1018,7 +1031,7 @@ irc_chat_set_topic(PurpleProtocolChat *protocol_chat, PurpleConnection *gc,
 }
 
 static PurpleRoomlist *
-irc_roomlist_get_list(PurpleProtocolRoomlist *protocol_roomlist,
+irc_roomlist_get_list(G_GNUC_UNUSED PurpleProtocolRoomlist *protocol_roomlist,
                       PurpleConnection *gc)
 {
 	struct irc_conn *irc;
@@ -1039,7 +1052,7 @@ irc_roomlist_get_list(PurpleProtocolRoomlist *protocol_roomlist,
 }
 
 static void
-irc_roomlist_cancel(PurpleProtocolRoomlist *protocol_roomlist,
+irc_roomlist_cancel(G_GNUC_UNUSED PurpleProtocolRoomlist *protocol_roomlist,
                     PurpleRoomlist *list)
 {
 	PurpleAccount *account = purple_roomlist_get_account(list);
@@ -1060,22 +1073,25 @@ irc_roomlist_cancel(PurpleProtocolRoomlist *protocol_roomlist,
 }
 
 static void
-irc_keepalive(PurpleProtocolServer *protocol_server, PurpleConnection *gc) {
+irc_keepalive(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+              PurpleConnection *gc)
+{
 	struct irc_conn *irc = purple_connection_get_protocol_data(gc);
 	if ((time(NULL) - irc->recv_time) > PING_TIMEOUT)
 		irc_cmd_ping(irc, NULL, NULL, NULL);
 }
 
 static const char *
-irc_normalize(PurpleProtocolClient *client, PurpleAccount *account,
+irc_normalize(G_GNUC_UNUSED PurpleProtocolClient *client,
+              G_GNUC_UNUSED PurpleAccount *account,
               const char *who)
 {
 	return purple_normalize_nocase(who);
 }
 
 static gssize
-irc_get_max_message_size(PurpleProtocolClient *client,
-                         PurpleConversation *conv)
+irc_get_max_message_size(G_GNUC_UNUSED PurpleProtocolClient *client,
+                         G_GNUC_UNUSED PurpleConversation *conv)
 {
 	/* TODO: this static value is got from pidgin-otr, but it depends on
 	 * some factors, for example IRC channel name. */
@@ -1083,8 +1099,7 @@ irc_get_max_message_size(PurpleProtocolClient *client,
 }
 
 static void
-irc_protocol_init(IRCProtocol *self)
-{
+irc_protocol_init(G_GNUC_UNUSED IRCProtocol *self) {
 }
 
 static void
@@ -1200,8 +1215,7 @@ irc_protocol_new(void) {
 }
 
 static GPluginPluginInfo *
-irc_query(GError **error)
-{
+irc_query(G_GNUC_UNUSED GError **error) {
 	return purple_plugin_info_new(
 		"id",           "prpl-irc",
 		"name",         "IRC Protocol",
@@ -1254,7 +1268,8 @@ irc_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-irc_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+irc_unload(GPluginPlugin *plugin, G_GNUC_UNUSED gboolean shutdown,
+           GError **error)
 {
 	PurpleProtocolManager *manager = purple_protocol_manager_get_default();
 

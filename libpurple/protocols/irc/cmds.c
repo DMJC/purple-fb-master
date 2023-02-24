@@ -27,7 +27,9 @@
 
 static void irc_do_mode(struct irc_conn *irc, const char *target, const char *sign, char **ops);
 
-int irc_cmd_default(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_default(struct irc_conn *irc, const char *cmd, const char *target,
+                G_GNUC_UNUSED const char **args)
 {
 	PurpleConversation *convo;
 	PurpleConversationManager *manager;
@@ -47,7 +49,9 @@ int irc_cmd_default(struct irc_conn *irc, const char *cmd, const char *target, c
 	return 1;
 }
 
-int irc_cmd_away(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_away(struct irc_conn *irc, const char *cmd,
+             G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf, *message;
 
@@ -65,7 +69,9 @@ int irc_cmd_away(struct irc_conn *irc, const char *cmd, const char *target, cons
 	return 0;
 }
 
-int irc_cmd_ctcp(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_ctcp(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             G_GNUC_UNUSED const char *target, const char **args)
 {
 	/* we have defined args as args[0] is target and args[1] is ctcp command */
 	char *buf;
@@ -222,7 +228,9 @@ int irc_cmd_ctcp_action(struct irc_conn *irc, const char *cmd, const char *targe
 	return 1;
 }
 
-int irc_cmd_ctcp_version(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_ctcp_version(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+                     G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf;
 
@@ -236,7 +244,9 @@ int irc_cmd_ctcp_version(struct irc_conn *irc, const char *cmd, const char *targ
 	return 0;
 }
 
-int irc_cmd_invite(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_invite(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+               const char *target, const char **args)
 {
 	char *buf;
 
@@ -250,7 +260,9 @@ int irc_cmd_invite(struct irc_conn *irc, const char *cmd, const char *target, co
 	return 0;
 }
 
-int irc_cmd_join(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_join(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf;
 
@@ -267,7 +279,9 @@ int irc_cmd_join(struct irc_conn *irc, const char *cmd, const char *target, cons
 	return 0;
 }
 
-int irc_cmd_kick(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_kick(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             const char *target, const char **args)
 {
 	PurpleConversationManager *manager;
 	char *buf;
@@ -292,7 +306,9 @@ int irc_cmd_kick(struct irc_conn *irc, const char *cmd, const char *target, cons
 	return 0;
 }
 
-int irc_cmd_list(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_list(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             G_GNUC_UNUSED const char *target, G_GNUC_UNUSED const char **args)
 {
 	purple_roomlist_show_with_account(irc->account);
 
@@ -331,7 +347,9 @@ int irc_cmd_mode(struct irc_conn *irc, const char *cmd, const char *target, cons
 	return 0;
 }
 
-int irc_cmd_names(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_names(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+              const char *target, const char **args)
 {
 	char *buf;
 
@@ -345,7 +363,9 @@ int irc_cmd_names(struct irc_conn *irc, const char *cmd, const char *target, con
 	return 0;
 }
 
-int irc_cmd_nick(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_nick(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf;
 
@@ -407,7 +427,9 @@ int irc_cmd_op(struct irc_conn *irc, const char *cmd, const char *target, const 
 	return 0;
 }
 
-int irc_cmd_part(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_part(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             const char *target, const char **args)
 {
 	char *buf;
 
@@ -424,7 +446,9 @@ int irc_cmd_part(struct irc_conn *irc, const char *cmd, const char *target, cons
 	return 0;
 }
 
-int irc_cmd_ping(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_ping(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             const char *target, const char **args)
 {
 	char *stamp;
 	char *buf;
@@ -452,7 +476,9 @@ int irc_cmd_ping(struct irc_conn *irc, const char *cmd, const char *target, cons
 	return 0;
 }
 
-int irc_cmd_privmsg(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_privmsg(struct irc_conn *irc, const char *cmd,
+                G_GNUC_UNUSED const char *target, const char **args)
 {
 	int max_privmsg_arg_len;
 	const char *cur, *end;
@@ -498,7 +524,9 @@ int irc_cmd_privmsg(struct irc_conn *irc, const char *cmd, const char *target, c
 	return 0;
 }
 
-int irc_cmd_quit(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_quit(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf;
 
@@ -521,7 +549,9 @@ int irc_cmd_quit(struct irc_conn *irc, const char *cmd, const char *target, cons
 	return 0;
 }
 
-int irc_cmd_quote(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_quote(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+              G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf;
 
@@ -568,7 +598,9 @@ int irc_cmd_query(struct irc_conn *irc, const char *cmd, const char *target, con
 	return 0;
 }
 
-int irc_cmd_remove(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_remove(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+               const char *target, const char **args)
 {
 	char *buf;
 
@@ -588,7 +620,9 @@ int irc_cmd_remove(struct irc_conn *irc, const char *cmd, const char *target, co
 	return 0;
 }
 
-int irc_cmd_service(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_service(struct irc_conn *irc, const char *cmd,
+                G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *capital_cmd, *buf;
 
@@ -605,7 +639,9 @@ int irc_cmd_service(struct irc_conn *irc, const char *cmd, const char *target, c
 	return 0;
 }
 
-int irc_cmd_time(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_time(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+             G_GNUC_UNUSED const char *target, G_GNUC_UNUSED const char **args)
 {
 	char *buf;
 
@@ -616,7 +652,9 @@ int irc_cmd_time(struct irc_conn *irc, const char *cmd, const char *target, cons
 	return 0;
 }
 
-int irc_cmd_topic(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_topic(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+              const char *target, const char **args)
 {
 	PurpleConversation *chat;
 	PurpleConversationManager *manager;
@@ -659,7 +697,9 @@ int irc_cmd_topic(struct irc_conn *irc, const char *cmd, const char *target, con
 	return 0;
 }
 
-int irc_cmd_wallops(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_wallops(struct irc_conn *irc, const char *cmd,
+                G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf;
 
@@ -679,7 +719,9 @@ int irc_cmd_wallops(struct irc_conn *irc, const char *cmd, const char *target, c
 	return 0;
 }
 
-int irc_cmd_whois(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_whois(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+              G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf;
 
@@ -700,7 +742,9 @@ int irc_cmd_whois(struct irc_conn *irc, const char *cmd, const char *target, con
 	return 0;
 }
 
-int irc_cmd_whowas(struct irc_conn *irc, const char *cmd, const char *target, const char **args)
+int
+irc_cmd_whowas(struct irc_conn *irc, G_GNUC_UNUSED const char *cmd,
+               G_GNUC_UNUSED const char *target, const char **args)
 {
 	char *buf;
 

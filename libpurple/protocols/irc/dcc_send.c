@@ -58,7 +58,10 @@ G_DEFINE_DYNAMIC_TYPE(IrcXfer, irc_xfer, PURPLE_TYPE_XFER);
  * It sends the acknowledgement (in the form of a total byte count as an
  * unsigned 4 byte integer in network byte order)
  */
-static void irc_dccsend_recv_ack(PurpleXfer *xfer, const guchar *data, size_t size) {
+static void
+irc_dccsend_recv_ack(PurpleXfer *xfer, G_GNUC_UNUSED const guchar *data,
+                     G_GNUC_UNUSED size_t size)
+{
 	guint32 l;
 	gssize result;
 
@@ -155,7 +158,9 @@ void irc_dccsend_recv(struct irc_conn *irc, const char *from, const char *msg) {
  *******************************************************************/
 
 /* just in case you were wondering, this is why DCC is crappy */
-static void irc_dccsend_send_read(gpointer data, int source, PurpleInputCondition cond)
+static void
+irc_dccsend_send_read(gpointer data, int source,
+                      G_GNUC_UNUSED PurpleInputCondition cond)
 {
 	PurpleXfer *xfer = PURPLE_XFER(data);
 	IrcXfer *xd = IRC_XFER(xfer);
@@ -227,7 +232,7 @@ static gssize irc_dccsend_send_write(PurpleXfer *xfer, const guchar *buffer, siz
 }
 
 static void
-irc_dccsend_send_connected(GSocketService *service,
+irc_dccsend_send_connected(G_GNUC_UNUSED GSocketService *service,
                            GSocketConnection *connection,
                            GObject *source_object, G_GNUC_UNUSED gpointer data)
 {
@@ -320,7 +325,10 @@ irc_dccsend_send_init(PurpleXfer *xfer)
 	g_free(tmp);
 }
 
-PurpleXfer *irc_dccsend_new_xfer(PurpleProtocolXfer *prplxfer, PurpleConnection *gc, const char *who) {
+PurpleXfer *
+irc_dccsend_new_xfer(G_GNUC_UNUSED PurpleProtocolXfer *prplxfer,
+                     PurpleConnection *gc, const char *who)
+{
 	return g_object_new(
 		IRC_TYPE_XFER,
 		"account", purple_connection_get_account(gc),
@@ -363,8 +371,7 @@ irc_dccsend_init(PurpleXfer *xfer) {
  * GObject Implementation
  *****************************************************************************/
 static void
-irc_xfer_init(IrcXfer *xfer)
-{
+irc_xfer_init(G_GNUC_UNUSED IrcXfer *xfer) {
 }
 
 static void
@@ -389,8 +396,7 @@ irc_xfer_finalize(GObject *obj) {
 }
 
 static void
-irc_xfer_class_finalize(IrcXferClass *klass) {
-
+irc_xfer_class_finalize(G_GNUC_UNUSED IrcXferClass *klass) {
 }
 
 static void

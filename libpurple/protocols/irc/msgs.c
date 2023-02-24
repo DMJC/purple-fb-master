@@ -120,7 +120,9 @@ static void irc_connected(struct irc_conn *irc, const char *nick)
 }
 
 /* This function is ugly, but it's really an error handler. */
-void irc_msg_default(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_default(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                G_GNUC_UNUSED const char *from, char **args)
 {
 	int i;
 	const char *end, *cur, *numeric = NULL;
@@ -196,7 +198,9 @@ void irc_msg_default(struct irc_conn *irc, const char *name, const char *from, c
 	g_free(clean);
 }
 
-void irc_msg_features(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_features(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                 G_GNUC_UNUSED const char *from, char **args)
 {
 	gchar **features;
 	int i;
@@ -213,7 +217,9 @@ void irc_msg_features(struct irc_conn *irc, const char *name, const char *from, 
 	g_strfreev(features);
 }
 
-void irc_msg_luser(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_luser(struct irc_conn *irc, const char *name,
+              G_GNUC_UNUSED const char *from, char **args)
 {
 	if (purple_strequal(name, "251")) {
 		/* 251 is required, so we pluck our nick from here and
@@ -244,7 +250,9 @@ void irc_msg_away(struct irc_conn *irc, const char *name, const char *from, char
 	}
 }
 
-void irc_msg_badmode(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_badmode(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 
@@ -254,7 +262,9 @@ void irc_msg_badmode(struct irc_conn *irc, const char *name, const char *from, c
 		purple_request_cpar_from_connection(gc));
 }
 
-void irc_msg_ban(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_ban(struct irc_conn *irc, const char *name,
+            G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConversation *chat;
 	PurpleConversationManager *manager;
@@ -293,7 +303,9 @@ void irc_msg_ban(struct irc_conn *irc, const char *name, const char *from, char 
 	}
 }
 
-void irc_msg_banned(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_banned(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+               G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	char *buf;
@@ -306,7 +318,9 @@ void irc_msg_banned(struct irc_conn *irc, const char *name, const char *from, ch
 	g_free(buf);
 }
 
-void irc_msg_banfull(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_banfull(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConversation *chat;
 	PurpleConversationManager *manager;
@@ -326,7 +340,9 @@ void irc_msg_banfull(struct irc_conn *irc, const char *name, const char *from, c
 	g_free(buf);
 }
 
-void irc_msg_chanmode(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_chanmode(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                 G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConversation *chat;
 	PurpleConversationManager *manager;
@@ -346,7 +362,9 @@ void irc_msg_chanmode(struct irc_conn *irc, const char *name, const char *from, 
 	g_free(buf);
 }
 
-void irc_msg_whois(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_whois(struct irc_conn *irc, const char *name,
+              G_GNUC_UNUSED const char *from, char **args)
 {
 	if (!irc->whois.nick) {
 		purple_debug_warning("irc", "Unexpected %s reply for %s",
@@ -391,7 +409,9 @@ void irc_msg_whois(struct irc_conn *irc, const char *name, const char *from, cha
 	}
 }
 
-void irc_msg_endwhois(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_endwhois(struct irc_conn *irc, const char *name,
+                 G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc;
 	char *tmp, *tmp2;
@@ -478,7 +498,9 @@ void irc_msg_endwhois(struct irc_conn *irc, const char *name, const char *from, 
 	memset(&irc->whois, 0, sizeof(irc->whois));
 }
 
-void irc_msg_who(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_who(struct irc_conn *irc, const char *name,
+            G_GNUC_UNUSED const char *from, char **args)
 {
 	if (purple_strequal(name, "352")) {
 		PurpleConversation *chat;
@@ -532,7 +554,9 @@ void irc_msg_who(struct irc_conn *irc, const char *name, const char *from, char 
 	}
 }
 
-void irc_msg_list(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_list(struct irc_conn *irc, const char *name,
+             G_GNUC_UNUSED const char *from, char **args)
 {
 	if (!irc->roomlist)
 		return;
@@ -625,7 +649,9 @@ void irc_msg_topic(struct irc_conn *irc, const char *name, const char *from, cha
 	g_free(topic);
 }
 
-void irc_msg_topicinfo(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_topicinfo(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                  G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConversation *chat;
 	PurpleConversationManager *manager;
@@ -667,7 +693,9 @@ void irc_msg_topicinfo(struct irc_conn *irc, const char *name, const char *from,
 	g_date_time_unref(local);
 }
 
-void irc_msg_unknown(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_unknown(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	char *buf;
@@ -681,7 +709,9 @@ void irc_msg_unknown(struct irc_conn *irc, const char *name, const char *from, c
 	g_free(buf);
 }
 
-void irc_msg_names(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_names(struct irc_conn *irc, const char *name,
+              G_GNUC_UNUSED const char *from, char **args)
 {
 	char *names, *cur, *end, *tmp, *msg;
 
@@ -758,7 +788,9 @@ void irc_msg_names(struct irc_conn *irc, const char *name, const char *from, cha
 	}
 }
 
-void irc_msg_motd(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_motd(struct irc_conn *irc, const char *name,
+             G_GNUC_UNUSED const char *from, char **args)
 {
 	char *escaped;
 
@@ -800,7 +832,9 @@ void irc_msg_motd(struct irc_conn *irc, const char *name, const char *from, char
 	g_free(escaped);
 }
 
-void irc_msg_time(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_time(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc;
 
@@ -813,7 +847,9 @@ void irc_msg_time(struct irc_conn *irc, const char *name, const char *from, char
 		purple_request_cpar_from_connection(gc));
 }
 
-void irc_msg_nochan(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_nochan(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+               G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 
@@ -823,7 +859,9 @@ void irc_msg_nochan(struct irc_conn *irc, const char *name, const char *from, ch
 		purple_request_cpar_from_connection(gc));
 }
 
-void irc_msg_nonick(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_nonick(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+               G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc;
 	PurpleConversation *convo;
@@ -849,7 +887,9 @@ void irc_msg_nonick(struct irc_conn *irc, const char *name, const char *from, ch
 	}
 }
 
-void irc_msg_nosend(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_nosend(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+               G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc;
 	PurpleConversation *chat;
@@ -869,7 +909,9 @@ void irc_msg_nosend(struct irc_conn *irc, const char *name, const char *from, ch
 	}
 }
 
-void irc_msg_notinchan(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_notinchan(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                  G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConversation *chat;
 	PurpleConversationManager *manager;
@@ -887,7 +929,9 @@ void irc_msg_notinchan(struct irc_conn *irc, const char *name, const char *from,
 	}
 }
 
-void irc_msg_notop(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_notop(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+              G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConversation *chat;
 	PurpleConversationManager *manager;
@@ -902,7 +946,9 @@ void irc_msg_notop(struct irc_conn *irc, const char *name, const char *from, cha
 	purple_conversation_write_system_message(chat, args[2], 0);
 }
 
-void irc_msg_invite(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_invite(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+               const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	GHashTable *components;
@@ -919,7 +965,9 @@ void irc_msg_invite(struct irc_conn *irc, const char *name, const char *from, ch
 	g_free(nick);
 }
 
-void irc_msg_inviteonly(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_inviteonly(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                   G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	char *buf;
@@ -932,7 +980,9 @@ void irc_msg_inviteonly(struct irc_conn *irc, const char *name, const char *from
 	g_free(buf);
 }
 
-void irc_msg_ison(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_ison(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             G_GNUC_UNUSED const char *from, char **args)
 {
 	char **nicks;
 	struct irc_buddy *ib;
@@ -971,7 +1021,9 @@ static void irc_buddy_status(char *name, struct irc_buddy *ib, struct irc_conn *
 	}
 }
 
-void irc_msg_join(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_join(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	PurpleConversation *chat;
@@ -1040,7 +1092,9 @@ void irc_msg_join(struct irc_conn *irc, const char *name, const char *from, char
 	g_free(nick);
 }
 
-void irc_msg_kick(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_kick(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	PurpleConversation *chat;
@@ -1075,7 +1129,9 @@ void irc_msg_kick(struct irc_conn *irc, const char *name, const char *from, char
 	g_free(nick);
 }
 
-void irc_msg_mode(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_mode(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             const char *from, char **args)
 {
 	char *nick = irc_mask_nick(from), *buf;
 
@@ -1146,7 +1202,9 @@ void irc_msg_mode(struct irc_conn *irc, const char *name, const char *from, char
 	g_free(nick);
 }
 
-void irc_msg_nick(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_nick(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	PurpleConversation *im;
@@ -1183,7 +1241,9 @@ void irc_msg_nick(struct irc_conn *irc, const char *name, const char *from, char
 	g_free(nick);
 }
 
-void irc_msg_badnick(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_badnick(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                G_GNUC_UNUSED const char *from, G_GNUC_UNUSED char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	if (purple_connection_get_state(gc) == PURPLE_CONNECTION_STATE_CONNECTED) {
@@ -1200,7 +1260,9 @@ void irc_msg_badnick(struct irc_conn *irc, const char *name, const char *from, c
 	}
 }
 
-void irc_msg_nickused(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_nickused(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                 G_GNUC_UNUSED const char *from, char **args)
 {
 	char *newnick, *buf, *end;
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
@@ -1246,7 +1308,9 @@ void irc_msg_notice(struct irc_conn *irc, const char *name, const char *from, ch
 	irc_msg_handle_privmsg(irc, name, from, args[0], args[1], TRUE);
 }
 
-void irc_msg_nochangenick(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_nochangenick(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                     G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 
@@ -1257,7 +1321,9 @@ void irc_msg_nochangenick(struct irc_conn *irc, const char *name, const char *fr
 		purple_request_cpar_from_connection(gc));
 }
 
-void irc_msg_part(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_part(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	PurpleConversation *chat;
@@ -1296,7 +1362,9 @@ void irc_msg_part(struct irc_conn *irc, const char *name, const char *from, char
 	g_free(nick);
 }
 
-void irc_msg_ping(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_ping(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             G_GNUC_UNUSED const char *from, char **args)
 {
 	char *buf;
 
@@ -1305,7 +1373,9 @@ void irc_msg_ping(struct irc_conn *irc, const char *name, const char *from, char
 	g_free(buf);
 }
 
-void irc_msg_pong(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_pong(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConversation *convo;
 	PurpleConversationManager *manager;
@@ -1350,7 +1420,10 @@ void irc_msg_privmsg(struct irc_conn *irc, const char *name, const char *from, c
 	irc_msg_handle_privmsg(irc, name, from, args[0], args[1], FALSE);
 }
 
-static void irc_msg_handle_privmsg(struct irc_conn *irc, const char *name, const char *from, const char *to, const char *rawmsg, gboolean notice)
+static void
+irc_msg_handle_privmsg(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                       const char *from, const char *to, const char *rawmsg,
+                       gboolean notice)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	PurpleConversation *chat;
@@ -1399,7 +1472,9 @@ static void irc_msg_handle_privmsg(struct irc_conn *irc, const char *name, const
 	g_free(nick);
 }
 
-void irc_msg_regonly(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_regonly(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	PurpleConversationManager *manager;
@@ -1423,7 +1498,9 @@ void irc_msg_regonly(struct irc_conn *irc, const char *name, const char *from, c
 	g_free(msg);
 }
 
-void irc_msg_quit(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_quit(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+             const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	struct irc_buddy *ib;
@@ -1444,7 +1521,9 @@ void irc_msg_quit(struct irc_conn *irc, const char *name, const char *from, char
 	g_free(data[0]);
 }
 
-void irc_msg_unavailable(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_unavailable(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                    G_GNUC_UNUSED const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 
@@ -1453,7 +1532,9 @@ void irc_msg_unavailable(struct irc_conn *irc, const char *name, const char *fro
 		purple_request_cpar_from_connection(gc));
 }
 
-void irc_msg_wallops(struct irc_conn *irc, const char *name, const char *from, char **args)
+void
+irc_msg_wallops(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                const char *from, char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 	char *nick, *msg;
@@ -1497,7 +1578,7 @@ irc_sasl_cb_secret(sasl_conn_t *conn, void *ctx, int id, sasl_secret_t **secret)
 }
 
 static int
-irc_sasl_cb_log(void *context, int level, const char *message)
+irc_sasl_cb_log(G_GNUC_UNUSED void *context, int level, const char *message)
 {
 	if(level <= SASL_LOG_TRACE)
 		purple_debug_info("sasl", "%s\n", message);
@@ -1632,7 +1713,8 @@ irc_auth_start_cyrus(struct irc_conn *irc)
 
 /* SASL authentication */
 void
-irc_msg_cap(struct irc_conn *irc, const char *name, const char *from, char **args)
+irc_msg_cap(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+            G_GNUC_UNUSED const char *from, char **args)
 {
 	int ret = 0;
 	int id = 0;
@@ -1664,22 +1746,22 @@ irc_msg_cap(struct irc_conn *irc, const char *name, const char *from, char **arg
 	irc->sasl_cb = g_new0(sasl_callback_t, 5);
 
 	irc->sasl_cb[id].id = SASL_CB_AUTHNAME;
-	irc->sasl_cb[id].proc = (int (*)(void))irc_sasl_cb_simple; /* sasl_getsimple_t */
+	irc->sasl_cb[id].proc = (int (*)(void))(gpointer)irc_sasl_cb_simple; /* sasl_getsimple_t */
 	irc->sasl_cb[id].context = (void *)irc;
 	id++;
 
 	irc->sasl_cb[id].id = SASL_CB_USER;
-	irc->sasl_cb[id].proc = (int (*)(void))irc_sasl_cb_simple; /* sasl_getsimple_t */
+	irc->sasl_cb[id].proc = (int (*)(void))(gpointer)irc_sasl_cb_simple; /* sasl_getsimple_t */
 	irc->sasl_cb[id].context = (void *)irc;
 	id++;
 
 	irc->sasl_cb[id].id = SASL_CB_PASS;
-	irc->sasl_cb[id].proc = (int (*)(void))irc_sasl_cb_secret; /* sasl_getsecret_t */
+	irc->sasl_cb[id].proc = (int (*)(void))(gpointer)irc_sasl_cb_secret; /* sasl_getsecret_t */
 	irc->sasl_cb[id].context = (void *)irc;
 	id++;
 
 	irc->sasl_cb[id].id = SASL_CB_LOG;
-	irc->sasl_cb[id].proc = (int (*)(void))irc_sasl_cb_log; /* sasl_log_t */
+	irc->sasl_cb[id].proc = (int (*)(void))(gpointer)irc_sasl_cb_log; /* sasl_log_t */
 	irc->sasl_cb[id].context = (void *)irc;
 	id++;
 
@@ -1764,13 +1846,15 @@ irc_msg_auth(struct irc_conn *irc, char *arg)
 }
 
 void
-irc_msg_authenticate(struct irc_conn *irc, const char *name, const char *from, char **args)
+irc_msg_authenticate(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                     G_GNUC_UNUSED const char *from, char **args)
 {
 	irc_msg_auth(irc, args[0]);
 }
 
 void
-irc_msg_authok(struct irc_conn *irc, const char *name, const char *from, char **args)
+irc_msg_authok(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+               G_GNUC_UNUSED const char *from, G_GNUC_UNUSED char **args)
 {
 	char *buf;
 
@@ -1785,7 +1869,8 @@ irc_msg_authok(struct irc_conn *irc, const char *name, const char *from, char **
 }
 
 void
-irc_msg_authtryagain(struct irc_conn *irc, const char *name, const char *from, char **args)
+irc_msg_authtryagain(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                     G_GNUC_UNUSED const char *from, G_GNUC_UNUSED char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 
@@ -1834,7 +1919,9 @@ irc_msg_authtryagain(struct irc_conn *irc, const char *name, const char *from, c
 }
 
 void
-irc_msg_authfail(struct irc_conn *irc, const char *name, const char *from, char **args)
+irc_msg_authfail(struct irc_conn *irc, G_GNUC_UNUSED const char *name,
+                 G_GNUC_UNUSED const char *from,
+                 G_GNUC_UNUSED char **args)
 {
 	PurpleConnection *gc = purple_account_get_connection(irc->account);
 

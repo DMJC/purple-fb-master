@@ -173,8 +173,10 @@ static struct _irc_user_cmd {
 	{ NULL, NULL, NULL, NULL }
 };
 
-static PurpleCmdRet irc_parse_purple_cmd(PurpleConversation *conv, const gchar *cmd,
-                                        gchar **args, gchar **error, void *data)
+static PurpleCmdRet
+irc_parse_purple_cmd(PurpleConversation *conv, const gchar *cmd,
+                     gchar **args, G_GNUC_UNUSED gchar **error,
+                     G_GNUC_UNUSED gpointer data)
 {
 	PurpleConnection *gc;
 	struct irc_conn *irc;
@@ -238,7 +240,7 @@ void irc_register_commands(void)
 
 void irc_unregister_commands(void)
 {
-	g_slist_free_full(cmds, (GDestroyNotify)purple_cmd_unregister);
+	g_slist_free_full(cmds, (GDestroyNotify)(gpointer)purple_cmd_unregister);
 }
 
 static char *irc_send_convert(struct irc_conn *irc, const char *string)
@@ -631,7 +633,8 @@ void irc_cmd_table_build(struct irc_conn *irc)
 	}
 }
 
-char *irc_format(struct irc_conn *irc, const char *format, ...)
+char *
+irc_format(G_GNUC_UNUSED struct irc_conn *irc, const char *format, ...)
 {
 	GString *string = g_string_new("");
 	char *tok, *tmp;
@@ -650,7 +653,7 @@ char *irc_format(struct irc_conn *irc, const char *format, ...)
 			break;
 		case ':':
 			g_string_append_c(string, ':');
-			/* no break! */
+			G_GNUC_FALLTHROUGH;
 		case 't':
 		case 'n':
 		case 'c':
@@ -804,7 +807,8 @@ void irc_parse_msg(struct irc_conn *irc, char *input)
 	g_free(from);
 }
 
-static void irc_parse_error_cb(struct irc_conn *irc, char *input)
+static void
+irc_parse_error_cb(G_GNUC_UNUSED struct irc_conn *irc, char *input)
 {
 	char *clean;
 	/* This really should be escaped somehow that you can tell what
