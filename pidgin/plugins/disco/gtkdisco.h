@@ -43,12 +43,10 @@ struct _PidginDiscoDialog {
 	GSimpleAction *add_action;
 	XmppDiscoService *selected;
 
-	GtkTreeView *tree;
-	GtkTreeStore *model;
+	GtkSortListModel *sorter;
+	GListStore *root;
 	PurpleAccount *account;
 	PidginDiscoList *discolist;
-
-	GtkPopoverMenu *popover;
 
 	gpointer prompt_handle;
 };

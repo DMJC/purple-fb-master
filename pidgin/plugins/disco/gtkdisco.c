@@ -51,7 +51,6 @@ pidgin_disco_list_new(void) {
 static void
 pidgin_disco_list_destroy(PidginDiscoList *list)
 {
-	g_hash_table_destroy(list->services);
 	if (list->dialog && list->dialog->discolist == list) {
 		list->dialog->discolist = NULL;
 	}
@@ -181,11 +180,9 @@ activate_browse(G_GNUC_UNUSED GSimpleAction *action,
 	g_simple_action_set_enabled(dialog->register_action, FALSE);
 
 	g_clear_pointer(&dialog->discolist, pidgin_disco_list_unref);
-	gtk_tree_store_clear(dialog->model);
+	g_list_store_remove_all(dialog->root);
 
 	pdl = dialog->discolist = pidgin_disco_list_new();
-	pdl->services = g_hash_table_new_full(NULL, NULL, NULL,
-			(GDestroyNotify)gtk_tree_row_reference_free);
 	pdl->pc = pc;
 	/* We keep a copy... */
 	pidgin_disco_list_ref(pdl);
@@ -245,64 +242,30 @@ activate_add_to_blist(G_GNUC_UNUSED GSimpleAction *action,
 	}
 }
 
-static gboolean
-service_click_cb(G_GNUC_UNUSED GtkGestureClick *click,
-                 G_GNUC_UNUSED gint n_press,
-                 gdouble x, gdouble y, gpointer data)
+static void
+selection_changed_cb(GtkSelectionModel *self, G_GNUC_UNUSED guint position,
+                     G_GNUC_UNUSED guint n_items, gpointer data)
 {
 	PidginDiscoDialog *dialog = data;
-	XmppDiscoService *service;
-
-	GtkTreePath *path;
-	GtkTreeIter iter;
-	GValue val;
-
-	GdkRectangle rect;
-
-	/* Figure out what was clicked */
-	if (!gtk_tree_view_get_path_at_pos(dialog->tree, (gint)x, (gint)y, &path,
-	                                   NULL, NULL, NULL))
-	{
-		return FALSE;
-	}
-	gtk_tree_model_get_iter(GTK_TREE_MODEL(dialog->model), &iter, path);
-	gtk_tree_path_free(path);
-	val.g_type = 0;
-	gtk_tree_model_get_value(GTK_TREE_MODEL(dialog->model), &iter,
-	                         SERVICE_COLUMN, &val);
-	service = g_value_get_pointer(&val);
-
-	if (!service) {
-		return FALSE;
-	}
-
-	gtk_tree_view_convert_bin_window_to_widget_coords(dialog->tree,
-	                                                  (gint)x, (gint)y,
-	                                                  &rect.x, &rect.y);
-	rect.width = rect.height = 1;
-
-	gtk_popover_set_pointing_to(GTK_POPOVER(dialog->popover), &rect);
-	gtk_popover_popup(GTK_POPOVER(dialog->popover));
-
-	return FALSE;
-}
-
-static void
-selection_changed_cb(GtkTreeSelection *selection, PidginDiscoDialog *dialog)
-{
-	GtkTreeIter iter;
-	GValue val;
+	GtkTreeListRow *row = NULL;
 	gboolean allow_add = FALSE, allow_register = FALSE;
 
-	if (gtk_tree_selection_get_selected(selection, NULL, &iter)) {
-		val.g_type = 0;
-		gtk_tree_model_get_value(GTK_TREE_MODEL(dialog->model), &iter,
-		                         SERVICE_COLUMN, &val);
-		dialog->selected = g_value_get_pointer(&val);
-		if (dialog->selected != NULL) {
-			XmppDiscoServiceFlags flags = xmpp_disco_service_get_flags(dialog->selected);
+	/* The passed in position and n_items gives the *range* of selections that
+	 * have changed, so just re-query it since GtkSingleSelection has exactly
+	 * one. */
+	row = gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(self));
+	if(row != NULL) {
+		dialog->selected = gtk_tree_list_row_get_item(row);
+		if(XMPP_DISCO_IS_SERVICE(dialog->selected)) {
+			XmppDiscoServiceFlags flags;
+
+			flags = xmpp_disco_service_get_flags(dialog->selected);
 			allow_add = (flags & XMPP_DISCO_ADD) != 0;
 			allow_register = (flags & XMPP_DISCO_REGISTER) != 0;
+
+			/* gtk_tree_list_row_get_item returns a ref, but this struct isn't
+			 * supposed to hold one, as the model holds on to it. */
+			g_object_unref(dialog->selected);
 		}
 	}
 
@@ -310,54 +273,73 @@ selection_changed_cb(GtkTreeSelection *selection, PidginDiscoDialog *dialog)
 	g_simple_action_set_enabled(dialog->register_action, allow_register);
 }
 
-static void
-row_expanded_cb(G_GNUC_UNUSED GtkTreeView *tree, GtkTreeIter *arg1,
-                G_GNUC_UNUSED GtkTreePath *rg2, gpointer user_data)
-{
-	PidginDiscoDialog *dialog = user_data;
-	XmppDiscoService *service;
-	GValue val;
+static GListModel *
+service_create_child_model_cb(GObject *item, G_GNUC_UNUSED gpointer data) {
+	XmppDiscoService *service = XMPP_DISCO_SERVICE(item);
+	GListModel *model = NULL;
 
-	val.g_type = 0;
-	gtk_tree_model_get_value(GTK_TREE_MODEL(dialog->model), arg1,
-	                         SERVICE_COLUMN, &val);
-	service = g_value_get_pointer(&val);
-	xmpp_disco_service_expand(service);
+	model = xmpp_disco_service_get_child_model(service);
+	if(G_IS_LIST_MODEL(model)) {
+		/* Always return a new ref, as the caller takes ownership. */
+		g_object_ref(model);
+	}
+
+	return model;
 }
 
 static void
-row_activated_cb(G_GNUC_UNUSED GtkTreeView *tree_view,
-                 GtkTreePath *path,
-                 G_GNUC_UNUSED GtkTreeViewColumn *column,
-                 gpointer user_data)
+row_expanded_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
+                G_GNUC_UNUSED gpointer data)
 {
-	PidginDiscoDialog *dialog = user_data;
-	GtkTreeIter iter;
-	XmppDiscoService *service;
-	XmppDiscoServiceFlags flags;
-	GValue val;
+	GtkTreeListRow *row = GTK_TREE_LIST_ROW(obj);
 
-	if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(dialog->model), &iter, path)) {
-		return;
+	if(gtk_tree_list_row_get_expanded(row)) {
+		XmppDiscoService *service = gtk_tree_list_row_get_item(row);
+		if(XMPP_DISCO_IS_SERVICE(service)) {
+			xmpp_disco_service_expand(service);
+		}
+		g_clear_object(&service);
 	}
+}
 
-	val.g_type = 0;
-	gtk_tree_model_get_value(GTK_TREE_MODEL(dialog->model), &iter,
-	                         SERVICE_COLUMN, &val);
-	service = g_value_get_pointer(&val);
+static void
+list_row_notify_cb(GObject *obj, GParamSpec *pspec, gpointer data) {
+	GtkTreeListRow *row = NULL;
+
+	row = gtk_tree_expander_get_list_row(GTK_TREE_EXPANDER(obj));
+	if(GTK_IS_TREE_LIST_ROW(row)) {
+		g_signal_connect(row, "notify::expanded", G_CALLBACK(row_expanded_cb),
+		                 NULL);
+	}
+}
+
+static void
+row_activated_cb(GtkColumnView *self, guint position, gpointer user_data) {
+	PidginDiscoDialog *dialog = user_data;
+	GtkSelectionModel *model = NULL;
+	GtkTreeListRow *row = NULL;
+	XmppDiscoService *service = NULL;
+	XmppDiscoServiceFlags flags;
+
+	model = gtk_column_view_get_model(self);
+	row = g_list_model_get_item(G_LIST_MODEL(model), position);
+	service = gtk_tree_list_row_get_item(row);
 
 	flags = xmpp_disco_service_get_flags(service);
 	if((flags & XMPP_DISCO_BROWSE) != 0) {
-		if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(dialog->tree), path)) {
-			gtk_tree_view_collapse_row(GTK_TREE_VIEW(dialog->tree), path);
+		if(gtk_tree_list_row_get_expanded(row)) {
+			gtk_tree_list_row_set_expanded(row, FALSE);
 		} else {
-			gtk_tree_view_expand_row(GTK_TREE_VIEW(dialog->tree), path, FALSE);
+			gtk_tree_list_row_set_expanded(row, TRUE);
 		}
 	} else if((flags & XMPP_DISCO_REGISTER) != 0) {
 		g_action_activate(G_ACTION(dialog->register_action), NULL);
 	} else if((flags & XMPP_DISCO_ADD) != 0) {
 		g_action_activate(G_ACTION(dialog->add_action), NULL);
 	}
+
+	g_clear_object(&service);
+	g_clear_object(&row);
 }
 
 static void
@@ -393,104 +375,6 @@ activate_stop(G_GNUC_UNUSED GSimpleAction *action,
 	pidgin_disco_list_set_in_progress(dialog->discolist, FALSE);
 }
 
-static gboolean
-disco_query_tooltip(GtkWidget *widget, int x, int y, gboolean keyboard_mode,
-                    GtkTooltip *tooltip, gpointer data)
-{
-	PidginDiscoDialog *dialog = data;
-	GtkTreePath *path = NULL;
-	GtkTreeIter iter;
-	XmppDiscoService *service;
-	GValue val;
-	const char *type = NULL;
-	char *markup, *jid, *name, *desc = NULL;
-
-	if (keyboard_mode) {
-		GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
-		if (!gtk_tree_selection_get_selected(selection, NULL, &iter)) {
-			return FALSE;
-		}
-		path = gtk_tree_model_get_path(GTK_TREE_MODEL(dialog->model), &iter);
-	} else {
-		gint bx, by;
-
-		gtk_tree_view_convert_widget_to_bin_window_coords(GTK_TREE_VIEW(widget),
-		                                                  x, y, &bx, &by);
-		gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget), bx, by, &path,
-		                              NULL, NULL, NULL);
-		if (path == NULL) {
-			return FALSE;
-		}
-
-		if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(dialog->model), &iter, path)) {
-			gtk_tree_path_free(path);
-			return FALSE;
-		}
-	}
-
-	val.g_type = 0;
-	gtk_tree_model_get_value(GTK_TREE_MODEL(dialog->model), &iter,
-	                         SERVICE_COLUMN, &val);
-	service = g_value_get_pointer(&val);
-	if (!service) {
-		gtk_tree_path_free(path);
-		return FALSE;
-	}
-
-	switch(xmpp_disco_service_get_service_type(service)) {
-		case XMPP_DISCO_SERVICE_TYPE_UNSET:
-			type = _("Unknown");
-			break;
-
-		case XMPP_DISCO_SERVICE_TYPE_GATEWAY:
-			type = _("Gateway");
-			break;
-
-		case XMPP_DISCO_SERVICE_TYPE_DIRECTORY:
-			type = _("Directory");
-			break;
-
-		case XMPP_DISCO_SERVICE_TYPE_CHAT:
-			type = _("Chat");
-			break;
-
-		case XMPP_DISCO_SERVICE_TYPE_PUBSUB_COLLECTION:
-			type = _("PubSub Collection");
-			break;
-
-		case XMPP_DISCO_SERVICE_TYPE_PUBSUB_LEAF:
-			type = _("PubSub Leaf");
-			break;
-
-		case XMPP_DISCO_SERVICE_TYPE_OTHER:
-			type = _("Other");
-			break;
-	}
-
-	name = g_markup_escape_text(xmpp_disco_service_get_name(service), -1);
-	jid = g_markup_escape_text(xmpp_disco_service_get_jid(service), -1);
-	if(xmpp_disco_service_get_description(service) != NULL) {
-		desc = g_markup_escape_text(xmpp_disco_service_get_description(service),
-		                            -1);
-	}
-
-	markup = g_strdup_printf("<span size='x-large' weight='bold'>%s</span>\n<b>%s:</b> %s%s%s",
-	                         name, type, jid,
-	                         desc != NULL ? _("\n<b>Description:</b> ") : "",
-	                         desc != NULL ? desc : "");
-
-	gtk_tooltip_set_markup(tooltip, markup);
-	gtk_tree_view_set_tooltip_row(GTK_TREE_VIEW(widget), tooltip, path);
-
-	g_free(markup);
-	g_free(jid);
-	g_free(name);
-	g_free(desc);
-	gtk_tree_path_free(path);
-
-	return TRUE;
-}
-
 void pidgin_disco_signed_off_cb(PurpleConnection *pc)
 {
 	GList *node;
@@ -506,7 +390,7 @@ void pidgin_disco_signed_off_cb(PurpleConnection *pc)
 				pidgin_disco_list_set_in_progress(list, FALSE);
 			}
 
-			gtk_tree_store_clear(dialog->model);
+			g_list_store_remove_all(dialog->root);
 
 			pidgin_disco_list_unref(list);
 			dialog->discolist = NULL;
@@ -550,18 +434,13 @@ pidgin_disco_dialog_class_init(PidginDiscoDialogClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, PidginDiscoDialog,
 	                                     progress);
 	gtk_widget_class_bind_template_child(widget_class, PidginDiscoDialog,
-	                                     tree);
-	gtk_widget_class_bind_template_child(widget_class, PidginDiscoDialog,
-	                                     model);
-	gtk_widget_class_bind_template_child(widget_class, PidginDiscoDialog,
-	                                     popover);
+	                                     sorter);
 
 	gtk_widget_class_bind_template_callback(widget_class, destroy_win_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        dialog_select_account_cb);
 	gtk_widget_class_bind_template_callback(widget_class, row_activated_cb);
-	gtk_widget_class_bind_template_callback(widget_class, row_expanded_cb);
-	gtk_widget_class_bind_template_callback(widget_class, service_click_cb);
+	gtk_widget_class_bind_template_callback(widget_class, list_row_notify_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        selection_changed_cb);
 }
@@ -574,6 +453,7 @@ pidgin_disco_dialog_class_finalize(G_GNUC_UNUSED PidginDiscoDialogClass *klass)
 static void
 pidgin_disco_dialog_init(PidginDiscoDialog *dialog)
 {
+	GtkTreeListModel *model = NULL;
 	GActionEntry entries[] = {
 		{ .name = "stop", .activate = activate_stop },
 		{ .name = "browse", .activate = activate_browse },
@@ -590,10 +470,6 @@ pidgin_disco_dialog_init(PidginDiscoDialog *dialog)
 	/* accounts dropdown list */
 	dialog->account = pidgin_account_chooser_get_selected(
 		PIDGIN_ACCOUNT_CHOOSER(dialog->account_chooser));
-
-	gtk_widget_set_has_tooltip(GTK_WIDGET(dialog->tree), TRUE);
-	g_signal_connect(G_OBJECT(dialog->tree), "query-tooltip",
-	                 G_CALLBACK(disco_query_tooltip), dialog);
 
 	action_group = g_simple_action_group_new();
 	action_map = G_ACTION_MAP(action_group);
@@ -618,6 +494,13 @@ pidgin_disco_dialog_init(PidginDiscoDialog *dialog)
 
 	gtk_widget_insert_action_group(GTK_WIDGET(dialog), "disco",
 	                               G_ACTION_GROUP(action_group));
+
+	dialog->root = g_list_store_new(XMPP_DISCO_TYPE_SERVICE);
+	model = gtk_tree_list_model_new(G_LIST_MODEL(dialog->root), FALSE, FALSE,
+	                                (GtkTreeListModelCreateModelFunc)service_create_child_model_cb,
+	                                NULL, NULL);
+	gtk_sort_list_model_set_model(dialog->sorter, G_LIST_MODEL(model));
+	g_object_unref(model);
 }
 
 /******************************************************************************
@@ -638,86 +521,23 @@ pidgin_disco_dialog_new(void)
 	return dialog;
 }
 
-void pidgin_disco_add_service(PidginDiscoList *pdl, XmppDiscoService *service, XmppDiscoService *parent)
+void
+pidgin_disco_add_service(PidginDiscoList *pdl, XmppDiscoService *service,
+                         XmppDiscoService *parent)
 {
 	PidginDiscoDialog *dialog;
-	GtkTreeIter iter, parent_iter, child;
-	char *icon_name = NULL;
-	gboolean append = TRUE;
 
 	dialog = pdl->dialog;
 	g_return_if_fail(dialog != NULL);
 
-	if (service != NULL) {
-		purple_debug_info("xmppdisco", "Adding service \"%s\"",
-		                  xmpp_disco_service_get_name(service));
-	} else {
-		purple_debug_info("xmppdisco", "Service \"%s\" has no children",
-		                  xmpp_disco_service_get_name(parent));
-	}
+	purple_debug_info("xmppdisco", "Adding service \"%s\" to %p",
+	                  xmpp_disco_service_get_name(service), parent);
 
 	gtk_progress_bar_pulse(GTK_PROGRESS_BAR(dialog->progress));
 
-	if (parent) {
-		GtkTreeRowReference *rr;
-		GtkTreePath *path;
-
-		rr = g_hash_table_lookup(pdl->services, parent);
-		path = gtk_tree_row_reference_get_path(rr);
-		if (path) {
-			gtk_tree_model_get_iter(GTK_TREE_MODEL(dialog->model),
-			                        &parent_iter, path);
-			gtk_tree_path_free(path);
-
-			if (gtk_tree_model_iter_children(
-			            GTK_TREE_MODEL(dialog->model), &child,
-			            &parent_iter)) {
-				PidginDiscoList *tmp;
-				gtk_tree_model_get(
-				        GTK_TREE_MODEL(dialog->model), &child,
-				        SERVICE_COLUMN, &tmp, -1);
-				if (!tmp) {
-					append = FALSE;
-				}
-			}
-		}
-	}
-
-	if (service == NULL) {
-		if (parent != NULL && !append) {
-			gtk_tree_store_remove(dialog->model, &child);
-		}
-		return;
-	}
-
-	if (append) {
-		gtk_tree_store_append(dialog->model, &iter,
-		                      (parent ? &parent_iter : NULL));
+	if(parent != NULL) {
+		xmpp_disco_service_add_child(parent, service);
 	} else {
-		iter = child;
+		g_list_store_append(dialog->root, service);
 	}
-
-	if((xmpp_disco_service_get_flags(service) & XMPP_DISCO_BROWSE) != 0) {
-		GtkTreeRowReference *rr;
-		GtkTreePath *path;
-
-		gtk_tree_store_append(dialog->model, &child, &iter);
-
-		path = gtk_tree_model_get_path(GTK_TREE_MODEL(dialog->model),
-		                               &iter);
-		rr = gtk_tree_row_reference_new(GTK_TREE_MODEL(dialog->model),
-		                                path);
-		g_hash_table_insert(pdl->services, service, rr);
-		gtk_tree_path_free(path);
-	}
-
-	icon_name = xmpp_disco_service_get_icon_name(service);
-
-	gtk_tree_store_set(dialog->model, &iter, ICON_NAME_COLUMN, icon_name,
-	                   NAME_COLUMN, xmpp_disco_service_get_name(service),
-	                   DESCRIPTION_COLUMN, xmpp_disco_service_get_description(service),
-	                   SERVICE_COLUMN, service, -1);
-
-	g_free(icon_name);
 }
-

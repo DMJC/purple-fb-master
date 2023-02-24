@@ -108,4 +108,7 @@ void xmpp_disco_service_set_expanded(XmppDiscoService *service, gboolean expande
 
 char *xmpp_disco_service_get_icon_name(XmppDiscoService *service);
 
+GListModel *xmpp_disco_service_get_child_model(XmppDiscoService *service);
+void xmpp_disco_service_add_child(XmppDiscoService *service, XmppDiscoService *child);
+
 #endif /* PIDGIN_XMPP_DISCO_SERVICE_H */

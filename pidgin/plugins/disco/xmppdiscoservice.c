@@ -29,6 +29,7 @@ struct _XmppDiscoService {
 	GObject parent;
 
 	PidginDiscoList *list;
+	GListStore *children;
 	char *name;
 	char *description;
 
@@ -53,6 +54,7 @@ enum {
 	PROP_NODE,
 	PROP_EXPANDED,
 	PROP_ICON_NAME,
+	PROP_CHILD_MODEL,
 	PROP_LAST
 };
 
@@ -66,6 +68,29 @@ xmpp_disco_service_set_list(XmppDiscoService *service, PidginDiscoList *list) {
 	service->list = list;
 
 	g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_LIST]);
+}
+
+static void
+xmpp_disco_service_refresh_child_model(GObject *obj,
+                                       G_GNUC_UNUSED GParamSpec *pspec,
+                                       G_GNUC_UNUSED gpointer data)
+{
+	XmppDiscoService *service = XMPP_DISCO_SERVICE(obj);
+	gboolean changed = FALSE;
+
+	if((service->flags & XMPP_DISCO_BROWSE) != 0) {
+		if(service->children == NULL) {
+			service->children = g_list_store_new(XMPP_DISCO_TYPE_SERVICE);
+			changed = TRUE;
+		}
+	} else {
+		changed = service->children != NULL;
+		g_clear_object(&service->children);
+	}
+
+	if(changed) {
+		g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_CHILD_MODEL]);
+	}
 }
 
 /******************************************************************************
@@ -114,6 +139,10 @@ xmpp_disco_service_get_property(GObject *object, guint prop_id, GValue *value,
 		case PROP_ICON_NAME:
 			g_value_take_string(value,
 			                    xmpp_disco_service_get_icon_name(service));
+			break;
+		case PROP_CHILD_MODEL:
+			g_value_set_object(value,
+			                   xmpp_disco_service_get_child_model(service));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -174,6 +203,7 @@ xmpp_disco_service_finalize(GObject *obj) {
 	g_clear_pointer(&service->gateway_type, g_free);
 	g_clear_pointer(&service->jid, g_free);
 	g_clear_pointer(&service->node, g_free);
+	g_clear_object(&service->children);
 
 	G_OBJECT_CLASS(xmpp_disco_service_parent_class)->finalize(obj);
 }
@@ -237,6 +267,12 @@ xmpp_disco_service_class_init(XmppDiscoServiceClass *klass)
 	        NULL,
 	        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	properties[PROP_CHILD_MODEL] = g_param_spec_object(
+	        "child-model", "child-model",
+	        "The model containing children of this service.",
+	        G_TYPE_LIST_MODEL,
+	        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties(obj_class, PROP_LAST, properties);
 }
 
@@ -245,7 +281,9 @@ xmpp_disco_service_class_finalize(G_GNUC_UNUSED XmppDiscoServiceClass *klass) {
 }
 
 static void
-xmpp_disco_service_init(G_GNUC_UNUSED XmppDiscoService *service) {
+xmpp_disco_service_init(XmppDiscoService *service) {
+	g_signal_connect(service, "notify::flags",
+	                 G_CALLBACK(xmpp_disco_service_refresh_child_model), NULL);
 }
 
 /******************************************************************************
@@ -464,4 +502,22 @@ xmpp_disco_service_get_icon_name(XmppDiscoService *service)
 	}
 
 	return icon_name;
+}
+
+GListModel *
+xmpp_disco_service_get_child_model(XmppDiscoService *service) {
+	g_return_val_if_fail(XMPP_DISCO_IS_SERVICE(service), NULL);
+
+	return G_LIST_MODEL(service->children);
+}
+
+void
+xmpp_disco_service_add_child(XmppDiscoService *service,
+                             XmppDiscoService *child)
+{
+	g_return_if_fail(XMPP_DISCO_IS_SERVICE(service));
+	g_return_if_fail(XMPP_DISCO_IS_SERVICE(child));
+	g_return_if_fail((service->flags & XMPP_DISCO_BROWSE) != 0);
+
+	g_list_store_append(service->children, child);
 }

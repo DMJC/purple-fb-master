@@ -25,30 +25,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <menu id="popover_menu">
-    <section>
-      <item>
-        <attribute name="action">disco.add</attribute>
-        <attribute name="label" translatable="yes">Add to Buddy List</attribute>
-      </item>
-      <item>
-        <attribute name="action">disco.register</attribute>
-        <attribute name="label" translatable="yes">Register</attribute>
-      </item>
-    </section>
-  </menu>
-  <object class="GtkTreeStore" id="model">
-    <columns>
-      <!-- column-name icon-name -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-      <!-- column-name description -->
-      <column type="gchararray"/>
-      <!-- column-name service -->
-      <column type="gpointer"/>
-    </columns>
-  </object>
   <template class="PidginDiscoDialog" parent="GtkDialog">
     <property name="title" translatable="1">Service Discovery</property>
     <signal name="destroy" handler="destroy_win_cb" swapped="no"/>
@@ -93,59 +69,126 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
             <property name="vscrollbar_policy">always</property>
             <property name="min_content_height">250</property>
             <property name="child">
-              <object class="GtkTreeView" id="tree">
+              <object class="GtkColumnView" id="columnview">
                 <property name="focusable">1</property>
-                <property name="model">model</property>
-                <signal name="row-activated" handler="row_activated_cb" object="PidginDiscoDialog" swapped="no"/>
-                <signal name="row-expanded" handler="row_expanded_cb" object="PidginDiscoDialog" swapped="no"/>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection">
-                    <signal name="changed" handler="selection_changed_cb" swapped="no"/>
+                <property name="model">
+                  <object class="GtkSingleSelection">
+                    <property name="model">
+                      <object class="GtkSortListModel" id="sorter">
+                        <property name="sorter">
+                          <object class="GtkTreeListRowSorter">
+                            <binding name="sorter">
+                              <lookup name="sorter">columnview</lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                    <signal name="selection-changed" handler="selection_changed_cb"/>
                   </object>
-                </child>
+                </property>
+                <signal name="activate" handler="row_activated_cb"/>
                 <child>
-                  <object class="GtkGestureClick">
-                    <property name="button">3</property>
-                    <signal name="pressed" handler="service_click_cb" object="PidginDiscoDialog" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkPopoverMenu" id="popover">
-                    <property name="menu-model">popover_menu</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn">
+                  <object class="GtkColumnViewColumn">
                     <property name="resizable">1</property>
                     <property name="title" translatable="1">Name</property>
-                    <property name="reorderable">1</property>
-                    <property name="sort_column_id">1</property>
-                    <child>
-                      <object class="GtkCellRendererPixbuf"/>
-                      <attributes>
-                        <attribute name="icon-name">0</attribute>
-                      </attributes>
-                    </child>
-                    <child>
-                      <object class="GtkCellRendererText"/>
-                      <attributes>
-                        <attribute name="text">1</attribute>
-                      </attributes>
-                    </child>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="bytes">
+<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkTreeExpander">
+        <property name="child">
+          <object class="GtkBox">
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkImage">
+                <binding name="icon-name">
+                  <lookup name="icon-name" type="XmppDiscoService">
+                    <lookup name="item" type="GtkTreeListRow">
+                      <lookup name="item">GtkListItem</lookup>
+                    </lookup>
+                  </lookup>
+                </binding>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <binding name="label">
+                  <lookup name="name" type="XmppDiscoService">
+                    <lookup name="item" type="GtkTreeListRow">
+                      <lookup name="item">GtkListItem</lookup>
+                    </lookup>
+                  </lookup>
+                </binding>
+              </object>
+            </child>
+          </object>
+        </property>
+        <binding name="list-row">
+          <lookup name="item">GtkListItem</lookup>
+        </binding>
+        <signal name="notify::list-row" handler="list_row_notify_cb"/>
+      </object>
+    </property>
+  </template>
+</interface>
+]]>
+                        </property>
+                      </object>
+                    </property>
+                    <property name="sorter">
+                      <object class="GtkStringSorter">
+                        <property name="expression">
+                          <lookup name="name" type="XmppDiscoService"></lookup>
+                        </property>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkTreeViewColumn">
+                  <object class="GtkColumnViewColumn">
+                    <property name="expand">1</property>
                     <property name="resizable">1</property>
                     <property name="title" translatable="1">Description</property>
-                    <property name="reorderable">1</property>
-                    <property name="sort_column_id">2</property>
-                    <child>
-                      <object class="GtkCellRendererText"/>
-                      <attributes>
-                        <attribute name="text">2</attribute>
-                      </attributes>
-                    </child>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="bytes">
+<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkLabel">
+        <property name="ellipsize">end</property>
+        <property name="xalign">0</property>
+        <binding name="label">
+          <lookup name="description" type="XmppDiscoService">
+            <lookup name="item" type="GtkTreeListRow">
+              <lookup name="item">GtkListItem</lookup>
+            </lookup>
+          </lookup>
+        </binding>
+      </object>
+    </property>
+  </template>
+</interface>
+]]>
+                        </property>
+                      </object>
+                    </property>
+                    <property name="sorter">
+                      <object class="GtkStringSorter">
+                        <property name="expression">
+                          <lookup name="description" type="XmppDiscoService"></lookup>
+                        </property>
+                      </object>
+                    </property>
                   </object>
                 </child>
               </object>
