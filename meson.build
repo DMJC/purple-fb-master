@@ -240,7 +240,7 @@ if get_option('gtkui')
 	libadwaita = dependency('libadwaita-1', version : '>= 1.2')
 
 	talkatu_dep = dependency('talkatu',
-		version: '>=0.1.0',
+		version: '>=0.2.0',
 		fallback: ['talkatu', 'talkatu_dep'])
 endif	# GTK
 

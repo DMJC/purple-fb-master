@@ -254,6 +254,7 @@ pidgin_notify_formatted(const char *title, const char *primary,
 	GtkWidget *sw;
 	GtkWidget *view;
 	GtkTextBuffer *buffer;
+	GSimpleActionGroup *ag = NULL;
 	char label_text[2048];
 	char *linked_text, *primary_esc, *secondary_esc;
 
@@ -291,7 +292,11 @@ pidgin_notify_formatted(const char *title, const char *primary,
 	gtk_box_append(GTK_BOX(vbox), sw);
 	gtk_widget_set_vexpand(sw, TRUE);
 
-	buffer = talkatu_html_buffer_new();
+	ag = talkatu_action_group_new(TALKATU_FORMAT_HTML);
+	buffer = talkatu_buffer_new(ag);
+	talkatu_action_group_set_buffer(TALKATU_ACTION_GROUP(ag), buffer);
+	g_clear_object(&ag);
+
 	view = talkatu_view_new_with_buffer(buffer);
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), view);
 	gtk_widget_set_name(view, "pidgin_notify_view");

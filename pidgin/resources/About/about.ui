@@ -21,12 +21,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <requires lib="Talkatu" version="0.0"/>
+  <requires lib="Talkatu" version="0.2.0"/>
   <!-- interface-license-type gplv2 -->
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <object class="TalkatuMarkdownBuffer" id="main_buffer"/>
+  <object class="TalkatuBuffer" id="main_buffer">
+    <property name="action-group">
+      <object class="TalkatuActionGroup">
+        <property name="format">markdown</property>
+        <property name="buffer">main_buffer</property>
+      </object>
+    </property>
+  </object>
   <template class="PidginAboutDialog" parent="GtkDialog">
     <property name="default-height">600</property>
     <signal name="response" handler="pidgin_about_dialog_response_cb" swapped="no"/>

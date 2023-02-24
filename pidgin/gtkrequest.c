@@ -632,7 +632,12 @@ pidgin_request_input(const char *title, const char *primary,
 		gtk_box_append(GTK_BOX(vbox), editor);
 
 		if (purple_strequal(data->u.input.hint, "html")) {
-			buffer = talkatu_html_buffer_new();
+			GSimpleActionGroup *ag = NULL;
+
+			ag = talkatu_action_group_new(TALKATU_FORMAT_HTML);
+			buffer = talkatu_buffer_new(ag);
+			talkatu_action_group_set_buffer(TALKATU_ACTION_GROUP(ag), buffer);
+			g_clear_object(&ag);
 
 			if(default_value != NULL) {
 				talkatu_markup_set_html(TALKATU_BUFFER(buffer), default_value, -1);

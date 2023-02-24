@@ -43,18 +43,29 @@ GtkTextBuffer *
 pidgin_talkatu_buffer_new_for_connection(PurpleConnection *pc) {
 	PurpleConnectionFlags flags = 0;
 	GtkTextBuffer *buffer = NULL;
+	GSimpleActionGroup *ag = NULL;
+	TalkatuBufferStyle style = TALKATU_BUFFER_STYLE_RICH;
 
 	g_return_val_if_fail(pc != NULL, NULL);
 
 	flags = purple_connection_get_flags(pc);
 
 	if(flags & PURPLE_CONNECTION_FLAG_HTML) {
-		buffer = talkatu_html_buffer_new();
-	} else if(flags & PURPLE_CONNECTION_FLAG_FORMATTING_WBFO) {
-		buffer = talkatu_whole_buffer_new();
-	} else {
-		buffer = talkatu_buffer_new(NULL);
+		ag = talkatu_action_group_new(TALKATU_FORMAT_HTML);
 	}
+
+	if(flags & PURPLE_CONNECTION_FLAG_FORMATTING_WBFO) {
+		style = TALKATU_BUFFER_STYLE_WHOLE;
+	}
+
+	buffer = g_object_new(TALKATU_TYPE_BUFFER,
+	                      "action-group", ag,
+	                      "style", style,
+	                      NULL);
+	if(TALKATU_IS_ACTION_GROUP(ag)) {
+		talkatu_action_group_set_buffer(TALKATU_ACTION_GROUP(ag), buffer);
+	}
+	g_clear_object(&ag);
 
 	return buffer;
 }

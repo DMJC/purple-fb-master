@@ -80,7 +80,6 @@ pidgin_about_dialog_load_main_page(PidginAboutDialog *about) {
 	GtkTextIter start;
 	GInputStream *istream = NULL;
 	GString *str = NULL;
-	TalkatuMarkdownBuffer *md_buffer = NULL;
 	gchar buffer[8192];
 	gssize read = 0, size = 0;
 
@@ -98,8 +97,8 @@ pidgin_about_dialog_load_main_page(PidginAboutDialog *about) {
 
 	gtk_text_buffer_get_start_iter(about->main_buffer, &start);
 
-	md_buffer = TALKATU_MARKDOWN_BUFFER(about->main_buffer);
-	talkatu_markdown_buffer_insert_markdown(md_buffer, &start, str->str, size);
+	talkatu_markdown_insert(TALKATU_BUFFER(about->main_buffer), &start,
+	                        str->str, size);
 
 	g_string_free(str, TRUE);
 

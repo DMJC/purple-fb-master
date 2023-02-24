@@ -94,6 +94,7 @@ make_string_pref(GtkWidget *parent, PurplePluginPref *pref, GtkSizeGroup *sg) {
 				GtkWidget *editor;
 				GtkWidget *input;
 				GtkTextBuffer *buffer;
+				GSimpleActionGroup *ag = NULL;
 
 				box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
@@ -120,10 +121,15 @@ make_string_pref(GtkWidget *parent, PurplePluginPref *pref, GtkSizeGroup *sg) {
 				input = talkatu_editor_get_input(TALKATU_EDITOR(editor));
 
 				if ((format & PURPLE_STRING_FORMAT_TYPE_HTML) != 0) {
-					buffer = talkatu_html_buffer_new();
-				} else {
-					buffer = talkatu_buffer_new(NULL);
+					ag = talkatu_action_group_new(TALKATU_FORMAT_HTML);
 				}
+
+				buffer = talkatu_buffer_new(ag);
+				if(TALKATU_IS_ACTION_GROUP(ag)) {
+					talkatu_action_group_set_buffer(TALKATU_ACTION_GROUP(ag),
+					                                buffer);
+				}
+				g_clear_object(&ag);
 
 				gtk_text_view_set_buffer(GTK_TEXT_VIEW(input), buffer);
 

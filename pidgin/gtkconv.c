@@ -440,6 +440,8 @@ pidgin_conv_switch_active_conversation(PurpleConversation *conv)
 static GtkWidget *
 setup_common_pane(PidginConversation *gtkconv)
 {
+	GSimpleActionGroup *ag = NULL;
+	GtkTextBuffer *buffer = NULL;
 	GtkWidget *vbox, *input, *hpaned, *sw;
 	GtkEventController *key = NULL;
 	PurpleConversation *conv = gtkconv->active_conv;
@@ -482,7 +484,13 @@ setup_common_pane(PidginConversation *gtkconv)
 
 	/* Setup the entry widget and all signals */
 	gtkconv->editor = talkatu_editor_new();
-	talkatu_editor_set_buffer(TALKATU_EDITOR(gtkconv->editor), talkatu_html_buffer_new());
+	ag = talkatu_action_group_new(TALKATU_FORMAT_HTML);
+	buffer = talkatu_buffer_new(ag);
+	talkatu_action_group_set_buffer(TALKATU_ACTION_GROUP(ag), buffer);
+	g_clear_object(&ag);
+
+	talkatu_editor_set_buffer(TALKATU_EDITOR(gtkconv->editor), buffer);
+	g_clear_object(&buffer);
 	gtk_box_append(GTK_BOX(vbox), gtkconv->editor);
 
 	input = talkatu_editor_get_input(TALKATU_EDITOR(gtkconv->editor));
