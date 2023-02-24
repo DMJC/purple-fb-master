@@ -171,15 +171,15 @@ ggp_tcpsocket_connect(void *_gc, const char *host, int port, int is_tls,
 }
 
 static void
-ggp_tcpsocket_close(void *_gc, void *_data)
-{
+ggp_tcpsocket_close(G_GNUC_UNUSED void *_gc, void *_data) {
 	GGPTcpSocketData *data = _data;
 
 	ggp_tcp_socket_data_free(data);
 }
 
 static ssize_t
-ggp_tcpsocket_read(void *_gc, void *_data, unsigned char *buffer, size_t bufsize)
+ggp_tcpsocket_read(G_GNUC_UNUSED void *_gc, void *_data,
+                   unsigned char *buffer, size_t bufsize)
 {
 	GGPTcpSocketData *data = _data;
 	GPollableInputStream *input;
@@ -211,7 +211,8 @@ ggp_tcpsocket_read(void *_gc, void *_data, unsigned char *buffer, size_t bufsize
 }
 
 static ssize_t
-ggp_tcpsocket_write(void *_gc, void *_data, const unsigned char *data_buf, size_t len)
+ggp_tcpsocket_write(G_GNUC_UNUSED void *_gc, void *_data,
+                    const unsigned char *data_buf, size_t len)
 {
 	GGPTcpSocketData *data = _data;
 	GPollableOutputStream *output;

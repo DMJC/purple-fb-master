@@ -83,7 +83,7 @@ static gchar * ggp_status_validate_description(const gchar* msg)
 
 GList *
 ggp_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
-                 PurpleAccount *account)
+                 G_GNUC_UNUSED PurpleAccount *account)
 {
 	GList *types = NULL;
 
@@ -252,7 +252,7 @@ gboolean ggp_status_set(PurpleAccount *account, int status, const gchar* msg)
 }
 
 void
-ggp_status_set_purplestatus(PurpleProtocolServer *protocol_server,
+ggp_status_set_purplestatus(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                             PurpleAccount *account, PurpleStatus *status)
 {
 	int status_gg;
@@ -453,7 +453,9 @@ void ggp_status_got_others_buddy(PurpleConnection *gc, uin_t uin, int status,
 }
 
 char *
-ggp_status_buddy_text(PurpleProtocolClient *client, PurpleBuddy *buddy) {
+ggp_status_buddy_text(G_GNUC_UNUSED PurpleProtocolClient *client,
+                      PurpleBuddy *buddy)
+{
 	ggp_buddy_data *buddy_data = ggp_buddy_get_data(buddy);
 	const gchar *purple_message;
 

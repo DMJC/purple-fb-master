@@ -46,8 +46,9 @@ guint ggp_purplew_http_input_add(struct gg_http *http_req,
 		func, user_data);
 }
 
-static void ggp_purplew_request_processing_cancel(
-	ggp_purplew_request_processing_handle *handle, gint id)
+static void
+ggp_purplew_request_processing_cancel(ggp_purplew_request_processing_handle *handle,
+                                      G_GNUC_UNUSED gint id)
 {
 	handle->cancel_cb(handle->gc, handle->user_data);
 	g_free(handle);

@@ -71,7 +71,7 @@ ggp_buddy_data * ggp_buddy_get_data(PurpleBuddy *buddy)
 }
 
 static void
-ggp_buddy_free(PurpleProtocolClient *client, PurpleBuddy *buddy)
+ggp_buddy_free(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *buddy)
 {
 	ggp_buddy_data *buddy_data = purple_buddy_get_protocol_data(buddy);
 
@@ -282,7 +282,8 @@ static void ggp_typing_notification_handler(PurpleConnection *gc, uin_t uin, int
  * @see http://toxygen.net/libgadu/protocol/#ch1.13
  * @todo: this may not be necessary anymore
  */
-static void ggp_xml_event_handler(PurpleConnection *gc, char *data)
+static void
+ggp_xml_event_handler(G_GNUC_UNUSED PurpleConnection *gc, char *data)
 {
 	PurpleXmlNode *xml = NULL;
 	PurpleXmlNode *xmlnode_next_event;
@@ -343,7 +344,9 @@ static void ggp_xml_event_handler(PurpleConnection *gc, char *data)
 			purple_xmlnode_free(xml);
 }
 
-static void ggp_callback_recv(gpointer _gc, gint fd, PurpleInputCondition cond)
+static void
+ggp_callback_recv(gpointer _gc, G_GNUC_UNUSED gint fd,
+                  G_GNUC_UNUSED PurpleInputCondition cond)
 {
 	PurpleConnection *gc = _gc;
 	GGPInfo *info = purple_connection_get_protocol_data(gc);
@@ -447,7 +450,9 @@ static void ggp_callback_recv(gpointer _gc, gint fd, PurpleInputCondition cond)
 	gg_free_event(ev);
 }
 
-void ggp_async_login_handler(gpointer _gc, gint fd, PurpleInputCondition cond)
+void
+ggp_async_login_handler(gpointer _gc, G_GNUC_UNUSED gint fd,
+                        G_GNUC_UNUSED PurpleInputCondition cond)
 {
 	PurpleConnection *gc = _gc;
 	GGPInfo *info;
@@ -642,7 +647,7 @@ gg_uri_handler_find_account(PurpleAccount *account,
 
 static gboolean
 gg_uri_handler(const gchar *scheme, const gchar *screenname,
-		GHashTable *params)
+               G_GNUC_UNUSED GHashTable *params)
 {
 	PurpleAccountManager *manager = NULL;
 	PurpleAccount *account;
@@ -680,7 +685,7 @@ gg_uri_handler(const gchar *scheme, const gchar *screenname,
 /* ---------------------------------------------------------------------- */
 
 static PurpleBuddyIconSpec *
-ggp_protocol_get_buddy_icon_spec(PurpleProtocol *protocol) {
+ggp_protocol_get_buddy_icon_spec(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	return purple_buddy_icon_spec_new("png",
 	                                  1, 1, 200, 200, 0,
 	                                  PURPLE_ICON_SCALE_DISPLAY |
@@ -688,7 +693,7 @@ ggp_protocol_get_buddy_icon_spec(PurpleProtocol *protocol) {
 }
 
 static GList *
-ggp_protocol_get_account_options(PurpleProtocol *protocol) {
+ggp_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	PurpleAccountOption *option = NULL;
 	PurpleKeyValuePair *kvp = NULL;
 	GList *encryption_options = NULL;
@@ -736,8 +741,8 @@ ggp_protocol_get_account_options(PurpleProtocol *protocol) {
 }
 
 static const char *
-ggp_normalize(PurpleProtocolClient *client, PurpleAccount *account,
-              const char *who)
+ggp_normalize(G_GNUC_UNUSED PurpleProtocolClient *client,
+              G_GNUC_UNUSED PurpleAccount *account, const char *who)
 {
 	static char normalized[21]; /* maximum unsigned long long int size */
 
@@ -756,8 +761,9 @@ ggp_normalize(PurpleProtocolClient *client, PurpleAccount *account,
  * - add information about not adding to his buddy list (not_a_friend)
  */
 static void
-ggp_tooltip_text(PurpleProtocolClient *client, PurpleBuddy *b,
-                 PurpleNotifyUserInfo *user_info, gboolean full)
+ggp_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b,
+                 PurpleNotifyUserInfo *user_info,
+                 G_GNUC_UNUSED gboolean full)
 {
 	PurpleStatus *status;
 	char *tmp;
@@ -957,7 +963,9 @@ ggp_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 	purple_debug_info("gg", "Connection closed.\n");
 }
 
-static unsigned int ggp_send_typing(PurpleProtocolIM *im, PurpleConnection *gc, const char *name, PurpleIMTypingState state)
+static unsigned int
+ggp_send_typing(G_GNUC_UNUSED PurpleProtocolIM *im, PurpleConnection *gc,
+                const char *name, PurpleIMTypingState state)
 {
 	GGPInfo *info = purple_connection_get_protocol_data(gc);
 	int dummy_length; /* we don't send real length of typed message */
@@ -1009,7 +1017,9 @@ ggp_remove_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
 }
 
 static void
-ggp_keepalive(PurpleProtocolServer *protocol_server, PurpleConnection *gc) {
+ggp_keepalive(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+              PurpleConnection *gc)
+{
 	GGPInfo *info = purple_connection_get_protocol_data(gc);
 
 	/* purple_debug_info("gg", "Keeping connection alive....\n"); */
@@ -1116,12 +1126,12 @@ ggp_action_set_info(G_GNUC_UNUSED GSimpleAction *action,
 }
 
 static const gchar *
-ggp_protocol_actions_get_prefix(PurpleProtocolActions *actions) {
+ggp_protocol_actions_get_prefix(G_GNUC_UNUSED PurpleProtocolActions *actions) {
 	return "prpl-gg";
 }
 
 static GActionGroup *
-ggp_protocol_actions_get_action_group(PurpleProtocolActions *actions,
+ggp_protocol_actions_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *actions,
                                       G_GNUC_UNUSED PurpleConnection *connection)
 {
 	GSimpleActionGroup *group = NULL;
@@ -1221,7 +1231,9 @@ ggp_protocol_actions_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
 }
 
 static const char *
-ggp_list_emblem(PurpleProtocolClient *client, PurpleBuddy *buddy) {
+ggp_list_emblem(G_GNUC_UNUSED PurpleProtocolClient *client,
+                PurpleBuddy *buddy)
+{
 	ggp_buddy_data *buddy_data = ggp_buddy_get_data(buddy);
 
 	if (buddy_data->blocked)
@@ -1233,13 +1245,15 @@ ggp_list_emblem(PurpleProtocolClient *client, PurpleBuddy *buddy) {
 }
 
 static gboolean
-ggp_offline_message(PurpleProtocolClient *client, PurpleBuddy *buddy) {
+ggp_offline_message(G_GNUC_UNUSED PurpleProtocolClient *client,
+                    G_GNUC_UNUSED PurpleBuddy *buddy)
+{
 	return TRUE;
 }
 
 static GHashTable *
-ggp_get_account_text_table(PurpleProtocolClient *client,
-                           PurpleAccount *account)
+ggp_get_account_text_table(G_GNUC_UNUSED PurpleProtocolClient *client,
+                           G_GNUC_UNUSED PurpleAccount *account)
 {
 	GHashTable *table;
 	table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -1248,16 +1262,15 @@ ggp_get_account_text_table(PurpleProtocolClient *client,
 }
 
 static gssize
-ggp_get_max_message_size(PurpleProtocolClient *client,
-                         PurpleConversation *conv)
+ggp_get_max_message_size(G_GNUC_UNUSED PurpleProtocolClient *client,
+                         G_GNUC_UNUSED PurpleConversation *conv)
 {
 	/* TODO: it may depend on protocol version or other factors */
 	return 1200; /* no more than 1232 */
 }
 
 static void
-ggp_protocol_init(GGPProtocol *self)
-{
+ggp_protocol_init(G_GNUC_UNUSED GGPProtocol *self) {
 }
 
 static void
@@ -1381,7 +1394,7 @@ ggp_protocol_new(void) {
 }
 
 static GPluginPluginInfo *
-gg_query(GError **error)
+gg_query(G_GNUC_UNUSED GError **error)
 {
 	GPluginPluginInfo *info = NULL;
 	gchar *description = NULL;
@@ -1447,7 +1460,8 @@ gg_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-gg_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+gg_unload(GPluginPlugin *plugin, G_GNUC_UNUSED gboolean shutdown,
+          GError **error)
 {
 	PurpleProtocolManager *manager = purple_protocol_manager_get_default();
 

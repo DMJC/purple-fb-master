@@ -416,8 +416,8 @@ ggp_ggdrive_auth(PurpleConnection *gc, ggp_ggdrive_auth_cb cb,
 }
 
 static void
-ggp_edisc_xfer_send_ticket_changed(PurpleConnection *gc, PurpleXfer *xfer,
-                                   gboolean is_allowed)
+ggp_edisc_xfer_send_ticket_changed(G_GNUC_UNUSED PurpleConnection *gc,
+                                   PurpleXfer *xfer, gboolean is_allowed)
 {
 	GGPXfer *edisc_xfer = GGP_XFER(xfer);
 	if (!edisc_xfer) {
@@ -453,7 +453,7 @@ ggp_edisc_xfer_send_ticket_changed(PurpleConnection *gc, PurpleXfer *xfer,
  ******************************************************************************/
 
 gboolean
-ggp_edisc_xfer_can_receive_file(PurpleProtocolXfer *prplxfer,
+ggp_edisc_xfer_can_receive_file(G_GNUC_UNUSED PurpleProtocolXfer *prplxfer,
                                 PurpleConnection *gc, const char *who)
 {
 	PurpleBuddy *buddy;
@@ -805,7 +805,9 @@ static void ggp_edisc_xfer_send_start(PurpleXfer *xfer)
 #endif
 }
 
-PurpleXfer * ggp_edisc_xfer_send_new(PurpleProtocolXfer *prplxfer, PurpleConnection *gc, const char *who)
+PurpleXfer *
+ggp_edisc_xfer_send_new(G_GNUC_UNUSED PurpleProtocolXfer *prplxfer,
+                        PurpleConnection *gc, const char *who)
 {
 	GGPXfer *xfer;
 
@@ -1063,7 +1065,7 @@ ggp_edisc_xfer_recv_done_cb(GObject *source, GAsyncResult *result,
 	poll = g_pollable_input_stream_create_source(G_POLLABLE_INPUT_STREAM(input),
 	                                             edisc_xfer->cancellable);
 	g_source_set_callback(poll,
-	                      (GSourceFunc)ggp_edisc_xfer_recv_pollable_source_cb,
+	                      (GSourceFunc)(gpointer)ggp_edisc_xfer_recv_pollable_source_cb,
 	                      xfer, NULL);
 	edisc_xfer->handler = g_source_attach(poll, NULL);
 	g_source_unref(poll);
@@ -1479,8 +1481,7 @@ ggp_xfer_finalize(GObject *obj) {
 }
 
 static void
-ggp_xfer_class_finalize(GGPXferClass *klass) {
-
+ggp_xfer_class_finalize(G_GNUC_UNUSED GGPXferClass *klass) {
 }
 
 static void

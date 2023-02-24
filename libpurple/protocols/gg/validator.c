@@ -33,8 +33,9 @@
 
 #include <glib/gi18n-lib.h>
 
-gboolean ggp_validator_password(PurpleRequestField *field, gchar **errmsg,
-	void *user_data)
+gboolean
+ggp_validator_password(PurpleRequestField *field, gchar **errmsg,
+                       G_GNUC_UNUSED gpointer data)
 {
 	const char *value;
 

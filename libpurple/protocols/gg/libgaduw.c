@@ -146,16 +146,18 @@ ggp_libgaduw_http_req * ggp_libgaduw_http_watch(PurpleConnection *gc,
 	return req;
 }
 
-static void ggp_libgaduw_http_processing_cancel(PurpleConnection *gc,
-	void *_req)
+static void
+ggp_libgaduw_http_processing_cancel(G_GNUC_UNUSED PurpleConnection *gc,
+                                    void *_req)
 {
 	ggp_libgaduw_http_req *req = _req;
 	req->processing = NULL;
 	ggp_libgaduw_http_cancel(req);
 }
 
-static void ggp_libgaduw_http_handler(gpointer _req, gint fd,
-	PurpleInputCondition cond)
+static void
+ggp_libgaduw_http_handler(gpointer _req, G_GNUC_UNUSED gint fd,
+                          G_GNUC_UNUSED PurpleInputCondition cond)
 {
 	ggp_libgaduw_http_req *req = _req;
 

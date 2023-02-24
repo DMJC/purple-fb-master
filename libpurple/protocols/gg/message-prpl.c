@@ -652,8 +652,9 @@ ggp_message_format_to_gg(PurpleConversation *conv, const gchar *text)
 	return text_new;
 }
 
-int ggp_message_send_im(PurpleProtocolIM *pim, PurpleConnection *gc,
-                        PurpleMessage *msg)
+int
+ggp_message_send_im(G_GNUC_UNUSED PurpleProtocolIM *pim,
+                    PurpleConnection *gc, PurpleMessage *msg)
 {
 	GGPInfo *info = purple_connection_get_protocol_data(gc);
 	PurpleConversation *im;

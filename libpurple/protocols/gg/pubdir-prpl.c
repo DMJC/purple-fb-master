@@ -332,9 +332,10 @@ ggp_pubdir_get_info(PurpleConnection *gc, uin_t uin, ggp_pubdir_request_cb cb,
 	g_free(url);
 }
 
-static void ggp_pubdir_get_info_protocol_got(PurpleConnection *gc,
-	int records_count, const ggp_pubdir_record *records, int next_offset,
-	void *_uin_p)
+static void
+ggp_pubdir_get_info_protocol_got(PurpleConnection *gc, int records_count,
+                                 const ggp_pubdir_record *records,
+                                 G_GNUC_UNUSED int next_offset, void *_uin_p)
 {
 	uin_t uin = *((uin_t*)_uin_p);
 	PurpleNotifyUserInfo *info = purple_notify_user_info_new();
@@ -420,7 +421,7 @@ static void ggp_pubdir_get_info_protocol_got(PurpleConnection *gc,
 }
 
 void
-ggp_pubdir_get_info_protocol(PurpleProtocolServer *protocol_server,
+ggp_pubdir_get_info_protocol(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                              PurpleConnection *gc, const gchar *name)
 {
 	uin_t uin = ggp_str_to_uin(name);
@@ -433,9 +434,11 @@ ggp_pubdir_get_info_protocol(PurpleProtocolServer *protocol_server,
 	ggp_pubdir_get_info(gc, uin, ggp_pubdir_get_info_protocol_got, uin_p);
 }
 
-static void ggp_pubdir_request_buddy_alias_got(PurpleConnection *gc,
-	int records_count, const ggp_pubdir_record *records, int next_offset,
-	void *user_data)
+static void
+ggp_pubdir_request_buddy_alias_got(PurpleConnection *gc, int records_count,
+                                   const ggp_pubdir_record *records,
+                                   G_GNUC_UNUSED int next_offset,
+                                   G_GNUC_UNUSED gpointer data)
 {
 	uin_t uin;
 	const gchar *alias;
@@ -585,7 +588,8 @@ ggp_pubdir_search_execute(PurpleConnection *gc,
 }
 
 static void
-ggp_pubdir_search_results_new(PurpleConnection *gc, GList *row, gpointer _form)
+ggp_pubdir_search_results_new(PurpleConnection *gc, G_GNUC_UNUSED GList *row,
+                              gpointer _form)
 {
 	ggp_pubdir_search_form *form = _form;
 	ggp_pubdir_search(gc, form);
@@ -599,7 +603,8 @@ ggp_pubdir_search_results_close(gpointer _form)
 }
 
 static void
-ggp_pubdir_search_results_next(PurpleConnection *gc, GList *row, gpointer _form)
+ggp_pubdir_search_results_next(PurpleConnection *gc, G_GNUC_UNUSED GList *row,
+                               gpointer _form)
 {
 	ggp_pubdir_search_form *form = _form;
 	ggp_pubdir_search_execute(gc, form, ggp_pubdir_search_results_display,
@@ -607,7 +612,8 @@ ggp_pubdir_search_results_next(PurpleConnection *gc, GList *row, gpointer _form)
 }
 
 static void
-ggp_pubdir_search_results_add(PurpleConnection *gc, GList *row, gpointer _form)
+ggp_pubdir_search_results_add(PurpleConnection *gc, GList *row,
+                              G_GNUC_UNUSED gpointer form)
 {
 	purple_blist_request_add_buddy(purple_connection_get_account(gc),
 	                               g_list_nth_data(row, 0), NULL,
@@ -615,14 +621,16 @@ ggp_pubdir_search_results_add(PurpleConnection *gc, GList *row, gpointer _form)
 }
 
 static void
-ggp_pubdir_search_results_im(PurpleConnection *gc, GList *row, gpointer _form)
+ggp_pubdir_search_results_im(PurpleConnection *gc, GList *row,
+                             G_GNUC_UNUSED gpointer form)
 {
 	purple_conversation_present(PURPLE_CONVERSATION(purple_im_conversation_new(
 	        purple_connection_get_account(gc), g_list_nth_data(row, 0))));
 }
 
 static void
-ggp_pubdir_search_results_info(PurpleConnection *gc, GList *row, gpointer _form)
+ggp_pubdir_search_results_info(PurpleConnection *gc, GList *row,
+                               G_GNUC_UNUSED gpointer form)
 {
 	ggp_pubdir_get_info_protocol(NULL, gc, g_list_nth_data(row, 0));
 }
@@ -922,8 +930,9 @@ ggp_pubdir_set_info_request(PurpleConnection *gc, PurpleRequestFields *fields)
 
 static void
 ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
-                           const ggp_pubdir_record *records, int next_offset,
-                           void *user_data)
+                           const ggp_pubdir_record *records,
+                           G_GNUC_UNUSED int next_offset,
+                           G_GNUC_UNUSED gpointer data)
 {
 	PurpleRequestFields *fields;
 	PurpleRequestFieldGroup *group;

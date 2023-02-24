@@ -342,7 +342,7 @@ void ggp_roster_version(PurpleConnection *gc,
  ******************************************************************************/
 
 void
-ggp_roster_alias_buddy(PurpleProtocolServer *protocol_server,
+ggp_roster_alias_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                        PurpleConnection *gc, const gchar *who,
                        const gchar *alias)
 {
@@ -363,7 +363,7 @@ ggp_roster_alias_buddy(PurpleProtocolServer *protocol_server,
 }
 
 void
-ggp_roster_group_buddy(PurpleProtocolServer *protocol_server,
+ggp_roster_group_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                        PurpleConnection *gc, const gchar *who,
                        const gchar *old_group, const gchar *new_group)
 {
@@ -387,9 +387,9 @@ ggp_roster_group_buddy(PurpleProtocolServer *protocol_server,
 }
 
 void
-ggp_roster_rename_group(PurpleProtocolServer *protocol_server,
+ggp_roster_rename_group(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                         PurpleConnection *gc, const gchar *old_name,
-                        PurpleGroup *group, GList *moved_buddies)
+                        PurpleGroup *group, G_GNUC_UNUSED GList *moved_buddies)
 {
 	ggp_roster_session_data *rdata = ggp_roster_get_rdata(gc);
 	ggp_roster_change *change;
@@ -406,9 +406,10 @@ ggp_roster_rename_group(PurpleProtocolServer *protocol_server,
 }
 
 void
-ggp_roster_add_buddy(PurpleProtocolServer *protocol_server,
+ggp_roster_add_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                      PurpleConnection *gc, PurpleBuddy *buddy,
-                     PurpleGroup *group, const gchar *message)
+                     G_GNUC_UNUSED PurpleGroup *group,
+                     G_GNUC_UNUSED const gchar *message)
 {
 	g_return_if_fail(gc != NULL);
 	g_return_if_fail(buddy != NULL);
@@ -420,9 +421,9 @@ ggp_roster_add_buddy(PurpleProtocolServer *protocol_server,
 }
 
 void
-ggp_roster_remove_buddy(PurpleProtocolServer *protocol_server,
+ggp_roster_remove_buddy(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
                         PurpleConnection *gc, PurpleBuddy *buddy,
-                        PurpleGroup *group)
+                        G_GNUC_UNUSED PurpleGroup *group)
 {
 	ggp_roster_session_data *rdata = ggp_roster_get_rdata(gc);
 	ggp_roster_change *change;

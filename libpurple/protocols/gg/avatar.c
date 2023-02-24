@@ -321,8 +321,8 @@ ggp_avatar_own_got_token(PurpleConnection *gc, const gchar *token,
 }
 
 void
-ggp_avatar_own_set(PurpleProtocolServer *protocol_server, PurpleConnection *gc,
-                   PurpleImage *img)
+ggp_avatar_own_set(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
+                   PurpleConnection *gc, PurpleImage *img)
 {
 	ggp_avatar_session_data *avdata;
 

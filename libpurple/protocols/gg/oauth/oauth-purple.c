@@ -133,7 +133,8 @@ ggp_oauth_access_token_got(GObject *source, GAsyncResult *result,
 }
 
 static void
-ggp_oauth_authorization_done(GObject *source, GAsyncResult *result,
+ggp_oauth_authorization_done(GObject *source,
+                             G_GNUC_UNUSED GAsyncResult *result,
                              gpointer user_data)
 {
 	ggp_oauth_data *data = user_data;
