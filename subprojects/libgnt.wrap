@@ -1,4 +1,4 @@
 [wrap-hg]
 directory = libgnt
 url = https://keep.imfreedom.org/libgnt/libgnt
-revision = b7174f76d7ee
+revision = 1cb23c87a22e
