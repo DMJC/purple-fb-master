@@ -28,7 +28,7 @@
  * Helpers
  *****************************************************************************/
 static void
-_test_purple_protocol_action_callback(PurpleProtocolAction *action) {
+_test_purple_protocol_action_callback(G_GNUC_UNUSED PurpleProtocolAction *action) {
 }
 
 /******************************************************************************

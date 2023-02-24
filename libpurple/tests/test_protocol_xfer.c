@@ -46,21 +46,31 @@ typedef struct {
 
 
 static gboolean
-test_purple_protocol_xfer_can_receive(PurpleProtocolXfer *prplxfer, PurpleConnection *c, const gchar *who) {
+test_purple_protocol_xfer_can_receive(PurpleProtocolXfer *prplxfer,
+                                      G_GNUC_UNUSED PurpleConnection *c,
+                                      G_GNUC_UNUSED const gchar *who)
+{
 	TestPurpleProtocolXfer *test_xfer = (TestPurpleProtocolXfer *)prplxfer;
 
 	return test_xfer->can_send;
 }
 
 static void
-test_purple_protocol_xfer_send_file(PurpleProtocolXfer *prplxfer, PurpleConnection *c, const gchar *who, const gchar *filename) {
+test_purple_protocol_xfer_send_file(PurpleProtocolXfer *prplxfer,
+                                    G_GNUC_UNUSED PurpleConnection *c,
+                                    G_GNUC_UNUSED const gchar *who,
+                                    G_GNUC_UNUSED const gchar *filename)
+{
 	TestPurpleProtocolXfer *test_xfer = (TestPurpleProtocolXfer *)prplxfer;
 
 	test_xfer->send_called = TRUE;
 }
 
 static PurpleXfer *
-test_purple_protocol_xfer_new_xfer(PurpleProtocolXfer *prplxfer, PurpleConnection *c, const gchar *who) {
+test_purple_protocol_xfer_new_xfer(PurpleProtocolXfer *prplxfer,
+                                   PurpleConnection *c,
+                                   const gchar *who)
+{
 	TestPurpleProtocolXfer *test_xfer = (TestPurpleProtocolXfer *)prplxfer;
 	PurpleAccount *a = purple_connection_get_account(c);
 
@@ -87,11 +97,11 @@ G_DEFINE_TYPE_WITH_CODE(
 );
 
 static void
-test_purple_protocol_xfer_init(TestPurpleProtocolXfer *prplxfer) {
+test_purple_protocol_xfer_init(G_GNUC_UNUSED TestPurpleProtocolXfer *prplxfer) {
 }
 
 static void
-test_purple_protocol_xfer_class_init(TestPurpleProtocolXferClass *klass) {
+test_purple_protocol_xfer_class_init(G_GNUC_UNUSED TestPurpleProtocolXferClass *klass) {
 }
 
 static TestPurpleProtocolXfer *

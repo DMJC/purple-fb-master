@@ -49,47 +49,47 @@ G_DEFINE_TYPE(TestPurpleCredentialProviderEmpty,
               PURPLE_TYPE_CREDENTIAL_PROVIDER)
 
 static void
-test_purple_credential_provider_empty_read_password_async(PurpleCredentialProvider *provider,
-                                                          PurpleAccount *account,
-                                                          GCancellable *cancellable,
-                                                          GAsyncReadyCallback callback,
-                                                          gpointer data)
+test_purple_credential_provider_empty_read_password_async(G_GNUC_UNUSED PurpleCredentialProvider *provider,
+                                                          G_GNUC_UNUSED PurpleAccount *account,
+                                                          G_GNUC_UNUSED GCancellable *cancellable,
+                                                          G_GNUC_UNUSED GAsyncReadyCallback callback,
+                                                          G_GNUC_UNUSED gpointer data)
 {
 }
 
 static gchar *
-test_purple_credential_provider_empty_read_password_finish(PurpleCredentialProvider *provider,
-                                                           GAsyncResult *result,
-                                                           GError **error)
+test_purple_credential_provider_empty_read_password_finish(G_GNUC_UNUSED PurpleCredentialProvider *provider,
+                                                           G_GNUC_UNUSED GAsyncResult *result,
+                                                           G_GNUC_UNUSED GError **error)
 {
 	return NULL;
 }
 
 static void
-test_purple_credential_provider_empty_write_password_async(PurpleCredentialProvider *provider,
-                                                           PurpleAccount *account,
-                                                           const gchar *password,
-                                                           GCancellable *cancellable,
-                                                           GAsyncReadyCallback callback,
-                                                           gpointer data)
+test_purple_credential_provider_empty_write_password_async(G_GNUC_UNUSED PurpleCredentialProvider *provider,
+                                                           G_GNUC_UNUSED PurpleAccount *account,
+                                                           G_GNUC_UNUSED const gchar *password,
+                                                           G_GNUC_UNUSED GCancellable *cancellable,
+                                                           G_GNUC_UNUSED GAsyncReadyCallback callback,
+                                                           G_GNUC_UNUSED gpointer data)
 {
 }
 
 static gboolean
-test_purple_credential_provider_empty_write_password_finish(PurpleCredentialProvider *provider,
-                                                            GAsyncResult *result,
-                                                            GError **error)
+test_purple_credential_provider_empty_write_password_finish(G_GNUC_UNUSED PurpleCredentialProvider *provider,
+                                                            G_GNUC_UNUSED GAsyncResult *result,
+                                                            G_GNUC_UNUSED GError **error)
 {
 	return TRUE;
 }
 
 static void
-test_purple_credential_provider_empty_class_init(TestPurpleCredentialProviderEmptyClass *klass)
+test_purple_credential_provider_empty_class_init(G_GNUC_UNUSED TestPurpleCredentialProviderEmptyClass *klass)
 {
 }
 
 static void
-test_purple_credential_provider_empty_init(TestPurpleCredentialProviderEmpty *provider)
+test_purple_credential_provider_empty_init(G_GNUC_UNUSED TestPurpleCredentialProviderEmpty *provider)
 {
 }
 
@@ -232,7 +232,7 @@ G_DEFINE_TYPE(TestPurpleCredentialProvider,
 
 static void
 test_purple_credential_provider_read_password_async(PurpleCredentialProvider *p,
-                                                    PurpleAccount *account,
+                                                    G_GNUC_UNUSED PurpleAccount *account,
                                                     GCancellable *cancellable,
                                                     GAsyncReadyCallback callback,
                                                     gpointer data)
@@ -249,8 +249,8 @@ test_purple_credential_provider_read_password_async(PurpleCredentialProvider *p,
 
 static gchar *
 test_purple_credential_provider_read_password_finish(PurpleCredentialProvider *p,
-                                                     GAsyncResult *result,
-                                                     GError **error)
+                                                     G_GNUC_UNUSED GAsyncResult *result,
+                                                     G_GNUC_UNUSED GError **error)
 {
 	TestPurpleCredentialProvider *provider = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
 
@@ -261,8 +261,8 @@ test_purple_credential_provider_read_password_finish(PurpleCredentialProvider *p
 
 static void
 test_purple_credential_provider_write_password_async(PurpleCredentialProvider *p,
-                                                     PurpleAccount *account,
-                                                     const gchar *password,
+                                                     G_GNUC_UNUSED PurpleAccount *account,
+                                                     G_GNUC_UNUSED const gchar *password,
                                                      GCancellable *cancellable,
                                                      GAsyncReadyCallback callback,
                                                      gpointer data)
@@ -279,8 +279,8 @@ test_purple_credential_provider_write_password_async(PurpleCredentialProvider *p
 
 static gboolean
 test_purple_credential_provider_write_password_finish(PurpleCredentialProvider *p,
-                                                      GAsyncResult *result,
-                                                      GError **error)
+                                                      G_GNUC_UNUSED GAsyncResult *result,
+                                                      G_GNUC_UNUSED GError **error)
 {
 	TestPurpleCredentialProvider *provider = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
 
@@ -291,7 +291,7 @@ test_purple_credential_provider_write_password_finish(PurpleCredentialProvider *
 
 static void
 test_purple_credential_provider_clear_password_async(PurpleCredentialProvider *p,
-                                                     PurpleAccount *account,
+                                                     G_GNUC_UNUSED PurpleAccount *account,
                                                      GCancellable *cancellable,
                                                      GAsyncReadyCallback callback,
                                                      gpointer data)
@@ -308,8 +308,8 @@ test_purple_credential_provider_clear_password_async(PurpleCredentialProvider *p
 
 static gboolean
 test_purple_credential_provider_clear_password_finish(PurpleCredentialProvider *p,
-                                                      GAsyncResult *result,
-                                                      GError **error)
+                                                      G_GNUC_UNUSED GAsyncResult *result,
+                                                      G_GNUC_UNUSED GError **error)
 {
 	TestPurpleCredentialProvider *provider = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
 
@@ -319,7 +319,7 @@ test_purple_credential_provider_clear_password_finish(PurpleCredentialProvider *
 }
 
 static void
-test_purple_credential_provider_init(TestPurpleCredentialProvider *provider) {
+test_purple_credential_provider_init(G_GNUC_UNUSED TestPurpleCredentialProvider *provider) {
 }
 
 static void

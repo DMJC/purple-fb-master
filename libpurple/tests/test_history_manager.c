@@ -51,7 +51,8 @@ G_DEFINE_TYPE(TestPurpleHistoryAdapter,
               PURPLE_TYPE_HISTORY_ADAPTER)
 
 static gboolean
-test_purple_history_adapter_activate(PurpleHistoryAdapter *a, GError **error)
+test_purple_history_adapter_activate(PurpleHistoryAdapter *a,
+                                     G_GNUC_UNUSED GError **error)
 {
 	TestPurpleHistoryAdapter *ta = TEST_PURPLE_HISTORY_ADAPTER(a);
 
@@ -61,7 +62,8 @@ test_purple_history_adapter_activate(PurpleHistoryAdapter *a, GError **error)
 }
 
 static gboolean
-test_purple_history_adapter_deactivate(PurpleHistoryAdapter *a, GError **error)
+test_purple_history_adapter_deactivate(PurpleHistoryAdapter *a,
+                                       G_GNUC_UNUSED GError **error)
 {
 	TestPurpleHistoryAdapter *ta = TEST_PURPLE_HISTORY_ADAPTER(a);
 
@@ -72,8 +74,8 @@ test_purple_history_adapter_deactivate(PurpleHistoryAdapter *a, GError **error)
 
 static GList *
 test_purple_history_adapter_query(PurpleHistoryAdapter *a,
-                                  const gchar *id,
-                                  GError **error)
+                                  G_GNUC_UNUSED const gchar *id,
+                                  G_GNUC_UNUSED GError **error)
 {
 	TestPurpleHistoryAdapter *ta = TEST_PURPLE_HISTORY_ADAPTER(a);
 
@@ -84,8 +86,8 @@ test_purple_history_adapter_query(PurpleHistoryAdapter *a,
 
 static gboolean
 test_purple_history_adapter_remove(PurpleHistoryAdapter *a,
-                                   const gchar *id,
-                                   GError **error)
+                                   G_GNUC_UNUSED const gchar *id,
+                                   G_GNUC_UNUSED GError **error)
 {
 	TestPurpleHistoryAdapter *ta = TEST_PURPLE_HISTORY_ADAPTER(a);
 
@@ -96,9 +98,9 @@ test_purple_history_adapter_remove(PurpleHistoryAdapter *a,
 
 static gboolean
 test_purple_history_adapter_write(PurpleHistoryAdapter *a,
-                                  PurpleConversation *conversation,
-                                  PurpleMessage *message,
-                                  GError **error)
+                                  G_GNUC_UNUSED PurpleConversation *conversation,
+                                  G_GNUC_UNUSED PurpleMessage *message,
+                                  G_GNUC_UNUSED GError **error)
 {
 	TestPurpleHistoryAdapter *ta = TEST_PURPLE_HISTORY_ADAPTER(a);
 
@@ -108,7 +110,7 @@ test_purple_history_adapter_write(PurpleHistoryAdapter *a,
 }
 
 static void
-test_purple_history_adapter_init(TestPurpleHistoryAdapter *adapter)
+test_purple_history_adapter_init(G_GNUC_UNUSED TestPurpleHistoryAdapter *adapter)
 {
 }
 

@@ -64,7 +64,7 @@ G_DEFINE_TYPE(TestPurpleCredentialProvider,
 
 static void
 test_purple_credential_provider_read_password_async(PurpleCredentialProvider *p,
-                                                    PurpleAccount *account,
+                                                    G_GNUC_UNUSED PurpleAccount *account,
                                                     GCancellable *cancellable,
                                                     GAsyncReadyCallback callback,
                                                     gpointer data)
@@ -88,8 +88,8 @@ test_purple_credential_provider_read_password_finish(PurpleCredentialProvider *p
 
 static void
 test_purple_credential_provider_write_password_async(PurpleCredentialProvider *p,
-                                                     PurpleAccount *account,
-                                                     const gchar *password,
+                                                     G_GNUC_UNUSED PurpleAccount *account,
+                                                     G_GNUC_UNUSED const gchar *password,
                                                      GCancellable *cancellable,
                                                      GAsyncReadyCallback callback,
                                                      gpointer data)
@@ -113,7 +113,7 @@ test_purple_credential_provider_write_password_finish(PurpleCredentialProvider *
 
 static void
 test_purple_credential_provider_clear_password_async(PurpleCredentialProvider *p,
-                                                     PurpleAccount *account,
+                                                     G_GNUC_UNUSED PurpleAccount *account,
                                                      GCancellable *cancellable,
                                                      GAsyncReadyCallback callback,
                                                      gpointer data)
@@ -136,7 +136,7 @@ test_purple_credential_provider_clear_password_finish(PurpleCredentialProvider *
 }
 
 static void
-test_purple_credential_provider_init(TestPurpleCredentialProvider *provider) {
+test_purple_credential_provider_init(G_GNUC_UNUSED TestPurpleCredentialProvider *provider) {
 }
 
 static void
