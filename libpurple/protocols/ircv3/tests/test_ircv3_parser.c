@@ -22,6 +22,8 @@
 
 #include "../purpleircv3parser.h"
 
+#define TEST_IRCV3_PARSER_DOMAIN (g_quark_from_static_string("test-ircv3-parser"))
+
 typedef struct {
 	GHashTable *tags;
 	gchar *source;
@@ -36,7 +38,8 @@ typedef struct {
 static gboolean
 test_purple_ircv3_test_handler(GHashTable *tags, const gchar *source,
                                const gchar *command, guint n_params,
-                               GStrv params, GError **error, gpointer data)
+                               GStrv params, G_GNUC_UNUSED GError **error,
+                               gpointer data)
 {
 	TestPurpleIRCv3ParserData *d = data;
 	GHashTableIter iter;
@@ -99,6 +102,20 @@ test_purple_ircv3_test_handler(GHashTable *tags, const gchar *source,
 	return TRUE;
 }
 
+static gboolean
+test_purple_ircv3_test_handler_error(G_GNUC_UNUSED GHashTable *tags,
+                                     G_GNUC_UNUSED const gchar *source,
+                                     G_GNUC_UNUSED const gchar *command,
+                                     G_GNUC_UNUSED guint n_params,
+                                     G_GNUC_UNUSED GStrv params,
+                                     GError **error,
+                                     G_GNUC_UNUSED gpointer data)
+{
+	g_set_error(error, TEST_IRCV3_PARSER_DOMAIN, 0, "test error");
+
+	return FALSE;
+}
+
 /******************************************************************************
  * Helpers
  *****************************************************************************/
@@ -122,6 +139,24 @@ test_purple_ircv3_parser(const gchar *source, TestPurpleIRCv3ParserData *d) {
 /******************************************************************************
  * Tests
  *****************************************************************************/
+static void
+test_purple_ircv3_parser_propagates_errors(void) {
+	PurpleIRCv3Parser *parser = purple_ircv3_parser_new();
+	GError *error = NULL;
+	gboolean result = FALSE;
+
+	purple_ircv3_parser_set_fallback_handler(parser,
+	                                         test_purple_ircv3_test_handler_error);
+
+	result = purple_ircv3_parser_parse(parser, "COMMAND", &error, NULL);
+	g_assert_error(error, TEST_IRCV3_PARSER_DOMAIN, 0);
+	g_clear_error(&error);
+
+	g_assert_false(result);
+
+	g_clear_object(&parser);
+}
+
 static void
 test_purple_ircv3_parser_simple(void) {
 	TestPurpleIRCv3ParserData data = {
@@ -678,6 +713,12 @@ test_purple_ircv3_parser_message_tags_labeled_response(void) {
 gint
 main(gint argc, gchar *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+
+	/* Make sure an error in the handler is propagated back up to the calling
+	 * function.
+	 */
+	g_test_add_func("/ircv3/parser/propagates-errors",
+	                test_purple_ircv3_parser_propagates_errors);
 
 	/* These tests are based on the msg-split tests from
 	 * https://github.com/ircdocs/parser-tests/blob/master/tests/msg-split.yaml
