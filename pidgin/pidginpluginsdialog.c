@@ -24,6 +24,8 @@
 #include "pidginpluginsdialog.h"
 
 #include <glib/gi18n.h>
+#define G_SETTINGS_ENABLE_BACKEND
+#include <gio/gsettingsbackend.h>
 
 #include <gplugin.h>
 #include <gplugin-gtk.h>
@@ -77,11 +79,16 @@ pidgin_plugins_dialog_class_init(PidginPluginsDialogClass *klass) {
 static void
 pidgin_plugins_dialog_init(PidginPluginsDialog *dialog) {
 	GPluginManager *manager = NULL;
+	GSettingsBackend *backend = NULL;
 
 	gtk_widget_init_template(GTK_WIDGET(dialog));
 
 	manager = gplugin_manager_get_default();
 	gplugin_gtk_view_set_manager(GPLUGIN_GTK_VIEW(dialog->view), manager);
+
+	backend = purple_core_get_settings_backend();
+	gplugin_gtk_view_set_settings_backend(GPLUGIN_GTK_VIEW(dialog->view),
+	                                      backend);
 }
 
 /******************************************************************************
