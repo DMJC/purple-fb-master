@@ -420,11 +420,8 @@ got_items_cb(PurpleConnection *pc, const char *type,
 				xmpp_disco_service_set_service_type(service,
 				                                    XMPP_DISCO_SERVICE_TYPE_CHAT);
 
-				if(name != NULL) {
-					xmpp_disco_service_set_name(service, name);
-				} else {
-					xmpp_disco_service_set_name(service, jid);
-				}
+				xmpp_disco_service_set_name(service, jid);
+				xmpp_disco_service_set_description(service, name);
 				xmpp_disco_service_set_jid(service, jid);
 				xmpp_disco_service_set_node(service, node);
 				pidgin_disco_add_service(list, service, item_data->parent);
