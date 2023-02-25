@@ -133,8 +133,6 @@ purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 		G_TYPE_STRING, /* Command */
 		G_TYPE_POINTER); /* Parameters (GHashTable *) */
 
-	purple_signal_register(core, "quitting", purple_marshal_VOID, G_TYPE_NONE,
-		0);
 	purple_signal_register(core, "core-initialized", purple_marshal_VOID,
 		G_TYPE_NONE, 0);
 
@@ -230,9 +228,6 @@ purple_core_quit(void)
 	PurpleHistoryManager *history_manager = NULL;
 
 	g_return_if_fail(core != NULL);
-
-	/* The self destruct sequence has been initiated */
-	purple_signal_emit(purple_get_core(), "quitting");
 
 	/* Transmission ends */
 	purple_connections_disconnect_all();

@@ -879,6 +879,7 @@ version 3.0.0 (??/??/????):
 		* PurpleXferUiOps.ui_write. Use PurpleXfer::write-local instead.
 		* PurpleXferUiOps.update_progress. Use notify::progress on
 		  #PurpleXfer objects instead.
+		* quitting signal
 		* serv_got_attention
 		* serv_send_attention
 		* struct _PurpleAttentionType

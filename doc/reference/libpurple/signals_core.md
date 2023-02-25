@@ -5,25 +5,9 @@ Slug: core-signals
 
 ### Signal List
 
-* [core-quitting](#quitting)
 * [core-uri-handler](#uri-handler)
 
 ### Signal Details
-
-#### quitting
-
-```c
-void user_function(gpointer user_data);
-```
-
-Emitted when libpurple is quitting.
-
-**Parameters:**
-
-**user_data**
-: User data set when the signal handler was connected.
-
-----
 
 #### uri-handler
 
