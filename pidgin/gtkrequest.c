@@ -1104,8 +1104,6 @@ setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
 {
 	const char *type_hint;
 
-	g_object_set(entry, "activates-default", TRUE, NULL);
-
 	g_signal_connect(entry, "changed", G_CALLBACK(req_entry_field_changed_cb),
 	                 field);
 
@@ -1201,10 +1199,11 @@ create_string_field(PurpleRequestField *field)
 
 		if (purple_request_field_string_is_masked(field)) {
 			widget = gtk_password_entry_new();
-			gtk_password_entry_set_show_peek_icon(GTK_PASSWORD_ENTRY(widget),
-			                                      TRUE);
+			g_object_set(widget, "activates-default", TRUE,
+			             "show-peek-icon", TRUE, NULL);
 		} else {
 			widget = gtk_entry_new();
+			gtk_entry_set_activates_default(GTK_ENTRY(widget), TRUE);
 		}
 
 		setup_entry_field(widget, field);
