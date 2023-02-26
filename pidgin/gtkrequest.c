@@ -72,7 +72,6 @@ typedef struct
 		struct
 		{
 			gboolean savedialog;
-			gchar *name;
 
 		} file;
 
@@ -2186,8 +2185,8 @@ pidgin_request_fields(const char *title, const char *primary,
 }
 
 static void
-file_ok_check_if_exists_cb(G_GNUC_UNUSED GtkWidget *widget, gint response,
-                           PidginRequestData *data)
+pidgin_request_file_folder_response_cb(G_GNUC_UNUSED GtkWidget *widget,
+                                       gint response, PidginRequestData *data)
 {
 	GFile *current_path;
 
@@ -2198,7 +2197,6 @@ file_ok_check_if_exists_cb(G_GNUC_UNUSED GtkWidget *widget, gint response,
 		return;
 	}
 
-	data->u.file.name = gtk_file_chooser_get_current_name(GTK_FILE_CHOOSER(data->dialog));
 	current_path = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(data->dialog));
 	if (current_path != NULL) {
 		gchar *current_folder = g_file_get_path(current_path);
@@ -2210,7 +2208,11 @@ file_ok_check_if_exists_cb(G_GNUC_UNUSED GtkWidget *widget, gint response,
 		g_free(current_folder);
 	}
 	if (data->cbs[1] != NULL) {
-		((PurpleRequestFileCb)data->cbs[1])(data->user_data, data->u.file.name);
+		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(data->dialog));
+		char *filename = g_file_get_path(file);
+		((PurpleRequestFileCb)data->cbs[1])(data->user_data, filename);
+		g_free(filename);
+		g_object_unref(file);
 	}
 	purple_request_close(data->type, data);
 
@@ -2291,8 +2293,8 @@ pidgin_request_file(const char *title, const char *filename,
 	g_clear_object(&file);
 #endif
 
-	g_signal_connect(G_OBJECT(GTK_FILE_CHOOSER(filesel)), "response",
-					 G_CALLBACK(file_ok_check_if_exists_cb), data);
+	g_signal_connect(G_OBJECT(filesel), "response",
+	                 G_CALLBACK(pidgin_request_file_folder_response_cb), data);
 
 #if 0
 	/* FIXME: Not implemented for native dialogs. */
@@ -2336,8 +2338,8 @@ pidgin_request_folder(const char *title, const char *dirname, GCallback ok_cb,
 		g_object_unref(path);
 	}
 
-	g_signal_connect(G_OBJECT(GTK_FILE_CHOOSER(dirsel)), "response",
-						G_CALLBACK(file_ok_check_if_exists_cb), data);
+	g_signal_connect(G_OBJECT(dirsel), "response",
+	                 G_CALLBACK(pidgin_request_file_folder_response_cb), data);
 
 	data->dialog = dirsel;
 #if 0
@@ -2396,8 +2398,6 @@ pidgin_close_request(PurpleRequestType type, void *ui_handle)
 
 	if (type == PURPLE_REQUEST_FIELDS)
 		purple_request_fields_destroy(data->u.multifield.fields);
-	else if (type == PURPLE_REQUEST_FILE)
-		g_free(data->u.file.name);
 
 	g_free(data);
 }
