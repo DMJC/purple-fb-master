@@ -1380,102 +1380,142 @@ create_account_field(PurpleRequestField *field)
 }
 
 static void
-select_field_list_item(GtkTreeModel *model, G_GNUC_UNUSED GtkTreePath *path,
-					   GtkTreeIter *iter, gpointer data)
+setup_list_field_listitem_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
+                             GtkListItem *item, gpointer data)
 {
-	PurpleRequestField *field = (PurpleRequestField *)data;
-	char *text;
+	PurpleRequestField *field = data;
+	GtkWidget *box = NULL;
+	GtkWidget *widget = NULL;
 
-	gtk_tree_model_get(model, iter, 1, &text, -1);
+	box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	gtk_list_item_set_child(item, box);
 
-	purple_request_field_list_add_selected(field, text);
-	g_free(text);
+	widget = gtk_label_new(NULL);
+	gtk_box_append(GTK_BOX(box), widget);
+
+	if(purple_request_field_list_has_icons(field)) {
+		widget = gtk_image_new();
+		gtk_box_append(GTK_BOX(box), widget);
+	}
 }
 
 static void
-list_field_select_changed_cb(GtkTreeSelection *sel, PurpleRequestField *field)
+bind_list_field_listitem_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
+                            GtkListItem *item, gpointer data)
 {
+	PurpleRequestField *field = data;
+	GtkWidget *box = NULL;
+	GtkWidget *label = NULL;
+	GObject *wrapper = NULL;
+
+	box = gtk_list_item_get_child(item);
+	wrapper = gtk_list_item_get_item(item);
+
+	label = gtk_widget_get_first_child(box);
+	gtk_label_set_text(GTK_LABEL(label), g_object_get_data(wrapper, "text"));
+
+	if(purple_request_field_list_has_icons(field)) {
+		GtkWidget *image = NULL;
+
+		image = gtk_widget_get_last_child(box);
+		gtk_image_set_from_pixbuf(GTK_IMAGE(image),
+		                          g_object_get_data(wrapper, "pixbuf"));
+	}
+}
+
+static void
+list_field_select_changed_cb(GtkSelectionModel *self,
+                             G_GNUC_UNUSED guint position,
+                             G_GNUC_UNUSED guint n_items, gpointer data)
+{
+	PurpleRequestField *field = data;
+	GtkBitset *bitset = NULL;
+
 	purple_request_field_list_clear_selected(field);
 
-	gtk_tree_selection_selected_foreach(sel, select_field_list_item, field);
+	bitset = gtk_selection_model_get_selection(self);
+	n_items = gtk_bitset_get_size(bitset);
+
+	for(guint index = 0; index < n_items; index++) {
+		GObject *wrapper = NULL;
+		const char *text = NULL;
+
+		wrapper = g_list_model_get_item(G_LIST_MODEL(self),
+		                                gtk_bitset_get_nth(bitset, index));
+
+		text = g_object_get_data(wrapper, "text");
+		purple_request_field_list_add_selected(field, text);
+
+		g_object_unref(wrapper);
+	}
+
+	gtk_bitset_unref(bitset);
 }
 
 static GtkWidget *
 create_list_field(PurpleRequestField *field)
 {
 	GtkWidget *sw;
-	GtkWidget *treeview;
-	GtkListStore *store;
-	GtkCellRenderer *renderer;
-	GtkTreeSelection *sel;
-	GtkTreeViewColumn *column;
-	GtkTreeIter iter;
+	GtkWidget *listview = NULL;
+	GtkSelectionModel *sel = NULL;
+	GtkListItemFactory *factory = NULL;
+	GListStore *store = NULL;
+	guint index = 0;
 	GList *l;
 	gboolean has_icons;
 
 	has_icons = purple_request_field_list_has_icons(field);
 
-
 	/* Create the list store */
-	if (has_icons) {
-		store = gtk_list_store_new(3, G_TYPE_POINTER, G_TYPE_STRING, GDK_TYPE_PIXBUF);
+	store = g_list_store_new(G_TYPE_OBJECT);
+	if(purple_request_field_list_get_multi_select(field)) {
+		sel = GTK_SELECTION_MODEL(gtk_multi_selection_new(G_LIST_MODEL(store)));
 	} else {
-		store = gtk_list_store_new(2, G_TYPE_POINTER, G_TYPE_STRING);
+		sel = GTK_SELECTION_MODEL(gtk_single_selection_new(G_LIST_MODEL(store)));
 	}
 
-	/* Create the tree view */
-	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	g_object_unref(G_OBJECT(store));
-	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
+	/* Create the row factory. */
+	factory = gtk_signal_list_item_factory_new();
+	g_signal_connect(factory, "setup", G_CALLBACK(setup_list_field_listitem_cb),
+	                 field);
+	g_signal_connect(factory, "bind", G_CALLBACK(bind_list_field_listitem_cb),
+	                 field);
 
-	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
-
-	if (purple_request_field_list_get_multi_select(field))
-		gtk_tree_selection_set_mode(sel, GTK_SELECTION_MULTIPLE);
-
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_insert_column(GTK_TREE_VIEW(treeview), column, -1);
-
-	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_add_attribute(column, renderer, "text", 1);
+	/* Create the list view */
+	listview = gtk_list_view_new(sel, factory);
 
 	if (has_icons) {
-		renderer = gtk_cell_renderer_pixbuf_new();
-		gtk_tree_view_column_pack_start(column, renderer, TRUE);
-		gtk_tree_view_column_add_attribute(column, renderer, "pixbuf", 2);
-
-		gtk_widget_set_size_request(treeview, 200, 400);
+		gtk_widget_set_size_request(listview, 200, 400);
 	}
 
-	for (l = purple_request_field_list_get_items(field); l != NULL; l = l->next)
+	for(index = 0, l = purple_request_field_list_get_items(field);
+	    l != NULL;
+	    index++, l = l->next)
 	{
 		PurpleKeyValuePair *item = l->data;
 		const char *text = (const char *)item->key;
+		GObject *wrapper = NULL;
 
-		gtk_list_store_append(store, &iter);
+		wrapper = g_object_new(G_TYPE_OBJECT, NULL);
+		g_list_store_append(store, wrapper);
 
-		if (has_icons) {
+		g_object_set_data(wrapper, "data",
+		                  purple_request_field_list_get_data(field, text));
+		g_object_set_data_full(wrapper, "text", g_strdup(text), g_free);
+
+		if(has_icons) {
 			const char *icon_path = (const char *)item->value;
 			GdkPixbuf* pixbuf = NULL;
 
-			if (icon_path)
+			if(icon_path) {
 				pixbuf = purple_gdk_pixbuf_new_from_file(icon_path);
+			}
 
-			gtk_list_store_set(store, &iter,
-			                   0, purple_request_field_list_get_data(field, text),
-			                   1, text,
-			                   2, pixbuf,
-			                   -1);
-		} else {
-			gtk_list_store_set(store, &iter,
-			                   0, purple_request_field_list_get_data(field, text),
-			                   1, text,
-			                   -1);
+			g_object_set_data_full(wrapper, "pixbuf", pixbuf, g_object_unref);
 		}
 
-		if (purple_request_field_list_is_selected(field, text)) {
-			gtk_tree_selection_select_iter(sel, &iter);
+		if(purple_request_field_list_is_selected(field, text)) {
+			gtk_selection_model_select_item(sel, index, FALSE);
 		}
 	}
 
@@ -1483,18 +1523,17 @@ create_list_field(PurpleRequestField *field)
 	 * We only want to catch changes made by the user, so it's important
 	 * that we wait until after the list is created to connect this
 	 * handler.  If we connect the handler before the loop above and
-	 * there are multiple items selected, then selecting the first iter
-	 * in the tree causes list_field_select_changed_cb to be triggered
+	 * there are multiple items selected, then selecting the first item
+	 * in the view causes list_field_select_changed_cb to be triggered
 	 * which clears out the rest of the list of selected items.
 	 */
-	g_signal_connect(G_OBJECT(sel), "changed",
-					 G_CALLBACK(list_field_select_changed_cb), field);
-
+	g_signal_connect(G_OBJECT(sel), "selection-changed",
+	                 G_CALLBACK(list_field_select_changed_cb), field);
 
 	sw = gtk_scrolled_window_new();
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
 	                               GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), treeview);
+	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), listview);
 	return sw;
 }
 
