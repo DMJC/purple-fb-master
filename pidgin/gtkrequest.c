@@ -918,7 +918,8 @@ pidgin_request_action(const char *title, const char *primary,
 }
 
 static void
-wait_cancel_cb(G_GNUC_UNUSED GtkWidget *button, PidginRequestData *data)
+wait_response_cb(G_GNUC_UNUSED GtkDialog *dialog, G_GNUC_UNUSED gint id,
+                 PidginRequestData *data)
 {
 	generic_response_start(data);
 
@@ -936,7 +937,7 @@ pidgin_request_wait(const char *title, const char *primary,
 {
 	PidginRequestData *data;
 	GtkWidget *dialog, *content;
-	GtkWidget *hbox, *vbox, *img, *label, *button;
+	GtkWidget *hbox, *vbox, *img, *label;
 	gchar *primary_esc, *secondary_esc, *label_text;
 
 	data            = g_new0(PidginRequestData, 1);
@@ -948,6 +949,9 @@ pidgin_request_wait(const char *title, const char *primary,
 	data->cbs[0] = (GCallback)cancel_cb;
 
 	data->dialog = dialog = gtk_dialog_new();
+
+	g_signal_connect(G_OBJECT(dialog), "response",
+	                 G_CALLBACK(wait_response_cb), data);
 
 	gtk_window_set_deletable(GTK_WINDOW(data->dialog), cancel_cb != NULL);
 
@@ -980,9 +984,7 @@ pidgin_request_wait(const char *title, const char *primary,
 	gtk_box_append(GTK_BOX(hbox), img);
 
 	/* Cancel button */
-	button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("Cancel"), GTK_RESPONSE_CANCEL);
-	g_signal_connect(G_OBJECT(button), "clicked",
-		G_CALLBACK(wait_cancel_cb), data);
+	gtk_dialog_add_button(GTK_DIALOG(dialog), _("Cancel"), GTK_RESPONSE_CANCEL);
 
 	/* Vertical box */
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
