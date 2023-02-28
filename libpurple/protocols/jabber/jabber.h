@@ -69,8 +69,6 @@ typedef struct _JabberStream JabberStream;
 #include "buddy.h"
 #include "bosh.h"
 
-#include <sasl/sasl.h>
-
 #define CAPS0115_NODE "https://pidgin.im/"
 
 #define JABBER_TYPE_PROTOCOL (jabber_protocol_get_type())
@@ -190,18 +188,6 @@ struct _JabberStream
 	char *server_name;
 
 	char *serverFQDN;
-
-	sasl_conn_t *sasl;
-	sasl_callback_t *sasl_cb;
-	sasl_secret_t *sasl_secret;
-	const char *current_mech;
-	int auth_fail_count;
-
-	int sasl_state;
-	int sasl_maxbuf;
-	GString *sasl_mechs;
-
-	gchar *sasl_password;
 
 	gboolean vcard_fetched;
 

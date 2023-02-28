@@ -197,12 +197,6 @@ jabber_auth_start(JabberStream *js, PurpleXmlNode *packet)
 	for (l = auth_mechs; l; l = l->next) {
 		JabberSaslMech *possible = l->data;
 
-		/* Is this the Cyrus SASL mechanism? */
-		if (purple_strequal(possible->name, "*")) {
-			js->auth_mech = possible;
-			break;
-		}
-
 		/* Can we find this mechanism in the server's list? */
 		if (g_slist_find_custom(mechanisms, possible->name, (GCompareFunc)strcmp)) {
 			js->auth_mech = possible;
@@ -551,7 +545,6 @@ void jabber_auth_init(void)
 
 	jabber_auth_add_mech(jabber_auth_get_plain_mech());
 	jabber_auth_add_mech(jabber_auth_get_digest_md5_mech());
-	jabber_auth_add_mech(jabber_auth_get_cyrus_mech());
 #ifdef HAVE_WEBEX_TOKEN
 	jabber_auth_add_mech(jabber_auth_get_webex_token_mech());
 #endif

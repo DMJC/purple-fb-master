@@ -465,47 +465,6 @@ jabber_send_raw(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
 	if (len == -1)
 		len = strlen(data);
 
-	/* If we've got a security layer, we need to encode the data,
-	 * splitting it on the maximum buffer length negotiated */
-	if (js->sasl_maxbuf>0) {
-		int pos = 0;
-
-		g_return_if_fail(js->input != NULL);
-
-		while (pos < len) {
-			int towrite;
-			const char *out;
-			unsigned olen;
-			int rc;
-
-			towrite = MIN((len - pos), js->sasl_maxbuf);
-
-			rc = sasl_encode(js->sasl, &data[pos], towrite,
-			                 &out, &olen);
-			if (rc != SASL_OK) {
-				gchar *error =
-					g_strdup_printf(_("SASL error: %s"),
-						sasl_errdetail(js->sasl));
-				purple_debug_error("jabber",
-					"sasl_encode error %d: %s\n", rc,
-					sasl_errdetail(js->sasl));
-				purple_connection_error(gc,
-					PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
-					error);
-				g_free(error);
-				return;
-			}
-			pos += towrite;
-
-			/* do_jabber_send_raw returns FALSE when it throws a
-			 * connection error.
-			 */
-			if (!do_jabber_send_raw(js, out, olen))
-				break;
-		}
-		return;
-	}
-
 	if (js->bosh)
 		jabber_bosh_connection_send(js->bosh, data);
 	else
@@ -626,30 +585,6 @@ jabber_recv_cb(GObject *stream, gpointer data)
 		}
 
 		purple_connection_update_last_received(gc);
-		if (js->sasl_maxbuf > 0) {
-			const char *out;
-			unsigned int olen;
-			int rc;
-
-			rc = sasl_decode(js->sasl, buf, len, &out, &olen);
-			if (rc != SASL_OK) {
-				gchar *error =
-					g_strdup_printf(_("SASL error: %s"),
-						sasl_errdetail(js->sasl));
-				purple_debug_error("jabber",
-					"sasl_decode_error %d: %s\n", rc,
-					sasl_errdetail(js->sasl));
-				purple_connection_error(gc,
-					PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
-					error);
-			} else if (olen > 0) {
-				purple_debug_info("jabber", "RecvSASL (%u): %s\n", olen, out);
-				jabber_parser_process(js, out, olen);
-				if (js->reinit)
-					jabber_stream_init(js);
-			}
-			return G_SOURCE_CONTINUE;
-		}
 		buf[len] = '\0';
 		purple_debug_misc("jabber", "Recv (%" G_GSSIZE_FORMAT "): %s", len,
 		                  buf);
@@ -1117,14 +1052,6 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 
 	if (js->auth_mech && js->auth_mech->dispose)
 		js->auth_mech->dispose(js);
-	if(js->sasl)
-		sasl_dispose(&js->sasl);
-	if(js->sasl_mechs)
-		g_string_free(js->sasl_mechs, TRUE);
-	g_free(js->sasl_cb);
-	/* Note: _not_ g_free.  See auth_cyrus.c:jabber_sasl_cb_secret */
-	free(js->sasl_secret);
-	g_free(js->sasl_password);
 	g_free(js->serverFQDN);
 	g_list_free_full(js->commands, (GDestroyNotify)jabber_adhoc_commands_free);
 	g_free(js->server_name);
@@ -3243,32 +3170,6 @@ jabber_do_init(void)
 	const gchar *type = "pc"; /* default client type, if unknown or
 								unspecified */
 	const gchar *ui_name = NULL;
-	/* We really really only want to do this once per process */
-	static gboolean sasl_initialized = FALSE;
-#ifdef _WIN32
-	UINT old_error_mode;
-	gchar *sasldir;
-#endif
-	int ret;
-
-	/* XXX - If any other plugin wants SASL this won't be good ... */
-	if (!sasl_initialized) {
-		sasl_initialized = TRUE;
-#ifdef _WIN32
-		sasldir = g_strdup(wpurple_lib_dir("sasl2"));
-		sasl_set_path(SASL_PATH_TYPE_PLUGIN, sasldir);
-		g_free(sasldir);
-		/* Suppress error popups for failing to load sasl plugins */
-		old_error_mode = SetErrorMode(SEM_FAILCRITICALERRORS);
-#endif
-		if ((ret = sasl_client_init(NULL)) != SASL_OK) {
-			purple_debug_error("xmpp", "Error (%d) initializing SASL.\n", ret);
-		}
-#ifdef _WIN32
-		/* Restore the original error mode */
-		SetErrorMode(old_error_mode);
-#endif
-	}
 
 	jabber_cmds = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, cmds_free_func);
 
