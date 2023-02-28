@@ -1517,6 +1517,8 @@ create_list_field(PurpleRequestField *field)
 		if(purple_request_field_list_is_selected(field, text)) {
 			gtk_selection_model_select_item(sel, index, FALSE);
 		}
+
+		g_object_unref(wrapper);
 	}
 
 	/*
@@ -2142,8 +2144,8 @@ pidgin_request_fields(const char *title, const char *primary,
 							col_offset, row_num, 1, 1);
 					}
 
-					g_free(field_label);
 				}
+				g_clear_pointer(&field_label, g_free);
 
 				widget = GTK_WIDGET(purple_request_field_get_ui_data(field));
 				if (widget == NULL)

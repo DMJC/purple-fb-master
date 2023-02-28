@@ -120,7 +120,7 @@ struct _PurpleRequestField
 		{
 			unsigned int scale_x;
 			unsigned int scale_y;
-			const char *buffer;
+			char *buffer;
 			gsize size;
 		} image;
 
@@ -891,25 +891,20 @@ purple_request_field_destroy(PurpleRequestField *field)
 	g_free(field->type_hint);
 	g_free(field->tooltip);
 
-	if (field->type == PURPLE_REQUEST_FIELD_STRING)
-	{
+	if(field->type == PURPLE_REQUEST_FIELD_STRING) {
 		g_free(field->u.string.default_value);
 		g_free(field->u.string.value);
-	}
-	else if (field->type == PURPLE_REQUEST_FIELD_CHOICE)
-	{
+	} else if(field->type == PURPLE_REQUEST_FIELD_CHOICE) {
 		g_list_free_full(field->u.choice.elements, (GDestroyNotify)purple_key_value_pair_free);
-	}
-	else if (field->type == PURPLE_REQUEST_FIELD_LIST)
-	{
+	} else if(field->type == PURPLE_REQUEST_FIELD_LIST) {
 		g_list_free_full(field->u.list.items, (GDestroyNotify)purple_key_value_pair_free);
 		g_list_free_full(field->u.list.selected, g_free);
 		g_hash_table_destroy(field->u.list.item_data);
 		g_hash_table_destroy(field->u.list.selected_table);
-	}
-	else if (field->type == PURPLE_REQUEST_FIELD_DATASHEET)
-	{
+	} else if(field->type == PURPLE_REQUEST_FIELD_DATASHEET) {
 		purple_request_datasheet_free(field->u.datasheet.sheet);
+	} else if(field->type == PURPLE_REQUEST_FIELD_IMAGE) {
+		g_free(field->u.image.buffer);
 	}
 
 	g_free(field);

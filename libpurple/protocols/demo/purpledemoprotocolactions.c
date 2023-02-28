@@ -212,6 +212,8 @@ purple_demo_protocol_request_input_activate(G_GNUC_UNUSED GSimpleAction *action,
 	                     _("Cancel"),
 	                     G_CALLBACK(purple_demo_protocol_request_input_cancel_cb),
 	                     purple_request_cpar_from_connection(connection), NULL);
+
+	g_free(secondary);
 }
 
 static void
