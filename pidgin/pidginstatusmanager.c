@@ -144,9 +144,10 @@ pidgin_status_manager_add(PidginStatusManager *manager,
 	g_object_set_data_full(wrapper, "type", g_strdup(type), g_free);
 	g_object_set_data_full(wrapper, "message", g_strdup(message), g_free);
 
-	g_free(message);
-
 	g_list_store_append(manager->model, wrapper);
+
+	g_free(message);
+	g_object_unref(wrapper);
 }
 
 static void
@@ -319,9 +320,12 @@ pidgin_status_editor_destroy_cb(GtkWidget *widget, gpointer data) {
 		if(editor == widget) {
 			/* It is, so set it back to NULL to remove it from the wrapper. */
 			g_object_set_data(wrapper, "editor", NULL);
+			g_object_unref(wrapper);
 
 			break;
 		}
+
+		g_object_unref(wrapper);
 	}
 }
 
