@@ -335,12 +335,16 @@ parse_account(PurpleXmlNode *node)
 
 	child = purple_xmlnode_get_child(node, "require_password");
 	if(child != NULL) {
-		require_password = atoi(purple_xmlnode_get_data(child));
+		data = purple_xmlnode_get_data(child);
+		require_password = atoi(data);
+		g_free(data);
 	}
 
 	child = purple_xmlnode_get_child(node, "enabled");
 	if(child != NULL) {
-		enabled = atoi(purple_xmlnode_get_data(child));
+		data = purple_xmlnode_get_data(child);
+		enabled = atoi(data);
+		g_free(data);
 	}
 
 	if ((protocol_id == NULL) || (name == NULL))

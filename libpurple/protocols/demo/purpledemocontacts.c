@@ -252,4 +252,5 @@ purple_demo_contacts_load(PurpleAccount *account) {
 	g_clear_object(&parser);
 
 	g_input_stream_close(istream, NULL, NULL);
+	g_object_unref(istream);
 }
