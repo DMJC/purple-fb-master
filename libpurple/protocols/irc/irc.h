@@ -26,7 +26,7 @@
 
 #include <config.h>
 
-#include <sasl/sasl.h>
+#include <hasl.h>
 
 #include <purple.h>
 
@@ -95,11 +95,8 @@ struct irc_conn {
 	char *mode_chars;
 	char *reqnick;
 	gboolean nickused;
-	sasl_conn_t *sasl_conn;
-	const char *current_mech;
-	GString *sasl_mechs;
-	gboolean mech_works;
-	sasl_callback_t *sasl_cb;
+
+	HaslContext *hasl_ctx;
 };
 
 struct irc_buddy {

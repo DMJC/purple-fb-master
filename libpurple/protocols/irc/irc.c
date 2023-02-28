@@ -720,14 +720,7 @@ irc_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 	g_free(irc->mode_chars);
 	g_free(irc->reqnick);
 
-	if (irc->sasl_conn) {
-		sasl_dispose(&irc->sasl_conn);
-		irc->sasl_conn = NULL;
-	}
-	g_free(irc->sasl_cb);
-	if(irc->sasl_mechs)
-		g_string_free(irc->sasl_mechs, TRUE);
-
+	g_clear_object(&irc->hasl_ctx);
 
 	g_free(irc);
 }
