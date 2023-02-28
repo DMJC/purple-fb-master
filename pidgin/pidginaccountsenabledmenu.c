@@ -280,6 +280,7 @@ pidgin_accounts_enabled_menu_get_item_links(GMenuModel *model, gint index,
 		if(G_IS_MENU(protocol_menu)) {
 			g_menu_insert_section(submenu, 1, NULL,
 			                      G_MENU_MODEL(protocol_menu));
+			g_object_unref(protocol_menu);
 		}
 	}
 

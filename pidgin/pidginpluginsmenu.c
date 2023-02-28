@@ -205,6 +205,7 @@ pidgin_plugins_menu_get_item_links(GMenuModel *model, gint index,
 		g_menu_item_set_attribute(section, G_MENU_ATTRIBUTE_ACTION_NAMESPACE,
 		                          "s", gplugin_plugin_info_get_id(info));
 		g_menu_append_item(menu, section);
+		g_object_unref(section);
 
 		g_hash_table_insert(*links, G_MENU_LINK_SUBMENU, menu);
 	}
