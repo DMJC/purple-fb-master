@@ -480,11 +480,9 @@ if get_option('gtkui')
 endif
 
 #######################################################################
-# Check for Cyrus-SASL (for xmpp/irc)
+# Check for Hasl
 #######################################################################
 hasl = dependency('hasl', version : '>= 0.1.0')
-
-sasl = dependency('libsasl2', version : '>= 2.0')
 
 #AC_MSG_CHECKING(for me pot o' gold)
 #AC_MSG_RESULT(no)
@@ -554,7 +552,6 @@ summary({
 
 summary({
     'Dynamic protocols': DYNAMIC_PRPLS,
-    'Cyrus SASL support (IRC and XMPP)': sasl,
 }, section: 'Protocol Support', bool_yn: true, list_sep: ', ')
 
 # TODO: Remove `.found()` once https://github.com/mesonbuild/meson/pull/10949
