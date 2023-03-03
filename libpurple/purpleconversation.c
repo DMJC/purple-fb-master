@@ -1,53 +1,45 @@
 /*
- * purple
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
- * Purple is the legal property of its developers, whose names are too numerous
- * to list here.  Please refer to the COPYRIGHT file distributed with this
- * source distribution.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <glib/gi18n-lib.h>
 
-#include "buddylist.h"
-#include "cmds.h"
+#include "purpleconversation.h"
+
 #include "conversations.h"
 #include "debug.h"
-#include "notify.h"
-#include "prefs.h"
-#include "purpleconversation.h"
 #include "purpleconversationmanager.h"
+#include "purpleconversationmember.h"
 #include "purpleenums.h"
 #include "purplehistorymanager.h"
 #include "purplemarkup.h"
 #include "purpleprivate.h"
-#include "purpleprotocol.h"
-#include "purpleprotocolclient.h"
-#include "request.h"
-#include "signals.h"
 
 typedef struct {
-	PurpleAccount *account;           /* The user using this conversation. */
+	PurpleAccount *account;
 
-	char *name;                       /* The name of the conversation.     */
-	char *title;                      /* The window title.                 */
+	char *name;
+	char *title;
 
-	PurpleConversationUiOps *ui_ops;  /* UI-specific operations.           */
+	PurpleConversationUiOps *ui_ops;
 
-	PurpleConnectionFlags features;   /* The supported features            */
+	PurpleConnectionFlags features;
+
+	GListStore *members;
 } PurpleConversationPrivate;
 
 enum {
@@ -56,17 +48,37 @@ enum {
 	PROP_NAME,
 	PROP_TITLE,
 	PROP_FEATURES,
+	PROP_MEMBERS,
 	N_PROPERTIES
 };
-
 static GParamSpec *properties[N_PROPERTIES] = { NULL, };
 
-G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(PurpleConversation, purple_conversation,
-                                    G_TYPE_OBJECT);
+enum {
+	SIG_MEMBER_ADDED,
+	SIG_MEMBER_REMOVED,
+	N_SIGNALS,
+};
+static guint signals[N_SIGNALS] = {0, };
+
+G_DEFINE_TYPE_WITH_PRIVATE(PurpleConversation, purple_conversation,
+                           G_TYPE_OBJECT);
 
 /**************************************************************************
  * Helpers
  **************************************************************************/
+static gboolean
+purple_conversation_check_member_equal(gconstpointer a, gconstpointer b) {
+	PurpleConversationMember *member_a = (PurpleConversationMember *)a;
+	PurpleConversationMember *member_b = (PurpleConversationMember *)b;
+	PurpleContactInfo *info_a = NULL;
+	PurpleContactInfo *info_b = NULL;
+
+	info_a = purple_conversation_member_get_contact_info(member_a);
+	info_b = purple_conversation_member_get_contact_info(member_b);
+
+	return (purple_contact_info_compare(info_a, info_b) == 0);
+}
+
 static void
 common_send(PurpleConversation *conv, const gchar *message,
             PurpleMessageFlags msgflags)
@@ -220,7 +232,7 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 
 	switch (param_id) {
 		case PROP_ACCOUNT:
-			priv->account = g_value_get_object(value);
+			purple_conversation_set_account(conv, g_value_get_object(value));
 			break;
 		case PROP_NAME:
 			g_free(priv->name);
@@ -258,6 +270,9 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_FEATURES:
 			g_value_set_flags(value, purple_conversation_get_features(conv));
 			break;
+		case PROP_MEMBERS:
+			g_value_set_object(value, purple_conversation_get_members(conv));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -265,7 +280,12 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 }
 
 static void
-purple_conversation_init(G_GNUC_UNUSED PurpleConversation *conv) {
+purple_conversation_init(PurpleConversation *conv) {
+	PurpleConversationPrivate *priv = NULL;
+
+	priv = purple_conversation_get_instance_private(conv);
+
+	priv->members = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
 }
 
 static void
@@ -340,6 +360,7 @@ purple_conversation_finalize(GObject *object) {
 
 	g_clear_pointer(&priv->name, g_free);
 	g_clear_pointer(&priv->title, g_free);
+	g_clear_object(&priv->members);
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->finalize(object);
 }
@@ -348,11 +369,9 @@ static void
 purple_conversation_class_init(PurpleConversationClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
+	obj_class->constructed = purple_conversation_constructed;
 	obj_class->dispose = purple_conversation_dispose;
 	obj_class->finalize = purple_conversation_finalize;
-	obj_class->constructed = purple_conversation_constructed;
-
-	/* Setup properties */
 	obj_class->get_property = purple_conversation_get_property;
 	obj_class->set_property = purple_conversation_set_property;
 
@@ -381,7 +400,70 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		0,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConversation:members:
+	 *
+	 * The members that are currently in this conversation.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_MEMBERS] = g_param_spec_object(
+		"members", "members",
+		"The members that are currently in this conversation",
+		G_TYPE_LIST_MODEL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
+
+	/**
+	 * PurpleConversation::member-added:
+	 * @conversation: The instance.
+	 * @member: The [class@Purple.ConversationMember] instance.
+	 * @announce: Whether or not this addition should be announced.
+	 * @message: (nullable): An optional message to use in the announcement.
+	 *
+	 * Emitted when a new member is added to this conversation.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_MEMBER_ADDED] = g_signal_new_class_handler(
+		"member-added",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		3,
+		PURPLE_TYPE_CONVERSATION_MEMBER,
+		G_TYPE_BOOLEAN,
+		G_TYPE_STRING);
+
+	/**
+	 * PurpleConversation::member-removed:
+	 * @conversation: The instance.
+	 * @member: The [class@Purple.ConversationMember] instance.
+	 * @announce: Whether or not this removal should be announced.
+	 * @message: (nullable): An optional message to use in the announcement.
+	 *
+	 * Emitted when member is removed from this conversation.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_MEMBER_REMOVED] = g_signal_new_class_handler(
+		"member-removed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		3,
+		PURPLE_TYPE_CONVERSATION_MEMBER,
+		G_TYPE_BOOLEAN,
+		G_TYPE_STRING);
 }
 
 /******************************************************************************
@@ -833,4 +915,125 @@ purple_conversation_get_extended_menu(PurpleConversation *conv) {
 	                   "conversation-extended-menu", conv, &menu);
 
 	return menu;
+}
+
+GListModel *
+purple_conversation_get_members(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return G_LIST_MODEL(priv->members);
+}
+
+gboolean
+purple_conversation_has_member(PurpleConversation *conversation,
+                               PurpleContactInfo *info, guint *position)
+{
+	PurpleConversationPrivate *priv = NULL;
+	PurpleConversationMember *needle = NULL;
+	gboolean found = FALSE;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	needle = purple_conversation_member_new(info);
+	found = g_list_store_find_with_equal_func(priv->members, needle,
+	                                          purple_conversation_check_member_equal,
+	                                          position);
+
+	g_clear_object(&needle);
+
+	return found;
+}
+
+PurpleConversationMember *
+purple_conversation_find_member(PurpleConversation *conversation,
+                                PurpleContactInfo *info)
+{
+	PurpleConversationMember *member = NULL;
+	guint position = 0;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	if(purple_conversation_has_member(conversation, info, &position)) {
+		PurpleConversationPrivate *priv = NULL;
+
+		priv = purple_conversation_get_instance_private(conversation);
+
+		member = g_list_model_get_item(G_LIST_MODEL(priv->members), position);
+
+		/* We don't return a reference, but get_item does, so we need to get
+		 * rid of that.
+		 */
+		g_object_unref(member);
+	}
+
+	return member;
+}
+
+PurpleConversationMember *
+purple_conversation_add_member(PurpleConversation *conversation,
+                               PurpleContactInfo *info, gboolean announce,
+                               const char *message)
+{
+	PurpleConversationMember *member = NULL;
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	member = purple_conversation_find_member(conversation, info);
+	if(PURPLE_IS_CONVERSATION_MEMBER(member)) {
+		return member;
+	}
+
+	member = purple_conversation_member_new(info);
+	g_list_store_append(priv->members, member);
+
+	g_signal_emit(conversation, signals[SIG_MEMBER_ADDED], 0, member, announce,
+	              message);
+
+	g_object_unref(member);
+
+	return member;
+}
+
+gboolean
+purple_conversation_remove_member(PurpleConversation *conversation,
+                                  PurpleConversationMember *member,
+                                  gboolean announce, const char *message)
+{
+	PurpleConversationPrivate *priv = NULL;
+	guint position = 0;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MEMBER(member), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(!g_list_store_find(priv->members, member, &position)) {
+		return FALSE;
+	}
+
+	/* We need to ref member to make sure it stays around long enough for us
+	 * to emit the signal.
+	 */
+	g_object_ref(member);
+
+	g_list_store_remove(priv->members, position);
+
+	g_signal_emit(conversation, signals[SIG_MEMBER_REMOVED], 0, member,
+	              announce, message);
+
+	g_object_unref(member);
+
+	return TRUE;
 }

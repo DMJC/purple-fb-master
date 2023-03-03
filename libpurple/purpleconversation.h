@@ -1,22 +1,19 @@
-/* purple
+/*
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
- * Purple is the legal property of its developers, whose names are too numerous
- * to list here.  Please refer to the COPYRIGHT file distributed with this
- * source distribution.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #if !defined(PURPLE_GLOBAL_HEADER_INSIDE) && !defined(PURPLE_COMPILATION)
@@ -33,6 +30,8 @@
 G_DECLARE_DERIVABLE_TYPE(PurpleConversation, purple_conversation, PURPLE,
                          CONVERSATION, GObject)
 
+#include <purplecontactinfo.h>
+#include <purpleconversationmember.h>
 #include <purplemessage.h>
 
 /**
@@ -356,6 +355,102 @@ GList * purple_conversation_get_extended_menu(PurpleConversation *conv);
  * Returns:        TRUE if the error was presented, else FALSE
  */
 gboolean purple_conversation_present_error(const gchar *who, PurpleAccount *account, const gchar *what);
+
+/**
+ * purple_conversation_get_members:
+ * @conversation: The instance.
+ *
+ * Gets the members that are in @conversation.
+ *
+ * Returns: (transfer none): The members in @conversation.
+ *
+ * Since: 3.0.0
+ */
+GListModel *purple_conversation_get_members(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_has_member:
+ * @conversation: The instance.
+ * @info: The [class@Purple.ContactInfo] to look for.
+ * @position: (out) (optional): A return address for the position of the member
+ *            in the collection.
+ *
+ * Checks if @info is in @conversation. If @info is found, @position is set to
+ * the position of @info in [property@Purple.Conversation:members] if it is not
+ * %NULL.
+ *
+ * Returns: %TRUE if @info is in @conversation otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_conversation_has_member(PurpleConversation *conversation, PurpleContactInfo *info, guint *position);
+
+/**
+ * purple_conversation_find_member:
+ * @conversation: The instance.
+ * @info: A [class@Purple.ContactInfo instance]
+ *
+ * Finds the [class@Purple.ConversationMember] for @info if they are a member
+ * of @conversation.
+ *
+ * Returns: (transfer none) (nullable): The [class@Purple.ConversationMember]
+ *          if found or %NULL.
+ *
+ * Since: 3.0.0
+ */
+PurpleConversationMember *purple_conversation_find_member(PurpleConversation *conversation, PurpleContactInfo *info);
+
+/**
+ * purple_conversation_add_member:
+ * @conversation: The instance.
+ * @info: The [class@Purple.ContactInfo] of the person joining.
+ * @announce: Whether this addition should be announced or not.
+ * @message: (nullable): An optional message to be used with @announce.
+ *
+ * Looks for an existing [class@Purple.ConversationMember] for @info in
+ * @conversation and returns it if found. If not, a new
+ * [class@Purple.ConversationMember] is created.
+ *
+ * > This method is intended to be called by a protocol plugin to directly
+ * > manage the membership state of the @conversation.
+ *
+ * This will also emit the [signal@Purple.Conversation::member-added] signal if
+ * an existing member was not found.
+ *
+ * The @announce and @message parameters will be used when emitting the
+ * [signal@Purple.Conversation::member-added] signal. Announce and message are
+ * meant for protocols to more properly define their behavior. For example, on
+ * IRC you will typically be told when a user joins a chat but on Twitch this
+ * isn't announced.
+ *
+ * Returns: (transfer none): The [class@Purple.ConversationMember] that was
+ *          created or found.
+ *
+ * Since: 3.0.0
+ */
+PurpleConversationMember *purple_conversation_add_member(PurpleConversation *conversation, PurpleContactInfo *info, gboolean announce, const char *message);
+
+/**
+ * purple_conversation_remove_member:
+ * @conversation: The instance.
+ * @member: The [class@Purple.ConversationMember] to remove.
+ * @announce: Whether or not this removal should be announced.
+ * @message: (nullable): An optional message for the announcement.
+ *
+ * Attempts to remove @member from the collection of members in @conversation.
+ * If found, @member is removed and the
+ * [signal@Purple.Conversation::member-removed] signal is emitted with
+ * @announce and @message as parameters.
+ *
+ * > This method is intended to be called by a protocol plugin to directly
+ * > manage the membership state of the @conversation.
+ *
+ * Returns: %TRUE if @member was found and removed from @conversation,
+ *          otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_conversation_remove_member(PurpleConversation *conversation, PurpleConversationMember *member, gboolean announce, const char *message);
 
 G_END_DECLS
 
