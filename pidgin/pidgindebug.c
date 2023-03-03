@@ -77,6 +77,7 @@ typedef struct {
 
 static gboolean debug_print_enabled = FALSE;
 static PidginDebugWindow *debug_win = NULL;
+static guint pref_callback_id = 0;
 static guint debug_enabled_timer = 0;
 
 G_DEFINE_TYPE(PidginDebugWindow, pidgin_debug_window, GTK_TYPE_WINDOW);
@@ -135,6 +136,7 @@ save_response_cb(GtkNativeDialog *self, gint response_id, gpointer data)
 
 		date = g_date_time_new_now_local();
 		date_str = g_date_time_format(date, "%c");
+		g_date_time_unref(date);
 
 		tmp = g_strdup_printf("Pidgin Debug Log : %s\n", date_str);
 		g_output_stream_write_all(G_OUTPUT_STREAM(output), tmp, strlen(tmp),
@@ -915,14 +917,19 @@ pidgin_debug_init(void)
 	purple_prefs_add_bool(PIDGIN_PREFS_ROOT "/debug/case_insensitive", FALSE);
 	purple_prefs_add_bool(PIDGIN_PREFS_ROOT "/debug/highlight", FALSE);
 
-	purple_prefs_connect_callback(NULL, PIDGIN_PREFS_ROOT "/debug/enabled",
-	                              debug_enabled_cb, NULL);
+	pref_callback_id = purple_prefs_connect_callback(NULL,
+	                                                 PIDGIN_PREFS_ROOT "/debug/enabled",
+	                                                 debug_enabled_cb, NULL);
 }
 
 void
 pidgin_debug_uninit(void)
 {
-	if (debug_enabled_timer != 0) {
+	if(pref_callback_id != 0) {
+		purple_prefs_disconnect_callback(pref_callback_id);
+	}
+	pref_callback_id = 0;
+	if(debug_enabled_timer != 0) {
 		g_source_remove(debug_enabled_timer);
 	}
 	debug_enabled_timer = 0;
