@@ -333,10 +333,8 @@ purple_request_cpar_ref(PurpleRequestCommonParameters *cpar);
  * Decreases the reference count on the parameters set.
  *
  * The object will be destroyed when this reaches 0.
- *
- * Returns: (transfer full): The NULL, if object was destroyed, cpar otherwise.
  */
-PurpleRequestCommonParameters *
+void
 purple_request_cpar_unref(PurpleRequestCommonParameters *cpar);
 
 /**

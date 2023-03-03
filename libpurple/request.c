@@ -161,10 +161,7 @@ struct _PurpleRequestFieldGroup
 	GList *fields;
 };
 
-struct _PurpleRequestCommonParameters
-{
-	int ref_count;
-
+struct _PurpleRequestCommonParameters {
 	PurpleAccount *account;
 	PurpleConversation *conv;
 
@@ -190,7 +187,7 @@ purple_request_fields_check_others_sensitivity(PurpleRequestField *field);
 PurpleRequestCommonParameters *
 purple_request_cpar_new(void)
 {
-	return g_new0(PurpleRequestCommonParameters, 1);
+	return g_rc_box_new0(PurpleRequestCommonParameters);
 }
 
 PurpleRequestCommonParameters *
@@ -236,21 +233,23 @@ purple_request_cpar_ref(PurpleRequestCommonParameters *cpar)
 {
 	g_return_if_fail(cpar != NULL);
 
-	cpar->ref_count++;
+	g_rc_box_acquire(cpar);
 }
 
-PurpleRequestCommonParameters *
+static void
+purple_request_cpar_destroy(PurpleRequestCommonParameters *cpar) {
+	g_slist_free_full(cpar->extra_actions,
+	                  (GDestroyNotify)purple_key_value_pair_free);
+}
+
+void
 purple_request_cpar_unref(PurpleRequestCommonParameters *cpar)
 {
-	if (cpar == NULL)
-		return NULL;
+	if(cpar == NULL) {
+		return;
+	}
 
-	if (--cpar->ref_count > 0)
-		return cpar;
-
-	purple_request_cpar_set_extra_actions(cpar, NULL);
-	g_free(cpar);
-	return NULL;
+	g_rc_box_release_full(cpar, (GDestroyNotify)purple_request_cpar_destroy);
 }
 
 void
