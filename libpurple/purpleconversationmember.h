@@ -28,6 +28,7 @@
 
 #include <libpurple/purplecontactinfo.h>
 #include <libpurple/purpletags.h>
+#include <libpurple/purpletyping.h>
 
 G_BEGIN_DECLS
 
@@ -88,6 +89,33 @@ PurpleContactInfo *purple_conversation_member_get_contact_info(PurpleConversatio
  * Since: 3.0.0
  */
 PurpleTags *purple_conversation_member_get_tags(PurpleConversationMember *conversation_member);
+
+/**
+ * purple_conversation_member_get_typing_state:
+ * @member: The instance.
+ *
+ * Gets the current [enum@Purple.TypingState] for @conversation_member.
+ *
+ * Returns: The current typing state for @conversation_member.
+ *
+ * Since: 3.0.0
+ */
+PurpleTypingState purple_conversation_member_get_typing_state(PurpleConversationMember *member);
+
+/**
+ * purple_conversation_member_set_typing_state:
+ * @member: The instance.
+ * @state: The new typing state.
+ * @seconds: The number of seconds before resetting the state.
+ *
+ * Sets the typing state of @conversation_member to @state.
+ *
+ * If @seconds is greater than %0, a timeout will be added for @seconds to
+ * reset the state to none.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_member_set_typing_state(PurpleConversationMember *member, PurpleTypingState state, guint seconds);
 
 G_END_DECLS
 

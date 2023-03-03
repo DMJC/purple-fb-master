@@ -18,17 +18,23 @@
 
 #include "purpleconversationmember.h"
 
+#include "purpleenums.h"
+
 struct _PurpleConversationMember {
 	GObject parent;
 
 	PurpleContactInfo *contact_info;
 	PurpleTags *tags;
+
+	guint typing_timeout;
+	PurpleTypingState typing_state;
 };
 
 enum {
 	PROP_0,
 	PROP_CONTACT_INFO,
 	PROP_TAGS,
+	PROP_TYPING_STATE,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -53,6 +59,20 @@ purple_conversation_member_set_contact_info(PurpleConversationMember *member,
 }
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static gboolean
+purple_conversation_member_reset_typing_state(gpointer data) {
+	PurpleConversationMember *member = data;
+
+	purple_conversation_member_set_typing_state(member,
+	                                            PURPLE_TYPING_STATE_NONE,
+	                                            0);
+
+	return G_SOURCE_REMOVE;
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 static void
@@ -69,6 +89,10 @@ purple_conversation_member_get_property(GObject *obj, guint param_id,
 		case PROP_TAGS:
 			g_value_set_object(value,
 			                   purple_conversation_member_get_tags(member));
+			break;
+		case PROP_TYPING_STATE:
+			g_value_set_enum(value,
+			                 purple_conversation_member_get_typing_state(member));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -87,6 +111,11 @@ purple_conversation_member_set_property(GObject *obj, guint param_id,
 			purple_conversation_member_set_contact_info(member,
 			                                            g_value_get_object(value));
 			break;
+		case PROP_TYPING_STATE:
+			purple_conversation_member_set_typing_state(member,
+			                                            g_value_get_enum(value),
+			                                            0);
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -98,6 +127,11 @@ purple_conversation_member_dispose(GObject *obj) {
 	PurpleConversationMember *member = PURPLE_CONVERSATION_MEMBER(obj);
 
 	g_clear_object(&member->contact_info);
+
+	if(member->typing_timeout != 0) {
+		g_source_remove(member->typing_timeout);
+		member->typing_timeout = 0;
+	}
 
 	G_OBJECT_CLASS(purple_conversation_member_parent_class)->dispose(obj);
 }
@@ -151,6 +185,20 @@ purple_conversation_member_class_init(PurpleConversationMemberClass *klass) {
 		PURPLE_TYPE_TAGS,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConversationMember:typing-state:
+	 *
+	 * The [enum@Purple.TypingState] for this member.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TYPING_STATE] = g_param_spec_enum(
+		"typing-state", "typing-state",
+		"The typing state for this member",
+		PURPLE_TYPE_TYPING_STATE,
+		PURPLE_TYPING_STATE_NONE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
@@ -179,4 +227,46 @@ purple_conversation_member_get_tags(PurpleConversationMember *member) {
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MEMBER(member), NULL);
 
 	return member->tags;
+}
+
+PurpleTypingState
+purple_conversation_member_get_typing_state(PurpleConversationMember *member)
+{
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MEMBER(member),
+	                     PURPLE_TYPING_STATE_NONE);
+
+	return member->typing_state;
+}
+
+void
+purple_conversation_member_set_typing_state(PurpleConversationMember *member,
+                                            PurpleTypingState state,
+                                            guint seconds)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION_MEMBER(member));
+
+	/* Remove an existing timeout if necessary. */
+	if(member->typing_timeout != 0) {
+		g_source_remove(member->typing_timeout);
+		member->typing_timeout = 0;
+	}
+
+	/* If the state has changed, notify. */
+	if(state != member->typing_state) {
+		member->typing_state = state;
+
+		g_object_notify_by_pspec(G_OBJECT(member),
+		                         properties[PROP_TYPING_STATE]);
+	}
+
+	/* If we got a timeout, add it. */
+	if(seconds > 0) {
+		guint source = 0;
+
+		source = g_timeout_add_seconds(seconds,
+		                               purple_conversation_member_reset_typing_state,
+		                               member);
+
+		member->typing_timeout = source;
+	}
 }
