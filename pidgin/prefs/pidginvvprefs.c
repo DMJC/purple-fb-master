@@ -82,7 +82,7 @@ populate_vv_device_menuitems(PurpleMediaElementType type, GtkListStore *store)
 	for (; devices; devices = g_list_delete_link(devices, devices)) {
 		PurpleMediaElementInfo *info = devices->data;
 		GtkTreeIter iter;
-		const gchar *name, *id;
+		char *name, *id;
 
 		name = purple_media_element_info_get_name(info);
 		id = purple_media_element_info_get_id(info);
@@ -91,6 +91,8 @@ populate_vv_device_menuitems(PurpleMediaElementType type, GtkListStore *store)
 		gtk_list_store_set(store, &iter, PIDGIN_PREF_COMBO_TEXT, name,
 		                   PIDGIN_PREF_COMBO_VALUE, id, -1);
 
+		g_free(name);
+		g_free(id);
 		g_object_unref(info);
 	}
 }
