@@ -382,6 +382,57 @@ test_purple_contact_info_matches_none(void) {
 }
 
 /******************************************************************************
+ * presence-changed signal tests
+ *****************************************************************************/
+static void
+test_purple_contact_info_presence_changed_callback(PurpleContactInfo *info,
+                                                   PurplePresence *presence,
+                                                   GParamSpec *pspec,
+                                                   gpointer data)
+{
+	guint *counter = data;
+
+	g_assert_true(PURPLE_IS_CONTACT_INFO(info));
+	g_assert_true(PURPLE_IS_PRESENCE(presence));
+	g_assert_true(G_IS_PARAM_SPEC(pspec));
+
+	*counter = *counter + 1;
+}
+
+static void
+test_purple_contact_info_presence_changed_signal(void) {
+	PurpleContactInfo *info = NULL;
+	PurplePresence *presence = NULL;
+	guint counter = 0;
+
+	/* Create the info and add our callbacks, one for everything and another
+	 * for just idle to make sure detail works.
+	 */
+	info = purple_contact_info_new(NULL);
+	g_signal_connect(info, "presence-changed",
+	                 G_CALLBACK(test_purple_contact_info_presence_changed_callback),
+	                 &counter);
+	g_signal_connect(info, "presence-changed::idle",
+	                 G_CALLBACK(test_purple_contact_info_presence_changed_callback),
+	                 &counter);
+
+	/* Grab the presence and start changing stuff. */
+	presence = purple_contact_info_get_presence(info);
+	g_assert_true(PURPLE_IS_PRESENCE(presence));
+
+	/* Set the presence as idle with no time, which should call our callback
+	 * three times, twice for the non-detailed callback, and once for the
+	 * detailed callback.
+	 */
+	g_assert_cmpint(counter, ==, 0);
+	purple_presence_set_idle(presence, TRUE, NULL);
+	g_assert_cmpint(counter, ==, 3);
+
+	/* Cleanup. */
+	g_clear_object(&info);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -431,6 +482,9 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_contact_info_matches_display_name);
 	g_test_add_func("/contact-info/matches/none",
 	                test_purple_contact_info_matches_none);
+
+	g_test_add_func("/contact-info/presence-changed-signal",
+	                test_purple_contact_info_presence_changed_signal);
 
 	return g_test_run();
 }

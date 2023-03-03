@@ -59,6 +59,12 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
+enum {
+	SIG_PRESENCE_CHANGED,
+	N_SIGNALS,
+};
+static guint signals[N_SIGNALS] = {0, };
+
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleContactInfo, purple_contact_info,
                            G_TYPE_OBJECT)
 
@@ -124,6 +130,19 @@ purple_contact_info_person_alias_changed_cb(G_GNUC_UNUSED GObject *obj,
                                             gpointer data)
 {
 	purple_contact_info_update_name_for_display(data);
+}
+
+/*
+ * This is a notify callback on the presence for a contact info, it is used
+ * to emit the presence-changed signal.
+ */
+static void
+purple_contact_info_presence_notify_cb(GObject *source, GParamSpec *pspec,
+                                       gpointer data)
+{
+	g_signal_emit(data, signals[SIG_PRESENCE_CHANGED],
+	              g_param_spec_get_name_quark(pspec),
+	              source, pspec);
 }
 
 /******************************************************************************
@@ -271,7 +290,11 @@ purple_contact_info_init(PurpleContactInfo *info) {
 	priv = purple_contact_info_get_instance_private(info);
 
 	priv->tags = purple_tags_new();
+
 	priv->presence = g_object_new(PURPLE_TYPE_PRESENCE, NULL);
+	g_signal_connect_object(priv->presence, "notify",
+	                        G_CALLBACK(purple_contact_info_presence_notify_cb),
+	                        info, 0);
 }
 
 static void
@@ -451,6 +474,34 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
+
+	/**
+	 * PurpleContactInfo::presence-changed:
+	 * @info: The instance.
+	 * @presence: The presence that was changed.
+	 * @pspec: The [class@GObject.ParamSpec] for the property that changed.
+	 *
+	 * This is a propagation of the notify signal from @presence. This means
+	 * that your callback will be called when anything in the presence changes.
+	 *
+	 * This also supports details, so you can specify the signal name as
+	 * something like `presence-changed::message` and your callback will only
+	 * be called when the message property of @presence has been changed.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_PRESENCE_CHANGED] = g_signal_new_class_handler(
+		"presence-changed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		2,
+		PURPLE_TYPE_PRESENCE,
+		G_TYPE_PARAM);
 }
 
 /******************************************************************************
