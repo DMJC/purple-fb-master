@@ -706,6 +706,9 @@ version 3.0.0 (??/??/????):
 		  purple_request_field_choice_add_full instead
 		* purple_request_field_list_add
 		* purple_request_field_list_get_icons
+		* PurpleRequestFieldSensitivityCb
+		* purple_request_field_set_sensitivity_cb
+		* purple_request_fields_get_autosensitive
 		* PurpleRoomlistRoomType
 		* purple_roomlist_expand_category
 		* purple_roomlist_field_get_field_type

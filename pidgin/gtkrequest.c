@@ -228,7 +228,6 @@ req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
 	PurpleRequestFieldGroup *group;
 	PurpleRequestFields *fields;
 	PidginRequestData *req_data;
-	const GList *it;
 
 	group = purple_request_field_get_group(field);
 	fields = purple_request_field_group_get_fields_list(group);
@@ -237,21 +236,6 @@ req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
 	gtk_widget_set_sensitive(req_data->ok_button,
 		purple_request_fields_all_required_filled(fields) &&
 		purple_request_fields_all_valid(fields));
-
-	it = purple_request_fields_get_autosensitive(fields);
-	for(; it != NULL; it = g_list_next(it)) {
-		PurpleRequestField *field = it->data;
-		GtkWidget *widget = purple_request_field_get_ui_data(field);
-		gboolean sensitive;
-
-		sensitive = purple_request_field_is_sensitive(field);
-		gtk_widget_set_sensitive(widget, sensitive);
-
-		/* XXX: and what about multiline? */
-		if(GTK_IS_EDITABLE(widget)) {
-			gtk_editable_set_editable(GTK_EDITABLE(widget), sensitive);
-		}
-	}
 }
 
 static void

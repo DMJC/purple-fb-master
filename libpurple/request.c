@@ -58,7 +58,6 @@ struct _PurpleRequestField
 	gboolean visible;
 	gboolean required;
 	gboolean sensitive;
-	PurpleRequestFieldSensitivityCb sensitivity_cb;
 
 	union
 	{
@@ -147,8 +146,6 @@ struct _PurpleRequestFields
 
 	GList *validated_fields;
 
-	GList *autosensitive_fields;
-
 	void *ui_data;
 };
 
@@ -180,9 +177,6 @@ struct _PurpleRequestCommonParameters {
 
 	gpointer parent_from;
 };
-
-static void
-purple_request_fields_check_others_sensitivity(PurpleRequestField *field);
 
 PurpleRequestCommonParameters *
 purple_request_cpar_new(void)
@@ -486,7 +480,6 @@ purple_request_fields_destroy(PurpleRequestFields *fields)
 	                 (GDestroyNotify)purple_request_field_group_destroy);
 	g_list_free(fields->required_fields);
 	g_list_free(fields->validated_fields);
-	g_list_free(fields->autosensitive_fields);
 	g_hash_table_destroy(fields->fields);
 	g_free(fields);
 }
@@ -523,11 +516,6 @@ purple_request_fields_add_group(PurpleRequestFields *fields,
 			fields->validated_fields =
 				g_list_append(fields->validated_fields, field);
 		}
-
-		if (field->sensitivity_cb != NULL) {
-			fields->autosensitive_fields =
-				g_list_append(fields->autosensitive_fields, field);
-		}
 	}
 }
 
@@ -562,14 +550,6 @@ purple_request_fields_get_validatable(const PurpleRequestFields *fields)
 	g_return_val_if_fail(fields != NULL, NULL);
 
 	return fields->validated_fields;
-}
-
-const GList *
-purple_request_fields_get_autosensitive(const PurpleRequestFields *fields)
-{
-	g_return_val_if_fail(fields != NULL, NULL);
-
-	return fields->autosensitive_fields;
 }
 
 gboolean
@@ -638,37 +618,6 @@ purple_request_fields_all_valid(const PurpleRequestFields *fields)
 	}
 
 	return TRUE;
-}
-
-static void
-purple_request_fields_check_sensitivity(PurpleRequestFields *fields)
-{
-	GList *it;
-
-	g_return_if_fail(fields != NULL);
-
-	for (it = fields->autosensitive_fields; it; it = g_list_next(it)) {
-		PurpleRequestField *field = it->data;
-
-		if (field->sensitivity_cb == NULL) {
-			g_warn_if_reached();
-			continue;
-		}
-
-		purple_request_field_set_sensitive(field,
-			field->sensitivity_cb(field));
-	}
-}
-
-static void
-purple_request_fields_check_others_sensitivity(PurpleRequestField *field)
-{
-	g_return_if_fail(field != NULL);
-
-	if (field->group == NULL || field->group->fields_list == NULL)
-		return;
-
-	purple_request_fields_check_sensitivity(field->group->fields_list);
 }
 
 PurpleRequestField *
@@ -822,12 +771,6 @@ purple_request_field_group_add_field(PurpleRequestFieldGroup *group,
 		{
 			group->fields_list->validated_fields =
 				g_list_append(group->fields_list->validated_fields, field);
-		}
-
-		if (field->sensitivity_cb != NULL)
-		{
-			group->fields_list->autosensitive_fields =
-				g_list_append(group->fields_list->autosensitive_fields, field);
 		}
 	}
 
@@ -1120,28 +1063,6 @@ purple_request_field_is_sensitive(PurpleRequestField *field)
 	return field->sensitive;
 }
 
-void
-purple_request_field_set_sensitivity_cb(PurpleRequestField *field,
-	PurpleRequestFieldSensitivityCb cb)
-{
-	PurpleRequestFields *flist;
-
-	g_return_if_fail(field != NULL);
-
-	field->sensitivity_cb = cb;
-
-	if (!field->group || !field->group->fields_list)
-		return;
-	flist = field->group->fields_list;
-	flist->autosensitive_fields = g_list_remove(flist->autosensitive_fields,
-		field);
-	if (cb != NULL)
-	{
-		flist->autosensitive_fields = g_list_append(
-			flist->autosensitive_fields, field);
-	}
-}
-
 PurpleRequestField *
 purple_request_field_string_new(const char *id, const char *text,
 							  const char *default_value, gboolean multiline)
@@ -1180,8 +1101,6 @@ purple_request_field_string_set_value(PurpleRequestField *field, const char *val
 
 	g_free(field->u.string.value);
 	field->u.string.value = g_strdup(value);
-
-	purple_request_fields_check_others_sensitivity(field);
 }
 
 void
@@ -1291,8 +1210,6 @@ purple_request_field_int_set_value(PurpleRequestField *field, int value)
 	}
 
 	field->u.integer.value = value;
-
-	purple_request_fields_check_others_sensitivity(field);
 }
 
 int
@@ -1365,8 +1282,6 @@ purple_request_field_bool_set_value(PurpleRequestField *field, gboolean value)
 	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_BOOLEAN);
 
 	field->u.boolean.value = value;
-
-	purple_request_fields_check_others_sensitivity(field);
 }
 
 gboolean
@@ -1444,8 +1359,6 @@ purple_request_field_choice_set_value(PurpleRequestField *field, gpointer value)
 	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE);
 
 	field->u.choice.value = value;
-
-	purple_request_fields_check_others_sensitivity(field);
 }
 
 gpointer
@@ -1767,8 +1680,6 @@ purple_request_field_account_set_value(PurpleRequestField *field,
 	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT);
 
 	field->u.account.account = value;
-
-	purple_request_fields_check_others_sensitivity(field);
 }
 
 void
@@ -2262,8 +2173,6 @@ purple_request_fields(void *handle, const char *title, const char *primary,
 	{
 		purple_request_fields_strip_html(fields);
 	}
-
-	purple_request_fields_check_sensitivity(fields);
 
 	if (ops != NULL && ops->request_fields != NULL) {
 		PurpleRequestInfo *info;

@@ -240,8 +240,6 @@ typedef void (*PurpleRequestInputCb)(void *data, const char *value);
 typedef gboolean (*PurpleRequestFieldValidator)(PurpleRequestField *field,
 	gchar **errmsg, gpointer user_data);
 
-typedef gboolean (*PurpleRequestFieldSensitivityCb)(PurpleRequestField *field);
-
 /**
  * PurpleRequestActionCb:
  * @data:   user-data
@@ -628,18 +626,6 @@ const GList *purple_request_fields_get_required(
  */
 const GList *purple_request_fields_get_validatable(
 	const PurpleRequestFields *fields);
-
-/**
- * purple_request_fields_get_autosensitive:
- * @fields: The fields list.
- *
- * Returns a list of all fields with sensitivity callback added.
- *
- * Returns: (element-type PurpleRequestField) (transfer none): The list of
- *          fields with automatic sensitivity callback.
- */
-const GList *
-purple_request_fields_get_autosensitive(const PurpleRequestFields *fields);
 
 /**
  * purple_request_fields_is_field_required:
@@ -1060,16 +1046,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**
- * purple_request_field_set_sensitivity_cb:
- * @field: The field.
- * @cb: (scope notified):   The callback.
- *
- * Sets the callback, used to determine if the field should be editable.
- */
-void purple_request_field_set_sensitivity_cb(PurpleRequestField *field,
-	PurpleRequestFieldSensitivityCb cb);
 
 /**
  * purple_request_field_get_ui_data:
