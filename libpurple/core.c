@@ -49,7 +49,6 @@
 #include "savedstatuses.h"
 #include "signals.h"
 #include "status.h"
-#include "stun.h"
 #include "util.h"
 #ifdef _WIN32
 #include "win32/win32dep.h"
@@ -182,7 +181,6 @@ purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	purple_history_manager_startup();
 	purple_network_init();
 	purple_proxy_init();
-	purple_stun_init();
 	purple_xfers_init();
 	purple_idle_init();
 

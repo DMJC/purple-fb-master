@@ -44,12 +44,8 @@
 #include "account.h"
 #include "network.h"
 #include "prefs.h"
-#include "stun.h"
 
 static gboolean force_online = FALSE;
-
-/* Cached IP addresses for STUN and TURN servers (set globally in prefs) */
-static gchar *stun_ip = NULL;
 
 void
 purple_network_set_public_ip(const char *ip)
@@ -114,7 +110,6 @@ void
 purple_network_discover_my_ip(void)
 {
 	const char *ip = NULL;
-	PurpleStunNatDiscovery *stun;
 
 	/* Check if the user specified an IP manually */
 	if (!purple_prefs_get_bool("/purple/network/auto_ip")) {
@@ -124,32 +119,20 @@ purple_network_discover_my_ip(void)
 			return;
 		}
 	}
-
-	/* Check if STUN discovery was already done */
-	stun = purple_stun_discover(NULL);
-	if (stun != NULL && stun->status == PURPLE_STUN_STATUS_DISCOVERED) {
-		return;
-	}
 }
 
 gchar *
 purple_network_get_my_ip_from_gio(GSocketConnection *sockconn)
 {
-	const gchar *ip = NULL;
-	PurpleStunNatDiscovery *stun;
-
 	/* Check if the user specified an IP manually */
 	if (!purple_prefs_get_bool("/purple/network/auto_ip")) {
+		const gchar *ip = NULL;
+
 		ip = purple_network_get_public_ip();
+
 		/* Make sure the IP address entered by the user is valid */
 		if ((ip != NULL) && (purple_network_is_ipv4(ip))) {
 			return g_strdup(ip);
-		}
-	} else {
-		/* Check if STUN discovery was already done */
-		stun = purple_stun_discover(NULL);
-		if ((stun != NULL) && (stun->status == PURPLE_STUN_STATUS_DISCOVERED)) {
-			return g_strdup(stun->publicip);
 		}
 	}
 
@@ -171,58 +154,6 @@ void
 purple_network_force_online(void)
 {
 	force_online = TRUE;
-}
-
-static void
-purple_network_ip_lookup_cb(GObject *sender, GAsyncResult *result, gpointer data) {
-	GError *error = NULL;
-	GList *addresses = NULL;
-	GInetAddress *address = NULL;
-	const gchar **ip_address = (const gchar **)data;
-
-	addresses = g_resolver_lookup_by_name_finish(G_RESOLVER(sender),
-			result, &error);
-	if(error) {
-		purple_debug_info("network", "lookup of IP address failed: %s\n", error->message);
-
-		g_error_free(error);
-
-		return;
-	}
-
-	address = G_INET_ADDRESS(addresses->data);
-
-	*ip_address = g_inet_address_to_string(address);
-
-	g_resolver_free_addresses(addresses);
-}
-
-void
-purple_network_set_stun_server(const gchar *stun_server)
-{
-	if (stun_server && stun_server[0] != '\0') {
-		if (purple_network_is_available()) {
-			GResolver *resolver = g_resolver_get_default();
-			g_resolver_lookup_by_name_async(resolver,
-			                                stun_server,
-			                                NULL,
-			                                purple_network_ip_lookup_cb,
-			                                &stun_ip);
-			g_object_unref(resolver);
-		} else {
-			purple_debug_info("network",
-				"network is unavailable, don't try to update STUN IP");
-		}
-	} else {
-		g_free(stun_ip);
-		stun_ip = NULL;
-	}
-}
-
-const gchar *
-purple_network_get_stun_ip(void)
-{
-	return stun_ip;
 }
 
 gboolean
@@ -256,25 +187,15 @@ void
 purple_network_init(void)
 {
 	purple_prefs_add_none  ("/purple/network");
-	purple_prefs_add_string("/purple/network/stun_server", "");
-	purple_prefs_add_string("/purple/network/turn_server", "");
-	purple_prefs_add_int   ("/purple/network/turn_port", 3478);
-	purple_prefs_add_int	 ("/purple/network/turn_port_tcp", 3478);
-	purple_prefs_add_string("/purple/network/turn_username", "");
-	purple_prefs_add_string("/purple/network/turn_password", "");
 	purple_prefs_add_bool  ("/purple/network/auto_ip", TRUE);
 	purple_prefs_add_string("/purple/network/public_ip", "");
 	purple_prefs_add_bool  ("/purple/network/map_ports", TRUE);
 	purple_prefs_add_bool  ("/purple/network/ports_range_use", FALSE);
 	purple_prefs_add_int   ("/purple/network/ports_range_start", 1024);
 	purple_prefs_add_int   ("/purple/network/ports_range_end", 2048);
-
-	purple_network_set_stun_server(
-		purple_prefs_get_string("/purple/network/stun_server"));
 }
 
 void
 purple_network_uninit(void)
 {
-	g_free(stun_ip);
 }

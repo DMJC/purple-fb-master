@@ -79,7 +79,6 @@ network_stun_server_changed_cb(G_GNUC_UNUSED GtkEventControllerFocus *focus,
 
 	purple_prefs_set_string("/purple/network/stun_server",
 	                        gtk_editable_get_text(editable));
-	purple_network_set_stun_server(gtk_editable_get_text(editable));
 }
 
 static void
@@ -88,19 +87,12 @@ auto_ip_button_clicked_cb(G_GNUC_UNUSED GObject *obj,
 {
 	PidginNetworkPrefs *prefs = PIDGIN_NETWORK_PREFS(data);
 	const char *ip;
-	PurpleStunNatDiscovery *stun;
 	char *auto_ip_text;
 	GList *list = NULL;
 
 	/* Make a lookup for the auto-detected IP ourselves. */
 	if (purple_prefs_get_bool("/purple/network/auto_ip")) {
-		/* Check if STUN discovery was already done */
-		stun = purple_stun_discover(NULL);
-		if ((stun != NULL) && (stun->status == PURPLE_STUN_STATUS_DISCOVERED)) {
-			ip = stun->publicip;
-		} else {
-			ip = "0.0.0.0";
-		}
+		ip = "0.0.0.0";
 	} else {
 		ip = _("Disabled");
 	}

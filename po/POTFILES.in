@@ -215,7 +215,6 @@ libpurple/savedstatuses.c
 libpurple/server.c
 libpurple/signals.c
 libpurple/status.c
-libpurple/stun.c
 libpurple/tests/test_account_manager.c
 libpurple/tests/test_account_option.c
 libpurple/tests/test_circular_buffer.c
