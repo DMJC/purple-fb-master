@@ -42,13 +42,6 @@
 typedef struct _PurpleRequestFields PurpleRequestFields;
 
 /**
- * PurpleRequestFieldGroup:
- *
- * A group of fields with a title.
- */
-typedef struct _PurpleRequestFieldGroup PurpleRequestFieldGroup;
-
-/**
  * PurpleRequestCommonParameters:
  *
  * Common parameters for UI operations.
@@ -59,6 +52,7 @@ typedef struct _PurpleRequestUiOps PurpleRequestUiOps;
 
 #include "account.h"
 #include "purpleconversation.h"
+#include "purplerequestgroup.h"
 #include "purplerequestfield.h"
 #include "request-datasheet.h"
 
@@ -714,71 +708,6 @@ gpointer purple_request_fields_get_ui_data(const PurpleRequestFields *fields);
  * Set the UI data associated with this object.
  */
 void purple_request_fields_set_ui_data(PurpleRequestFields *fields, gpointer ui_data);
-
-/**************************************************************************/
-/* Fields Group API                                                       */
-/**************************************************************************/
-
-/**
- * purple_request_field_group_new:
- * @title: The optional title to give the group.
- *
- * Creates a fields group with an optional title.
- *
- * Returns: (transfer full): A new fields group
- */
-PurpleRequestFieldGroup *purple_request_field_group_new(const char *title);
-
-/**
- * purple_request_field_group_destroy:
- * @group: The group to destroy.
- *
- * Destroys a fields group.
- */
-void purple_request_field_group_destroy(PurpleRequestFieldGroup *group);
-
-/**
- * purple_request_field_group_add_field:
- * @group: The group to add the field to.
- * @field: The field to add to the group.
- *
- * Adds a field to the group.
- */
-void purple_request_field_group_add_field(PurpleRequestFieldGroup *group,
-										PurpleRequestField *field);
-
-/**
- * purple_request_field_group_get_title:
- * @group: The group.
- *
- * Returns the title of a fields group.
- *
- * Returns: The title, if set.
- */
-const char *purple_request_field_group_get_title(
-		const PurpleRequestFieldGroup *group);
-
-/**
- * purple_request_field_group_get_fields:
- * @group: The group.
- *
- * Returns a list of all fields in a group.
- *
- * Returns: (element-type PurpleRequestField) (transfer none): The list of fields in the group.
- */
-GList *purple_request_field_group_get_fields(
-		const PurpleRequestFieldGroup *group);
-
-/**
- * purple_request_field_group_get_fields_list:
- * @group: The group.
- *
- * Returns a list of all fields in a group.
- *
- * Returns: (transfer none): The list of fields in the group.
- */
-PurpleRequestFields *purple_request_field_group_get_fields_list(
-		const PurpleRequestFieldGroup *group);
 
 /**************************************************************************/
 /* Request API                                                            */

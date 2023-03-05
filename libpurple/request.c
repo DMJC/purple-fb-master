@@ -59,15 +59,6 @@ struct _PurpleRequestFields
 	void *ui_data;
 };
 
-struct _PurpleRequestFieldGroup
-{
-	PurpleRequestFields *fields_list;
-
-	char *title;
-
-	GList *fields;
-};
-
 struct _PurpleRequestCommonParameters {
 	PurpleAccount *account;
 	PurpleConversation *conv;
@@ -395,6 +386,54 @@ purple_request_fields_destroy(PurpleRequestFields *fields)
 }
 
 void
+_purple_request_field_list_set_field_required(PurpleRequestFields *fields,
+                                              PurpleRequestField *field,
+                                              gboolean required)
+{
+	g_return_if_fail(fields != NULL);
+
+	if(required) {
+		fields->required_fields = g_list_append(fields->required_fields, field);
+	} else {
+		fields->required_fields = g_list_remove(fields->required_fields, field);
+	}
+}
+
+void
+_purple_request_field_list_set_field_validator(PurpleRequestFields *fields,
+                                               PurpleRequestField *field,
+                                               gboolean validator)
+{
+	g_return_if_fail(fields != NULL);
+
+	fields->validated_fields = g_list_remove(fields->validated_fields, field);
+	if(validator) {
+		fields->validated_fields = g_list_append(fields->validated_fields,
+		                                         field);
+	}
+}
+
+void
+_purple_request_field_list_add_field(PurpleRequestFields *fields,
+                                     PurpleRequestField *field)
+{
+	g_return_if_fail(fields != NULL);
+
+	g_hash_table_insert(fields->fields,
+	                    g_strdup(purple_request_field_get_id(field)), field);
+
+	if(purple_request_field_is_required(field)) {
+		fields->required_fields = g_list_append(fields->required_fields,
+		                                        field);
+	}
+
+	if(purple_request_field_is_validatable(field)) {
+		fields->validated_fields = g_list_append(fields->validated_fields,
+		                                         field);
+	}
+}
+
+void
 purple_request_fields_add_group(PurpleRequestFields *fields,
 							  PurpleRequestFieldGroup *group)
 {
@@ -406,7 +445,7 @@ purple_request_fields_add_group(PurpleRequestFields *fields,
 
 	fields->groups = g_list_append(fields->groups, group);
 
-	group->fields_list = fields;
+	_purple_request_field_group_set_field_list(group, fields);
 
 	for (l = purple_request_field_group_get_fields(group);
 		 l != NULL;
@@ -613,114 +652,6 @@ void purple_request_fields_set_ui_data(PurpleRequestFields *fields, gpointer ui_
 	g_return_if_fail(fields != NULL);
 
 	fields->ui_data = ui_data;
-}
-
-PurpleRequestFieldGroup *
-purple_request_field_group_new(const char *title)
-{
-	PurpleRequestFieldGroup *group;
-
-	group = g_new0(PurpleRequestFieldGroup, 1);
-
-	group->title = g_strdup(title);
-
-	return group;
-}
-
-void
-purple_request_field_group_destroy(PurpleRequestFieldGroup *group)
-{
-	g_return_if_fail(group != NULL);
-
-	g_free(group->title);
-
-	g_list_free_full(group->fields,
-	                 (GDestroyNotify)purple_request_field_destroy);
-
-	g_free(group);
-}
-
-void
-_purple_request_field_group_set_field_required(PurpleRequestFieldGroup *group,
-                                               PurpleRequestField *field,
-                                               gboolean required)
-{
-		if(required) {
-			group->fields_list->required_fields =
-				g_list_append(group->fields_list->required_fields,
-							  field);
-		} else {
-			group->fields_list->required_fields =
-				g_list_remove(group->fields_list->required_fields,
-							  field);
-		}
-}
-
-void
-_purple_request_field_group_set_field_validator(PurpleRequestFieldGroup *group,
-                                                PurpleRequestField *field,
-                                                gboolean validator)
-{
-		PurpleRequestFields *flist = group->fields_list;
-		flist->validated_fields = g_list_remove(flist->validated_fields, field);
-		if(validator) {
-			flist->validated_fields = g_list_append(flist->validated_fields,
-			                                        field);
-		}
-}
-
-void
-purple_request_field_group_add_field(PurpleRequestFieldGroup *group,
-								   PurpleRequestField *field)
-{
-	g_return_if_fail(group != NULL);
-	g_return_if_fail(field != NULL);
-
-	group->fields = g_list_append(group->fields, field);
-
-	if (group->fields_list != NULL)
-	{
-		g_hash_table_insert(group->fields_list->fields,
-							g_strdup(purple_request_field_get_id(field)), field);
-
-		if (purple_request_field_is_required(field))
-		{
-			group->fields_list->required_fields =
-				g_list_append(group->fields_list->required_fields, field);
-		}
-
-		if (purple_request_field_is_validatable(field))
-		{
-			group->fields_list->validated_fields =
-				g_list_append(group->fields_list->validated_fields, field);
-		}
-	}
-
-	_purple_request_field_set_group(field, group);
-}
-
-const char *
-purple_request_field_group_get_title(const PurpleRequestFieldGroup *group)
-{
-	g_return_val_if_fail(group != NULL, NULL);
-
-	return group->title;
-}
-
-GList *
-purple_request_field_group_get_fields(const PurpleRequestFieldGroup *group)
-{
-	g_return_val_if_fail(group != NULL, NULL);
-
-	return group->fields;
-}
-
-PurpleRequestFields *
-purple_request_field_group_get_fields_list(const PurpleRequestFieldGroup *group)
-{
-	g_return_val_if_fail(group != NULL, NULL);
-
-	return group->fields_list;
 }
 
 /* -- */
@@ -1006,7 +937,10 @@ purple_request_fields_strip_html(PurpleRequestFields *fields)
 		PurpleRequestFieldGroup *group = itg->data;
 		GList *itf;
 
-		for (itf = group->fields; itf != NULL; itf = g_list_next(itf)) {
+		for (itf = purple_request_field_group_get_fields(group);
+		     itf != NULL;
+		     itf = g_list_next(itf))
+		{
 			PurpleRequestField *field = itf->data;
 			const char *old_label;
 			gchar *new_label;

@@ -202,6 +202,7 @@ libpurple/purpleprotocolroomlist.c
 libpurple/purpleprotocolserver.c
 libpurple/purpleprotocolwhiteboard.c
 libpurple/purplerequestfield.c
+libpurple/purplerequestgroup.c
 libpurple/purplesqlitehistoryadapter.c
 libpurple/purpleui.c
 libpurple/purplewhiteboard.c
