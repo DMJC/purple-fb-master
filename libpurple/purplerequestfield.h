@@ -166,7 +166,7 @@ void purple_request_field_set_required(PurpleRequestField *field,
  *
  * Returns: The field's type.
  */
-PurpleRequestFieldType purple_request_field_get_field_type(const PurpleRequestField *field);
+PurpleRequestFieldType purple_request_field_get_field_type(PurpleRequestField *field);
 
 /**
  * purple_request_field_get_group:
@@ -176,7 +176,7 @@ PurpleRequestFieldType purple_request_field_get_field_type(const PurpleRequestFi
  *
  * Returns: (transfer none): The UI data.
  */
-PurpleRequestFieldGroup *purple_request_field_get_group(const PurpleRequestField *field);
+PurpleRequestFieldGroup *purple_request_field_get_group(PurpleRequestField *field);
 
 /**
  * purple_request_field_get_id:
@@ -186,7 +186,7 @@ PurpleRequestFieldGroup *purple_request_field_get_group(const PurpleRequestField
  *
  * Returns: The ID
  */
-const char *purple_request_field_get_id(const PurpleRequestField *field);
+const char *purple_request_field_get_id(PurpleRequestField *field);
 
 /**
  * purple_request_field_get_label:
@@ -196,7 +196,7 @@ const char *purple_request_field_get_id(const PurpleRequestField *field);
  *
  * Returns: The label text.
  */
-const char *purple_request_field_get_label(const PurpleRequestField *field);
+const char *purple_request_field_get_label(PurpleRequestField *field);
 
 /**
  * purple_request_field_is_visible:
@@ -206,7 +206,7 @@ const char *purple_request_field_get_label(const PurpleRequestField *field);
  *
  * Returns: TRUE if the field is visible. FALSE otherwise.
  */
-gboolean purple_request_field_is_visible(const PurpleRequestField *field);
+gboolean purple_request_field_is_visible(PurpleRequestField *field);
 
 /**
  * purple_request_field_get_field_type_hint:
@@ -216,7 +216,7 @@ gboolean purple_request_field_is_visible(const PurpleRequestField *field);
  *
  * Returns: The field's type hint.
  */
-const char *purple_request_field_get_field_type_hint(const PurpleRequestField *field);
+const char *purple_request_field_get_field_type_hint(PurpleRequestField *field);
 
 /**
  * purple_request_field_get_tooltip:
@@ -226,7 +226,7 @@ const char *purple_request_field_get_field_type_hint(const PurpleRequestField *f
  *
  * Returns: The field's tooltip.
  */
-const char *purple_request_field_get_tooltip(const PurpleRequestField *field);
+const char *purple_request_field_get_tooltip(PurpleRequestField *field);
 
 /**
  * purple_request_field_is_required:
@@ -236,7 +236,7 @@ const char *purple_request_field_get_tooltip(const PurpleRequestField *field);
  *
  * Returns: TRUE if the field is required, or FALSE.
  */
-gboolean purple_request_field_is_required(const PurpleRequestField *field);
+gboolean purple_request_field_is_required(PurpleRequestField *field);
 
 /**
  * purple_request_field_is_filled:
@@ -246,7 +246,7 @@ gboolean purple_request_field_is_required(const PurpleRequestField *field);
  *
  * Returns: TRUE if the field has value, or FALSE.
  */
-gboolean purple_request_field_is_filled(const PurpleRequestField *field);
+gboolean purple_request_field_is_filled(PurpleRequestField *field);
 
 /**
  * purple_request_field_set_validator:
@@ -315,7 +315,7 @@ gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
  *
  * Returns: The UI data.
  */
-gpointer purple_request_field_get_ui_data(const PurpleRequestField *field);
+gpointer purple_request_field_get_ui_data(PurpleRequestField *field);
 
 /**
  * purple_request_field_set_ui_data:
@@ -386,8 +386,7 @@ void purple_request_field_string_set_masked(PurpleRequestField *field,
  *
  * Returns: The default value.
  */
-const char *purple_request_field_string_get_default_value(
-		const PurpleRequestField *field);
+const char *purple_request_field_string_get_default_value(PurpleRequestField *field);
 
 /**
  * purple_request_field_string_get_value:
@@ -397,7 +396,7 @@ const char *purple_request_field_string_get_default_value(
  *
  * Returns: The value.
  */
-const char *purple_request_field_string_get_value(const PurpleRequestField *field);
+const char *purple_request_field_string_get_value(PurpleRequestField *field);
 
 /**
  * purple_request_field_string_is_multiline:
@@ -407,7 +406,7 @@ const char *purple_request_field_string_get_value(const PurpleRequestField *fiel
  *
  * Returns: %TRUE if the field is mulit-line, or %FALSE otherwise.
  */
-gboolean purple_request_field_string_is_multiline(const PurpleRequestField *field);
+gboolean purple_request_field_string_is_multiline(PurpleRequestField *field);
 
 /**
  * purple_request_field_string_is_masked:
@@ -417,7 +416,7 @@ gboolean purple_request_field_string_is_multiline(const PurpleRequestField *fiel
  *
  * Returns: %TRUE if the field is masked, or %FALSE otherwise.
  */
-gboolean purple_request_field_string_is_masked(const PurpleRequestField *field);
+gboolean purple_request_field_string_is_masked(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Integer Field API                                                      */
@@ -483,7 +482,7 @@ void purple_request_field_int_set_value(PurpleRequestField *field, int value);
  *
  * Returns: The default value.
  */
-int purple_request_field_int_get_default_value(const PurpleRequestField *field);
+int purple_request_field_int_get_default_value(PurpleRequestField *field);
 
 /**
  * purple_request_field_int_get_lower_bound:
@@ -493,7 +492,7 @@ int purple_request_field_int_get_default_value(const PurpleRequestField *field);
  *
  * Returns: The lower bound.
  */
-int purple_request_field_int_get_lower_bound(const PurpleRequestField *field);
+int purple_request_field_int_get_lower_bound(PurpleRequestField *field);
 
 /**
  * purple_request_field_int_get_upper_bound:
@@ -503,7 +502,7 @@ int purple_request_field_int_get_lower_bound(const PurpleRequestField *field);
  *
  * Returns: The upper bound.
  */
-int purple_request_field_int_get_upper_bound(const PurpleRequestField *field);
+int purple_request_field_int_get_upper_bound(PurpleRequestField *field);
 
 /**
  * purple_request_field_int_get_value:
@@ -513,7 +512,7 @@ int purple_request_field_int_get_upper_bound(const PurpleRequestField *field);
  *
  * Returns: The value.
  */
-int purple_request_field_int_get_value(const PurpleRequestField *field);
+int purple_request_field_int_get_value(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Boolean Field API                                                      */
@@ -563,8 +562,7 @@ void purple_request_field_bool_set_value(PurpleRequestField *field,
  *
  * Returns: The default value.
  */
-gboolean purple_request_field_bool_get_default_value(
-		const PurpleRequestField *field);
+gboolean purple_request_field_bool_get_default_value(PurpleRequestField *field);
 
 /**
  * purple_request_field_bool_get_value:
@@ -574,7 +572,7 @@ gboolean purple_request_field_bool_get_default_value(
  *
  * Returns: The value.
  */
-gboolean purple_request_field_bool_get_value(const PurpleRequestField *field);
+gboolean purple_request_field_bool_get_value(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Choice Field API                                                       */
@@ -654,7 +652,7 @@ purple_request_field_choice_set_value(PurpleRequestField *field,
  * Returns: The default value.
  */
 gpointer
-purple_request_field_choice_get_default_value(const PurpleRequestField *field);
+purple_request_field_choice_get_default_value(PurpleRequestField *field);
 
 /**
  * purple_request_field_choice_get_value:
@@ -665,7 +663,7 @@ purple_request_field_choice_get_default_value(const PurpleRequestField *field);
  * Returns: The value.
  */
 gpointer
-purple_request_field_choice_get_value(const PurpleRequestField *field);
+purple_request_field_choice_get_value(PurpleRequestField *field);
 
 /**
  * purple_request_field_choice_get_elements:
@@ -676,7 +674,7 @@ purple_request_field_choice_get_value(const PurpleRequestField *field);
  * Returns: (element-type PurpleKeyValuePair) (transfer none): The list of pairs of {label, value}.
  */
 GList *
-purple_request_field_choice_get_elements(const PurpleRequestField *field);
+purple_request_field_choice_get_elements(PurpleRequestField *field);
 
 /**************************************************************************/
 /* List Field API                                                         */
@@ -712,8 +710,7 @@ void purple_request_field_list_set_multi_select(PurpleRequestField *field,
  *
  * Returns: TRUE if multiple selection is enabled, or FALSE otherwise.
  */
-gboolean purple_request_field_list_get_multi_select(
-	const PurpleRequestField *field);
+gboolean purple_request_field_list_get_multi_select(PurpleRequestField *field);
 
 /**
  * purple_request_field_list_get_data:
@@ -724,8 +721,7 @@ gboolean purple_request_field_list_get_multi_select(
  *
  * Returns: The data associated with the item.
  */
-void *purple_request_field_list_get_data(const PurpleRequestField *field,
-									   const char *text);
+void *purple_request_field_list_get_data(PurpleRequestField *field, const char *text);
 
 /**
  * purple_request_field_list_add_icon:
@@ -776,8 +772,7 @@ void purple_request_field_list_set_selected(PurpleRequestField *field,
  *
  * Returns: TRUE if the item is selected. FALSE otherwise.
  */
-gboolean purple_request_field_list_is_selected(const PurpleRequestField *field,
-											 const char *item);
+gboolean purple_request_field_list_is_selected(PurpleRequestField *field, const char *item);
 
 /**
  * purple_request_field_list_get_selected:
@@ -790,8 +785,7 @@ gboolean purple_request_field_list_is_selected(const PurpleRequestField *field,
  *
  * Returns: (element-type utf8) (transfer none): The list of selected items.
  */
-GList *purple_request_field_list_get_selected(
-	const PurpleRequestField *field);
+GList *purple_request_field_list_get_selected(PurpleRequestField *field);
 
 /**
  * purple_request_field_list_get_items:
@@ -801,7 +795,7 @@ GList *purple_request_field_list_get_selected(
  *
  * Returns: (element-type PurpleKeyValuePair) (transfer none): The list of items.
  */
-GList *purple_request_field_list_get_items(const PurpleRequestField *field);
+GList *purple_request_field_list_get_items(PurpleRequestField *field);
 
 /**
  * purple_request_field_list_has_icons:
@@ -813,7 +807,7 @@ GList *purple_request_field_list_get_items(const PurpleRequestField *field);
  *
  * Since: 3.0.0
  */
-gboolean purple_request_field_list_has_icons(const PurpleRequestField *field);
+gboolean purple_request_field_list_has_icons(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Label Field API                                                        */
@@ -973,8 +967,7 @@ void purple_request_field_account_set_filter(PurpleRequestField *field,
  *
  * Returns: (transfer none): The default account.
  */
-PurpleAccount *purple_request_field_account_get_default_value(
-		const PurpleRequestField *field);
+PurpleAccount *purple_request_field_account_get_default_value(PurpleRequestField *field);
 
 /**
  * purple_request_field_account_get_value:
@@ -984,8 +977,7 @@ PurpleAccount *purple_request_field_account_get_default_value(
  *
  * Returns: (transfer none): The user-entered account.
  */
-PurpleAccount *purple_request_field_account_get_value(
-		const PurpleRequestField *field);
+PurpleAccount *purple_request_field_account_get_value(PurpleRequestField *field);
 
 /**
  * purple_request_field_account_get_show_all:
@@ -998,8 +990,7 @@ PurpleAccount *purple_request_field_account_get_value(
  *
  * Returns: Whether or not to show all accounts.
  */
-gboolean purple_request_field_account_get_show_all(
-		const PurpleRequestField *field);
+gboolean purple_request_field_account_get_show_all(PurpleRequestField *field);
 
 /**
  * purple_request_field_account_get_filter:
@@ -1012,8 +1003,7 @@ gboolean purple_request_field_account_get_show_all(
  *
  * Returns: (transfer none): The account filter function.
  */
-PurpleFilterAccountFunc purple_request_field_account_get_filter(
-		const PurpleRequestField *field);
+PurpleFilterAccountFunc purple_request_field_account_get_filter(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Datasheet Field API                                                    */

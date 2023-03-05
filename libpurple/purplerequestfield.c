@@ -119,8 +119,7 @@ struct _PurpleRequestField
 };
 
 gpointer
-purple_request_field_get_ui_data(const PurpleRequestField *field)
-{
+purple_request_field_get_ui_data(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 
 	return field->ui_data;
@@ -247,72 +246,63 @@ purple_request_field_set_required(PurpleRequestField *field, gboolean required)
 }
 
 PurpleRequestFieldType
-purple_request_field_get_field_type(const PurpleRequestField *field)
-{
+purple_request_field_get_field_type(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, PURPLE_REQUEST_FIELD_NONE);
 
 	return field->type;
 }
 
 PurpleRequestFieldGroup *
-purple_request_field_get_group(const PurpleRequestField *field)
-{
+purple_request_field_get_group(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 
 	return field->group;
 }
 
 const char *
-purple_request_field_get_id(const PurpleRequestField *field)
-{
+purple_request_field_get_id(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 
 	return field->id;
 }
 
 const char *
-purple_request_field_get_label(const PurpleRequestField *field)
-{
+purple_request_field_get_label(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 
 	return field->label;
 }
 
 gboolean
-purple_request_field_is_visible(const PurpleRequestField *field)
-{
+purple_request_field_is_visible(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 
 	return field->visible;
 }
 
 const char *
-purple_request_field_get_field_type_hint(const PurpleRequestField *field)
-{
+purple_request_field_get_field_type_hint(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 
 	return field->type_hint;
 }
 
 const char *
-purple_request_field_get_tooltip(const PurpleRequestField *field)
-{
+purple_request_field_get_tooltip(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 
 	return field->tooltip;
 }
 
 gboolean
-purple_request_field_is_required(const PurpleRequestField *field)
-{
+purple_request_field_is_required(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 
 	return field->required;
 }
 
 gboolean
-purple_request_field_is_filled(const PurpleRequestField *field)
-{
+purple_request_field_is_filled(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 
 	switch (purple_request_field_get_field_type(field))
@@ -437,8 +427,7 @@ purple_request_field_string_set_masked(PurpleRequestField *field, gboolean maske
 }
 
 const char *
-purple_request_field_string_get_default_value(const PurpleRequestField *field)
-{
+purple_request_field_string_get_default_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, NULL);
 
@@ -446,8 +435,7 @@ purple_request_field_string_get_default_value(const PurpleRequestField *field)
 }
 
 const char *
-purple_request_field_string_get_value(const PurpleRequestField *field)
-{
+purple_request_field_string_get_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, NULL);
 
@@ -455,8 +443,7 @@ purple_request_field_string_get_value(const PurpleRequestField *field)
 }
 
 gboolean
-purple_request_field_string_is_multiline(const PurpleRequestField *field)
-{
+purple_request_field_string_is_multiline(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
 
@@ -464,8 +451,7 @@ purple_request_field_string_is_multiline(const PurpleRequestField *field)
 }
 
 gboolean
-purple_request_field_string_is_masked(const PurpleRequestField *field)
-{
+purple_request_field_string_is_masked(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
 
@@ -537,8 +523,7 @@ purple_request_field_int_set_value(PurpleRequestField *field, int value)
 }
 
 int
-purple_request_field_int_get_default_value(const PurpleRequestField *field)
-{
+purple_request_field_int_get_default_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, 0);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
 
@@ -546,8 +531,7 @@ purple_request_field_int_get_default_value(const PurpleRequestField *field)
 }
 
 int
-purple_request_field_int_get_lower_bound(const PurpleRequestField *field)
-{
+purple_request_field_int_get_lower_bound(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, 0);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
 
@@ -555,8 +539,7 @@ purple_request_field_int_get_lower_bound(const PurpleRequestField *field)
 }
 
 int
-purple_request_field_int_get_upper_bound(const PurpleRequestField *field)
-{
+purple_request_field_int_get_upper_bound(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, 0);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
 
@@ -564,8 +547,7 @@ purple_request_field_int_get_upper_bound(const PurpleRequestField *field)
 }
 
 int
-purple_request_field_int_get_value(const PurpleRequestField *field)
-{
+purple_request_field_int_get_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, 0);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
 
@@ -609,8 +591,7 @@ purple_request_field_bool_set_value(PurpleRequestField *field, gboolean value)
 }
 
 gboolean
-purple_request_field_bool_get_default_value(const PurpleRequestField *field)
-{
+purple_request_field_bool_get_default_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_BOOLEAN, FALSE);
 
@@ -618,8 +599,7 @@ purple_request_field_bool_get_default_value(const PurpleRequestField *field)
 }
 
 gboolean
-purple_request_field_bool_get_value(const PurpleRequestField *field)
-{
+purple_request_field_bool_get_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_BOOLEAN, FALSE);
 
@@ -686,8 +666,7 @@ purple_request_field_choice_set_value(PurpleRequestField *field, gpointer value)
 }
 
 gpointer
-purple_request_field_choice_get_default_value(const PurpleRequestField *field)
-{
+purple_request_field_choice_get_default_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
 
@@ -695,8 +674,7 @@ purple_request_field_choice_get_default_value(const PurpleRequestField *field)
 }
 
 gpointer
-purple_request_field_choice_get_value(const PurpleRequestField *field)
-{
+purple_request_field_choice_get_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
 
@@ -704,8 +682,7 @@ purple_request_field_choice_get_value(const PurpleRequestField *field)
 }
 
 GList *
-purple_request_field_choice_get_elements(const PurpleRequestField *field)
-{
+purple_request_field_choice_get_elements(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
 
@@ -741,8 +718,7 @@ purple_request_field_list_set_multi_select(PurpleRequestField *field,
 }
 
 gboolean
-purple_request_field_list_get_multi_select(const PurpleRequestField *field)
-{
+purple_request_field_list_get_multi_select(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
 
@@ -750,8 +726,7 @@ purple_request_field_list_get_multi_select(const PurpleRequestField *field)
 }
 
 void *
-purple_request_field_list_get_data(const PurpleRequestField *field,
-								 const char *text)
+purple_request_field_list_get_data(PurpleRequestField *field, const char *text)
 {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(text  != NULL, NULL);
@@ -843,8 +818,8 @@ purple_request_field_list_set_selected(PurpleRequestField *field, GList *items)
 }
 
 gboolean
-purple_request_field_list_is_selected(const PurpleRequestField *field,
-									const char *item)
+purple_request_field_list_is_selected(PurpleRequestField *field,
+                                      const char *item)
 {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(item  != NULL, FALSE);
@@ -854,8 +829,7 @@ purple_request_field_list_is_selected(const PurpleRequestField *field,
 }
 
 GList *
-purple_request_field_list_get_selected(const PurpleRequestField *field)
-{
+purple_request_field_list_get_selected(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, NULL);
 
@@ -863,8 +837,7 @@ purple_request_field_list_get_selected(const PurpleRequestField *field)
 }
 
 GList *
-purple_request_field_list_get_items(const PurpleRequestField *field)
-{
+purple_request_field_list_get_items(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, NULL);
 
@@ -872,8 +845,7 @@ purple_request_field_list_get_items(const PurpleRequestField *field)
 }
 
 gboolean
-purple_request_field_list_has_icons(const PurpleRequestField *field)
-{
+purple_request_field_list_has_icons(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
 
@@ -1049,8 +1021,7 @@ purple_request_field_account_set_filter(PurpleRequestField *field,
 }
 
 PurpleAccount *
-purple_request_field_account_get_default_value(const PurpleRequestField *field)
-{
+purple_request_field_account_get_default_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT, NULL);
 
@@ -1058,8 +1029,7 @@ purple_request_field_account_get_default_value(const PurpleRequestField *field)
 }
 
 PurpleAccount *
-purple_request_field_account_get_value(const PurpleRequestField *field)
-{
+purple_request_field_account_get_value(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT, NULL);
 
@@ -1067,8 +1037,7 @@ purple_request_field_account_get_value(const PurpleRequestField *field)
 }
 
 gboolean
-purple_request_field_account_get_show_all(const PurpleRequestField *field)
-{
+purple_request_field_account_get_show_all(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT, FALSE);
 
@@ -1076,8 +1045,7 @@ purple_request_field_account_get_show_all(const PurpleRequestField *field)
 }
 
 PurpleFilterAccountFunc
-purple_request_field_account_get_filter(const PurpleRequestField *field)
-{
+purple_request_field_account_get_filter(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, FALSE);
 	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT, FALSE);
 
