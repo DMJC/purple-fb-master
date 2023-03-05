@@ -281,7 +281,7 @@ purple_request_field_is_visible(PurpleRequestField *field) {
 }
 
 const char *
-purple_request_field_get_field_type_hint(PurpleRequestField *field) {
+purple_request_field_get_type_hint(PurpleRequestField *field) {
 	g_return_val_if_fail(field != NULL, NULL);
 
 	return field->type_hint;

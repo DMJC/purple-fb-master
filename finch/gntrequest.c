@@ -421,7 +421,7 @@ create_boolean_field(PurpleRequestField *field)
 static GntWidget*
 create_string_field(PurpleRequestField *field, GntWidget **username)
 {
-	const char *hint = purple_request_field_get_field_type_hint(field);
+	const char *hint = purple_request_field_get_type_hint(field);
 	GntWidget *entry = gnt_entry_new(
 			purple_request_field_string_get_default_value(field));
 	gnt_entry_set_masked(GNT_ENTRY(entry),

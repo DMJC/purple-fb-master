@@ -1069,7 +1069,7 @@ setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
 	g_signal_connect(entry, "changed", G_CALLBACK(req_entry_field_changed_cb),
 	                 field);
 
-	if ((type_hint = purple_request_field_get_field_type_hint(field)) != NULL)
+	if ((type_hint = purple_request_field_get_type_hint(field)) != NULL)
 	{
 		if (g_str_has_prefix(type_hint, "screenname")) {
 			GtkWidget *optmenu = NULL;
@@ -1086,7 +1086,7 @@ setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
 				if (purple_request_field_get_field_type(fld) == PURPLE_REQUEST_FIELD_ACCOUNT &&
 						purple_request_field_is_visible(fld))
 				{
-					const char *type_hint = purple_request_field_get_field_type_hint(fld);
+					const char *type_hint = purple_request_field_get_type_hint(fld);
 					if (purple_strequal(type_hint, "account"))
 					{
 						optmenu = GTK_WIDGET(purple_request_field_get_ui_data(fld));

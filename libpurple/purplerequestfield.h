@@ -209,14 +209,14 @@ const char *purple_request_field_get_label(PurpleRequestField *field);
 gboolean purple_request_field_is_visible(PurpleRequestField *field);
 
 /**
- * purple_request_field_get_field_type_hint:
+ * purple_request_field_get_type_hint:
  * @field: The field.
  *
  * Returns the field's type hint.
  *
  * Returns: The field's type hint.
  */
-const char *purple_request_field_get_field_type_hint(PurpleRequestField *field);
+const char *purple_request_field_get_type_hint(PurpleRequestField *field);
 
 /**
  * purple_request_field_get_tooltip:
