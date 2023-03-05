@@ -487,24 +487,6 @@ tinyurl_notify_uri(const char *uri)
 	return win;
 }
 
-static PurplePluginPrefFrame *
-get_plugin_pref_frame(G_GNUC_UNUSED PurplePlugin *plugin) {
-  PurplePluginPrefFrame *frame;
-  PurplePluginPref *pref;
-
-  frame = purple_plugin_pref_frame_new();
-
-  pref = purple_plugin_pref_new_with_name(PREF_LENGTH);
-  purple_plugin_pref_set_label(pref, _("Only create TinyURL for URLs"
-				     " of this length or greater"));
-  purple_plugin_pref_frame_add(frame, pref);
-  pref = purple_plugin_pref_new_with_name(PREF_URL);
-  purple_plugin_pref_set_label(pref, _("TinyURL (or other) address prefix"));
-  purple_plugin_pref_frame_add(frame, pref);
-
-  return frame;
-}
-
 static GPluginPluginInfo *
 tiny_url_query(G_GNUC_UNUSED GError **error) {
 	const gchar * const authors[] = {
@@ -523,7 +505,7 @@ tiny_url_query(G_GNUC_UNUSED GError **error) {
 		"authors",        authors,
 		"website",        PURPLE_WEBSITE,
 		"abi-version",    PURPLE_ABI_VERSION,
-		"pref-frame-cb",  get_plugin_pref_frame,
+		"settings-schema", PREFS_SCHEMA,
 		NULL
 	);
 }
