@@ -320,26 +320,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
 
-/**
- * purple_request_field_get_ui_data:
- * @field: The field.
- *
- * Returns the ui_data for a field.
- *
- * Returns: The UI data.
- */
-gpointer purple_request_field_get_ui_data(PurpleRequestField *field);
-
-/**
- * purple_request_field_set_ui_data:
- * @field:   The field.
- * @ui_data: The UI data.
- *
- * Sets the ui_data for a field.
- */
-void purple_request_field_set_ui_data(PurpleRequestField *field,
-                                      gpointer ui_data);
-
 /**************************************************************************/
 /* String Field API                                                       */
 /**************************************************************************/

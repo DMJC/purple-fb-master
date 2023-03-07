@@ -303,26 +303,30 @@ request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
 				continue;
 			if (type == PURPLE_REQUEST_FIELD_BOOLEAN)
 			{
-				GntWidget *check = purple_request_field_get_ui_data(field);
+				GntWidget *check = g_object_get_data(G_OBJECT(field),
+				                                     "finch-ui-data");
 				gboolean value = gnt_check_box_get_checked(GNT_CHECK_BOX(check));
 				purple_request_field_bool_set_value(field, value);
 			}
 			else if (type == PURPLE_REQUEST_FIELD_STRING)
 			{
-				GntWidget *entry = purple_request_field_get_ui_data(field);
+				GntWidget *entry = g_object_get_data(G_OBJECT(field),
+				                                     "finch-ui-data");
 				const char *text = gnt_entry_get_text(GNT_ENTRY(entry));
 				purple_request_field_string_set_value(field, (text && *text) ? text : NULL);
 			}
 			else if (type == PURPLE_REQUEST_FIELD_INTEGER)
 			{
-				GntWidget *entry = purple_request_field_get_ui_data(field);
+				GntWidget *entry = g_object_get_data(G_OBJECT(field),
+				                                     "finch-ui-data");
 				const char *text = gnt_entry_get_text(GNT_ENTRY(entry));
 				int value = (text && *text) ? atoi(text) : 0;
 				purple_request_field_int_set_value(field, value);
 			}
 			else if (type == PURPLE_REQUEST_FIELD_CHOICE)
 			{
-				GntWidget *combo = purple_request_field_get_ui_data(field);
+				GntWidget *combo = g_object_get_data(G_OBJECT(field),
+				                                     "finch-ui-data");
 				gpointer value = gnt_combo_box_get_selected_data(GNT_COMBO_BOX(combo));
 				purple_request_field_choice_set_value(field, value);
 			}
@@ -332,7 +336,8 @@ request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
 				GList *list = purple_request_field_list_get_items(field);
 				if (purple_request_field_list_get_multi_select(field))
 				{
-					GntWidget *tree = purple_request_field_get_ui_data(field);
+					GntWidget *tree = g_object_get_data(G_OBJECT(field),
+					                                    "finch-ui-data");
 
 					for (; list; list = list->next)
 					{
@@ -346,7 +351,8 @@ request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
 				}
 				else
 				{
-					GntWidget *combo = purple_request_field_get_ui_data(field);
+					GntWidget *combo = g_object_get_data(G_OBJECT(field),
+					                                     "finch-ui-data");
 					gpointer data = gnt_combo_box_get_selected_data(GNT_COMBO_BOX(combo));
 
 					for (; list; list = list->next) {
@@ -365,7 +371,7 @@ request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
 			}
 			else if (type == PURPLE_REQUEST_FIELD_ACCOUNT)
 			{
-				GntWidget *combo = purple_request_field_get_ui_data(field);
+				GntWidget *combo = g_object_get_data(G_OBJECT(field), "finch-ui-data");
 				PurpleAccount *acc = gnt_combo_box_get_selected_data(GNT_COMBO_BOX(combo));
 				purple_request_field_account_set_value(field, acc);
 			}
@@ -633,6 +639,7 @@ finch_request_fields(const char *title, const char *primary,
 			PurpleRequestField *field = fields->data;
 			PurpleRequestFieldType type = purple_request_field_get_field_type(field);
 			const char *label = purple_request_field_get_label(field);
+			GntWidget *widget = NULL;
 
 			if (!purple_request_field_is_visible(field))
 				continue;
@@ -651,38 +658,26 @@ finch_request_fields(const char *title, const char *primary,
 				gnt_box_add_widget(GNT_BOX(hbox), l);
 			}
 
-			if (type == PURPLE_REQUEST_FIELD_BOOLEAN)
-			{
-				purple_request_field_set_ui_data(field, create_boolean_field(field));
-			}
-			else if (type == PURPLE_REQUEST_FIELD_STRING)
-			{
-				purple_request_field_set_ui_data(field, create_string_field(field, &username));
-			}
-			else if (type == PURPLE_REQUEST_FIELD_INTEGER)
-			{
-				purple_request_field_set_ui_data(field, create_integer_field(field));
-			}
-			else if (type == PURPLE_REQUEST_FIELD_CHOICE)
-			{
-				purple_request_field_set_ui_data(field, create_choice_field(field));
-			}
-			else if (type == PURPLE_REQUEST_FIELD_LIST)
-			{
-				purple_request_field_set_ui_data(field, create_list_field(field));
-			}
-			else if (type == PURPLE_REQUEST_FIELD_ACCOUNT)
-			{
+			if (type == PURPLE_REQUEST_FIELD_BOOLEAN) {
+				widget = create_boolean_field(field);
+			} else if (type == PURPLE_REQUEST_FIELD_STRING) {
+				widget = create_string_field(field, &username);
+			} else if (type == PURPLE_REQUEST_FIELD_INTEGER) {
+				widget = create_integer_field(field);
+			} else if (type == PURPLE_REQUEST_FIELD_CHOICE) {
+				widget = create_choice_field(field);
+			} else if (type == PURPLE_REQUEST_FIELD_LIST) {
+				widget = create_list_field(field);
+			} else if (type == PURPLE_REQUEST_FIELD_ACCOUNT) {
 				accountlist = create_account_field(field);
-				purple_request_field_set_ui_data(field, accountlist);
-			}
-			else
-			{
-				purple_request_field_set_ui_data(field, gnt_label_new_with_format(_("Not implemented yet."),
-						GNT_TEXT_FLAG_BOLD));
+				widget = accountlist;
+			} else {
+				widget = gnt_label_new_with_format(_("Not implemented yet."),
+				                                   GNT_TEXT_FLAG_BOLD);
 			}
 			gnt_box_set_alignment(GNT_BOX(hbox), GNT_ALIGN_MID);
-			gnt_box_add_widget(GNT_BOX(hbox), GNT_WIDGET(purple_request_field_get_ui_data(field)));
+			gnt_box_add_widget(GNT_BOX(hbox), widget);
+			g_object_set_data(G_OBJECT(field), "finch-ui-data", widget);
 		}
 		if (grlist->next)
 			gnt_box_add_widget(GNT_BOX(box), gnt_hline_new());

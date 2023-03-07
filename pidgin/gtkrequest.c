@@ -1089,10 +1089,12 @@ setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
 					const char *type_hint = purple_request_field_get_type_hint(fld);
 					if (purple_strequal(type_hint, "account"))
 					{
-						optmenu = GTK_WIDGET(purple_request_field_get_ui_data(fld));
+						optmenu = GTK_WIDGET(g_object_get_data(G_OBJECT(fld),
+						                                       "pidgin-ui-data"));
 						if (optmenu == NULL) {
 							optmenu = GTK_WIDGET(create_account_field(fld));
-							purple_request_field_set_ui_data(fld, optmenu);
+							g_object_set_data(G_OBJECT(fld), "pidgin-ui-data",
+							                  optmenu);
 						}
 						break;
 					}
@@ -2129,7 +2131,8 @@ pidgin_request_fields(const char *title, const char *primary,
 				}
 				g_clear_pointer(&field_label, g_free);
 
-				widget = GTK_WIDGET(purple_request_field_get_ui_data(field));
+				widget = GTK_WIDGET(g_object_get_data(G_OBJECT(field),
+				                                      "pidgin-ui-data"));
 				if (widget == NULL)
 				{
 					if (type == PURPLE_REQUEST_FIELD_STRING)
@@ -2188,7 +2191,7 @@ pidgin_request_fields(const char *title, const char *primary,
 						1, row_num, 2 * cols - 1, 1);
 				}
 
-				purple_request_field_set_ui_data(field, widget);
+				g_object_set_data(G_OBJECT(field), "pidgin-ui-data", widget);
 			}
 		}
 	}

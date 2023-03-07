@@ -389,30 +389,6 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
-gpointer
-purple_request_field_get_ui_data(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-
-	return priv->ui_data;
-}
-
-void
-purple_request_field_set_ui_data(PurpleRequestField *field,
-                                 gpointer ui_data)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-
-	priv->ui_data = ui_data;
-}
-
 PurpleRequestField *
 purple_request_field_new(const char *id, const char *text,
                          PurpleRequestFieldType type)

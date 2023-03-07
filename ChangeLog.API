@@ -712,6 +712,8 @@ version 3.0.0 (??/??/????):
 		* purple_request_field_list_get_icons
 		* PurpleRequestFieldSensitivityCb
 		* purple_request_field_set_sensitivity_cb
+		* purple_request_field_get_ui_data
+		* purple_request_field_set_ui_data
 		* purple_request_fields_get_autosensitive
 		* PurpleRoomlistRoomType
 		* purple_roomlist_expand_category
