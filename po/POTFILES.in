@@ -87,7 +87,6 @@ libpurple/protocols/facebook/json.c
 libpurple/protocols/facebook/mqtt.c
 libpurple/protocols/facebook/thrift.c
 libpurple/protocols/facebook/util.c
-libpurple/protocols/gg/account.c
 libpurple/protocols/gg/avatar.c
 libpurple/protocols/gg/blist.c
 libpurple/protocols/gg/chat.c
