@@ -351,17 +351,3 @@ purple_request_page_get_account(PurpleRequestPage *page, const char *id) {
 
 	return purple_request_field_account_get_value(field);
 }
-
-gpointer
-purple_request_page_get_ui_data(PurpleRequestPage *page) {
-	g_return_val_if_fail(PURPLE_IS_REQUEST_PAGE(page), NULL);
-
-	return page->ui_data;
-}
-
-void
-purple_request_page_set_ui_data(PurpleRequestPage *page, gpointer ui_data) {
-	g_return_if_fail(PURPLE_IS_REQUEST_PAGE(page));
-
-	page->ui_data = ui_data;
-}

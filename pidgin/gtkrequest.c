@@ -231,7 +231,7 @@ req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
 
 	group = purple_request_field_get_group(field);
 	page = purple_request_group_get_page(group);
-	req_data = purple_request_page_get_ui_data(page);
+	req_data = g_object_get_data(G_OBJECT(page), "pidgin-ui-data");
 
 	gtk_widget_set_sensitive(req_data->ok_button,
 		purple_request_page_all_required_filled(page) &&
@@ -1907,7 +1907,7 @@ pidgin_request_fields(const char *title, const char *primary,
 	data->user_data = user_data;
 	data->u.multifield.page = page;
 
-	purple_request_page_set_ui_data(page, data);
+	g_object_set_data(G_OBJECT(page), "pidgin-ui-data", data);
 
 	extra_actions = purple_request_cpar_get_extra_actions(cpar);
 

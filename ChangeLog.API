@@ -724,6 +724,8 @@ version 3.0.0 (??/??/????):
 		  instead.
 		* purple_request_fields_destroy. Use g_object_unref instead.
 		* purple_request_fields_get_autosensitive
+		* purple_request_fields_get_ui_data
+		* purple_request_fields_set_ui_data
 		* PurpleRoomlistRoomType
 		* purple_roomlist_expand_category
 		* purple_roomlist_field_get_field_type

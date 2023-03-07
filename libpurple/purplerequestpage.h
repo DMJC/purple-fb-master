@@ -205,27 +205,6 @@ gpointer purple_request_page_get_choice(PurpleRequestPage *page, const char *id)
  */
 PurpleAccount *purple_request_page_get_account(PurpleRequestPage *page, const char *id);
 
-/**
- * purple_request_page_get_ui_data:
- * @page: The fields page.
- *
- * Returns the UI data associated with this object.
- *
- * Returns: The UI data associated with this object.  This is a
- *         convenience field provided to the UIs--it is not
- *         used by the libpurple core.
- */
-gpointer purple_request_page_get_ui_data(PurpleRequestPage *page);
-
-/**
- * purple_request_page_set_ui_data:
- * @page: The fields page.
- * @ui_data: A pointer to associate with this object.
- *
- * Set the UI data associated with this object.
- */
-void purple_request_page_set_ui_data(PurpleRequestPage *page, gpointer ui_data);
-
 G_END_DECLS
 
 #endif /* PURPLE_REQUEST_PAGE_H */
