@@ -1058,7 +1058,7 @@ purple_chat_conversation_invite_user(PurpleChatConversation *chat,
 {
 	PurpleAccount *account;
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
 	g_return_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat));
@@ -1077,18 +1077,18 @@ purple_chat_conversation_invite_user(PurpleChatConversation *chat,
 	}
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(_("Invite to chat"));
+	group = purple_request_group_new(_("Invite to chat"));
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_string_new("screenname", _("Buddy"), user,
 	                                        FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	purple_request_field_set_required(field, TRUE);
 	purple_request_field_set_type_hint(field, "screenname");
 
 	field = purple_request_field_string_new("message", _("Message"), message,
 	                                        FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	purple_request_fields(chat, _("Invite to chat"), NULL,
 	                      _("Please enter the name of the user you wish to "

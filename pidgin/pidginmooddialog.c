@@ -246,7 +246,7 @@ void
 pidgin_mood_dialog_show(PurpleAccount *account) {
 	const gchar *current_mood;
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *g;
+	PurpleRequestGroup *g;
 	PurpleRequestField *f;
 	PurpleConnection *gc = NULL;
 	PurpleProtocol *protocol = NULL;
@@ -265,7 +265,7 @@ pidgin_mood_dialog_show(PurpleAccount *account) {
 	}
 
 	fields = purple_request_fields_new();
-	g = purple_request_field_group_new(NULL);
+	g = purple_request_group_new(NULL);
 	f = purple_request_field_list_new("mood", _("Please select your mood from the list"));
 
 	purple_request_field_list_add_icon(f, _("None"), NULL, "");
@@ -297,16 +297,16 @@ pidgin_mood_dialog_show(PurpleAccount *account) {
 		if (current_mood && purple_strequal(current_mood, mood->mood))
 			purple_request_field_list_add_selected(f, _(mood->description));
 	}
-	purple_request_field_group_add_field(g, f);
+	purple_request_group_add_field(g, f);
 
 	purple_request_fields_add_group(fields, g);
 
 	/* if the connection allows setting a mood message */
 	if (gc && (purple_connection_get_flags(gc) & PURPLE_CONNECTION_FLAG_SUPPORT_MOOD_MESSAGES)) {
-		g = purple_request_field_group_new(NULL);
+		g = purple_request_group_new(NULL);
 		f = purple_request_field_string_new("text",
 		    _("Message (optional)"), NULL, FALSE);
-		purple_request_field_group_add_field(g, f);
+		purple_request_group_add_field(g, f);
 		purple_request_fields_add_group(fields, g);
 	}
 

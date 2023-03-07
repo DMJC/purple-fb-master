@@ -748,22 +748,22 @@ void
 ggp_pubdir_search(PurpleConnection *gc, const ggp_pubdir_search_form *form)
 {
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
 	purple_debug_info("gg", "ggp_pubdir_search");
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_string_new("name", _("Name"),
 	                                        form ? form->nick : NULL, FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new("city", _("City"),
 	                                        form ? form->city : NULL, FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_choice_new(
 	        "gender", _("Gender"), form ? GINT_TO_POINTER(form->gender) : NULL);
@@ -772,7 +772,7 @@ ggp_pubdir_search(PurpleConnection *gc, const ggp_pubdir_search_form *form)
 		GINT_TO_POINTER(GGP_PUBDIR_GENDER_MALE));
 	purple_request_field_choice_add(field, _("Female"),
 		GINT_TO_POINTER(GGP_PUBDIR_GENDER_FEMALE));
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	purple_request_fields(gc, _("Find buddies"), _("Find buddies"),
 	                      _("Please, enter your search criteria below"), fields,
@@ -935,7 +935,7 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
                            G_GNUC_UNUSED gpointer data)
 {
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 	gchar *bday = NULL;
 	gsize i;
@@ -947,18 +947,18 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 	record = (records_count == 1 ? &records[0] : NULL);
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_string_new("first_name", _("First name"),
 	                                        record ? record->first_name : NULL,
 	                                        FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new("last_name", _("Last name"),
 	                                        record ? record->last_name : NULL,
 	                                        FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_choice_new(
 	        "gender", _("Gender"),
@@ -969,7 +969,7 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 	                                GINT_TO_POINTER(GGP_PUBDIR_GENDER_MALE));
 	purple_request_field_choice_add(field, _("Female"),
 	                                GINT_TO_POINTER(GGP_PUBDIR_GENDER_FEMALE));
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	if(record != NULL && record->birth != NULL) {
 		bday = g_date_time_format(record->birth, "%Y-%m-%d");
@@ -980,11 +980,11 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 	        FALSE);
 	g_free(bday);
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new(
 	        "city", _("City"), record ? record->city : NULL, FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	/* Translators: This word is basically used to describe a Polish
 	   province. Gadu-Gadu users outside of Poland might choose to enter some
@@ -993,7 +993,7 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 	   your language, feel free to use it. Otherwise it's probably acceptable
 	   to leave it changed or transliterate it into your alphabet. */
 	field = purple_request_field_choice_new("province", _("Voivodeship"), 0);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	for (i = 0; i < ggp_pubdir_provinces_count; i++) {
 		purple_request_field_choice_add(field, ggp_pubdir_provinces[i],
 		                                GINT_TO_POINTER(i));

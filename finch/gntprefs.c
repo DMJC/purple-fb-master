@@ -240,16 +240,16 @@ static void
 add_pref_group(PurpleRequestFields *fields, const char *title, Prefs *prefs)
 {
 	PurpleRequestField *field;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	int i;
 
-	group = purple_request_field_group_new(title);
+	group = purple_request_group_new(title);
 	purple_request_fields_add_group(fields, group);
 	for (i = 0; prefs[i].pref; i++)
 	{
 		field = get_pref_field(prefs + i);
 		if (field)
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 	}
 }
 

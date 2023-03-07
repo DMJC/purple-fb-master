@@ -218,7 +218,7 @@ ggp_multilogon_dialog(PurpleConnection *gc)
 	ggp_multilogon_session_data *mldata = ggp_multilogon_get_mldata(gc);
 	PurpleRequestField *field;
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestCommonParameters *cpar;
 	PurpleRequestDatasheet *sheet;
 	PurpleRequestDatasheetAction *action;
@@ -228,7 +228,7 @@ ggp_multilogon_dialog(PurpleConnection *gc)
 		return;
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	sheet = purple_request_datasheet_new();
@@ -247,7 +247,7 @@ ggp_multilogon_dialog(PurpleConnection *gc)
 	ggp_multilogon_fill_sessions(sheet, gc);
 
 	field = purple_request_field_datasheet_new("sessions", NULL, sheet);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	cpar = purple_request_cpar_new();
 	purple_request_cpar_set_icon(cpar, PURPLE_REQUEST_ICON_DIALOG);

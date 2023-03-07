@@ -235,6 +235,9 @@ version 3.0.0 (??/??/????):
 		  details.
 		* PurpleRequestField is now a GObject. Please see the documentation
 		  for details.
+		* PurpleRequestFieldGroup is now a GObject, and renamed to
+		  PurpleRequestGroup. Please see the documentation for
+		  details.
 		* purple_request_field_get_field_type_hint renamed to
 		  purple_request_field_get_type_hint
 		* purple_request_field_group_get_tab
@@ -708,12 +711,15 @@ version 3.0.0 (??/??/????):
 		* purple_request_certificate
 		* purple_request_field_choice_set_data_destructor. Use
 		  purple_request_field_choice_add_full instead
+		* purple_request_field_destroy. Use g_object_unref instead.
 		* purple_request_field_list_add
 		* purple_request_field_list_get_icons
 		* PurpleRequestFieldSensitivityCb
 		* purple_request_field_set_sensitivity_cb
 		* purple_request_field_get_ui_data
 		* purple_request_field_set_ui_data
+		* purple_request_field_group_destroy. Use g_object_unref
+		  instead.
 		* purple_request_fields_get_autosensitive
 		* PurpleRoomlistRoomType
 		* purple_roomlist_expand_category

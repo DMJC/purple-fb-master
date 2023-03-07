@@ -30,7 +30,7 @@
 
 typedef struct {
 	PurpleRequestFieldType type;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 
 	char *id;
 	char *label;
@@ -409,7 +409,7 @@ purple_request_field_new(const char *id, const char *text,
 
 void
 _purple_request_field_set_group(PurpleRequestField *field,
-                                PurpleRequestFieldGroup *group)
+                                PurpleRequestGroup *group)
 {
 	PurpleRequestFieldPrivate *priv = NULL;
 
@@ -495,9 +495,9 @@ purple_request_field_set_required(PurpleRequestField *field, gboolean required)
 
 	priv->required = required;
 
-	if(priv->group != NULL) {
-		_purple_request_field_group_set_field_required(priv->group, field,
-		                                               required);
+	if(PURPLE_IS_REQUEST_GROUP(priv->group)) {
+		_purple_request_group_set_field_required(priv->group, field,
+		                                         required);
 	}
 
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_REQUIRED]);
@@ -515,7 +515,7 @@ purple_request_field_get_field_type(PurpleRequestField *field) {
 	return priv->type;
 }
 
-PurpleRequestFieldGroup *
+PurpleRequestGroup *
 purple_request_field_get_group(PurpleRequestField *field) {
 	PurpleRequestFieldPrivate *priv = NULL;
 
@@ -619,9 +619,9 @@ purple_request_field_set_validator(PurpleRequestField *field,
 	priv->validator = validator;
 	priv->validator_data = validator ? user_data : NULL;
 
-	if(priv->group != NULL) {
-		_purple_request_field_group_set_field_validator(priv->group, field,
-		                                                validator != NULL);
+	if(PURPLE_IS_REQUEST_GROUP(priv->group)) {
+		_purple_request_group_set_field_validator(priv->group, field,
+		                                          validator != NULL);
 	}
 
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_IS_VALIDATABLE]);

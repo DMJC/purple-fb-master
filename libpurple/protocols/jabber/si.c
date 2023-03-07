@@ -1589,14 +1589,14 @@ static void jabber_si_xfer_xfer_init(PurpleXfer *xfer)
 			char *msg = g_strdup_printf(_("Please select the resource of %s to which you would like to send a file"), purple_xfer_get_remote_user(xfer));
 			PurpleRequestFields *fields = purple_request_fields_new();
 			PurpleRequestField *field = purple_request_field_choice_new("resource", _("Resource"), 0);
-			PurpleRequestFieldGroup *group = purple_request_field_group_new(NULL);
+			PurpleRequestGroup *group = purple_request_group_new(NULL);
 
 			for(l = resources; l; l = l->next) {
 				jbr = l->data;
 				purple_request_field_choice_add_full(field, jbr->name, g_strdup(jbr->name), g_free);
 			}
 
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 
 			purple_request_fields_add_group(fields, group);
 

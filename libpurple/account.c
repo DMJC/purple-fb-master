@@ -1063,7 +1063,7 @@ purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
 {
 	gchar *primary;
 	const gchar *username;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 	PurpleRequestFields *fields;
 
@@ -1075,16 +1075,16 @@ purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
 								  purple_account_get_protocol_name(account));
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_string_new("password", _("Enter Password"), NULL, FALSE);
 	purple_request_field_string_set_masked(field, TRUE);
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_bool_new("remember", _("Save password"), FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	purple_request_fields(account, NULL, primary, NULL, fields, _("OK"),
 		ok_cb, _("Cancel"), cancel_cb,
@@ -1096,7 +1096,7 @@ void
 purple_account_request_change_password(PurpleAccount *account)
 {
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 	PurpleConnection *gc;
 	PurpleProtocol *protocol = NULL;
@@ -1111,7 +1111,7 @@ purple_account_request_change_password(PurpleAccount *account)
 
 	fields = purple_request_fields_new();
 
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_string_new("password", _("Original password"),
@@ -1119,7 +1119,7 @@ purple_account_request_change_password(PurpleAccount *account)
 	purple_request_field_string_set_masked(field, TRUE);
 	if (!protocol || !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
 		purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new("new_password_1",
 										  _("New password"),
@@ -1127,7 +1127,7 @@ purple_account_request_change_password(PurpleAccount *account)
 	purple_request_field_string_set_masked(field, TRUE);
 	if (!protocol || !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
 		purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new("new_password_2",
 										  _("New password (again)"),
@@ -1135,7 +1135,7 @@ purple_account_request_change_password(PurpleAccount *account)
 	purple_request_field_string_set_masked(field, TRUE);
 	if (!protocol || !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
 		purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	g_snprintf(primary, sizeof(primary), _("Change password for %s"),
 			   purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)));

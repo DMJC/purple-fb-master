@@ -620,7 +620,7 @@ jabber_setup_set_info(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	PurpleAccount *account = NULL;
 	PurpleConnection *connection = NULL;
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 	const struct vcard_template *vc_tp;
 	const char *user_info;
@@ -638,7 +638,7 @@ jabber_setup_set_info(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	connection = purple_account_get_connection(account);
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	/*
@@ -681,7 +681,7 @@ jabber_setup_set_info(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 		g_free(cdata);
 		cdata = NULL;
 
-		purple_request_field_group_add_field(group, field);
+		purple_request_group_add_field(group, field);
 	}
 
 	if(x_vc_data != NULL)

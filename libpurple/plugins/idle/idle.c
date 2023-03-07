@@ -159,18 +159,18 @@ purple_idle_set_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 	/* Use the super fancy request API */
 
 	PurpleRequestFields *request;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 
 	field = purple_request_field_account_new("acct", _("Account"), NULL);
 	purple_request_field_account_set_filter(field, idleable_filter);
 	purple_request_field_account_set_show_all(field, FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_int_new("mins", _("Minutes"), 10, 0, 9999);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	request = purple_request_fields_new();
 	purple_request_fields_add_group(request, group);
@@ -191,7 +191,7 @@ purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
                                     gpointer data)
 {
 	PurpleRequestFields *request;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
 	if (idled_accts == NULL)
@@ -200,12 +200,12 @@ purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 		return;
 	}
 
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 
 	field = purple_request_field_account_new("acct", _("Account"), NULL);
 	purple_request_field_account_set_filter(field, unidle_filter);
 	purple_request_field_account_set_show_all(field, FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	request = purple_request_fields_new();
 	purple_request_fields_add_group(request, group);
@@ -226,13 +226,13 @@ purple_idle_set_all_accounts_idle_time(G_GNUC_UNUSED GSimpleAction *action,
                                        gpointer data)
 {
 	PurpleRequestFields *request;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 
 	field = purple_request_field_int_new("mins", _("Minutes"), 10, 0, 9999);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	request = purple_request_fields_new();
 	purple_request_fields_add_group(request, group);

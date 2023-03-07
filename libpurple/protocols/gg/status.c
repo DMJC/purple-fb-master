@@ -342,17 +342,17 @@ void ggp_status_set_status_broadcasting(PurpleConnection *gc,
 void ggp_status_broadcasting_dialog(PurpleConnection *gc)
 {
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_bool_new("buddies_only",
 		_("Show status only for buddies"),
 		!ggp_status_get_status_broadcasting(gc));
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	purple_request_fields(gc,
 		_("Change status broadcasting"),

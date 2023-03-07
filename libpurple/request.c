@@ -629,10 +629,10 @@ purple_request_fields_strip_html(PurpleRequestFields *fields)
 	     itg != NULL;
 	     itg = g_list_next(itg))
 	{
-		PurpleRequestFieldGroup *group = itg->data;
+		PurpleRequestGroup *group = itg->data;
 		GList *itf;
 
-		for (itf = purple_request_field_group_get_fields(group);
+		for (itf = purple_request_group_get_fields(group);
 		     itf != NULL;
 		     itf = g_list_next(itf))
 		{

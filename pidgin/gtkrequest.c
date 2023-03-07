@@ -225,12 +225,12 @@ static void
 req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
                          PurpleRequestField *field)
 {
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestFields *fields;
 	PidginRequestData *req_data;
 
 	group = purple_request_field_get_group(field);
-	fields = purple_request_field_group_get_fields_list(group);
+	fields = purple_request_group_get_fields_list(group);
 	req_data = purple_request_fields_get_ui_data(fields);
 
 	gtk_widget_set_sensitive(req_data->ok_button,
@@ -1073,8 +1073,8 @@ setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
 	{
 		if (g_str_has_prefix(type_hint, "screenname")) {
 			GtkWidget *optmenu = NULL;
-			PurpleRequestFieldGroup *group = purple_request_field_get_group(field);
-			GList *fields = purple_request_field_group_get_fields(group);
+			PurpleRequestGroup *group = purple_request_field_get_group(field);
+			GList *fields = purple_request_group_get_fields(group);
 
 			/* Ensure the account option menu is created (if the widget hasn't
 			 * been initialized already) for username auto-completion. */
@@ -1894,7 +1894,7 @@ pidgin_request_fields(const char *title, const char *primary,
 	GtkWidget *content;
 	GtkSizeGroup *sg, *datasheet_buttons_sg;
 	GList *gl, *fl;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	char *label_text;
 	char *primary_esc, *secondary_esc;
 	const gboolean compact = purple_request_cpar_is_compact(cpar);
@@ -2017,11 +2017,11 @@ pidgin_request_fields(const char *title, const char *primary,
 		gboolean contains_resizable = FALSE;
 
 		group      = gl->data;
-		field_list = purple_request_field_group_get_fields(group);
+		field_list = purple_request_group_get_fields(group);
 
-		if(purple_request_field_group_get_title(group) != NULL) {
+		if(purple_request_group_get_title(group) != NULL) {
 			frame = pidgin_make_frame(vbox,
-				purple_request_field_group_get_title(group));
+				purple_request_group_get_title(group));
 		} else {
 			frame = vbox;
 		}

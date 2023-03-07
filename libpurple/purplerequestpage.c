@@ -56,8 +56,7 @@ purple_request_fields_destroy(PurpleRequestFields *fields)
 {
 	g_return_if_fail(fields != NULL);
 
-	g_list_free_full(fields->groups,
-	                 (GDestroyNotify)purple_request_field_group_destroy);
+	g_list_free_full(fields->groups, g_object_unref);
 	g_list_free(fields->required_fields);
 	g_list_free(fields->validated_fields);
 	g_hash_table_destroy(fields->fields);
@@ -114,19 +113,19 @@ _purple_request_field_list_add_field(PurpleRequestFields *fields,
 
 void
 purple_request_fields_add_group(PurpleRequestFields *fields,
-							  PurpleRequestFieldGroup *group)
+                                PurpleRequestGroup *group)
 {
 	GList *l;
 	PurpleRequestField *field;
 
 	g_return_if_fail(fields != NULL);
-	g_return_if_fail(group  != NULL);
+	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
 
 	fields->groups = g_list_append(fields->groups, group);
 
-	_purple_request_field_group_set_field_list(group, fields);
+	_purple_request_group_set_field_list(group, fields);
 
-	for (l = purple_request_field_group_get_fields(group);
+	for (l = purple_request_group_get_fields(group);
 		 l != NULL;
 		 l = l->next) {
 

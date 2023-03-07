@@ -86,19 +86,19 @@ void
 pidgin_dialogs_im(void)
 {
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
 	fields = purple_request_fields_new();
 
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_string_new("screenname", _("_Name"), NULL, FALSE);
 	purple_request_field_set_type_hint(field, "screenname");
 	purple_request_field_set_required(field, TRUE);
 	purple_request_field_set_validator(field, pidgin_dialogs_im_name_validator, fields);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_account_new("account", _("_Account"), NULL);
 	purple_request_field_set_type_hint(field, "account");
@@ -106,7 +106,7 @@ pidgin_dialogs_im(void)
 		(purple_connections_get_all() != NULL &&
 		 purple_connections_get_all()->next != NULL));
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	purple_request_fields(
 	        purple_blist_get_default(), _("New Instant Message"), NULL,
@@ -161,18 +161,18 @@ void
 pidgin_dialogs_info(void)
 {
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
 	fields = purple_request_fields_new();
 
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_string_new("screenname", _("_Name"), NULL, FALSE);
 	purple_request_field_set_type_hint(field, "screenname");
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_account_new("account", _("_Account"), NULL);
 	purple_request_field_set_type_hint(field, "account");
@@ -180,7 +180,7 @@ pidgin_dialogs_info(void)
 		(purple_connections_get_all() != NULL &&
 		 purple_connections_get_all()->next != NULL));
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	purple_request_fields(
 	        purple_blist_get_default(), _("Get User Info"), NULL,

@@ -535,7 +535,7 @@ process_pref_frame(PurplePluginPrefFrame *frame)
 {
 	PurpleRequestField *field;
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group = NULL;
+	PurpleRequestGroup *group = NULL;
 	GList *prefs;
 	GList *stringlist = NULL;
 	GntWidget *ret = NULL;
@@ -553,9 +553,9 @@ process_pref_frame(PurplePluginPrefFrame *frame)
 
 			if(purple_plugin_pref_get_pref_type(pref) == PURPLE_PLUGIN_PREF_INFO) {
 				field = purple_request_field_label_new("*", purple_plugin_pref_get_label(pref));
-				purple_request_field_group_add_field(group, field);
+				purple_request_group_add_field(group, field);
 			} else {
-				group = purple_request_field_group_new(label);
+				group = purple_request_group_new(label);
 				purple_request_fields_add_group(fields, group);
 			}
 			continue;
@@ -623,10 +623,10 @@ process_pref_frame(PurplePluginPrefFrame *frame)
 
 		if (field) {
 			if (group == NULL) {
-				group = purple_request_field_group_new(_("Preferences"));
+				group = purple_request_group_new(_("Preferences"));
 				purple_request_fields_add_group(fields, group);
 			}
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 		}
 	}
 

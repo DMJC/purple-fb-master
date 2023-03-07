@@ -69,8 +69,7 @@ void purple_request_fields_destroy(PurpleRequestFields *fields);
  *
  * Adds a group of fields to the list.
  */
-void purple_request_fields_add_group(PurpleRequestFields *fields,
-								   PurpleRequestFieldGroup *group);
+void purple_request_fields_add_group(PurpleRequestFields *fields, PurpleRequestGroup *group);
 
 /**
  * purple_request_fields_get_groups:
@@ -78,7 +77,7 @@ void purple_request_fields_add_group(PurpleRequestFields *fields,
  *
  * Returns a list of all groups in a field list.
  *
- * Returns: (element-type PurpleRequestFieldGroup) (transfer none): A list of groups.
+ * Returns: (element-type PurpleRequestGroup) (transfer none): A list of groups.
  */
 GList *purple_request_fields_get_groups(const PurpleRequestFields *fields);
 

@@ -292,8 +292,8 @@ request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
 	 * here, although it can be done. */
 	for (list = purple_request_fields_get_groups(fields); list; list = list->next)
 	{
-		PurpleRequestFieldGroup *group = list->data;
-		GList *fields = purple_request_field_group_get_fields(group);
+		PurpleRequestGroup *group = list->data;
+		GList *fields = purple_request_group_get_fields(group);
 
 		for (; fields ; fields = fields->next)
 		{
@@ -625,10 +625,10 @@ finch_request_fields(const char *title, const char *primary,
 	gnt_box_set_fill(GNT_BOX(box), TRUE);
 	for (grlist = purple_request_fields_get_groups(allfields); grlist; grlist = grlist->next)
 	{
-		PurpleRequestFieldGroup *group = grlist->data;
-		GList *fields = purple_request_field_group_get_fields(group);
+		PurpleRequestGroup *group = grlist->data;
+		GList *fields = purple_request_group_get_fields(group);
 		GntWidget *hbox;
-		const char *title = purple_request_field_group_get_title(group);
+		const char *title = purple_request_group_get_title(group);
 
 		if (title)
 			gnt_box_add_widget(GNT_BOX(box),
@@ -861,8 +861,8 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 {
 	GList *list;
 	for (list = purple_request_fields_get_groups(allfields); list; list = list->next) {
-		PurpleRequestFieldGroup *group = list->data;
-		GList *fields = purple_request_field_group_get_fields(group);
+		PurpleRequestGroup *group = list->data;
+		GList *fields = purple_request_group_get_fields(group);
 
 		for (; fields ; fields = fields->next) {
 			PurpleRequestField *field = fields->data;

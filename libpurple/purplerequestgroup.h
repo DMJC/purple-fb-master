@@ -33,76 +33,68 @@
 #include <glib-object.h>
 
 /**
- * PurpleRequestFieldGroup:
+ * PurpleRequestGroup:
  *
  * A group of fields with a title.
  */
-typedef struct _PurpleRequestFieldGroup PurpleRequestFieldGroup;
+typedef struct _PurpleRequestGroup PurpleRequestGroup;
 
 #include "purplerequestfield.h"
+
+#define PURPLE_TYPE_REQUEST_GROUP (purple_request_group_get_type())
+G_DECLARE_FINAL_TYPE(PurpleRequestGroup, purple_request_group,
+                     PURPLE, REQUEST_GROUP, GObject)
 
 G_BEGIN_DECLS
 
 /**
- * purple_request_field_group_new:
- * @title: The optional title to give the group.
+ * purple_request_group_new:
+ * @title: (nullable): The title to give the group.
  *
  * Creates a fields group with an optional title.
  *
  * Returns: (transfer full): A new fields group
  */
-PurpleRequestFieldGroup *purple_request_field_group_new(const char *title);
+PurpleRequestGroup *purple_request_group_new(const char *title);
 
 /**
- * purple_request_field_group_destroy:
- * @group: The group to destroy.
- *
- * Destroys a fields group.
- */
-void purple_request_field_group_destroy(PurpleRequestFieldGroup *group);
-
-/**
- * purple_request_field_group_add_field:
+ * purple_request_group_add_field:
  * @group: The group to add the field to.
  * @field: (transfer full): The field to add to the group.
  *
  * Adds a field to the group.
  */
-void purple_request_field_group_add_field(PurpleRequestFieldGroup *group,
-										PurpleRequestField *field);
+void purple_request_group_add_field(PurpleRequestGroup *group, PurpleRequestField *field);
 
 /**
- * purple_request_field_group_get_title:
+ * purple_request_group_get_title:
  * @group: The group.
  *
  * Returns the title of a fields group.
  *
- * Returns: The title, if set.
+ * Returns: (nullable): The title, if set.
  */
-const char *purple_request_field_group_get_title(
-		const PurpleRequestFieldGroup *group);
+const char *purple_request_group_get_title(PurpleRequestGroup *group);
 
 /**
- * purple_request_field_group_get_fields:
+ * purple_request_group_get_fields:
  * @group: The group.
  *
  * Returns a list of all fields in a group.
  *
  * Returns: (element-type PurpleRequestField) (transfer none): The list of fields in the group.
  */
-GList *purple_request_field_group_get_fields(
-		const PurpleRequestFieldGroup *group);
+GList *purple_request_group_get_fields(PurpleRequestGroup *group);
 
 /**
- * purple_request_field_group_get_fields_list:
+ * purple_request_group_get_fields_list:
  * @group: The group.
  *
  * Returns a list of all fields in a group.
  *
  * Returns: (transfer none): The list of fields in the group.
  */
-PurpleRequestFields *purple_request_field_group_get_fields_list(
-		const PurpleRequestFieldGroup *group);
+PurpleRequestFields *purple_request_group_get_fields_list(PurpleRequestGroup *group);
 
 G_END_DECLS
 

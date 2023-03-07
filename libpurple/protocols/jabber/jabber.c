@@ -1904,7 +1904,7 @@ jabber_password_change(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	PurpleConnection *connection = NULL;
 	JabberStream *js = NULL;
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
 	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
@@ -1919,20 +1919,20 @@ jabber_password_change(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	js = purple_connection_get_protocol_data(connection);
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_string_new("password1", _("Password"),
 			"", FALSE);
 	purple_request_field_string_set_masked(field, TRUE);
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new("password2", _("Password (again)"),
 			"", FALSE);
 	purple_request_field_string_set_masked(field, TRUE);
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	purple_request_fields(connection, _("Change XMPP Password"),
 	                      _("Change XMPP Password"),
@@ -2700,7 +2700,7 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 		PurpleRequestFields *fields;
 		PurpleRequestField *field = purple_request_field_choice_new(
 				"resource", _("Resource"), 0);
-		PurpleRequestFieldGroup *group;
+		PurpleRequestGroup *group;
 		JabberMediaRequest *request;
 
 		for(l = jb->resources; l; l = l->next)
@@ -2751,14 +2751,14 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 
 		msg = g_strdup_printf(_("Please select the resource of %s with which you would like to start a media session."), who);
 		fields = purple_request_fields_new();
-		group =	purple_request_field_group_new(NULL);
+		group =	purple_request_group_new(NULL);
 		request = g_new0(JabberMediaRequest, 1);
 		request->media = media;
 		request->account = account;
 		request->who = g_strdup(who);
 		request->type = type;
 
-		purple_request_field_group_add_field(group, field);
+		purple_request_group_add_field(group, field);
 		purple_request_fields_add_group(fields, group);
 		purple_request_fields(account, _("Select a Resource"), msg,
 				NULL, fields, _("Initiate Media"),

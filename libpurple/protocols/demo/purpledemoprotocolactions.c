@@ -453,7 +453,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	PurpleAccountManager *manager = NULL;
 	PurpleAccount *account = NULL;
 	PurpleRequestFields *fields = NULL;
-	PurpleRequestFieldGroup *group = NULL;
+	PurpleRequestGroup *group = NULL;
 	PurpleRequestField *field = NULL;
 	GBytes *icon = NULL;
 	gconstpointer icon_data = NULL;
@@ -473,64 +473,64 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	fields = purple_request_fields_new();
 
 	/* This group will contain basic fields. */
-	group = purple_request_field_group_new(_("Basic"));
+	group = purple_request_group_new(_("Basic"));
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_label_new("basic-label",
 	                                       _("This group contains basic fields"));
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new("string", _("A string"),
 	                                        _("default"), FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("multiline-string",
 	                                        _("A multiline string"),
 	                                        _("default"), TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("masked-string",
 	                                        _("A masked string"), _("default"),
 	                                        FALSE);
 	purple_request_field_string_set_masked(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("alphanumeric",
 	                                        _("An alphanumeric string"),
 	                                        _("default"), FALSE);
 	purple_request_field_set_validator(field,
 	                                   purple_request_field_alphanumeric_validator,
 	                                   NULL);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("email", _("An email"),
 	                                        _("me@example.com"), FALSE);
 	purple_request_field_set_validator(field,
 	                                   purple_request_field_email_validator,
 	                                   NULL);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	field = purple_request_field_int_new("int", _("An integer"), 123, -42, 1337);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	field = purple_request_field_bool_new("bool", _("A boolean"), FALSE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	/* This group will contain fields with multiple options. */
-	group = purple_request_field_group_new(_("Multiple"));
+	group = purple_request_group_new(_("Multiple"));
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_label_new("multiple-label",
 	                                       _("This group contains fields with multiple options"));
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_choice_new("choice", _("A choice"), "foo");
 	purple_request_field_choice_add(field, _("foo"), "foo");
 	purple_request_field_choice_add(field, _("bar"), "bar");
 	purple_request_field_choice_add(field, _("baz"), "baz");
 	purple_request_field_choice_add(field, _("quux"), "quux");
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_list_new("list", _("A list"));
 	purple_request_field_list_add_icon(field, _("foo"), NULL, "foo");
 	purple_request_field_list_add_icon(field, _("bar"), NULL, "bar");
 	purple_request_field_list_add_icon(field, _("baz"), NULL, "baz");
 	purple_request_field_list_add_icon(field, _("quux"), NULL, "quux");
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_list_new("multilist", _("A multi-select list"));
 	purple_request_field_list_set_multi_select(field, TRUE);
@@ -538,15 +538,15 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	purple_request_field_list_add_icon(field, _("bar"), NULL, "bar");
 	purple_request_field_list_add_icon(field, _("baz"), NULL, "baz");
 	purple_request_field_list_add_icon(field, _("quux"), NULL, "quux");
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	/* This group will contain specialized fields. */
-	group = purple_request_field_group_new(_("Special"));
+	group = purple_request_group_new(_("Special"));
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_label_new("special-label",
 	                                       _("This group contains specialized fields"));
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	icon = g_resource_lookup_data(purple_demo_get_resource(),
 	                              "/im/pidgin/purple/demo/icons/scalable/apps/im-purple-demo.svg",
@@ -554,12 +554,12 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	icon_data = g_bytes_get_data(icon, &icon_len);
 	field = purple_request_field_image_new("image", _("An image"),
 	                                       icon_data, icon_len);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 	g_bytes_unref(icon);
 
 	field = purple_request_field_account_new("account", _("An account"),
 	                                         account);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	purple_request_fields(connection, _("Request Fields Demo"),
 	                      _("Please fill out these fields…"), NULL, fields,

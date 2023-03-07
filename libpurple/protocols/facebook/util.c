@@ -381,7 +381,7 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 	PurpleAccount *acct;
 	PurpleRequestCommonParameters *cpar;
 	PurpleRequestField *field;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestFields *fields;
 
 	request_data = g_new0(gpointer, 3);
@@ -394,13 +394,13 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 	buddies = g_slist_sort(buddies, fb_buddy_cmp);
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	field = purple_request_field_list_new("buddy", NULL);
 	purple_request_field_list_set_multi_select(field, multi);
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_group_add_field(group, field);
+	purple_request_group_add_field(group, field);
 
 	for (l = buddies; l != NULL; l = l->next) {
 		name = purple_buddy_get_name(l->data);

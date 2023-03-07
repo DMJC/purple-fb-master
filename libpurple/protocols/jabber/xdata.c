@@ -44,7 +44,7 @@ struct jabber_x_data_data {
 	gpointer user_data;
 	JabberStream *js;
 	GList *actions;
-	PurpleRequestFieldGroup *actiongroup;
+	PurpleRequestGroup *actiongroup;
 };
 
 static void jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestFields *fields) {
@@ -61,7 +61,7 @@ static void jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestFi
 
 	for(groups = purple_request_fields_get_groups(fields); groups; groups = groups->next) {
 		if(groups->data == data->actiongroup) {
-			for(flds = purple_request_field_group_get_fields(groups->data); flds; flds = flds->next) {
+			for(flds = purple_request_group_get_fields(groups->data); flds; flds = flds->next) {
 				PurpleRequestField *field = flds->data;
 				const char *id = purple_request_field_get_id(field);
 				int handleindex;
@@ -73,7 +73,7 @@ static void jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestFi
 			}
 			continue;
 		}
-		for(flds = purple_request_field_group_get_fields(groups->data); flds; flds = flds->next) {
+		for(flds = purple_request_group_get_fields(groups->data); flds; flds = flds->next) {
 			PurpleXmlNode *fieldnode, *valuenode;
 			PurpleRequestField *field = flds->data;
 			const char *id = purple_request_field_get_id(field);
@@ -191,7 +191,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 	void *handle;
 	PurpleXmlNode *fn, *x;
 	PurpleRequestFields *fields;
-	PurpleRequestFieldGroup *group;
+	PurpleRequestGroup *group;
 	PurpleRequestField *field = NULL;
 
 	char *title = NULL;
@@ -205,7 +205,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 	data->js = js;
 
 	fields = purple_request_fields_new();
-	group = purple_request_field_group_new(NULL);
+	group = purple_request_group_new(NULL);
 	purple_request_fields_add_group(fields, group);
 
 	for(fn = purple_xmlnode_get_child(packet, "field"); fn; fn = purple_xmlnode_get_next_twin(fn)) {
@@ -230,7 +230,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 			field = purple_request_field_string_new(var, label,
 					value ? value : "", FALSE);
 			purple_request_field_string_set_masked(field, TRUE);
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 
 			g_hash_table_replace(data->fields, g_strdup(var), GINT_TO_POINTER(JABBER_X_DATA_TEXT_SINGLE));
 
@@ -250,7 +250,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 
 			field = purple_request_field_string_new(var, label,
 					str->str, TRUE);
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 
 			g_hash_table_replace(data->fields, g_strdup(var), GINT_TO_POINTER(JABBER_X_DATA_TEXT_MULTI));
 
@@ -297,7 +297,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 				if(g_list_find_custom(selected, value, (GCompareFunc)strcmp))
 					purple_request_field_list_add_selected(field, lbl);
 			}
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 
 			g_list_free_full(selected, g_free);
 		} else if(purple_strequal(type, "boolean")) {
@@ -311,7 +311,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 				def = TRUE;
 
 			field = purple_request_field_bool_new(var, label, def);
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 
 			g_hash_table_replace(data->fields, g_strdup(var), GINT_TO_POINTER(JABBER_X_DATA_BOOLEAN));
 
@@ -322,7 +322,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 
 			if(value != NULL) {
 				field = purple_request_field_label_new("", value);
-				purple_request_field_group_add_field(group, field);
+				purple_request_group_add_field(group, field);
 
 				g_free(value);
 			}
@@ -333,7 +333,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 			field = purple_request_field_string_new(var, "", value ? value : "",
 					FALSE);
 			purple_request_field_set_visible(field, FALSE);
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 
 			g_hash_table_replace(data->fields, g_strdup(var), GINT_TO_POINTER(JABBER_X_DATA_TEXT_SINGLE));
 
@@ -344,7 +344,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 
 			field = purple_request_field_string_new(var, label,
 					value ? value : "", FALSE);
-			purple_request_field_group_add_field(group, field);
+			purple_request_group_add_field(group, field);
 
 			if(purple_strequal(type, "jid-single")) {
 				purple_request_field_set_type_hint(field, "screenname");
@@ -365,7 +365,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 		GList *action;
 		int i;
 
-		data->actiongroup = group = purple_request_field_group_new(_("Actions"));
+		data->actiongroup = group = purple_request_group_new(_("Actions"));
 		purple_request_fields_add_group(fields, group);
 		actionfield = purple_request_field_choice_new("libpurple:jabber:xdata:actions", _("Select an action"), GINT_TO_POINTER(defaultaction));
 
@@ -376,7 +376,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 			data->actions = g_list_append(data->actions, g_strdup(a->handle));
 		}
 		purple_request_field_set_required(actionfield,TRUE);
-		purple_request_field_group_add_field(group, actionfield);
+		purple_request_group_add_field(group, actionfield);
 	}
 
 	if((x = purple_xmlnode_get_child(packet, "title")))

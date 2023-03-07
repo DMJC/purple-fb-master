@@ -189,7 +189,7 @@ PurpleRequestFieldType purple_request_field_get_field_type(PurpleRequestField *f
  *
  * Returns: (transfer none): The UI data.
  */
-PurpleRequestFieldGroup *purple_request_field_get_group(PurpleRequestField *field);
+PurpleRequestGroup *purple_request_field_get_group(PurpleRequestField *field);
 
 /**
  * purple_request_field_get_id:
