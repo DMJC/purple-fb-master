@@ -106,8 +106,6 @@ typedef enum {
  */
 #define PURPLE_CONNECTION_ERROR (g_quark_from_static_string("purple-connection-error"))
 
-#include <time.h>
-
 #include "account.h"
 #include "purpleconnectionerrorinfo.h"
 #include "purpleprotocol.h"

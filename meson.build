@@ -116,14 +116,6 @@ endif
 # Checks for header files.
 conf.set('HAVE_UNISTD_H', compiler.has_header('unistd.h'))
 
-# Checks for typedefs, structures, and compiler characteristics.
-time_t_size = compiler.sizeof('time_t',
-    prefix : '''
-#include <stdio.h>
-#include <time.h>
-''')
-conf.set('SIZEOF_TIME_T', time_t_size)
-
 # Check for directories
 if IS_WIN32
 	foreach dir : ['bin', 'lib', 'data', 'sysconf', 'locale']

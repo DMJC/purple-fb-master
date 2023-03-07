@@ -16,8 +16,6 @@
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <time.h>
-
 #include <glib/gi18n-lib.h>
 
 #include "purpledemoprotocol.h"
