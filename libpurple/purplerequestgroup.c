@@ -53,8 +53,7 @@ purple_request_field_group_destroy(PurpleRequestFieldGroup *group)
 
 	g_free(group->title);
 
-	g_list_free_full(group->fields,
-	                 (GDestroyNotify)purple_request_field_destroy);
+	g_list_free_full(group->fields, g_object_unref);
 
 	g_free(group);
 }
@@ -95,7 +94,7 @@ purple_request_field_group_add_field(PurpleRequestFieldGroup *group,
 								   PurpleRequestField *field)
 {
 	g_return_if_fail(group != NULL);
-	g_return_if_fail(field != NULL);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
 
 	group->fields = g_list_append(group->fields, field);
 

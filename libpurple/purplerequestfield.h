@@ -45,6 +45,23 @@ typedef struct _PurpleRequestField PurpleRequestField;
 #define PURPLE_DEFAULT_ACTION_NONE	-1
 
 /**
+ * PurpleRequestFieldClass:
+ *
+ * #PurpleRequestFieldClass defines the interface for a request field.
+ *
+ * Since: 3.0.0
+ */
+struct _PurpleRequestFieldClass {
+	/*< private >*/
+	GObjectClass parent_class;
+
+	/*< public >*/
+
+	/*< private >*/
+	gpointer reserved[4];
+};
+
+/**
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
  * @PURPLE_REQUEST_FIELD_STRING: String field.
@@ -83,6 +100,10 @@ G_BEGIN_DECLS
 /* Field API                                                              */
 /**************************************************************************/
 
+#define PURPLE_TYPE_REQUEST_FIELD (purple_request_field_get_type())
+G_DECLARE_DERIVABLE_TYPE(PurpleRequestField, purple_request_field,
+                         PURPLE, REQUEST_FIELD, GObject)
+
 /**
  * purple_request_field_new:
  * @id:   The field ID.
@@ -95,14 +116,6 @@ G_BEGIN_DECLS
  */
 PurpleRequestField *purple_request_field_new(const char *id, const char *text,
 										 PurpleRequestFieldType type);
-
-/**
- * purple_request_field_destroy:
- * @field: The field to destroy.
- *
- * Destroys a field.
- */
-void purple_request_field_destroy(PurpleRequestField *field);
 
 /**
  * purple_request_field_set_label:

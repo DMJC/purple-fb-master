@@ -2742,7 +2742,7 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 				field)) <= 1) {
 			gchar *name;
 			gboolean result;
-			purple_request_field_destroy(field);
+			g_object_unref(field);
 			name = g_strdup_printf("%s/%s", who, jbr->name);
 			result = jabber_initiate_media(media, account, name, type);
 			g_free(name);

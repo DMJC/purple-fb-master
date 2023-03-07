@@ -28,8 +28,7 @@
 #include "purplekeyvaluepair.h"
 #include "purpleprivate.h"
 
-struct _PurpleRequestField
-{
+typedef struct {
 	PurpleRequestFieldType type;
 	PurpleRequestFieldGroup *group;
 
@@ -41,42 +40,34 @@ struct _PurpleRequestField
 	gboolean required;
 	gboolean sensitive;
 
-	union
-	{
-		struct
-		{
+	union {
+		struct {
 			gboolean multiline;
 			gboolean masked;
 			char *default_value;
 			char *value;
-
 		} string;
 
-		struct
-		{
+		struct {
 			int default_value;
 			int value;
 			int lower_bound;
 			int upper_bound;
 		} integer;
 
-		struct
-		{
+		struct {
 			gboolean default_value;
 			gboolean value;
-
 		} boolean;
 
-		struct
-		{
+		struct {
 			gpointer default_value;
 			gpointer value;
 
 			GList *elements;
 		} choice;
 
-		struct
-		{
+		struct {
 			GList *items;
 			gboolean has_icons;
 			GHashTable *item_data;
@@ -84,29 +75,24 @@ struct _PurpleRequestField
 			GHashTable *selected_table;
 
 			gboolean multiple_selection;
-
 		} list;
 
-		struct
-		{
+		struct {
 			PurpleAccount *default_account;
 			PurpleAccount *account;
 			gboolean show_all;
 
 			PurpleFilterAccountFunc filter_func;
-
 		} account;
 
-		struct
-		{
+		struct {
 			unsigned int scale_x;
 			unsigned int scale_y;
 			char *buffer;
 			gsize size;
 		} image;
 
-		struct
-		{
+		struct {
 			PurpleRequestDatasheet *sheet;
 		} datasheet;
 	} u;
@@ -116,194 +102,523 @@ struct _PurpleRequestField
 
 	PurpleRequestFieldValidator validator;
 	void *validator_data;
-};
+} PurpleRequestFieldPrivate;
 
+enum {
+	PROP_0,
+	PROP_ID,
+	PROP_LABEL,
+	PROP_VISIBLE,
+	PROP_SENSITIVE,
+	PROP_TYPE_HINT,
+	PROP_TOOLTIP,
+	PROP_REQUIRED,
+	PROP_IS_VALIDATABLE,
+	N_PROPERTIES,
+};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
+
+G_DEFINE_TYPE_WITH_PRIVATE(PurpleRequestField, purple_request_field, G_TYPE_OBJECT)
+
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static void
+purple_request_field_set_id(PurpleRequestField *field, const char *id) {
+	PurpleRequestFieldPrivate *priv = NULL;
+
+	priv = purple_request_field_get_instance_private(field);
+
+	g_free(priv->id);
+	priv->id = g_strdup(id);
+
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_ID]);
+}
+
+static void
+purple_request_field_set_field_type(PurpleRequestField *field,
+                                    PurpleRequestFieldType type)
+{
+	PurpleRequestFieldPrivate *priv = NULL;
+
+	priv = purple_request_field_get_instance_private(field);
+
+	priv->type = type;
+}
+
+/******************************************************************************
+ * GObject Implementation
+ *****************************************************************************/
+static void
+purple_request_field_get_property(GObject *obj, guint param_id, GValue *value,
+                                  GParamSpec *pspec)
+{
+	PurpleRequestField *field = PURPLE_REQUEST_FIELD(obj);
+
+	switch(param_id) {
+		case PROP_ID:
+			g_value_set_string(value, purple_request_field_get_id(field));
+			break;
+		case PROP_LABEL:
+			g_value_set_string(value, purple_request_field_get_label(field));
+			break;
+		case PROP_VISIBLE:
+			g_value_set_boolean(value, purple_request_field_is_visible(field));
+			break;
+		case PROP_SENSITIVE:
+			g_value_set_boolean(value,
+			                    purple_request_field_is_sensitive(field));
+			break;
+		case PROP_TYPE_HINT:
+			g_value_set_string(value,
+			                   purple_request_field_get_type_hint(field));
+			break;
+		case PROP_TOOLTIP:
+			g_value_set_string(value, purple_request_field_get_tooltip(field));
+			break;
+		case PROP_REQUIRED:
+			g_value_set_boolean(value,
+			                    purple_request_field_is_required(field));
+			break;
+		case PROP_IS_VALIDATABLE:
+			g_value_set_boolean(value,
+			                    purple_request_field_is_validatable(field));
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+			break;
+	}
+}
+
+static void
+purple_request_field_set_property(GObject *obj, guint param_id,
+                                  const GValue *value, GParamSpec *pspec)
+{
+	PurpleRequestField *field = PURPLE_REQUEST_FIELD(obj);
+
+	switch(param_id) {
+		case PROP_ID:
+			purple_request_field_set_id(field, g_value_get_string(value));
+			break;
+		case PROP_LABEL:
+			purple_request_field_set_label(field, g_value_get_string(value));
+			break;
+		case PROP_VISIBLE:
+			purple_request_field_set_visible(field,
+			                                 g_value_get_boolean(value));
+			break;
+		case PROP_SENSITIVE:
+			purple_request_field_set_sensitive(field,
+			                                   g_value_get_boolean(value));
+			break;
+		case PROP_TYPE_HINT:
+			purple_request_field_set_type_hint(field,
+			                                   g_value_get_string(value));
+			break;
+		case PROP_TOOLTIP:
+			purple_request_field_set_tooltip(field, g_value_get_string(value));
+			break;
+		case PROP_REQUIRED:
+			purple_request_field_set_required(field,
+			                                  g_value_get_boolean(value));
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+			break;
+	}
+}
+
+static void
+purple_request_field_finalize(GObject *obj) {
+	PurpleRequestField *field = PURPLE_REQUEST_FIELD(obj);
+	PurpleRequestFieldPrivate *priv = NULL;
+
+	priv = purple_request_field_get_instance_private(field);
+
+	g_free(priv->id);
+	g_free(priv->label);
+	g_free(priv->type_hint);
+	g_free(priv->tooltip);
+
+	if(priv->type == PURPLE_REQUEST_FIELD_STRING) {
+		g_free(priv->u.string.default_value);
+		g_free(priv->u.string.value);
+	} else if(priv->type == PURPLE_REQUEST_FIELD_CHOICE) {
+		g_list_free_full(priv->u.choice.elements,
+		                 (GDestroyNotify)purple_key_value_pair_free);
+	} else if(priv->type == PURPLE_REQUEST_FIELD_LIST) {
+		g_list_free_full(priv->u.list.items,
+		                 (GDestroyNotify)purple_key_value_pair_free);
+		g_list_free_full(priv->u.list.selected, g_free);
+		g_hash_table_destroy(priv->u.list.item_data);
+		g_hash_table_destroy(priv->u.list.selected_table);
+	} else if(priv->type == PURPLE_REQUEST_FIELD_DATASHEET) {
+		purple_request_datasheet_free(priv->u.datasheet.sheet);
+	} else if(priv->type == PURPLE_REQUEST_FIELD_IMAGE) {
+		g_free(priv->u.image.buffer);
+	}
+
+	G_OBJECT_CLASS(purple_request_field_parent_class)->finalize(obj);
+}
+
+static void
+purple_request_field_init(PurpleRequestField *field) {
+	PurpleRequestFieldPrivate *priv = NULL;
+
+	priv = purple_request_field_get_instance_private(field);
+
+	priv->visible = TRUE;
+	priv->sensitive = TRUE;
+}
+
+static void
+purple_request_field_class_init(PurpleRequestFieldClass *klass) {
+	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
+
+	obj_class->finalize = purple_request_field_finalize;
+	obj_class->get_property = purple_request_field_get_property;
+	obj_class->set_property = purple_request_field_set_property;
+
+	/**
+	 * PurpleRequestField:id:
+	 *
+	 * The ID of the field.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_ID] = g_param_spec_string(
+		"id", "id",
+		"The ID of the field.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:label:
+	 *
+	 * The label of the field.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_LABEL] = g_param_spec_string(
+		"label", "label",
+		"The label of the field.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:visible:
+	 *
+	 * Whether the field should be visible.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_VISIBLE] = g_param_spec_boolean(
+		"visible", "visible",
+		"Whether the field should be visible.",
+		TRUE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:sensitive:
+	 *
+	 * Whether the field should be sensitive.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_SENSITIVE] = g_param_spec_boolean(
+		"sensitive", "sensitive",
+		"Whether the field should be sensitive.",
+		TRUE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:type-hint:
+	 *
+	 * The type hint of the field.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TYPE_HINT] = g_param_spec_string(
+		"type-hint", "type-hint",
+		"The type hint of the field.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:tooltip:
+	 *
+	 * The tooltip of the field.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TOOLTIP] = g_param_spec_string(
+		"tooltip", "tooltip",
+		"The tooltip of the field.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:required:
+	 *
+	 * Whether the field is required to complete the request.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_REQUIRED] = g_param_spec_boolean(
+		"required", "required",
+		"Whether the field is required to complete the request.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:is-validatable:
+	 *
+	 * Whether the field can be validated by the requestor.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_IS_VALIDATABLE] = g_param_spec_boolean(
+		"is-validatable", "is-validatable",
+		"Whether the field can be validated by the requestor.",
+		FALSE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
+}
+
+/******************************************************************************
+ * Public API
+ *****************************************************************************/
 gpointer
 purple_request_field_get_ui_data(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->ui_data;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->ui_data;
 }
 
 void
 purple_request_field_set_ui_data(PurpleRequestField *field,
                                  gpointer ui_data)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->ui_data = ui_data;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+
+	priv->ui_data = ui_data;
 }
 
 PurpleRequestField *
 purple_request_field_new(const char *id, const char *text,
-					   PurpleRequestFieldType type)
+                         PurpleRequestFieldType type)
 {
 	PurpleRequestField *field;
 
-	g_return_val_if_fail(id   != NULL, NULL);
+	g_return_val_if_fail(id != NULL, NULL);
 	g_return_val_if_fail(type != PURPLE_REQUEST_FIELD_NONE, NULL);
 
-	field = g_new0(PurpleRequestField, 1);
-
-	field->id   = g_strdup(id);
-	field->type = type;
-
-	purple_request_field_set_label(field, text);
-	purple_request_field_set_visible(field, TRUE);
-	purple_request_field_set_sensitive(field, TRUE);
+	field = g_object_new(PURPLE_TYPE_REQUEST_FIELD,
+	                     "id", id,
+	                     "label", text,
+	                     NULL);
+	purple_request_field_set_field_type(field, type);
 
 	return field;
-}
-
-void
-purple_request_field_destroy(PurpleRequestField *field)
-{
-	g_return_if_fail(field != NULL);
-
-	g_free(field->id);
-	g_free(field->label);
-	g_free(field->type_hint);
-	g_free(field->tooltip);
-
-	if(field->type == PURPLE_REQUEST_FIELD_STRING) {
-		g_free(field->u.string.default_value);
-		g_free(field->u.string.value);
-	} else if(field->type == PURPLE_REQUEST_FIELD_CHOICE) {
-		g_list_free_full(field->u.choice.elements, (GDestroyNotify)purple_key_value_pair_free);
-	} else if(field->type == PURPLE_REQUEST_FIELD_LIST) {
-		g_list_free_full(field->u.list.items, (GDestroyNotify)purple_key_value_pair_free);
-		g_list_free_full(field->u.list.selected, g_free);
-		g_hash_table_destroy(field->u.list.item_data);
-		g_hash_table_destroy(field->u.list.selected_table);
-	} else if(field->type == PURPLE_REQUEST_FIELD_DATASHEET) {
-		purple_request_datasheet_free(field->u.datasheet.sheet);
-	} else if(field->type == PURPLE_REQUEST_FIELD_IMAGE) {
-		g_free(field->u.image.buffer);
-	}
-
-	g_free(field);
 }
 
 void
 _purple_request_field_set_group(PurpleRequestField *field,
                                 PurpleRequestFieldGroup *group)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->group = group;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+
+	priv->group = group;
 }
 
 void
 purple_request_field_set_label(PurpleRequestField *field, const char *label)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	g_free(field->label);
-	field->label = g_strdup(label);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+
+	g_free(priv->label);
+	priv->label = g_strdup(label);
+
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_LABEL]);
 }
 
 void
 purple_request_field_set_visible(PurpleRequestField *field, gboolean visible)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->visible = visible;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+
+	priv->visible = visible;
+
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VISIBLE]);
 }
 
 void
 purple_request_field_set_type_hint(PurpleRequestField *field,
 								 const char *type_hint)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	g_free(field->type_hint);
-	field->type_hint = g_strdup(type_hint);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+
+	g_free(priv->type_hint);
+	priv->type_hint = g_strdup(type_hint);
+
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_TYPE_HINT]);
 }
 
 void
 purple_request_field_set_tooltip(PurpleRequestField *field, const char *tooltip)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	g_free(field->tooltip);
-	field->tooltip = g_strdup(tooltip);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+
+	g_free(priv->tooltip);
+	priv->tooltip = g_strdup(tooltip);
+
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_TOOLTIP]);
 }
 
 void
 purple_request_field_set_required(PurpleRequestField *field, gboolean required)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	if (field->required == required)
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+
+	if(priv->required == required) {
 		return;
+	}
 
-	field->required = required;
+	priv->required = required;
 
-	if(field->group != NULL) {
-		_purple_request_field_group_set_field_required(field->group, field,
+	if(priv->group != NULL) {
+		_purple_request_field_group_set_field_required(priv->group, field,
 		                                               required);
 	}
+
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_REQUIRED]);
 }
 
 PurpleRequestFieldType
 purple_request_field_get_field_type(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, PURPLE_REQUEST_FIELD_NONE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->type;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field),
+	                     PURPLE_REQUEST_FIELD_NONE);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->type;
 }
 
 PurpleRequestFieldGroup *
 purple_request_field_get_group(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->group;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->group;
 }
 
 const char *
 purple_request_field_get_id(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->id;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->id;
 }
 
 const char *
 purple_request_field_get_label(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->label;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->label;
 }
 
 gboolean
 purple_request_field_is_visible(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->visible;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->visible;
 }
 
 const char *
 purple_request_field_get_type_hint(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->type_hint;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->type_hint;
 }
 
 const char *
 purple_request_field_get_tooltip(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->tooltip;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->tooltip;
 }
 
 gboolean
 purple_request_field_is_required(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->required;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->required;
 }
 
 gboolean
 purple_request_field_is_filled(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
 
 	switch (purple_request_field_get_field_type(field))
 	{
@@ -319,40 +634,54 @@ void
 purple_request_field_set_validator(PurpleRequestField *field,
 	PurpleRequestFieldValidator validator, void *user_data)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->validator = validator;
-	field->validator_data = validator ? user_data : NULL;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
 
-	if(field->group != NULL) {
-		_purple_request_field_group_set_field_validator(field->group, field,
+	priv = purple_request_field_get_instance_private(field);
+
+	priv->validator = validator;
+	priv->validator_data = validator ? user_data : NULL;
+
+	if(priv->group != NULL) {
+		_purple_request_field_group_set_field_validator(priv->group, field,
 		                                                validator != NULL);
 	}
+
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_IS_VALIDATABLE]);
 }
 
 gboolean
 purple_request_field_is_validatable(PurpleRequestField *field)
 {
-	g_return_val_if_fail(field != NULL, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->validator != NULL;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->validator != NULL;
 }
 
 gboolean
 purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg)
 {
+	PurpleRequestFieldPrivate *priv = NULL;
 	gboolean valid;
 
-	g_return_val_if_fail(field != NULL, FALSE);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
 
-	if (!field->validator)
+	priv = purple_request_field_get_instance_private(field);
+
+	if(!priv->validator) {
 		return TRUE;
+	}
 
 	if (!purple_request_field_is_required(field) &&
 		!purple_request_field_is_filled(field))
 		return TRUE;
 
-	valid = field->validator(field, errmsg, field->validator_data);
+	valid = priv->validator(field, errmsg, priv->validator_data);
 
 	if (valid && errmsg)
 		*errmsg = NULL;
@@ -364,17 +693,27 @@ void
 purple_request_field_set_sensitive(PurpleRequestField *field,
 	gboolean sensitive)
 {
-	g_return_if_fail(field != NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->sensitive = sensitive;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+
+	priv->sensitive = sensitive;
+
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_SENSITIVE]);
 }
 
 gboolean
 purple_request_field_is_sensitive(PurpleRequestField *field)
 {
-	g_return_val_if_fail(field != NULL, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->sensitive;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+
+	return priv->sensitive;
 }
 
 PurpleRequestField *
@@ -382,13 +721,15 @@ purple_request_field_string_new(const char *id, const char *text,
 							  const char *default_value, gboolean multiline)
 {
 	PurpleRequestField *field;
+	PurpleRequestFieldPrivate *priv = NULL;
 
 	g_return_val_if_fail(id   != NULL, NULL);
 	g_return_val_if_fail(text != NULL, NULL);
 
 	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_STRING);
+	priv = purple_request_field_get_instance_private(field);
 
-	field->u.string.multiline = multiline;
+	priv->u.string.multiline = multiline;
 
 	purple_request_field_string_set_default_value(field, default_value);
 	purple_request_field_string_set_value(field, default_value);
@@ -400,62 +741,90 @@ void
 purple_request_field_string_set_default_value(PurpleRequestField *field,
 											const char *default_value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	g_free(field->u.string.default_value);
-	field->u.string.default_value = g_strdup(default_value);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING);
+
+	g_free(priv->u.string.default_value);
+	priv->u.string.default_value = g_strdup(default_value);
 }
 
 void
 purple_request_field_string_set_value(PurpleRequestField *field, const char *value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	g_free(field->u.string.value);
-	field->u.string.value = g_strdup(value);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING);
+
+	g_free(priv->u.string.value);
+	priv->u.string.value = g_strdup(value);
 }
 
 void
 purple_request_field_string_set_masked(PurpleRequestField *field, gboolean masked)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.string.masked = masked;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING);
+
+	priv->u.string.masked = masked;
 }
 
 const char *
 purple_request_field_string_get_default_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.string.default_value;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, NULL);
+
+	return priv->u.string.default_value;
 }
 
 const char *
 purple_request_field_string_get_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.string.value;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, NULL);
+
+	return priv->u.string.value;
 }
 
 gboolean
 purple_request_field_string_is_multiline(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.string.multiline;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
+
+	return priv->u.string.multiline;
 }
 
 gboolean
 purple_request_field_string_is_masked(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.string.masked;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
+
+	return priv->u.string.masked;
 }
 
 PurpleRequestField *
@@ -481,77 +850,110 @@ void
 purple_request_field_int_set_default_value(PurpleRequestField *field,
 										 int default_value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.integer.default_value = default_value;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER);
+
+	priv->u.integer.default_value = default_value;
 }
 
 void
 purple_request_field_int_set_lower_bound(PurpleRequestField *field,
 	int lower_bound)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.integer.lower_bound = lower_bound;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER);
+
+	priv->u.integer.lower_bound = lower_bound;
 }
 
 void
 purple_request_field_int_set_upper_bound(PurpleRequestField *field,
 	int upper_bound)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.integer.upper_bound = upper_bound;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER);
+
+	priv->u.integer.upper_bound = upper_bound;
 }
 
 void
 purple_request_field_int_set_value(PurpleRequestField *field, int value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	if (value < field->u.integer.lower_bound ||
-		value > field->u.integer.upper_bound) {
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER);
+
+	if(value < priv->u.integer.lower_bound ||
+	   value > priv->u.integer.upper_bound)
+	{
 		purple_debug_error("request", "Int value out of bounds\n");
 		return;
 	}
 
-	field->u.integer.value = value;
+	priv->u.integer.value = value;
 }
 
 int
 purple_request_field_int_get_default_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, 0);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.integer.default_value;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
+
+	return priv->u.integer.default_value;
 }
 
 int
 purple_request_field_int_get_lower_bound(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, 0);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.integer.lower_bound;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
+
+	return priv->u.integer.lower_bound;
 }
 
 int
 purple_request_field_int_get_upper_bound(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, 0);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.integer.upper_bound;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
+
+	return priv->u.integer.upper_bound;
 }
 
 int
 purple_request_field_int_get_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, 0);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.integer.value;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
+
+	return priv->u.integer.value;
 }
 
 PurpleRequestField *
@@ -575,35 +977,51 @@ void
 purple_request_field_bool_set_default_value(PurpleRequestField *field,
 										  gboolean default_value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_BOOLEAN);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.boolean.default_value = default_value;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_BOOLEAN);
+
+	priv->u.boolean.default_value = default_value;
 }
 
 void
 purple_request_field_bool_set_value(PurpleRequestField *field, gboolean value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_BOOLEAN);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.boolean.value = value;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_BOOLEAN);
+
+	priv->u.boolean.value = value;
 }
 
 gboolean
 purple_request_field_bool_get_default_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_BOOLEAN, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.boolean.default_value;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_BOOLEAN, FALSE);
+
+	return priv->u.boolean.default_value;
 }
 
 gboolean
 purple_request_field_bool_get_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_BOOLEAN, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.boolean.value;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_BOOLEAN, FALSE);
+
+	return priv->u.boolean.value;
 }
 
 PurpleRequestField *
@@ -635,74 +1053,98 @@ purple_request_field_choice_add_full(PurpleRequestField *field, const char *labe
                                      gpointer value, GDestroyNotify destroy)
 {
 	PurpleKeyValuePair *choice;
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	g_return_if_fail(field != NULL);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
 	g_return_if_fail(label != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE);
 
 	choice = purple_key_value_pair_new_full(label, value, destroy);
 
-	field->u.choice.elements = g_list_append(field->u.choice.elements,
-		choice);
+	priv->u.choice.elements = g_list_append(priv->u.choice.elements, choice);
 }
 
 void
 purple_request_field_choice_set_default_value(PurpleRequestField *field,
 	gpointer default_value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.choice.default_value = default_value;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE);
+
+	priv->u.choice.default_value = default_value;
 }
 
 void
 purple_request_field_choice_set_value(PurpleRequestField *field, gpointer value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.choice.value = value;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE);
+
+	priv->u.choice.value = value;
 }
 
 gpointer
 purple_request_field_choice_get_default_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.choice.default_value;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
+
+	return priv->u.choice.default_value;
 }
 
 gpointer
 purple_request_field_choice_get_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.choice.value;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
+
+	return priv->u.choice.value;
 }
 
 GList *
 purple_request_field_choice_get_elements(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.choice.elements;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
+
+	return priv->u.choice.elements;
 }
 
 PurpleRequestField *
 purple_request_field_list_new(const char *id, const char *text)
 {
 	PurpleRequestField *field;
+	PurpleRequestFieldPrivate *priv = NULL;
 
 	g_return_val_if_fail(id   != NULL, NULL);
 
 	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_LIST);
+	priv = purple_request_field_get_instance_private(field);
 
-	field->u.list.item_data = g_hash_table_new_full(g_str_hash, g_str_equal,
-													g_free, NULL);
+	priv->u.list.item_data = g_hash_table_new_full(g_str_hash, g_str_equal,
+	                                               g_free, NULL);
 
-	field->u.list.selected_table =
-		g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+	priv->u.list.selected_table = g_hash_table_new_full(g_str_hash, g_str_equal,
+	                                                    g_free, NULL);
 
 	return field;
 }
@@ -711,28 +1153,40 @@ void
 purple_request_field_list_set_multi_select(PurpleRequestField *field,
 										 gboolean multi_select)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.list.multiple_selection = multi_select;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST);
+
+	priv->u.list.multiple_selection = multi_select;
 }
 
 gboolean
 purple_request_field_list_get_multi_select(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.list.multiple_selection;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
+
+	return priv->u.list.multiple_selection;
 }
 
 void *
 purple_request_field_list_get_data(PurpleRequestField *field, const char *text)
 {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(text  != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return g_hash_table_lookup(field->u.list.item_data, text);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+	g_return_val_if_fail(text  != NULL, NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST, NULL);
+
+	return g_hash_table_lookup(priv->u.list.item_data, text);
 }
 
 void
@@ -740,27 +1194,34 @@ purple_request_field_list_add_icon(PurpleRequestField *field, const char *item, 
 							void *data)
 {
 	PurpleKeyValuePair *kvp;
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	g_return_if_fail(field != NULL);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
 	g_return_if_fail(item  != NULL);
 	g_return_if_fail(data  != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST);
 
-	field->u.list.has_icons = field->u.list.has_icons || (icon_path != NULL);
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST);
+
+	priv->u.list.has_icons = priv->u.list.has_icons || (icon_path != NULL);
 	kvp = purple_key_value_pair_new_full(item, g_strdup(icon_path), g_free);
-	field->u.list.items = g_list_append(field->u.list.items, kvp);
-	g_hash_table_insert(field->u.list.item_data, g_strdup(item), data);
+	priv->u.list.items = g_list_append(priv->u.list.items, kvp);
+	g_hash_table_insert(priv->u.list.item_data, g_strdup(item), data);
 }
 
 void
 purple_request_field_list_add_selected(PurpleRequestField *field, const char *item)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(item  != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	if (!purple_request_field_list_get_multi_select(field) &&
-		field->u.list.selected != NULL)
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+	g_return_if_fail(item  != NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST);
+
+	if(!purple_request_field_list_get_multi_select(field) &&
+	   priv->u.list.selected != NULL)
 	{
 		purple_debug_warning("request",
 						   "More than one item added to non-multi-select "
@@ -769,35 +1230,41 @@ purple_request_field_list_add_selected(PurpleRequestField *field, const char *it
 		return;
 	}
 
-	field->u.list.selected = g_list_append(field->u.list.selected,
-										   g_strdup(item));
+	priv->u.list.selected = g_list_append(priv->u.list.selected,
+	                                      g_strdup(item));
 
-	g_hash_table_add(field->u.list.selected_table, g_strdup(item));
+	g_hash_table_add(priv->u.list.selected_table, g_strdup(item));
 }
 
 void
 purple_request_field_list_clear_selected(PurpleRequestField *field)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	if (field->u.list.selected != NULL)
-	{
-		g_list_free_full(field->u.list.selected, g_free);
-		field->u.list.selected = NULL;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST);
+
+	if(priv->u.list.selected != NULL) {
+		g_list_free_full(priv->u.list.selected, g_free);
+		priv->u.list.selected = NULL;
 	}
 
-	g_hash_table_remove_all(field->u.list.selected_table);
+	g_hash_table_remove_all(priv->u.list.selected_table);
 }
 
 void
 purple_request_field_list_set_selected(PurpleRequestField *field, GList *items)
 {
+	PurpleRequestFieldPrivate *priv = NULL;
 	GList *l;
 
-	g_return_if_fail(field != NULL);
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
 	g_return_if_fail(items != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST);
 
 	purple_request_field_list_clear_selected(field);
 
@@ -811,9 +1278,9 @@ purple_request_field_list_set_selected(PurpleRequestField *field, GList *items)
 
 	for (l = items; l != NULL; l = l->next) {
 		char *selected = l->data;
-		field->u.list.selected = g_list_append(field->u.list.selected,
-		                                       g_strdup(selected));
-		g_hash_table_add(field->u.list.selected_table, g_strdup(selected));
+		priv->u.list.selected = g_list_append(priv->u.list.selected,
+		                                      g_strdup(selected));
+		g_hash_table_add(priv->u.list.selected_table, g_strdup(selected));
 	}
 }
 
@@ -821,35 +1288,51 @@ gboolean
 purple_request_field_list_is_selected(PurpleRequestField *field,
                                       const char *item)
 {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(item  != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return g_hash_table_contains(field->u.list.selected_table, item);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+	g_return_val_if_fail(item  != NULL, FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
+
+	return g_hash_table_contains(priv->u.list.selected_table, item);
 }
 
 GList *
 purple_request_field_list_get_selected(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.list.selected;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST, NULL);
+
+	return priv->u.list.selected;
 }
 
 GList *
 purple_request_field_list_get_items(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.list.items;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST, NULL);
+
+	return priv->u.list.items;
 }
 
 gboolean
 purple_request_field_list_has_icons(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.list.has_icons;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_LIST, FALSE);
+
+	return priv->u.list.has_icons;
 }
 
 PurpleRequestField *
@@ -870,17 +1353,20 @@ purple_request_field_image_new(const char *id, const char *text, const char *buf
 {
 	PurpleRequestField *field;
 
+	PurpleRequestFieldPrivate *priv = NULL;
+
 	g_return_val_if_fail(id   != NULL, NULL);
 	g_return_val_if_fail(text != NULL, NULL);
 	g_return_val_if_fail(buf  != NULL, NULL);
 	g_return_val_if_fail(size > 0, NULL);
 
 	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_IMAGE);
+	priv = purple_request_field_get_instance_private(field);
 
-	field->u.image.buffer  = g_memdup2(buf, size);
-	field->u.image.size    = size;
-	field->u.image.scale_x = 1;
-	field->u.image.scale_y = 1;
+	priv->u.image.buffer = g_memdup2(buf, size);
+	priv->u.image.size = size;
+	priv->u.image.scale_x = 1;
+	priv->u.image.scale_y = 1;
 
 	return field;
 }
@@ -888,47 +1374,67 @@ purple_request_field_image_new(const char *id, const char *text, const char *buf
 void
 purple_request_field_image_set_scale(PurpleRequestField *field, unsigned int x, unsigned int y)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_IMAGE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.image.scale_x = x;
-	field->u.image.scale_y = y;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE);
+
+	priv->u.image.scale_x = x;
+	priv->u.image.scale_y = y;
 }
 
 const char *
 purple_request_field_image_get_buffer(PurpleRequestField *field)
 {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_IMAGE, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.image.buffer;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, NULL);
+
+	return priv->u.image.buffer;
 }
 
 gsize
 purple_request_field_image_get_size(PurpleRequestField *field)
 {
-	g_return_val_if_fail(field != NULL, 0);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.image.size;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
+
+	return priv->u.image.size;
 }
 
 unsigned int
 purple_request_field_image_get_scale_x(PurpleRequestField *field)
 {
-	g_return_val_if_fail(field != NULL, 0);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.image.scale_x;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
+
+	return priv->u.image.scale_x;
 }
 
 unsigned int
 purple_request_field_image_get_scale_y(PurpleRequestField *field)
 {
-	g_return_val_if_fail(field != NULL, 0);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.image.scale_y;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
+
+	return priv->u.image.scale_y;
 }
 
 PurpleRequestField *
@@ -962,46 +1468,57 @@ void
 purple_request_field_account_set_default_value(PurpleRequestField *field,
 											 PurpleAccount *default_value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.account.default_account = default_value;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT);
+
+	priv->u.account.default_account = default_value;
 }
 
 void
 purple_request_field_account_set_value(PurpleRequestField *field,
 									 PurpleAccount *value)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.account.account = value;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT);
+
+	priv->u.account.account = value;
 }
 
 void
 purple_request_field_account_set_show_all(PurpleRequestField *field,
 										gboolean show_all)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	if (field->u.account.show_all == show_all)
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT);
+
+	if(priv->u.account.show_all == show_all) {
 		return;
+	}
 
-	field->u.account.show_all = show_all;
+	priv->u.account.show_all = show_all;
 
 	if(!show_all) {
 		PurpleAccountManager *manager = purple_account_manager_get_default();
 		GList *accounts = purple_account_manager_get_connected(manager);
 
-		if (purple_account_is_connected(field->u.account.default_account))
-		{
+		if(purple_account_is_connected(priv->u.account.default_account)) {
 			purple_request_field_account_set_default_value(field,
 			                                               accounts->data);
 		}
 
-		if (purple_account_is_connected(field->u.account.account))
-		{
+		if(purple_account_is_connected(priv->u.account.account)) {
 			purple_request_field_account_set_value(field,
 			                                       accounts->data);
 		}
@@ -1014,42 +1531,62 @@ void
 purple_request_field_account_set_filter(PurpleRequestField *field,
 									  PurpleFilterAccountFunc filter_func)
 {
-	g_return_if_fail(field != NULL);
-	g_return_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	field->u.account.filter_func = filter_func;
+	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT);
+
+	priv->u.account.filter_func = filter_func;
 }
 
 PurpleAccount *
 purple_request_field_account_get_default_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.account.default_account;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT, NULL);
+
+	return priv->u.account.default_account;
 }
 
 PurpleAccount *
 purple_request_field_account_get_value(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.account.account;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT, NULL);
+
+	return priv->u.account.account;
 }
 
 gboolean
 purple_request_field_account_get_show_all(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.account.show_all;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT, FALSE);
+
+	return priv->u.account.show_all;
 }
 
 PurpleFilterAccountFunc
 purple_request_field_account_get_filter(PurpleRequestField *field) {
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_ACCOUNT, FALSE);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.account.filter_func;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT, FALSE);
+
+	return priv->u.account.filter_func;
 }
 
 PurpleRequestField *
@@ -1057,13 +1594,15 @@ purple_request_field_datasheet_new(const char *id,
 	const gchar *text, PurpleRequestDatasheet *sheet)
 {
 	PurpleRequestField *field;
+	PurpleRequestFieldPrivate *priv = NULL;
 
 	g_return_val_if_fail(id != NULL, NULL);
 	g_return_val_if_fail(sheet != NULL, NULL);
 
 	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_DATASHEET);
+	priv = purple_request_field_get_instance_private(field);
 
-	field->u.datasheet.sheet = sheet;
+	priv->u.datasheet.sheet = sheet;
 
 	return field;
 }
@@ -1071,10 +1610,14 @@ purple_request_field_datasheet_new(const char *id,
 PurpleRequestDatasheet *
 purple_request_field_datasheet_get_sheet(PurpleRequestField *field)
 {
-	g_return_val_if_fail(field != NULL, NULL);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_DATASHEET, NULL);
+	PurpleRequestFieldPrivate *priv = NULL;
 
-	return field->u.datasheet.sheet;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_DATASHEET, NULL);
+
+	return priv->u.datasheet.sheet;
 }
 
 /* -- */
@@ -1083,10 +1626,13 @@ gboolean
 purple_request_field_email_validator(PurpleRequestField *field, gchar **errmsg,
                                      G_GNUC_UNUSED gpointer user_data)
 {
+	PurpleRequestFieldPrivate *priv = NULL;
 	const char *value;
 
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
 
 	value = purple_request_field_string_get_value(field);
 
@@ -1102,11 +1648,14 @@ gboolean
 purple_request_field_alphanumeric_validator(PurpleRequestField *field,
 	gchar **errmsg, void *allowed_characters)
 {
+	PurpleRequestFieldPrivate *priv = NULL;
 	const char *value;
 	gchar invalid_char = '\0';
 
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+
+	priv = purple_request_field_get_instance_private(field);
+	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
 
 	value = purple_request_field_string_get_value(field);
 

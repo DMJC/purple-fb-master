@@ -204,7 +204,7 @@ purple_request_fields_all_required_filled(const PurpleRequestFields *fields)
 
 	for (l = fields->required_fields; l != NULL; l = l->next)
 	{
-		PurpleRequestField *field = (PurpleRequestField *)l->data;
+		PurpleRequestField *field = PURPLE_REQUEST_FIELD(l->data);
 
 		if (!purple_request_field_is_filled(field))
 			return FALSE;
@@ -222,7 +222,7 @@ purple_request_fields_all_valid(const PurpleRequestFields *fields)
 
 	for (l = fields->validated_fields; l != NULL; l = l->next)
 	{
-		PurpleRequestField *field = (PurpleRequestField *)l->data;
+		PurpleRequestField *field = PURPLE_REQUEST_FIELD(l->data);
 
 		if (!purple_request_field_is_valid(field, NULL))
 			return FALSE;
@@ -241,7 +241,7 @@ purple_request_fields_get_field(const PurpleRequestFields *fields, const char *i
 
 	field = g_hash_table_lookup(fields->fields, id);
 
-	g_return_val_if_fail(field != NULL, NULL);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
 
 	return field;
 }

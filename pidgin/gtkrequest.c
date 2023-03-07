@@ -1893,7 +1893,6 @@ pidgin_request_fields(const char *title, const char *primary,
 	GtkSizeGroup *sg, *datasheet_buttons_sg;
 	GList *gl, *fl;
 	PurpleRequestFieldGroup *group;
-	PurpleRequestField *field;
 	char *label_text;
 	char *primary_esc, *secondary_esc;
 	const gboolean compact = purple_request_cpar_is_compact(cpar);
@@ -2030,9 +2029,8 @@ pidgin_request_fields(const char *title, const char *primary,
 
 		for (fl = field_list; fl != NULL; fl = fl->next)
 		{
+			PurpleRequestField *field = PURPLE_REQUEST_FIELD(fl->data);
 			PurpleRequestFieldType type;
-
-			field = (PurpleRequestField *)fl->data;
 
 			type = purple_request_field_get_field_type(field);
 
@@ -2076,12 +2074,12 @@ pidgin_request_fields(const char *title, const char *primary,
 			for (; dummy_counter && fl != NULL; dummy_counter = FALSE, fl = fl->next)
 			{
 				size_t col_offset = 0;
+				PurpleRequestField *field = PURPLE_REQUEST_FIELD(fl->data);
 				PurpleRequestFieldType type;
 				GtkWidget *widget = NULL;
 				gchar *field_label;
 
 				label = NULL;
-				field = fl->data;
 
 				if (!purple_request_field_is_visible(field)) {
 					continue;

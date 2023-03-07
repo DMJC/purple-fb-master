@@ -39,7 +39,7 @@ ggp_validator_password(PurpleRequestField *field, gchar **errmsg,
 {
 	const char *value;
 
-	g_return_val_if_fail(field != NULL, FALSE);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
 	g_return_val_if_fail(purple_request_field_get_field_type(field) ==
 		PURPLE_REQUEST_FIELD_STRING, FALSE);
 
@@ -67,8 +67,8 @@ gboolean ggp_validator_password_equal(PurpleRequestField *field, gchar **errmsg,
 	const char *value1, *value2;
 	PurpleRequestField *field2 = field2_p;
 
-	g_return_val_if_fail(field != NULL, FALSE);
-	g_return_val_if_fail(field2 != NULL, FALSE);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field2), FALSE);
 	g_return_val_if_fail(purple_request_field_get_field_type(field) ==
 		PURPLE_REQUEST_FIELD_STRING, FALSE);
 	g_return_val_if_fail(purple_request_field_get_field_type(field2) ==

@@ -64,7 +64,7 @@ void purple_request_field_group_destroy(PurpleRequestFieldGroup *group);
 /**
  * purple_request_field_group_add_field:
  * @group: The group to add the field to.
- * @field: The field to add to the group.
+ * @field: (transfer full): The field to add to the group.
  *
  * Adds a field to the group.
  */
