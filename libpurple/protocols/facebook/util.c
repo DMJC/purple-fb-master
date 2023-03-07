@@ -295,8 +295,7 @@ fb_util_rand_alnum(guint len)
 }
 
 static void
-fb_util_request_buddy_ok(gpointer *request_data, PurpleRequestFields *fields)
-{
+fb_util_request_buddy_ok(gpointer *request_data, PurpleRequestPage *page) {
 	FbUtilRequestBuddyFunc func = request_data[0];
 	GList *l;
 	GList *select;
@@ -310,7 +309,7 @@ fb_util_request_buddy_ok(gpointer *request_data, PurpleRequestFields *fields)
 		return;
 	}
 
-	field = purple_request_fields_get_field(fields, "buddy");
+	field = purple_request_page_get_field(page, "buddy");
 	select = purple_request_field_list_get_selected(field);
 
 	for (l = select; l != NULL; l = l->next) {
@@ -327,7 +326,7 @@ fb_util_request_buddy_ok(gpointer *request_data, PurpleRequestFields *fields)
 
 static void
 fb_util_request_buddy_cancel(gpointer *request_data,
-                             G_GNUC_UNUSED PurpleRequestFields *fields)
+                             G_GNUC_UNUSED PurpleRequestPage *page)
 {
 	FbUtilRequestBuddyFunc func = request_data[1];
 	gpointer data = request_data[2];
@@ -382,7 +381,7 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 	PurpleRequestCommonParameters *cpar;
 	PurpleRequestField *field;
 	PurpleRequestGroup *group;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 
 	request_data = g_new0(gpointer, 3);
 	request_data[0] = ok_cb;
@@ -393,9 +392,9 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 	buddies = purple_blist_find_buddies(acct, NULL);
 	buddies = g_slist_sort(buddies, fb_buddy_cmp);
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_list_new("buddy", NULL);
 	purple_request_field_list_set_multi_select(field, multi);
@@ -422,7 +421,7 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 	g_list_free_full(items, g_free);
 
 	cpar = purple_request_cpar_from_connection(gc);
-	return purple_request_fields(gc, title, primary, secondary, fields,
+	return purple_request_fields(gc, title, primary, secondary, page,
 	                             _("Ok"),
 	                             G_CALLBACK(fb_util_request_buddy_ok),
 				     _("Cancel"),

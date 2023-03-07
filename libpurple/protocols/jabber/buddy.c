@@ -555,8 +555,7 @@ jabber_set_buddy_icon(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
  * Sets the vCard with data from PurpleRequestFields.
  */
 static void
-jabber_format_info(PurpleConnection *gc, PurpleRequestFields *fields)
-{
+jabber_format_info(PurpleConnection *gc, PurpleRequestPage *page) {
 	PurpleXmlNode *vc_node;
 	PurpleRequestField *field;
 	PurpleProtocol *protocol = NULL;
@@ -574,7 +573,7 @@ jabber_format_info(PurpleConnection *gc, PurpleRequestFields *fields)
 		if (*vc_tp->label == '\0')
 			continue;
 
-		field = purple_request_fields_get_field(fields, vc_tp->tag);
+		field = purple_request_page_get_field(page, vc_tp->tag);
 		text  = purple_request_field_string_get_value(field);
 
 
@@ -619,7 +618,7 @@ jabber_setup_set_info(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	PurpleAccountManager *manager = NULL;
 	PurpleAccount *account = NULL;
 	PurpleConnection *connection = NULL;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 	const struct vcard_template *vc_tp;
@@ -637,9 +636,9 @@ jabber_setup_set_info(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	/*
 	 * Get existing, XML-formatted, user info
@@ -691,7 +690,7 @@ jabber_setup_set_info(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	                      _("Edit XMPP vCard"),
 	                      _("All items below are optional. Enter only the "
 	                        "information with which you feel comfortable."),
-	                      fields,
+	                      page,
 	                      _("Save"), G_CALLBACK(jabber_format_info),
 	                      _("Cancel"), NULL,
 	                      purple_request_cpar_from_connection(connection),

@@ -727,16 +727,15 @@ ggp_pubdir_search_results_display(PurpleConnection *gc, int records_count,
 }
 
 static void
-ggp_pubdir_search_request(PurpleConnection *gc, PurpleRequestFields *fields)
-{
+ggp_pubdir_search_request(PurpleConnection *gc, PurpleRequestPage *page) {
 	ggp_pubdir_search_form *form = g_new0(ggp_pubdir_search_form, 1);
 
 	purple_debug_info("gg", "ggp_pubdir_search_request");
 
-	form->nick = g_strdup(purple_request_fields_get_string(fields, "name"));
-	form->city = g_strdup(purple_request_fields_get_string(fields, "city"));
+	form->nick = g_strdup(purple_request_page_get_string(page, "name"));
+	form->city = g_strdup(purple_request_page_get_string(page, "city"));
 	form->gender =
-	        GPOINTER_TO_INT(purple_request_fields_get_choice(fields, "gender"));
+	        GPOINTER_TO_INT(purple_request_page_get_choice(page, "gender"));
 	form->offset = 0;
 	form->limit = GGP_PUBDIR_SEARCH_PER_PAGE;
 
@@ -747,15 +746,15 @@ ggp_pubdir_search_request(PurpleConnection *gc, PurpleRequestFields *fields)
 void
 ggp_pubdir_search(PurpleConnection *gc, const ggp_pubdir_search_form *form)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
 	purple_debug_info("gg", "ggp_pubdir_search");
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("name", _("Name"),
 	                                        form ? form->nick : NULL, FALSE);
@@ -775,7 +774,7 @@ ggp_pubdir_search(PurpleConnection *gc, const ggp_pubdir_search_form *form)
 	purple_request_group_add_field(group, field);
 
 	purple_request_fields(gc, _("Find buddies"), _("Find buddies"),
-	                      _("Please, enter your search criteria below"), fields,
+	                      _("Please, enter your search criteria below"), page,
 	                      _("OK"), G_CALLBACK(ggp_pubdir_search_request),
 	                      _("Cancel"), NULL,
 	                      purple_request_cpar_from_connection(gc), gc);
@@ -892,7 +891,7 @@ static void ggp_pubdir_set_info_got_token(PurpleConnection *gc,
 }
 
 static void
-ggp_pubdir_set_info_request(PurpleConnection *gc, PurpleRequestFields *fields)
+ggp_pubdir_set_info_request(PurpleConnection *gc, PurpleRequestPage *page)
 {
 	PurpleAccount *account = purple_connection_get_account(gc);
 	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
@@ -904,24 +903,23 @@ ggp_pubdir_set_info_request(PurpleConnection *gc, PurpleRequestFields *fields)
 	purple_debug_info("gg", "ggp_pubdir_set_info_request");
 
 	record->uin = uin;
-	record->first_name =
-	        g_strdup(purple_request_fields_get_string(fields, "first_name"));
-	record->last_name =
-	        g_strdup(purple_request_fields_get_string(fields, "last_name"));
-	record->gender =
-	        GPOINTER_TO_INT(purple_request_fields_get_choice(fields, "gender"));
-	record->city = g_strdup(purple_request_fields_get_string(fields, "city"));
-	record->province = GPOINTER_TO_INT(
-	        purple_request_fields_get_choice(fields, "province"));
+	record->first_name = g_strdup(purple_request_page_get_string(page,
+	                                                             "first_name"));
+	record->last_name = g_strdup(purple_request_page_get_string(page,
+	                                                            "last_name"));
+	record->gender = GPOINTER_TO_INT(purple_request_page_get_choice(page,
+	                                                                "gender"));
+	record->city = g_strdup(purple_request_page_get_string(page, "city"));
+	record->province = GPOINTER_TO_INT(purple_request_page_get_choice(page,
+	                                                                  "province"));
 
-	birth_s = g_strdup_printf(
-	        "%sT10:00:00+00:00",
-	        purple_request_fields_get_string(fields, "birth_date"));
+	birth_s = g_strdup_printf("%sT10:00:00+00:00",
+	                          purple_request_page_get_string(page, "birth_date"));
 	record->birth = g_date_time_new_from_iso8601(birth_s, NULL);
 	g_free(birth_s);
 	purple_debug_info("gg", "ggp_pubdir_set_info_request: birth [%lu][%s]",
 	                  g_date_time_to_unix(record->birth),
-	                  purple_request_fields_get_string(fields, "birth_date"));
+	                  purple_request_page_get_string(page, "birth_date"));
 
 	url = g_strdup_printf("http://api.gadu-gadu.pl/users/%u.xml", uin);
 	ggp_oauth_request(gc, ggp_pubdir_set_info_got_token, record, "PUT", url);
@@ -934,7 +932,7 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
                            G_GNUC_UNUSED int next_offset,
                            G_GNUC_UNUSED gpointer data)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 	gchar *bday = NULL;
@@ -946,9 +944,9 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 
 	record = (records_count == 1 ? &records[0] : NULL);
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("first_name", _("First name"),
 	                                        record ? record->first_name : NULL,
@@ -1005,7 +1003,7 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 	}
 
 	purple_request_fields(gc, _("Set User Info"), _("Set User Info"), NULL,
-	                      fields, _("OK"),
+	                      page, _("OK"),
 	                      G_CALLBACK(ggp_pubdir_set_info_request), _("Cancel"),
 	                      NULL, purple_request_cpar_from_connection(gc), gc);
 }

@@ -33,11 +33,11 @@
 #include <glib-object.h>
 
 /**
- * PurpleRequestFields:
+ * PurpleRequestPage:
  *
  * Multiple fields request data.
  */
-typedef struct _PurpleRequestFields PurpleRequestFields;
+typedef struct _PurpleRequestPage PurpleRequestPage;
 
 #include "account.h"
 #include "purplerequestgroup.h"
@@ -45,185 +45,169 @@ typedef struct _PurpleRequestFields PurpleRequestFields;
 
 G_BEGIN_DECLS
 
-/**
- * purple_request_fields_new:
- *
- * Creates a list of fields to pass to purple_request_fields().
- *
- * Returns: (transfer full): A PurpleRequestFields structure.
- */
-PurpleRequestFields *purple_request_fields_new(void);
+#define PURPLE_TYPE_REQUEST_PAGE (purple_request_page_get_type())
+G_DECLARE_FINAL_TYPE(PurpleRequestPage, purple_request_page,
+                     PURPLE, REQUEST_PAGE, GObject)
 
 /**
- * purple_request_fields_destroy:
- * @fields: The list of fields to destroy.
+ * purple_request_page_new:
  *
- * Destroys a list of fields.
+ * Creates a page of fields to pass to [func@Purple.request_fields].
+ *
+ * Returns: (transfer full): The new request page.
  */
-void purple_request_fields_destroy(PurpleRequestFields *fields);
+PurpleRequestPage *purple_request_page_new(void);
 
 /**
- * purple_request_fields_add_group:
- * @fields: The fields list.
- * @group:  The group to add.
+ * purple_request_page_add_group:
+ * @page: The fields page.
+ * @group: (transfer full): The group to add.
  *
  * Adds a group of fields to the list.
  */
-void purple_request_fields_add_group(PurpleRequestFields *fields, PurpleRequestGroup *group);
+void purple_request_page_add_group(PurpleRequestPage *page, PurpleRequestGroup *group);
 
 /**
- * purple_request_fields_get_groups:
- * @fields: The fields list.
+ * purple_request_page_get_groups:
+ * @page: The fields page.
  *
  * Returns a list of all groups in a field list.
  *
  * Returns: (element-type PurpleRequestGroup) (transfer none): A list of groups.
  */
-GList *purple_request_fields_get_groups(const PurpleRequestFields *fields);
+GList *purple_request_page_get_groups(PurpleRequestPage *page);
 
 /**
- * purple_request_fields_exists:
- * @fields: The fields list.
- * @id:     The ID of the field.
+ * purple_request_page_exists:
+ * @page: The fields page.
+ * @id: The ID of the field.
  *
  * Returns whether or not the field with the specified ID exists.
  *
  * Returns: TRUE if the field exists, or FALSE.
  */
-gboolean purple_request_fields_exists(const PurpleRequestFields *fields,
-									const char *id);
+gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_fields_get_required:
- * @fields: The fields list.
+ * purple_request_page_get_required:
+ * @page: The fields page.
  *
  * Returns a list of all required fields.
  *
  * Returns: (element-type PurpleRequestField) (transfer none): The list of required fields.
  */
-const GList *purple_request_fields_get_required(
-	const PurpleRequestFields *fields);
+const GList *purple_request_page_get_required(PurpleRequestPage *page);
 
 /**
- * purple_request_fields_get_validatable:
- * @fields: The fields list.
+ * purple_request_page_get_validatable:
+ * @page: The fields page.
  *
  * Returns a list of all validated fields.
  *
  * Returns: (element-type PurpleRequestField) (transfer none): The list of validated fields.
  */
-const GList *purple_request_fields_get_validatable(
-	const PurpleRequestFields *fields);
+const GList *purple_request_page_get_validatable(PurpleRequestPage *page);
 
 /**
- * purple_request_fields_is_field_required:
- * @fields: The fields list.
- * @id:     The field ID.
+ * purple_request_page_is_field_required:
+ * @page: The fields page.
+ * @id: The field ID.
  *
  * Returns whether or not a field with the specified ID is required.
  *
  * Returns: TRUE if the specified field is required, or FALSE.
  */
-gboolean purple_request_fields_is_field_required(const PurpleRequestFields *fields,
-											   const char *id);
+gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_fields_all_required_filled:
- * @fields: The fields list.
+ * purple_request_page_all_required_filled:
+ * @page: The fields page.
  *
  * Returns whether or not all required fields have values.
  *
  * Returns: TRUE if all required fields have values, or FALSE.
  */
-gboolean purple_request_fields_all_required_filled(
-	const PurpleRequestFields *fields);
+gboolean purple_request_page_all_required_filled(PurpleRequestPage *page);
 
 /**
- * purple_request_fields_all_valid:
- * @fields: The fields list.
+ * purple_request_page_all_valid:
+ * @page: The fields page.
  *
  * Returns whether or not all fields are valid.
  *
  * Returns: TRUE if all fields are valid, or FALSE.
  */
-gboolean purple_request_fields_all_valid(const PurpleRequestFields *fields);
+gboolean purple_request_page_all_valid(PurpleRequestPage *page);
 
 /**
- * purple_request_fields_get_field:
- * @fields: The fields list.
- * @id:     The ID of the field.
+ * purple_request_page_get_field:
+ * @page: The fields page.
+ * @id: The ID of the field.
  *
  * Return the field with the specified ID.
  *
  * Returns: (transfer none): The field, if found.
  */
-PurpleRequestField *purple_request_fields_get_field(
-		const PurpleRequestFields *fields, const char *id);
+PurpleRequestField *purple_request_page_get_field(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_fields_get_string:
- * @fields: The fields list.
- * @id:     The ID of the field.
+ * purple_request_page_get_string:
+ * @page: The fields page.
+ * @id: The ID of the field.
  *
  * Returns the string value of a field with the specified ID.
  *
  * Returns: The string value, if found, or %NULL otherwise.
  */
-const char *purple_request_fields_get_string(const PurpleRequestFields *fields,
-										   const char *id);
+const char *purple_request_page_get_string(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_fields_get_integer:
- * @fields: The fields list.
- * @id:     The ID of the field.
+ * purple_request_page_get_integer:
+ * @page: The fields page.
+ * @id: The ID of the field.
  *
  * Returns the integer value of a field with the specified ID.
  *
  * Returns: The integer value, if found, or 0 otherwise.
  */
-int purple_request_fields_get_integer(const PurpleRequestFields *fields,
-									const char *id);
+int purple_request_page_get_integer(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_fields_get_bool:
- * @fields: The fields list.
- * @id:     The ID of the field.
+ * purple_request_page_get_bool:
+ * @page: The fields page.
+ * @id: The ID of the field.
  *
  * Returns the boolean value of a field with the specified ID.
  *
  * Returns: The boolean value, if found, or %FALSE otherwise.
  */
-gboolean purple_request_fields_get_bool(const PurpleRequestFields *fields,
-									  const char *id);
+gboolean purple_request_page_get_bool(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_fields_get_choice:
- * @fields: The fields list.
+ * purple_request_page_get_choice:
+ * @page: The fields page.
  * @id:     The ID of the field.
  *
  * Returns the choice index of a field with the specified ID.
  *
  * Returns: The choice value, if found, or NULL otherwise.
  */
-gpointer
-purple_request_fields_get_choice(const PurpleRequestFields *fields,
-	const char *id);
+gpointer purple_request_page_get_choice(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_fields_get_account:
- * @fields: The fields list.
+ * purple_request_page_get_account:
+ * @page: The fields page.
  * @id:     The ID of the field.
  *
  * Returns the account of a field with the specified ID.
  *
  * Returns: (transfer none): The account value, if found, or %NULL otherwise.
  */
-PurpleAccount *purple_request_fields_get_account(const PurpleRequestFields *fields,
-											 const char *id);
+PurpleAccount *purple_request_page_get_account(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_fields_get_ui_data:
- * @fields: The fields list.
+ * purple_request_page_get_ui_data:
+ * @page: The fields page.
  *
  * Returns the UI data associated with this object.
  *
@@ -231,16 +215,16 @@ PurpleAccount *purple_request_fields_get_account(const PurpleRequestFields *fiel
  *         convenience field provided to the UIs--it is not
  *         used by the libpurple core.
  */
-gpointer purple_request_fields_get_ui_data(const PurpleRequestFields *fields);
+gpointer purple_request_page_get_ui_data(PurpleRequestPage *page);
 
 /**
- * purple_request_fields_set_ui_data:
- * @fields: The fields list.
+ * purple_request_page_set_ui_data:
+ * @page: The fields page.
  * @ui_data: A pointer to associate with this object.
  *
  * Set the UI data associated with this object.
  */
-void purple_request_fields_set_ui_data(PurpleRequestFields *fields, gpointer ui_data);
+void purple_request_page_set_ui_data(PurpleRequestPage *page, gpointer ui_data);
 
 G_END_DECLS
 

@@ -534,13 +534,13 @@ static GntWidget*
 process_pref_frame(PurplePluginPrefFrame *frame)
 {
 	PurpleRequestField *field;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group = NULL;
 	GList *prefs;
 	GList *stringlist = NULL;
 	GntWidget *ret = NULL;
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 
 	for (prefs = purple_plugin_pref_frame_get_prefs(frame); prefs; prefs = prefs->next) {
 		PurplePluginPref *pref = prefs->data;
@@ -556,7 +556,7 @@ process_pref_frame(PurplePluginPrefFrame *frame)
 				purple_request_group_add_field(group, field);
 			} else {
 				group = purple_request_group_new(label);
-				purple_request_fields_add_group(fields, group);
+				purple_request_page_add_group(page, group);
 			}
 			continue;
 		}
@@ -624,13 +624,13 @@ process_pref_frame(PurplePluginPrefFrame *frame)
 		if (field) {
 			if (group == NULL) {
 				group = purple_request_group_new(_("Preferences"));
-				purple_request_fields_add_group(fields, group);
+				purple_request_page_add_group(page, group);
 			}
 			purple_request_group_add_field(group, field);
 		}
 	}
 
-	ret = purple_request_fields(NULL, _("Preferences"), NULL, NULL, fields,
+	ret = purple_request_fields(NULL, _("Preferences"), NULL, NULL, page,
 			_("Save"), G_CALLBACK(finch_request_save_in_prefs), _("Cancel"), NULL,
 			NULL, NULL);
 	g_signal_connect_swapped(G_OBJECT(ret), "destroy", G_CALLBACK(free_stringlist), stringlist);

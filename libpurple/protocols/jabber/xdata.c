@@ -47,7 +47,8 @@ struct jabber_x_data_data {
 	PurpleRequestGroup *actiongroup;
 };
 
-static void jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestFields *fields) {
+static void
+jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestPage *page) {
 	PurpleXmlNode *result = purple_xmlnode_new("x");
 	GCallback cb = data->cb;
 	gpointer user_data = data->user_data;
@@ -59,7 +60,7 @@ static void jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestFi
 	purple_xmlnode_set_namespace(result, "jabber:x:data");
 	purple_xmlnode_set_attrib(result, "type", "submit");
 
-	for(groups = purple_request_fields_get_groups(fields); groups; groups = groups->next) {
+	for(groups = purple_request_page_get_groups(page); groups; groups = groups->next) {
 		if(groups->data == data->actiongroup) {
 			for(flds = purple_request_group_get_fields(groups->data); flds; flds = flds->next) {
 				PurpleRequestField *field = flds->data;
@@ -157,7 +158,7 @@ static void jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestFi
 
 static void
 jabber_x_data_cancel_cb(struct jabber_x_data_data *data,
-                        G_GNUC_UNUSED PurpleRequestFields *fields)
+                        G_GNUC_UNUSED PurpleRequestPage *page)
 {
 	PurpleXmlNode *result = purple_xmlnode_new("x");
 	GCallback cb = data->cb;
@@ -190,7 +191,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 {
 	void *handle;
 	PurpleXmlNode *fn, *x;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field = NULL;
 
@@ -204,9 +205,9 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 	data->cb = G_CALLBACK(cb);
 	data->js = js;
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	for(fn = purple_xmlnode_get_child(packet, "field"); fn; fn = purple_xmlnode_get_next_twin(fn)) {
 		PurpleXmlNode *valuenode;
@@ -366,7 +367,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 		int i;
 
 		data->actiongroup = group = purple_request_group_new(_("Actions"));
-		purple_request_fields_add_group(fields, group);
+		purple_request_page_add_group(page, group);
 		actionfield = purple_request_field_choice_new("libpurple:jabber:xdata:actions", _("Select an action"), GINT_TO_POINTER(defaultaction));
 
 		for(i = 0, action = actions; action; action = g_list_next(action), i++) {
@@ -385,7 +386,7 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 	if((x = purple_xmlnode_get_child(packet, "instructions")))
 		instructions = purple_xmlnode_get_data(x);
 
-	handle = purple_request_fields(js->gc, title, title, instructions, fields,
+	handle = purple_request_fields(js->gc, title, title, instructions, page,
 			_("OK"), G_CALLBACK(jabber_x_data_ok_cb),
 			_("Cancel"), G_CALLBACK(jabber_x_data_cancel_cb),
 			purple_request_cpar_from_connection(js->gc),

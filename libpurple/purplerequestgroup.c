@@ -28,7 +28,7 @@
 struct _PurpleRequestGroup {
 	GObject parent;
 
-	PurpleRequestFields *fields_list;
+	PurpleRequestPage *page;
 
 	char *title;
 
@@ -171,12 +171,12 @@ purple_request_group_new(const char *title) {
 }
 
 void
-_purple_request_group_set_field_list(PurpleRequestGroup *group,
-                                     PurpleRequestFields *fields)
+_purple_request_group_set_page(PurpleRequestGroup *group,
+                               PurpleRequestPage *page)
 {
 	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
 
-	group->fields_list = fields;
+	group->page = page;
 }
 
 void
@@ -186,8 +186,7 @@ _purple_request_group_set_field_required(PurpleRequestGroup *group,
 {
 	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
 
-	_purple_request_field_list_set_field_required(group->fields_list, field,
-	                                              required);
+	_purple_request_page_set_field_required(group->page, field, required);
 }
 
 void
@@ -197,8 +196,7 @@ _purple_request_group_set_field_validator(PurpleRequestGroup *group,
 {
 	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
 
-	_purple_request_field_list_set_field_validator(group->fields_list, field,
-	                                               validator);
+	_purple_request_page_set_field_validator(group->page, field, validator);
 }
 
 void
@@ -213,8 +211,8 @@ purple_request_group_add_field(PurpleRequestGroup *group,
 	position = g_list_length(group->fields);
 	group->fields = g_list_append(group->fields, field);
 
-	if(group->fields_list != NULL) {
-		_purple_request_field_list_add_field(group->fields_list, field);
+	if(PURPLE_IS_REQUEST_PAGE(group->page)) {
+		_purple_request_page_add_field(group->page, field);
 	}
 
 	_purple_request_field_set_group(field, group);
@@ -238,10 +236,10 @@ purple_request_group_get_fields(PurpleRequestGroup *group)
 	return group->fields;
 }
 
-PurpleRequestFields *
-purple_request_group_get_fields_list(PurpleRequestGroup *group)
+PurpleRequestPage *
+purple_request_group_get_page(PurpleRequestGroup *group)
 {
 	g_return_val_if_fail(PURPLE_IS_REQUEST_GROUP(group), NULL);
 
-	return group->fields_list;
+	return group->page;
 }

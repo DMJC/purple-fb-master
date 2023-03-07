@@ -47,30 +47,29 @@ struct _PidginGroupMergeObject {
 };
 
 static void
-pidgin_dialogs_im_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
-{
+pidgin_dialogs_im_cb(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	PurpleAccount *account;
 	const char *username;
 
-	account  = purple_request_fields_get_account(fields, "account");
-	username = purple_request_fields_get_string(fields,  "screenname");
+	account = purple_request_page_get_account(page, "account");
+	username = purple_request_page_get_string(page,  "screenname");
 
 	pidgin_dialogs_im_with_user(account, username);
 }
 
 static gboolean
 pidgin_dialogs_im_name_validator(G_GNUC_UNUSED PurpleRequestField *field,
-                                 char **errmsg, gpointer _fields)
+                                 char **errmsg, gpointer data)
 {
-	PurpleRequestFields *fields = _fields;
+	PurpleRequestPage *page = data;
 	PurpleAccount *account;
 	PurpleProtocol *protocol;
 	const char *username;
 	gboolean valid = FALSE;
 
-	account = purple_request_fields_get_account(fields, "account");
+	account = purple_request_page_get_account(page, "account");
 	protocol = purple_account_get_protocol(account);
-	username = purple_request_fields_get_string(fields, "screenname");
+	username = purple_request_page_get_string(page, "screenname");
 
 	if (username) {
 		valid = purple_validate(protocol, username);
@@ -85,19 +84,19 @@ pidgin_dialogs_im_name_validator(G_GNUC_UNUSED PurpleRequestField *field,
 void
 pidgin_dialogs_im(void)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("screenname", _("_Name"), NULL, FALSE);
 	purple_request_field_set_type_hint(field, "screenname");
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_set_validator(field, pidgin_dialogs_im_name_validator, fields);
+	purple_request_field_set_validator(field, pidgin_dialogs_im_name_validator, page);
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_account_new("account", _("_Account"), NULL);
@@ -112,7 +111,7 @@ pidgin_dialogs_im(void)
 	        purple_blist_get_default(), _("New Instant Message"), NULL,
 	        _("Please enter the username or alias of the person "
 	          "you would like to IM."),
-	        fields, _("OK"), G_CALLBACK(pidgin_dialogs_im_cb), _("Cancel"),
+	        page, _("OK"), G_CALLBACK(pidgin_dialogs_im_cb), _("Cancel"),
 	        NULL, NULL, NULL);
 }
 
@@ -137,16 +136,14 @@ pidgin_dialogs_im_with_user(PurpleAccount *account, const char *username)
 }
 
 static void
-pidgin_dialogs_info_cb(G_GNUC_UNUSED gpointer data,
-                       PurpleRequestFields *fields)
-{
+pidgin_dialogs_info_cb(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	char *username;
 	PurpleAccount *account;
 	const gchar *screenname = NULL;
 
-	account = purple_request_fields_get_account(fields, "account");
+	account = purple_request_page_get_account(page, "account");
 
-	screenname = purple_request_fields_get_string(fields,  "screenname");
+	screenname = purple_request_page_get_string(page, "screenname");
 	username = g_strdup(purple_normalize(account, screenname));
 
 	if(username != NULL && *username != '\0' && account != NULL) {
@@ -160,14 +157,14 @@ pidgin_dialogs_info_cb(G_GNUC_UNUSED gpointer data,
 void
 pidgin_dialogs_info(void)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("screenname", _("_Name"), NULL, FALSE);
 	purple_request_field_set_type_hint(field, "screenname");
@@ -186,7 +183,7 @@ pidgin_dialogs_info(void)
 	        purple_blist_get_default(), _("Get User Info"), NULL,
 	        _("Please enter the username or alias of the person "
 	          "whose info you would like to view."),
-	        fields, _("OK"), G_CALLBACK(pidgin_dialogs_info_cb),
+	        page, _("OK"), G_CALLBACK(pidgin_dialogs_info_cb),
 	        _("Cancel"), NULL, NULL, NULL);
 }
 

@@ -74,8 +74,7 @@ static void disallow_plaintext_auth(PurpleAccount *account)
 }
 
 static void
-auth_old_pass_cb(PurpleConnection *gc, PurpleRequestFields *fields)
-{
+auth_old_pass_cb(PurpleConnection *gc, PurpleRequestPage *page) {
 	PurpleAccount *account;
 	JabberStream *js;
 	const char *entry;
@@ -87,8 +86,8 @@ auth_old_pass_cb(PurpleConnection *gc, PurpleRequestFields *fields)
 	account = purple_connection_get_account(gc);
 	js = purple_connection_get_protocol_data(gc);
 
-	entry = purple_request_fields_get_string(fields, "password");
-	remember = purple_request_fields_get_bool(fields, "remember");
+	entry = purple_request_page_get_string(page, "password");
+	remember = purple_request_page_get_bool(page, "remember");
 
 	if (!entry || !*entry)
 	{
@@ -116,9 +115,7 @@ auth_old_pass_cb(PurpleConnection *gc, PurpleRequestFields *fields)
 }
 
 static void
-auth_no_pass_cb(PurpleConnection *gc,
-                G_GNUC_UNUSED PurpleRequestFields *fields)
-{
+auth_no_pass_cb(PurpleConnection *gc, G_GNUC_UNUSED PurpleRequestPage *page) {
 	/* TODO: the password prompt dialog doesn't get disposed if the account disconnects */
 	PURPLE_ASSERT_CONNECTION_IS_VALID(gc);
 

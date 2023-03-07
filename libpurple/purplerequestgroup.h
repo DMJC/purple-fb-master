@@ -87,14 +87,14 @@ const char *purple_request_group_get_title(PurpleRequestGroup *group);
 GList *purple_request_group_get_fields(PurpleRequestGroup *group);
 
 /**
- * purple_request_group_get_fields_list:
+ * purple_request_group_get_page:
  * @group: The group.
  *
  * Returns a list of all fields in a group.
  *
  * Returns: (transfer none): The list of fields in the group.
  */
-PurpleRequestFields *purple_request_group_get_fields_list(PurpleRequestGroup *group);
+PurpleRequestPage *purple_request_group_get_page(PurpleRequestGroup *group);
 
 G_END_DECLS
 

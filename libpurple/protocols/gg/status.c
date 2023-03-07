@@ -204,11 +204,6 @@ const gchar * ggp_status_get_name(const gchar *purple_status)
  * Own status.
  ******************************************************************************/
 
-static void ggp_status_broadcasting_dialog_ok(PurpleConnection *gc,
-	PurpleRequestFields *fields);
-
-/******************************************************************************/
-
 void ggp_status_set_initial(PurpleConnection *gc, struct gg_login_params *glp)
 {
 	ggp_status_session_data *ssdata = ggp_status_get_ssdata(gc);
@@ -339,15 +334,23 @@ void ggp_status_set_status_broadcasting(PurpleConnection *gc,
 		purple_account_get_active_status(account));
 }
 
+static void
+ggp_status_broadcasting_dialog_ok(PurpleConnection *gc,
+                                  PurpleRequestPage *page)
+{
+	gboolean buddies_only = purple_request_page_get_bool(page, "buddies_only");
+	ggp_status_set_status_broadcasting(gc, !buddies_only);
+}
+
 void ggp_status_broadcasting_dialog(PurpleConnection *gc)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_bool_new("buddies_only",
 		_("Show status only for buddies"),
@@ -358,17 +361,10 @@ void ggp_status_broadcasting_dialog(PurpleConnection *gc)
 		_("Change status broadcasting"),
 		_("Please, select who can see your status"),
 		NULL,
-		fields,
+		page,
 		_("OK"), G_CALLBACK(ggp_status_broadcasting_dialog_ok),
 		_("Cancel"), NULL,
 		purple_request_cpar_from_connection(gc), gc);
-}
-
-static void ggp_status_broadcasting_dialog_ok(PurpleConnection *gc,
-	PurpleRequestFields *fields)
-{
-	ggp_status_set_status_broadcasting(gc,
-		!purple_request_fields_get_bool(fields, "buddies_only"));
 }
 
 /*******************************************************************************

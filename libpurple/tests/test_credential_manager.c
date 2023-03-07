@@ -54,8 +54,6 @@ G_DECLARE_FINAL_TYPE(TestPurpleCredentialProvider,
 
 struct _TestPurpleCredentialProvider {
 	PurpleCredentialProvider parent;
-
-	PurpleRequestFields *fields;
 };
 
 G_DEFINE_TYPE(TestPurpleCredentialProvider,

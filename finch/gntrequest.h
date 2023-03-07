@@ -61,12 +61,12 @@ void finch_request_uninit(void);
 /**
  * finch_request_save_in_prefs:
  * @data: No longer used, set to %NULL.
- * @fields: The #PurpleRequestFields to save.
+ * @page: The #PurpleRequestPage to save.
  *
  * Save the request fields in preferences where the id attribute of each field is the
  * id of a preference.
  */
-void finch_request_save_in_prefs(gpointer data, PurpleRequestFields *fields);
+void finch_request_save_in_prefs(gpointer data, PurpleRequestPage *page);
 
 /**
  * finch_request_field_get_widget:

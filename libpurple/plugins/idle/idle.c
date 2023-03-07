@@ -83,11 +83,10 @@ set_idle_time(PurpleAccount *acct, int mins_idle)
 }
 
 static void
-idle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
-{
-	PurpleAccount *acct = purple_request_fields_get_account(fields, "acct");
+idle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
+	PurpleAccount *acct = purple_request_page_get_account(page, "acct");
 	PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
-	int tm = purple_request_fields_get_integer(fields, "mins");
+	int tm = purple_request_page_get_integer(page, "mins");
 
 	/* only add the account to the GList if it's not already been idled */
 	if(!unidle_filter(acct)) {
@@ -100,12 +99,11 @@ idle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 }
 
 static void
-idle_all_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
-{
+idle_all_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	PurpleAccountManager *manager = NULL;
 	PurpleAccount *acct = NULL;
 	GList *list, *iter;
-	int tm = purple_request_fields_get_integer(fields, "mins");
+	int tm = purple_request_page_get_integer(page, "mins");
 
 	manager = purple_account_manager_get_default();
 	list = purple_account_manager_get_enabled(manager);
@@ -129,9 +127,8 @@ idle_all_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 }
 
 static void
-unidle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
-{
-	PurpleAccount *acct = purple_request_fields_get_account(fields, "acct");
+unidle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
+	PurpleAccount *acct = purple_request_page_get_account(page, "acct");
 
 	set_idle_time(acct, 0); /* unidle the account */
 
@@ -158,7 +155,7 @@ purple_idle_set_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 {
 	/* Use the super fancy request API */
 
-	PurpleRequestFields *request;
+	PurpleRequestPage *request;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
@@ -172,8 +169,8 @@ purple_idle_set_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 	field = purple_request_field_int_new("mins", _("Minutes"), 10, 0, 9999);
 	purple_request_group_add_field(group, field);
 
-	request = purple_request_fields_new();
-	purple_request_fields_add_group(request, group);
+	request = purple_request_page_new();
+	purple_request_page_add_group(request, group);
 
 	purple_request_fields(data,
 			N_("I'dle Mak'er"),
@@ -190,7 +187,7 @@ purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
                                     G_GNUC_UNUSED GVariant *parameter,
                                     gpointer data)
 {
-	PurpleRequestFields *request;
+	PurpleRequestPage *request;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
@@ -207,8 +204,8 @@ purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 	purple_request_field_account_set_show_all(field, FALSE);
 	purple_request_group_add_field(group, field);
 
-	request = purple_request_fields_new();
-	purple_request_fields_add_group(request, group);
+	request = purple_request_page_new();
+	purple_request_page_add_group(request, group);
 
 	purple_request_fields(data,
 			N_("I'dle Mak'er"),
@@ -225,7 +222,7 @@ purple_idle_set_all_accounts_idle_time(G_GNUC_UNUSED GSimpleAction *action,
                                        G_GNUC_UNUSED GVariant *parameter,
                                        gpointer data)
 {
-	PurpleRequestFields *request;
+	PurpleRequestPage *request;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
@@ -234,8 +231,8 @@ purple_idle_set_all_accounts_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 	field = purple_request_field_int_new("mins", _("Minutes"), 10, 0, 9999);
 	purple_request_group_add_field(group, field);
 
-	request = purple_request_fields_new();
-	purple_request_fields_add_group(request, group);
+	request = purple_request_page_new();
+	purple_request_page_add_group(request, group);
 
 	purple_request_fields(data,
 			N_("I'dle Mak'er"),

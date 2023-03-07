@@ -227,13 +227,12 @@ request_password_write_cb(GObject *obj, GAsyncResult *res, gpointer data) {
 }
 
 static void
-request_password_ok_cb(PurpleAccount *account, PurpleRequestFields *fields)
-{
+request_password_ok_cb(PurpleAccount *account, PurpleRequestPage *page) {
 	const char *entry;
 	gboolean remember;
 
-	entry = purple_request_fields_get_string(fields, "password");
-	remember = purple_request_fields_get_bool(fields, "remember");
+	entry = purple_request_page_get_string(page, "password");
+	remember = purple_request_page_get_bool(page, "remember");
 
 	if (!entry || !*entry)
 	{
@@ -266,7 +265,7 @@ request_password_ok_cb(PurpleAccount *account, PurpleRequestFields *fields)
 
 static void
 request_password_cancel_cb(PurpleAccount *account,
-                           G_GNUC_UNUSED PurpleRequestFields *fields)
+                           G_GNUC_UNUSED PurpleRequestPage *page)
 {
 	/* Disable the account as the user has cancelled connecting */
 	purple_account_set_enabled(account, FALSE);
@@ -315,13 +314,12 @@ purple_account_connect_got_password_cb(GObject *obj, GAsyncResult *res,
 }
 
 static void
-change_password_cb(PurpleAccount *account, PurpleRequestFields *fields)
-{
+change_password_cb(PurpleAccount *account, PurpleRequestPage *page) {
 	const char *orig_pass, *new_pass_1, *new_pass_2;
 
-	orig_pass  = purple_request_fields_get_string(fields, "password");
-	new_pass_1 = purple_request_fields_get_string(fields, "new_password_1");
-	new_pass_2 = purple_request_fields_get_string(fields, "new_password_2");
+	orig_pass = purple_request_page_get_string(page, "password");
+	new_pass_1 = purple_request_page_get_string(page, "new_password_1");
+	new_pass_2 = purple_request_page_get_string(page, "new_password_2");
 
 	if (g_utf8_collate(new_pass_1, new_pass_2))
 	{
@@ -332,12 +330,12 @@ change_password_cb(PurpleAccount *account, PurpleRequestFields *fields)
 		return;
 	}
 
-	if ((purple_request_fields_is_field_required(fields, "password") &&
-			(orig_pass == NULL || *orig_pass == '\0')) ||
-		(purple_request_fields_is_field_required(fields, "new_password_1") &&
-			(new_pass_1 == NULL || *new_pass_1 == '\0')) ||
-		(purple_request_fields_is_field_required(fields, "new_password_2") &&
-			(new_pass_2 == NULL || *new_pass_2 == '\0')))
+	if((purple_request_page_is_field_required(page, "password") &&
+	    purple_strempty(orig_pass)) ||
+	   (purple_request_page_is_field_required(page, "new_password_1") &&
+	    purple_strempty(new_pass_1)) ||
+	   (purple_request_page_is_field_required(page, "new_password_2") &&
+	    purple_strempty(new_pass_2)))
 	{
 		purple_notify_error(account, NULL,
 			_("Fill out all fields completely."), NULL,
@@ -1065,7 +1063,7 @@ purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
 	const gchar *username;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 
 	/* Close any previous password request windows */
 	purple_request_close_with_handle(account);
@@ -1074,9 +1072,9 @@ purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
 	primary = g_strdup_printf(_("Enter password for %s (%s)"), username,
 								  purple_account_get_protocol_name(account));
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("password", _("Enter Password"), NULL, FALSE);
 	purple_request_field_string_set_masked(field, TRUE);
@@ -1086,7 +1084,7 @@ purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
 	field = purple_request_field_bool_new("remember", _("Save password"), FALSE);
 	purple_request_group_add_field(group, field);
 
-	purple_request_fields(account, NULL, primary, NULL, fields, _("OK"),
+	purple_request_fields(account, NULL, primary, NULL, page, _("OK"),
 		ok_cb, _("Cancel"), cancel_cb,
 		purple_request_cpar_from_account(account), user_data);
 	g_free(primary);
@@ -1095,7 +1093,7 @@ purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
 void
 purple_account_request_change_password(PurpleAccount *account)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 	PurpleConnection *gc;
@@ -1109,10 +1107,10 @@ purple_account_request_change_password(PurpleAccount *account)
 	if (gc != NULL)
 		protocol = purple_connection_get_protocol(gc);
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("password", _("Original password"),
 										  NULL, FALSE);
@@ -1144,7 +1142,7 @@ purple_account_request_change_password(PurpleAccount *account)
 
 	purple_request_fields(purple_account_get_connection(account), NULL,
 		primary, _("Please enter your current password and your new "
-		"password."), fields, _("OK"), G_CALLBACK(change_password_cb),
+		"password."), page, _("OK"), G_CALLBACK(change_password_cb),
 		_("Cancel"), NULL, purple_request_cpar_from_account(account),
 		account);
 }

@@ -230,21 +230,19 @@ free_strings(void)
 }
 
 static void
-save_cb(void *data, PurpleRequestFields *allfields)
-{
-	finch_request_save_in_prefs(data, allfields);
+save_cb(void *data, PurpleRequestPage *page) {
+	finch_request_save_in_prefs(data, page);
 	free_strings();
 }
 
 static void
-add_pref_group(PurpleRequestFields *fields, const char *title, Prefs *prefs)
-{
+add_pref_group(PurpleRequestPage *page, const char *title, Prefs *prefs) {
 	PurpleRequestField *field;
 	PurpleRequestGroup *group;
 	int i;
 
 	group = purple_request_group_new(title);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 	for (i = 0; prefs[i].pref; i++)
 	{
 		field = get_pref_field(prefs + i);
@@ -256,22 +254,22 @@ add_pref_group(PurpleRequestFields *fields, const char *title, Prefs *prefs)
 void
 finch_prefs_show_all(void)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 
 	if (pref_request.showing) {
 		gnt_window_present(pref_request.window);
 		return;
 	}
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 
-	add_pref_group(fields, _("Buddy List"), blist);
-	add_pref_group(fields, _("Conversations"), convs);
-	add_pref_group(fields, _("Idle"), idle);
-	add_pref_group(fields, _("Credentials"), credentials);
+	add_pref_group(page, _("Buddy List"), blist);
+	add_pref_group(page, _("Conversations"), convs);
+	add_pref_group(page, _("Idle"), idle);
+	add_pref_group(page, _("Credentials"), credentials);
 
 	pref_request.showing = TRUE;
-	pref_request.window = purple_request_fields(NULL, _("Preferences"), NULL, NULL, fields,
+	pref_request.window = purple_request_fields(NULL, _("Preferences"), NULL, NULL, page,
 			_("Save"), G_CALLBACK(save_cb), _("Cancel"), free_strings,
 			NULL, NULL);
 }

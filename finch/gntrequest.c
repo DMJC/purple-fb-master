@@ -167,14 +167,8 @@ finch_request_input(const char *title, const char *primary,
 }
 
 static void
-finch_close_request(PurpleRequestType type, gpointer ui_handle)
-{
+finch_close_request(G_GNUC_UNUSED PurpleRequestType type, gpointer ui_handle) {
 	GntWidget *widget = GNT_WIDGET(ui_handle);
-	if (type == PURPLE_REQUEST_FIELDS) {
-		PurpleRequestFields *fields = g_object_get_data(G_OBJECT(widget), "fields");
-		purple_request_fields_destroy(fields);
-	}
-
 	widget = gnt_widget_get_toplevel(widget);
 	gnt_widget_destroy(widget);
 }
@@ -278,8 +272,7 @@ finch_request_action(const char *title, const char *primary,
 }
 
 static void
-request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
-{
+request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 	PurpleRequestFieldsCb callback = g_object_get_data(G_OBJECT(button), "activate-callback");
 	gpointer data = g_object_get_data(G_OBJECT(button), "activate-userdata");
 	GList *list;
@@ -290,8 +283,7 @@ request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
 	 * instantly whenever a change is made. That allows it to make sure the
 	 * 'required' fields are entered before the user can hit OK. It's not the case
 	 * here, although it can be done. */
-	for (list = purple_request_fields_get_groups(fields); list; list = list->next)
-	{
+	for(list = purple_request_page_get_groups(page); list; list = list->next) {
 		PurpleRequestGroup *group = list->data;
 		GList *fields = purple_request_group_get_fields(group);
 
@@ -381,16 +373,17 @@ request_fields_cb(GntWidget *button, PurpleRequestFields *fields)
 	purple_notify_close_with_handle(button);
 
 	if (!g_object_get_data(G_OBJECT(button), "cancellation-function") &&
-			(!purple_request_fields_all_required_filled(fields) ||
-			!purple_request_fields_all_valid(fields))) {
+			(!purple_request_page_all_required_filled(page) ||
+			!purple_request_page_all_valid(page))) {
 		purple_notify_error(button, _("Error"),
 			_("You must properly fill all the required fields."),
 			_("The required fields are underlined."), NULL);
 		return;
 	}
 
-	if (callback)
-		callback(data, fields);
+	if(callback) {
+		callback(data, page);
+	}
 
 	window = gnt_widget_get_toplevel(button);
 	purple_request_close(PURPLE_REQUEST_FIELDS, window);
@@ -583,8 +576,7 @@ create_account_field(PurpleRequestField *field)
 }
 
 static void
-multifield_extra_cb(GntWidget *button, PurpleRequestFields *allfields)
-{
+multifield_extra_cb(GntWidget *button, PurpleRequestPage *page) {
 	PurpleRequestFieldsCb cb;
 	gpointer cb_data;
 	gpointer handle;
@@ -593,8 +585,9 @@ multifield_extra_cb(GntWidget *button, PurpleRequestFields *allfields)
 	cb = g_object_get_data(G_OBJECT(button), "extra-cb");
 	cb_data = g_object_get_data(G_OBJECT(button), "extra-cb-data");
 
-	if (cb != NULL)
-		cb(cb_data, allfields);
+	if(cb != NULL) {
+		cb(cb_data, page);
+	}
 
 	action_performed(button, handle);
 	purple_request_close(PURPLE_REQUEST_FIELDS, handle);
@@ -602,7 +595,7 @@ multifield_extra_cb(GntWidget *button, PurpleRequestFields *allfields)
 
 static void *
 finch_request_fields(const char *title, const char *primary,
-		const char *secondary, PurpleRequestFields *allfields,
+		const char *secondary, PurpleRequestPage *page,
 		const char *ok, GCallback ok_cb,
 		const char *cancel, GCallback cancel_cb,
 		PurpleRequestCommonParameters *cpar,
@@ -623,7 +616,8 @@ finch_request_fields(const char *title, const char *primary,
 	box = gnt_vbox_new(FALSE);
 	gnt_box_set_pad(GNT_BOX(box), 0);
 	gnt_box_set_fill(GNT_BOX(box), TRUE);
-	for (grlist = purple_request_fields_get_groups(allfields); grlist; grlist = grlist->next)
+	for(grlist = purple_request_page_get_groups(page); grlist;
+	    grlist = grlist->next)
 	{
 		PurpleRequestGroup *group = grlist->data;
 		GList *fields = purple_request_group_get_fields(group);
@@ -684,8 +678,8 @@ finch_request_fields(const char *title, const char *primary,
 	}
 	gnt_box_add_widget(GNT_BOX(window), box);
 
-	box = setup_button_box(window, userdata, request_fields_cb, allfields,
-			ok, ok_cb, cancel, cancel_cb, NULL);
+	box = setup_button_box(window, userdata, request_fields_cb, page,
+	                       ok, ok_cb, cancel, cancel_cb, NULL);
 
 	extra_actions = purple_request_cpar_get_extra_actions(cpar);
 	for (GSList *it = extra_actions; it; it = it->next) {
@@ -697,7 +691,7 @@ finch_request_fields(const char *title, const char *primary,
 		g_object_set_data(G_OBJECT(button), "extra-cb", extra_action->value);
 		g_object_set_data(G_OBJECT(button), "extra-cb-data", userdata);
 		g_signal_connect(G_OBJECT(button), "activate",
-			G_CALLBACK(multifield_extra_cb), allfields);
+		                 G_CALLBACK(multifield_extra_cb), page);
 	}
 
 	help_cb = purple_request_cpar_get_help_cb(cpar, &help_data);
@@ -717,7 +711,7 @@ finch_request_fields(const char *title, const char *primary,
 		g_signal_connect(username, "completion", G_CALLBACK(update_selected_account), accountlist);
 	}
 
-	g_object_set_data(G_OBJECT(window), "fields", allfields);
+	g_object_set_data_full(G_OBJECT(window), "fields", page, g_object_unref);
 
 	return window;
 }
@@ -857,10 +851,10 @@ finch_request_uninit(void)
 
 void
 finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
-                            PurpleRequestFields *allfields)
+                            PurpleRequestPage *page)
 {
 	GList *list;
-	for (list = purple_request_fields_get_groups(allfields); list; list = list->next) {
+	for(list = purple_request_page_get_groups(page); list; list = list->next) {
 		PurpleRequestGroup *group = list->data;
 		GList *fields = purple_request_group_get_fields(group);
 

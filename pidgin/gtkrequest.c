@@ -65,7 +65,7 @@ typedef struct
 
 		struct
 		{
-			PurpleRequestFields *fields;
+			PurpleRequestPage *page;
 
 		} multifield;
 
@@ -226,16 +226,16 @@ req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
                          PurpleRequestField *field)
 {
 	PurpleRequestGroup *group;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PidginRequestData *req_data;
 
 	group = purple_request_field_get_group(field);
-	fields = purple_request_group_get_fields_list(group);
-	req_data = purple_request_fields_get_ui_data(fields);
+	page = purple_request_group_get_page(group);
+	req_data = purple_request_page_get_ui_data(page);
 
 	gtk_widget_set_sensitive(req_data->ok_button,
-		purple_request_fields_all_required_filled(fields) &&
-		purple_request_fields_all_valid(fields));
+		purple_request_page_all_required_filled(page) &&
+		purple_request_page_all_valid(page));
 }
 
 static void
@@ -283,7 +283,7 @@ multifield_ok_cb(GtkWidget *button, PidginRequestData *data)
 
 	if (data->cbs[0] != NULL)
 		((PurpleRequestFieldsCb)data->cbs[0])(data->user_data,
-											data->u.multifield.fields);
+		                                      data->u.multifield.page);
 
 	purple_request_close(PURPLE_REQUEST_FIELDS, data);
 }
@@ -295,7 +295,7 @@ multifield_cancel_cb(G_GNUC_UNUSED GtkWidget *button, PidginRequestData *data)
 
 	if (data->cbs[1] != NULL)
 		((PurpleRequestFieldsCb)data->cbs[1])(data->user_data,
-											data->u.multifield.fields);
+		                                      data->u.multifield.page);
 
 	purple_request_close(PURPLE_REQUEST_FIELDS, data);
 }
@@ -310,7 +310,7 @@ multifield_extra_cb(GtkWidget *button, PidginRequestData *data)
 	cb = g_object_get_data(G_OBJECT(button), "extra-cb");
 
 	if (cb != NULL)
-		cb(data->user_data, data->u.multifield.fields);
+		cb(data->user_data, data->u.multifield.page);
 
 	purple_request_close(PURPLE_REQUEST_FIELDS, data);
 }
@@ -1879,7 +1879,7 @@ create_datasheet_field(PurpleRequestField *field, GtkSizeGroup *buttons_sg)
 
 static void *
 pidgin_request_fields(const char *title, const char *primary,
-	const char *secondary, PurpleRequestFields *fields, const char *ok_text,
+	const char *secondary, PurpleRequestPage *page, const char *ok_text,
 	GCallback ok_cb, const char *cancel_text, GCallback cancel_cb,
 	PurpleRequestCommonParameters *cpar, void *user_data)
 {
@@ -1905,9 +1905,9 @@ pidgin_request_fields(const char *title, const char *primary,
 	data            = g_new0(PidginRequestData, 1);
 	data->type      = PURPLE_REQUEST_FIELDS;
 	data->user_data = user_data;
-	data->u.multifield.fields = fields;
+	data->u.multifield.page = page;
 
-	purple_request_fields_set_ui_data(fields, data);
+	purple_request_page_set_ui_data(page, data);
 
 	extra_actions = purple_request_cpar_get_extra_actions(cpar);
 
@@ -2005,10 +2005,7 @@ pidgin_request_fields(const char *title, const char *primary,
 		gtk_box_append(GTK_BOX(vbox), label);
 	}
 
-	for (gl = purple_request_fields_get_groups(fields);
-		 gl != NULL;
-		 gl = gl->next)
-	{
+	for(gl = purple_request_page_get_groups(page); gl != NULL; gl = gl->next) {
 		GList *field_list;
 		size_t field_count = 0;
 		size_t cols = 1;
@@ -2199,11 +2196,13 @@ pidgin_request_fields(const char *title, const char *primary,
 	g_object_unref(sg);
 	g_object_unref(datasheet_buttons_sg);
 
-	if (!purple_request_fields_all_required_filled(fields))
+	if(!purple_request_page_all_required_filled(page)) {
 		gtk_widget_set_sensitive(data->ok_button, FALSE);
+	}
 
-	if (!purple_request_fields_all_valid(fields))
+	if(!purple_request_page_all_valid(page)) {
 		gtk_widget_set_sensitive(data->ok_button, FALSE);
+	}
 
 	pidgin_auto_parent_window(win);
 
@@ -2424,8 +2423,9 @@ pidgin_close_request(PurpleRequestType type, void *ui_handle)
 		gtk_window_destroy(GTK_WINDOW(data->dialog));
 	}
 
-	if (type == PURPLE_REQUEST_FIELDS)
-		purple_request_fields_destroy(data->u.multifield.fields);
+	if(type == PURPLE_REQUEST_FIELDS) {
+		g_clear_object(&data->u.multifield.page);
+	}
 
 	g_free(data);
 }

@@ -621,11 +621,11 @@ purple_request_wait_progress(void *ui_handle, gfloat fraction)
 }
 
 static void
-purple_request_fields_strip_html(PurpleRequestFields *fields)
+purple_request_fields_strip_html(PurpleRequestPage *page)
 {
 	GList *itg;
 
-	for (itg = purple_request_fields_get_groups(fields);
+	for (itg = purple_request_page_get_groups(page);
 	     itg != NULL;
 	     itg = g_list_next(itg))
 	{
@@ -652,18 +652,18 @@ purple_request_fields_strip_html(PurpleRequestFields *fields)
 
 void *
 purple_request_fields(void *handle, const char *title, const char *primary,
-	const char *secondary, PurpleRequestFields *fields, const char *ok_text,
+	const char *secondary, PurpleRequestPage *page, const char *ok_text,
 	GCallback ok_cb, const char *cancel_text, GCallback cancel_cb,
 	PurpleRequestCommonParameters *cpar, void *user_data)
 {
 	PurpleRequestUiOps *ops;
 
-	if (G_UNLIKELY(fields == NULL ||
+	if(G_UNLIKELY(!PURPLE_IS_REQUEST_PAGE(page) ||
 		((ok_text == NULL) != (ok_cb == NULL)) ||
 		cancel_text == NULL))
 	{
 		purple_request_cpar_unref(cpar);
-		g_warn_if_fail(fields != NULL);
+		g_warn_if_fail(PURPLE_IS_REQUEST_PAGE(page));
 		g_warn_if_fail((ok_text == NULL) != (ok_cb == NULL));
 		g_warn_if_fail(cancel_text != NULL);
 		g_return_val_if_reached(NULL);
@@ -674,7 +674,7 @@ purple_request_fields(void *handle, const char *title, const char *primary,
 	if (purple_request_cpar_is_html(cpar) &&
 		!((ops->features & PURPLE_REQUEST_FEATURE_HTML)))
 	{
-		purple_request_fields_strip_html(fields);
+		purple_request_fields_strip_html(page);
 	}
 
 	if (ops != NULL && ops->request_fields != NULL) {
@@ -687,8 +687,9 @@ purple_request_fields(void *handle, const char *title, const char *primary,
 		info->type      = PURPLE_REQUEST_FIELDS;
 		info->handle    = handle;
 		info->ui_handle = ops->request_fields(title, primary, secondary,
-			fields, ok_text, ok_cb, cancel_text, cancel_cb,
-			cpar, user_data);
+		                                      page, ok_text, ok_cb,
+		                                      cancel_text, cancel_cb, cpar,
+		                                      user_data);
 
 		handles = g_list_append(handles, info);
 

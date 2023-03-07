@@ -217,7 +217,7 @@ ggp_multilogon_dialog(PurpleConnection *gc)
 {
 	ggp_multilogon_session_data *mldata = ggp_multilogon_get_mldata(gc);
 	PurpleRequestField *field;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestCommonParameters *cpar;
 	PurpleRequestDatasheet *sheet;
@@ -227,9 +227,9 @@ ggp_multilogon_dialog(PurpleConnection *gc)
 	if (mldata->dialog_handle != NULL)
 		return;
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	sheet = purple_request_datasheet_new();
 	purple_request_datasheet_add_column(sheet,
@@ -253,7 +253,7 @@ ggp_multilogon_dialog(PurpleConnection *gc)
 	purple_request_cpar_set_icon(cpar, PURPLE_REQUEST_ICON_DIALOG);
 
 	dialog_handle = purple_request_fields(gc,
-		_("Other Gadu-Gadu sessions"), NULL, NULL, fields,
+		_("Other Gadu-Gadu sessions"), NULL, NULL, page,
 		NULL, NULL, _("Close"), NULL,
 		cpar, NULL);
 	mldata->sheet_handle = sheet;

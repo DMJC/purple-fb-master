@@ -1861,15 +1861,14 @@ jabber_password_change_result_cb(JabberStream *js,
 	g_free(data);
 }
 
-static void jabber_password_change_cb(JabberStream *js,
-		PurpleRequestFields *fields)
-{
+static void
+jabber_password_change_cb(JabberStream *js, PurpleRequestPage *page) {
 	const char *p1, *p2;
 	JabberIq *iq;
 	PurpleXmlNode *query, *y;
 
-	p1 = purple_request_fields_get_string(fields, "password1");
-	p2 = purple_request_fields_get_string(fields, "password2");
+	p1 = purple_request_page_get_string(page, "password1");
+	p2 = purple_request_page_get_string(page, "password2");
 
 	if(!purple_strequal(p1, p2)) {
 		purple_notify_error(js->gc, NULL,
@@ -1903,7 +1902,7 @@ jabber_password_change(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	PurpleAccount *account = NULL;
 	PurpleConnection *connection = NULL;
 	JabberStream *js = NULL;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
@@ -1918,9 +1917,9 @@ jabber_password_change(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	connection = purple_account_get_connection(account);
 	js = purple_connection_get_protocol_data(connection);
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("password1", _("Password"),
 			"", FALSE);
@@ -1937,7 +1936,7 @@ jabber_password_change(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	purple_request_fields(connection, _("Change XMPP Password"),
 	                      _("Change XMPP Password"),
 	                      _("Please enter your new password"),
-	                      fields,
+	                      page,
 	                      _("OK"), G_CALLBACK(jabber_password_change_cb),
 	                      _("Cancel"), NULL,
 	                      purple_request_cpar_from_connection(connection), js);
@@ -2613,17 +2612,15 @@ typedef struct {
 
 static void
 jabber_media_cancel_cb(JabberMediaRequest *request,
-                       G_GNUC_UNUSED PurpleRequestFields *fields)
+                       G_GNUC_UNUSED PurpleRequestPage *page)
 {
 	g_free(request->who);
 	g_free(request);
 }
 
 static void
-jabber_media_ok_cb(JabberMediaRequest *request, PurpleRequestFields *fields)
-{
-	PurpleRequestField *field =
-			purple_request_fields_get_field(fields, "resource");
+jabber_media_ok_cb(JabberMediaRequest *request, PurpleRequestPage *page) {
+	PurpleRequestField *field = purple_request_page_get_field(page, "resource");
 	const gchar *selected = purple_request_field_choice_get_value(field);
 	gchar *who = g_strdup_printf("%s/%s", request->who, selected);
 	jabber_initiate_media(request->media, request->account, who, request->type);
@@ -2697,12 +2694,12 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 		 * we need to pick one to initiate with */
 		GList *l;
 		char *msg;
-		PurpleRequestFields *fields;
-		PurpleRequestField *field = purple_request_field_choice_new(
-				"resource", _("Resource"), 0);
-		PurpleRequestGroup *group;
+		PurpleRequestPage *page = NULL;
+		PurpleRequestField *field = NULL;
+		PurpleRequestGroup *group = NULL;
 		JabberMediaRequest *request;
 
+		field = purple_request_field_choice_new("resource", _("Resource"), 0);
 		for(l = jb->resources; l; l = l->next)
 		{
 			JabberBuddyResource *ljbr = l->data;
@@ -2750,7 +2747,7 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 		}
 
 		msg = g_strdup_printf(_("Please select the resource of %s with which you would like to start a media session."), who);
-		fields = purple_request_fields_new();
+		page = purple_request_page_new();
 		group =	purple_request_group_new(NULL);
 		request = g_new0(JabberMediaRequest, 1);
 		request->media = media;
@@ -2759,9 +2756,9 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 		request->type = type;
 
 		purple_request_group_add_field(group, field);
-		purple_request_fields_add_group(fields, group);
+		purple_request_page_add_group(page, group);
 		purple_request_fields(account, _("Select a Resource"), msg,
-				NULL, fields, _("Initiate Media"),
+				NULL, page, _("Initiate Media"),
 				G_CALLBACK(jabber_media_ok_cb), _("Cancel"),
 				G_CALLBACK(jabber_media_cancel_cb),
 				purple_request_cpar_from_account(account),

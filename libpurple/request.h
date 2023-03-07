@@ -165,7 +165,7 @@ struct _PurpleRequestUiOps
 		gfloat fraction);
 
 	void *(*request_fields)(const char *title, const char *primary,
-		const char *secondary, PurpleRequestFields *fields,
+		const char *secondary, PurpleRequestPage *page,
 		const char *ok_text, GCallback ok_cb,
 		const char *cancel_text, GCallback cancel_cb,
 		PurpleRequestCommonParameters *cpar, void *user_data);
@@ -210,7 +210,7 @@ typedef void (*PurpleRequestActionCb)(void *data, int action);
  * values of those choice.
  */
 typedef void (*PurpleRequestChoiceCb)(void *data, gpointer value);
-typedef void (*PurpleRequestFieldsCb)(void *data, PurpleRequestFields *fields);
+typedef void (*PurpleRequestFieldsCb)(void *data, PurpleRequestPage *page);
 typedef void (*PurpleRequestFileCb)(void *data, const char *filename);
 typedef void (*PurpleRequestHelpCb)(gpointer data);
 
@@ -461,7 +461,7 @@ purple_request_cpar_get_help_cb(PurpleRequestCommonParameters *cpar,
  *        #PurpleRequestFieldsCb function to use when the button is clicked.
  *        Should be terminated with the NULL label.
  *
- * Sets extra actions for the PurpleRequestFields dialog.
+ * Sets extra actions for the PurpleRequestPage dialog.
  */
 void
 purple_request_cpar_set_extra_actions(PurpleRequestCommonParameters *cpar, ...);
@@ -470,7 +470,7 @@ purple_request_cpar_set_extra_actions(PurpleRequestCommonParameters *cpar, ...);
  * purple_request_cpar_get_extra_actions:
  * @cpar: The parameters set (may be %NULL).
  *
- * Gets extra actions for the PurpleRequestFields dialog.
+ * Gets extra actions for the PurpleRequestPage dialog.
  *
  * Returns: (element-type PurpleKeyValuePair) (transfer none): A list of actions (pairs of arguments, as in
  *          setter).
@@ -763,7 +763,7 @@ purple_request_wait_progress(void *ui_handle, gfloat fraction);
  * @primary:     The main point of the message, or %NULL if you're
  *               feeling enigmatic.
  * @secondary:   Secondary information, or %NULL if there is none.
- * @fields:      The list of fields.
+ * @page:        The page of fields.
  * @ok_text:     The text for the <literal>OK</literal> button, which may not be
  *               %NULL.
  * @ok_cb: (scope notified):       The callback for the <literal>OK</literal> button, which may
@@ -783,7 +783,7 @@ purple_request_wait_progress(void *ui_handle, gfloat fraction);
  */
 void *
 purple_request_fields(void *handle, const char *title, const char *primary,
-	const char *secondary, PurpleRequestFields *fields,
+	const char *secondary, PurpleRequestPage *page,
 	const char *ok_text, GCallback ok_cb,
 	const char *cancel_text, GCallback cancel_cb,
 	PurpleRequestCommonParameters *cpar,

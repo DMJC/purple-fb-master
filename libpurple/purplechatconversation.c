@@ -1035,7 +1035,7 @@ purple_chat_conversation_get_nick(PurpleChatConversation *chat) {
 }
 
 static void
-invite_user_to_chat(gpointer data, PurpleRequestFields *fields) {
+invite_user_to_chat(gpointer data, PurpleRequestPage *page) {
 	PurpleChatConversation *chat;
 	PurpleChatConversationPrivate *priv;
 	PurpleConnection *pc;
@@ -1044,8 +1044,8 @@ invite_user_to_chat(gpointer data, PurpleRequestFields *fields) {
 	chat = PURPLE_CHAT_CONVERSATION(data);
 	priv = purple_chat_conversation_get_instance_private(chat);
 
-	user = purple_request_fields_get_string(fields, "screenname");
-	message = purple_request_fields_get_string(fields, "message");
+	user = purple_request_page_get_string(page, "screenname");
+	message = purple_request_page_get_string(page, "message");
 
 	pc = purple_conversation_get_connection(PURPLE_CONVERSATION(chat));
 	purple_serv_chat_invite(pc, priv->id, message, user);
@@ -1057,7 +1057,7 @@ purple_chat_conversation_invite_user(PurpleChatConversation *chat,
                                      gboolean confirm)
 {
 	PurpleAccount *account;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
@@ -1076,9 +1076,9 @@ purple_chat_conversation_invite_user(PurpleChatConversation *chat,
 		return;
 	}
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	group = purple_request_group_new(_("Invite to chat"));
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("screenname", _("Buddy"), user,
 	                                        FALSE);
@@ -1093,7 +1093,7 @@ purple_chat_conversation_invite_user(PurpleChatConversation *chat,
 	purple_request_fields(chat, _("Invite to chat"), NULL,
 	                      _("Please enter the name of the user you wish to "
 	                        "invite, along with an optional invite message."),
-	                      fields,
+	                      page,
 	                      _("Invite"), G_CALLBACK(invite_user_to_chat),
 	                      _("Cancel"), NULL,
 	                      purple_request_cpar_from_conversation(PURPLE_CONVERSATION(chat)),

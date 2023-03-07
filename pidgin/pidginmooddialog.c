@@ -57,19 +57,19 @@ update_status_with_mood(PurpleAccount *account, const gchar *mood,
 /*< private
  * pidgin_mood_edit_cb:
  * @connection: The #PurpleConnection instance.
- * @fields: The #PurpleRequestFields
+ * @page: The #PurpleRequestPage
  *
  * This a callback function for when the request dialog has been accepted.
  */
 static void
 pidgin_mood_dialog_edit_cb(PurpleConnection *connection,
-                           PurpleRequestFields *fields)
+                           PurpleRequestPage *page)
 {
 	PurpleRequestField *mood_field = NULL;
 	GList *l = NULL;
 	const gchar *mood = NULL;
 
-	mood_field = purple_request_fields_get_field(fields, "mood");
+	mood_field = purple_request_page_get_field(page, "mood");
 	l = purple_request_field_list_get_selected(mood_field);
 
 	if(l == NULL) {
@@ -87,7 +87,7 @@ pidgin_mood_dialog_edit_cb(PurpleConnection *connection,
 		if (flags & PURPLE_CONNECTION_FLAG_SUPPORT_MOOD_MESSAGES) {
 			PurpleRequestField *text_field = NULL;
 
-			text_field = purple_request_fields_get_field(fields, "text");
+			text_field = purple_request_page_get_field(page, "text");
 			text = purple_request_field_string_get_value(text_field);
 		} else {
 			text = NULL;
@@ -245,7 +245,7 @@ pidgin_mood_get_global_status(void) {
 void
 pidgin_mood_dialog_show(PurpleAccount *account) {
 	const gchar *current_mood;
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *g;
 	PurpleRequestField *f;
 	PurpleConnection *gc = NULL;
@@ -264,7 +264,7 @@ pidgin_mood_dialog_show(PurpleAccount *account) {
 		current_mood = pidgin_mood_get_global_status();
 	}
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 	g = purple_request_group_new(NULL);
 	f = purple_request_field_list_new("mood", _("Please select your mood from the list"));
 
@@ -299,7 +299,7 @@ pidgin_mood_dialog_show(PurpleAccount *account) {
 	}
 	purple_request_group_add_field(g, f);
 
-	purple_request_fields_add_group(fields, g);
+	purple_request_page_add_group(page, g);
 
 	/* if the connection allows setting a mood message */
 	if (gc && (purple_connection_get_flags(gc) & PURPLE_CONNECTION_FLAG_SUPPORT_MOOD_MESSAGES)) {
@@ -307,11 +307,11 @@ pidgin_mood_dialog_show(PurpleAccount *account) {
 		f = purple_request_field_string_new("text",
 		    _("Message (optional)"), NULL, FALSE);
 		purple_request_group_add_field(g, f);
-		purple_request_fields_add_group(fields, g);
+		purple_request_page_add_group(page, g);
 	}
 
 	purple_request_fields(gc, _("Edit User Mood"), _("Edit User Mood"),
-	                      NULL, fields,
+	                      NULL, page,
 	                      _("OK"), G_CALLBACK(pidgin_mood_dialog_edit_cb),
 	                      _("Cancel"), NULL,
 	                      purple_request_cpar_from_connection(gc), gc);

@@ -367,7 +367,7 @@ purple_demo_protocol_request_wait_activate(G_GNUC_UNUSED GSimpleAction *action,
 
 static void
 purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
-                                          PurpleRequestFields *fields)
+                                          PurpleRequestPage *page)
 {
 	PurpleAccount *account = NULL;
 	PurpleRequestField *field = NULL;
@@ -378,30 +378,30 @@ purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
 	info = g_string_new(_("Basic group:\n"));
 
 	g_string_append_printf(info, _("\tString: %s\n"),
-	                       purple_request_fields_get_string(fields, "string"));
+	                       purple_request_page_get_string(page, "string"));
 	g_string_append_printf(info, _("\tMultiline string: %s\n"),
-	                       purple_request_fields_get_string(fields,
-	                                                        "multiline-string"));
+	                       purple_request_page_get_string(page,
+	                                                      "multiline-string"));
 	g_string_append_printf(info, _("\tMasked string: %s\n"),
-	                       purple_request_fields_get_string(fields,
-	                                                        "masked-string"));
+	                       purple_request_page_get_string(page,
+	                                                      "masked-string"));
 	g_string_append_printf(info, _("\tAlphanumeric string: %s\n"),
-	                       purple_request_fields_get_string(fields,
-	                                                        "alphanumeric"));
+	                       purple_request_page_get_string(page,
+	                                                      "alphanumeric"));
 	g_string_append_printf(info, _("\tEmail string: %s\n"),
-	                       purple_request_fields_get_string(fields, "email"));
+	                       purple_request_page_get_string(page, "email"));
 	g_string_append_printf(info, _("\tInteger: %d\n"),
-	                       purple_request_fields_get_integer(fields, "int"));
+	                       purple_request_page_get_integer(page, "int"));
 	g_string_append_printf(info, _("\tBoolean: %s\n"),
-	                       purple_request_fields_get_bool(fields, "bool") ?
+	                       purple_request_page_get_bool(page, "bool") ?
 	                       _("TRUE") : _("FALSE"));
 
 	g_string_append(info, _("Multiple-choice group:\n"));
 
-	tmp = (const char *)purple_request_fields_get_choice(fields, "choice");
+	tmp = (const char *)purple_request_page_get_choice(page, "choice");
 	g_string_append_printf(info, _("\tChoice: %s\n"), tmp);
 
-	field = purple_request_fields_get_field(fields, "list");
+	field = purple_request_page_get_field(page, "list");
 	list = purple_request_field_list_get_selected(field);
 	if(list != NULL) {
 		tmp = (const char *)list->data;
@@ -410,7 +410,7 @@ purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
 	}
 	g_string_append_printf(info, _("\tList: %s\n"), tmp);
 
-	field = purple_request_fields_get_field(fields, "multilist");
+	field = purple_request_page_get_field(page, "multilist");
 	list = purple_request_field_list_get_selected(field);
 	g_string_append(info, _("\tMulti-list: ["));
 	while(list != NULL) {
@@ -423,7 +423,7 @@ purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
 
 	g_string_append(info, _("Special group:\n"));
 
-	account = purple_request_fields_get_account(fields, "account");
+	account = purple_request_page_get_account(page, "account");
 	if(PURPLE_IS_ACCOUNT(account)) {
 		tmp = purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(account));
 	} else {
@@ -438,7 +438,7 @@ purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
 
 static void
 purple_demo_protocol_request_fields_cancel_cb(G_GNUC_UNUSED gpointer data,
-                                              G_GNUC_UNUSED PurpleRequestFields *fields)
+                                              G_GNUC_UNUSED PurpleRequestPage *page)
 {
 	g_message(_("UI cancelled field request"));
 }
@@ -452,7 +452,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	const gchar *account_id = NULL;
 	PurpleAccountManager *manager = NULL;
 	PurpleAccount *account = NULL;
-	PurpleRequestFields *fields = NULL;
+	PurpleRequestPage *page = NULL;
 	PurpleRequestGroup *group = NULL;
 	PurpleRequestField *field = NULL;
 	GBytes *icon = NULL;
@@ -470,11 +470,11 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 
 	/* This group will contain basic fields. */
 	group = purple_request_group_new(_("Basic"));
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_label_new("basic-label",
 	                                       _("This group contains basic fields"));
@@ -512,7 +512,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 
 	/* This group will contain fields with multiple options. */
 	group = purple_request_group_new(_("Multiple"));
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_label_new("multiple-label",
 	                                       _("This group contains fields with multiple options"));
@@ -542,7 +542,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 
 	/* This group will contain specialized fields. */
 	group = purple_request_group_new(_("Special"));
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_label_new("special-label",
 	                                       _("This group contains specialized fields"));
@@ -562,7 +562,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	purple_request_group_add_field(group, field);
 
 	purple_request_fields(connection, _("Request Fields Demo"),
-	                      _("Please fill out these fields…"), NULL, fields,
+	                      _("Please fill out these fields…"), NULL, page,
 	                      _("OK"),
 	                      G_CALLBACK(purple_demo_protocol_request_fields_ok_cb),
 	                      _("Cancel"),

@@ -530,13 +530,12 @@ remove_new_empty_group(G_GNUC_UNUSED gpointer data)
 }
 
 static void
-add_buddy_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *allfields)
-{
-	const char *username = purple_request_fields_get_string(allfields, "screenname");
-	const char *alias = purple_request_fields_get_string(allfields, "alias");
-	const char *group = purple_request_fields_get_string(allfields, "group");
-	const char *invite = purple_request_fields_get_string(allfields, "invite");
-	PurpleAccount *account = purple_request_fields_get_account(allfields, "account");
+add_buddy_cb(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
+	const char *username = purple_request_page_get_string(page, "screenname");
+	const char *alias = purple_request_page_get_string(page, "alias");
+	const char *group = purple_request_page_get_string(page, "group");
+	const char *invite = purple_request_page_get_string(page, "invite");
+	PurpleAccount *account = purple_request_page_get_account(page, "account");
 	const char *error = NULL;
 	PurpleGroup *grp;
 	PurpleBuddy *buddy;
@@ -582,11 +581,11 @@ finch_request_add_buddy(G_GNUC_UNUSED PurpleBuddyList *list,
                         PurpleAccount *account, const char *username,
                         const char *grp, const char *alias)
 {
-	PurpleRequestFields *fields = purple_request_fields_new();
+	PurpleRequestPage *page = purple_request_page_new();
 	PurpleRequestGroup *group = purple_request_group_new(NULL);
 	PurpleRequestField *field;
 
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("screenname", _("Username"), username, FALSE);
 	purple_request_group_add_field(group, field);
@@ -608,7 +607,7 @@ finch_request_add_buddy(G_GNUC_UNUSED PurpleBuddyList *list,
 	purple_request_group_add_field(group, field);
 
 	purple_request_fields(NULL, _("Add Buddy"), NULL, _("Please enter buddy information."),
-			fields,
+			page,
 			_("Add"), G_CALLBACK(add_buddy_cb),
 			_("Cancel"), NULL,
 			purple_request_cpar_from_account(account),
@@ -636,8 +635,7 @@ join_chat(PurpleChat *chat)
 }
 
 static void
-add_chat_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *allfields)
-{
+add_chat_cb(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	PurpleAccount *account;
 	const char *alias, *name, *group;
 	PurpleChat *chat;
@@ -647,11 +645,11 @@ add_chat_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *allfields)
 	gboolean autojoin;
 	PurpleProtocol *protocol;
 
-	account = purple_request_fields_get_account(allfields, "account");
-	name = purple_request_fields_get_string(allfields, "name");
-	alias = purple_request_fields_get_string(allfields, "alias");
-	group = purple_request_fields_get_string(allfields, "group");
-	autojoin = purple_request_fields_get_bool(allfields, "autojoin");
+	account = purple_request_page_get_account(page, "account");
+	name = purple_request_page_get_string(page, "name");
+	alias = purple_request_page_get_string(page, "alias");
+	group = purple_request_page_get_string(page, "group");
+	autojoin = purple_request_page_get_bool(page, "autojoin");
 
 	if (!purple_account_is_connected(account) || !name || !*name)
 		return;
@@ -684,11 +682,11 @@ finch_request_add_chat(G_GNUC_UNUSED PurpleBuddyList *list,
                        PurpleAccount *account, PurpleGroup *grp,
                        const char *alias, const char *name)
 {
-	PurpleRequestFields *fields = purple_request_fields_new();
+	PurpleRequestPage *page = purple_request_page_new();
 	PurpleRequestGroup *group = purple_request_group_new(NULL);
 	PurpleRequestField *field;
 
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_account_new("account", _("Account"), NULL);
 	purple_request_field_account_set_show_all(field, FALSE);
@@ -711,7 +709,7 @@ finch_request_add_chat(G_GNUC_UNUSED PurpleBuddyList *list,
 
 	purple_request_fields(NULL, _("Add Chat"), NULL,
 			_("You can edit more information from the context menu later."),
-			fields, _("Add"), G_CALLBACK(add_chat_cb), _("Cancel"), NULL,
+			page, _("Add"), G_CALLBACK(add_chat_cb), _("Cancel"), NULL,
 			NULL, NULL);
 }
 
@@ -980,11 +978,13 @@ add_custom_action(GntMenu *menu, const char *label, GCallback callback,
 }
 
 static void
-chat_components_edit_ok(PurpleChat *chat, PurpleRequestFields *allfields)
+chat_components_edit_ok(PurpleChat *chat, PurpleRequestPage *page)
 {
 	GList *groups, *fields;
 
-	for (groups = purple_request_fields_get_groups(allfields); groups; groups = groups->next) {
+	for(groups = purple_request_page_get_groups(page); groups;
+	    groups = groups->next)
+	{
 		fields = purple_request_group_get_fields(groups->data);
 		for (; fields; fields = fields->next) {
 			PurpleRequestField *field = fields->data;
@@ -1009,7 +1009,7 @@ chat_components_edit_ok(PurpleChat *chat, PurpleRequestFields *allfields)
 static void
 chat_components_edit(G_GNUC_UNUSED PurpleBlistNode *selected, PurpleChat *chat)
 {
-	PurpleRequestFields *fields = purple_request_fields_new();
+	PurpleRequestPage *page = purple_request_page_new();
 	PurpleRequestGroup *group = purple_request_group_new(NULL);
 	PurpleRequestField *field;
 	GList *parts, *iter;
@@ -1017,7 +1017,7 @@ chat_components_edit(G_GNUC_UNUSED PurpleBlistNode *selected, PurpleChat *chat)
 	PurpleProtocolChatEntry *pce;
 	PurpleConnection *gc;
 
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	gc = purple_account_get_connection(purple_chat_get_account(chat));
 	protocol = purple_connection_get_protocol(gc);
@@ -1048,7 +1048,7 @@ chat_components_edit(G_GNUC_UNUSED PurpleBlistNode *selected, PurpleChat *chat)
 	g_list_free(parts);
 
 	purple_request_fields(NULL, _("Edit Chat"), NULL, _("Please Update the necessary fields."),
-			fields, _("Edit"), G_CALLBACK(chat_components_edit_ok), _("Cancel"), NULL,
+			page, _("Edit"), G_CALLBACK(chat_components_edit_ok), _("Cancel"), NULL,
 			NULL, chat);
 }
 
@@ -2518,14 +2518,13 @@ static void sort_blist_change_cb(G_GNUC_UNUSED GntMenuItem *item, gpointer n)
 
 /* send_im_select* -- Xerox */
 static void
-send_im_select_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
-{
+send_im_select_cb(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	PurpleAccount *account;
 	const char *username;
 	PurpleConversation *im;
 
-	account  = purple_request_fields_get_account(fields, "account");
-	username = purple_request_fields_get_string(fields,  "screenname");
+	account = purple_request_page_get_account(page, "account");
+	username = purple_request_page_get_string(page, "screenname");
 
 	im = purple_im_conversation_new(account, username);
 	purple_conversation_present(im);
@@ -2534,14 +2533,14 @@ send_im_select_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 static void
 send_im_select(G_GNUC_UNUSED GntMenuItem *item, G_GNUC_UNUSED gpointer n)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("screenname", _("Name"), NULL, FALSE);
 	purple_request_field_set_type_hint(field, "screenname");
@@ -2560,13 +2559,12 @@ send_im_select(G_GNUC_UNUSED GntMenuItem *item, G_GNUC_UNUSED gpointer n)
 	        purple_blist_get_default(), _("New Instant Message"), NULL,
 	        _("Please enter the username or alias of the person "
 	          "you would like to IM."),
-	        fields, _("OK"), G_CALLBACK(send_im_select_cb), _("Cancel"),
+	        page, _("OK"), G_CALLBACK(send_im_select_cb), _("Cancel"),
 	        NULL, NULL, NULL);
 }
 
 static void
-join_chat_select_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
-{
+join_chat_select_cb(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	PurpleAccount *account;
 	const char *name;
 	PurpleConnection *gc;
@@ -2575,8 +2573,8 @@ join_chat_select_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 	GHashTable *hash = NULL;
 	PurpleConversation *conv;
 
-	account = purple_request_fields_get_account(fields, "account");
-	name = purple_request_fields_get_string(fields,  "chat");
+	account = purple_request_page_get_account(page, "account");
+	name = purple_request_page_get_string(page, "chat");
 
 	if (!purple_account_is_connected(account))
 		return;
@@ -2610,14 +2608,14 @@ join_chat_select_cb(G_GNUC_UNUSED gpointer data, PurpleRequestFields *fields)
 static void
 join_chat_select(G_GNUC_UNUSED GntMenuItem *item, G_GNUC_UNUSED gpointer n)
 {
-	PurpleRequestFields *fields;
+	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 
-	fields = purple_request_fields_new();
+	page = purple_request_page_new();
 
 	group = purple_request_group_new(NULL);
-	purple_request_fields_add_group(fields, group);
+	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("chat", _("Channel"), NULL, FALSE);
 	purple_request_field_set_required(field, TRUE);
@@ -2634,7 +2632,7 @@ join_chat_select(G_GNUC_UNUSED GntMenuItem *item, G_GNUC_UNUSED gpointer n)
 	purple_request_fields(
 	        purple_blist_get_default(), _("Join a Chat"), NULL,
 	        _("Please enter the name of the chat you want to join."),
-	        fields, _("Join"), G_CALLBACK(join_chat_select_cb), _("Cancel"),
+	        page, _("Join"), G_CALLBACK(join_chat_select_cb), _("Cancel"),
 	        NULL, NULL, NULL);
 }
 
