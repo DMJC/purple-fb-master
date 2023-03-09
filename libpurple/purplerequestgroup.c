@@ -69,10 +69,16 @@ purple_request_group_get_n_items(GListModel *model) {
 }
 
 static gpointer
-purple_request_group_get_item(G_GNUC_UNUSED GListModel *model, guint index) {
+purple_request_group_get_item(GListModel *model, guint index) {
 	PurpleRequestGroup *group = PURPLE_REQUEST_GROUP(model);
+	PurpleRequestField *field = NULL;
 
-	return g_list_nth_data(group->fields, index);
+	field = g_list_nth_data(group->fields, index);
+	if(PURPLE_IS_REQUEST_FIELD(field)) {
+		g_object_ref(field);
+	}
+
+	return field;
 }
 
 static void

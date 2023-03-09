@@ -57,8 +57,14 @@ purple_request_page_get_n_items(GListModel *model) {
 static gpointer
 purple_request_page_get_item(GListModel *model, guint index) {
 	PurpleRequestPage *page = PURPLE_REQUEST_PAGE(model);
+	PurpleRequestGroup *group = NULL;
 
-	return g_list_nth_data(page->groups, index);
+	group = g_list_nth_data(page->groups, index);
+	if(PURPLE_IS_REQUEST_GROUP(group)) {
+		g_object_ref(group);
+	}
+
+	return group;
 }
 
 static void
