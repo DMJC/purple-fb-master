@@ -79,7 +79,7 @@ purple_kwallet_provider_account_key(PurpleAccount *account) {
 /******************************************************************************
  * Request Implementation
  *****************************************************************************/
-PurpleKWalletPlugin::Request::Request(QString key, GTask *task) {
+PurpleKWalletPlugin::Request::Request(const QString &key, GTask *task) {
 	this->key = key;
 	this->task = G_TASK(g_object_ref(G_OBJECT(task)));
 }
@@ -91,7 +91,7 @@ PurpleKWalletPlugin::Request::~Request(void) {
 /******************************************************************************
  * ReadRequest Implementation
  *****************************************************************************/
-PurpleKWalletPlugin::ReadRequest::ReadRequest(QString key, GTask *task) : PurpleKWalletPlugin::Request(key, task) {
+PurpleKWalletPlugin::ReadRequest::ReadRequest(const QString &key, GTask *task) : PurpleKWalletPlugin::Request(key, task) {
 }
 
 void
@@ -128,7 +128,7 @@ PurpleKWalletPlugin::ReadRequest::execute(KWallet::Wallet *wallet) {
 }
 
 void
-PurpleKWalletPlugin::ReadRequest::cancel(QString reason) {
+PurpleKWalletPlugin::ReadRequest::cancel(const QString &reason) {
 	g_task_return_new_error(this->task, PURPLE_KWALLET_DOMAIN, 0,
 	                        _("failed to read password: %s"),
 	                        reason.toUtf8().constData());
@@ -139,7 +139,7 @@ PurpleKWalletPlugin::ReadRequest::cancel(QString reason) {
 /******************************************************************************
  * WriteRequest Implementation
  *****************************************************************************/
-PurpleKWalletPlugin::WriteRequest::WriteRequest(QString key, GTask *task, QString password) : PurpleKWalletPlugin::Request(key, task) {
+PurpleKWalletPlugin::WriteRequest::WriteRequest(const QString &key, GTask *task, const QString &password) : PurpleKWalletPlugin::Request(key, task) {
 	this->password = password;
 }
 
@@ -161,7 +161,7 @@ PurpleKWalletPlugin::WriteRequest::execute(KWallet::Wallet *wallet) {
 }
 
 void
-PurpleKWalletPlugin::WriteRequest::cancel(QString reason) {
+PurpleKWalletPlugin::WriteRequest::cancel(const QString &reason) {
 	g_task_return_new_error(this->task, PURPLE_KWALLET_DOMAIN, 0,
 	                        _("failed to write password: %s"),
 	                        reason.toUtf8().constData());
@@ -172,7 +172,7 @@ PurpleKWalletPlugin::WriteRequest::cancel(QString reason) {
 /******************************************************************************
  * ClearRequest Implementation
  *****************************************************************************/
-PurpleKWalletPlugin::ClearRequest::ClearRequest(QString key, GTask *task) : PurpleKWalletPlugin::Request(key, task) {
+PurpleKWalletPlugin::ClearRequest::ClearRequest(const QString &key, GTask *task) : PurpleKWalletPlugin::Request(key, task) {
 }
 
 void
@@ -193,7 +193,7 @@ PurpleKWalletPlugin::ClearRequest::execute(KWallet::Wallet *wallet) {
 }
 
 void
-PurpleKWalletPlugin::ClearRequest::cancel(QString reason) {
+PurpleKWalletPlugin::ClearRequest::cancel(const QString &reason) {
 	g_task_return_new_error(this->task, PURPLE_KWALLET_DOMAIN, 0,
 	                        _("failed to clear password: %s"),
 	                        reason.toUtf8().constData());

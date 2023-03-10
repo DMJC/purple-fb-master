@@ -34,10 +34,10 @@ namespace PurpleKWalletPlugin {
 
 class Request {
 public:
-	Request(QString key, GTask *task);
+	Request(const QString &key, GTask *task);
 	virtual ~Request(void);
 	virtual void execute(KWallet::Wallet *wallet) = 0;
-	virtual void cancel(QString reason) = 0;
+	virtual void cancel(const QString &reason) = 0;
 protected:
 	QString key;
 	GTask *task;
@@ -45,25 +45,25 @@ protected:
 
 class ReadRequest : public Request {
 public:
-	ReadRequest(QString key, GTask *task);
+	ReadRequest(const QString &key, GTask *task);
 	void execute(KWallet::Wallet *wallet);
-	void cancel(QString reason);
+	void cancel(const QString &reason);
 };
 
 class WriteRequest : public Request {
 public:
-	WriteRequest(QString key, GTask *task, QString password);
+	WriteRequest(const QString &key, GTask *task, const QString &password);
 	void execute(KWallet::Wallet *wallet);
-	void cancel(QString reason);
+	void cancel(const QString &reason);
 private:
 	QString password;
 };
 
 class ClearRequest : public Request {
 public:
-	ClearRequest(QString key, GTask *task);
+	ClearRequest(const QString &key, GTask *task);
 	void execute(KWallet::Wallet *wallet);
-	void cancel(QString reason);
+	void cancel(const QString &reason);
 };
 
 class Engine : public QObject {
