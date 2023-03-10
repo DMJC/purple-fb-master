@@ -29,6 +29,7 @@
 #include "purpleenums.h"
 #include "purpleprivate.h"
 #include "request.h"
+#include "request/purplerequestfieldstring.h"
 #include "server.h"
 
 typedef struct {

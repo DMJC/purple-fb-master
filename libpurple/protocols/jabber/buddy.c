@@ -557,7 +557,6 @@ jabber_set_buddy_icon(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
 static void
 jabber_format_info(PurpleConnection *gc, PurpleRequestPage *page) {
 	PurpleXmlNode *vc_node;
-	PurpleRequestField *field;
 	PurpleProtocol *protocol = NULL;
 	const char *text;
 	char *p;
@@ -573,11 +572,9 @@ jabber_format_info(PurpleConnection *gc, PurpleRequestPage *page) {
 		if (*vc_tp->label == '\0')
 			continue;
 
-		field = purple_request_page_get_field(page, vc_tp->tag);
-		text  = purple_request_field_string_get_value(field);
+		text = purple_request_page_get_string(page, vc_tp->tag);
 
-
-		if (text != NULL && *text != '\0') {
+		if(!purple_strempty(text)) {
 			PurpleXmlNode *xp;
 
 			purple_debug_info("jabber", "Setting %s to '%s'\n", vc_tp->tag, text);

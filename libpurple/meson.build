@@ -98,6 +98,7 @@ purple_coresources = [
 	'queuedoutputstream.c',
 	'request.c',
 	'request/purplerequestfieldaccount.c',
+	'request/purplerequestfieldstring.c',
 	'request-datasheet.c',
 	'roomlist.c',
 	'savedstatuses.c',
@@ -222,6 +223,7 @@ purple_coreheaders = [
 
 purple_request_headers = [
 	'request/purplerequestfieldaccount.h',
+	'request/purplerequestfieldstring.h',
 ]
 
 purple_generated_sources = []

@@ -23,6 +23,7 @@
 
 #include "glibcompat.h"
 #include "request.h"
+#include "request/purplerequestfieldstring.h"
 #include "debug.h"
 #include "purplekeyvaluepair.h"
 #include "purpleprivate.h"
@@ -40,13 +41,6 @@ typedef struct {
 	gboolean sensitive;
 
 	union {
-		struct {
-			gboolean multiline;
-			gboolean masked;
-			char *default_value;
-			char *value;
-		} string;
-
 		struct {
 			int default_value;
 			int value;
@@ -231,10 +225,7 @@ purple_request_field_finalize(GObject *obj) {
 	g_free(priv->type_hint);
 	g_free(priv->tooltip);
 
-	if(priv->type == PURPLE_REQUEST_FIELD_STRING) {
-		g_free(priv->u.string.default_value);
-		g_free(priv->u.string.value);
-	} else if(priv->type == PURPLE_REQUEST_FIELD_CHOICE) {
+	if(priv->type == PURPLE_REQUEST_FIELD_CHOICE) {
 		g_list_free_full(priv->u.choice.elements,
 		                 (GDestroyNotify)purple_key_value_pair_free);
 	} else if(priv->type == PURPLE_REQUEST_FIELD_LIST) {
@@ -587,14 +578,12 @@ gboolean
 purple_request_field_is_filled(PurpleRequestField *field) {
 	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
 
-	switch (purple_request_field_get_field_type(field))
-	{
-		case PURPLE_REQUEST_FIELD_STRING:
-			return (purple_request_field_string_get_value(field) != NULL &&
-				*(purple_request_field_string_get_value(field)) != '\0');
-		default:
-			return TRUE;
+	if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
+		PurpleRequestFieldString *sfield = PURPLE_REQUEST_FIELD_STRING(field);
+		return !purple_strempty(purple_request_field_string_get_value(sfield));
 	}
+
+	return TRUE;
 }
 
 void
@@ -681,117 +670,6 @@ purple_request_field_is_sensitive(PurpleRequestField *field)
 	priv = purple_request_field_get_instance_private(field);
 
 	return priv->sensitive;
-}
-
-PurpleRequestField *
-purple_request_field_string_new(const char *id, const char *text,
-							  const char *default_value, gboolean multiline)
-{
-	PurpleRequestField *field;
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(id   != NULL, NULL);
-	g_return_val_if_fail(text != NULL, NULL);
-
-	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_STRING);
-	priv = purple_request_field_get_instance_private(field);
-
-	priv->u.string.multiline = multiline;
-
-	purple_request_field_string_set_default_value(field, default_value);
-	purple_request_field_string_set_value(field, default_value);
-
-	return field;
-}
-
-void
-purple_request_field_string_set_default_value(PurpleRequestField *field,
-											const char *default_value)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING);
-
-	g_free(priv->u.string.default_value);
-	priv->u.string.default_value = g_strdup(default_value);
-}
-
-void
-purple_request_field_string_set_value(PurpleRequestField *field, const char *value)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING);
-
-	g_free(priv->u.string.value);
-	priv->u.string.value = g_strdup(value);
-}
-
-void
-purple_request_field_string_set_masked(PurpleRequestField *field, gboolean masked)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING);
-
-	priv->u.string.masked = masked;
-}
-
-const char *
-purple_request_field_string_get_default_value(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, NULL);
-
-	return priv->u.string.default_value;
-}
-
-const char *
-purple_request_field_string_get_value(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, NULL);
-
-	return priv->u.string.value;
-}
-
-gboolean
-purple_request_field_string_is_multiline(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
-
-	return priv->u.string.multiline;
-}
-
-gboolean
-purple_request_field_string_is_masked(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
-
-	return priv->u.string.masked;
 }
 
 PurpleRequestField *
@@ -1433,73 +1311,4 @@ purple_request_field_datasheet_get_sheet(PurpleRequestField *field)
 	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_DATASHEET, NULL);
 
 	return priv->u.datasheet.sheet;
-}
-
-/* -- */
-
-gboolean
-purple_request_field_email_validator(PurpleRequestField *field, gchar **errmsg,
-                                     G_GNUC_UNUSED gpointer user_data)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-	const char *value;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
-
-	value = purple_request_field_string_get_value(field);
-
-	if (value != NULL && purple_email_is_valid(value))
-		return TRUE;
-
-	if (errmsg)
-		*errmsg = g_strdup(_("Invalid email address"));
-	return FALSE;
-}
-
-gboolean
-purple_request_field_alphanumeric_validator(PurpleRequestField *field,
-	gchar **errmsg, void *allowed_characters)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-	const char *value;
-	gchar invalid_char = '\0';
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_STRING, FALSE);
-
-	value = purple_request_field_string_get_value(field);
-
-	g_return_val_if_fail(value != NULL, FALSE);
-
-	if (allowed_characters)
-	{
-		gchar *value_r = g_strdup(value);
-		g_strcanon(value_r, allowed_characters, '\0');
-		invalid_char = value[strlen(value_r)];
-		g_free(value_r);
-	}
-	else
-	{
-		while (value)
-		{
-			if (!g_ascii_isalnum(*value))
-			{
-				invalid_char = *value;
-				break;
-			}
-			value++;
-		}
-	}
-	if (!invalid_char)
-		return TRUE;
-
-	if (errmsg)
-		*errmsg = g_strdup_printf(_("Invalid character '%c'"),
-			invalid_char);
-	return FALSE;
 }

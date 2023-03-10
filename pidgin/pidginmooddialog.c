@@ -85,10 +85,7 @@ pidgin_mood_dialog_edit_cb(PurpleConnection *connection,
 
 		flags = purple_connection_get_flags(connection);
 		if (flags & PURPLE_CONNECTION_FLAG_SUPPORT_MOOD_MESSAGES) {
-			PurpleRequestField *text_field = NULL;
-
-			text_field = purple_request_page_get_field(page, "text");
-			text = purple_request_field_string_get_value(text_field);
+			text = purple_request_page_get_string(page, "text");
 		} else {
 			text = NULL;
 		}

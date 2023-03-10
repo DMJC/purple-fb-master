@@ -195,7 +195,7 @@ choice_response_cb(GtkDialog *dialog, gint id, PidginRequestData *data) {
 
 static gboolean
 field_string_focus_out_cb(GtkEventControllerFocus *controller,
-                          PurpleRequestField *field)
+                          PurpleRequestFieldString *field)
 {
 	GtkWidget *entry = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(controller));
 	const char *value;
@@ -1042,21 +1042,27 @@ req_entry_field_changed_cb(GtkWidget *entry, PurpleRequestField *field)
 		int value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 		purple_request_field_int_set_value(field, value);
 
-	} else if (purple_request_field_string_is_multiline(field)) {
-		char *text;
-		GtkTextIter start_iter, end_iter;
-
-		gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(entry), &start_iter);
-		gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(entry), &end_iter);
-
-		text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(entry), &start_iter, &end_iter, FALSE);
-		purple_request_field_string_set_value(field, (!text || !*text) ? NULL : text);
-		g_free(text);
-
 	} else {
-		const char *text = NULL;
-		text = gtk_editable_get_text(GTK_EDITABLE(entry));
-		purple_request_field_string_set_value(field, (*text == '\0') ? NULL : text);
+		PurpleRequestFieldString *strfield = PURPLE_REQUEST_FIELD_STRING(field);
+		if(purple_request_field_string_is_multiline(strfield)) {
+			char *text;
+			GtkTextIter start_iter, end_iter;
+
+			gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(entry), &start_iter);
+			gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(entry), &end_iter);
+
+			text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(entry),
+			                                &start_iter, &end_iter, FALSE);
+			purple_request_field_string_set_value(strfield,
+			                                      purple_strempty(text) ? NULL : text);
+			g_free(text);
+
+		} else {
+			const char *text = NULL;
+			text = gtk_editable_get_text(GTK_EDITABLE(entry));
+			purple_request_field_string_set_value(strfield,
+			                                      purple_strempty(text) ? NULL : text);
+		}
 	}
 
 	req_field_changed_common(entry, field);
@@ -1109,15 +1115,15 @@ setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
 static GtkWidget *
 create_string_field(PurpleRequestField *field)
 {
+	PurpleRequestFieldString *strfield = PURPLE_REQUEST_FIELD_STRING(field);
 	const char *value;
 	GtkWidget *widget;
 	gboolean is_editable;
 
-	value = purple_request_field_string_get_default_value(field);
+	value = purple_request_field_string_get_default_value(strfield);
 	is_editable = purple_request_field_is_sensitive(field);
 
-	if (purple_request_field_string_is_multiline(field))
-	{
+	if(purple_request_field_string_is_multiline(strfield)) {
 		GtkWidget *textview;
 		GtkEventController *controller;
 
@@ -1162,7 +1168,7 @@ create_string_field(PurpleRequestField *field)
 	{
 		GtkEventController *controller = NULL;
 
-		if (purple_request_field_string_is_masked(field)) {
+		if(purple_request_field_string_is_masked(strfield)) {
 			widget = gtk_password_entry_new();
 			g_object_set(widget, "activates-default", TRUE,
 			             "show-peek-icon", TRUE, NULL);
@@ -2044,8 +2050,8 @@ pidgin_request_fields(const char *title, const char *primary,
 				rows++;
 			}
 			else if ((type == PURPLE_REQUEST_FIELD_LIST) ||
-				 (type == PURPLE_REQUEST_FIELD_STRING &&
-				  purple_request_field_string_is_multiline(field)))
+				 (PURPLE_IS_REQUEST_FIELD_STRING(field) &&
+				  purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field))))
 			{
 				rows += 2;
 			} else if (compact && type != PURPLE_REQUEST_FIELD_BOOLEAN)
@@ -2114,8 +2120,8 @@ pidgin_request_fields(const char *title, const char *primary,
 
 					if (type == PURPLE_REQUEST_FIELD_LABEL ||
 					    type == PURPLE_REQUEST_FIELD_LIST ||
-						(type == PURPLE_REQUEST_FIELD_STRING &&
-						 purple_request_field_string_is_multiline(field)))
+						(PURPLE_IS_REQUEST_FIELD_STRING(field) &&
+						 purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field))))
 					{
 						gtk_grid_attach(GTK_GRID(grid), label,
 							0, row_num, 2 * cols, 1);
@@ -2135,9 +2141,9 @@ pidgin_request_fields(const char *title, const char *primary,
 				                                      "pidgin-ui-data"));
 				if (widget == NULL)
 				{
-					if (type == PURPLE_REQUEST_FIELD_STRING)
+					if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 						widget = create_string_field(field);
-					else if (type == PURPLE_REQUEST_FIELD_INTEGER)
+					} else if (type == PURPLE_REQUEST_FIELD_INTEGER)
 						widget = create_int_field(field);
 					else if (type == PURPLE_REQUEST_FIELD_BOOLEAN)
 						widget = create_bool_field(field, cpar);
@@ -2166,8 +2172,8 @@ pidgin_request_fields(const char *title, const char *primary,
 				gtk_widget_set_margin_start(widget, 5);
 				gtk_widget_set_margin_end(widget, 5);
 
-				if (type == PURPLE_REQUEST_FIELD_STRING &&
-					purple_request_field_string_is_multiline(field))
+				if(PURPLE_IS_REQUEST_FIELD_STRING(field) &&
+					purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field)))
 				{
 					gtk_grid_attach(GTK_GRID(grid), widget,
 						0, row_num, 2 * cols, 1);

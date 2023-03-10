@@ -490,7 +490,8 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	field = purple_request_field_string_new("masked-string",
 	                                        _("A masked string"), _("default"),
 	                                        FALSE);
-	purple_request_field_string_set_masked(field, TRUE);
+	purple_request_field_string_set_masked(PURPLE_REQUEST_FIELD_STRING(field),
+	                                       TRUE);
 	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("alphanumeric",
 	                                        _("An alphanumeric string"),

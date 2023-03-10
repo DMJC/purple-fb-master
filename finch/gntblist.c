@@ -1000,8 +1000,9 @@ chat_components_edit_ok(PurpleChat *chat, PurpleRequestPage *page)
 			id = purple_request_field_get_id(field);
 			if (purple_request_field_get_field_type(field) == PURPLE_REQUEST_FIELD_INTEGER)
 				val = g_strdup_printf("%d", purple_request_field_int_get_value(field));
-			else
-				val = g_strdup(purple_request_field_string_get_value(field));
+			else {
+				val = g_strdup(purple_request_field_string_get_value(PURPLE_REQUEST_FIELD_STRING(field)));
+			}
 
 			if (!val) {
 				g_hash_table_remove(purple_chat_get_components(chat), id);
@@ -1040,8 +1041,10 @@ chat_components_edit(G_GNUC_UNUSED PurpleBlistNode *selected, PurpleChat *chat)
 		} else {
 			field = purple_request_field_string_new(pce->identifier, pce->label,
 					g_hash_table_lookup(purple_chat_get_components(chat), pce->identifier), FALSE);
-			if (pce->secret)
-				purple_request_field_string_set_masked(field, TRUE);
+			if(pce->secret) {
+				purple_request_field_string_set_masked(PURPLE_REQUEST_FIELD_STRING(field),
+				                                       TRUE);
+			}
 		}
 
 		if (pce->required)

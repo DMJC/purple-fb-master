@@ -64,7 +64,6 @@ struct _PurpleRequestFieldClass {
 /**
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
- * @PURPLE_REQUEST_FIELD_STRING: String field.
  * @PURPLE_REQUEST_FIELD_INTEGER: Integer field.
  * @PURPLE_REQUEST_FIELD_BOOLEAN: Boolean field.
  * @PURPLE_REQUEST_FIELD_CHOICE: Choice field (dropdown?).
@@ -78,7 +77,6 @@ struct _PurpleRequestFieldClass {
 typedef enum
 {
 	PURPLE_REQUEST_FIELD_NONE,
-	PURPLE_REQUEST_FIELD_STRING,
 	PURPLE_REQUEST_FIELD_INTEGER,
 	PURPLE_REQUEST_FIELD_BOOLEAN,
 	PURPLE_REQUEST_FIELD_CHOICE,
@@ -317,97 +315,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**************************************************************************/
-/* String Field API                                                       */
-/**************************************************************************/
-
-/**
- * purple_request_field_string_new:
- * @id:            The field ID.
- * @text:          The text label of the field.
- * @default_value: The optional default value.
- * @multiline:     Whether or not this should be a multiline string.
- *
- * Creates a string request field.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_string_new(const char *id,
-												const char *text,
-												const char *default_value,
-												gboolean multiline);
-
-/**
- * purple_request_field_string_set_default_value:
- * @field:         The field.
- * @default_value: The default value.
- *
- * Sets the default value in a string field.
- */
-void purple_request_field_string_set_default_value(PurpleRequestField *field,
-												 const char *default_value);
-
-/**
- * purple_request_field_string_set_value:
- * @field: The field.
- * @value: The value.
- *
- * Sets the value in a string field.
- */
-void purple_request_field_string_set_value(PurpleRequestField *field,
-										 const char *value);
-
-/**
- * purple_request_field_string_set_masked:
- * @field:  The field.
- * @masked: The masked value.
- *
- * Sets whether or not a string field is masked
- * (commonly used for password fields).
- */
-void purple_request_field_string_set_masked(PurpleRequestField *field,
-										  gboolean masked);
-
-/**
- * purple_request_field_string_get_default_value:
- * @field: The field.
- *
- * Returns the default value in a string field.
- *
- * Returns: The default value.
- */
-const char *purple_request_field_string_get_default_value(PurpleRequestField *field);
-
-/**
- * purple_request_field_string_get_value:
- * @field: The field.
- *
- * Returns the user-entered value in a string field.
- *
- * Returns: The value.
- */
-const char *purple_request_field_string_get_value(PurpleRequestField *field);
-
-/**
- * purple_request_field_string_is_multiline:
- * @field: The field.
- *
- * Returns whether or not a string field is multi-line.
- *
- * Returns: %TRUE if the field is mulit-line, or %FALSE otherwise.
- */
-gboolean purple_request_field_string_is_multiline(PurpleRequestField *field);
-
-/**
- * purple_request_field_string_is_masked:
- * @field: The field.
- *
- * Returns whether or not a string field is masked.
- *
- * Returns: %TRUE if the field is masked, or %FALSE otherwise.
- */
-gboolean purple_request_field_string_is_masked(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Integer Field API                                                      */

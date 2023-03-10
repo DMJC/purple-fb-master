@@ -38,6 +38,7 @@
 #include "purpleprotocolmanager.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
+#include "request/purplerequestfieldstring.h"
 #include "server.h"
 #include "signals.h"
 #include "util.h"
@@ -1077,7 +1078,8 @@ purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
 	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_string_new("password", _("Enter Password"), NULL, FALSE);
-	purple_request_field_string_set_masked(field, TRUE);
+	purple_request_field_string_set_masked(PURPLE_REQUEST_FIELD_STRING(field),
+	                                       TRUE);
 	purple_request_field_set_required(field, TRUE);
 	purple_request_group_add_field(group, field);
 
@@ -1114,7 +1116,8 @@ purple_account_request_change_password(PurpleAccount *account)
 
 	field = purple_request_field_string_new("password", _("Original password"),
 										  NULL, FALSE);
-	purple_request_field_string_set_masked(field, TRUE);
+	purple_request_field_string_set_masked(PURPLE_REQUEST_FIELD_STRING(field),
+	                                       TRUE);
 	if (!protocol || !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
 		purple_request_field_set_required(field, TRUE);
 	purple_request_group_add_field(group, field);
@@ -1122,7 +1125,8 @@ purple_account_request_change_password(PurpleAccount *account)
 	field = purple_request_field_string_new("new_password_1",
 										  _("New password"),
 										  NULL, FALSE);
-	purple_request_field_string_set_masked(field, TRUE);
+	purple_request_field_string_set_masked(PURPLE_REQUEST_FIELD_STRING(field),
+	                                       TRUE);
 	if (!protocol || !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
 		purple_request_field_set_required(field, TRUE);
 	purple_request_group_add_field(group, field);
@@ -1130,7 +1134,8 @@ purple_account_request_change_password(PurpleAccount *account)
 	field = purple_request_field_string_new("new_password_2",
 										  _("New password (again)"),
 										  NULL, FALSE);
-	purple_request_field_string_set_masked(field, TRUE);
+	purple_request_field_string_set_masked(PURPLE_REQUEST_FIELD_STRING(field),
+	                                       TRUE);
 	if (!protocol || !(purple_protocol_get_options(protocol) & OPT_PROTO_PASSWORD_OPTIONAL))
 		purple_request_field_set_required(field, TRUE);
 	purple_request_group_add_field(group, field);

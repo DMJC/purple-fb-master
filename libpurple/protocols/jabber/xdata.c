@@ -84,7 +84,8 @@ jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestPage *page) {
 				case JABBER_X_DATA_TEXT_SINGLE:
 				case JABBER_X_DATA_JID_SINGLE:
 					{
-					const char *value = purple_request_field_string_get_value(field);
+					PurpleRequestFieldString *sfield = PURPLE_REQUEST_FIELD_STRING(field);
+					const char *value = purple_request_field_string_get_value(sfield);
 					if (value == NULL)
 						break;
 					fieldnode = purple_xmlnode_new_child(result, "field");
@@ -95,8 +96,9 @@ jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestPage *page) {
 					}
 				case JABBER_X_DATA_TEXT_MULTI:
 					{
+					PurpleRequestFieldString *sfield = PURPLE_REQUEST_FIELD_STRING(field);
+					const char *value = purple_request_field_string_get_value(sfield);
 					char **pieces, **p;
-					const char *value = purple_request_field_string_get_value(field);
 					if (value == NULL)
 						break;
 					fieldnode = purple_xmlnode_new_child(result, "field");
@@ -230,7 +232,8 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 
 			field = purple_request_field_string_new(var, label,
 					value ? value : "", FALSE);
-			purple_request_field_string_set_masked(field, TRUE);
+			purple_request_field_string_set_masked(PURPLE_REQUEST_FIELD_STRING(field),
+			                                       TRUE);
 			purple_request_group_add_field(group, field);
 
 			g_hash_table_replace(data->fields, g_strdup(var), GINT_TO_POINTER(JABBER_X_DATA_TEXT_SINGLE));
