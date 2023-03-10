@@ -64,7 +64,6 @@ struct _PurpleRequestFieldClass {
 /**
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
- * @PURPLE_REQUEST_FIELD_LABEL: Label field.
  * @PURPLE_REQUEST_FIELD_IMAGE: Image field.
  * @PURPLE_REQUEST_FIELD_DATASHEET: Datasheet field.
  *
@@ -73,7 +72,6 @@ struct _PurpleRequestFieldClass {
 typedef enum
 {
 	PURPLE_REQUEST_FIELD_NONE,
-	PURPLE_REQUEST_FIELD_LABEL,
 	PURPLE_REQUEST_FIELD_IMAGE,
 	PURPLE_REQUEST_FIELD_DATASHEET
 
@@ -307,22 +305,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**************************************************************************/
-/* Label Field API                                                        */
-/**************************************************************************/
-
-/**
- * purple_request_field_label_new:
- * @id:   The field ID.
- * @text: The label of the field.
- *
- * Creates a label field.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_label_new(const char *id,
-											   const char *text);
 
 /**************************************************************************/
 /* Image Field API                                                        */

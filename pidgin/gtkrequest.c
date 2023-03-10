@@ -2050,8 +2050,7 @@ pidgin_request_fields(const char *title, const char *primary,
 			if (type == PURPLE_REQUEST_FIELD_DATASHEET)
 				contains_resizable = TRUE;
 
-			if (type == PURPLE_REQUEST_FIELD_LABEL)
-			{
+			if(PURPLE_IS_REQUEST_FIELD_LABEL(field)) {
 				rows++;
 			}
 			else if(PURPLE_IS_REQUEST_FIELD_LIST(field) ||
@@ -2108,7 +2107,7 @@ pidgin_request_fields(const char *title, const char *primary,
 
 					if (field_label[strlen(field_label) - 1] != ':' &&
 						field_label[strlen(field_label) - 1] != '?' &&
-						type != PURPLE_REQUEST_FIELD_LABEL)
+						!PURPLE_IS_REQUEST_FIELD_LABEL(field))
 					{
 						text = g_strdup_printf("%s:", field_label);
 					}
@@ -2123,7 +2122,7 @@ pidgin_request_fields(const char *title, const char *primary,
 
 					gtk_size_group_add_widget(sg, label);
 
-					if (type == PURPLE_REQUEST_FIELD_LABEL ||
+					if (PURPLE_IS_REQUEST_FIELD_LABEL(field) ||
 					    PURPLE_IS_REQUEST_FIELD_LIST(field) ||
 						(PURPLE_IS_REQUEST_FIELD_STRING(field) &&
 						 purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field))))

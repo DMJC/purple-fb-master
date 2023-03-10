@@ -635,19 +635,6 @@ purple_request_field_is_sensitive(PurpleRequestField *field)
 }
 
 PurpleRequestField *
-purple_request_field_label_new(const char *id, const char *text)
-{
-	PurpleRequestField *field;
-
-	g_return_val_if_fail(id   != NULL, NULL);
-	g_return_val_if_fail(text != NULL, NULL);
-
-	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_LABEL);
-
-	return field;
-}
-
-PurpleRequestField *
 purple_request_field_image_new(const char *id, const char *text, const char *buf, gsize size)
 {
 	PurpleRequestField *field;
