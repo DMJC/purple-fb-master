@@ -153,11 +153,15 @@ get_pref_field(Prefs *prefs)
 	}
 	else
 	{
-		GList *list = prefs->lv(), *iter;
-		if (list)
+		PurpleRequestFieldList *lfield = NULL;
+		GList *list = NULL;
+
+		list = prefs->lv();
+		if(list != NULL) {
 			field = purple_request_field_list_new(prefs->pref, _(prefs->label));
-		for (iter = list; iter; iter = iter->next)
-		{
+			lfield = PURPLE_REQUEST_FIELD_LIST(field);
+		}
+		for(GList *iter = list; iter; iter = iter->next) {
 			gboolean select = FALSE;
 			const char *data = iter->data;
 			int idata;
@@ -183,9 +187,10 @@ get_pref_field(Prefs *prefs)
 				default:
 					break;
 			}
-			purple_request_field_list_add_icon(field, data, NULL, iter->data);
-			if (select)
-				purple_request_field_list_add_selected(field, data);
+			purple_request_field_list_add_icon(lfield, data, NULL, iter->data);
+			if(select) {
+				purple_request_field_list_add_selected(lfield, data);
+			}
 		}
 		g_list_free(list);
 	}

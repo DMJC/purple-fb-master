@@ -1383,7 +1383,7 @@ static void
 setup_list_field_listitem_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
                              GtkListItem *item, gpointer data)
 {
-	PurpleRequestField *field = data;
+	PurpleRequestFieldList *field = data;
 	GtkWidget *box = NULL;
 	GtkWidget *widget = NULL;
 
@@ -1403,7 +1403,7 @@ static void
 bind_list_field_listitem_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
                             GtkListItem *item, gpointer data)
 {
-	PurpleRequestField *field = data;
+	PurpleRequestFieldList *field = data;
 	GtkWidget *box = NULL;
 	GtkWidget *label = NULL;
 	GObject *wrapper = NULL;
@@ -1428,7 +1428,7 @@ list_field_select_changed_cb(GtkSelectionModel *self,
                              G_GNUC_UNUSED guint position,
                              G_GNUC_UNUSED guint n_items, gpointer data)
 {
-	PurpleRequestField *field = data;
+	PurpleRequestFieldList *field = data;
 	GtkBitset *bitset = NULL;
 
 	purple_request_field_list_clear_selected(field);
@@ -1453,8 +1453,8 @@ list_field_select_changed_cb(GtkSelectionModel *self,
 }
 
 static GtkWidget *
-create_list_field(PurpleRequestField *field)
-{
+create_list_field(PurpleRequestField *field) {
+	PurpleRequestFieldList *listfield = PURPLE_REQUEST_FIELD_LIST(field);
 	GtkWidget *sw;
 	GtkWidget *listview = NULL;
 	GtkSelectionModel *sel = NULL;
@@ -1464,11 +1464,11 @@ create_list_field(PurpleRequestField *field)
 	GList *l;
 	gboolean has_icons;
 
-	has_icons = purple_request_field_list_has_icons(field);
+	has_icons = purple_request_field_list_has_icons(listfield);
 
 	/* Create the list store */
 	store = g_list_store_new(G_TYPE_OBJECT);
-	if(purple_request_field_list_get_multi_select(field)) {
+	if(purple_request_field_list_get_multi_select(listfield)) {
 		sel = GTK_SELECTION_MODEL(gtk_multi_selection_new(G_LIST_MODEL(store)));
 	} else {
 		sel = GTK_SELECTION_MODEL(gtk_single_selection_new(G_LIST_MODEL(store)));
@@ -1488,7 +1488,7 @@ create_list_field(PurpleRequestField *field)
 		gtk_widget_set_size_request(listview, 200, 400);
 	}
 
-	for(index = 0, l = purple_request_field_list_get_items(field);
+	for(index = 0, l = purple_request_field_list_get_items(listfield);
 	    l != NULL;
 	    index++, l = l->next)
 	{
@@ -1500,7 +1500,7 @@ create_list_field(PurpleRequestField *field)
 		g_list_store_append(store, wrapper);
 
 		g_object_set_data(wrapper, "data",
-		                  purple_request_field_list_get_data(field, text));
+		                  purple_request_field_list_get_data(listfield, text));
 		g_object_set_data_full(wrapper, "text", g_strdup(text), g_free);
 
 		if(has_icons) {
@@ -1514,7 +1514,7 @@ create_list_field(PurpleRequestField *field)
 			g_object_set_data_full(wrapper, "pixbuf", pixbuf, g_object_unref);
 		}
 
-		if(purple_request_field_list_is_selected(field, text)) {
+		if(purple_request_field_list_is_selected(listfield, text)) {
 			gtk_selection_model_select_item(sel, index, FALSE);
 		}
 
@@ -2054,7 +2054,7 @@ pidgin_request_fields(const char *title, const char *primary,
 			{
 				rows++;
 			}
-			else if ((type == PURPLE_REQUEST_FIELD_LIST) ||
+			else if(PURPLE_IS_REQUEST_FIELD_LIST(field) ||
 				 (PURPLE_IS_REQUEST_FIELD_STRING(field) &&
 				  purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field))))
 			{
@@ -2124,7 +2124,7 @@ pidgin_request_fields(const char *title, const char *primary,
 					gtk_size_group_add_widget(sg, label);
 
 					if (type == PURPLE_REQUEST_FIELD_LABEL ||
-					    type == PURPLE_REQUEST_FIELD_LIST ||
+					    PURPLE_IS_REQUEST_FIELD_LIST(field) ||
 						(PURPLE_IS_REQUEST_FIELD_STRING(field) &&
 						 purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field))))
 					{
@@ -2154,9 +2154,9 @@ pidgin_request_fields(const char *title, const char *primary,
 						widget = create_bool_field(field, cpar);
 					} else if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
 						widget = create_choice_field(field);
-					} else if (type == PURPLE_REQUEST_FIELD_LIST)
+					} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
 						widget = create_list_field(field);
-					else if (type == PURPLE_REQUEST_FIELD_IMAGE)
+					} else if (type == PURPLE_REQUEST_FIELD_IMAGE)
 						widget = create_image_field(field);
 					else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 						widget = create_account_field(field);
@@ -2182,9 +2182,7 @@ pidgin_request_fields(const char *title, const char *primary,
 				{
 					gtk_grid_attach(GTK_GRID(grid), widget,
 						0, row_num, 2 * cols, 1);
-				}
-				else if (type == PURPLE_REQUEST_FIELD_LIST)
-				{
+				} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
 					gtk_grid_attach(GTK_GRID(grid), widget,
 						0, row_num, 2 * cols, 1);
 				} else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {

@@ -302,14 +302,15 @@ fb_util_request_buddy_ok(gpointer *request_data, PurpleRequestPage *page) {
 	gpointer data = request_data[2];
 	GSList *ret = NULL;
 	PurpleBuddy *bdy;
-	PurpleRequestField *field;
+	PurpleRequestFieldList *field;
 
 	if (func == NULL) {
 		g_free(request_data);
 		return;
 	}
 
-	field = purple_request_page_get_field(page, "buddy");
+	field = PURPLE_REQUEST_FIELD_LIST(purple_request_page_get_field(page,
+	                                                                "buddy"));
 	select = purple_request_field_list_get_selected(field);
 
 	for (l = select; l != NULL; l = l->next) {
@@ -380,6 +381,7 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 	PurpleAccount *acct;
 	PurpleRequestCommonParameters *cpar;
 	PurpleRequestField *field;
+	PurpleRequestFieldList *list;
 	PurpleRequestGroup *group;
 	PurpleRequestPage *page;
 
@@ -397,7 +399,8 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_list_new("buddy", NULL);
-	purple_request_field_list_set_multi_select(field, multi);
+	list = PURPLE_REQUEST_FIELD_LIST(field);
+	purple_request_field_list_set_multi_select(list, multi);
 	purple_request_field_set_required(field, TRUE);
 	purple_request_group_add_field(group, field);
 
@@ -405,7 +408,7 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 		name = purple_buddy_get_name(l->data);
 		alias = purple_buddy_get_alias(l->data);
 		str = g_strdup_printf("%s (%s)", alias, name);
-		purple_request_field_list_add_icon(field, str, NULL, l->data);
+		purple_request_field_list_add_icon(list, str, NULL, l->data);
 		g_free(str);
 	}
 
@@ -416,7 +419,7 @@ fb_util_request_buddy(PurpleConnection *gc, const gchar *title,
 		items = g_list_append(items, str);
 	}
 
-	purple_request_field_list_set_selected(field, items);
+	purple_request_field_list_set_selected(list, items);
 	g_slist_free(buddies);
 	g_list_free_full(items, g_free);
 

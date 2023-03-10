@@ -290,7 +290,6 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 		for (; fields ; fields = fields->next)
 		{
 			PurpleRequestField *field = fields->data;
-			PurpleRequestFieldType type = purple_request_field_get_field_type(field);
 			if (!purple_request_field_is_visible(field))
 				continue;
 			if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
@@ -321,13 +320,11 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 				gpointer value = gnt_combo_box_get_selected_data(GNT_COMBO_BOX(combo));
 				purple_request_field_choice_set_value(PURPLE_REQUEST_FIELD_CHOICE(field),
 				                                      value);
-			}
-			else if (type == PURPLE_REQUEST_FIELD_LIST)
-			{
+			} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
+				PurpleRequestFieldList *lfield = PURPLE_REQUEST_FIELD_LIST(field);
 				GList *selected = NULL;
-				GList *list = purple_request_field_list_get_items(field);
-				if (purple_request_field_list_get_multi_select(field))
-				{
+				GList *list = purple_request_field_list_get_items(lfield);
+				if(purple_request_field_list_get_multi_select(lfield)) {
 					GntWidget *tree = g_object_get_data(G_OBJECT(field),
 					                                    "finch-ui-data");
 
@@ -335,7 +332,9 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 					{
 						PurpleKeyValuePair *item = list->data;
 						const char *text = item->key;
-						gpointer key = purple_request_field_list_get_data(field, text);
+						gpointer key = NULL;
+
+						key = purple_request_field_list_get_data(lfield, text);
 						if (gnt_tree_get_choice(GNT_TREE(tree), key)) {
 							selected = g_list_prepend(selected, (gpointer)text);
 						}
@@ -350,7 +349,9 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 					for (; list; list = list->next) {
 						PurpleKeyValuePair *item = list->data;
 						const char *text = item->key;
-						gpointer key = purple_request_field_list_get_data(field, text);
+						gpointer key = NULL;
+
+						key = purple_request_field_list_get_data(lfield, text);
 						if (key == data) {
 							selected = g_list_prepend(selected, (gpointer)text);
 							break;
@@ -358,7 +359,7 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 					}
 				}
 
-				purple_request_field_list_set_selected(field, selected);
+				purple_request_field_list_set_selected(lfield, selected);
 				g_list_free(selected);
 
 			} else if (PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
@@ -488,20 +489,22 @@ create_choice_field(PurpleRequestField *field)
 static GntWidget*
 create_list_field(PurpleRequestField *field)
 {
+	PurpleRequestFieldList *lfield = PURPLE_REQUEST_FIELD_LIST(field);
 	GntWidget *ret = NULL;
-	GList *list = purple_request_field_list_get_items(field);
-	if (purple_request_field_list_get_multi_select(field)) {
+	GList *list = purple_request_field_list_get_items(lfield);
+	if(purple_request_field_list_get_multi_select(lfield)) {
 		GntWidget *tree = gnt_tree_new();
 
 		for (; list; list = list->next)
 		{
 			PurpleKeyValuePair *item = list->data;
 			const char *text = item->key;
-			gpointer key = purple_request_field_list_get_data(field, text);
+			gpointer key = purple_request_field_list_get_data(lfield, text);
 			gnt_tree_add_choice(GNT_TREE(tree), key,
 					gnt_tree_create_row(GNT_TREE(tree), text), NULL, NULL);
-			if (purple_request_field_list_is_selected(field, text))
+			if(purple_request_field_list_is_selected(lfield, text)) {
 				gnt_tree_set_choice(GNT_TREE(tree), key, TRUE);
+			}
 		}
 		ret = tree;
 	}
@@ -513,10 +516,11 @@ create_list_field(PurpleRequestField *field)
 		{
 			PurpleKeyValuePair *item = list->data;
 			const char *text = item->key;
-			gpointer key = purple_request_field_list_get_data(field, text);
+			gpointer key = purple_request_field_list_get_data(lfield, text);
 			gnt_combo_box_add_data(GNT_COMBO_BOX(combo), key, text);
-			if (purple_request_field_list_is_selected(field, text))
+			if(purple_request_field_list_is_selected(lfield, text)) {
 				gnt_combo_box_set_selected(GNT_COMBO_BOX(combo), key);
+			}
 		}
 		ret = combo;
 	}
@@ -641,7 +645,6 @@ finch_request_fields(const char *title, const char *primary,
 		for (; fields ; fields = fields->next)
 		{
 			PurpleRequestField *field = fields->data;
-			PurpleRequestFieldType type = purple_request_field_get_field_type(field);
 			const char *label = purple_request_field_get_label(field);
 			GntWidget *widget = NULL;
 
@@ -669,7 +672,7 @@ finch_request_fields(const char *title, const char *primary,
 				widget = create_integer_field(field);
 			} else if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
 				widget = create_choice_field(field);
-			} else if (type == PURPLE_REQUEST_FIELD_LIST) {
+			} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
 				widget = create_list_field(field);
 			} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 				accountlist = create_account_field(field);
@@ -869,12 +872,15 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 
 		for (; fields ; fields = fields->next) {
 			PurpleRequestField *field = fields->data;
-			PurpleRequestFieldType type = purple_request_field_get_field_type(field);
 			PurplePrefType pt;
 			gpointer val = NULL;
 			const char *id = purple_request_field_get_id(field);
 
-			if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
+			if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
+				PurpleRequestFieldList *lfield = PURPLE_REQUEST_FIELD_LIST(field);
+				val = purple_request_field_list_get_selected(lfield)->data;
+				val = purple_request_field_list_get_data(lfield, val);
+			} else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 				PurpleRequestFieldBool *bfield = PURPLE_REQUEST_FIELD_BOOL(field);
 				val = GINT_TO_POINTER(purple_request_field_bool_get_value(bfield));
 			} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
@@ -883,15 +889,6 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 			} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 				PurpleRequestFieldString *sfield = PURPLE_REQUEST_FIELD_STRING(field);
 				val = (gpointer)purple_request_field_string_get_value(sfield);
-			} else {
-			switch (type) {
-				case PURPLE_REQUEST_FIELD_LIST:
-					val = purple_request_field_list_get_selected(field)->data;
-					val = purple_request_field_list_get_data(field, val);
-					break;
-				default:
-					break;
-			}
 			}
 
 			pt = purple_prefs_get_pref_type(id);
@@ -899,7 +896,7 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 				case PURPLE_PREF_INT:
 				{
 					long int tmp = GPOINTER_TO_INT(val);
-					if (type == PURPLE_REQUEST_FIELD_LIST) {
+					if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
 						/* Lists always return string */
 						if (sscanf(val, "%ld", &tmp) != 1)
 							tmp = 0;
@@ -933,16 +930,11 @@ GntWidget *finch_request_field_get_widget(PurpleRequestField *field)
 		ret = create_choice_field(field);
 	} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 		ret = create_account_field(field);
+	} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
+		ret = create_list_field(field);
 	} else {
-	switch (purple_request_field_get_field_type(field)) {
-		case PURPLE_REQUEST_FIELD_LIST:
-			ret = create_list_field(field);
-			break;
-		default:
-			purple_debug_error("GntRequest", "Unimplemented request-field %d\n",
-					purple_request_field_get_field_type(field));
-			break;
-	}
+		purple_debug_error("GntRequest", "Unimplemented request-field %s",
+		                   G_OBJECT_TYPE_NAME(field));
 	}
 	return ret;
 }

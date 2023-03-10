@@ -370,7 +370,7 @@ purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
                                           PurpleRequestPage *page)
 {
 	PurpleAccount *account = NULL;
-	PurpleRequestField *field = NULL;
+	PurpleRequestFieldList *field = NULL;
 	GList *list = NULL;
 	const char *tmp = NULL;
 	GString *info = NULL;
@@ -401,7 +401,8 @@ purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
 	tmp = (const char *)purple_request_page_get_choice(page, "choice");
 	g_string_append_printf(info, _("\tChoice: %s\n"), tmp);
 
-	field = purple_request_page_get_field(page, "list");
+	field = PURPLE_REQUEST_FIELD_LIST(purple_request_page_get_field(page,
+	                                                                "list"));
 	list = purple_request_field_list_get_selected(field);
 	if(list != NULL) {
 		tmp = (const char *)list->data;
@@ -410,7 +411,8 @@ purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
 	}
 	g_string_append_printf(info, _("\tList: %s\n"), tmp);
 
-	field = purple_request_page_get_field(page, "multilist");
+	field = PURPLE_REQUEST_FIELD_LIST(purple_request_page_get_field(page,
+	                                                                "multilist"));
 	list = purple_request_field_list_get_selected(field);
 	g_string_append(info, _("\tMulti-list: ["));
 	while(list != NULL) {
@@ -456,6 +458,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	PurpleRequestGroup *group = NULL;
 	PurpleRequestField *field = NULL;
 	PurpleRequestFieldChoice *choice_field = NULL;
+	PurpleRequestFieldList *list_field = NULL;
 	GBytes *icon = NULL;
 	gconstpointer icon_data = NULL;
 	gsize icon_len = 0;
@@ -529,18 +532,20 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_list_new("list", _("A list"));
-	purple_request_field_list_add_icon(field, _("foo"), NULL, "foo");
-	purple_request_field_list_add_icon(field, _("bar"), NULL, "bar");
-	purple_request_field_list_add_icon(field, _("baz"), NULL, "baz");
-	purple_request_field_list_add_icon(field, _("quux"), NULL, "quux");
+	list_field = PURPLE_REQUEST_FIELD_LIST(field);
+	purple_request_field_list_add_icon(list_field, _("foo"), NULL, "foo");
+	purple_request_field_list_add_icon(list_field, _("bar"), NULL, "bar");
+	purple_request_field_list_add_icon(list_field, _("baz"), NULL, "baz");
+	purple_request_field_list_add_icon(list_field, _("quux"), NULL, "quux");
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_list_new("multilist", _("A multi-select list"));
-	purple_request_field_list_set_multi_select(field, TRUE);
-	purple_request_field_list_add_icon(field, _("foo"), NULL, "foo");
-	purple_request_field_list_add_icon(field, _("bar"), NULL, "bar");
-	purple_request_field_list_add_icon(field, _("baz"), NULL, "baz");
-	purple_request_field_list_add_icon(field, _("quux"), NULL, "quux");
+	list_field = PURPLE_REQUEST_FIELD_LIST(field);
+	purple_request_field_list_set_multi_select(list_field, TRUE);
+	purple_request_field_list_add_icon(list_field, _("foo"), NULL, "foo");
+	purple_request_field_list_add_icon(list_field, _("bar"), NULL, "bar");
+	purple_request_field_list_add_icon(list_field, _("baz"), NULL, "baz");
+	purple_request_field_list_add_icon(list_field, _("quux"), NULL, "quux");
 	purple_request_group_add_field(group, field);
 
 	/* This group will contain specialized fields. */

@@ -65,11 +65,12 @@ static void
 pidgin_mood_dialog_edit_cb(PurpleConnection *connection,
                            PurpleRequestPage *page)
 {
-	PurpleRequestField *mood_field = NULL;
+	PurpleRequestFieldList *mood_field = NULL;
 	GList *l = NULL;
 	const gchar *mood = NULL;
 
-	mood_field = purple_request_page_get_field(page, "mood");
+	mood_field = PURPLE_REQUEST_FIELD_LIST(purple_request_page_get_field(page,
+	                                                                     "mood"));
 	l = purple_request_field_list_get_selected(mood_field);
 
 	if(l == NULL) {
@@ -243,8 +244,9 @@ void
 pidgin_mood_dialog_show(PurpleAccount *account) {
 	const gchar *current_mood;
 	PurpleRequestPage *page;
-	PurpleRequestGroup *g;
-	PurpleRequestField *f;
+	PurpleRequestGroup *group = NULL;
+	PurpleRequestField *field = NULL;
+	PurpleRequestFieldList *fieldlist = NULL;
 	PurpleConnection *gc = NULL;
 	PurpleProtocol *protocol = NULL;
 	PurpleMood *mood = NULL;
@@ -262,12 +264,15 @@ pidgin_mood_dialog_show(PurpleAccount *account) {
 	}
 
 	page = purple_request_page_new();
-	g = purple_request_group_new(NULL);
-	f = purple_request_field_list_new("mood", _("Please select your mood from the list"));
+	group = purple_request_group_new(NULL);
+	field = purple_request_field_list_new("mood",
+	                                      _("Please select your mood from the list"));
+	fieldlist = PURPLE_REQUEST_FIELD_LIST(field);
 
-	purple_request_field_list_add_icon(f, _("None"), NULL, "");
-	if (current_mood == NULL)
-		purple_request_field_list_add_selected(f, _("None"));
+	purple_request_field_list_add_icon(fieldlist, _("None"), NULL, "");
+	if(current_mood == NULL) {
+		purple_request_field_list_add_selected(fieldlist, _("None"));
+	}
 
 	/* TODO: rlaager wants this sorted. */
 	/* TODO: darkrain wants it sorted post-translation */
@@ -287,24 +292,24 @@ pidgin_mood_dialog_show(PurpleAccount *account) {
 		}
 
 		path = pidgin_mood_get_icon_path(mood->mood);
-		purple_request_field_list_add_icon(f, _(mood->description),
-				path, (gpointer)mood->mood);
+		purple_request_field_list_add_icon(fieldlist, _(mood->description),
+		                                   path, (gpointer)mood->mood);
 		g_free(path);
 
 		if (current_mood && purple_strequal(current_mood, mood->mood))
-			purple_request_field_list_add_selected(f, _(mood->description));
+			purple_request_field_list_add_selected(fieldlist, _(mood->description));
 	}
-	purple_request_group_add_field(g, f);
+	purple_request_group_add_field(group, field);
 
-	purple_request_page_add_group(page, g);
+	purple_request_page_add_group(page, group);
 
 	/* if the connection allows setting a mood message */
 	if (gc && (purple_connection_get_flags(gc) & PURPLE_CONNECTION_FLAG_SUPPORT_MOOD_MESSAGES)) {
-		g = purple_request_group_new(NULL);
-		f = purple_request_field_string_new("text",
-		    _("Message (optional)"), NULL, FALSE);
-		purple_request_group_add_field(g, f);
-		purple_request_page_add_group(page, g);
+		group = purple_request_group_new(NULL);
+		field = purple_request_field_string_new("text", _("Message (optional)"),
+		                                        NULL, FALSE);
+		purple_request_group_add_field(group, field);
+		purple_request_page_add_group(page, group);
 	}
 
 	purple_request_fields(gc, _("Edit User Mood"), _("Edit User Mood"),

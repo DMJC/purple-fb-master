@@ -64,7 +64,6 @@ struct _PurpleRequestFieldClass {
 /**
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
- * @PURPLE_REQUEST_FIELD_LIST: List field.
  * @PURPLE_REQUEST_FIELD_LABEL: Label field.
  * @PURPLE_REQUEST_FIELD_IMAGE: Image field.
  * @PURPLE_REQUEST_FIELD_DATASHEET: Datasheet field.
@@ -74,7 +73,6 @@ struct _PurpleRequestFieldClass {
 typedef enum
 {
 	PURPLE_REQUEST_FIELD_NONE,
-	PURPLE_REQUEST_FIELD_LIST,
 	PURPLE_REQUEST_FIELD_LABEL,
 	PURPLE_REQUEST_FIELD_IMAGE,
 	PURPLE_REQUEST_FIELD_DATASHEET
@@ -309,139 +307,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**************************************************************************/
-/* List Field API                                                         */
-/**************************************************************************/
-
-/**
- * purple_request_field_list_new:
- * @id:   The field ID.
- * @text: The optional label of the field.
- *
- * Creates a multiple list item field.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_list_new(const char *id, const char *text);
-
-/**
- * purple_request_field_list_set_multi_select:
- * @field:        The list field.
- * @multi_select: TRUE if multiple selection is enabled,
- *                     or FALSE otherwise.
- *
- * Sets whether or not a list field allows multiple selection.
- */
-void purple_request_field_list_set_multi_select(PurpleRequestField *field,
-											  gboolean multi_select);
-
-/**
- * purple_request_field_list_get_multi_select:
- * @field: The list field.
- *
- * Returns whether or not a list field allows multiple selection.
- *
- * Returns: TRUE if multiple selection is enabled, or FALSE otherwise.
- */
-gboolean purple_request_field_list_get_multi_select(PurpleRequestField *field);
-
-/**
- * purple_request_field_list_get_data:
- * @field: The list field.
- * @text:  The item text.
- *
- * Returns the data for a particular item.
- *
- * Returns: The data associated with the item.
- */
-void *purple_request_field_list_get_data(PurpleRequestField *field, const char *text);
-
-/**
- * purple_request_field_list_add_icon:
- * @field:     The list field.
- * @item:      The list item.
- * @icon_path: The path to icon file, or %NULL for no icon.
- * @data:      The associated data.
- *
- * Adds an item to a list field.
- */
-void purple_request_field_list_add_icon(PurpleRequestField *field,
-								 const char *item, const char* icon_path, void* data);
-
-/**
- * purple_request_field_list_add_selected:
- * @field: The field.
- * @item:  The item to add.
- *
- * Adds a selected item to the list field.
- */
-void purple_request_field_list_add_selected(PurpleRequestField *field,
-										  const char *item);
-
-/**
- * purple_request_field_list_clear_selected:
- * @field: The field.
- *
- * Clears the list of selected items in a list field.
- */
-void purple_request_field_list_clear_selected(PurpleRequestField *field);
-
-/**
- * purple_request_field_list_set_selected:
- * @field: The field.
- * @items: (element-type utf8) (transfer none): The list of selected items.
- *
- * Sets a list of selected items in a list field.
- */
-void purple_request_field_list_set_selected(PurpleRequestField *field,
-										  GList *items);
-
-/**
- * purple_request_field_list_is_selected:
- * @field: The field.
- * @item:  The item.
- *
- * Returns whether or not a particular item is selected in a list field.
- *
- * Returns: TRUE if the item is selected. FALSE otherwise.
- */
-gboolean purple_request_field_list_is_selected(PurpleRequestField *field, const char *item);
-
-/**
- * purple_request_field_list_get_selected:
- * @field: The field.
- *
- * Returns a list of selected items in a list field.
- *
- * To retrieve the data for each item, use
- * purple_request_field_list_get_data().
- *
- * Returns: (element-type utf8) (transfer none): The list of selected items.
- */
-GList *purple_request_field_list_get_selected(PurpleRequestField *field);
-
-/**
- * purple_request_field_list_get_items:
- * @field: The field.
- *
- * Returns a list of items in a list field.
- *
- * Returns: (element-type PurpleKeyValuePair) (transfer none): The list of items.
- */
-GList *purple_request_field_list_get_items(PurpleRequestField *field);
-
-/**
- * purple_request_field_list_has_icons:
- * @field: The field.
- *
- * Indicates if list field has icons.
- *
- * Returns: TRUE if list field has icons, FALSE otherwise.
- *
- * Since: 3.0.0
- */
-gboolean purple_request_field_list_has_icons(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Label Field API                                                        */

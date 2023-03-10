@@ -116,13 +116,14 @@ jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestPage *page) {
 				case JABBER_X_DATA_LIST_SINGLE:
 				case JABBER_X_DATA_LIST_MULTI:
 					{
-					GList *selected = purple_request_field_list_get_selected(field);
+					PurpleRequestFieldList *lfield = PURPLE_REQUEST_FIELD_LIST(field);
+					GList *selected = purple_request_field_list_get_selected(lfield);
 					char *value;
 					fieldnode = purple_xmlnode_new_child(result, "field");
 					purple_xmlnode_set_attrib(fieldnode, "var", id);
 
 					while(selected) {
-						value = purple_request_field_list_get_data(field, selected->data);
+						value = purple_request_field_list_get_data(lfield, selected->data);
 						valuenode = purple_xmlnode_new_child(fieldnode, "value");
 						if(value)
 							purple_xmlnode_insert_data(valuenode, value, -1);
@@ -265,13 +266,15 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 
 			g_string_free(str, TRUE);
 		} else if(purple_strequal(type, "list-single") || purple_strequal(type, "list-multi")) {
+			PurpleRequestFieldList *list_field = NULL;
 			PurpleXmlNode *optnode;
 			GList *selected = NULL;
 
 			field = purple_request_field_list_new(var, label);
+			list_field = PURPLE_REQUEST_FIELD_LIST(field);
 
 			if(purple_strequal(type, "list-multi")) {
-				purple_request_field_list_set_multi_select(field, TRUE);
+				purple_request_field_list_set_multi_select(list_field, TRUE);
 				g_hash_table_replace(data->fields, g_strdup(var),
 						GINT_TO_POINTER(JABBER_X_DATA_LIST_MULTI));
 			} else {
@@ -302,9 +305,10 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 
 				data->values = g_slist_prepend(data->values, value);
 
-				purple_request_field_list_add_icon(field, lbl, NULL, value);
-				if(g_list_find_custom(selected, value, (GCompareFunc)strcmp))
-					purple_request_field_list_add_selected(field, lbl);
+				purple_request_field_list_add_icon(list_field, lbl, NULL, value);
+				if(g_list_find_custom(selected, value, (GCompareFunc)strcmp)) {
+					purple_request_field_list_add_selected(list_field, lbl);
+				}
 			}
 			purple_request_group_add_field(group, field);
 
