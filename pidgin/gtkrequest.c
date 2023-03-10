@@ -268,7 +268,8 @@ field_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data)
 	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(obj);
 
 	purple_request_field_account_set_value(
-	        field, pidgin_account_chooser_get_selected(chooser));
+	        PURPLE_REQUEST_FIELD_ACCOUNT(field),
+	        pidgin_account_chooser_get_selected(chooser));
 
 	req_field_changed_common(GTK_WIDGET(obj), field);
 }
@@ -1083,8 +1084,8 @@ setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
 				PurpleRequestField *fld = fields->data;
 				fields = fields->next;
 
-				if (purple_request_field_get_field_type(fld) == PURPLE_REQUEST_FIELD_ACCOUNT &&
-						purple_request_field_is_visible(fld))
+				if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(fld) &&
+				   purple_request_field_is_visible(fld))
 				{
 					const char *type_hint = purple_request_field_get_type_hint(fld);
 					if (purple_strequal(type_hint, "account"))
@@ -1316,15 +1317,17 @@ field_custom_account_filter_cb(gpointer item, G_GNUC_UNUSED gpointer data) {
 static GtkWidget *
 create_account_field(PurpleRequestField *field)
 {
+	PurpleRequestFieldAccount *afield = NULL;
 	GtkWidget *widget = NULL;
 	PurpleAccount *account = NULL;
 	PurpleFilterAccountFunc account_filter = NULL;
 	GtkFilter *filter = NULL;
 
 	widget = pidgin_account_chooser_new();
-	account  = purple_request_field_account_get_default_value(field);
+	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
+	account = purple_request_field_account_get_default_value(afield);
 
-	account_filter = purple_request_field_account_get_filter(field);
+	account_filter = purple_request_field_account_get_filter(afield);
 	if(account_filter != NULL) {
 		GtkCustomFilter *custom_filter = NULL;
 
@@ -1334,7 +1337,7 @@ create_account_field(PurpleRequestField *field)
 		filter = GTK_FILTER(custom_filter);
 	}
 
-	if(!purple_request_field_account_get_show_all(field)) {
+	if(!purple_request_field_account_get_show_all(afield)) {
 		GtkEveryFilter *every = NULL;
 
 		every = gtk_every_filter_new();
@@ -2144,9 +2147,9 @@ pidgin_request_fields(const char *title, const char *primary,
 						widget = create_list_field(field);
 					else if (type == PURPLE_REQUEST_FIELD_IMAGE)
 						widget = create_image_field(field);
-					else if (type == PURPLE_REQUEST_FIELD_ACCOUNT)
+					else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 						widget = create_account_field(field);
-					else if (type == PURPLE_REQUEST_FIELD_DATASHEET)
+					} else if (type == PURPLE_REQUEST_FIELD_DATASHEET)
 						widget = create_datasheet_field(field, datasheet_buttons_sg);
 					else
 						continue;

@@ -601,9 +601,12 @@ finch_request_add_buddy(G_GNUC_UNUSED PurpleBuddyList *list,
 	purple_request_field_set_type_hint(field, "group");
 
 	field = purple_request_field_account_new("account", _("Account"), NULL);
-	purple_request_field_account_set_show_all(field, FALSE);
-	if (account)
-		purple_request_field_account_set_value(field, account);
+	purple_request_field_account_set_show_all(PURPLE_REQUEST_FIELD_ACCOUNT(field),
+	                                          FALSE);
+	if(account) {
+		purple_request_field_account_set_value(PURPLE_REQUEST_FIELD_ACCOUNT(field),
+		                                       account);
+	}
 	purple_request_group_add_field(group, field);
 
 	purple_request_fields(NULL, _("Add Buddy"), NULL, _("Please enter buddy information."),
@@ -689,9 +692,12 @@ finch_request_add_chat(G_GNUC_UNUSED PurpleBuddyList *list,
 	purple_request_page_add_group(page, group);
 
 	field = purple_request_field_account_new("account", _("Account"), NULL);
-	purple_request_field_account_set_show_all(field, FALSE);
-	if (account)
-		purple_request_field_account_set_value(field, account);
+	purple_request_field_account_set_show_all(PURPLE_REQUEST_FIELD_ACCOUNT(field),
+	                                          FALSE);
+	if(account) {
+		purple_request_field_account_set_value(PURPLE_REQUEST_FIELD_ACCOUNT(field),
+		                                       account);
+	}
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new("name", _("Name"), name, FALSE);

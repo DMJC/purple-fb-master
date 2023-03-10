@@ -24,7 +24,6 @@
 #include "glibcompat.h"
 #include "request.h"
 #include "debug.h"
-#include "purpleaccountmanager.h"
 #include "purplekeyvaluepair.h"
 #include "purpleprivate.h"
 
@@ -76,14 +75,6 @@ typedef struct {
 
 			gboolean multiple_selection;
 		} list;
-
-		struct {
-			PurpleAccount *default_account;
-			PurpleAccount *account;
-			gboolean show_all;
-
-			PurpleFilterAccountFunc filter_func;
-		} account;
 
 		struct {
 			unsigned int scale_x;
@@ -1411,158 +1402,6 @@ purple_request_field_image_get_scale_y(PurpleRequestField *field)
 	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
 
 	return priv->u.image.scale_y;
-}
-
-PurpleRequestField *
-purple_request_field_account_new(const char *id, const char *text,
-							   PurpleAccount *account)
-{
-	PurpleRequestField *field;
-
-	g_return_val_if_fail(id   != NULL, NULL);
-	g_return_val_if_fail(text != NULL, NULL);
-
-	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_ACCOUNT);
-
-	if(account == NULL) {
-		PurpleAccountManager *manager = purple_account_manager_get_default();
-		GList *accounts = purple_account_manager_get_connected(manager);
-
-		if(accounts != NULL) {
-			account = accounts->data;
-			g_list_free(accounts);
-		}
-	}
-
-	purple_request_field_account_set_default_value(field, account);
-	purple_request_field_account_set_value(field, account);
-
-	return field;
-}
-
-void
-purple_request_field_account_set_default_value(PurpleRequestField *field,
-											 PurpleAccount *default_value)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT);
-
-	priv->u.account.default_account = default_value;
-}
-
-void
-purple_request_field_account_set_value(PurpleRequestField *field,
-									 PurpleAccount *value)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT);
-
-	priv->u.account.account = value;
-}
-
-void
-purple_request_field_account_set_show_all(PurpleRequestField *field,
-										gboolean show_all)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT);
-
-	if(priv->u.account.show_all == show_all) {
-		return;
-	}
-
-	priv->u.account.show_all = show_all;
-
-	if(!show_all) {
-		PurpleAccountManager *manager = purple_account_manager_get_default();
-		GList *accounts = purple_account_manager_get_connected(manager);
-
-		if(purple_account_is_connected(priv->u.account.default_account)) {
-			purple_request_field_account_set_default_value(field,
-			                                               accounts->data);
-		}
-
-		if(purple_account_is_connected(priv->u.account.account)) {
-			purple_request_field_account_set_value(field,
-			                                       accounts->data);
-		}
-
-		g_list_free(accounts);
-	}
-}
-
-void
-purple_request_field_account_set_filter(PurpleRequestField *field,
-									  PurpleFilterAccountFunc filter_func)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT);
-
-	priv->u.account.filter_func = filter_func;
-}
-
-PurpleAccount *
-purple_request_field_account_get_default_value(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT, NULL);
-
-	return priv->u.account.default_account;
-}
-
-PurpleAccount *
-purple_request_field_account_get_value(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT, NULL);
-
-	return priv->u.account.account;
-}
-
-gboolean
-purple_request_field_account_get_show_all(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT, FALSE);
-
-	return priv->u.account.show_all;
-}
-
-PurpleFilterAccountFunc
-purple_request_field_account_get_filter(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_ACCOUNT, FALSE);
-
-	return priv->u.account.filter_func;
 }
 
 PurpleRequestField *

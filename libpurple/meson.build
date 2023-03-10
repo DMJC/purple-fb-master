@@ -97,6 +97,7 @@ purple_coresources = [
 	'purplewhiteboarduiops.c',
 	'queuedoutputstream.c',
 	'request.c',
+	'request/purplerequestfieldaccount.c',
 	'request-datasheet.c',
 	'roomlist.c',
 	'savedstatuses.c',
@@ -219,6 +220,10 @@ purple_coreheaders = [
 	'xmlnode.h',
 ]
 
+purple_request_headers = [
+	'request/purplerequestfieldaccount.h',
+]
+
 purple_generated_sources = []
 
 # An environment for unit tests.
@@ -292,7 +297,7 @@ enums_c = enums[0]
 enums_h = enums[1]
 
 PURPLE_H_INCLUDES = []
-foreach header : purple_coreheaders + purple_mediaheaders + ['version.h', 'purpleenums.h']
+foreach header : purple_coreheaders + purple_mediaheaders + purple_request_headers + ['version.h', 'purpleenums.h']
 	PURPLE_H_INCLUDES += f'#include <libpurple/@header@>'
 endforeach
 purple_h_conf = configuration_data()
@@ -338,6 +343,9 @@ install_headers(purple_coreheaders,
 
 install_headers(purple_mediaheaders,
                 subdir : purple_include_base / 'media')
+
+install_headers(purple_request_headers,
+                subdir : purple_include_base / 'request')
 
 pkgconfig.generate(
     libpurple,

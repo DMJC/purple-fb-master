@@ -39,7 +39,7 @@
  */
 typedef struct _PurpleRequestField PurpleRequestField;
 
-#include "account.h"
+#include "request.h"
 #include "request-datasheet.h"
 
 #define PURPLE_DEFAULT_ACTION_NONE	-1
@@ -71,7 +71,6 @@ struct _PurpleRequestFieldClass {
  * @PURPLE_REQUEST_FIELD_LIST: List field.
  * @PURPLE_REQUEST_FIELD_LABEL: Label field.
  * @PURPLE_REQUEST_FIELD_IMAGE: Image field.
- * @PURPLE_REQUEST_FIELD_ACCOUNT: #PurpleAccount field.
  * @PURPLE_REQUEST_FIELD_DATASHEET: Datasheet field.
  *
  * A type of field.
@@ -86,7 +85,6 @@ typedef enum
 	PURPLE_REQUEST_FIELD_LIST,
 	PURPLE_REQUEST_FIELD_LABEL,
 	PURPLE_REQUEST_FIELD_IMAGE,
-	PURPLE_REQUEST_FIELD_ACCOUNT,
 	PURPLE_REQUEST_FIELD_DATASHEET
 
 } PurpleRequestFieldType;
@@ -885,118 +883,6 @@ unsigned int purple_request_field_image_get_scale_x(PurpleRequestField *field);
  * Returns: Y scale coefficient of the image.
  */
 unsigned int purple_request_field_image_get_scale_y(PurpleRequestField *field);
-
-/**************************************************************************/
-/* Account Field API                                                      */
-/**************************************************************************/
-
-/**
- * purple_request_field_account_new:
- * @id:      The field ID.
- * @text:    The text label of the field.
- * @account: The optional default account.
- *
- * Creates an account field.
- *
- * By default, this field will not show offline accounts.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_account_new(const char *id,
-												 const char *text,
-												 PurpleAccount *account);
-
-/**
- * purple_request_field_account_set_default_value:
- * @field:         The account field.
- * @default_value: The default account.
- *
- * Sets the default account on an account field.
- */
-void purple_request_field_account_set_default_value(PurpleRequestField *field,
-												  PurpleAccount *default_value);
-
-/**
- * purple_request_field_account_set_value:
- * @field: The account field.
- * @value: The account.
- *
- * Sets the account in an account field.
- */
-void purple_request_field_account_set_value(PurpleRequestField *field,
-										  PurpleAccount *value);
-
-/**
- * purple_request_field_account_set_show_all:
- * @field:    The account field.
- * @show_all: Whether or not to show all accounts.
- *
- * Sets whether or not to show all accounts in an account field.
- *
- * If TRUE, all accounts, online or offline, will be shown. If FALSE,
- * only online accounts will be shown.
- */
-void purple_request_field_account_set_show_all(PurpleRequestField *field,
-											 gboolean show_all);
-
-/**
- * purple_request_field_account_set_filter:
- * @field:       The account field.
- * @filter_func: (scope notified): The account filter function.
- *
- * Sets the account filter function in an account field.
- *
- * This function will determine which accounts get displayed and which
- * don't.
- */
-void purple_request_field_account_set_filter(PurpleRequestField *field,
-										   PurpleFilterAccountFunc filter_func);
-
-/**
- * purple_request_field_account_get_default_value:
- * @field: The field.
- *
- * Returns the default account in an account field.
- *
- * Returns: (transfer none): The default account.
- */
-PurpleAccount *purple_request_field_account_get_default_value(PurpleRequestField *field);
-
-/**
- * purple_request_field_account_get_value:
- * @field: The field.
- *
- * Returns the user-entered account in an account field.
- *
- * Returns: (transfer none): The user-entered account.
- */
-PurpleAccount *purple_request_field_account_get_value(PurpleRequestField *field);
-
-/**
- * purple_request_field_account_get_show_all:
- * @field: The account field.
- *
- * Returns whether or not to show all accounts in an account field.
- *
- * If TRUE, all accounts, online or offline, will be shown. If FALSE,
- * only online accounts will be shown.
- *
- * Returns: Whether or not to show all accounts.
- */
-gboolean purple_request_field_account_get_show_all(PurpleRequestField *field);
-
-/**
- * purple_request_field_account_get_filter:
- * @field: The account field.
- *
- * Returns the account filter function in an account field.
- *
- * This function will determine which accounts get displayed and which
- * don't.
- *
- * Returns: (transfer none): The account filter function.
- */
-PurpleFilterAccountFunc purple_request_field_account_get_filter(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Datasheet Field API                                                    */

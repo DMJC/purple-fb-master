@@ -158,12 +158,14 @@ purple_idle_set_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 	PurpleRequestPage *request;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
+	PurpleRequestFieldAccount *afield;
 
 	group = purple_request_group_new(NULL);
 
 	field = purple_request_field_account_new("acct", _("Account"), NULL);
-	purple_request_field_account_set_filter(field, idleable_filter);
-	purple_request_field_account_set_show_all(field, FALSE);
+	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
+	purple_request_field_account_set_filter(afield, idleable_filter);
+	purple_request_field_account_set_show_all(afield, FALSE);
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_int_new("mins", _("Minutes"), 10, 0, 9999);
@@ -190,6 +192,7 @@ purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 	PurpleRequestPage *request;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
+	PurpleRequestFieldAccount *afield;
 
 	if (idled_accts == NULL)
 	{
@@ -200,8 +203,9 @@ purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 	group = purple_request_group_new(NULL);
 
 	field = purple_request_field_account_new("acct", _("Account"), NULL);
-	purple_request_field_account_set_filter(field, unidle_filter);
-	purple_request_field_account_set_show_all(field, FALSE);
+	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
+	purple_request_field_account_set_filter(afield, unidle_filter);
+	purple_request_field_account_set_show_all(afield, FALSE);
 	purple_request_group_add_field(group, field);
 
 	request = purple_request_page_new();
