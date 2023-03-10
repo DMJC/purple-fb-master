@@ -64,14 +64,12 @@ struct _PurpleRequestFieldClass {
 /**
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
- * @PURPLE_REQUEST_FIELD_DATASHEET: Datasheet field.
  *
  * A type of field.
  */
 typedef enum
 {
 	PURPLE_REQUEST_FIELD_NONE,
-	PURPLE_REQUEST_FIELD_DATASHEET
 
 } PurpleRequestFieldType;
 
@@ -303,34 +301,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**************************************************************************/
-/* Datasheet Field API                                                    */
-/**************************************************************************/
-
-/**
- * purple_request_field_datasheet_new:
- * @id:    The field ID.
- * @text:  The label of the field, may be %NULL.
- * @sheet: The datasheet.
- *
- * Creates a datasheet item field.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_datasheet_new(const char *id,
-	const gchar *text, PurpleRequestDatasheet *sheet);
-
-/**
- * purple_request_field_datasheet_get_sheet:
- * @field: The field.
- *
- * Returns a datasheet for a field.
- *
- * Returns: (transfer none): The datasheet object.
- */
-PurpleRequestDatasheet *purple_request_field_datasheet_get_sheet(
-	PurpleRequestField *field);
 
 /**************************************************************************/
 /* Validators for request fields.                                         */

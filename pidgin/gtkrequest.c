@@ -1772,6 +1772,7 @@ datasheet_action_clicked(GtkButton *btn, PurpleRequestDatasheetAction *act)
 static GtkWidget *
 create_datasheet_field(PurpleRequestField *field, GtkSizeGroup *buttons_sg)
 {
+	PurpleRequestFieldDatasheet *dfield = PURPLE_REQUEST_FIELD_DATASHEET(field);
 	PurpleRequestDatasheet *sheet;
 	guint i, col_count;
 	GType *col_types;
@@ -1785,7 +1786,7 @@ create_datasheet_field(PurpleRequestField *field, GtkSizeGroup *buttons_sg)
 	GtkWidget *buttons_box;
 	const GList *it;
 
-	sheet = purple_request_field_datasheet_get_sheet(field);
+	sheet = purple_request_field_datasheet_get_sheet(dfield);
 	main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
 	col_count = purple_request_datasheet_get_column_count(sheet);
@@ -2044,12 +2045,10 @@ pidgin_request_fields(const char *title, const char *primary,
 		for (fl = field_list; fl != NULL; fl = fl->next)
 		{
 			PurpleRequestField *field = PURPLE_REQUEST_FIELD(fl->data);
-			PurpleRequestFieldType type;
 
-			type = purple_request_field_get_field_type(field);
-
-			if (type == PURPLE_REQUEST_FIELD_DATASHEET)
+			if(PURPLE_IS_REQUEST_FIELD_DATASHEET(field)) {
 				contains_resizable = TRUE;
+			}
 
 			if(PURPLE_IS_REQUEST_FIELD_LABEL(field)) {
 				rows++;
@@ -2089,7 +2088,6 @@ pidgin_request_fields(const char *title, const char *primary,
 			{
 				size_t col_offset = 0;
 				PurpleRequestField *field = PURPLE_REQUEST_FIELD(fl->data);
-				PurpleRequestFieldType type;
 				GtkWidget *widget = NULL;
 				gchar *field_label;
 
@@ -2099,7 +2097,6 @@ pidgin_request_fields(const char *title, const char *primary,
 					continue;
 				}
 
-				type = purple_request_field_get_field_type(field);
 				field_label = pidgin_request_escape(cpar,
 					purple_request_field_get_label(field));
 
@@ -2160,10 +2157,11 @@ pidgin_request_fields(const char *title, const char *primary,
 						widget = create_image_field(field);
 					} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 						widget = create_account_field(field);
-					} else if (type == PURPLE_REQUEST_FIELD_DATASHEET)
+					} else if(PURPLE_IS_REQUEST_FIELD_DATASHEET(field)) {
 						widget = create_datasheet_field(field, datasheet_buttons_sg);
-					else
+					} else {
 						continue;
+					}
 				}
 
 				gtk_widget_set_sensitive(widget,

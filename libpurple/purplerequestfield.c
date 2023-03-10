@@ -40,12 +40,6 @@ typedef struct {
 	gboolean required;
 	gboolean sensitive;
 
-	union {
-		struct {
-			PurpleRequestDatasheet *sheet;
-		} datasheet;
-	} u;
-
 	void *ui_data;
 	char *tooltip;
 
@@ -188,10 +182,6 @@ purple_request_field_finalize(GObject *obj) {
 	g_free(priv->label);
 	g_free(priv->type_hint);
 	g_free(priv->tooltip);
-
-	if(priv->type == PURPLE_REQUEST_FIELD_DATASHEET) {
-		purple_request_datasheet_free(priv->u.datasheet.sheet);
-	}
 
 	G_OBJECT_CLASS(purple_request_field_parent_class)->finalize(obj);
 }
@@ -623,35 +613,4 @@ purple_request_field_is_sensitive(PurpleRequestField *field)
 	priv = purple_request_field_get_instance_private(field);
 
 	return priv->sensitive;
-}
-
-PurpleRequestField *
-purple_request_field_datasheet_new(const char *id,
-	const gchar *text, PurpleRequestDatasheet *sheet)
-{
-	PurpleRequestField *field;
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(id != NULL, NULL);
-	g_return_val_if_fail(sheet != NULL, NULL);
-
-	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_DATASHEET);
-	priv = purple_request_field_get_instance_private(field);
-
-	priv->u.datasheet.sheet = sheet;
-
-	return field;
-}
-
-PurpleRequestDatasheet *
-purple_request_field_datasheet_get_sheet(PurpleRequestField *field)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_DATASHEET, NULL);
-
-	return priv->u.datasheet.sheet;
 }
