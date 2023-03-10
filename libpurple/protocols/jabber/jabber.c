@@ -2622,8 +2622,7 @@ jabber_media_cancel_cb(JabberMediaRequest *request,
 
 static void
 jabber_media_ok_cb(JabberMediaRequest *request, PurpleRequestPage *page) {
-	PurpleRequestField *field = purple_request_page_get_field(page, "resource");
-	const gchar *selected = purple_request_field_choice_get_value(field);
+	const gchar *selected = purple_request_page_get_choice(page, "resource");
 	gchar *who = g_strdup_printf("%s/%s", request->who, selected);
 	jabber_initiate_media(request->media, request->account, who, request->type);
 
@@ -2698,10 +2697,12 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 		char *msg;
 		PurpleRequestPage *page = NULL;
 		PurpleRequestField *field = NULL;
+		PurpleRequestFieldChoice *choice = NULL;
 		PurpleRequestGroup *group = NULL;
 		JabberMediaRequest *request;
 
 		field = purple_request_field_choice_new("resource", _("Resource"), 0);
+		choice = PURPLE_REQUEST_FIELD_CHOICE(field);
 		for(l = jb->resources; l; l = l->next)
 		{
 			JabberBuddyResource *ljbr = l->data;
@@ -2715,19 +2716,22 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 					(type & PURPLE_MEDIA_VIDEO)) {
 				if (caps & PURPLE_MEDIA_CAPS_AUDIO_VIDEO) {
 					jbr = ljbr;
-					purple_request_field_choice_add_full(field,
-					        jbr->name, g_strdup(jbr->name), g_free);
+					purple_request_field_choice_add_full(choice, jbr->name,
+					                                     g_strdup(jbr->name),
+					                                     g_free);
 				}
 			} else if (type & (PURPLE_MEDIA_AUDIO) &&
 					(caps & PURPLE_MEDIA_CAPS_AUDIO)) {
 				jbr = ljbr;
-				purple_request_field_choice_add_full(field,
-				        jbr->name, g_strdup(jbr->name), g_free);
+				purple_request_field_choice_add_full(choice, jbr->name,
+				                                     g_strdup(jbr->name),
+				                                     g_free);
 			}else if (type & (PURPLE_MEDIA_VIDEO) &&
 					(caps & PURPLE_MEDIA_CAPS_VIDEO)) {
 				jbr = ljbr;
-				purple_request_field_choice_add_full(field,
-				        jbr->name, g_strdup(jbr->name), g_free);
+				purple_request_field_choice_add_full(choice, jbr->name,
+				                                     g_strdup(jbr->name),
+				                                     g_free);
 			}
 		}
 
@@ -2737,8 +2741,7 @@ jabber_initiate_media(PurpleProtocolMedia *media, PurpleAccount *account,
 			return FALSE;
 		}
 
-		if (g_list_length(purple_request_field_choice_get_elements(
-				field)) <= 1) {
+		if(g_list_length(purple_request_field_choice_get_elements(choice)) <= 1) {
 			gchar *name;
 			gboolean result;
 			g_object_unref(field);

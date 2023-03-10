@@ -42,13 +42,6 @@ typedef struct {
 
 	union {
 		struct {
-			gpointer default_value;
-			gpointer value;
-
-			GList *elements;
-		} choice;
-
-		struct {
 			GList *items;
 			gboolean has_icons;
 			GHashTable *item_data;
@@ -213,10 +206,7 @@ purple_request_field_finalize(GObject *obj) {
 	g_free(priv->type_hint);
 	g_free(priv->tooltip);
 
-	if(priv->type == PURPLE_REQUEST_FIELD_CHOICE) {
-		g_list_free_full(priv->u.choice.elements,
-		                 (GDestroyNotify)purple_key_value_pair_free);
-	} else if(priv->type == PURPLE_REQUEST_FIELD_LIST) {
+	if(priv->type == PURPLE_REQUEST_FIELD_LIST) {
 		g_list_free_full(priv->u.list.items,
 		                 (GDestroyNotify)purple_key_value_pair_free);
 		g_list_free_full(priv->u.list.selected, g_free);
@@ -658,111 +648,6 @@ purple_request_field_is_sensitive(PurpleRequestField *field)
 	priv = purple_request_field_get_instance_private(field);
 
 	return priv->sensitive;
-}
-
-PurpleRequestField *
-purple_request_field_choice_new(const char *id, const char *text,
-	gpointer default_value)
-{
-	PurpleRequestField *field;
-
-	g_return_val_if_fail(id   != NULL, NULL);
-	g_return_val_if_fail(text != NULL, NULL);
-
-	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_CHOICE);
-
-	purple_request_field_choice_set_default_value(field, default_value);
-	purple_request_field_choice_set_value(field, default_value);
-
-	return field;
-}
-
-void
-purple_request_field_choice_add(PurpleRequestField *field, const char *label,
-	gpointer value)
-{
-	purple_request_field_choice_add_full(field, label, value, NULL);
-}
-
-void
-purple_request_field_choice_add_full(PurpleRequestField *field, const char *label,
-                                     gpointer value, GDestroyNotify destroy)
-{
-	PurpleKeyValuePair *choice;
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-	g_return_if_fail(label != NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE);
-
-	choice = purple_key_value_pair_new_full(label, value, destroy);
-
-	priv->u.choice.elements = g_list_append(priv->u.choice.elements, choice);
-}
-
-void
-purple_request_field_choice_set_default_value(PurpleRequestField *field,
-	gpointer default_value)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE);
-
-	priv->u.choice.default_value = default_value;
-}
-
-void
-purple_request_field_choice_set_value(PurpleRequestField *field, gpointer value)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE);
-
-	priv->u.choice.value = value;
-}
-
-gpointer
-purple_request_field_choice_get_default_value(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
-
-	return priv->u.choice.default_value;
-}
-
-gpointer
-purple_request_field_choice_get_value(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
-
-	return priv->u.choice.value;
-}
-
-GList *
-purple_request_field_choice_get_elements(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_CHOICE, NULL);
-
-	return priv->u.choice.elements;
 }
 
 PurpleRequestField *

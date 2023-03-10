@@ -64,7 +64,6 @@ struct _PurpleRequestFieldClass {
 /**
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
- * @PURPLE_REQUEST_FIELD_CHOICE: Choice field (dropdown?).
  * @PURPLE_REQUEST_FIELD_LIST: List field.
  * @PURPLE_REQUEST_FIELD_LABEL: Label field.
  * @PURPLE_REQUEST_FIELD_IMAGE: Image field.
@@ -75,7 +74,6 @@ struct _PurpleRequestFieldClass {
 typedef enum
 {
 	PURPLE_REQUEST_FIELD_NONE,
-	PURPLE_REQUEST_FIELD_CHOICE,
 	PURPLE_REQUEST_FIELD_LIST,
 	PURPLE_REQUEST_FIELD_LABEL,
 	PURPLE_REQUEST_FIELD_IMAGE,
@@ -311,108 +309,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**************************************************************************/
-/* Choice Field API                                                       */
-/**************************************************************************/
-
-/**
- * purple_request_field_choice_new:
- * @id:            The field ID.
- * @text:          The optional label of the field.
- * @default_value: The default choice.
- *
- * Creates a multiple choice field.
- *
- * This is often represented as a group of radio buttons.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *
-purple_request_field_choice_new(const char *id, const char *text,
-	gpointer default_value);
-
-/**
- * purple_request_field_choice_add:
- * @field: The choice field.
- * @label: The choice label.
- * @data:  The choice value.
- *
- * Adds a choice to a multiple choice field.
- */
-void
-purple_request_field_choice_add(PurpleRequestField *field, const char *label,
-	gpointer data);
-
-/**
- * purple_request_field_choice_add_full:
- * @field: The choice field.
- * @label: The choice label.
- * @data:  The choice value.
- * @destroy: The value destroy function.
- *
- * Adds a choice to a multiple choice field with destructor for value.
- *
- * Since: 3.0.0
- */
-void
-purple_request_field_choice_add_full(PurpleRequestField *field, const char *label,
-                                     gpointer data, GDestroyNotify destroy);
-
-/**
- * purple_request_field_choice_set_default_value:
- * @field:         The field.
- * @default_value: The default value.
- *
- * Sets the default value in an choice field.
- */
-void
-purple_request_field_choice_set_default_value(PurpleRequestField *field,
-	gpointer default_value);
-
-/**
- * purple_request_field_choice_set_value:
- * @field: The field.
- * @value: The value.
- *
- * Sets the value in an choice field.
- */
-void
-purple_request_field_choice_set_value(PurpleRequestField *field,
-	gpointer value);
-
-/**
- * purple_request_field_choice_get_default_value:
- * @field: The field.
- *
- * Returns the default value in an choice field.
- *
- * Returns: The default value.
- */
-gpointer
-purple_request_field_choice_get_default_value(PurpleRequestField *field);
-
-/**
- * purple_request_field_choice_get_value:
- * @field: The field.
- *
- * Returns the user-entered value in an choice field.
- *
- * Returns: The value.
- */
-gpointer
-purple_request_field_choice_get_value(PurpleRequestField *field);
-
-/**
- * purple_request_field_choice_get_elements:
- * @field: The field.
- *
- * Returns a list of elements in a choice field.
- *
- * Returns: (element-type PurpleKeyValuePair) (transfer none): The list of pairs of {label, value}.
- */
-GList *
-purple_request_field_choice_get_elements(PurpleRequestField *field);
 
 /**************************************************************************/
 /* List Field API                                                         */

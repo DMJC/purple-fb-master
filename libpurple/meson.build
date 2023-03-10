@@ -99,6 +99,7 @@ purple_coresources = [
 	'request.c',
 	'request/purplerequestfieldaccount.c',
 	'request/purplerequestfieldbool.c',
+	'request/purplerequestfieldchoice.c',
 	'request/purplerequestfieldint.c',
 	'request/purplerequestfieldstring.c',
 	'request-datasheet.c',
@@ -226,6 +227,7 @@ purple_coreheaders = [
 purple_request_headers = [
 	'request/purplerequestfieldaccount.h',
 	'request/purplerequestfieldbool.h',
+	'request/purplerequestfieldchoice.h',
 	'request/purplerequestfieldint.h',
 	'request/purplerequestfieldstring.h',
 ]

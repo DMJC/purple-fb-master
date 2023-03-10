@@ -64,11 +64,12 @@ jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestPage *page) {
 		if(groups->data == data->actiongroup) {
 			for(flds = purple_request_group_get_fields(groups->data); flds; flds = flds->next) {
 				PurpleRequestField *field = flds->data;
+				PurpleRequestFieldChoice *choice = PURPLE_REQUEST_FIELD_CHOICE(field);
 				const char *id = purple_request_field_get_id(field);
 				int handleindex;
 				if(!purple_strequal(id, "libpurple:jabber:xdata:actions"))
 					continue;
-				handleindex = GPOINTER_TO_INT(purple_request_field_choice_get_value(field));
+				handleindex = GPOINTER_TO_INT(purple_request_field_choice_get_value(choice));
 				actionhandle = g_strdup(g_list_nth_data(data->actions, handleindex));
 				break;
 			}
@@ -369,22 +370,26 @@ void *jabber_x_data_request_with_actions(JabberStream *js, PurpleXmlNode *packet
 	}
 
 	if(actions != NULL) {
-		PurpleRequestField *actionfield;
+		PurpleRequestField *field = NULL;
+		PurpleRequestFieldChoice *choice = NULL;
 		GList *action;
 		int i;
 
 		data->actiongroup = group = purple_request_group_new(_("Actions"));
 		purple_request_page_add_group(page, group);
-		actionfield = purple_request_field_choice_new("libpurple:jabber:xdata:actions", _("Select an action"), GINT_TO_POINTER(defaultaction));
+		field = purple_request_field_choice_new("libpurple:jabber:xdata:actions",
+		                                        _("Select an action"),
+		                                        GINT_TO_POINTER(defaultaction));
+		choice = PURPLE_REQUEST_FIELD_CHOICE(field);
 
 		for(i = 0, action = actions; action; action = g_list_next(action), i++) {
 			JabberXDataAction *a = action->data;
 
-			purple_request_field_choice_add(actionfield, a->name, GINT_TO_POINTER(i));
+			purple_request_field_choice_add(choice, a->name, GINT_TO_POINTER(i));
 			data->actions = g_list_append(data->actions, g_strdup(a->handle));
 		}
-		purple_request_field_set_required(actionfield,TRUE);
-		purple_request_group_add_field(group, actionfield);
+		purple_request_field_set_required(field, TRUE);
+		purple_request_group_add_field(group, field);
 	}
 
 	if((x = purple_xmlnode_get_child(packet, "title")))

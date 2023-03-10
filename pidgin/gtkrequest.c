@@ -257,7 +257,8 @@ field_choice_option_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
 
 	if(G_IS_OBJECT(item)) {
 		gpointer value = g_object_get_data(item, "choice_value");
-		purple_request_field_choice_set_value(field, value);
+		purple_request_field_choice_set_value(PURPLE_REQUEST_FIELD_CHOICE(field),
+		                                      value);
 	}
 }
 
@@ -1243,6 +1244,7 @@ create_bool_field(PurpleRequestField *field,
 
 static GtkWidget *
 create_choice_field(PurpleRequestField *field) {
+	PurpleRequestFieldChoice *choicefield = PURPLE_REQUEST_FIELD_CHOICE(field);
 	GtkWidget *widget;
 	GListModel *model = NULL;
 	GList *elements = NULL;
@@ -1250,12 +1252,12 @@ create_choice_field(PurpleRequestField *field) {
 	gpointer default_value;
 	guint index;
 
-	default_value = purple_request_field_choice_get_value(field);
+	default_value = purple_request_field_choice_get_value(choicefield);
 	widget = gtk_drop_down_new_from_strings(NULL);
 	model = gtk_drop_down_get_model(GTK_DROP_DOWN(widget));
 
 	index = 0;
-	elements = purple_request_field_choice_get_elements(field);
+	elements = purple_request_field_choice_get_elements(choicefield);
 	for(GList *l = elements; l != NULL; l = g_list_next(l)) {
 		PurpleKeyValuePair *choice = l->data;
 		GObject *item = NULL;
@@ -1281,7 +1283,7 @@ create_choice_field(PurpleRequestField *field) {
 	if(default_index == GTK_INVALID_LIST_POSITION && index > 0) {
 		GObject *item = g_list_model_get_item(model, 0);
 		gpointer value = g_object_get_data(item, "choice_value");
-		purple_request_field_choice_set_value(field, value);
+		purple_request_field_choice_set_value(choicefield, value);
 		g_clear_object(&item);
 	}
 
@@ -2150,9 +2152,9 @@ pidgin_request_fields(const char *title, const char *primary,
 						widget = create_int_field(field);
 					} else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 						widget = create_bool_field(field, cpar);
-					} else if (type == PURPLE_REQUEST_FIELD_CHOICE)
+					} else if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
 						widget = create_choice_field(field);
-					else if (type == PURPLE_REQUEST_FIELD_LIST)
+					} else if (type == PURPLE_REQUEST_FIELD_LIST)
 						widget = create_list_field(field);
 					else if (type == PURPLE_REQUEST_FIELD_IMAGE)
 						widget = create_image_field(field);

@@ -1519,8 +1519,7 @@ static void do_transfer_send(PurpleXfer *xfer, const char *resource)
 static void
 resource_select_ok_cb(PurpleXfer *xfer, PurpleRequestPage *page)
 {
-	PurpleRequestField *field = purple_request_page_get_field(page, "resource");
-	const char *selected_label = purple_request_field_choice_get_value(field);
+	const char *selected_label = purple_request_page_get_choice(page, "resource");
 
 	do_transfer_send(xfer, selected_label);
 }
@@ -1587,19 +1586,30 @@ static void jabber_si_xfer_xfer_init(PurpleXfer *xfer)
 		} else {
 			/* we've got multiple resources, we need to pick one to send to */
 			GList *l;
-			char *msg = g_strdup_printf(_("Please select the resource of %s to which you would like to send a file"), purple_xfer_get_remote_user(xfer));
-			PurpleRequestPage *page = purple_request_page_new();
-			PurpleRequestField *field = purple_request_field_choice_new("resource", _("Resource"), 0);
-			PurpleRequestGroup *group = purple_request_group_new(NULL);
+			PurpleRequestPage *page = NULL;
+			PurpleRequestField *field = NULL;
+			PurpleRequestFieldChoice *choice = NULL;
+			PurpleRequestGroup *group = NULL;
+			char *msg = NULL;
 
+			field = purple_request_field_choice_new("resource", _("Resource"), 0);
+			choice = PURPLE_REQUEST_FIELD_CHOICE(field);
 			for(l = resources; l; l = l->next) {
 				jbr = l->data;
-				purple_request_field_choice_add_full(field, jbr->name, g_strdup(jbr->name), g_free);
+				purple_request_field_choice_add_full(choice, jbr->name,
+				                                     g_strdup(jbr->name),
+				                                     g_free);
 			}
 
+			group = purple_request_group_new(NULL);
 			purple_request_group_add_field(group, field);
 
+			page = purple_request_page_new();
 			purple_request_page_add_group(page, group);
+
+			msg = g_strdup_printf(_("Please select the resource of %s to "
+			                        "which you would like to send a file"),
+			                      purple_xfer_get_remote_user(xfer));
 
 			purple_request_fields(jsx->js->gc, _("Select a Resource"), msg, NULL, page,
 					_("Send File"), G_CALLBACK(resource_select_ok_cb), _("Cancel"), G_CALLBACK(resource_select_cancel_cb),

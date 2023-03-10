@@ -315,13 +315,12 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 				int value = (text && *text) ? atoi(text) : 0;
 				purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field),
 				                                   value);
-			}
-			else if (type == PURPLE_REQUEST_FIELD_CHOICE)
-			{
+			} else if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
 				GntWidget *combo = g_object_get_data(G_OBJECT(field),
 				                                     "finch-ui-data");
 				gpointer value = gnt_combo_box_get_selected_data(GNT_COMBO_BOX(combo));
-				purple_request_field_choice_set_value(field, value);
+				purple_request_field_choice_set_value(PURPLE_REQUEST_FIELD_CHOICE(field),
+				                                      value);
 			}
 			else if (type == PURPLE_REQUEST_FIELD_LIST)
 			{
@@ -471,16 +470,18 @@ create_integer_field(PurpleRequestField *field)
 static GntWidget*
 create_choice_field(PurpleRequestField *field)
 {
+	PurpleRequestFieldChoice *cfield = PURPLE_REQUEST_FIELD_CHOICE(field);
 	GntWidget *combo = gnt_combo_box_new();
 
-	for (GList *it = purple_request_field_choice_get_elements(field); it != NULL; it = g_list_next(it))
+	for(GList *it = purple_request_field_choice_get_elements(cfield);
+	    it != NULL; it = g_list_next(it))
 	{
 		PurpleKeyValuePair *choice = it->data;
 
 		gnt_combo_box_add_data(GNT_COMBO_BOX(combo), choice->value, choice->key);
 	}
 	gnt_combo_box_set_selected(GNT_COMBO_BOX(combo),
-		purple_request_field_choice_get_default_value(field));
+		purple_request_field_choice_get_default_value(cfield));
 	return combo;
 }
 
@@ -666,7 +667,7 @@ finch_request_fields(const char *title, const char *primary,
 				widget = create_string_field(field, &username);
 			} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
 				widget = create_integer_field(field);
-			} else if (type == PURPLE_REQUEST_FIELD_CHOICE) {
+			} else if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
 				widget = create_choice_field(field);
 			} else if (type == PURPLE_REQUEST_FIELD_LIST) {
 				widget = create_list_field(field);
@@ -928,13 +929,12 @@ GntWidget *finch_request_field_get_widget(PurpleRequestField *field)
 		ret = create_string_field(field, NULL);
 	} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
 		ret = create_integer_field(field);
+	} else if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
+		ret = create_choice_field(field);
 	} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 		ret = create_account_field(field);
 	} else {
 	switch (purple_request_field_get_field_type(field)) {
-		case PURPLE_REQUEST_FIELD_CHOICE:
-			ret = create_choice_field(field);
-			break;
 		case PURPLE_REQUEST_FIELD_LIST:
 			ret = create_list_field(field);
 			break;

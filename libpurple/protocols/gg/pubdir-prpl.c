@@ -749,6 +749,7 @@ ggp_pubdir_search(PurpleConnection *gc, const ggp_pubdir_search_form *form)
 	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
+	PurpleRequestFieldChoice *choice;
 
 	purple_debug_info("gg", "ggp_pubdir_search");
 
@@ -766,11 +767,12 @@ ggp_pubdir_search(PurpleConnection *gc, const ggp_pubdir_search_form *form)
 
 	field = purple_request_field_choice_new(
 	        "gender", _("Gender"), form ? GINT_TO_POINTER(form->gender) : NULL);
-	purple_request_field_choice_add(field, _("Male or female"), NULL);
-	purple_request_field_choice_add(field, _("Male"),
-		GINT_TO_POINTER(GGP_PUBDIR_GENDER_MALE));
-	purple_request_field_choice_add(field, _("Female"),
-		GINT_TO_POINTER(GGP_PUBDIR_GENDER_FEMALE));
+	choice = PURPLE_REQUEST_FIELD_CHOICE(field);
+	purple_request_field_choice_add(choice, _("Male or female"), NULL);
+	purple_request_field_choice_add(choice, _("Male"),
+	                                GINT_TO_POINTER(GGP_PUBDIR_GENDER_MALE));
+	purple_request_field_choice_add(choice, _("Female"),
+	                                GINT_TO_POINTER(GGP_PUBDIR_GENDER_FEMALE));
 	purple_request_group_add_field(group, field);
 
 	purple_request_fields(gc, _("Find buddies"), _("Find buddies"),
@@ -935,6 +937,7 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
+	PurpleRequestFieldChoice *choice;
 	gchar *bday = NULL;
 	gsize i;
 	const ggp_pubdir_record *record;
@@ -962,10 +965,11 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 	        "gender", _("Gender"),
 	        record ? GINT_TO_POINTER(record->gender)
 	               : GGP_PUBDIR_GENDER_UNSPECIFIED);
+	choice = PURPLE_REQUEST_FIELD_CHOICE(field);
 	purple_request_field_set_required(field, TRUE);
-	purple_request_field_choice_add(field, _("Male"),
+	purple_request_field_choice_add(choice, _("Male"),
 	                                GINT_TO_POINTER(GGP_PUBDIR_GENDER_MALE));
-	purple_request_field_choice_add(field, _("Female"),
+	purple_request_field_choice_add(choice, _("Female"),
 	                                GINT_TO_POINTER(GGP_PUBDIR_GENDER_FEMALE));
 	purple_request_group_add_field(group, field);
 
@@ -991,13 +995,14 @@ ggp_pubdir_set_info_dialog(PurpleConnection *gc, int records_count,
 	   your language, feel free to use it. Otherwise it's probably acceptable
 	   to leave it changed or transliterate it into your alphabet. */
 	field = purple_request_field_choice_new("province", _("Voivodeship"), 0);
+	choice = PURPLE_REQUEST_FIELD_CHOICE(field);
 	purple_request_group_add_field(group, field);
 	for (i = 0; i < ggp_pubdir_provinces_count; i++) {
-		purple_request_field_choice_add(field, ggp_pubdir_provinces[i],
+		purple_request_field_choice_add(choice, ggp_pubdir_provinces[i],
 		                                GINT_TO_POINTER(i));
 		if (record && i == record->province) {
-			purple_request_field_choice_set_value(field, GINT_TO_POINTER(i));
-			purple_request_field_choice_set_default_value(field,
+			purple_request_field_choice_set_value(choice, GINT_TO_POINTER(i));
+			purple_request_field_choice_set_default_value(choice,
 			                                              GINT_TO_POINTER(i));
 		}
 	}

@@ -455,6 +455,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	PurpleRequestPage *page = NULL;
 	PurpleRequestGroup *group = NULL;
 	PurpleRequestField *field = NULL;
+	PurpleRequestFieldChoice *choice_field = NULL;
 	GBytes *icon = NULL;
 	gconstpointer icon_data = NULL;
 	gsize icon_len = 0;
@@ -520,10 +521,11 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_choice_new("choice", _("A choice"), "foo");
-	purple_request_field_choice_add(field, _("foo"), "foo");
-	purple_request_field_choice_add(field, _("bar"), "bar");
-	purple_request_field_choice_add(field, _("baz"), "baz");
-	purple_request_field_choice_add(field, _("quux"), "quux");
+	choice_field = PURPLE_REQUEST_FIELD_CHOICE(field);
+	purple_request_field_choice_add(choice_field, _("foo"), "foo");
+	purple_request_field_choice_add(choice_field, _("bar"), "bar");
+	purple_request_field_choice_add(choice_field, _("baz"), "baz");
+	purple_request_field_choice_add(choice_field, _("quux"), "quux");
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_list_new("list", _("A list"));
