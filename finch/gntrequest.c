@@ -308,14 +308,13 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 				}
 				purple_request_field_string_set_value(PURPLE_REQUEST_FIELD_STRING(field),
 				                                      text);
-			}
-			else if (type == PURPLE_REQUEST_FIELD_INTEGER)
-			{
+			} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
 				GntWidget *entry = g_object_get_data(G_OBJECT(field),
 				                                     "finch-ui-data");
 				const char *text = gnt_entry_get_text(GNT_ENTRY(entry));
 				int value = (text && *text) ? atoi(text) : 0;
-				purple_request_field_int_set_value(field, value);
+				purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field),
+				                                   value);
 			}
 			else if (type == PURPLE_REQUEST_FIELD_CHOICE)
 			{
@@ -458,8 +457,9 @@ create_string_field(PurpleRequestField *field, GntWidget **username)
 static GntWidget*
 create_integer_field(PurpleRequestField *field)
 {
+	PurpleRequestFieldInt *intfield = PURPLE_REQUEST_FIELD_INT(field);
 	char str[256];
-	int val = purple_request_field_int_get_default_value(field);
+	int val = purple_request_field_int_get_default_value(intfield);
 	GntWidget *entry;
 
 	g_snprintf(str, sizeof(str), "%d", val);
@@ -664,7 +664,7 @@ finch_request_fields(const char *title, const char *primary,
 				widget = create_boolean_field(field);
 			} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 				widget = create_string_field(field, &username);
-			} else if (type == PURPLE_REQUEST_FIELD_INTEGER) {
+			} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
 				widget = create_integer_field(field);
 			} else if (type == PURPLE_REQUEST_FIELD_CHOICE) {
 				widget = create_choice_field(field);
@@ -876,6 +876,9 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 			if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 				PurpleRequestFieldBool *bfield = PURPLE_REQUEST_FIELD_BOOL(field);
 				val = GINT_TO_POINTER(purple_request_field_bool_get_value(bfield));
+			} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
+				PurpleRequestFieldInt *ifield = PURPLE_REQUEST_FIELD_INT(field);
+				val = GINT_TO_POINTER(purple_request_field_int_get_value(ifield));
 			} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 				PurpleRequestFieldString *sfield = PURPLE_REQUEST_FIELD_STRING(field);
 				val = (gpointer)purple_request_field_string_get_value(sfield);
@@ -884,9 +887,6 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 				case PURPLE_REQUEST_FIELD_LIST:
 					val = purple_request_field_list_get_selected(field)->data;
 					val = purple_request_field_list_get_data(field, val);
-					break;
-				case PURPLE_REQUEST_FIELD_INTEGER:
-					val = GINT_TO_POINTER(purple_request_field_int_get_value(field));
 					break;
 				default:
 					break;
@@ -926,13 +926,12 @@ GntWidget *finch_request_field_get_widget(PurpleRequestField *field)
 		ret = create_boolean_field(field);
 	} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 		ret = create_string_field(field, NULL);
+	} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
+		ret = create_integer_field(field);
 	} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 		ret = create_account_field(field);
 	} else {
 	switch (purple_request_field_get_field_type(field)) {
-		case PURPLE_REQUEST_FIELD_INTEGER:
-			ret = create_integer_field(field);
-			break;
 		case PURPLE_REQUEST_FIELD_CHOICE:
 			ret = create_choice_field(field);
 			break;

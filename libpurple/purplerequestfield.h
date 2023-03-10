@@ -64,7 +64,6 @@ struct _PurpleRequestFieldClass {
 /**
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
- * @PURPLE_REQUEST_FIELD_INTEGER: Integer field.
  * @PURPLE_REQUEST_FIELD_CHOICE: Choice field (dropdown?).
  * @PURPLE_REQUEST_FIELD_LIST: List field.
  * @PURPLE_REQUEST_FIELD_LABEL: Label field.
@@ -76,7 +75,6 @@ struct _PurpleRequestFieldClass {
 typedef enum
 {
 	PURPLE_REQUEST_FIELD_NONE,
-	PURPLE_REQUEST_FIELD_INTEGER,
 	PURPLE_REQUEST_FIELD_CHOICE,
 	PURPLE_REQUEST_FIELD_LIST,
 	PURPLE_REQUEST_FIELD_LABEL,
@@ -313,102 +311,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**************************************************************************/
-/* Integer Field API                                                      */
-/**************************************************************************/
-
-/**
- * purple_request_field_int_new:
- * @id:            The field ID.
- * @text:          The text label of the field.
- * @default_value: The default value.
- * @lower_bound:   The lower bound.
- * @upper_bound:   The upper bound.
- *
- * Creates an integer field.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_int_new(const char *id,
-	const char *text, int default_value, int lower_bound, int upper_bound);
-
-/**
- * purple_request_field_int_set_default_value:
- * @field:         The field.
- * @default_value: The default value.
- *
- * Sets the default value in an integer field.
- */
-void purple_request_field_int_set_default_value(PurpleRequestField *field,
-											  int default_value);
-
-/**
- * purple_request_field_int_set_lower_bound:
- * @field:       The field.
- * @lower_bound: The lower bound.
- *
- * Sets the lower bound in an integer field.
- */
-void purple_request_field_int_set_lower_bound(PurpleRequestField *field, int lower_bound);
-
-/**
- * purple_request_field_int_set_upper_bound:
- * @field:       The field.
- * @upper_bound: The upper bound.
- *
- * Sets the upper bound in an integer field.
- */
-void purple_request_field_int_set_upper_bound(PurpleRequestField *field, int upper_bound);
-
-/**
- * purple_request_field_int_set_value:
- * @field: The field.
- * @value: The value.
- *
- * Sets the value in an integer field.
- */
-void purple_request_field_int_set_value(PurpleRequestField *field, int value);
-
-/**
- * purple_request_field_int_get_default_value:
- * @field: The field.
- *
- * Returns the default value in an integer field.
- *
- * Returns: The default value.
- */
-int purple_request_field_int_get_default_value(PurpleRequestField *field);
-
-/**
- * purple_request_field_int_get_lower_bound:
- * @field: The field.
- *
- * Returns the lower bound in an integer field.
- *
- * Returns: The lower bound.
- */
-int purple_request_field_int_get_lower_bound(PurpleRequestField *field);
-
-/**
- * purple_request_field_int_get_upper_bound:
- * @field: The field.
- *
- * Returns the upper bound in an integer field.
- *
- * Returns: The upper bound.
- */
-int purple_request_field_int_get_upper_bound(PurpleRequestField *field);
-
-/**
- * purple_request_field_int_get_value:
- * @field: The field.
- *
- * Returns the user-entered value in an integer field.
- *
- * Returns: The value.
- */
-int purple_request_field_int_get_value(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Choice Field API                                                       */

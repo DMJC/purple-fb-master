@@ -25,6 +25,7 @@
 #include "purplerequestpage.h"
 #include "request/purplerequestfieldaccount.h"
 #include "request/purplerequestfieldbool.h"
+#include "request/purplerequestfieldint.h"
 #include "request/purplerequestfieldstring.h"
 #include "purpleprivate.h"
 
@@ -313,11 +314,12 @@ purple_request_page_get_integer(PurpleRequestPage *page, const char *id) {
 	g_return_val_if_fail(PURPLE_IS_REQUEST_PAGE(page), 0);
 	g_return_val_if_fail(id     != NULL, 0);
 
-	if((field = purple_request_page_get_field(page, id)) == NULL) {
+	field = purple_request_page_get_field(page, id);
+	if(!PURPLE_IS_REQUEST_FIELD_INT(field)) {
 		return 0;
 	}
 
-	return purple_request_field_int_get_value(field);
+	return purple_request_field_int_get_value(PURPLE_REQUEST_FIELD_INT(field));
 }
 
 gboolean

@@ -1038,9 +1038,10 @@ pidgin_request_wait_update(void *ui_handle, gboolean pulse, gfloat fraction)
 static void
 req_entry_field_changed_cb(GtkWidget *entry, PurpleRequestField *field)
 {
-	if (purple_request_field_get_field_type(field) == PURPLE_REQUEST_FIELD_INTEGER) {
+	if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
+		PurpleRequestFieldInt *intfield = PURPLE_REQUEST_FIELD_INT(field);
 		int value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-		purple_request_field_int_set_value(field, value);
+		purple_request_field_int_set_value(intfield, value);
 
 	} else {
 		PurpleRequestFieldString *strfield = PURPLE_REQUEST_FIELD_STRING(field);
@@ -1199,16 +1200,17 @@ create_string_field(PurpleRequestField *field)
 static GtkWidget *
 create_int_field(PurpleRequestField *field)
 {
+	PurpleRequestFieldInt *intfield = PURPLE_REQUEST_FIELD_INT(field);
 	int value;
 	GtkWidget *widget;
 
 	widget = gtk_spin_button_new_with_range(
-		purple_request_field_int_get_lower_bound(field),
-		purple_request_field_int_get_upper_bound(field), 1);
+		purple_request_field_int_get_lower_bound(intfield),
+		purple_request_field_int_get_upper_bound(intfield), 1);
 
 	setup_entry_field(widget, field);
 
-	value = purple_request_field_int_get_default_value(field);
+	value = purple_request_field_int_get_default_value(intfield);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), value);
 
 	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
@@ -2144,9 +2146,9 @@ pidgin_request_fields(const char *title, const char *primary,
 				{
 					if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 						widget = create_string_field(field);
-					} else if (type == PURPLE_REQUEST_FIELD_INTEGER)
+					} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
 						widget = create_int_field(field);
-					else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
+					} else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 						widget = create_bool_field(field, cpar);
 					} else if (type == PURPLE_REQUEST_FIELD_CHOICE)
 						widget = create_choice_field(field);
