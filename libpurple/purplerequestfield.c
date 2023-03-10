@@ -49,11 +49,6 @@ typedef struct {
 		} integer;
 
 		struct {
-			gboolean default_value;
-			gboolean value;
-		} boolean;
-
-		struct {
 			gpointer default_value;
 			gpointer value;
 
@@ -799,74 +794,6 @@ purple_request_field_int_get_value(PurpleRequestField *field) {
 	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_INTEGER, 0);
 
 	return priv->u.integer.value;
-}
-
-PurpleRequestField *
-purple_request_field_bool_new(const char *id, const char *text,
-							gboolean default_value)
-{
-	PurpleRequestField *field;
-
-	g_return_val_if_fail(id   != NULL, NULL);
-	g_return_val_if_fail(text != NULL, NULL);
-
-	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_BOOLEAN);
-
-	purple_request_field_bool_set_default_value(field, default_value);
-	purple_request_field_bool_set_value(field, default_value);
-
-	return field;
-}
-
-void
-purple_request_field_bool_set_default_value(PurpleRequestField *field,
-										  gboolean default_value)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_BOOLEAN);
-
-	priv->u.boolean.default_value = default_value;
-}
-
-void
-purple_request_field_bool_set_value(PurpleRequestField *field, gboolean value)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_BOOLEAN);
-
-	priv->u.boolean.value = value;
-}
-
-gboolean
-purple_request_field_bool_get_default_value(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_BOOLEAN, FALSE);
-
-	return priv->u.boolean.default_value;
-}
-
-gboolean
-purple_request_field_bool_get_value(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_BOOLEAN, FALSE);
-
-	return priv->u.boolean.value;
 }
 
 PurpleRequestField *

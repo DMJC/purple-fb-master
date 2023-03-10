@@ -130,13 +130,17 @@ jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestPage *page) {
 					}
 					break;
 				case JABBER_X_DATA_BOOLEAN:
+					{
+					PurpleRequestFieldBool *bfield = PURPLE_REQUEST_FIELD_BOOL(field);
 					fieldnode = purple_xmlnode_new_child(result, "field");
 					purple_xmlnode_set_attrib(fieldnode, "var", id);
 					valuenode = purple_xmlnode_new_child(fieldnode, "value");
-					if(purple_request_field_bool_get_value(field))
+					if(purple_request_field_bool_get_value(bfield)) {
 						purple_xmlnode_insert_data(valuenode, "1", -1);
-					else
+					} else {
 						purple_xmlnode_insert_data(valuenode, "0", -1);
+					}
+					}
 					break;
 				case JABBER_X_DATA_IGNORE:
 					break;

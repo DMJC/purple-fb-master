@@ -24,6 +24,7 @@
 #include "glibcompat.h"
 #include "purplerequestpage.h"
 #include "request/purplerequestfieldaccount.h"
+#include "request/purplerequestfieldbool.h"
 #include "request/purplerequestfieldstring.h"
 #include "purpleprivate.h"
 
@@ -326,11 +327,12 @@ purple_request_page_get_bool(PurpleRequestPage *page, const char *id) {
 	g_return_val_if_fail(PURPLE_IS_REQUEST_PAGE(page), FALSE);
 	g_return_val_if_fail(id     != NULL, FALSE);
 
-	if((field = purple_request_page_get_field(page, id)) == NULL) {
+	field = purple_request_page_get_field(page, id);
+	if(!PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 		return FALSE;
 	}
 
-	return purple_request_field_bool_get_value(field);
+	return purple_request_field_bool_get_value(PURPLE_REQUEST_FIELD_BOOL(field));
 }
 
 gpointer

@@ -38,6 +38,7 @@
 #include "purpleprotocolmanager.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
+#include "request/purplerequestfieldbool.h"
 #include "request/purplerequestfieldstring.h"
 #include "server.h"
 #include "signals.h"

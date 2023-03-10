@@ -65,7 +65,6 @@ struct _PurpleRequestFieldClass {
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
  * @PURPLE_REQUEST_FIELD_INTEGER: Integer field.
- * @PURPLE_REQUEST_FIELD_BOOLEAN: Boolean field.
  * @PURPLE_REQUEST_FIELD_CHOICE: Choice field (dropdown?).
  * @PURPLE_REQUEST_FIELD_LIST: List field.
  * @PURPLE_REQUEST_FIELD_LABEL: Label field.
@@ -78,7 +77,6 @@ typedef enum
 {
 	PURPLE_REQUEST_FIELD_NONE,
 	PURPLE_REQUEST_FIELD_INTEGER,
-	PURPLE_REQUEST_FIELD_BOOLEAN,
 	PURPLE_REQUEST_FIELD_CHOICE,
 	PURPLE_REQUEST_FIELD_LIST,
 	PURPLE_REQUEST_FIELD_LABEL,
@@ -411,66 +409,6 @@ int purple_request_field_int_get_upper_bound(PurpleRequestField *field);
  * Returns: The value.
  */
 int purple_request_field_int_get_value(PurpleRequestField *field);
-
-/**************************************************************************/
-/* Boolean Field API                                                      */
-/**************************************************************************/
-
-/**
- * purple_request_field_bool_new:
- * @id:            The field ID.
- * @text:          The text label of the field.
- * @default_value: The default value.
- *
- * Creates a boolean field.
- *
- * This is often represented as a checkbox.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_bool_new(const char *id,
-											  const char *text,
-											  gboolean default_value);
-
-/**
- * purple_request_field_bool_set_default_value:
- * @field:         The field.
- * @default_value: The default value.
- *
- * Sets the default value in an boolean field.
- */
-void purple_request_field_bool_set_default_value(PurpleRequestField *field,
-											   gboolean default_value);
-
-/**
- * purple_request_field_bool_set_value:
- * @field: The field.
- * @value: The value.
- *
- * Sets the value in an boolean field.
- */
-void purple_request_field_bool_set_value(PurpleRequestField *field,
-									   gboolean value);
-
-/**
- * purple_request_field_bool_get_default_value:
- * @field: The field.
- *
- * Returns the default value in an boolean field.
- *
- * Returns: The default value.
- */
-gboolean purple_request_field_bool_get_default_value(PurpleRequestField *field);
-
-/**
- * purple_request_field_bool_get_value:
- * @field: The field.
- *
- * Returns the user-entered value in an boolean field.
- *
- * Returns: The value.
- */
-gboolean purple_request_field_bool_get_value(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Choice Field API                                                       */

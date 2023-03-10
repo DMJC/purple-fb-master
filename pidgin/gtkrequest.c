@@ -241,7 +241,7 @@ req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
 static void
 field_bool_cb(GtkCheckButton *button, PurpleRequestField *field)
 {
-	purple_request_field_bool_set_value(field,
+	purple_request_field_bool_set_value(PURPLE_REQUEST_FIELD_BOOL(field),
 			gtk_check_button_get_active(button));
 
 	req_field_changed_common(GTK_WIDGET(button), field);
@@ -1220,6 +1220,7 @@ static GtkWidget *
 create_bool_field(PurpleRequestField *field,
 	PurpleRequestCommonParameters *cpar)
 {
+	PurpleRequestFieldBool *boolfield = PURPLE_REQUEST_FIELD_BOOL(field);
 	GtkWidget *widget;
 	gchar *label;
 
@@ -1231,7 +1232,7 @@ create_bool_field(PurpleRequestField *field,
 	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
 
 	gtk_check_button_set_active(GTK_CHECK_BUTTON(widget),
-		purple_request_field_bool_get_default_value(field));
+		purple_request_field_bool_get_default_value(boolfield));
 
 	g_signal_connect(widget, "toggled", G_CALLBACK(field_bool_cb), field);
 
@@ -2054,8 +2055,9 @@ pidgin_request_fields(const char *title, const char *primary,
 				  purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field))))
 			{
 				rows += 2;
-			} else if (compact && type != PURPLE_REQUEST_FIELD_BOOLEAN)
+			} else if(compact && !PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 				rows++;
+			}
 		}
 
 		grid = gtk_grid_new();
@@ -2097,8 +2099,7 @@ pidgin_request_fields(const char *title, const char *primary,
 				field_label = pidgin_request_escape(cpar,
 					purple_request_field_get_label(field));
 
-				if (type != PURPLE_REQUEST_FIELD_BOOLEAN && field_label)
-				{
+				if(!PURPLE_IS_REQUEST_FIELD_BOOL(field) && field_label) {
 					char *text = NULL;
 
 					if (field_label[strlen(field_label) - 1] != ':' &&
@@ -2145,9 +2146,9 @@ pidgin_request_fields(const char *title, const char *primary,
 						widget = create_string_field(field);
 					} else if (type == PURPLE_REQUEST_FIELD_INTEGER)
 						widget = create_int_field(field);
-					else if (type == PURPLE_REQUEST_FIELD_BOOLEAN)
+					else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 						widget = create_bool_field(field, cpar);
-					else if (type == PURPLE_REQUEST_FIELD_CHOICE)
+					} else if (type == PURPLE_REQUEST_FIELD_CHOICE)
 						widget = create_choice_field(field);
 					else if (type == PURPLE_REQUEST_FIELD_LIST)
 						widget = create_list_field(field);
@@ -2182,9 +2183,7 @@ pidgin_request_fields(const char *title, const char *primary,
 				{
 					gtk_grid_attach(GTK_GRID(grid), widget,
 						0, row_num, 2 * cols, 1);
-				}
-				else if (type == PURPLE_REQUEST_FIELD_BOOLEAN)
-				{
+				} else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 					gtk_grid_attach(GTK_GRID(grid), widget,
 						col_offset, row_num, 1, 1);
 				}

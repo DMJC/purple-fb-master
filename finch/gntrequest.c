@@ -293,12 +293,12 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 			PurpleRequestFieldType type = purple_request_field_get_field_type(field);
 			if (!purple_request_field_is_visible(field))
 				continue;
-			if (type == PURPLE_REQUEST_FIELD_BOOLEAN)
-			{
+			if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 				GntWidget *check = g_object_get_data(G_OBJECT(field),
 				                                     "finch-ui-data");
 				gboolean value = gnt_check_box_get_checked(GNT_CHECK_BOX(check));
-				purple_request_field_bool_set_value(field, value);
+				purple_request_field_bool_set_value(PURPLE_REQUEST_FIELD_BOOL(field),
+				                                    value);
 			} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 				GntWidget *entry = g_object_get_data(G_OBJECT(field),
 				                                     "finch-ui-data");
@@ -416,10 +416,11 @@ update_selected_account(GntEntry *username, G_GNUC_UNUSED const char *start,
 static GntWidget*
 create_boolean_field(PurpleRequestField *field)
 {
+	PurpleRequestFieldBool *boolfield = PURPLE_REQUEST_FIELD_BOOL(field);
 	const char *label = purple_request_field_get_label(field);
 	GntWidget *check = gnt_check_box_new(label);
 	gnt_check_box_set_checked(GNT_CHECK_BOX(check),
-			purple_request_field_bool_get_default_value(field));
+			purple_request_field_bool_get_default_value(boolfield));
 	return check;
 }
 
@@ -649,8 +650,7 @@ finch_request_fields(const char *title, const char *primary,
 			hbox = gnt_hbox_new(TRUE);   /* hrm */
 			gnt_box_add_widget(GNT_BOX(box), hbox);
 
-			if (type != PURPLE_REQUEST_FIELD_BOOLEAN && label)
-			{
+			if(!PURPLE_IS_REQUEST_FIELD_BOOL(field) && label) {
 				GntWidget *l;
 				if (purple_request_field_is_required(field))
 					l = gnt_label_new_with_format(label, GNT_TEXT_FLAG_UNDERLINE);
@@ -660,7 +660,7 @@ finch_request_fields(const char *title, const char *primary,
 				gnt_box_add_widget(GNT_BOX(hbox), l);
 			}
 
-			if (type == PURPLE_REQUEST_FIELD_BOOLEAN) {
+			if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 				widget = create_boolean_field(field);
 			} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 				widget = create_string_field(field, &username);
@@ -873,7 +873,10 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 			gpointer val = NULL;
 			const char *id = purple_request_field_get_id(field);
 
-			if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
+			if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
+				PurpleRequestFieldBool *bfield = PURPLE_REQUEST_FIELD_BOOL(field);
+				val = GINT_TO_POINTER(purple_request_field_bool_get_value(bfield));
+			} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 				PurpleRequestFieldString *sfield = PURPLE_REQUEST_FIELD_STRING(field);
 				val = (gpointer)purple_request_field_string_get_value(sfield);
 			} else {
@@ -881,9 +884,6 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 				case PURPLE_REQUEST_FIELD_LIST:
 					val = purple_request_field_list_get_selected(field)->data;
 					val = purple_request_field_list_get_data(field, val);
-					break;
-				case PURPLE_REQUEST_FIELD_BOOLEAN:
-					val = GINT_TO_POINTER(purple_request_field_bool_get_value(field));
 					break;
 				case PURPLE_REQUEST_FIELD_INTEGER:
 					val = GINT_TO_POINTER(purple_request_field_int_get_value(field));
@@ -922,15 +922,14 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 GntWidget *finch_request_field_get_widget(PurpleRequestField *field)
 {
 	GntWidget *ret = NULL;
-	if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
+	if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
+		ret = create_boolean_field(field);
+	} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
 		ret = create_string_field(field, NULL);
 	} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 		ret = create_account_field(field);
 	} else {
 	switch (purple_request_field_get_field_type(field)) {
-		case PURPLE_REQUEST_FIELD_BOOLEAN:
-			ret = create_boolean_field(field);
-			break;
 		case PURPLE_REQUEST_FIELD_INTEGER:
 			ret = create_integer_field(field);
 			break;
