@@ -42,13 +42,6 @@ typedef struct {
 
 	union {
 		struct {
-			unsigned int scale_x;
-			unsigned int scale_y;
-			char *buffer;
-			gsize size;
-		} image;
-
-		struct {
 			PurpleRequestDatasheet *sheet;
 		} datasheet;
 	} u;
@@ -198,8 +191,6 @@ purple_request_field_finalize(GObject *obj) {
 
 	if(priv->type == PURPLE_REQUEST_FIELD_DATASHEET) {
 		purple_request_datasheet_free(priv->u.datasheet.sheet);
-	} else if(priv->type == PURPLE_REQUEST_FIELD_IMAGE) {
-		g_free(priv->u.image.buffer);
 	}
 
 	G_OBJECT_CLASS(purple_request_field_parent_class)->finalize(obj);
@@ -632,95 +623,6 @@ purple_request_field_is_sensitive(PurpleRequestField *field)
 	priv = purple_request_field_get_instance_private(field);
 
 	return priv->sensitive;
-}
-
-PurpleRequestField *
-purple_request_field_image_new(const char *id, const char *text, const char *buf, gsize size)
-{
-	PurpleRequestField *field;
-
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(id   != NULL, NULL);
-	g_return_val_if_fail(text != NULL, NULL);
-	g_return_val_if_fail(buf  != NULL, NULL);
-	g_return_val_if_fail(size > 0, NULL);
-
-	field = purple_request_field_new(id, text, PURPLE_REQUEST_FIELD_IMAGE);
-	priv = purple_request_field_get_instance_private(field);
-
-	priv->u.image.buffer = g_memdup2(buf, size);
-	priv->u.image.size = size;
-	priv->u.image.scale_x = 1;
-	priv->u.image.scale_y = 1;
-
-	return field;
-}
-
-void
-purple_request_field_image_set_scale(PurpleRequestField *field, unsigned int x, unsigned int y)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE);
-
-	priv->u.image.scale_x = x;
-	priv->u.image.scale_y = y;
-}
-
-const char *
-purple_request_field_image_get_buffer(PurpleRequestField *field)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, NULL);
-
-	return priv->u.image.buffer;
-}
-
-gsize
-purple_request_field_image_get_size(PurpleRequestField *field)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
-
-	return priv->u.image.size;
-}
-
-unsigned int
-purple_request_field_image_get_scale_x(PurpleRequestField *field)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
-
-	return priv->u.image.scale_x;
-}
-
-unsigned int
-purple_request_field_image_get_scale_y(PurpleRequestField *field)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), 0);
-
-	priv = purple_request_field_get_instance_private(field);
-	g_return_val_if_fail(priv->type == PURPLE_REQUEST_FIELD_IMAGE, 0);
-
-	return priv->u.image.scale_y;
 }
 
 PurpleRequestField *

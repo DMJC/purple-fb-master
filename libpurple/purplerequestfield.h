@@ -64,7 +64,6 @@ struct _PurpleRequestFieldClass {
 /**
  * PurpleRequestFieldType:
  * @PURPLE_REQUEST_FIELD_NONE: No field.
- * @PURPLE_REQUEST_FIELD_IMAGE: Image field.
  * @PURPLE_REQUEST_FIELD_DATASHEET: Datasheet field.
  *
  * A type of field.
@@ -72,7 +71,6 @@ struct _PurpleRequestFieldClass {
 typedef enum
 {
 	PURPLE_REQUEST_FIELD_NONE,
-	PURPLE_REQUEST_FIELD_IMAGE,
 	PURPLE_REQUEST_FIELD_DATASHEET
 
 } PurpleRequestFieldType;
@@ -305,74 +303,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**************************************************************************/
-/* Image Field API                                                        */
-/**************************************************************************/
-
-/**
- * purple_request_field_image_new:
- * @id:   The field ID.
- * @text: The label of the field.
- * @buf:  The image data.
- * @size: The size of the data in @buf.
- *
- * Creates an image field.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_image_new(const char *id, const char *text,
-											   const char *buf, gsize size);
-
-/**
- * purple_request_field_image_set_scale:
- * @field: The image field.
- * @x:     The x scale factor.
- * @y:     The y scale factor.
- *
- * Sets the scale factors of an image field.
- */
-void purple_request_field_image_set_scale(PurpleRequestField *field, unsigned int x, unsigned int y);
-
-/**
- * purple_request_field_image_get_buffer:
- * @field: The image field.
- *
- * Returns pointer to the image.
- *
- * Returns: Pointer to the image.
- */
-const char *purple_request_field_image_get_buffer(PurpleRequestField *field);
-
-/**
- * purple_request_field_image_get_size:
- * @field: The image field.
- *
- * Returns size (in bytes) of the image.
- *
- * Returns: Size of the image.
- */
-gsize purple_request_field_image_get_size(PurpleRequestField *field);
-
-/**
- * purple_request_field_image_get_scale_x:
- * @field: The image field.
- *
- * Returns X scale coefficient of the image.
- *
- * Returns: X scale coefficient of the image.
- */
-unsigned int purple_request_field_image_get_scale_x(PurpleRequestField *field);
-
-/**
- * purple_request_field_image_get_scale_y:
- * @field: The image field.
- *
- * Returns Y scale coefficient of the image.
- *
- * Returns: Y scale coefficient of the image.
- */
-unsigned int purple_request_field_image_get_scale_y(PurpleRequestField *field);
 
 /**************************************************************************/
 /* Datasheet Field API                                                    */

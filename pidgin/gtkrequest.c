@@ -1293,16 +1293,17 @@ create_choice_field(PurpleRequestField *field) {
 static GtkWidget *
 create_image_field(PurpleRequestField *field)
 {
+	PurpleRequestFieldImage *ifield = PURPLE_REQUEST_FIELD_IMAGE(field);
 	GtkWidget *widget;
 	GdkPixbuf *buf, *scale;
 
 	buf = purple_gdk_pixbuf_from_data(
-			(const guchar *)purple_request_field_image_get_buffer(field),
-			purple_request_field_image_get_size(field));
+			(const guchar *)purple_request_field_image_get_buffer(ifield),
+			purple_request_field_image_get_size(ifield));
 
 	scale = gdk_pixbuf_scale_simple(buf,
-			purple_request_field_image_get_scale_x(field) * gdk_pixbuf_get_width(buf),
-			purple_request_field_image_get_scale_y(field) * gdk_pixbuf_get_height(buf),
+			purple_request_field_image_get_scale_x(ifield) * gdk_pixbuf_get_width(buf),
+			purple_request_field_image_get_scale_y(ifield) * gdk_pixbuf_get_height(buf),
 			GDK_INTERP_BILINEAR);
 	widget = gtk_image_new_from_pixbuf(scale);
 	g_object_unref(G_OBJECT(buf));
@@ -2155,9 +2156,9 @@ pidgin_request_fields(const char *title, const char *primary,
 						widget = create_choice_field(field);
 					} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
 						widget = create_list_field(field);
-					} else if (type == PURPLE_REQUEST_FIELD_IMAGE)
+					} else if(PURPLE_IS_REQUEST_FIELD_IMAGE(field)) {
 						widget = create_image_field(field);
-					else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
+					} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 						widget = create_account_field(field);
 					} else if (type == PURPLE_REQUEST_FIELD_DATASHEET)
 						widget = create_datasheet_field(field, datasheet_buttons_sg);
