@@ -27,22 +27,20 @@
 #ifndef PURPLE_REQUEST_FIELD_CHOICE_H
 #define PURPLE_REQUEST_FIELD_CHOICE_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
-
-/**
- * PurpleRequestFieldChoice:
- *
- * A choice request field.
- */
-typedef struct _PurpleRequestFieldChoice PurpleRequestFieldChoice;
 
 #include "purplerequestfield.h"
 
 G_BEGIN_DECLS
 
+/**
+ * PurpleRequestFieldChoice:
+ *
+ * A choice request field.
+ *
+ * Since: 3.0.0
+ */
 #define PURPLE_TYPE_REQUEST_FIELD_CHOICE (purple_request_field_choice_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldChoice, purple_request_field_choice,
                      PURPLE, REQUEST_FIELD_CHOICE, PurpleRequestField)

@@ -27,8 +27,6 @@
 #ifndef PURPLE_REQUEST_FIELD_H
 #define PURPLE_REQUEST_FIELD_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
 
@@ -36,13 +34,12 @@
  * PurpleRequestField:
  *
  * A request field.
+ *
+ * Since: 3.0.0
  */
 typedef struct _PurpleRequestField PurpleRequestField;
 
-#include "request.h"
-#include "request-datasheet.h"
-
-#define PURPLE_DEFAULT_ACTION_NONE	-1
+#include "purplerequestgroup.h"
 
 /**
  * PurpleRequestFieldClass:
@@ -61,43 +58,14 @@ struct _PurpleRequestFieldClass {
 	gpointer reserved[4];
 };
 
-/**
- * PurpleRequestFieldType:
- * @PURPLE_REQUEST_FIELD_NONE: No field.
- *
- * A type of field.
- */
-typedef enum
-{
-	PURPLE_REQUEST_FIELD_NONE,
-
-} PurpleRequestFieldType;
-
 typedef gboolean (*PurpleRequestFieldValidator)(PurpleRequestField *field,
 	gchar **errmsg, gpointer user_data);
 
 G_BEGIN_DECLS
 
-/**************************************************************************/
-/* Field API                                                              */
-/**************************************************************************/
-
 #define PURPLE_TYPE_REQUEST_FIELD (purple_request_field_get_type())
 G_DECLARE_DERIVABLE_TYPE(PurpleRequestField, purple_request_field,
                          PURPLE, REQUEST_FIELD, GObject)
-
-/**
- * purple_request_field_new:
- * @id:   The field ID.
- * @text: The text label of the field.
- * @type: The type of field.
- *
- * Creates a field of the specified type.
- *
- * Returns: (transfer full): The new field.
- */
-PurpleRequestField *purple_request_field_new(const char *id, const char *text,
-										 PurpleRequestFieldType type);
 
 /**
  * purple_request_field_set_label:
@@ -140,8 +108,7 @@ void purple_request_field_set_type_hint(PurpleRequestField *field,
  * This is optionally used by the UIs to provide a tooltip for
  * the field.
  */
-void purple_request_field_set_tooltip(PurpleRequestField *field,
-									const char *tooltip);
+void purple_request_field_set_tooltip(PurpleRequestField *field, const char *tooltip);
 
 /**
  * purple_request_field_set_required:
@@ -150,18 +117,7 @@ void purple_request_field_set_tooltip(PurpleRequestField *field,
  *
  * Sets whether or not a field is required.
  */
-void purple_request_field_set_required(PurpleRequestField *field,
-									 gboolean required);
-
-/**
- * purple_request_field_get_field_type:
- * @field: The field.
- *
- * Returns the type of a field.
- *
- * Returns: The field's type.
- */
-PurpleRequestFieldType purple_request_field_get_field_type(PurpleRequestField *field);
+void purple_request_field_set_required(PurpleRequestField *field, gboolean required);
 
 /**
  * purple_request_field_get_group:
@@ -289,8 +245,7 @@ gboolean purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg
  *
  * Sets field editable.
  */
-void purple_request_field_set_sensitive(PurpleRequestField *field,
-	gboolean sensitive);
+void purple_request_field_set_sensitive(PurpleRequestField *field, gboolean sensitive);
 
 /**
  * purple_request_field_is_sensitive:
@@ -301,41 +256,6 @@ void purple_request_field_set_sensitive(PurpleRequestField *field,
  * Returns: TRUE, if the field is sensitive for user input.
  */
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
-
-/**************************************************************************/
-/* Validators for request fields.                                         */
-/**************************************************************************/
-
-/**
- * purple_request_field_email_validator:
- * @field: The field.
- * @errmsg: (out) (optional): destination for error message.
- * @user_data: Ignored.
- *
- * Validates a field which should contain an email address.
- *
- * See purple_request_field_set_validator().
- *
- * Returns: TRUE, if field contains valid email address.
- */
-gboolean purple_request_field_email_validator(PurpleRequestField *field,
-	gchar **errmsg, void *user_data);
-
-/**
- * purple_request_field_alphanumeric_validator:
- * @field: The field.
- * @errmsg: (allow-none): destination for error message.
- * @allowed_characters: (allow-none): allowed character list
- *                      (NULL-terminated string).
- *
- * Validates a field which should contain alphanumeric content.
- *
- * See purple_request_field_set_validator().
- *
- * Returns: TRUE, if field contains only alphanumeric characters.
- */
-gboolean purple_request_field_alphanumeric_validator(PurpleRequestField *field,
-	gchar **errmsg, void *allowed_characters);
 
 G_END_DECLS
 

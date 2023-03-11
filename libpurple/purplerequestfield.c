@@ -15,21 +15,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <glib/gi18n-lib.h>
 
-#include "glibcompat.h"
 #include "request.h"
 #include "request/purplerequestfieldstring.h"
-#include "debug.h"
-#include "purplekeyvaluepair.h"
 #include "purpleprivate.h"
 
 typedef struct {
-	PurpleRequestFieldType type;
 	PurpleRequestGroup *group;
 
 	char *id;
@@ -40,7 +35,6 @@ typedef struct {
 	gboolean required;
 	gboolean sensitive;
 
-	void *ui_data;
 	char *tooltip;
 
 	PurpleRequestFieldValidator validator;
@@ -61,7 +55,8 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE_WITH_PRIVATE(PurpleRequestField, purple_request_field, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(PurpleRequestField, purple_request_field,
+                                    G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers
@@ -76,17 +71,6 @@ purple_request_field_set_id(PurpleRequestField *field, const char *id) {
 	priv->id = g_strdup(id);
 
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_ID]);
-}
-
-static void
-purple_request_field_set_field_type(PurpleRequestField *field,
-                                    PurpleRequestFieldType type)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	priv = purple_request_field_get_instance_private(field);
-
-	priv->type = type;
 }
 
 /******************************************************************************
@@ -314,24 +298,6 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
-PurpleRequestField *
-purple_request_field_new(const char *id, const char *text,
-                         PurpleRequestFieldType type)
-{
-	PurpleRequestField *field;
-
-	g_return_val_if_fail(id != NULL, NULL);
-	g_return_val_if_fail(type != PURPLE_REQUEST_FIELD_NONE, NULL);
-
-	field = g_object_new(PURPLE_TYPE_REQUEST_FIELD,
-	                     "id", id,
-	                     "label", text,
-	                     NULL);
-	purple_request_field_set_field_type(field, type);
-
-	return field;
-}
-
 void
 _purple_request_field_set_group(PurpleRequestField *field,
                                 PurpleRequestGroup *group)
@@ -426,18 +392,6 @@ purple_request_field_set_required(PurpleRequestField *field, gboolean required)
 	}
 
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_REQUIRED]);
-}
-
-PurpleRequestFieldType
-purple_request_field_get_field_type(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field),
-	                     PURPLE_REQUEST_FIELD_NONE);
-
-	priv = purple_request_field_get_instance_private(field);
-
-	return priv->type;
 }
 
 PurpleRequestGroup *

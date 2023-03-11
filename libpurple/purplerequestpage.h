@@ -27,8 +27,6 @@
 #ifndef PURPLE_REQUEST_PAGE_H
 #define PURPLE_REQUEST_PAGE_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
 
@@ -36,6 +34,8 @@
  * PurpleRequestPage:
  *
  * Multiple fields request data.
+ *
+ * Since: 3.0.0
  */
 typedef struct _PurpleRequestPage PurpleRequestPage;
 
@@ -55,6 +55,8 @@ G_DECLARE_FINAL_TYPE(PurpleRequestPage, purple_request_page,
  * Creates a page of fields to pass to [func@Purple.request_fields].
  *
  * Returns: (transfer full): The new request page.
+ *
+ * Since: 3.0.0
  */
 PurpleRequestPage *purple_request_page_new(void);
 
@@ -64,6 +66,8 @@ PurpleRequestPage *purple_request_page_new(void);
  * @group: (transfer full): The group to add.
  *
  * Adds a group of fields to the list.
+ *
+ * Since: 3.0.0
  */
 void purple_request_page_add_group(PurpleRequestPage *page, PurpleRequestGroup *group);
 
@@ -74,6 +78,8 @@ void purple_request_page_add_group(PurpleRequestPage *page, PurpleRequestGroup *
  * Returns a list of all groups in a field list.
  *
  * Returns: (element-type PurpleRequestGroup) (transfer none): A list of groups.
+ *
+ * Since: 3.0.0
  */
 GList *purple_request_page_get_groups(PurpleRequestPage *page);
 
@@ -85,6 +91,8 @@ GList *purple_request_page_get_groups(PurpleRequestPage *page);
  * Returns whether or not the field with the specified ID exists.
  *
  * Returns: TRUE if the field exists, or FALSE.
+ *
+ * Since: 3.0.0
  */
 gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
 
@@ -95,6 +103,8 @@ gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
  * Returns a list of all required fields.
  *
  * Returns: (element-type PurpleRequestField) (transfer none): The list of required fields.
+ *
+ * Since: 3.0.0
  */
 const GList *purple_request_page_get_required(PurpleRequestPage *page);
 
@@ -105,6 +115,8 @@ const GList *purple_request_page_get_required(PurpleRequestPage *page);
  * Returns a list of all validated fields.
  *
  * Returns: (element-type PurpleRequestField) (transfer none): The list of validated fields.
+ *
+ * Since: 3.0.0
  */
 const GList *purple_request_page_get_validatable(PurpleRequestPage *page);
 
@@ -116,6 +128,8 @@ const GList *purple_request_page_get_validatable(PurpleRequestPage *page);
  * Returns whether or not a field with the specified ID is required.
  *
  * Returns: TRUE if the specified field is required, or FALSE.
+ *
+ * Since: 3.0.0
  */
 gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const char *id);
 
@@ -126,6 +140,8 @@ gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const ch
  * Returns whether or not all required fields have values.
  *
  * Returns: TRUE if all required fields have values, or FALSE.
+ *
+ * Since: 3.0.0
  */
 gboolean purple_request_page_all_required_filled(PurpleRequestPage *page);
 
@@ -136,6 +152,8 @@ gboolean purple_request_page_all_required_filled(PurpleRequestPage *page);
  * Returns whether or not all fields are valid.
  *
  * Returns: TRUE if all fields are valid, or FALSE.
+ *
+ * Since: 3.0.0
  */
 gboolean purple_request_page_all_valid(PurpleRequestPage *page);
 
@@ -147,6 +165,8 @@ gboolean purple_request_page_all_valid(PurpleRequestPage *page);
  * Return the field with the specified ID.
  *
  * Returns: (transfer none): The field, if found.
+ *
+ * Since: 3.0.0
  */
 PurpleRequestField *purple_request_page_get_field(PurpleRequestPage *page, const char *id);
 
@@ -158,6 +178,8 @@ PurpleRequestField *purple_request_page_get_field(PurpleRequestPage *page, const
  * Returns the string value of a field with the specified ID.
  *
  * Returns: The string value, if found, or %NULL otherwise.
+ *
+ * Since: 3.0.0
  */
 const char *purple_request_page_get_string(PurpleRequestPage *page, const char *id);
 
@@ -169,6 +191,8 @@ const char *purple_request_page_get_string(PurpleRequestPage *page, const char *
  * Returns the integer value of a field with the specified ID.
  *
  * Returns: The integer value, if found, or 0 otherwise.
+ *
+ * Since: 3.0.0
  */
 int purple_request_page_get_integer(PurpleRequestPage *page, const char *id);
 
@@ -180,6 +204,8 @@ int purple_request_page_get_integer(PurpleRequestPage *page, const char *id);
  * Returns the boolean value of a field with the specified ID.
  *
  * Returns: The boolean value, if found, or %FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
 gboolean purple_request_page_get_bool(PurpleRequestPage *page, const char *id);
 
@@ -191,6 +217,8 @@ gboolean purple_request_page_get_bool(PurpleRequestPage *page, const char *id);
  * Returns the choice index of a field with the specified ID.
  *
  * Returns: The choice value, if found, or NULL otherwise.
+ *
+ * Since: 3.0.0
  */
 gpointer purple_request_page_get_choice(PurpleRequestPage *page, const char *id);
 
@@ -202,6 +230,8 @@ gpointer purple_request_page_get_choice(PurpleRequestPage *page, const char *id)
  * Returns the account of a field with the specified ID.
  *
  * Returns: (transfer none): The account value, if found, or %NULL otherwise.
+ *
+ * Since: 3.0.0
  */
 PurpleAccount *purple_request_page_get_account(PurpleRequestPage *page, const char *id);
 

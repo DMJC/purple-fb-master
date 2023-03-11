@@ -379,7 +379,7 @@ pkgconfig.generate(
 
 if enable_introspection
 	introspection_sources = (purple_coresources + purple_coreheaders +
-	                         purple_builtheaders + purple_mediaheaders)
+	                         purple_builtheaders + purple_mediaheaders + purple_request_headers)
 
 	libpurple_gir = gnome.generate_gir(libpurple,
 	    sources : introspection_sources,

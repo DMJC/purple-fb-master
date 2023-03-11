@@ -27,8 +27,6 @@
 #ifndef PURPLE_REQUEST_FIELD_IMAGE_H
 #define PURPLE_REQUEST_FIELD_IMAGE_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
 
@@ -36,6 +34,8 @@
  * PurpleRequestFieldImage:
  *
  * An image request field.
+ *
+ * Since: 3.0.0
  */
 typedef struct _PurpleRequestFieldImage PurpleRequestFieldImage;
 

@@ -49,16 +49,10 @@ version 3.0.0 (??/??/????):
 		* purple_protocol_factory_iface_* for factory interface methods
 		* purple_protocol_action_new
 		* purple_protocol_action_free
-		* purple_request_certificate
-		* purple_request_field_certificate_new
-		* purple_request_field_certificate_get_value
 		* purple_request_field_choice_add_full
 		* purple_request_field_get_tooltip
-		* purple_request_field_group_get_fields_list
 		* purple_request_field_list_has_icons
 		* purple_request_field_set_tooltip
-		* purple_request_fields_get_ui_data
-		* purple_request_fields_set_ui_data
 		* purple_roomlist_get_account
 		* purple_roomlist_get_proto_data
 		* purple_roomlist_room_get_expanded_once
@@ -242,11 +236,7 @@ version 3.0.0 (??/??/????):
 		  PurpleRequestPage. Please see the documentation for details.
 		* purple_request_field_get_field_type_hint renamed to
 		  purple_request_field_get_type_hint
-		* purple_request_field_group_get_tab
-		* purple_request_field_group_set_tab
 		* purple_request_field_list_get_items now returns list of PurpleKeyValuePair
-		* purple_request_fields_get_tab_names
-		* purple_request_fields_set_tab_names
 		* purple_roomlist_room_get_type is now
 		  purple_roomlist_room_get_room_type
 		* purple_roomlist_field_get_type is now
@@ -710,7 +700,6 @@ version 3.0.0 (??/??/????):
 		* purple_prpl_send_attention
 		* purple_quotedp_decode. See the GMime library if needed.
 		* purple_restore_default_signal_handlers
-		* purple_request_certificate
 		* purple_request_field_choice_set_data_destructor. Use
 		  purple_request_field_choice_add_full instead
 		* purple_request_field_destroy. Use g_object_unref instead.

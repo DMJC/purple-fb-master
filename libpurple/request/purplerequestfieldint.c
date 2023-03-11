@@ -1,4 +1,6 @@
-/* purple
+/*
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Purple is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -15,18 +17,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <glib/gi18n-lib.h>
 
-#include "glibcompat.h"
-#include "request.h"
-#include "request/purplerequestfieldint.h"
-#include "debug.h"
-#include "purplekeyvaluepair.h"
-#include "purpleprivate.h"
+#include "purplerequestfield.h"
+#include "purplerequestfieldint.h"
 
 struct _PurpleRequestFieldInt {
 	PurpleRequestField parent;
@@ -246,7 +243,8 @@ purple_request_field_int_set_value(PurpleRequestFieldInt *field, int value) {
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD_INT(field));
 
 	if(value < field->lower_bound || value > field->upper_bound) {
-		purple_debug_error("request", "Int value out of bounds\n");
+		g_warning("Int value %d out of bounds (%d, %d)", value,
+		          field->lower_bound, field->upper_bound);
 		return;
 	}
 

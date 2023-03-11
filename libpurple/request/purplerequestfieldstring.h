@@ -27,22 +27,20 @@
 #ifndef PURPLE_REQUEST_FIELD_STRING_H
 #define PURPLE_REQUEST_FIELD_STRING_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
 
 #include "purplerequestfield.h"
 
+G_BEGIN_DECLS
+
 /**
  * PurpleRequestFieldString:
  *
  * A string request field.
+ *
+ * Since: 3.0.0
  */
-typedef struct _PurpleRequestFieldString PurpleRequestFieldString;
-
-G_BEGIN_DECLS
-
 #define PURPLE_TYPE_REQUEST_FIELD_STRING (purple_request_field_string_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldString, purple_request_field_string,
                      PURPLE, REQUEST_FIELD_STRING, PurpleRequestField)
@@ -58,10 +56,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldString, purple_request_field_string,
  *
  * Returns: (transfer full): The new field.
  */
-PurpleRequestField *purple_request_field_string_new(const char *id,
-												const char *text,
-												const char *default_value,
-												gboolean multiline);
+PurpleRequestField *purple_request_field_string_new(const char *id, const char *text, const char *default_value, gboolean multiline);
 
 /**
  * purple_request_field_string_set_default_value:
@@ -143,8 +138,7 @@ gboolean purple_request_field_string_is_masked(PurpleRequestFieldString *field);
  *
  * Returns: TRUE, if field contains valid email address.
  */
-gboolean purple_request_field_email_validator(PurpleRequestField *field,
-	gchar **errmsg, void *user_data);
+gboolean purple_request_field_email_validator(PurpleRequestField *field, char **errmsg, gpointer user_data);
 
 /**
  * purple_request_field_alphanumeric_validator:
@@ -159,8 +153,7 @@ gboolean purple_request_field_email_validator(PurpleRequestField *field,
  *
  * Returns: TRUE, if field contains only alphanumeric characters.
  */
-gboolean purple_request_field_alphanumeric_validator(PurpleRequestField *field,
-	gchar **errmsg, void *allowed_characters);
+gboolean purple_request_field_alphanumeric_validator(PurpleRequestField *field, char **errmsg, gpointer allowed_characters);
 
 G_END_DECLS
 

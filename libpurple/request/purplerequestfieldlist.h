@@ -27,22 +27,20 @@
 #ifndef PURPLE_REQUEST_FIELD_LIST_H
 #define PURPLE_REQUEST_FIELD_LIST_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
-
-/**
- * PurpleRequestFieldList:
- *
- * A list request field.
- */
-typedef struct _PurpleRequestFieldList PurpleRequestFieldList;
 
 #include "purplerequestfield.h"
 
 G_BEGIN_DECLS
 
+/**
+ * PurpleRequestFieldList:
+ *
+ * A list request field.
+ *
+ * Since: 3.0.0
+ */
 #define PURPLE_TYPE_REQUEST_FIELD_LIST (purple_request_field_list_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldList, purple_request_field_list,
                      PURPLE, REQUEST_FIELD_LIST, PurpleRequestField)

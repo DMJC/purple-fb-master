@@ -1,4 +1,6 @@
-/* purple
+/*
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Purple is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -15,13 +17,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <glib/gi18n-lib.h>
 
-#include "glibcompat.h"
 #include "purpleaccountmanager.h"
 #include "purplerequestfield.h"
 #include "purplerequestfieldaccount.h"
@@ -45,12 +45,12 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PurpleRequestFieldAccount, purple_request_field_account,
-              PURPLE_TYPE_REQUEST_FIELD)
-
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_TYPE(PurpleRequestFieldAccount, purple_request_field_account,
+              PURPLE_TYPE_REQUEST_FIELD)
+
 static void
 purple_request_field_account_get_property(GObject *obj, guint param_id,
                                           GValue *value, GParamSpec *pspec)

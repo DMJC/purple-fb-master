@@ -27,22 +27,21 @@
 #ifndef PURPLE_REQUEST_FIELD_ACCOUNT_H
 #define PURPLE_REQUEST_FIELD_ACCOUNT_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
+
+#include "account.h"
+#include "purplerequestfield.h"
+
+G_BEGIN_DECLS
 
 /**
  * PurpleRequestFieldAccount:
  *
  * An account request field.
+ *
+ * Since: 3.0.0
  */
-typedef struct _PurpleRequestFieldAccount PurpleRequestFieldAccount;
-
-#include "account.h"
-
-G_BEGIN_DECLS
-
 #define PURPLE_TYPE_REQUEST_FIELD_ACCOUNT (purple_request_field_account_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldAccount, purple_request_field_account,
                      PURPLE, REQUEST_FIELD_ACCOUNT, PurpleRequestField)
@@ -137,7 +136,7 @@ PurpleAccount *purple_request_field_account_get_value(PurpleRequestFieldAccount 
 gboolean purple_request_field_account_get_show_all(PurpleRequestFieldAccount *field);
 
 /**
- * purple_request_field_account_get_filter:
+ * purple_request_field_account_get_filter: (skip):
  * @field: The account field.
  *
  * Returns the account filter function in an account field.

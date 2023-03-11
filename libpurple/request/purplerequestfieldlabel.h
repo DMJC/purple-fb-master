@@ -27,22 +27,20 @@
 #ifndef PURPLE_REQUEST_FIELD_LABEL_H
 #define PURPLE_REQUEST_FIELD_LABEL_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
-
-/**
- * PurpleRequestFieldLabel:
- *
- * A label request field.
- */
-typedef struct _PurpleRequestFieldLabel PurpleRequestFieldLabel;
 
 #include "purplerequestfield.h"
 
 G_BEGIN_DECLS
 
+/**
+ * PurpleRequestFieldLabel:
+ *
+ * A label request field.
+ *
+ * Since: 3.0.0
+ */
 #define PURPLE_TYPE_REQUEST_FIELD_LABEL (purple_request_field_label_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldLabel, purple_request_field_label,
                      PURPLE, REQUEST_FIELD_LABEL, PurpleRequestField)

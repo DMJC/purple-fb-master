@@ -27,25 +27,21 @@
 #ifndef PURPLE_REQUEST_FIELD_DATASHEET_H
 #define PURPLE_REQUEST_FIELD_DATASHEET_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
-
-/**
- * PurpleRequestField:
- *
- * A request field.
- */
-typedef struct _PurpleRequestField PurpleRequestField;
 
 #include "request.h"
 #include "request-datasheet.h"
 
-#define PURPLE_DEFAULT_ACTION_NONE	-1
-
 G_BEGIN_DECLS
 
+/**
+ * PurpleRequestFieldDatasheet:
+ *
+ * A datasheet request field.
+ *
+ * Since: 3.0.0
+ */
 #define PURPLE_TYPE_REQUEST_FIELD_DATASHEET (purple_request_field_datasheet_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldDatasheet, purple_request_field_datasheet,
                      PURPLE, REQUEST_FIELD_DATASHEET, PurpleRequestField)

@@ -27,22 +27,20 @@
 #ifndef PURPLE_REQUEST_FIELD_BOOL_H
 #define PURPLE_REQUEST_FIELD_BOOL_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
-
-/**
- * PurpleRequestFieldBool:
- *
- * A boolean request field.
- */
-typedef struct _PurpleRequestFieldBool PurpleRequestFieldBool;
 
 #include "purplerequestfield.h"
 
 G_BEGIN_DECLS
 
+/**
+ * PurpleRequestFieldBool:
+ *
+ * A boolean request field.
+ *
+ * Since: 3.0.0
+ */
 #define PURPLE_TYPE_REQUEST_FIELD_BOOL (purple_request_field_bool_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldBool, purple_request_field_bool,
                      PURPLE, REQUEST_FIELD_BOOL, PurpleRequestField)

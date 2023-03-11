@@ -27,22 +27,20 @@
 #ifndef PURPLE_REQUEST_FIELD_INT_H
 #define PURPLE_REQUEST_FIELD_INT_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
-
-/**
- * PurpleRequestFieldInt:
- *
- * An integer request field.
- */
-typedef struct _PurpleRequestFieldInt PurpleRequestFieldInt;
 
 #include "purplerequestfield.h"
 
 G_BEGIN_DECLS
 
+/**
+ * PurpleRequestFieldInt:
+ *
+ * An integer request field.
+ *
+ * Since: 3.0.0
+ */
 #define PURPLE_TYPE_REQUEST_FIELD_INT (purple_request_field_int_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldInt, purple_request_field_int,
                      PURPLE, REQUEST_FIELD_INT, PurpleRequestField)

@@ -27,8 +27,6 @@
 #ifndef PURPLE_REQUEST_GROUP_H
 #define PURPLE_REQUEST_GROUP_H
 
-#include <stdlib.h>
-
 #include <glib.h>
 #include <glib-object.h>
 
@@ -36,10 +34,13 @@
  * PurpleRequestGroup:
  *
  * A group of fields with a title.
+ *
+ * Since: 3.0.0
  */
 typedef struct _PurpleRequestGroup PurpleRequestGroup;
 
 #include "purplerequestfield.h"
+#include "purplerequestpage.h"
 
 #define PURPLE_TYPE_REQUEST_GROUP (purple_request_group_get_type())
 G_DECLARE_FINAL_TYPE(PurpleRequestGroup, purple_request_group,
@@ -54,6 +55,8 @@ G_BEGIN_DECLS
  * Creates a fields group with an optional title.
  *
  * Returns: (transfer full): A new fields group
+ *
+ * Since: 3.0.0
  */
 PurpleRequestGroup *purple_request_group_new(const char *title);
 
@@ -63,6 +66,8 @@ PurpleRequestGroup *purple_request_group_new(const char *title);
  * @field: (transfer full): The field to add to the group.
  *
  * Adds a field to the group.
+ *
+ * Since: 3.0.0
  */
 void purple_request_group_add_field(PurpleRequestGroup *group, PurpleRequestField *field);
 
@@ -73,6 +78,8 @@ void purple_request_group_add_field(PurpleRequestGroup *group, PurpleRequestFiel
  * Returns the title of a fields group.
  *
  * Returns: (nullable): The title, if set.
+ *
+ * Since: 3.0.0
  */
 const char *purple_request_group_get_title(PurpleRequestGroup *group);
 
@@ -83,6 +90,8 @@ const char *purple_request_group_get_title(PurpleRequestGroup *group);
  * Returns a list of all fields in a group.
  *
  * Returns: (element-type PurpleRequestField) (transfer none): The list of fields in the group.
+ *
+ * Since: 3.0.0
  */
 GList *purple_request_group_get_fields(PurpleRequestGroup *group);
 
@@ -93,6 +102,8 @@ GList *purple_request_group_get_fields(PurpleRequestGroup *group);
  * Returns a list of all fields in a group.
  *
  * Returns: (transfer none): The list of fields in the group.
+ *
+ * Since: 3.0.0
  */
 PurpleRequestPage *purple_request_group_get_page(PurpleRequestGroup *group);
 

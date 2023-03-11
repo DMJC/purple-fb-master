@@ -1,4 +1,6 @@
-/* purple
+/*
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Purple is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -15,16 +17,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <glib/gi18n-lib.h>
 
-#include "glibcompat.h"
 #include "purplerequestfield.h"
-#include "request/purplerequestfieldlist.h"
-#include "debug.h"
+#include "purplerequestfieldlist.h"
 #include "purplekeyvaluepair.h"
 
 struct _PurpleRequestFieldList {
@@ -201,10 +200,8 @@ purple_request_field_list_add_selected(PurpleRequestFieldList *field,
 	g_return_if_fail(item  != NULL);
 
 	if(!field->multiple_selection && field->selected != NULL) {
-		purple_debug_warning("request",
-						   "More than one item added to non-multi-select "
-						   "field %s\n",
-						   purple_request_field_get_id(PURPLE_REQUEST_FIELD(field)));
+		g_warning("More than one item added to non-multi-select field %s",
+		          purple_request_field_get_id(PURPLE_REQUEST_FIELD(field)));
 		return;
 	}
 
@@ -235,10 +232,8 @@ purple_request_field_list_set_selected(PurpleRequestFieldList *field,
 	purple_request_field_list_clear_selected(field);
 
 	if (!purple_request_field_list_get_multi_select(field) && items->next) {
-		purple_debug_warning("request",
-						   "More than one item added to non-multi-select "
-						   "field %s\n",
-						   purple_request_field_get_id(PURPLE_REQUEST_FIELD(field)));
+		g_warning("More than one item added to non-multi-select field %s",
+		          purple_request_field_get_id(PURPLE_REQUEST_FIELD(field)));
 		return;
 	}
 
