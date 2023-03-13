@@ -216,20 +216,6 @@ purple_request_page_exists(PurpleRequestPage *page, const char *id) {
 	return (g_hash_table_lookup(page->fields, id) != NULL);
 }
 
-const GList *
-purple_request_page_get_required(PurpleRequestPage *page) {
-	g_return_val_if_fail(PURPLE_IS_REQUEST_PAGE(page), NULL);
-
-	return page->required_fields;
-}
-
-const GList *
-purple_request_page_get_validatable(PurpleRequestPage *page) {
-	g_return_val_if_fail(PURPLE_IS_REQUEST_PAGE(page), NULL);
-
-	return page->validated_fields;
-}
-
 gboolean
 purple_request_page_is_field_required(PurpleRequestPage *page, const char *id)
 {

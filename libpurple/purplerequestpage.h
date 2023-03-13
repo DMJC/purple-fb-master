@@ -97,30 +97,6 @@ GList *purple_request_page_get_groups(PurpleRequestPage *page);
 gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_page_get_required:
- * @page: The fields page.
- *
- * Returns a list of all required fields.
- *
- * Returns: (element-type PurpleRequestField) (transfer none): The list of required fields.
- *
- * Since: 3.0.0
- */
-const GList *purple_request_page_get_required(PurpleRequestPage *page);
-
-/**
- * purple_request_page_get_validatable:
- * @page: The fields page.
- *
- * Returns a list of all validated fields.
- *
- * Returns: (element-type PurpleRequestField) (transfer none): The list of validated fields.
- *
- * Since: 3.0.0
- */
-const GList *purple_request_page_get_validatable(PurpleRequestPage *page);
-
-/**
  * purple_request_page_is_field_required:
  * @page: The fields page.
  * @id: The field ID.
