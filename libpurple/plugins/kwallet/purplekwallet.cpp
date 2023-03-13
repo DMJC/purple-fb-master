@@ -24,7 +24,7 @@
 
 #include <purple.h>
 
-#include <QCoreApplication>
+#include <QGuiApplication>
 
 #include <kwallet.h>
 
@@ -33,8 +33,12 @@
 /******************************************************************************
  * Globals
  *****************************************************************************/
-static QCoreApplication *qCoreApp = NULL;
+static QGuiApplication *guiApp = NULL;
 static PurpleCredentialProvider *instance = NULL;
+static char *argv[] = {
+	(char*)"purplekwallet",
+};
+static int argc = G_N_ELEMENTS(argv);
 
 #define PURPLE_KWALLET_DOMAIN (g_quark_from_static_string("purple-kwallet"))
 #define PURPLE_KWALLET_WALLET_NAME (KWallet::Wallet::NetworkWallet())
@@ -569,10 +573,9 @@ kwallet_load(GPluginPlugin *plugin, GError **error) {
 
 	purple_kwallet_provider_register_type(G_TYPE_MODULE(plugin));
 
-	if(qCoreApp == NULL) {
-		int argc = 0;
-		qCoreApp = new QCoreApplication(argc, NULL);
-		qCoreApp->setApplicationName(purple_kwallet_get_ui_name());
+	if(guiApp == NULL) {
+		guiApp = new QGuiApplication(argc, argv);
+		guiApp->setApplicationName(purple_kwallet_get_ui_name());
 	}
 
 	if(!KWallet::Wallet::isEnabled()) {
@@ -604,9 +607,9 @@ kwallet_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
 		return ret;
 	}
 
-	if(qCoreApp != NULL) {
-		delete qCoreApp;
-		qCoreApp = NULL;
+	if(guiApp != NULL) {
+		delete guiApp;
+		guiApp = NULL;
 	}
 
 	g_clear_object(&instance);
