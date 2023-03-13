@@ -143,10 +143,15 @@ pidgin_network_prefs_class_init(PidginNetworkPrefsClass *klass)
 static void
 pidgin_network_prefs_init(PidginNetworkPrefs *prefs)
 {
+	const char *stun_server = NULL;
+
 	gtk_widget_init_template(GTK_WIDGET(prefs));
 
-	gtk_editable_set_text(GTK_EDITABLE(prefs->stun_server),
-	                      purple_prefs_get_string("/purple/network/stun_server"));
+	stun_server = purple_prefs_get_string("/purple/network/stun_server");
+	if (stun_server != NULL) {
+		gtk_editable_set_text(GTK_EDITABLE(prefs->stun_server),
+		                      stun_server);
+	}
 
 	pidgin_prefs_bind_switch("/purple/network/auto_ip", prefs->auto_ip);
 	auto_ip_button_clicked_cb(NULL, NULL, prefs); /* Update label */
