@@ -57,6 +57,16 @@ purple_request_field_string_set_multiline(PurpleRequestFieldString *field,
 }
 
 /******************************************************************************
+ * PurpleRequestField Implementation
+ *****************************************************************************/
+static gboolean
+purple_request_field_string_is_filled(PurpleRequestField *field) {
+	PurpleRequestFieldString *strfield = PURPLE_REQUEST_FIELD_STRING(field);
+
+	return !purple_strempty(strfield->value);
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 G_DEFINE_TYPE(PurpleRequestFieldString, purple_request_field_string,
@@ -138,7 +148,10 @@ purple_request_field_string_init(G_GNUC_UNUSED PurpleRequestFieldString *field)
 
 static void
 purple_request_field_string_class_init(PurpleRequestFieldStringClass *klass) {
+	PurpleRequestFieldClass *field_class = PURPLE_REQUEST_FIELD_CLASS(klass);
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
+
+	field_class->is_filled = purple_request_field_string_is_filled;
 
 	obj_class->finalize = purple_request_field_string_finalize;
 	obj_class->get_property = purple_request_field_string_get_property;
@@ -237,14 +250,25 @@ void
 purple_request_field_string_set_value(PurpleRequestFieldString *field,
                                       const char *value)
 {
+	gboolean before, after;
+
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD_STRING(field));
 
-	if(!purple_strequal(field->value, value)) {
-		g_free(field->value);
-		field->value = g_strdup(value);
-
-		g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALUE]);
+	if(purple_strequal(field->value, value)) {
+		return;
 	}
+
+	before = purple_request_field_string_is_filled(PURPLE_REQUEST_FIELD(field));
+	g_free(field->value);
+	field->value = g_strdup(value);
+	after = purple_request_field_string_is_filled(PURPLE_REQUEST_FIELD(field));
+
+	g_object_freeze_notify(G_OBJECT(field));
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALUE]);
+	if(before != after) {
+		g_object_notify(G_OBJECT(field), "filled");
+	}
+	g_object_thaw_notify(G_OBJECT(field));
 }
 
 void

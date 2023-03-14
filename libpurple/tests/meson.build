@@ -26,6 +26,7 @@ PROGS = [
     'protocol_xfer',
     'purplepath',
     'queued_output_stream',
+    'request_field',
     'str',
     'tags',
     'util',

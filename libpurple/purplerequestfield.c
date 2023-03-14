@@ -21,7 +21,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "request.h"
-#include "request/purplerequestfieldstring.h"
 #include "purpleprivate.h"
 
 typedef struct {
@@ -50,6 +49,7 @@ enum {
 	PROP_TYPE_HINT,
 	PROP_TOOLTIP,
 	PROP_REQUIRED,
+	PROP_FILLED,
 	PROP_IS_VALIDATABLE,
 	N_PROPERTIES,
 };
@@ -106,6 +106,10 @@ purple_request_field_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_REQUIRED:
 			g_value_set_boolean(value,
 			                    purple_request_field_is_required(field));
+			break;
+		case PROP_FILLED:
+			g_value_set_boolean(value,
+			                    purple_request_field_is_filled(field));
 			break;
 		case PROP_IS_VALIDATABLE:
 			g_value_set_boolean(value,
@@ -278,6 +282,19 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 		"Whether the field is required to complete the request.",
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:filled:
+	 *
+	 * Whether the field has been filled.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_FILLED] = g_param_spec_boolean(
+		"filled", "filled",
+		"Whether the field has been filled.",
+		TRUE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleRequestField:is-validatable:
@@ -473,14 +490,17 @@ purple_request_field_is_required(PurpleRequestField *field) {
 
 gboolean
 purple_request_field_is_filled(PurpleRequestField *field) {
+	PurpleRequestFieldClass *klass = NULL;
+	gboolean filled = TRUE;
+
 	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
 
-	if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
-		PurpleRequestFieldString *sfield = PURPLE_REQUEST_FIELD_STRING(field);
-		return !purple_strempty(purple_request_field_string_get_value(sfield));
+	klass = PURPLE_REQUEST_FIELD_GET_CLASS(field);
+	if(klass != NULL && klass->is_filled != NULL) {
+		filled = klass->is_filled(field);
 	}
 
-	return TRUE;
+	return filled;
 }
 
 void

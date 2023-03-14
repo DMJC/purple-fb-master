@@ -53,6 +53,7 @@ struct _PurpleRequestFieldClass {
 	GObjectClass parent_class;
 
 	/*< public >*/
+	gboolean (*is_filled)(PurpleRequestField *field);
 
 	/*< private >*/
 	gpointer reserved[4];
@@ -193,7 +194,11 @@ gboolean purple_request_field_is_required(PurpleRequestField *field);
  * purple_request_field_is_filled:
  * @field: The field.
  *
- * Checks, if specified field has value.
+ * Returns whether the field is currently filled.
+ *
+ * Note: For subclassers, if this is not overridden, then the field is assumed
+ * to always be filled. If the filled status changes, then subclasses should
+ * notify on [property@RequestField:filled].
  *
  * Returns: TRUE if the field has value, or FALSE.
  */
