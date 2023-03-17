@@ -403,11 +403,6 @@ purple_request_field_set_required(PurpleRequestField *field, gboolean required)
 
 	priv->required = required;
 
-	if(PURPLE_IS_REQUEST_GROUP(priv->group)) {
-		_purple_request_group_set_field_required(priv->group, field,
-		                                         required);
-	}
-
 	g_object_freeze_notify(G_OBJECT(field));
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_REQUIRED]);
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALID]);

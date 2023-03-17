@@ -222,29 +222,10 @@ field_string_focus_out_cb(GtkEventControllerFocus *controller,
 }
 
 static void
-req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
-                         PurpleRequestField *field)
-{
-	PurpleRequestGroup *group;
-	PurpleRequestPage *page;
-	PidginRequestData *req_data;
-
-	group = purple_request_field_get_group(field);
-	page = purple_request_group_get_page(group);
-	req_data = g_object_get_data(G_OBJECT(page), "pidgin-ui-data");
-
-	gtk_widget_set_sensitive(req_data->ok_button,
-		purple_request_page_all_required_filled(page) &&
-		purple_request_page_is_valid(page));
-}
-
-static void
 field_bool_cb(GtkCheckButton *button, PurpleRequestField *field)
 {
 	purple_request_field_bool_set_value(PURPLE_REQUEST_FIELD_BOOL(field),
 			gtk_check_button_get_active(button));
-
-	req_field_changed_common(GTK_WIDGET(button), field);
 }
 
 static void
@@ -271,8 +252,6 @@ field_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data)
 	purple_request_field_account_set_value(
 	        PURPLE_REQUEST_FIELD_ACCOUNT(field),
 	        pidgin_account_chooser_get_selected(chooser));
-
-	req_field_changed_common(GTK_WIDGET(obj), field);
 }
 
 static void
@@ -1066,8 +1045,6 @@ req_entry_field_changed_cb(GtkWidget *entry, PurpleRequestField *field)
 			                                      purple_strempty(text) ? NULL : text);
 		}
 	}
-
-	req_field_changed_common(entry, field);
 }
 
 static void
@@ -2204,13 +2181,7 @@ pidgin_request_fields(const char *title, const char *primary,
 	g_object_unref(sg);
 	g_object_unref(datasheet_buttons_sg);
 
-	if(!purple_request_page_all_required_filled(page)) {
-		gtk_widget_set_sensitive(data->ok_button, FALSE);
-	}
-
-	if(!purple_request_page_is_valid(page)) {
-		gtk_widget_set_sensitive(data->ok_button, FALSE);
-	}
+	g_object_bind_property(page, "valid", data->ok_button, "sensitive", 0);
 
 	pidgin_auto_parent_window(win);
 

@@ -37,8 +37,6 @@ struct _PurpleRequestPage {
 	GHashTable *invalid_groups;
 
 	GHashTable *fields;
-
-	GList *required_fields;
 };
 
 enum {
@@ -137,7 +135,6 @@ purple_request_page_finalize(GObject *obj) {
 
 	g_list_free_full(page->groups, g_object_unref);
 	g_clear_pointer(&page->invalid_groups, g_hash_table_destroy);
-	g_list_free(page->required_fields);
 	g_hash_table_destroy(page->fields);
 
 	G_OBJECT_CLASS(purple_request_page_parent_class)->finalize(obj);
@@ -181,20 +178,6 @@ purple_request_page_new(void) {
 }
 
 void
-_purple_request_page_set_field_required(PurpleRequestPage *page,
-                                        PurpleRequestField *field,
-                                        gboolean required)
-{
-	g_return_if_fail(PURPLE_IS_REQUEST_PAGE(page));
-
-	if(required) {
-		page->required_fields = g_list_append(page->required_fields, field);
-	} else {
-		page->required_fields = g_list_remove(page->required_fields, field);
-	}
-}
-
-void
 _purple_request_page_add_field(PurpleRequestPage *page,
                                PurpleRequestField *field)
 {
@@ -202,10 +185,6 @@ _purple_request_page_add_field(PurpleRequestPage *page,
 
 	g_hash_table_insert(page->fields,
 	                    g_strdup(purple_request_field_get_id(field)), field);
-
-	if(purple_request_field_is_required(field)) {
-		page->required_fields = g_list_append(page->required_fields, field);
-	}
 }
 
 void
@@ -237,11 +216,6 @@ purple_request_page_add_group(PurpleRequestPage *page,
 		g_hash_table_insert(page->fields,
 		                    g_strdup(purple_request_field_get_id(field)),
 		                    field);
-
-		if (purple_request_field_is_required(field)) {
-			page->required_fields = g_list_append(page->required_fields,
-			                                      field);
-		}
 	}
 
 	g_list_model_items_changed(G_LIST_MODEL(page), position, 0, 1);
@@ -275,22 +249,6 @@ purple_request_page_is_field_required(PurpleRequestPage *page, const char *id)
 	}
 
 	return purple_request_field_is_required(field);
-}
-
-gboolean
-purple_request_page_all_required_filled(PurpleRequestPage *page) {
-	GList *l;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_PAGE(page), FALSE);
-
-	for(l = page->required_fields; l != NULL; l = l->next) {
-		PurpleRequestField *field = PURPLE_REQUEST_FIELD(l->data);
-
-		if (!purple_request_field_is_filled(field))
-			return FALSE;
-	}
-
-	return TRUE;
 }
 
 gboolean

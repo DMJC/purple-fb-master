@@ -110,18 +110,6 @@ gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
 gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const char *id);
 
 /**
- * purple_request_page_all_required_filled:
- * @page: The fields page.
- *
- * Returns whether or not all required fields have values.
- *
- * Returns: TRUE if all required fields have values, or FALSE.
- *
- * Since: 3.0.0
- */
-gboolean purple_request_page_all_required_filled(PurpleRequestPage *page);
-
-/**
  * purple_request_page_is_valid:
  * @page: The fields page.
  *

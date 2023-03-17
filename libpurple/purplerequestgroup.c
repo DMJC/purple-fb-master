@@ -230,16 +230,6 @@ _purple_request_group_set_page(PurpleRequestGroup *group,
 }
 
 void
-_purple_request_group_set_field_required(PurpleRequestGroup *group,
-                                         PurpleRequestField *field,
-                                         gboolean required)
-{
-	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
-
-	_purple_request_page_set_field_required(group->page, field, required);
-}
-
-void
 purple_request_group_add_field(PurpleRequestGroup *group,
                                PurpleRequestField *field)
 {

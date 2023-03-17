@@ -486,6 +486,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 
 	field = purple_request_field_string_new("string", _("A string"),
 	                                        _("default"), FALSE);
+	purple_request_field_set_required(field, TRUE);
 	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("multiline-string",
 	                                        _("A multiline string"),
