@@ -984,19 +984,22 @@ add_custom_action(GntMenu *menu, const char *label, GCallback callback,
 }
 
 static void
-chat_components_edit_ok(PurpleChat *chat, PurpleRequestPage *page)
-{
-	GList *groups, *fields;
+chat_components_edit_ok(PurpleChat *chat, PurpleRequestPage *page) {
+	guint n_groups;
 
-	for(groups = purple_request_page_get_groups(page); groups;
-	    groups = groups->next)
-	{
-		fields = purple_request_group_get_fields(groups->data);
-		for (; fields; fields = fields->next) {
-			PurpleRequestField *field = fields->data;
+	n_groups = g_list_model_get_n_items(G_LIST_MODEL(page));
+	for(guint group_index = 0; group_index < n_groups; group_index++) {
+		GListModel *group = NULL;
+		guint n_fields = 0;
+
+		group = g_list_model_get_item(G_LIST_MODEL(page), group_index);
+		n_fields = g_list_model_get_n_items(group);
+		for(guint field_index = 0; field_index < n_fields; field_index++) {
+			PurpleRequestField *field = NULL;
 			const char *id;
 			char *val;
 
+			field = g_list_model_get_item(group, field_index);
 			id = purple_request_field_get_id(field);
 			if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
 				PurpleRequestFieldInt *ifield = PURPLE_REQUEST_FIELD_INT(field);
@@ -1011,7 +1014,11 @@ chat_components_edit_ok(PurpleChat *chat, PurpleRequestPage *page)
 			} else {
 				g_hash_table_replace(purple_chat_get_components(chat), g_strdup(id), val);  /* val should not be free'd */
 			}
+
+			g_object_unref(field);
 		}
+
+		g_object_unref(group);
 	}
 }
 

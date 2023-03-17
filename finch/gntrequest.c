@@ -275,23 +275,30 @@ static void
 request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 	PurpleRequestFieldsCb callback = g_object_get_data(G_OBJECT(button), "activate-callback");
 	gpointer data = g_object_get_data(G_OBJECT(button), "activate-userdata");
-	GList *list;
 	GntWidget *window;
+	guint n_groups;
 
 	/* Update the data of the fields. Pidgin does this differently. Instead of
 	 * updating the fields at the end like here, it updates the appropriate field
 	 * instantly whenever a change is made. That allows it to make sure the
 	 * 'required' fields are entered before the user can hit OK. It's not the case
 	 * here, although it can be done. */
-	for(list = purple_request_page_get_groups(page); list; list = list->next) {
-		PurpleRequestGroup *group = list->data;
-		GList *fields = purple_request_group_get_fields(group);
+	n_groups = g_list_model_get_n_items(G_LIST_MODEL(page));
+	for(guint group_index = 0; group_index < n_groups; group_index++) {
+		GListModel *group = NULL;
+		guint n_fields;
 
-		for (; fields ; fields = fields->next)
-		{
-			PurpleRequestField *field = fields->data;
-			if (!purple_request_field_is_visible(field))
+		group = g_list_model_get_item(G_LIST_MODEL(page), group_index);
+		n_fields = g_list_model_get_n_items(group);
+		for(guint field_index = 0; field_index < n_fields; field_index++) {
+			PurpleRequestField *field = NULL;
+
+			field = g_list_model_get_item(group, field_index);
+			if(!purple_request_field_is_visible(field)) {
+				g_object_unref(field);
 				continue;
+			}
+
 			if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
 				GntWidget *check = g_object_get_data(G_OBJECT(field),
 				                                     "finch-ui-data");
@@ -372,7 +379,11 @@ request_fields_cb(GntWidget *button, PurpleRequestPage *page) {
 				afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
 				purple_request_field_account_set_value(afield, acc);
 			}
+
+			g_object_unref(field);
 		}
+
+		g_object_unref(group);
 	}
 
 	purple_notify_close_with_handle(button);
@@ -616,11 +627,11 @@ finch_request_fields(const char *title, const char *primary,
 		void *userdata)
 {
 	GntWidget *window, *box;
-	GList *grlist;
 	GntWidget *username = NULL, *accountlist = NULL;
 	PurpleRequestHelpCb help_cb;
 	gpointer help_data;
 	GSList *extra_actions;
+	guint n_groups;
 
 	window = setup_request_window(title, primary, secondary, PURPLE_REQUEST_FIELDS);
 
@@ -630,26 +641,33 @@ finch_request_fields(const char *title, const char *primary,
 	box = gnt_vbox_new(FALSE);
 	gnt_box_set_pad(GNT_BOX(box), 0);
 	gnt_box_set_fill(GNT_BOX(box), TRUE);
-	for(grlist = purple_request_page_get_groups(page); grlist;
-	    grlist = grlist->next)
-	{
-		PurpleRequestGroup *group = grlist->data;
-		GList *fields = purple_request_group_get_fields(group);
+	n_groups = g_list_model_get_n_items(G_LIST_MODEL(page));
+	for(guint group_index = 0; group_index < n_groups; group_index++) {
+		PurpleRequestGroup *group = NULL;
 		GntWidget *hbox;
-		const char *title = purple_request_group_get_title(group);
+		const char *title = NULL;
+		guint n_fields;
+
+		group = g_list_model_get_item(G_LIST_MODEL(page), group_index);
+		title = purple_request_group_get_title(group);
 
 		if (title)
 			gnt_box_add_widget(GNT_BOX(box),
 					gnt_label_new_with_format(title, GNT_TEXT_FLAG_BOLD));
 
-		for (; fields ; fields = fields->next)
-		{
-			PurpleRequestField *field = fields->data;
-			const char *label = purple_request_field_get_label(field);
+		n_fields = g_list_model_get_n_items(G_LIST_MODEL(group));
+		for(guint field_index = 0; field_index < n_fields; field_index++) {
+			PurpleRequestField *field = NULL;
+			const char *label = NULL;
 			GntWidget *widget = NULL;
 
-			if (!purple_request_field_is_visible(field))
+			field = g_list_model_get_item(G_LIST_MODEL(group), field_index);
+			label = purple_request_field_get_label(field);
+
+			if(!purple_request_field_is_visible(field)) {
+				g_object_unref(field);
 				continue;
+			}
 
 			hbox = gnt_hbox_new(TRUE);   /* hrm */
 			gnt_box_add_widget(GNT_BOX(box), hbox);
@@ -684,9 +702,15 @@ finch_request_fields(const char *title, const char *primary,
 			gnt_box_set_alignment(GNT_BOX(hbox), GNT_ALIGN_MID);
 			gnt_box_add_widget(GNT_BOX(hbox), widget);
 			g_object_set_data(G_OBJECT(field), "finch-ui-data", widget);
+
+			g_object_unref(field);
 		}
-		if (grlist->next)
+
+		if(group_index < n_groups - 1) {
 			gnt_box_add_widget(GNT_BOX(box), gnt_hline_new());
+		}
+
+		g_object_unref(group);
 	}
 	gnt_box_add_widget(GNT_BOX(window), box);
 
@@ -865,16 +889,23 @@ void
 finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
                             PurpleRequestPage *page)
 {
-	GList *list;
-	for(list = purple_request_page_get_groups(page); list; list = list->next) {
-		PurpleRequestGroup *group = list->data;
-		GList *fields = purple_request_group_get_fields(group);
+	guint n_groups;
 
-		for (; fields ; fields = fields->next) {
-			PurpleRequestField *field = fields->data;
+	n_groups = g_list_model_get_n_items(G_LIST_MODEL(page));
+	for(guint group_index = 0; group_index < n_groups; group_index++) {
+		GListModel *group = NULL;
+		guint n_fields;
+
+		group = g_list_model_get_item(G_LIST_MODEL(page), group_index);
+		n_fields = g_list_model_get_n_items(group);
+		for(guint field_index = 0; field_index < n_fields; field_index++) {
+			PurpleRequestField *field = NULL;
 			PurplePrefType pt;
 			gpointer val = NULL;
-			const char *id = purple_request_field_get_id(field);
+			const char *id = NULL;
+
+			field = g_list_model_get_item(group, field_index);
+			id = purple_request_field_get_id(field);
 
 			if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
 				PurpleRequestFieldList *lfield = PURPLE_REQUEST_FIELD_LIST(field);
@@ -913,7 +944,11 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 				default:
 					break;
 			}
+
+			g_object_unref(field);
 		}
+
+		g_object_unref(group);
 	}
 }
 
