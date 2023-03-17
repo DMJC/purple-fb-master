@@ -36,8 +36,7 @@ typedef struct {
 
 	char *tooltip;
 
-	PurpleRequestFieldValidator validator;
-	void *validator_data;
+	GClosure *validator;
 } PurpleRequestFieldPrivate;
 
 enum {
@@ -50,6 +49,7 @@ enum {
 	PROP_TOOLTIP,
 	PROP_REQUIRED,
 	PROP_FILLED,
+	PROP_VALID,
 	PROP_IS_VALIDATABLE,
 	N_PROPERTIES,
 };
@@ -111,6 +111,10 @@ purple_request_field_get_property(GObject *obj, guint param_id, GValue *value,
 			g_value_set_boolean(value,
 			                    purple_request_field_is_filled(field));
 			break;
+		case PROP_VALID:
+			g_value_set_boolean(value,
+			                    purple_request_field_is_valid(field, NULL));
+			break;
 		case PROP_IS_VALIDATABLE:
 			g_value_set_boolean(value,
 			                    purple_request_field_is_validatable(field));
@@ -170,6 +174,7 @@ purple_request_field_finalize(GObject *obj) {
 	g_free(priv->label);
 	g_free(priv->type_hint);
 	g_free(priv->tooltip);
+	g_clear_pointer(&priv->validator, g_closure_unref);
 
 	G_OBJECT_CLASS(purple_request_field_parent_class)->finalize(obj);
 }
@@ -293,6 +298,19 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	properties[PROP_FILLED] = g_param_spec_boolean(
 		"filled", "filled",
 		"Whether the field has been filled.",
+		TRUE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestField:valid:
+	 *
+	 * Whether the field has a valid value.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_VALID] = g_param_spec_boolean(
+		"valid", "valid",
+		"Whether the field has a valid value.",
 		TRUE,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -505,7 +523,9 @@ purple_request_field_is_filled(PurpleRequestField *field) {
 
 void
 purple_request_field_set_validator(PurpleRequestField *field,
-	PurpleRequestFieldValidator validator, void *user_data)
+                                   PurpleRequestFieldValidator validator,
+                                   gpointer user_data,
+                                   GDestroyNotify destroy_data)
 {
 	PurpleRequestFieldPrivate *priv = NULL;
 
@@ -513,8 +533,14 @@ purple_request_field_set_validator(PurpleRequestField *field,
 
 	priv = purple_request_field_get_instance_private(field);
 
-	priv->validator = validator;
-	priv->validator_data = validator ? user_data : NULL;
+	g_clear_pointer(&priv->validator, g_closure_unref);
+	if(validator != NULL) {
+		priv->validator = g_cclosure_new(G_CALLBACK(validator), user_data,
+		                                 (GClosureNotify)G_CALLBACK(destroy_data));
+		g_closure_ref(priv->validator);
+		g_closure_sink(priv->validator);
+		g_closure_set_marshal(priv->validator, g_cclosure_marshal_generic);
+	}
 
 	if(PURPLE_IS_REQUEST_GROUP(priv->group)) {
 		_purple_request_group_set_field_validator(priv->group, field,
@@ -522,6 +548,7 @@ purple_request_field_set_validator(PurpleRequestField *field,
 	}
 
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_IS_VALIDATABLE]);
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALID]);
 }
 
 gboolean
@@ -539,25 +566,49 @@ purple_request_field_is_validatable(PurpleRequestField *field)
 gboolean
 purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg)
 {
+	PurpleRequestFieldClass *klass = NULL;
 	PurpleRequestFieldPrivate *priv = NULL;
-	gboolean valid;
+	gboolean valid = TRUE;
 
 	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
 
-	priv = purple_request_field_get_instance_private(field);
+	if(errmsg != NULL) {
+		*errmsg = NULL;
+	}
 
-	if(!priv->validator) {
+	if(!purple_request_field_is_required(field) &&
+	   !purple_request_field_is_filled(field))
+	{
 		return TRUE;
 	}
 
-	if (!purple_request_field_is_required(field) &&
-		!purple_request_field_is_filled(field))
-		return TRUE;
+	klass = PURPLE_REQUEST_FIELD_GET_CLASS(field);
+	if(klass != NULL && klass->is_valid != NULL) {
+		valid = klass->is_valid(field, errmsg);
+	}
 
-	valid = priv->validator(field, errmsg, priv->validator_data);
+	priv = purple_request_field_get_instance_private(field);
+	if(valid && priv->validator != NULL) {
+		GValue result = G_VALUE_INIT;
+		GValue params[] = {G_VALUE_INIT, G_VALUE_INIT};
+		g_value_init(&result, G_TYPE_BOOLEAN);
+		g_value_set_instance(g_value_init(&params[0],
+		                                  PURPLE_TYPE_REQUEST_FIELD),
+		                     field);
+		g_value_set_pointer(g_value_init(&params[1], G_TYPE_POINTER), errmsg);
+		g_closure_invoke(priv->validator, &result,
+		                 G_N_ELEMENTS(params), params, NULL);
+		valid = g_value_get_boolean(&result);
+		g_value_unset(&result);
+		for(gsize i = 0; i < G_N_ELEMENTS(params); i++) {
+			g_value_unset(&params[i]);
+		}
+	}
 
-	if (valid && errmsg)
-		*errmsg = NULL;
+	if(!valid && errmsg != NULL && *errmsg == NULL) {
+		*errmsg = g_strdup(_("Validation failed without setting an error "
+		                     "message."));
+	}
 
 	return valid;
 }

@@ -217,7 +217,10 @@ purple_request_field_account_set_value(PurpleRequestFieldAccount *field,
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field));
 
 	if(g_set_object(&field->account, value)) {
+		g_object_freeze_notify(G_OBJECT(field));
 		g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALUE]);
+		g_object_notify(G_OBJECT(field), "valid");
+		g_object_thaw_notify(G_OBJECT(field));
 	}
 }
 

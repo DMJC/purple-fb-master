@@ -54,13 +54,23 @@ struct _PurpleRequestFieldClass {
 
 	/*< public >*/
 	gboolean (*is_filled)(PurpleRequestField *field);
+	gboolean (*is_valid)(PurpleRequestField *field, char **errmsg);
 
 	/*< private >*/
 	gpointer reserved[4];
 };
 
-typedef gboolean (*PurpleRequestFieldValidator)(PurpleRequestField *field,
-	gchar **errmsg, gpointer user_data);
+/**
+ * PurpleRequestFieldValidator:
+ * @field: The field.
+ * @errmsg: (nullable) (optional) (out): A location to store an error message
+ *          if the field is invalid.
+ * @user_data: (closure): The data passed to
+ *             [method@Purple.RequestField.set_validator].
+ *
+ * A callback to check whether a field is valid.
+ */
+typedef gboolean (*PurpleRequestFieldValidator)(PurpleRequestField *field, char **errmsg, gpointer user_data);
 
 G_BEGIN_DECLS
 
@@ -207,13 +217,14 @@ gboolean purple_request_field_is_filled(PurpleRequestField *field);
 /**
  * purple_request_field_set_validator:
  * @field:     The field.
- * @validator: (scope notified): The validator callback, NULL to disable validation.
- * @user_data: The data to pass to the callback.
+ * @validator: (scope notified) (closure user_data): The validator callback, or
+ *             %NULL to disable additional validation.
+ * @user_data: The data to pass to the validator callback.
+ * @destroy_data: A cleanup function for @user_data.
  *
- * Sets validator for a single field.
+ * Set an additional validator for a field.
  */
-void purple_request_field_set_validator(PurpleRequestField *field,
-	PurpleRequestFieldValidator validator, void *user_data);
+void purple_request_field_set_validator(PurpleRequestField *field, PurpleRequestFieldValidator validator, gpointer user_data, GDestroyNotify destroy_data);
 
 /**
  * purple_request_field_is_validatable:
@@ -228,8 +239,8 @@ gboolean purple_request_field_is_validatable(PurpleRequestField *field);
 /**
  * purple_request_field_is_valid:
  * @field:  The field.
- * @errmsg: If non-NULL, the memory area, where the pointer to validation
- *         failure message will be set.
+ * @errmsg: (nullable) (optional) (out): If non-%NULL, the memory area, where
+ *          the validation failure message will be returned.
  *
  * Checks, if specified field is valid.
  *

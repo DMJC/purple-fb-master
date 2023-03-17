@@ -113,6 +113,96 @@ test_request_field_filled_nonstring(void) {
 	g_object_unref(field);
 }
 
+static void
+test_request_field_valid_int(void) {
+	PurpleRequestField *field = NULL;
+	char *errmsg = NULL;
+	gboolean result;
+
+	field = purple_request_field_int_new("test-int", "Test int", 50, 0, 100);
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_null(errmsg);
+	g_assert_true(result);
+
+	purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field), -42);
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_cmpstr(errmsg, ==, "Int value -42 exceeds lower bound 0");
+	g_assert_false(result);
+	g_free(errmsg);
+
+	/* Don't crash if no error message is requested. */
+	result = purple_request_field_is_valid(field, NULL);
+	g_assert_false(result);
+
+	purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field), 1337);
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_cmpstr(errmsg, ==, "Int value 1337 exceeds upper bound 100");
+	g_assert_false(result);
+	g_free(errmsg);
+
+	/* Don't crash if no error message is requested. */
+	result = purple_request_field_is_valid(field, NULL);
+	g_assert_false(result);
+
+	g_object_unref(field);
+}
+
+static gboolean
+test_request_field_validator_is_even(PurpleRequestField *field, char **errmsg,
+                                     G_GNUC_UNUSED gpointer data)
+{
+	gboolean *called = data;
+	gint value;
+
+	*called = TRUE;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD_INT(field), FALSE);
+
+	value = purple_request_field_int_get_value(PURPLE_REQUEST_FIELD_INT(field));
+
+	if(value % 2 != 0) {
+		*errmsg = g_strdup_printf("Value %d is not even.", value);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static void
+test_request_field_valid_custom(void) {
+	PurpleRequestField *field = NULL;
+	char *errmsg = NULL;
+	gboolean result;
+	gboolean called = FALSE;
+
+	field = purple_request_field_int_new("test-int", "Test int", 50, 0, 100);
+	purple_request_field_set_validator(field,
+	                                   test_request_field_validator_is_even,
+	                                   &called, NULL);
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_cmpstr(errmsg, ==, NULL);
+	g_assert_true(result);
+
+	/* Default validator (i.e., the bounds) is checked first. */
+	called = FALSE;
+	purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field), -42);
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_cmpstr(errmsg, ==, "Int value -42 exceeds lower bound 0");
+	g_assert_false(result);
+	g_assert_false(called);
+	g_free(errmsg);
+
+	/* But if default validator passes, then the custom one is checked. */
+	called = FALSE;
+	purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field), 23);
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_cmpstr(errmsg, ==, "Value 23 is not even.");
+	g_assert_false(result);
+	g_assert_true(called);
+	g_free(errmsg);
+
+	g_object_unref(field);
+}
+
 /******************************************************************************
  * Main
  *****************************************************************************/
@@ -124,6 +214,10 @@ main(gint argc, gchar *argv[]) {
 	                test_request_field_filled_string);
 	g_test_add_func("/request-field/filled-nonstring",
 	                test_request_field_filled_nonstring);
+
+	g_test_add_func("/request-field/valid-int", test_request_field_valid_int);
+	g_test_add_func("/request-field/valid-custom",
+	                test_request_field_valid_custom);
 
 	return g_test_run();
 }

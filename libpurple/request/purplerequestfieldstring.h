@@ -134,7 +134,7 @@ gboolean purple_request_field_string_is_masked(PurpleRequestFieldString *field);
  *
  * Validates a field which should contain an email address.
  *
- * See purple_request_field_set_validator().
+ * See [method@Purple.RequestField.set_validator].
  *
  * Returns: TRUE, if field contains valid email address.
  */
@@ -149,7 +149,7 @@ gboolean purple_request_field_email_validator(PurpleRequestField *field, char **
  *
  * Validates a field which should contain alphanumeric content.
  *
- * See purple_request_field_set_validator().
+ * See [method@Purple.RequestField.set_validator].
  *
  * Returns: TRUE, if field contains only alphanumeric characters.
  */

@@ -502,13 +502,13 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	                                        _("default"), FALSE);
 	purple_request_field_set_validator(field,
 	                                   purple_request_field_alphanumeric_validator,
-	                                   NULL);
+	                                   NULL, NULL);
 	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("email", _("An email"),
 	                                        _("me@example.com"), FALSE);
 	purple_request_field_set_validator(field,
 	                                   purple_request_field_email_validator,
-	                                   NULL);
+	                                   NULL, NULL);
 	purple_request_group_add_field(group, field);
 	field = purple_request_field_int_new("int", _("An integer"), 123, -42, 1337);
 	purple_request_group_add_field(group, field);

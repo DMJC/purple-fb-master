@@ -45,6 +45,32 @@ enum {
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 /******************************************************************************
+ * PurpleRequestField Implementation
+ *****************************************************************************/
+static gboolean
+purple_request_field_int_is_valid(PurpleRequestField *field, char **errmsg) {
+	PurpleRequestFieldInt *intfield = PURPLE_REQUEST_FIELD_INT(field);
+
+	if(intfield->value < intfield->lower_bound) {
+		if(errmsg != NULL) {
+			*errmsg = g_strdup_printf(_("Int value %d exceeds lower bound %d"),
+			                          intfield->value, intfield->lower_bound);
+		}
+		return FALSE;
+	}
+
+	if(intfield->value > intfield->upper_bound) {
+		if(errmsg != NULL) {
+			*errmsg = g_strdup_printf(_("Int value %d exceeds upper bound %d"),
+			                          intfield->value, intfield->upper_bound);
+		}
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 G_DEFINE_TYPE(PurpleRequestFieldInt, purple_request_field_int,
@@ -112,7 +138,10 @@ purple_request_field_int_init(G_GNUC_UNUSED PurpleRequestFieldInt *field) {
 
 static void
 purple_request_field_int_class_init(PurpleRequestFieldIntClass *klass) {
+	PurpleRequestFieldClass *request_class = PURPLE_REQUEST_FIELD_CLASS(klass);
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
+
+	request_class->is_valid = purple_request_field_int_is_valid;
 
 	obj_class->get_property = purple_request_field_int_get_property;
 	obj_class->set_property = purple_request_field_int_set_property;
@@ -220,7 +249,10 @@ purple_request_field_int_set_lower_bound(PurpleRequestFieldInt *field,
 
 	field->lower_bound = lower_bound;
 
+	g_object_freeze_notify(G_OBJECT(field));
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_LOWER_BOUND]);
+	g_object_notify(G_OBJECT(field), "valid");
+	g_object_thaw_notify(G_OBJECT(field));
 }
 
 void
@@ -235,18 +267,15 @@ purple_request_field_int_set_upper_bound(PurpleRequestFieldInt *field,
 
 	field->upper_bound = upper_bound;
 
+	g_object_freeze_notify(G_OBJECT(field));
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_UPPER_BOUND]);
+	g_object_notify(G_OBJECT(field), "valid");
+	g_object_thaw_notify(G_OBJECT(field));
 }
 
 void
 purple_request_field_int_set_value(PurpleRequestFieldInt *field, int value) {
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD_INT(field));
-
-	if(value < field->lower_bound || value > field->upper_bound) {
-		g_warning("Int value %d out of bounds (%d, %d)", value,
-		          field->lower_bound, field->upper_bound);
-		return;
-	}
 
 	if(field->value == value) {
 		return;
@@ -254,7 +283,10 @@ purple_request_field_int_set_value(PurpleRequestFieldInt *field, int value) {
 
 	field->value = value;
 
+	g_object_freeze_notify(G_OBJECT(field));
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALUE]);
+	g_object_notify(G_OBJECT(field), "valid");
+	g_object_thaw_notify(G_OBJECT(field));
 }
 
 int

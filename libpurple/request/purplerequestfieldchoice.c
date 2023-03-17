@@ -207,7 +207,10 @@ purple_request_field_choice_set_value(PurpleRequestFieldChoice *field,
 
 	field->value = value;
 
+	g_object_freeze_notify(G_OBJECT(field));
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALUE]);
+	g_object_notify(G_OBJECT(field), "valid");
+	g_object_thaw_notify(G_OBJECT(field));
 }
 
 gpointer

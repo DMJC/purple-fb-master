@@ -190,6 +190,7 @@ purple_request_field_list_add_icon(PurpleRequestFieldList *field,
 	kvp = purple_key_value_pair_new_full(item, g_strdup(icon_path), g_free);
 	field->items = g_list_append(field->items, kvp);
 	g_hash_table_insert(field->item_data, g_strdup(item), data);
+	g_object_notify(G_OBJECT(field), "valid");
 }
 
 void
@@ -208,6 +209,7 @@ purple_request_field_list_add_selected(PurpleRequestFieldList *field,
 	field->selected = g_list_append(field->selected, g_strdup(item));
 
 	g_hash_table_add(field->selected_table, g_strdup(item));
+	g_object_notify(G_OBJECT(field), "valid");
 }
 
 void
@@ -218,6 +220,7 @@ purple_request_field_list_clear_selected(PurpleRequestFieldList *field) {
 	field->selected = NULL;
 
 	g_hash_table_remove_all(field->selected_table);
+	g_object_notify(G_OBJECT(field), "valid");
 }
 
 void
@@ -242,6 +245,8 @@ purple_request_field_list_set_selected(PurpleRequestFieldList *field,
 		field->selected = g_list_append(field->selected, g_strdup(selected));
 		g_hash_table_add(field->selected_table, g_strdup(selected));
 	}
+
+	g_object_notify(G_OBJECT(field), "valid");
 }
 
 gboolean
