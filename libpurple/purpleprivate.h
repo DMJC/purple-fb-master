@@ -340,10 +340,8 @@ G_GNUC_INTERNAL void purple_account_set_enabled_plain(PurpleAccount *account, gb
 
 G_GNUC_INTERNAL void _purple_request_page_add_field(PurpleRequestPage *fields, PurpleRequestField *field);
 G_GNUC_INTERNAL void _purple_request_page_set_field_required(PurpleRequestPage *fields, PurpleRequestField *field, gboolean required);
-G_GNUC_INTERNAL void _purple_request_page_set_field_validator(PurpleRequestPage *fields, PurpleRequestField *field, gboolean validator);
 G_GNUC_INTERNAL void _purple_request_group_set_page(PurpleRequestGroup *group, PurpleRequestPage *fields);
 G_GNUC_INTERNAL void _purple_request_group_set_field_required(PurpleRequestGroup *group, PurpleRequestField *field, gboolean required);
-G_GNUC_INTERNAL void _purple_request_group_set_field_validator(PurpleRequestGroup *group, PurpleRequestField *field, gboolean validator);
 G_GNUC_INTERNAL void _purple_request_field_set_group(PurpleRequestField *field, PurpleRequestGroup *group);
 
 G_END_DECLS

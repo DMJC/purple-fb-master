@@ -39,8 +39,6 @@ struct _PurpleRequestPage {
 	GHashTable *fields;
 
 	GList *required_fields;
-
-	GList *validated_fields;
 };
 
 enum {
@@ -140,7 +138,6 @@ purple_request_page_finalize(GObject *obj) {
 	g_list_free_full(page->groups, g_object_unref);
 	g_clear_pointer(&page->invalid_groups, g_hash_table_destroy);
 	g_list_free(page->required_fields);
-	g_list_free(page->validated_fields);
 	g_hash_table_destroy(page->fields);
 
 	G_OBJECT_CLASS(purple_request_page_parent_class)->finalize(obj);
@@ -198,19 +195,6 @@ _purple_request_page_set_field_required(PurpleRequestPage *page,
 }
 
 void
-_purple_request_page_set_field_validator(PurpleRequestPage *page,
-                                         PurpleRequestField *field,
-                                         gboolean validator)
-{
-	g_return_if_fail(PURPLE_IS_REQUEST_PAGE(page));
-
-	page->validated_fields = g_list_remove(page->validated_fields, field);
-	if(validator) {
-		page->validated_fields = g_list_append(page->validated_fields, field);
-	}
-}
-
-void
 _purple_request_page_add_field(PurpleRequestPage *page,
                                PurpleRequestField *field)
 {
@@ -221,10 +205,6 @@ _purple_request_page_add_field(PurpleRequestPage *page,
 
 	if(purple_request_field_is_required(field)) {
 		page->required_fields = g_list_append(page->required_fields, field);
-	}
-
-	if(purple_request_field_is_validatable(field)) {
-		page->validated_fields = g_list_append(page->validated_fields, field);
 	}
 }
 
@@ -261,11 +241,6 @@ purple_request_page_add_group(PurpleRequestPage *page,
 		if (purple_request_field_is_required(field)) {
 			page->required_fields = g_list_append(page->required_fields,
 			                                      field);
-		}
-
-		if (purple_request_field_is_validatable(field)) {
-			page->validated_fields = g_list_append(page->validated_fields,
-			                                       field);
 		}
 	}
 

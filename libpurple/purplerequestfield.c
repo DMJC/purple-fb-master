@@ -50,7 +50,6 @@ enum {
 	PROP_REQUIRED,
 	PROP_FILLED,
 	PROP_VALID,
-	PROP_IS_VALIDATABLE,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -114,10 +113,6 @@ purple_request_field_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_VALID:
 			g_value_set_boolean(value,
 			                    purple_request_field_is_valid(field, NULL));
-			break;
-		case PROP_IS_VALIDATABLE:
-			g_value_set_boolean(value,
-			                    purple_request_field_is_validatable(field));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -312,19 +307,6 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 		"valid", "valid",
 		"Whether the field has a valid value.",
 		TRUE,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleRequestField:is-validatable:
-	 *
-	 * Whether the field can be validated by the requestor.
-	 *
-	 * Since: 3.0.0
-	 */
-	properties[PROP_IS_VALIDATABLE] = g_param_spec_boolean(
-		"is-validatable", "is-validatable",
-		"Whether the field can be validated by the requestor.",
-		FALSE,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
@@ -545,25 +527,7 @@ purple_request_field_set_validator(PurpleRequestField *field,
 		g_closure_set_marshal(priv->validator, g_cclosure_marshal_generic);
 	}
 
-	if(PURPLE_IS_REQUEST_GROUP(priv->group)) {
-		_purple_request_group_set_field_validator(priv->group, field,
-		                                          validator != NULL);
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_IS_VALIDATABLE]);
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALID]);
-}
-
-gboolean
-purple_request_field_is_validatable(PurpleRequestField *field)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
-
-	priv = purple_request_field_get_instance_private(field);
-
-	return priv->validator != NULL;
 }
 
 gboolean

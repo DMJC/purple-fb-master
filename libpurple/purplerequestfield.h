@@ -227,16 +227,6 @@ gboolean purple_request_field_is_filled(PurpleRequestField *field);
 void purple_request_field_set_validator(PurpleRequestField *field, PurpleRequestFieldValidator validator, gpointer user_data, GDestroyNotify destroy_data);
 
 /**
- * purple_request_field_is_validatable:
- * @field: The field.
- *
- * Returns whether or not field has validator set.
- *
- * Returns: TRUE if the field has validator, or FALSE.
- */
-gboolean purple_request_field_is_validatable(PurpleRequestField *field);
-
-/**
  * purple_request_field_is_valid:
  * @field:  The field.
  * @errmsg: (nullable) (optional) (out): If non-%NULL, the memory area, where
