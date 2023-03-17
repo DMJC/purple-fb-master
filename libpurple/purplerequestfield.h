@@ -248,7 +248,7 @@ gboolean purple_request_field_is_validatable(PurpleRequestField *field);
  * return (via errmsg argument) pointer to newly allocated error message.
  * It must be freed with g_free after use.
  *
- * Note: empty, not required fields are valid.
+ * Note: Required, but unfilled, fields are invalid.
  *
  * Returns: TRUE, if the field is valid, FALSE otherwise.
  */

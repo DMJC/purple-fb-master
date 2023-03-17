@@ -203,6 +203,35 @@ test_request_field_valid_custom(void) {
 	g_object_unref(field);
 }
 
+static void
+test_request_field_required_validity(void) {
+	PurpleRequestField *field = NULL;
+	char *errmsg = NULL;
+	gboolean result;
+
+	field = purple_request_field_string_new("test-string", "Test string", NULL,
+	                                        FALSE);
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_cmpstr(errmsg, ==, NULL);
+	g_assert_true(result);
+
+	/* Once required, a field must be filled to be valid. */
+	purple_request_field_set_required(field, TRUE);
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_cmpstr(errmsg, ==, "Required field is not filled.");
+	g_assert_false(result);
+	g_free(errmsg);
+
+	/* But once filled (and there's no other validator), then it can be valid. */
+	purple_request_field_string_set_value(PURPLE_REQUEST_FIELD_STRING(field),
+	                                      "valid");
+	result = purple_request_field_is_valid(field, &errmsg);
+	g_assert_cmpstr(errmsg, ==, NULL);
+	g_assert_true(result);
+
+	g_object_unref(field);
+}
+
 /******************************************************************************
  * Main
  *****************************************************************************/
@@ -218,6 +247,9 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/request-field/valid-int", test_request_field_valid_int);
 	g_test_add_func("/request-field/valid-custom",
 	                test_request_field_valid_custom);
+
+	g_test_add_func("/request-field/required-validity",
+	                test_request_field_required_validity);
 
 	return g_test_run();
 }

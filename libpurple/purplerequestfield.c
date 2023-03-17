@@ -426,7 +426,10 @@ purple_request_field_set_required(PurpleRequestField *field, gboolean required)
 		                                         required);
 	}
 
+	g_object_freeze_notify(G_OBJECT(field));
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_REQUIRED]);
+	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALID]);
+	g_object_thaw_notify(G_OBJECT(field));
 }
 
 PurpleRequestGroup *
@@ -576,12 +579,6 @@ purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg)
 		*errmsg = NULL;
 	}
 
-	if(!purple_request_field_is_required(field) &&
-	   !purple_request_field_is_filled(field))
-	{
-		return TRUE;
-	}
-
 	klass = PURPLE_REQUEST_FIELD_GET_CLASS(field);
 	if(klass != NULL && klass->is_valid != NULL) {
 		valid = klass->is_valid(field, errmsg);
@@ -603,6 +600,15 @@ purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg)
 		for(gsize i = 0; i < G_N_ELEMENTS(params); i++) {
 			g_value_unset(&params[i]);
 		}
+	}
+
+	if(valid && purple_request_field_is_required(field) &&
+	   !purple_request_field_is_filled(field))
+	{
+		if(errmsg != NULL) {
+			*errmsg = g_strdup(_("Required field is not filled."));
+		}
+		valid = FALSE;
 	}
 
 	if(!valid && errmsg != NULL && *errmsg == NULL) {
