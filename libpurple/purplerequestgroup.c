@@ -32,11 +32,13 @@ struct _PurpleRequestGroup {
 	char *title;
 
 	GList *fields;
+	GHashTable *invalid_fields;
 };
 
 enum {
 	PROP_0,
 	PROP_TITLE,
+	PROP_VALID,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -50,6 +52,31 @@ purple_request_group_set_title(PurpleRequestGroup *group, const char *title) {
 	group->title = g_strdup(title);
 
 	g_object_notify_by_pspec(G_OBJECT(group), properties[PROP_TITLE]);
+}
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+purple_request_group_notify_field_cb(GObject *obj,
+                                     G_GNUC_UNUSED GParamSpec *pspec,
+                                     gpointer data)
+{
+	PurpleRequestGroup *group = PURPLE_REQUEST_GROUP(data);
+	PurpleRequestField *field = PURPLE_REQUEST_FIELD(obj);
+	gboolean before, after;
+
+	before = purple_request_group_is_valid(group);
+	if(purple_request_field_is_valid(field, NULL)) {
+		g_hash_table_remove(group->invalid_fields, field);
+	} else {
+		g_hash_table_add(group->invalid_fields, field);
+	}
+	after = purple_request_group_is_valid(group);
+
+	if(before != after) {
+		g_object_notify_by_pspec(G_OBJECT(group), properties[PROP_VALID]);
+	}
 }
 
 /******************************************************************************
@@ -104,6 +131,9 @@ purple_request_group_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_TITLE:
 			g_value_set_string(value, purple_request_group_get_title(group));
 			break;
+		case PROP_VALID:
+			g_value_set_boolean(value, purple_request_group_is_valid(group));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -133,12 +163,14 @@ purple_request_group_finalize(GObject *obj) {
 	g_free(group->title);
 
 	g_list_free_full(group->fields, g_object_unref);
+	g_clear_pointer(&group->invalid_fields, g_hash_table_destroy);
 
 	G_OBJECT_CLASS(purple_request_group_parent_class)->finalize(obj);
 }
 
 static void
-purple_request_group_init(G_GNUC_UNUSED PurpleRequestGroup *group) {
+purple_request_group_init(PurpleRequestGroup *group) {
+	group->invalid_fields = g_hash_table_new(g_direct_hash, g_direct_equal);
 }
 
 static void
@@ -161,6 +193,19 @@ purple_request_group_class_init(PurpleRequestGroupClass *klass) {
 		"The title of the field group.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestGroup:valid:
+	 *
+	 * Whether all fields in a group are valid.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_VALID] = g_param_spec_boolean(
+		"valid", "valid",
+		"Whether all fields in a group are valid.",
+		TRUE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
@@ -216,6 +261,10 @@ purple_request_group_add_field(PurpleRequestGroup *group,
 	position = g_list_length(group->fields);
 	group->fields = g_list_append(group->fields, field);
 
+	purple_request_group_notify_field_cb(G_OBJECT(field), NULL, group);
+	g_signal_connect(field, "notify::valid",
+	                 G_CALLBACK(purple_request_group_notify_field_cb), group);
+
 	if(PURPLE_IS_REQUEST_PAGE(group->page)) {
 		_purple_request_page_add_field(group->page, field);
 	}
@@ -247,4 +296,11 @@ purple_request_group_get_page(PurpleRequestGroup *group)
 	g_return_val_if_fail(PURPLE_IS_REQUEST_GROUP(group), NULL);
 
 	return group->page;
+}
+
+gboolean
+purple_request_group_is_valid(PurpleRequestGroup *group) {
+	g_return_val_if_fail(PURPLE_IS_REQUEST_GROUP(group), FALSE);
+
+	return g_hash_table_size(group->invalid_fields) == 0;
 }

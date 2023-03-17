@@ -122,16 +122,16 @@ gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const ch
 gboolean purple_request_page_all_required_filled(PurpleRequestPage *page);
 
 /**
- * purple_request_page_all_valid:
+ * purple_request_page_is_valid:
  * @page: The fields page.
  *
  * Returns whether or not all fields are valid.
  *
- * Returns: TRUE if all fields are valid, or FALSE.
+ * Returns: %TRUE if all fields in the page are valid, %FALSE otherwise.
  *
  * Since: 3.0.0
  */
-gboolean purple_request_page_all_valid(PurpleRequestPage *page);
+gboolean purple_request_page_is_valid(PurpleRequestPage *page);
 
 /**
  * purple_request_page_get_field:

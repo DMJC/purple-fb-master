@@ -235,7 +235,7 @@ req_field_changed_common(G_GNUC_UNUSED GtkWidget *widget,
 
 	gtk_widget_set_sensitive(req_data->ok_button,
 		purple_request_page_all_required_filled(page) &&
-		purple_request_page_all_valid(page));
+		purple_request_page_is_valid(page));
 }
 
 static void
@@ -2208,7 +2208,7 @@ pidgin_request_fields(const char *title, const char *primary,
 		gtk_widget_set_sensitive(data->ok_button, FALSE);
 	}
 
-	if(!purple_request_page_all_valid(page)) {
+	if(!purple_request_page_is_valid(page)) {
 		gtk_widget_set_sensitive(data->ok_button, FALSE);
 	}
 

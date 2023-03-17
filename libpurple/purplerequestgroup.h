@@ -107,6 +107,18 @@ GList *purple_request_group_get_fields(PurpleRequestGroup *group);
  */
 PurpleRequestPage *purple_request_group_get_page(PurpleRequestGroup *group);
 
+/**
+ * purple_request_group_is_valid:
+ * @group:  The field.
+ *
+ * Returns whether or not all fields are valid.
+ *
+ * Returns: %TRUE if all fields in the group are valid, %FALSE otherwise.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_request_group_is_valid(PurpleRequestGroup *group);
+
 G_END_DECLS
 
 #endif /* PURPLE_REQUEST_GROUP_H */

@@ -34,6 +34,7 @@ struct _PurpleRequestPage {
 	GObject parent;
 
 	GList *groups;
+	GHashTable *invalid_groups;
 
 	GHashTable *fields;
 
@@ -41,6 +42,38 @@ struct _PurpleRequestPage {
 
 	GList *validated_fields;
 };
+
+enum {
+	PROP_0,
+	PROP_VALID,
+	N_PROPERTIES,
+};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+purple_request_page_notify_group_cb(GObject *obj,
+                                    G_GNUC_UNUSED GParamSpec *pspec,
+                                    gpointer data)
+{
+	PurpleRequestPage *page = PURPLE_REQUEST_PAGE(data);
+	PurpleRequestGroup *group = PURPLE_REQUEST_GROUP(obj);
+	gboolean before, after;
+
+	before = purple_request_page_is_valid(page);
+	if(purple_request_group_is_valid(group)) {
+		g_hash_table_remove(page->invalid_groups, group);
+	} else {
+		g_hash_table_add(page->invalid_groups, group);
+	}
+	after = purple_request_page_is_valid(page);
+
+	if(before != after) {
+		g_object_notify_by_pspec(G_OBJECT(page), properties[PROP_VALID]);
+	}
+}
 
 /******************************************************************************
  * GListModel Implementation
@@ -85,10 +118,27 @@ G_DEFINE_TYPE_WITH_CODE(PurpleRequestPage, purple_request_page, G_TYPE_OBJECT,
                                               purple_request_page_list_model_init))
 
 static void
+purple_request_page_get_property(GObject *obj, guint param_id, GValue *value,
+                                 GParamSpec *pspec)
+{
+	PurpleRequestPage *page = PURPLE_REQUEST_PAGE(obj);
+
+	switch(param_id) {
+		case PROP_VALID:
+			g_value_set_boolean(value, purple_request_page_is_valid(page));
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+			break;
+	}
+}
+
+static void
 purple_request_page_finalize(GObject *obj) {
 	PurpleRequestPage *page = PURPLE_REQUEST_PAGE(obj);
 
 	g_list_free_full(page->groups, g_object_unref);
+	g_clear_pointer(&page->invalid_groups, g_hash_table_destroy);
 	g_list_free(page->required_fields);
 	g_list_free(page->validated_fields);
 	g_hash_table_destroy(page->fields);
@@ -99,6 +149,7 @@ purple_request_page_finalize(GObject *obj) {
 static void
 purple_request_page_init(PurpleRequestPage *page) {
 	page->fields = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+	page->invalid_groups = g_hash_table_new(g_direct_hash, g_direct_equal);
 }
 
 static void
@@ -106,6 +157,22 @@ purple_request_page_class_init(PurpleRequestPageClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
 	obj_class->finalize = purple_request_page_finalize;
+	obj_class->get_property = purple_request_page_get_property;
+
+	/**
+	 * PurpleRequestPage:valid:
+	 *
+	 * Whether all fields in a page are valid.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_VALID] = g_param_spec_boolean(
+		"valid", "valid",
+		"Whether all fields in a page are valid.",
+		TRUE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************
@@ -176,6 +243,10 @@ purple_request_page_add_group(PurpleRequestPage *page,
 	page->groups = g_list_append(page->groups, group);
 
 	_purple_request_group_set_page(group, page);
+
+	purple_request_page_notify_group_cb(G_OBJECT(group), NULL, page);
+	g_signal_connect(group, "notify::valid",
+	                 G_CALLBACK(purple_request_page_notify_group_cb), page);
 
 	for (l = purple_request_group_get_fields(group);
 		 l != NULL;
@@ -248,19 +319,10 @@ purple_request_page_all_required_filled(PurpleRequestPage *page) {
 }
 
 gboolean
-purple_request_page_all_valid(PurpleRequestPage *page) {
-	GList *l;
-
+purple_request_page_is_valid(PurpleRequestPage *page) {
 	g_return_val_if_fail(PURPLE_IS_REQUEST_PAGE(page), FALSE);
 
-	for(l = page->validated_fields; l != NULL; l = l->next) {
-		PurpleRequestField *field = PURPLE_REQUEST_FIELD(l->data);
-
-		if (!purple_request_field_is_valid(field, NULL))
-			return FALSE;
-	}
-
-	return TRUE;
+	return g_hash_table_size(page->invalid_groups) == 0;
 }
 
 PurpleRequestField *

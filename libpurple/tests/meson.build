@@ -27,6 +27,8 @@ PROGS = [
     'purplepath',
     'queued_output_stream',
     'request_field',
+    'request_group',
+    'request_page',
     'str',
     'tags',
     'util',
