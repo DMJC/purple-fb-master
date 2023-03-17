@@ -29,9 +29,11 @@
 #include "pidginprotocolchooser.h"
 
 struct _PidginAccountEditor {
-	GtkDialog parent;
+	AdwPreferencesPage parent;
 
 	PurpleAccount *account;
+
+	gboolean valid;
 
 	/* Login Options */
 	GtkWidget *login_options;
@@ -71,6 +73,7 @@ struct _PidginAccountEditor {
 enum {
 	PROP_0,
 	PROP_ACCOUNT,
+	PROP_VALID,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -85,6 +88,17 @@ static void pidgin_account_editor_connection_changed_cb(GObject *obj,
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static void
+pidgin_account_editor_set_valid(PidginAccountEditor *editor, gboolean valid) {
+	g_return_if_fail(PIDGIN_IS_ACCOUNT_EDITOR(editor));
+
+	if(editor->valid != valid) {
+		editor->valid = valid;
+
+		g_object_notify_by_pspec(G_OBJECT(editor), properties[PROP_VALID]);
+	}
+}
+
 static void
 pidgin_account_editor_add_user_split(gpointer data, gpointer user_data) {
 	PurpleAccountUserSplit *split = data;
@@ -652,8 +666,7 @@ pidgin_account_editor_update(PidginAccountEditor *editor) {
 	pidgin_account_editor_update_advanced_options(editor, protocol);
 	pidgin_account_editor_update_proxy_options(editor);
 
-	gtk_dialog_set_response_sensitive(GTK_DIALOG(editor), GTK_RESPONSE_APPLY,
-	                                  sensitive);
+	pidgin_account_editor_set_valid(editor, sensitive);
 }
 
 static void
@@ -704,23 +717,6 @@ pidgin_account_editor_login_options_update_editable(PidginAccountEditor *editor)
 		gtk_editable_set_editable(GTK_EDITABLE(row), editable);
 	}
 	gtk_widget_set_sensitive(editor->require_password, editable);
-}
-
-static void
-pidgin_account_editor_set_account(PidginAccountEditor *editor,
-                                  PurpleAccount *account)
-{
-	if(g_set_object(&editor->account, account)) {
-		if(PURPLE_IS_ACCOUNT(account)) {
-			g_signal_connect_object(account, "notify::connection",
-			                        G_CALLBACK(pidgin_account_editor_connection_changed_cb),
-			                        editor, 0);
-		}
-
-		g_object_notify_by_pspec(G_OBJECT(editor), properties[PROP_ACCOUNT]);
-	}
-
-	pidgin_account_editor_update(editor);
 }
 
 static gboolean
@@ -912,35 +908,6 @@ pidgin_account_editor_save_proxy(PidginAccountEditor *editor,
 	purple_proxy_info_set_password(info, svalue);
 }
 
-static void
-pidgin_account_editor_save_account(PidginAccountEditor *editor) {
-	gboolean new_account = FALSE;
-
-	new_account = pidgin_account_editor_save_login_options(editor);
-	pidgin_account_editor_save_user_options(editor);
-	pidgin_account_editor_save_advanced_options(editor);
-	pidgin_account_editor_save_proxy(editor, new_account);
-
-	/* If this is a new account, add it to the account manager and bring it
-	 * online.
-	 */
-	if(new_account) {
-		PurpleAccountManager *manager = NULL;
-		const PurpleSavedStatus *saved_status;
-
-		manager = purple_account_manager_get_default();
-
-		purple_account_manager_add(manager, editor->account);
-
-		saved_status = purple_savedstatus_get_current();
-		if (saved_status != NULL) {
-			purple_savedstatus_activate_for_account(saved_status,
-			                                        editor->account);
-			purple_account_set_enabled(editor->account, TRUE);
-		}
-	}
-}
-
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -959,7 +926,7 @@ pidgin_account_editor_response_cb(GtkDialog *dialog, gint response_id,
                                   G_GNUC_UNUSED gpointer data)
 {
 	if(response_id == GTK_RESPONSE_APPLY) {
-		pidgin_account_editor_save_account(PIDGIN_ACCOUNT_EDITOR(dialog));
+		pidgin_account_editor_save(PIDGIN_ACCOUNT_EDITOR(dialog));
 	}
 
 	gtk_window_destroy(GTK_WINDOW(dialog));
@@ -983,8 +950,7 @@ pidgin_account_editor_username_changed_cb(GtkEditable *self, gpointer data) {
 		sensitive = TRUE;
 	}
 
-	gtk_dialog_set_response_sensitive(GTK_DIALOG(editor), GTK_RESPONSE_APPLY,
-	                                  sensitive);
+	pidgin_account_editor_set_valid(editor, sensitive);
 }
 
 static void
@@ -1103,7 +1069,8 @@ pidgin_account_editor_proxy_type_changed_cb(G_GNUC_UNUSED GObject *obj,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountEditor, pidgin_account_editor, GTK_TYPE_DIALOG)
+G_DEFINE_TYPE(PidginAccountEditor, pidgin_account_editor,
+              ADW_TYPE_PREFERENCES_PAGE)
 
 static void
 pidgin_account_editor_get_property(GObject *obj, guint param_id, GValue *value,
@@ -1115,6 +1082,10 @@ pidgin_account_editor_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_ACCOUNT:
 			g_value_set_object(value,
 			                   pidgin_account_editor_get_account(editor));
+			break;
+		case PROP_VALID:
+			g_value_set_boolean(value,
+			                    pidgin_account_editor_get_is_valid(editor));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -1208,7 +1179,19 @@ pidgin_account_editor_class_init(PidginAccountEditorClass *klass) {
 		"account", "account",
 		"The account to modify",
 		PURPLE_TYPE_ACCOUNT,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PidginAccountEditor::valid:
+	 *
+	 * Whether or not the account settings are valid and it is okay to save the
+	 * account.
+	 */
+	properties[PROP_VALID] = g_param_spec_boolean(
+		"valid", "valid",
+		"Whether or not the account settings are valid",
+		FALSE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
@@ -1292,4 +1275,72 @@ pidgin_account_editor_get_account(PidginAccountEditor *editor) {
 	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_EDITOR(editor), NULL);
 
 	return editor->account;
+}
+
+void
+pidgin_account_editor_set_account(PidginAccountEditor *editor,
+                                  PurpleAccount *account)
+{
+	g_return_if_fail(PIDGIN_IS_ACCOUNT_EDITOR(editor));
+
+	/* Disconnect the notify handler from the previous account. */
+	if(PURPLE_IS_ACCOUNT(editor->account)) {
+		g_signal_handlers_disconnect_by_func(editor->account,
+		                                     G_CALLBACK(pidgin_account_editor_connection_changed_cb),
+		                                     editor);
+	}
+
+	if(g_set_object(&editor->account, account)) {
+		if(PURPLE_IS_ACCOUNT(account)) {
+			pidgin_protocol_chooser_set_protocol(PIDGIN_PROTOCOL_CHOOSER(editor->protocol),
+			                                     purple_account_get_protocol(editor->account));
+
+			g_signal_connect_object(account, "notify::connection",
+			                        G_CALLBACK(pidgin_account_editor_connection_changed_cb),
+			                        editor, 0);
+		}
+
+		g_object_notify_by_pspec(G_OBJECT(editor), properties[PROP_ACCOUNT]);
+	}
+
+	pidgin_account_editor_update(editor);
+}
+
+gboolean
+pidgin_account_editor_get_is_valid(PidginAccountEditor *editor) {
+	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_EDITOR(editor), FALSE);
+
+	return editor->valid;
+}
+
+void
+pidgin_account_editor_save(PidginAccountEditor *editor) {
+	gboolean new_account = FALSE;
+
+	g_return_if_fail(PIDGIN_IS_ACCOUNT_EDITOR(editor));
+	g_return_if_fail(editor->valid == TRUE);
+
+	new_account = pidgin_account_editor_save_login_options(editor);
+	pidgin_account_editor_save_user_options(editor);
+	pidgin_account_editor_save_advanced_options(editor);
+	pidgin_account_editor_save_proxy(editor, new_account);
+
+	/* If this is a new account, add it to the account manager and bring it
+	 * online.
+	 */
+	if(new_account) {
+		PurpleAccountManager *manager = NULL;
+		const PurpleSavedStatus *saved_status;
+
+		manager = purple_account_manager_get_default();
+
+		purple_account_manager_add(manager, editor->account);
+
+		saved_status = purple_savedstatus_get_current();
+		if(saved_status != NULL) {
+			purple_savedstatus_activate_for_account(saved_status,
+			                                        editor->account);
+			purple_account_set_enabled(editor->account, TRUE);
+		}
+	}
 }

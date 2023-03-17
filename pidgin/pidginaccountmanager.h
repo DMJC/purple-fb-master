@@ -54,6 +54,28 @@ G_DECLARE_FINAL_TYPE(PidginAccountManager, pidgin_account_manager, PIDGIN,
  */
 GtkWidget *pidgin_account_manager_new(void);
 
+/**
+ * pidgin_account_managet_show_overview:
+ * @manager: The instance.
+ *
+ * Switches @manager to the overview page. This is useful as @manager might
+ * already be visible but editing an account.
+ *
+ * Since: 3.0.0
+ */
+void pidgin_account_manager_show_overview(PidginAccountManager *manager);
+
+/**
+ * pidgin_account_manager_edit_account:
+ * @manager: The instance.
+ * @account: The account to edit.
+ *
+ * Opens the account editor in @manager for the given account.
+ *
+ * Since: 3.0.0
+ */
+void pidgin_account_manager_edit_account(PidginAccountManager *manager, PurpleAccount *account);
+
 G_END_DECLS
 
 #endif /* PIDGIN_ACCOUNT_MANAGER_H */

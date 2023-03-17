@@ -36,6 +36,15 @@ struct _PidginAccountManager {
 
 	GtkListBox *list_box;
 	GtkWidget *add;
+
+	GtkWidget *stack;
+	GtkWidget *editor;
+
+	/* This is used to not go back to the manager when an account was edited
+	 * directly, via the `accounts->(account)->edit` menu or the
+	 * `connection error` notification.
+	 */
+	gboolean edit_only;
 };
 
 enum {
@@ -59,16 +68,32 @@ pidgin_account_manager_create_widget(gpointer item,
 }
 
 static void
-pidgin_account_manager_create_account(PidginAccountManager *manager) {
-	GtkWidget *editor = pidgin_account_editor_new(NULL);
-	gtk_window_set_transient_for(GTK_WINDOW(editor),
-	                             GTK_WINDOW(manager));
-	gtk_window_present_with_time(GTK_WINDOW(editor), GDK_CURRENT_TIME);
+pidgin_account_manager_real_edit_account(PidginAccountManager *manager,
+                                         PurpleAccount *account,
+                                         gboolean edit_only)
+{
+	g_return_if_fail(PIDGIN_IS_ACCOUNT_MANAGER(manager));
+
+	manager->edit_only = edit_only;
+
+	pidgin_account_editor_set_account(PIDGIN_ACCOUNT_EDITOR(manager->editor),
+	                                  account);
+
+	gtk_stack_set_visible_child_name(GTK_STACK(manager->stack), "editor-page");
 }
 
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
+/* This is used by the add button on the placeholder page. */
+static void
+pidgin_account_manager_create_account(G_GNUC_UNUSED GtkButton *self,
+                                      gpointer data)
+{
+	PidginAccountManager *manager = data;
+
+	pidgin_account_manager_real_edit_account(manager, NULL, FALSE);
+}
 
 static void
 pidgin_account_manager_refresh_add_cb(GListModel *list,
@@ -92,7 +117,7 @@ pidgin_account_manager_response_cb(GtkDialog *dialog, gint response_id,
 
 	switch(response_id) {
 		case RESPONSE_ADD:
-			pidgin_account_manager_create_account(manager);
+			pidgin_account_manager_real_edit_account(manager, NULL, FALSE);
 			break;
 		case GTK_RESPONSE_CLOSE:
 		case GTK_RESPONSE_DELETE_EVENT:
@@ -106,14 +131,49 @@ pidgin_account_manager_response_cb(GtkDialog *dialog, gint response_id,
 static void
 pidgin_account_manager_row_activated_cb(G_GNUC_UNUSED GtkListBox *box,
                                         GtkListBoxRow *row,
-                                        G_GNUC_UNUSED gpointer data)
+                                        gpointer data)
 {
-	GtkWidget *editor = NULL;
 	PurpleAccount *account = NULL;
+	PidginAccountManager *manager = data;
 
 	account = pidgin_account_row_get_account(PIDGIN_ACCOUNT_ROW(row));
-	editor = pidgin_account_editor_new(account);
-	gtk_widget_show(editor);
+
+	pidgin_account_manager_real_edit_account(manager, account, FALSE);
+}
+
+static void
+pidgin_account_manager_back_clicked_cb(G_GNUC_UNUSED GtkButton *self,
+                                       gpointer data)
+{
+	PidginAccountManager *manager = data;
+
+#if ADW_CHECK_VERSION(1, 3, 0)
+	/* Scroll the editor back to the top of the scrolled window. */
+	adw_preferences_page_scroll_to_top(ADW_PREFERENCES_PAGE(manager->editor));
+#endif
+
+	/* Disconnect the account which will remove all of the account options as
+	 * well.
+	 */
+	pidgin_account_editor_set_account(PIDGIN_ACCOUNT_EDITOR(manager->editor),
+	                                  NULL);
+
+	pidgin_account_manager_show_overview(manager);
+}
+
+static void
+pidgin_account_manager_save_clicked_cb(G_GNUC_UNUSED GtkButton *self,
+                                       gpointer data)
+{
+	PidginAccountManager *manager = data;
+
+	pidgin_account_editor_save(PIDGIN_ACCOUNT_EDITOR(manager->editor));
+
+	if(manager->edit_only) {
+		gtk_window_destroy(GTK_WINDOW(manager));
+	} else {
+		gtk_stack_set_visible_child_name(GTK_STACK(manager->stack), "overview");
+	}
 }
 
 /******************************************************************************
@@ -147,6 +207,10 @@ pidgin_account_manager_class_init(PidginAccountManagerClass *klass) {
 	                                     list_box);
 	gtk_widget_class_bind_template_child(widget_class, PidginAccountManager,
 	                                     add);
+	gtk_widget_class_bind_template_child(widget_class, PidginAccountManager,
+	                                     stack);
+	gtk_widget_class_bind_template_child(widget_class, PidginAccountManager,
+	                                     editor);
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_account_manager_response_cb);
@@ -154,6 +218,10 @@ pidgin_account_manager_class_init(PidginAccountManagerClass *klass) {
 	                                        pidgin_account_manager_row_activated_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_account_manager_create_account);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_account_manager_back_clicked_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_account_manager_save_clicked_cb);
 }
 
 /******************************************************************************
@@ -162,4 +230,21 @@ pidgin_account_manager_class_init(PidginAccountManagerClass *klass) {
 GtkWidget *
 pidgin_account_manager_new(void) {
 	return g_object_new(PIDGIN_TYPE_ACCOUNT_MANAGER, NULL);
+}
+
+void
+pidgin_account_manager_show_overview(PidginAccountManager *manager) {
+	g_return_if_fail(PIDGIN_IS_ACCOUNT_MANAGER(manager));
+
+	gtk_stack_set_visible_child_name(GTK_STACK(manager->stack), "overview");
+}
+
+void
+pidgin_account_manager_edit_account(PidginAccountManager *manager,
+                                    PurpleAccount *account)
+{
+	g_return_if_fail(PIDGIN_IS_ACCOUNT_MANAGER(manager));
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	pidgin_account_manager_real_edit_account(manager, account, TRUE);
 }

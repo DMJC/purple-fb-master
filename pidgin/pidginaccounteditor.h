@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include <adwaita.h>
+
 #include <purple.h>
 
 /**
@@ -43,7 +45,7 @@ G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_ACCOUNT_EDITOR pidgin_account_editor_get_type()
 G_DECLARE_FINAL_TYPE(PidginAccountEditor, pidgin_account_editor, PIDGIN,
-                     ACCOUNT_EDITOR, GtkDialog)
+                     ACCOUNT_EDITOR, AdwPreferencesPage)
 
 /**
  * pidgin_account_editor_new:
@@ -69,6 +71,42 @@ GtkWidget *pidgin_account_editor_new(PurpleAccount *account);
  * Since: 3.0.0
  */
 PurpleAccount *pidgin_account_editor_get_account(PidginAccountEditor *editor);
+
+/**
+ * pidgin_account_editor_set_account:
+ * @editor: The instance.
+ * @account: (nullable): The new account to edit.
+ *
+ * Sets the account that @editor is editing to @account. You can pass %NULL
+ * to remove the current account or edit a new account.
+ *
+ * Since: 3.0.0
+ */
+void pidgin_account_editor_set_account(PidginAccountEditor *editor, PurpleAccount *account);
+
+/**
+ * pidgin_account_editor_get_is_valid:
+ * @editor: The instance.
+ *
+ * Gets whether or not the settings for the account is valid and can be saved.
+ *
+ * Returns: %TRUE if the account being edited has valid values, otherwise
+ *          %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean pidgin_account_editor_get_is_valid(PidginAccountEditor *editor);
+
+/**
+ * pidgin_account_editor_save:
+ * @editor: The instance.
+ *
+ * Save the account to disk. If this is a new account, it will be set to match
+ * the current global status which is "online" in most cases.
+ *
+ * Since: 3.0.0
+ */
+void pidgin_account_editor_save(PidginAccountEditor *editor);
 
 G_END_DECLS
 

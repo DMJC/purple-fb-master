@@ -95,6 +95,26 @@ G_DEFINE_TYPE(PidginApplication, pidgin_application, GTK_TYPE_APPLICATION)
  *****************************************************************************/
 
 /*
+ * pidgin_application_get_account_manager:
+ *
+ * The Pidgin account manager can get opened from multiple actions, so this
+ * helper manages the singleton.
+ *
+ * Since: 3.0.0
+ */
+static GtkWidget *
+pidgin_application_get_account_manager(void) {
+	static GtkWidget *manager = NULL;
+
+	if(!PIDGIN_IS_ACCOUNT_MANAGER(manager)) {
+		manager = pidgin_account_manager_new();
+		g_object_add_weak_pointer(G_OBJECT(manager), (gpointer)&manager);
+	}
+
+	return manager;
+}
+
+/*
  * pidgin_application_present_transient_window:
  * @application: The application instance.
  * @window: The [class@Gtk.Window] to present.
@@ -275,12 +295,9 @@ pidgin_application_accounts(G_GNUC_UNUSED GSimpleAction *simple,
                             G_GNUC_UNUSED GVariant *parameter, gpointer data)
 {
 	PidginApplication *application = data;
-	static GtkWidget *manager = NULL;
+	GtkWidget *manager = pidgin_application_get_account_manager();
 
-	if(!GTK_IS_WIDGET(manager)) {
-		manager = pidgin_account_manager_new();
-		g_object_add_weak_pointer(G_OBJECT(manager), (gpointer)&manager);
-	}
+	pidgin_account_manager_show_overview(PIDGIN_ACCOUNT_MANAGER(manager));
 
 	pidgin_application_present_transient_window(application,
 	                                            GTK_WINDOW(manager));
@@ -377,16 +394,27 @@ pidgin_application_edit_account(G_GNUC_UNUSED GSimpleAction *simple,
 	PurpleAccountManager *manager = NULL;
 	const gchar *id = NULL;
 
+	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
+		g_warning("parameter is of type %s, expected %s",
+		          g_variant_get_type_string(parameter),
+		          (char *)G_VARIANT_TYPE_STRING);
+
+		return;
+	}
+
 	id = g_variant_get_string(parameter, NULL);
 
 	manager = purple_account_manager_get_default();
 
 	account = purple_account_manager_find_by_id(manager, id);
 	if(PURPLE_IS_ACCOUNT(account)) {
-		GtkWidget *editor = pidgin_account_editor_new(account);
+		GtkWidget *account_manager = pidgin_application_get_account_manager();
+
+		pidgin_account_manager_edit_account(PIDGIN_ACCOUNT_MANAGER(account_manager),
+		                                    account);
 
 		pidgin_application_present_transient_window(application,
-		                                            GTK_WINDOW(editor));
+		                                            GTK_WINDOW(account_manager));
 	}
 }
 
