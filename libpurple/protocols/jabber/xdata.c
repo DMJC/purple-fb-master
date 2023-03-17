@@ -53,33 +53,56 @@ jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestPage *page) {
 	GCallback cb = data->cb;
 	gpointer user_data = data->user_data;
 	JabberStream *js = data->js;
-	GList *groups, *flds;
 	char *actionhandle = NULL;
 	gboolean hasActions = (data->actions != NULL);
+	guint n_groups;
 
 	purple_xmlnode_set_namespace(result, "jabber:x:data");
 	purple_xmlnode_set_attrib(result, "type", "submit");
 
-	for(groups = purple_request_page_get_groups(page); groups; groups = groups->next) {
-		if(groups->data == data->actiongroup) {
-			for(flds = purple_request_group_get_fields(groups->data); flds; flds = flds->next) {
-				PurpleRequestField *field = flds->data;
-				PurpleRequestFieldChoice *choice = PURPLE_REQUEST_FIELD_CHOICE(field);
-				const char *id = purple_request_field_get_id(field);
+	n_groups = g_list_model_get_n_items(G_LIST_MODEL(page));
+	for(guint group_index = 0; group_index < n_groups; group_index++) {
+		PurpleRequestGroup *group = NULL;
+		guint n_fields;
+
+		group = g_list_model_get_item(G_LIST_MODEL(page), group_index);
+		n_fields = g_list_model_get_n_items(G_LIST_MODEL(group));
+
+		if(group == data->actiongroup) {
+			for(guint field_index = 0; field_index < n_fields; field_index++) {
+				PurpleRequestField *field = NULL;
+				PurpleRequestFieldChoice *choice = NULL;
+				const char *id = NULL;
 				int handleindex;
-				if(!purple_strequal(id, "libpurple:jabber:xdata:actions"))
+
+				field = g_list_model_get_item(G_LIST_MODEL(group), field_index);
+				choice = PURPLE_REQUEST_FIELD_CHOICE(field);
+				id = purple_request_field_get_id(field);
+
+				if(!purple_strequal(id, "libpurple:jabber:xdata:actions")) {
+					g_object_unref(field);
 					continue;
+				}
+
 				handleindex = GPOINTER_TO_INT(purple_request_field_choice_get_value(choice));
 				actionhandle = g_strdup(g_list_nth_data(data->actions, handleindex));
+				g_object_unref(field);
 				break;
 			}
+
+			g_object_unref(group);
 			continue;
 		}
-		for(flds = purple_request_group_get_fields(groups->data); flds; flds = flds->next) {
+
+		for(guint field_index = 0; field_index < n_fields; field_index++) {
 			PurpleXmlNode *fieldnode, *valuenode;
-			PurpleRequestField *field = flds->data;
-			const char *id = purple_request_field_get_id(field);
-			jabber_x_data_field_type type = GPOINTER_TO_INT(g_hash_table_lookup(data->fields, id));
+			PurpleRequestField *field = NULL;
+			const char *id = NULL;
+			jabber_x_data_field_type type;
+
+			field = g_list_model_get_item(G_LIST_MODEL(group), field_index);
+			id = purple_request_field_get_id(field);
+			type = GPOINTER_TO_INT(g_hash_table_lookup(data->fields, id));
 
 			switch(type) {
 				case JABBER_X_DATA_TEXT_SINGLE:
@@ -147,7 +170,11 @@ jabber_x_data_ok_cb(struct jabber_x_data_data *data, PurpleRequestPage *page) {
 				case JABBER_X_DATA_IGNORE:
 					break;
 			}
+
+			g_object_unref(field);
 		}
+
+		g_object_unref(group);
 	}
 
 	g_hash_table_destroy(data->fields);
