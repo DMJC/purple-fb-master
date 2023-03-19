@@ -456,6 +456,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	PurpleAccount *account = NULL;
 	PurpleRequestPage *page = NULL;
 	PurpleRequestGroup *group = NULL;
+	PurpleRequestField *boolfield = NULL;
 	PurpleRequestField *field = NULL;
 	PurpleRequestFieldChoice *choice_field = NULL;
 	PurpleRequestFieldList *list_field = NULL;
@@ -480,23 +481,32 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	group = purple_request_group_new(_("Basic"));
 	purple_request_page_add_group(page, group);
 
+	boolfield = purple_request_field_bool_new("bool", _("Sensitive?"), TRUE);
+	purple_request_field_set_tooltip(boolfield,
+	                                 _("Allow modifying all fields."));
+	purple_request_group_add_field(group, boolfield);
+
 	field = purple_request_field_label_new("basic-label",
 	                                       _("This group contains basic fields"));
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_string_new("string", _("A string"),
 	                                        _("default"), FALSE);
 	purple_request_field_set_required(field, TRUE);
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("multiline-string",
 	                                        _("A multiline string"),
 	                                        _("default"), TRUE);
 	purple_request_group_add_field(group, field);
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	field = purple_request_field_string_new("masked-string",
 	                                        _("A masked string"), _("default"),
 	                                        FALSE);
 	purple_request_field_string_set_masked(PURPLE_REQUEST_FIELD_STRING(field),
 	                                       TRUE);
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("alphanumeric",
 	                                        _("An alphanumeric string"),
@@ -504,16 +514,17 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	purple_request_field_set_validator(field,
 	                                   purple_request_field_alphanumeric_validator,
 	                                   NULL, NULL);
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 	field = purple_request_field_string_new("email", _("An email"),
 	                                        _("me@example.com"), FALSE);
 	purple_request_field_set_validator(field,
 	                                   purple_request_field_email_validator,
 	                                   NULL, NULL);
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 	field = purple_request_field_int_new("int", _("An integer"), 123, -42, 1337);
-	purple_request_group_add_field(group, field);
-	field = purple_request_field_bool_new("bool", _("A boolean"), FALSE);
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 
 	/* This group will contain fields with multiple options. */
@@ -522,6 +533,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 
 	field = purple_request_field_label_new("multiple-label",
 	                                       _("This group contains fields with multiple options"));
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_choice_new("choice", _("A choice"), "foo");
@@ -530,6 +542,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	purple_request_field_choice_add(choice_field, _("bar"), "bar");
 	purple_request_field_choice_add(choice_field, _("baz"), "baz");
 	purple_request_field_choice_add(choice_field, _("quux"), "quux");
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_list_new("list", _("A list"));
@@ -538,6 +551,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	purple_request_field_list_add_icon(list_field, _("bar"), NULL, "bar");
 	purple_request_field_list_add_icon(list_field, _("baz"), NULL, "baz");
 	purple_request_field_list_add_icon(list_field, _("quux"), NULL, "quux");
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 
 	field = purple_request_field_list_new("multilist", _("A multi-select list"));
@@ -547,6 +561,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	purple_request_field_list_add_icon(list_field, _("bar"), NULL, "bar");
 	purple_request_field_list_add_icon(list_field, _("baz"), NULL, "baz");
 	purple_request_field_list_add_icon(list_field, _("quux"), NULL, "quux");
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 
 	/* This group will contain specialized fields. */
@@ -555,6 +570,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 
 	field = purple_request_field_label_new("special-label",
 	                                       _("This group contains specialized fields"));
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 
 	icon = g_resource_lookup_data(purple_demo_get_resource(),
@@ -563,11 +579,13 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	icon_data = g_bytes_get_data(icon, &icon_len);
 	field = purple_request_field_image_new("image", _("An image"),
 	                                       icon_data, icon_len);
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 	g_bytes_unref(icon);
 
 	field = purple_request_field_account_new("account", _("An account"),
 	                                         account);
+	g_object_bind_property(boolfield, "value", field, "sensitive", 0);
 	purple_request_group_add_field(group, field);
 
 	purple_request_fields(connection, _("Request Fields Demo"),
