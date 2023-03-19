@@ -58,18 +58,18 @@ pidgin_dialogs_im_cb(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 }
 
 static gboolean
-pidgin_dialogs_im_name_validator(G_GNUC_UNUSED PurpleRequestField *field,
-                                 char **errmsg, gpointer data)
+pidgin_dialogs_im_name_validator(PurpleRequestField *field, char **errmsg,
+                                 gpointer data)
 {
-	PurpleRequestPage *page = data;
+	PurpleRequestFieldAccount *account_field = data;
 	PurpleAccount *account;
 	PurpleProtocol *protocol;
 	const char *username;
 	gboolean valid = FALSE;
 
-	account = purple_request_page_get_account(page, "account");
+	account = purple_request_field_account_get_value(account_field);
 	protocol = purple_account_get_protocol(account);
-	username = purple_request_page_get_string(page, "screenname");
+	username = purple_request_field_string_get_value(PURPLE_REQUEST_FIELD_STRING(field));
 
 	if (username) {
 		valid = purple_validate(protocol, username);
@@ -86,27 +86,32 @@ pidgin_dialogs_im(void)
 {
 	PurpleRequestPage *page;
 	PurpleRequestGroup *group;
-	PurpleRequestField *field;
+	PurpleRequestField *username_field = NULL;
+	PurpleRequestField *account_field = NULL;
 
 	page = purple_request_page_new();
 
 	group = purple_request_group_new(NULL);
 	purple_request_page_add_group(page, group);
 
-	field = purple_request_field_string_new("screenname", _("_Name"), NULL, FALSE);
-	purple_request_field_set_type_hint(field, "screenname");
-	purple_request_field_set_required(field, TRUE);
-	purple_request_field_set_validator(field, pidgin_dialogs_im_name_validator,
-	                                   page, NULL);
-	purple_request_group_add_field(group, field);
+	username_field = purple_request_field_string_new("screenname", _("_Name"),
+	                                                 NULL, FALSE);
+	purple_request_field_set_type_hint(username_field, "screenname");
+	purple_request_field_set_required(username_field, TRUE);
+	purple_request_group_add_field(group, username_field);
 
-	field = purple_request_field_account_new("account", _("_Account"), NULL);
-	purple_request_field_set_type_hint(field, "account");
-	purple_request_field_set_visible(field,
+	account_field = purple_request_field_account_new("account", _("_Account"),
+	                                                 NULL);
+	purple_request_field_set_type_hint(account_field, "account");
+	purple_request_field_set_visible(account_field,
 		(purple_connections_get_all() != NULL &&
 		 purple_connections_get_all()->next != NULL));
-	purple_request_field_set_required(field, TRUE);
-	purple_request_group_add_field(group, field);
+	purple_request_field_set_required(account_field, TRUE);
+	purple_request_group_add_field(group, account_field);
+
+	purple_request_field_set_validator(username_field,
+	                                   pidgin_dialogs_im_name_validator,
+	                                   account_field, NULL);
 
 	purple_request_fields(
 	        purple_blist_get_default(), _("New Instant Message"), NULL,
