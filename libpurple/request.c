@@ -621,32 +621,34 @@ purple_request_wait_progress(void *ui_handle, gfloat fraction)
 }
 
 static void
-purple_request_fields_strip_html(PurpleRequestPage *page)
-{
-	GList *itg;
+purple_request_fields_strip_html(PurpleRequestPage *page) {
+	guint n_groups;
 
-	for (itg = purple_request_page_get_groups(page);
-	     itg != NULL;
-	     itg = g_list_next(itg))
-	{
-		PurpleRequestGroup *group = itg->data;
-		GList *itf;
+	n_groups = g_list_model_get_n_items(G_LIST_MODEL(page));
+	for(guint group_index = 0; group_index < n_groups; group_index++) {
+		GListModel *group = NULL;
+		guint n_fields;
 
-		for (itf = purple_request_group_get_fields(group);
-		     itf != NULL;
-		     itf = g_list_next(itf))
-		{
-			PurpleRequestField *field = itf->data;
-			const char *old_label;
-			gchar *new_label;
+		group = g_list_model_get_item(G_LIST_MODEL(page), group_index);
+		n_fields = g_list_model_get_n_items(group);
 
+		for(guint field_index = 0; field_index < n_fields; field_index++) {
+			PurpleRequestField *field = NULL;
+			const char *old_label = NULL;
+			char *new_label = NULL;
+
+			field = g_list_model_get_item(group, field_index);
 			old_label = purple_request_field_get_label(field);
 			new_label = purple_request_strip_html_custom(old_label);
 			if(g_strcmp0(new_label, old_label) != 0) {
 				purple_request_field_set_label(field, new_label);
 			}
+
 			g_free(new_label);
+			g_object_unref(field);
 		}
+
+		g_object_unref(group);
 	}
 }
 

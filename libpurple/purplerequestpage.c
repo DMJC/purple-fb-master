@@ -71,6 +71,26 @@ purple_request_page_notify_group_cb(GObject *obj,
 	}
 }
 
+static void
+purple_request_page_items_changed_cb(GListModel *list, guint position,
+                                     guint removed, guint added, gpointer data)
+{
+	PurpleRequestPage *page = data;
+
+	/* Groups don't support removing fields, nor do pages support removing
+	 * groups, so we don't attempt to support that here. */
+	g_return_if_fail(removed == 0);
+
+	for(guint offset = 0; offset < added; offset++) {
+		PurpleRequestField *field;
+		field = g_list_model_get_item(list, position + offset);
+		g_hash_table_insert(page->fields,
+		                    g_strdup(purple_request_field_get_id(field)),
+		                    field);
+		g_object_unref(field);
+	}
+}
+
 /******************************************************************************
  * GListModel Implementation
  *****************************************************************************/
@@ -178,22 +198,11 @@ purple_request_page_new(void) {
 }
 
 void
-_purple_request_page_add_field(PurpleRequestPage *page,
-                               PurpleRequestField *field)
-{
-	g_return_if_fail(PURPLE_IS_REQUEST_PAGE(page));
-
-	g_hash_table_insert(page->fields,
-	                    g_strdup(purple_request_field_get_id(field)), field);
-}
-
-void
 purple_request_page_add_group(PurpleRequestPage *page,
                               PurpleRequestGroup *group)
 {
 	guint position;
-	GList *l;
-	PurpleRequestField *field;
+	GListModel *model = NULL;
 
 	g_return_if_fail(PURPLE_IS_REQUEST_PAGE(page));
 	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
@@ -207,16 +216,12 @@ purple_request_page_add_group(PurpleRequestPage *page,
 	g_signal_connect(group, "notify::valid",
 	                 G_CALLBACK(purple_request_page_notify_group_cb), page);
 
-	for (l = purple_request_group_get_fields(group);
-		 l != NULL;
-		 l = l->next) {
-
-		field = l->data;
-
-		g_hash_table_insert(page->fields,
-		                    g_strdup(purple_request_field_get_id(field)),
-		                    field);
-	}
+	model = G_LIST_MODEL(group);
+	purple_request_page_items_changed_cb(model, 0, 0,
+	                                     g_list_model_get_n_items(model),
+	                                     page);
+	g_signal_connect(group, "items-changed",
+	                 G_CALLBACK(purple_request_page_items_changed_cb), page);
 
 	g_list_model_items_changed(G_LIST_MODEL(page), position, 0, 1);
 }

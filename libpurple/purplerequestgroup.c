@@ -245,10 +245,6 @@ purple_request_group_add_field(PurpleRequestGroup *group,
 	g_signal_connect(field, "notify::valid",
 	                 G_CALLBACK(purple_request_group_notify_field_cb), group);
 
-	if(PURPLE_IS_REQUEST_PAGE(group->page)) {
-		_purple_request_page_add_field(group->page, field);
-	}
-
 	_purple_request_field_set_group(field, group);
 
 	g_list_model_items_changed(G_LIST_MODEL(group), position, 0, 1);
