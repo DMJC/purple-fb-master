@@ -255,52 +255,29 @@ field_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data)
 }
 
 static void
-multifield_ok_cb(GtkWidget *button, PidginRequestData *data)
+multifield_response_cb(G_GNUC_UNUSED GtkDialog *dialog, gint response,
+                       gpointer data)
 {
-	generic_response_start(data);
+	PidginRequestData *req_data = data;
+	PurpleRequestFieldsCb cb = NULL;
 
-	if (!gtk_widget_has_focus(button))
-		gtk_widget_grab_focus(button);
+	generic_response_start(req_data);
 
-	if (data->cbs[0] != NULL)
-		((PurpleRequestFieldsCb)data->cbs[0])(data->user_data,
-		                                      data->u.multifield.page);
+	if(response == GTK_RESPONSE_OK) {
+		cb = (PurpleRequestFieldsCb)req_data->cbs[0];
+	} else if(response == GTK_RESPONSE_CANCEL ||
+	          response == GTK_RESPONSE_DELETE_EVENT)
+	{
+		cb = (PurpleRequestFieldsCb)req_data->cbs[1];
+	} else if(2 <= response && (gsize)response < req_data->cb_count) {
+		cb = (PurpleRequestFieldsCb)req_data->cbs[response];
+	}
+
+	if(cb != NULL) {
+		cb(req_data->user_data, req_data->u.multifield.page);
+	}
 
 	purple_request_close(PURPLE_REQUEST_FIELDS, data);
-}
-
-static void
-multifield_cancel_cb(G_GNUC_UNUSED GtkWidget *button, PidginRequestData *data)
-{
-	generic_response_start(data);
-
-	if (data->cbs[1] != NULL)
-		((PurpleRequestFieldsCb)data->cbs[1])(data->user_data,
-		                                      data->u.multifield.page);
-
-	purple_request_close(PURPLE_REQUEST_FIELDS, data);
-}
-
-static void
-multifield_extra_cb(GtkWidget *button, PidginRequestData *data)
-{
-	PurpleRequestFieldsCb cb;
-
-	generic_response_start(data);
-
-	cb = g_object_get_data(G_OBJECT(button), "extra-cb");
-
-	if (cb != NULL)
-		cb(data->user_data, data->u.multifield.page);
-
-	purple_request_close(PURPLE_REQUEST_FIELDS, data);
-}
-
-static gboolean
-destroy_multifield_cb(G_GNUC_UNUSED GtkWidget *self, PidginRequestData *data)
-{
-	multifield_cancel_cb(NULL, data);
-	return FALSE;
 }
 
 static gchar *
@@ -1882,7 +1859,6 @@ pidgin_request_fields(const char *title, const char *primary,
 	GtkWidget *frame;
 	GtkWidget *label;
 	GtkWidget *grid;
-	GtkWidget *button;
 	GtkWidget *img;
 	GtkWidget *content;
 	GtkSizeGroup *sg, *datasheet_buttons_sg;
@@ -1892,8 +1868,7 @@ pidgin_request_fields(const char *title, const char *primary,
 	char *primary_esc, *secondary_esc;
 	const gboolean compact = purple_request_cpar_is_compact(cpar);
 	GSList *extra_actions;
-	size_t i;
-	gboolean ok_btn = (ok_text != NULL);
+	gint response;
 
 	data            = g_new0(PidginRequestData, 1);
 	data->type      = PURPLE_REQUEST_FIELDS;
@@ -1902,14 +1877,6 @@ pidgin_request_fields(const char *title, const char *primary,
 
 	g_object_set_data(G_OBJECT(page), "pidgin-ui-data", data);
 
-	extra_actions = purple_request_cpar_get_extra_actions(cpar);
-
-	data->cb_count = 2;
-	data->cbs = g_new0(GCallback, 2);
-
-	data->cbs[0] = ok_cb;
-	data->cbs[1] = cancel_cb;
-
 	data->dialog = win = gtk_dialog_new();
 	if(title != NULL) {
 		gtk_window_set_title(GTK_WINDOW(win), title);
@@ -1917,9 +1884,6 @@ pidgin_request_fields(const char *title, const char *primary,
 		gtk_window_set_title(GTK_WINDOW(win), PIDGIN_ALERT_TITLE);
 	}
 	gtk_window_set_resizable(GTK_WINDOW(win), TRUE);
-
-	g_signal_connect(G_OBJECT(win), "close-request",
-					 G_CALLBACK(destroy_multifield_cb), data);
 
 	/* Setup the main horizontal box */
 	content = gtk_dialog_get_content_area(GTK_DIALOG(win));
@@ -1934,31 +1898,36 @@ pidgin_request_fields(const char *title, const char *primary,
 
 	pidgin_request_add_help(GTK_DIALOG(win), cpar);
 
-	i = 0;
-	for (GSList *it = extra_actions; it != NULL; it = it->next) {
-		PurpleKeyValuePair *extra_action = it->data;
+	/* Add responses and callbacks. */
+	g_signal_connect(data->dialog, "response",
+	                 G_CALLBACK(multifield_response_cb), data);
+	extra_actions = purple_request_cpar_get_extra_actions(cpar);
+	data->cb_count = 2 + g_slist_length(extra_actions);
+	data->cbs = g_new0(GCallback, data->cb_count);
 
-		button = gtk_dialog_add_button(GTK_DIALOG(win), extra_action->key, i++);
-		g_signal_connect(G_OBJECT(button), "clicked",
-				G_CALLBACK(multifield_extra_cb), data);
-		g_object_set_data(G_OBJECT(button), "extra-cb", extra_action->value);
+	data->cbs[0] = ok_cb;
+	data->cbs[1] = cancel_cb;
+
+	response = 2; /* So that response == data->cbs index. */
+	for(; extra_actions != NULL; extra_actions = extra_actions->next) {
+		PurpleKeyValuePair *extra_action = extra_actions->data;
+
+		gtk_dialog_add_button(GTK_DIALOG(win), extra_action->key, response);
+		data->cbs[response] = extra_action->value;
+		response++;
 	}
 
 	/* Cancel button */
-	button = gtk_dialog_add_button(GTK_DIALOG(win), cancel_text, GTK_RESPONSE_CANCEL);
-	g_signal_connect(G_OBJECT(button), "clicked",
-			G_CALLBACK(multifield_cancel_cb), data);
+	gtk_dialog_add_button(GTK_DIALOG(win), cancel_text, GTK_RESPONSE_CANCEL);
+	response = GTK_RESPONSE_CANCEL;
 
 	/* OK button */
-	if (!ok_btn) {
-		gtk_window_set_default_widget(GTK_WINDOW(win), button);
-	} else {
-		button = gtk_dialog_add_button(GTK_DIALOG(win), ok_text, GTK_RESPONSE_OK);
-		g_signal_connect(G_OBJECT(button), "clicked",
-				G_CALLBACK(multifield_ok_cb), data);
-		data->ok_button = button;
-		gtk_window_set_default_widget(GTK_WINDOW(win), button);
+	if(ok_text != NULL) {
+		data->ok_button = gtk_dialog_add_button(GTK_DIALOG(win), ok_text,
+		                                        GTK_RESPONSE_OK);
+		response = GTK_RESPONSE_OK;
 	}
+	gtk_dialog_set_default_response(GTK_DIALOG(win), response);
 
 	pidgin_widget_decorate_account(hbox,
 		purple_request_cpar_get_account(cpar));
