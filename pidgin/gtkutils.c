@@ -45,6 +45,7 @@
 #include "gtkdialogs.h"
 #include "gtkrequest.h"
 #include "gtkutils.h"
+#include "pidginaccountchooser.h"
 #include "pidgincore.h"
 
 /******************************************************************************
@@ -74,7 +75,7 @@ enum {
 typedef struct
 {
 	GtkWidget *entry;
-	GtkWidget *accountopt;
+	GtkWidget *chooser;
 
 	PidginFilterBuddyCompletionEntryFunc filter_func;
 	gpointer filter_func_user_data;
@@ -119,24 +120,6 @@ pidgin_make_frame(GtkWidget *parent, const char *title)
 	g_object_set_data(G_OBJECT(vbox2), "main-vbox", vbox);
 
 	return vbox2;
-}
-
-static void
-aop_option_menu_select_by_data(GtkWidget *optmenu, gpointer data)
-{
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	gpointer iter_data;
-	model = gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu));
-	if (gtk_tree_model_get_iter_first(model, &iter)) {
-		do {
-			gtk_tree_model_get(model, &iter, AOP_DATA_COLUMN, &iter_data, -1);
-			if (iter_data == data) {
-				gtk_combo_box_set_active_iter(GTK_COMBO_BOX(optmenu), &iter);
-				return;
-			}
-		} while (gtk_tree_model_iter_next(model, &iter));
-	}
 }
 
 void
@@ -232,8 +215,7 @@ buddyname_completion_match_selected_cb(G_GNUC_UNUSED GtkEntryCompletion *complet
                                        PidginCompletionData *data)
 {
 	GValue val;
-	GtkWidget *optmenu = data->accountopt;
-	PurpleAccount *account;
+	PurpleAccount *account = NULL;
 
 	val.g_type = 0;
 	gtk_tree_model_get_value(model, iter, COMPLETION_BUDDY_COLUMN, &val);
@@ -244,11 +226,14 @@ buddyname_completion_match_selected_cb(G_GNUC_UNUSED GtkEntryCompletion *complet
 	account = g_value_get_pointer(&val);
 	g_value_unset(&val);
 
-	if (account == NULL)
+	if(!PURPLE_IS_ACCOUNT(account)) {
 		return TRUE;
+	}
 
-	if (optmenu != NULL)
-		aop_option_menu_select_by_data(optmenu, account);
+	if(PIDGIN_IS_ACCOUNT_CHOOSER(data->chooser)) {
+		pidgin_account_chooser_set_selected(PIDGIN_ACCOUNT_CHOOSER(data->chooser),
+		                                    account);
+	}
 
 	return TRUE;
 }
@@ -432,7 +417,7 @@ pidgin_setup_screenname_autocomplete(
 	                           G_TYPE_POINTER);
 
 	data->entry = entry;
-	data->accountopt = chooser;
+	data->chooser = chooser;
 	if (filter_func == NULL) {
 		data->filter_func = pidgin_screenname_autocomplete_default_filter;
 		data->filter_func_user_data = NULL;
