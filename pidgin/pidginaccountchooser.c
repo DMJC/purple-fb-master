@@ -46,49 +46,6 @@ static GParamSpec *properties[PROP_LAST] = {NULL};
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
-static char *
-pidgin_account_chooser_icon_name_cb(G_GNUC_UNUSED GObject *self,
-                                    PurpleAccount *account,
-                                    G_GNUC_UNUSED gpointer data)
-{
-	const char *icon_name = NULL;
-
-	if(PURPLE_IS_ACCOUNT(account)) {
-		PurpleProtocol *protocol = purple_account_get_protocol(account);
-		icon_name = purple_protocol_get_icon_name(protocol);
-	}
-
-	return g_strdup(icon_name);
-}
-
-static char *
-pidgin_account_chooser_label_cb(G_GNUC_UNUSED GObject *self,
-                                PurpleAccount *account,
-                                G_GNUC_UNUSED gpointer data)
-{
-	gchar *markup = NULL;
-	const char *alias = NULL;
-	const char *protocol_name = NULL;
-	const char *username = NULL;
-
-	if(!PURPLE_IS_ACCOUNT(account)) {
-		return NULL;
-	}
-
-	alias = purple_contact_info_get_alias(PURPLE_CONTACT_INFO(account));
-	protocol_name = purple_account_get_protocol_name(account);
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
-
-	if(alias != NULL) {
-		markup = g_strdup_printf(_("%s (%s) (%s)"), username, alias,
-		                         protocol_name);
-	} else {
-		markup = g_strdup_printf(_("%s (%s)"), username, protocol_name);
-	}
-
-	return markup;
-}
-
 static void
 pidgin_account_chooser_changed_cb(G_GNUC_UNUSED GObject *obj,
                                   G_GNUC_UNUSED GParamSpec *pspec,
@@ -174,10 +131,6 @@ pidgin_account_chooser_class_init(PidginAccountChooserClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, PidginAccountChooser,
 	                                     filter);
 
-	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_account_chooser_icon_name_cb);
-	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_account_chooser_label_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_account_chooser_changed_cb);
 }
