@@ -84,18 +84,6 @@ void purple_request_group_add_field(PurpleRequestGroup *group, PurpleRequestFiel
 const char *purple_request_group_get_title(PurpleRequestGroup *group);
 
 /**
- * purple_request_group_get_fields:
- * @group: The group.
- *
- * Returns a list of all fields in a group.
- *
- * Returns: (element-type PurpleRequestField) (transfer none): The list of fields in the group.
- *
- * Since: 3.0.0
- */
-GList *purple_request_group_get_fields(PurpleRequestGroup *group);
-
-/**
  * purple_request_group_get_page:
  * @group: The group.
  *

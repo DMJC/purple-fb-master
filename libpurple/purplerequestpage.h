@@ -72,18 +72,6 @@ PurpleRequestPage *purple_request_page_new(void);
 void purple_request_page_add_group(PurpleRequestPage *page, PurpleRequestGroup *group);
 
 /**
- * purple_request_page_get_groups:
- * @page: The fields page.
- *
- * Returns a list of all groups in a field list.
- *
- * Returns: (element-type PurpleRequestGroup) (transfer none): A list of groups.
- *
- * Since: 3.0.0
- */
-GList *purple_request_page_get_groups(PurpleRequestPage *page);
-
-/**
  * purple_request_page_exists:
  * @page: The fields page.
  * @id: The ID of the field.

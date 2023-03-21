@@ -210,8 +210,6 @@ purple_request_page_add_group(PurpleRequestPage *page,
 	position = g_list_length(page->groups);
 	page->groups = g_list_append(page->groups, group);
 
-	_purple_request_group_set_page(group, page);
-
 	purple_request_page_notify_group_cb(G_OBJECT(group), NULL, page);
 	g_signal_connect(group, "notify::valid",
 	                 G_CALLBACK(purple_request_page_notify_group_cb), page);
@@ -224,13 +222,6 @@ purple_request_page_add_group(PurpleRequestPage *page,
 	                 G_CALLBACK(purple_request_page_items_changed_cb), page);
 
 	g_list_model_items_changed(G_LIST_MODEL(page), position, 0, 1);
-}
-
-GList *
-purple_request_page_get_groups(PurpleRequestPage *page) {
-	g_return_val_if_fail(PURPLE_IS_REQUEST_PAGE(page), NULL);
-
-	return page->groups;
 }
 
 gboolean

@@ -27,8 +27,6 @@
 struct _PurpleRequestGroup {
 	GObject parent;
 
-	PurpleRequestPage *page;
-
 	char *title;
 
 	GList *fields;
@@ -221,15 +219,6 @@ purple_request_group_new(const char *title) {
 }
 
 void
-_purple_request_group_set_page(PurpleRequestGroup *group,
-                               PurpleRequestPage *page)
-{
-	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
-
-	group->page = page;
-}
-
-void
 purple_request_group_add_field(PurpleRequestGroup *group,
                                PurpleRequestField *field)
 {
@@ -245,8 +234,6 @@ purple_request_group_add_field(PurpleRequestGroup *group,
 	g_signal_connect(field, "notify::valid",
 	                 G_CALLBACK(purple_request_group_notify_field_cb), group);
 
-	_purple_request_field_set_group(field, group);
-
 	g_list_model_items_changed(G_LIST_MODEL(group), position, 0, 1);
 }
 
@@ -256,22 +243,6 @@ purple_request_group_get_title(PurpleRequestGroup *group)
 	g_return_val_if_fail(PURPLE_IS_REQUEST_GROUP(group), NULL);
 
 	return group->title;
-}
-
-GList *
-purple_request_group_get_fields(PurpleRequestGroup *group)
-{
-	g_return_val_if_fail(PURPLE_IS_REQUEST_GROUP(group), NULL);
-
-	return group->fields;
-}
-
-PurpleRequestPage *
-purple_request_group_get_page(PurpleRequestGroup *group)
-{
-	g_return_val_if_fail(PURPLE_IS_REQUEST_GROUP(group), NULL);
-
-	return group->page;
 }
 
 gboolean

@@ -24,8 +24,6 @@
 #include "purpleprivate.h"
 
 typedef struct {
-	PurpleRequestGroup *group;
-
 	char *id;
 	char *label;
 	char *type_hint;
@@ -316,19 +314,6 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
  * Public API
  *****************************************************************************/
 void
-_purple_request_field_set_group(PurpleRequestField *field,
-                                PurpleRequestGroup *group)
-{
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
-
-	priv = purple_request_field_get_instance_private(field);
-
-	priv->group = group;
-}
-
-void
 purple_request_field_set_label(PurpleRequestField *field, const char *label)
 {
 	PurpleRequestFieldPrivate *priv = NULL;
@@ -407,17 +392,6 @@ purple_request_field_set_required(PurpleRequestField *field, gboolean required)
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_REQUIRED]);
 	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALID]);
 	g_object_thaw_notify(G_OBJECT(field));
-}
-
-PurpleRequestGroup *
-purple_request_field_get_group(PurpleRequestField *field) {
-	PurpleRequestFieldPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
-
-	priv = purple_request_field_get_instance_private(field);
-
-	return priv->group;
 }
 
 const char *
