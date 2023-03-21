@@ -584,3 +584,33 @@ purple_presence_get_message(PurplePresence *presence) {
 
 	return purple_status_get_attr_string(priv->active_status, "message");
 }
+
+const char *
+purple_presence_primitive_to_string(PurplePresencePrimitive primitive) {
+	switch(primitive) {
+		case PURPLE_PRESENCE_PRIMITIVE_OFFLINE:
+			return _("Offline");
+			break;
+		case PURPLE_PRESENCE_PRIMITIVE_AVAILABLE:
+			return _("Available");
+			break;
+		case PURPLE_PRESENCE_PRIMITIVE_IDLE:
+			return _("Idle");
+			break;
+		case PURPLE_PRESENCE_PRIMITIVE_INVISIBLE:
+			return _("Invisible");
+			break;
+		case PURPLE_PRESENCE_PRIMITIVE_AWAY:
+			return _("Away");
+			break;
+		case PURPLE_PRESENCE_PRIMITIVE_EXTENDED_AWAY:
+			return _("Do not disturb");
+			break;
+		case PURPLE_PRESENCE_PRIMITIVE_STREAMING:
+			return _("Streaming");
+			break;
+		default:
+			return _("Unknown");
+			break;
+	}
+}

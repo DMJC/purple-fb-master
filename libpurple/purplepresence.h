@@ -318,6 +318,19 @@ PurpleStatusPrimitive purple_presence_get_primitive(PurplePresence *presence);
  */
 const char *purple_presence_get_message(PurplePresence *presence);
 
+/**
+ * purple_presence_primitive_to_string:
+ * @primitive: The [enum@Purple.PresencePrimitive] value.
+ *
+ * Gets a string representation for @primitive that is suitable for display to
+ * users.
+ *
+ * Returns: The string representation.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_presence_primitive_to_string(PurplePresencePrimitive primitive);
+
 G_END_DECLS
 
 #endif /* PURPLE_PRESENCE_H */
