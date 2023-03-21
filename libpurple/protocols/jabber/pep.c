@@ -28,7 +28,6 @@
 #include <string.h>
 #include "useravatar.h"
 #include "usernick.h"
-#include "usertune.h"
 
 static GHashTable *pep_handlers = NULL;
 
@@ -38,7 +37,6 @@ void jabber_pep_init(void) {
 
 		/* register PEP handlers */
 		jabber_avatar_init();
-		jabber_tune_init();
 		jabber_nick_init();
 	}
 }

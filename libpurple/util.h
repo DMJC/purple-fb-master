@@ -39,29 +39,6 @@
 
 G_BEGIN_DECLS
 
-/**
- * purple_util_set_current_song:
- * @title:     The title of the song, %NULL to unset the value.
- * @artist:    The artist of the song, can be %NULL.
- * @album:     The album of the song, can be %NULL.
- *
- * Set the appropriate presence values for the currently playing song.
- */
-void purple_util_set_current_song(const char *title, const char *artist,
-		const char *album);
-
-/**
- * purple_util_format_song_info:
- * @title:     The title of the song, %NULL to unset the value.
- * @artist:    The artist of the song, can be %NULL.
- * @album:     The album of the song, can be %NULL.
- *
- * Format song information.
- *
- * Returns:   The formatted string. The caller must g_free the returned string.
- */
-char *purple_util_format_song_info(const char *title, const char *artist, const char *album);
-
 /**************************************************************************/
 /* Utility Subsystem                                                      */
 /**************************************************************************/

@@ -49,7 +49,6 @@ pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primitive,
 			return "pidgin-user-extended-away";
 			break;
 		case PURPLE_STATUS_MOBILE:
-		case PURPLE_STATUS_TUNE:
 		case PURPLE_STATUS_UNSET:
 		default:
 			break;

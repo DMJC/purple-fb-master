@@ -91,7 +91,6 @@ typedef struct _PurpleStatusAttribute PurpleStatusAttribute;
  * @PURPLE_STATUS_AWAY: The status is away
  * @PURPLE_STATUS_EXTENDED_AWAY: The status is extended away/do not disturb
  * @PURPLE_STATUS_MOBILE: The status is mobile
- * @PURPLE_STATUS_TUNE: The status includes a song title
  * @PURPLE_STATUS_NUM_PRIMITIVES: The number of #PurpleStatusPrimitive<!-- -->s
  *
  * A primitive defining the basic structure of a status type.
@@ -110,82 +109,11 @@ typedef enum
 	PURPLE_STATUS_AWAY,
 	PURPLE_STATUS_EXTENDED_AWAY,
 	PURPLE_STATUS_MOBILE,
-	PURPLE_STATUS_TUNE,
 
 	PURPLE_STATUS_NUM_PRIMITIVES, /*< skip >*/
 } PurpleStatusPrimitive;
 
 #include "purplepresence.h"
-
-/**
- * PURPLE_TUNE_ALBUM:
- *
- * A constant for a status attribute that represents the album of a song.
- */
-#define PURPLE_TUNE_ALBUM "tune_album"
-
-/**
- * PURPLE_TUNE_ARTIST:
- *
- * A constant for a status attribute that represents the artists of a song.
- */
-#define PURPLE_TUNE_ARTIST "tune_artist"
-
-/**
- * PURPLE_TUNE_COMMENT:
- *
- * A constant for a status attribute that represents the comment of a song.
- */
-#define PURPLE_TUNE_COMMENT "tune_comment"
-
-/**
- * PURPLE_TUNE_FULL:
- *
- * A constant for a status attribute that represents the full details of a song.
- */
-#define PURPLE_TUNE_FULL "tune_full"
-
-/**
- * PURPLE_TUNE_GENRE:
- *
- * A constant for a status attribute that represents the genre of a song.
- */
-#define PURPLE_TUNE_GENRE "tune_genre"
-
-/**
- * PURPLE_TUNE_TIME:
- *
- * A constant for a status attribute that represents the duration of a song.
- */
-#define PURPLE_TUNE_TIME "tune_time"
-
-/**
- * PURPLE_TUNE_TITLE:
- *
- * A constant for a status attribute that represents the title of a song.
- */
-#define PURPLE_TUNE_TITLE "tune_title"
-
-/**
- * PURPLE_TUNE_TRACK:
- *
- * A constant for a status attribute that represents the track number of a song.
- */
-#define PURPLE_TUNE_TRACK "tune_track"
-
-/**
- * PURPLE_TUNE_URL:
- *
- * A constant for a status attribute that represents the url of a song.
- */
-#define PURPLE_TUNE_URL "tune_url"
-
-/**
- * PURPLE_TUNE_YEAR:
- *
- * A constant for a status attribute that represents the release year of a song.
- */
-#define PURPLE_TUNE_YEAR "tune_year"
 
 G_BEGIN_DECLS
 

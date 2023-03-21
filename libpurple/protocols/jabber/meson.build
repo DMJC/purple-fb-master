@@ -68,8 +68,6 @@ JABBER_SOURCES = [
 	'useravatar.h',
 	'usernick.c',
 	'usernick.h',
-	'usertune.c',
-	'usertune.h',
 	'xdata.c',
 	'xdata.h',
 	'xmpp.c',

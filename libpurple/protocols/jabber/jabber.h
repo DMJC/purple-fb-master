@@ -209,14 +209,6 @@ struct _JabberStream
 	int old_priority;
 	char *old_avatarhash;
 
-	/* same for user tune */
-	char *old_artist;
-	char *old_title;
-	char *old_source;
-	char *old_uri;
-	int old_length;
-	char *old_track;
-
 	char *certificate_CN;
 
 	/* A purple timeout tag for the keepalive */

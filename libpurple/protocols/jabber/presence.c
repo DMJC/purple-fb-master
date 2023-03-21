@@ -31,8 +31,6 @@
 #include "jutil.h"
 #include "adhoccommands.h"
 
-#include "usertune.h"
-
 static GHashTable *presence_handlers = NULL;
 
 static const struct {
@@ -178,11 +176,9 @@ void jabber_presence_send(JabberStream *js, gboolean force)
 	char *stripped = NULL;
 	JabberBuddyState state;
 	int priority;
-	const char *artist = NULL, *title = NULL, *source = NULL, *uri = NULL, *track = NULL;
-	int length = -1;
 	gboolean allowBuzz;
 	PurplePresence *p;
-	PurpleStatus *status, *tune;
+	PurpleStatus *status;
 
 	account = purple_connection_get_account(js->gc);
 	p = purple_account_get_presence(account);
@@ -240,45 +236,6 @@ void jabber_presence_send(JabberStream *js, gboolean force)
 		js->old_idle = js->idle;
 	}
 	g_free(stripped);
-
-	/* next, check if there are any changes to the tune values */
-	tune = purple_presence_get_status(p, "tune");
-	if (purple_status_is_active(tune)) {
-		artist = purple_status_get_attr_string(tune, PURPLE_TUNE_ARTIST);
-		title = purple_status_get_attr_string(tune, PURPLE_TUNE_TITLE);
-		source = purple_status_get_attr_string(tune, PURPLE_TUNE_ALBUM);
-		uri = purple_status_get_attr_string(tune, PURPLE_TUNE_URL);
-		track = purple_status_get_attr_string(tune, PURPLE_TUNE_TRACK);
-		length = (!purple_status_get_attr_value(tune, PURPLE_TUNE_TIME)) ? -1 :
-				purple_status_get_attr_int(tune, PURPLE_TUNE_TIME);
-	}
-
-	if(!purple_strequal(artist, js->old_artist) || !purple_strequal(title, js->old_title) ||
-			!purple_strequal(source, js->old_source) || !purple_strequal(uri, js->old_uri) ||
-			!purple_strequal(track, js->old_track) || (length != js->old_length)) {
-		PurpleJabberTuneInfo tuneinfo = {
-			(char*)artist,
-			(char*)title,
-			(char*)source,
-			(char*)track,
-			length,
-			(char*)uri
-		};
-		jabber_tune_set(js->gc, &tuneinfo);
-
-		/* update old values */
-		g_free(js->old_artist);
-		g_free(js->old_title);
-		g_free(js->old_source);
-		g_free(js->old_uri);
-		g_free(js->old_track);
-		js->old_artist = g_strdup(artist);
-		js->old_title = g_strdup(title);
-		js->old_source = g_strdup(source);
-		js->old_uri = g_strdup(uri);
-		js->old_length = length;
-		js->old_track = g_strdup(track);
-	}
 
 #undef CHANGED
 

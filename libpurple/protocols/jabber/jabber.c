@@ -863,7 +863,6 @@ jabber_stream_new(PurpleAccount *account)
 	js->chats = g_hash_table_new_full(g_str_hash, g_str_equal,
 			g_free, (GDestroyNotify)jabber_chat_free);
 	js->next_id = g_random_int();
-	js->old_length = 0;
 	js->keepalive_timeout = 0;
 	js->max_inactivity = DEFAULT_INACTIVITY_TIME;
 	/* Set the default protocol version to 1.0. Overridden in parser.c. */
@@ -1057,11 +1056,6 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 	g_free(js->certificate_CN);
 	g_free(js->old_msg);
 	g_free(js->old_avatarhash);
-	g_free(js->old_artist);
-	g_free(js->old_title);
-	g_free(js->old_source);
-	g_free(js->old_uri);
-	g_free(js->old_track);
 
 	if (js->keepalive_timeout != 0)
 		g_source_remove(js->keepalive_timeout);
@@ -1582,7 +1576,6 @@ jabber_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b,
 
 	if(jb) {
 		JabberBuddyResource *jbr = NULL;
-		PurplePresence *presence = purple_buddy_get_presence(b);
 		const char *sub;
 		GList *l;
 		gboolean multiple_resources =
@@ -1605,18 +1598,6 @@ jabber_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b,
 		}
 
 		if (full) {
-			if (purple_presence_is_status_primitive_active(presence, PURPLE_STATUS_TUNE)) {
-				PurpleStatus *tune = purple_presence_get_status(presence, "tune");
-				const char *title = purple_status_get_attr_string(tune, PURPLE_TUNE_TITLE);
-				const char *artist = purple_status_get_attr_string(tune, PURPLE_TUNE_ARTIST);
-				const char *album = purple_status_get_attr_string(tune, PURPLE_TUNE_ALBUM);
-				char *playing = purple_util_format_song_info(title, artist, album);
-				if (playing) {
-					purple_notify_user_info_add_pair_html(user_info, _("Now Listening"), playing);
-					g_free(playing);
-				}
-			}
-
 			if(jb->subscription & JABBER_SUB_FROM) {
 				if(jb->subscription & JABBER_SUB_TO)
 					sub = _("Both");
@@ -1728,20 +1709,6 @@ jabber_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 			jabber_buddy_state_get_status_id(JABBER_BUDDY_STATE_UNAVAILABLE),
 			NULL, TRUE, TRUE, FALSE,
 			"message", _("Message"), purple_value_new(G_TYPE_STRING),
-			NULL);
-	types = g_list_prepend(types, type);
-
-	type = purple_status_type_new_with_attrs(PURPLE_STATUS_TUNE,
-			"tune", NULL, FALSE, TRUE, TRUE,
-			PURPLE_TUNE_ARTIST, _("Tune Artist"), purple_value_new(G_TYPE_STRING),
-			PURPLE_TUNE_TITLE, _("Tune Title"), purple_value_new(G_TYPE_STRING),
-			PURPLE_TUNE_ALBUM, _("Tune Album"), purple_value_new(G_TYPE_STRING),
-			PURPLE_TUNE_GENRE, _("Tune Genre"), purple_value_new(G_TYPE_STRING),
-			PURPLE_TUNE_COMMENT, _("Tune Comment"), purple_value_new(G_TYPE_STRING),
-			PURPLE_TUNE_TRACK, _("Tune Track"), purple_value_new(G_TYPE_STRING),
-			PURPLE_TUNE_TIME, _("Tune Time"), purple_value_new(G_TYPE_INT),
-			PURPLE_TUNE_YEAR, _("Tune Year"), purple_value_new(G_TYPE_INT),
-			PURPLE_TUNE_URL, _("Tune URL"), purple_value_new(G_TYPE_STRING),
 			NULL);
 	types = g_list_prepend(types, type);
 

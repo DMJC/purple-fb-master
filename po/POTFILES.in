@@ -153,7 +153,6 @@ libpurple/protocols/jabber/tests/test_jabber_jutil.c
 libpurple/protocols/jabber/tests/test_jabber_scram.c
 libpurple/protocols/jabber/useravatar.c
 libpurple/protocols/jabber/usernick.c
-libpurple/protocols/jabber/usertune.c
 libpurple/protocols/jabber/xdata.c
 libpurple/protocols/jabber/xmpp.c
 libpurple/proxy.c

@@ -349,7 +349,6 @@ status_changed_cb(PurpleSavedStatus *saved_status)
 
 	switch (purple_savedstatus_get_primitive_type(saved_status)) {
 	case PURPLE_STATUS_AVAILABLE:
-	case PURPLE_STATUS_TUNE:
 	case PURPLE_STATUS_UNSET:
 		status = MESSAGING_MENU_STATUS_AVAILABLE;
 		break;

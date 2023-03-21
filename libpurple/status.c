@@ -109,7 +109,6 @@ static int primitive_scores[] =
 	-100,   /* away                     */
 	-200,   /* extended away            */
 	-400,   /* mobile                   */
-	0,      /* tune                     */
 	-10,    /* idle, special case.      */
 	-5,     /* idle time, special case. */
 	10      /* Offline messageable      */
@@ -138,7 +137,6 @@ static struct PurpleStatusPrimitiveMap
 	{ PURPLE_STATUS_AWAY,            "away",            N_("Away")                },
 	{ PURPLE_STATUS_EXTENDED_AWAY,   "extended_away",   N_("Extended away")       },
 	{ PURPLE_STATUS_MOBILE,          "mobile",          N_("Mobile")              },
-	{ PURPLE_STATUS_TUNE,            "tune",            N_("Listening to music"), },
 };
 
 int *
