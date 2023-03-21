@@ -82,8 +82,6 @@ typedef struct
 
 static GHashTable *datasheet_stock = NULL;
 
-static GtkWidget * create_account_field(PurpleRequestField *field);
-
 static void
 pidgin_widget_decorate_account(GtkWidget *cont, PurpleAccount *account)
 {
@@ -211,13 +209,6 @@ field_string_focus_out_cb(GtkEventControllerFocus *controller,
 			(*value == '\0' ? NULL : value));
 
 	return FALSE;
-}
-
-static void
-field_bool_cb(GtkCheckButton *button, PurpleRequestField *field)
-{
-	purple_request_field_bool_set_value(PURPLE_REQUEST_FIELD_BOOL(field),
-			gtk_check_button_get_active(button));
 }
 
 static void
@@ -986,6 +977,31 @@ pidgin_request_wait_update(void *ui_handle, gboolean pulse, gfloat fraction)
 		gtk_progress_bar_set_fraction(bar, fraction);
 }
 
+static GtkWidget *
+create_label_field(void) {
+	GtkWidget *row = NULL;
+	GtkWidget *label = NULL;
+
+	row = adw_preferences_row_new();
+	gtk_widget_set_focusable(row, FALSE);
+	gtk_list_box_row_set_activatable(GTK_LIST_BOX_ROW(row), FALSE);
+
+	label = gtk_label_new(NULL);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_widget_set_margin_start(label, 12);
+	gtk_widget_set_margin_end(label, 12);
+	gtk_widget_set_margin_bottom(label, 12);
+	gtk_widget_set_margin_top(label, 12);
+	g_object_bind_property(row, "title", label, "label", G_BINDING_DEFAULT);
+	g_object_bind_property(row, "use-markup", label, "use-markup",
+	                       G_BINDING_DEFAULT);
+	g_object_bind_property(row, "use-underline", label, "use-underline",
+	                       G_BINDING_DEFAULT);
+	gtk_list_box_row_set_child(GTK_LIST_BOX_ROW(row), label);
+
+	return row;
+}
+
 static void
 req_entry_field_changed_cb(GtkWidget *entry, PurpleRequestField *field)
 {
@@ -1019,51 +1035,23 @@ req_entry_field_changed_cb(GtkWidget *entry, PurpleRequestField *field)
 }
 
 static void
-setup_entry_field(GtkWidget *entry, PurpleRequestField *field)
+setup_entry_field(GtkWidget *entry, PurpleRequestField *field,
+                  PurpleKeyValuePair **hinted_widget)
 {
 	const char *type_hint;
 
 	g_signal_connect(entry, "changed", G_CALLBACK(req_entry_field_changed_cb),
 	                 field);
 
-	if ((type_hint = purple_request_field_get_type_hint(field)) != NULL)
-	{
-		if (g_str_has_prefix(type_hint, "screenname")) {
-			GtkWidget *optmenu = NULL;
-			PurpleRequestGroup *group = purple_request_field_get_group(field);
-			GList *fields = purple_request_group_get_fields(group);
-
-			/* Ensure the account option menu is created (if the widget hasn't
-			 * been initialized already) for username auto-completion. */
-			while (fields)
-			{
-				PurpleRequestField *fld = fields->data;
-				fields = fields->next;
-
-				if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(fld) &&
-				   purple_request_field_is_visible(fld))
-				{
-					const char *type_hint = purple_request_field_get_type_hint(fld);
-					if (purple_strequal(type_hint, "account"))
-					{
-						optmenu = GTK_WIDGET(g_object_get_data(G_OBJECT(fld),
-						                                       "pidgin-ui-data"));
-						if (optmenu == NULL) {
-							optmenu = GTK_WIDGET(create_account_field(fld));
-							g_object_set_data(G_OBJECT(fld), "pidgin-ui-data",
-							                  optmenu);
-						}
-						break;
-					}
-				}
-			}
-			pidgin_setup_screenname_autocomplete(entry, optmenu, pidgin_screenname_autocomplete_default_filter, GINT_TO_POINTER(purple_strequal(type_hint, "screenname-all")));
-		}
+	type_hint = purple_request_field_get_type_hint(field);
+	if(type_hint != NULL && g_str_has_prefix(type_hint, "screenname")) {
+		*hinted_widget = purple_key_value_pair_new(type_hint, entry);
 	}
 }
 
 static GtkWidget *
-create_string_field(PurpleRequestField *field)
+create_string_field(PurpleRequestField *field,
+                    PurpleKeyValuePair **hinted_widget)
 {
 	PurpleRequestFieldString *strfield = PURPLE_REQUEST_FIELD_STRING(field);
 	const char *value;
@@ -1092,8 +1080,6 @@ create_string_field(PurpleRequestField *field)
 			gtk_text_buffer_set_text(buffer, value, -1);
 		}
 
-		gtk_widget_set_tooltip_text(textview, purple_request_field_get_tooltip(field));
-
 		gtk_text_view_set_editable(GTK_TEXT_VIEW(textview), is_editable);
 
 		controller = gtk_event_controller_focus_new();
@@ -1112,6 +1098,8 @@ create_string_field(PurpleRequestField *field)
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(widget),
 		                               GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 		gtk_widget_set_size_request(widget, -1, 75);
+		gtk_widget_set_hexpand(widget, TRUE);
+		gtk_widget_set_vexpand(widget, TRUE);
 		gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(widget), textview);
 	}
 	else
@@ -1127,13 +1115,11 @@ create_string_field(PurpleRequestField *field)
 			gtk_entry_set_activates_default(GTK_ENTRY(widget), TRUE);
 		}
 
-		setup_entry_field(widget, field);
+		setup_entry_field(widget, field, hinted_widget);
 
 		if(value != NULL) {
 			gtk_editable_set_text(GTK_EDITABLE(widget), value);
 		}
-
-		gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
 
 		gtk_editable_set_editable(GTK_EDITABLE(widget), is_editable);
 
@@ -1147,7 +1133,7 @@ create_string_field(PurpleRequestField *field)
 }
 
 static GtkWidget *
-create_int_field(PurpleRequestField *field)
+create_int_field(PurpleRequestField *field, PurpleKeyValuePair **hinted_widget)
 {
 	PurpleRequestFieldInt *intfield = PURPLE_REQUEST_FIELD_INT(field);
 	int value;
@@ -1157,37 +1143,34 @@ create_int_field(PurpleRequestField *field)
 		purple_request_field_int_get_lower_bound(intfield),
 		purple_request_field_int_get_upper_bound(intfield), 1);
 
-	setup_entry_field(widget, field);
+	setup_entry_field(widget, field, hinted_widget);
 
 	value = purple_request_field_int_get_default_value(intfield);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), value);
-
-	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
 
 	return widget;
 }
 
 static GtkWidget *
-create_bool_field(PurpleRequestField *field,
-	PurpleRequestCommonParameters *cpar)
-{
+create_bool_field(PurpleRequestField *field) {
 	PurpleRequestFieldBool *boolfield = PURPLE_REQUEST_FIELD_BOOL(field);
-	GtkWidget *widget;
-	gchar *label;
+	GtkWidget *row = NULL;
+	GtkWidget *sw = NULL;
 
-	label = pidgin_request_escape(cpar,
-		purple_request_field_get_label(field));
-	widget = gtk_check_button_new_with_label(label);
-	g_free(label);
+	sw = gtk_switch_new();
+	gtk_switch_set_active(GTK_SWITCH(sw),
+	                      purple_request_field_bool_get_default_value(boolfield));
+	gtk_widget_set_focusable(sw, TRUE);
+	gtk_widget_set_valign(sw, GTK_ALIGN_CENTER);
+	g_object_bind_property(field, "value", sw, "active",
+	                       G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
-	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
+	row = adw_action_row_new();
+	gtk_widget_set_focusable(row, FALSE);
+	adw_action_row_add_suffix(ADW_ACTION_ROW(row), sw);
+	adw_action_row_set_activatable_widget(ADW_ACTION_ROW(row), sw);
 
-	gtk_check_button_set_active(GTK_CHECK_BUTTON(widget),
-		purple_request_field_bool_get_default_value(boolfield));
-
-	g_signal_connect(widget, "toggled", G_CALLBACK(field_bool_cb), field);
-
-	return widget;
+	return row;
 }
 
 static GtkWidget *
@@ -1223,8 +1206,6 @@ create_choice_field(PurpleRequestField *field) {
 
 	gtk_drop_down_set_selected(GTK_DROP_DOWN(widget), default_index);
 
-	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
-
 	g_signal_connect(G_OBJECT(widget), "notify::selected",
 	                 G_CALLBACK(field_choice_option_cb), field);
 
@@ -1257,8 +1238,6 @@ create_image_field(PurpleRequestField *field)
 	g_object_unref(G_OBJECT(buf));
 	g_object_unref(G_OBJECT(scale));
 
-	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
-
 	return widget;
 }
 
@@ -1275,13 +1254,14 @@ field_custom_account_filter_cb(gpointer item, G_GNUC_UNUSED gpointer data) {
 }
 
 static GtkWidget *
-create_account_field(PurpleRequestField *field)
+create_account_field(PurpleRequestField *field, GtkWidget **account_hint)
 {
 	PurpleRequestFieldAccount *afield = NULL;
 	GtkWidget *widget = NULL;
 	PurpleAccount *account = NULL;
 	PurpleFilterAccountFunc account_filter = NULL;
 	GtkFilter *filter = NULL;
+	const char *type_hint = NULL;
 
 	widget = pidgin_account_chooser_new();
 	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
@@ -1323,7 +1303,10 @@ create_account_field(PurpleRequestField *field)
 	g_signal_connect(widget, "notify::account", G_CALLBACK(field_account_cb),
 	                 field);
 
-	gtk_widget_set_tooltip_text(widget, purple_request_field_get_tooltip(field));
+	type_hint = purple_request_field_get_type_hint(field);
+	if(purple_strequal(type_hint, "account")) {
+		*account_hint = widget;
+	}
 
 	return widget;
 }
@@ -1849,27 +1832,20 @@ pidgin_request_fields(const char *title, const char *primary,
 {
 	PidginRequestData *data;
 	GtkWidget *win;
-	GtkWidget *hbox, *vbox;
-	GtkWidget *frame;
-	GtkWidget *label;
-	GtkWidget *grid;
+	GtkWidget *page_widget = NULL;
+	AdwPreferencesGroup *group_widget = NULL;
+	GtkWidget *vbox = NULL;
 	GtkWidget *img;
 	GtkWidget *content;
-	GtkSizeGroup *sg, *datasheet_buttons_sg;
-	GList *gl, *fl;
-	PurpleRequestGroup *group;
-	char *label_text;
-	char *primary_esc, *secondary_esc;
-	const gboolean compact = purple_request_cpar_is_compact(cpar);
+	GtkSizeGroup *datasheet_buttons_sg;
 	GSList *extra_actions;
 	gint response;
+	guint n_groups;
 
 	data            = g_new0(PidginRequestData, 1);
 	data->type      = PURPLE_REQUEST_FIELDS;
 	data->user_data = user_data;
 	data->u.multifield.page = page;
-
-	g_object_set_data(G_OBJECT(page), "pidgin-ui-data", data);
 
 	data->dialog = win = gtk_dialog_new();
 	if(title != NULL) {
@@ -1878,17 +1854,29 @@ pidgin_request_fields(const char *title, const char *primary,
 		gtk_window_set_title(GTK_WINDOW(win), PIDGIN_ALERT_TITLE);
 	}
 	gtk_window_set_resizable(GTK_WINDOW(win), TRUE);
+	gtk_window_set_default_size(GTK_WINDOW(win), 480, -1);
 
-	/* Setup the main horizontal box */
 	content = gtk_dialog_get_content_area(GTK_DIALOG(win));
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
-	gtk_box_append(GTK_BOX(content), hbox);
+	page_widget = adw_preferences_page_new();
+	gtk_widget_set_vexpand(page_widget, TRUE);
+	gtk_box_append(GTK_BOX(content), page_widget);
+
+	/* Setup the general info box. */
+	group_widget = ADW_PREFERENCES_GROUP(adw_preferences_group_new());
+	adw_preferences_page_add(ADW_PREFERENCES_PAGE(page_widget), group_widget);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	gtk_widget_set_margin_bottom(vbox, 12);
+	adw_preferences_group_add(group_widget, vbox);
 
 	/* Dialog icon. */
 	img = pidgin_request_dialog_icon(PURPLE_REQUEST_FIELDS, cpar);
-	gtk_widget_set_halign(img, GTK_ALIGN_START);
-	gtk_widget_set_valign(img, GTK_ALIGN_START);
-	gtk_box_append(GTK_BOX(hbox), img);
+	if(gtk_image_get_storage_type(GTK_IMAGE(img)) == GTK_IMAGE_ICON_NAME) {
+		gtk_image_set_pixel_size(GTK_IMAGE(img), 64);
+	}
+	gtk_box_append(GTK_BOX(vbox), img);
+
+	pidgin_widget_decorate_account(vbox,
+	                               purple_request_cpar_get_account(cpar));
 
 	pidgin_request_add_help(GTK_DIALOG(win), cpar);
 
@@ -1923,225 +1911,142 @@ pidgin_request_fields(const char *title, const char *primary,
 	}
 	gtk_dialog_set_default_response(GTK_DIALOG(win), response);
 
-	/* Setup the vbox */
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
-	gtk_widget_set_hexpand(vbox, TRUE);
-	gtk_box_append(GTK_BOX(hbox), vbox);
-
-	pidgin_widget_decorate_account(vbox,
-	                               purple_request_cpar_get_account(cpar));
-
-	sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	datasheet_buttons_sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
-	if(primary) {
-		primary_esc = pidgin_request_escape(cpar, primary);
-		label_text = g_strdup_printf(
-				"<span weight=\"bold\" size=\"larger\">%s</span>", primary_esc);
-		g_free(primary_esc);
-		label = gtk_label_new(NULL);
-
-		gtk_label_set_markup(GTK_LABEL(label), label_text);
+	if(primary != NULL) {
+		GtkWidget *label = gtk_label_new(primary);
 		gtk_label_set_wrap(GTK_LABEL(label), TRUE);
-		gtk_label_set_xalign(GTK_LABEL(label), 0);
-		gtk_label_set_yalign(GTK_LABEL(label), 0);
-		gtk_box_append(GTK_BOX(vbox), label);
-		g_free(label_text);
+		gtk_widget_add_css_class(label, "title-1");
+		adw_preferences_group_add(group_widget, label);
 	}
 
-	if (secondary) {
-		secondary_esc = pidgin_request_escape(cpar, secondary);
-		label = gtk_label_new(NULL);
-
-		gtk_label_set_markup(GTK_LABEL(label), secondary_esc);
-		g_free(secondary_esc);
+	if(secondary != NULL) {
+		GtkWidget *label = gtk_label_new(secondary);
 		gtk_label_set_wrap(GTK_LABEL(label), TRUE);
-		gtk_label_set_xalign(GTK_LABEL(label), 0);
-		gtk_label_set_yalign(GTK_LABEL(label), 0);
-		gtk_box_append(GTK_BOX(vbox), label);
+		adw_preferences_group_add(group_widget, label);
 	}
 
-	for(gl = purple_request_page_get_groups(page); gl != NULL; gl = gl->next) {
-		GList *field_list;
-		size_t field_count = 0;
-		size_t cols = 1;
-		size_t rows;
-		size_t row_num = 0;
-		gboolean contains_resizable = FALSE;
+	n_groups = g_list_model_get_n_items(G_LIST_MODEL(page));
+	for(guint group_index = 0; group_index < n_groups; group_index++) {
+		PurpleRequestGroup *group = NULL;
+		guint n_fields = 0;
+		GSList *username_widgets = NULL;
+		GtkWidget *account_hint = NULL;
 
-		group      = gl->data;
-		field_list = purple_request_group_get_fields(group);
+		group = g_list_model_get_item(G_LIST_MODEL(page), group_index);
+		group_widget = ADW_PREFERENCES_GROUP(adw_preferences_group_new());
+		adw_preferences_group_set_title(group_widget,
+		                                purple_request_group_get_title(group));
+		adw_preferences_page_add(ADW_PREFERENCES_PAGE(page_widget),
+		                         group_widget);
 
-		if(purple_request_group_get_title(group) != NULL) {
-			frame = pidgin_make_frame(vbox,
-				purple_request_group_get_title(group));
-		} else {
-			frame = vbox;
-		}
+		n_fields = g_list_model_get_n_items(G_LIST_MODEL(group));
+		for(guint field_index = 0; field_index < n_fields; field_index++) {
+			PurpleRequestField *field = NULL;
+			GtkWidget *widget = NULL;
+			gboolean was_handled_by_create = FALSE;
 
-		field_count = g_list_length(field_list);
-		rows = field_count;
-
-		for (fl = field_list; fl != NULL; fl = fl->next)
-		{
-			PurpleRequestField *field = PURPLE_REQUEST_FIELD(fl->data);
-
-			if(PURPLE_IS_REQUEST_FIELD_DATASHEET(field)) {
-				contains_resizable = TRUE;
+			field = g_list_model_get_item(G_LIST_MODEL(group), field_index);
+			if(!purple_request_field_is_visible(field)) {
+				g_object_unref(field);
+				continue;
 			}
 
 			if(PURPLE_IS_REQUEST_FIELD_LABEL(field)) {
-				rows++;
+				widget = create_label_field();
+				was_handled_by_create = TRUE;
+			} else if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
+				PurpleKeyValuePair *username_hint = NULL;
+
+				widget = create_string_field(field, &username_hint);
+
+				if(username_hint != NULL) {
+					username_widgets = g_slist_prepend(username_widgets,
+					                                   username_hint);
+				}
+			} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
+				PurpleKeyValuePair *username_hint = NULL;
+
+				widget = create_int_field(field, &username_hint);
+
+				if(username_hint != NULL) {
+					username_widgets = g_slist_prepend(username_widgets,
+					                                   username_hint);
+				}
+			} else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
+				widget = create_bool_field(field);
+				was_handled_by_create = TRUE;
+			} else if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
+				widget = create_choice_field(field);
+			} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
+				widget = create_list_field(field);
+			} else if(PURPLE_IS_REQUEST_FIELD_IMAGE(field)) {
+				widget = create_image_field(field);
+			} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
+				widget = create_account_field(field, &account_hint);
+			} else if(PURPLE_IS_REQUEST_FIELD_DATASHEET(field)) {
+				widget = create_datasheet_field(field, datasheet_buttons_sg);
+			} else {
+				g_warning("Unhandled field type: %s",
+				          G_OBJECT_TYPE_NAME(field));
+				g_object_unref(field);
+				continue;
 			}
-			else if(PURPLE_IS_REQUEST_FIELD_LIST(field) ||
-				 (PURPLE_IS_REQUEST_FIELD_STRING(field) &&
-				  purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field))))
-			{
-				rows += 2;
-			} else if(compact && !PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
-				rows++;
+
+			g_object_bind_property(field, "tooltip", widget, "tooltip-text",
+			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+			g_object_bind_property(field, "sensitive", widget, "sensitive",
+			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+
+			if(!was_handled_by_create) {
+				GtkWidget *row = NULL;
+				if(!PURPLE_IS_REQUEST_FIELD_STRING(field) ||
+				   !purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field)))
+				{
+						gtk_widget_set_valign(widget, GTK_ALIGN_CENTER);
+				}
+
+				row = adw_action_row_new();
+				adw_action_row_add_suffix(ADW_ACTION_ROW(row), widget);
+				widget = row;
 			}
+
+			g_object_bind_property(field, "label", widget, "title",
+			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+			adw_preferences_row_set_use_underline(ADW_PREFERENCES_ROW(widget),
+			                                      TRUE);
+
+			adw_preferences_group_add(group_widget, widget);
+
+			g_object_unref(field);
 		}
 
-		grid = gtk_grid_new();
-		gtk_grid_set_row_spacing(GTK_GRID(grid), 6);
-		gtk_grid_set_column_spacing(GTK_GRID(grid), 6);
+		/* Link autocompletion of entry widgets to account if we found any. */
+		if(username_widgets != NULL && account_hint != NULL) {
 
-		/* This box could be setup in a number of ways, so just set all of the
-		 * fill and expand properties instead of only setting the
-		 * minimums.
-		 */
-		g_object_set(G_OBJECT(grid),
-		             "hexpand", contains_resizable,
-		             "vexpand", contains_resizable,
-		             NULL);
+			while(username_widgets != NULL) {
+				PurpleKeyValuePair *pair = username_widgets->data;
+				const char *type_hint = pair->key;
+				GtkWidget *entry = pair->value;
+				gboolean show_all;
 
-		gtk_box_append(GTK_BOX(frame), grid);
+				show_all = purple_strequal(type_hint, "screenname-all");
+				pidgin_setup_screenname_autocomplete(entry, account_hint,
+				                                     pidgin_screenname_autocomplete_default_filter,
+				                                     GINT_TO_POINTER(show_all));
 
-		for (row_num = 0, fl = field_list;
-			 row_num < rows && fl != NULL;
-			 row_num++)
-		{
-			gboolean dummy_counter = TRUE;
-			/* it's the same as loop above */
-			for (; dummy_counter && fl != NULL; dummy_counter = FALSE, fl = fl->next)
-			{
-				size_t col_offset = 0;
-				PurpleRequestField *field = PURPLE_REQUEST_FIELD(fl->data);
-				GtkWidget *widget = NULL;
-				gchar *field_label;
-
-				label = NULL;
-
-				if (!purple_request_field_is_visible(field)) {
-					continue;
-				}
-
-				field_label = pidgin_request_escape(cpar,
-					purple_request_field_get_label(field));
-
-				if(!PURPLE_IS_REQUEST_FIELD_BOOL(field) && field_label) {
-					char *text = NULL;
-
-					if (field_label[strlen(field_label) - 1] != ':' &&
-						field_label[strlen(field_label) - 1] != '?' &&
-						!PURPLE_IS_REQUEST_FIELD_LABEL(field))
-					{
-						text = g_strdup_printf("%s:", field_label);
-					}
-
-					label = gtk_label_new(NULL);
-					gtk_label_set_markup_with_mnemonic(GTK_LABEL(label), text ? text : field_label);
-					g_free(text);
-
-					gtk_widget_set_hexpand(label, TRUE);
-					gtk_widget_set_vexpand(label, TRUE);
-					gtk_label_set_xalign(GTK_LABEL(label), 0);
-
-					gtk_size_group_add_widget(sg, label);
-
-					if (PURPLE_IS_REQUEST_FIELD_LABEL(field) ||
-					    PURPLE_IS_REQUEST_FIELD_LIST(field) ||
-						(PURPLE_IS_REQUEST_FIELD_STRING(field) &&
-						 purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field))))
-					{
-						gtk_grid_attach(GTK_GRID(grid), label,
-							0, row_num, 2 * cols, 1);
-
-						row_num++;
-					}
-					else
-					{
-						gtk_grid_attach(GTK_GRID(grid), label,
-							col_offset, row_num, 1, 1);
-					}
-
-				}
-				g_clear_pointer(&field_label, g_free);
-
-				widget = GTK_WIDGET(g_object_get_data(G_OBJECT(field),
-				                                      "pidgin-ui-data"));
-				if (widget == NULL)
-				{
-					if(PURPLE_IS_REQUEST_FIELD_STRING(field)) {
-						widget = create_string_field(field);
-					} else if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
-						widget = create_int_field(field);
-					} else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
-						widget = create_bool_field(field, cpar);
-					} else if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
-						widget = create_choice_field(field);
-					} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
-						widget = create_list_field(field);
-					} else if(PURPLE_IS_REQUEST_FIELD_IMAGE(field)) {
-						widget = create_image_field(field);
-					} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
-						widget = create_account_field(field);
-					} else if(PURPLE_IS_REQUEST_FIELD_DATASHEET(field)) {
-						widget = create_datasheet_field(field, datasheet_buttons_sg);
-					} else {
-						continue;
-					}
-				}
-
-				gtk_widget_set_sensitive(widget,
-					purple_request_field_is_sensitive(field));
-
-				if (label)
-					gtk_label_set_mnemonic_widget(GTK_LABEL(label), widget);
-
-				gtk_widget_set_hexpand(widget, TRUE);
-				gtk_widget_set_vexpand(widget, TRUE);
-				gtk_widget_set_margin_start(widget, 5);
-				gtk_widget_set_margin_end(widget, 5);
-
-				if(PURPLE_IS_REQUEST_FIELD_STRING(field) &&
-					purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field)))
-				{
-					gtk_grid_attach(GTK_GRID(grid), widget,
-						0, row_num, 2 * cols, 1);
-				} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
-					gtk_grid_attach(GTK_GRID(grid), widget,
-						0, row_num, 2 * cols, 1);
-				} else if(PURPLE_IS_REQUEST_FIELD_BOOL(field)) {
-					gtk_grid_attach(GTK_GRID(grid), widget,
-						col_offset, row_num, 1, 1);
-				}
-				else if (compact) {
-					row_num++;
-					gtk_grid_attach(GTK_GRID(grid), widget,
-						0, row_num, 2 * cols, 1);
-				} else {
-					gtk_grid_attach(GTK_GRID(grid), widget,
-						1, row_num, 2 * cols - 1, 1);
-				}
-
-				g_object_set_data(G_OBJECT(field), "pidgin-ui-data", widget);
+				purple_key_value_pair_free(pair);
+				username_widgets = g_slist_delete_link(username_widgets,
+				                                       username_widgets);
 			}
+		} else {
+			g_slist_free_full(username_widgets,
+			                  (GDestroyNotify)purple_key_value_pair_free);
 		}
+
+		g_object_unref(group);
 	}
 
-	g_object_unref(sg);
 	g_object_unref(datasheet_buttons_sg);
 
 	g_object_bind_property(page, "valid", data->ok_button, "sensitive", 0);
