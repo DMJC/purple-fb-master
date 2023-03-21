@@ -216,8 +216,7 @@ void
 purple_request_field_list_clear_selected(PurpleRequestFieldList *field) {
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD_LIST(field));
 
-	g_list_free_full(field->selected, g_free);
-	field->selected = NULL;
+	g_clear_list(&field->selected, g_free);
 
 	g_hash_table_remove_all(field->selected_table);
 	g_object_notify(G_OBJECT(field), "valid");

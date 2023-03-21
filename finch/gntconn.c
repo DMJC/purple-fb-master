@@ -145,5 +145,5 @@ finch_connections_uninit(void)
 	g_signal_handlers_disconnect_by_func(manager,
 	                                     G_CALLBACK(account_removed_cb), NULL);
 
-	g_hash_table_destroy(hash);
+	g_clear_pointer(&hash, g_hash_table_destroy);
 }

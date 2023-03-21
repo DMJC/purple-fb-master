@@ -380,11 +380,7 @@ add_account_options(AccountEditDialog *dialog)
 		gnt_box_set_fill(GNT_BOX(vbox), TRUE);
 	}
 
-	if (dialog->protocol_entries)
-	{
-		g_list_free(dialog->protocol_entries);
-		dialog->protocol_entries = NULL;
-	}
+	g_clear_list(&dialog->protocol_entries, NULL);
 
 	vbox = dialog->protocols;
 
@@ -949,8 +945,6 @@ finch_accounts_init(void)
 }
 
 void
-finch_accounts_uninit(void)
-{
-	if (accounts.window)
-		gnt_widget_destroy(accounts.window);
+finch_accounts_uninit(void) {
+	g_clear_pointer(&accounts.window, gnt_widget_destroy);
 }

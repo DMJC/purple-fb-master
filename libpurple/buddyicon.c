@@ -1138,9 +1138,7 @@ purple_buddy_icons_uninit(void)
 	g_hash_table_destroy(icon_data_cache);
 	g_hash_table_destroy(icon_file_cache);
 	g_hash_table_destroy(pointer_icon_cache);
-	g_free(cache_dir);
-
-	cache_dir = NULL;
+	g_clear_pointer(&cache_dir, g_free);
 }
 
 GType

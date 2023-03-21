@@ -590,8 +590,7 @@ ggp_message_format_to_gg(PurpleConversation *conv, const gchar *text)
 				font_new->color = color;
 			}
 
-			if (styles)
-				g_hash_table_destroy(styles);
+			g_clear_pointer(&styles, g_hash_table_destroy);
 			g_hash_table_destroy(attribs);
 		}
 		else if ((tag == GGP_HTML_TAG_FONT || tag == GGP_HTML_TAG_SPAN

@@ -109,8 +109,7 @@ purple_request_datasheet_free(PurpleRequestDatasheet *sheet)
 	g_list_free_full(sheet->record_list,
 		(GDestroyNotify)purple_request_datasheet_record_free);
 
-	if (sheet->marked_for_rem != NULL)
-		g_hash_table_destroy(sheet->marked_for_rem);
+	g_clear_pointer(&sheet->marked_for_rem, g_hash_table_destroy);
 
 	g_free(sheet);
 }
@@ -381,9 +380,8 @@ purple_request_datasheet_record_remove_all(PurpleRequestDatasheet *sheet)
 {
 	g_return_if_fail(sheet != NULL);
 
-	g_list_free_full(sheet->record_list,
-		(GDestroyNotify)purple_request_datasheet_record_free);
-	sheet->record_list = NULL;
+	g_clear_list(&sheet->record_list,
+	             (GDestroyNotify)purple_request_datasheet_record_free);
 	g_hash_table_remove_all(sheet->record_li_by_key);
 
 	purple_signal_emit(sheet, "record-changed", sheet, NULL);
@@ -394,8 +392,7 @@ purple_request_datasheet_record_mark_all_for_rem(PurpleRequestDatasheet *sheet)
 {
 	const GList *it;
 
-	if (sheet->marked_for_rem != NULL)
-		g_hash_table_destroy(sheet->marked_for_rem);
+	g_clear_pointer(&sheet->marked_for_rem, g_hash_table_destroy);
 	sheet->marked_for_rem = g_hash_table_new(g_direct_hash, g_direct_equal);
 
 	it = purple_request_datasheet_get_records(sheet);

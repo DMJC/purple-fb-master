@@ -944,8 +944,7 @@ pidgin_xfers_init(void)
 void
 pidgin_xfers_uninit(void)
 {
-	if (xfer_dialog != NULL)
-		pidgin_xfer_dialog_destroy(xfer_dialog);
+	g_clear_pointer(&xfer_dialog, pidgin_xfer_dialog_destroy);
 }
 
 void

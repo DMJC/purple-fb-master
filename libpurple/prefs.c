@@ -923,8 +923,7 @@ purple_prefs_set_string_list(const char *name, GList *value)
 			return;
 		}
 
-		g_list_free_full(pref->value.stringlist, g_free);
-		pref->value.stringlist = NULL;
+		g_clear_list(&pref->value.stringlist, g_free);
 
 		for(tmp = value; tmp; tmp = tmp->next) {
 			if(tmp->data != NULL && !g_utf8_validate(tmp->data, -1, NULL)) {
@@ -1489,6 +1488,5 @@ purple_prefs_uninit(void)
 
 	prefs_loaded = FALSE;
 	purple_prefs_destroy();
-	g_hash_table_destroy(prefs_hash);
-	prefs_hash = NULL;
+	g_clear_pointer(&prefs_hash, g_hash_table_destroy);
 }

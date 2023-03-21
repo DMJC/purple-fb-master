@@ -240,7 +240,7 @@ void irc_register_commands(void)
 
 void irc_unregister_commands(void)
 {
-	g_slist_free_full(cmds, (GDestroyNotify)(gpointer)purple_cmd_unregister);
+	g_clear_slist(&cmds, (GDestroyNotify)(gpointer)purple_cmd_unregister);
 }
 
 static char *irc_send_convert(struct irc_conn *irc, const char *string)

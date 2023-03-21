@@ -1446,8 +1446,8 @@ jabber_time_parse(G_GNUC_UNUSED JabberStream *js, const char *from,
 
 void jabber_buddy_remove_all_pending_buddy_info_requests(JabberStream *js)
 {
-	g_slist_free_full(js->pending_buddy_info_requests, (GDestroyNotify)jabber_buddy_info_destroy);
-	js->pending_buddy_info_requests = NULL;
+	g_clear_slist(&js->pending_buddy_info_requests,
+	              (GDestroyNotify)jabber_buddy_info_destroy);
 }
 
 static gboolean jabber_buddy_get_info_timeout(gpointer data)

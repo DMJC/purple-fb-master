@@ -457,8 +457,7 @@ struct chat_invite_data {
 
 static void chat_invite_data_free(struct chat_invite_data *cid)
 {
-	if (cid->components)
-		g_hash_table_destroy(cid->components);
+	g_clear_pointer(&cid->components, g_hash_table_destroy);
 	g_free(cid);
 }
 

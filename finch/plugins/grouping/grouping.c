@@ -250,8 +250,7 @@ nested_group_init(void)
 static gboolean
 nested_group_uninit(void)
 {
-	g_hash_table_destroy(groups);
-	groups = NULL;
+	g_clear_pointer(&groups, g_hash_table_destroy);
 	return TRUE;
 }
 

@@ -1025,12 +1025,9 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 
 	jabber_parser_free(js);
 
-	if(js->iq_callbacks)
-		g_hash_table_destroy(js->iq_callbacks);
-	if(js->buddies)
-		g_hash_table_destroy(js->buddies);
-	if(js->chats)
-		g_hash_table_destroy(js->chats);
+	g_clear_pointer(&js->iq_callbacks, g_hash_table_destroy);
+	g_clear_pointer(&js->buddies, g_hash_table_destroy);
+	g_clear_pointer(&js->chats, g_hash_table_destroy);
 
 	g_list_free_full(js->chat_servers, g_free);
 
@@ -1042,8 +1039,7 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 	}
 
 	g_free(js->stream_id);
-	if(js->user)
-		jabber_id_free(js->user);
+	g_clear_pointer(&js->user, jabber_id_free);
 	g_free(js->initial_avatar_hash);
 	g_free(js->avatar_hash);
 	g_free(js->caps_hash);
@@ -2620,9 +2616,7 @@ jabber_get_media_caps(G_GNUC_UNUSED PurpleProtocolMedia *media,
 		total |= caps;
 	}
 
-	if (specific) {
-		g_list_free(specific);
-	}
+	g_clear_list(&specific, NULL);
 
 	return total;
 }
@@ -2980,11 +2974,10 @@ jabber_do_uninit(void)
 			G_CALLBACK(jabber_caps_broadcast_change), NULL);
 
 	jabber_auth_uninit();
-	g_list_free_full(jabber_features, (GDestroyNotify)jabber_feature_free);
-	g_list_free_full(jabber_identities, (GDestroyNotify)jabber_identity_free);
+	g_clear_list(&jabber_features, (GDestroyNotify)jabber_feature_free);
+	g_clear_list(&jabber_identities, (GDestroyNotify)jabber_identity_free);
 
-	g_hash_table_destroy(jabber_cmds);
-	jabber_cmds = NULL;
+	g_clear_pointer(&jabber_cmds, g_hash_table_destroy);
 }
 
 static void jabber_init_protocol(PurpleProtocol *protocol)

@@ -711,8 +711,7 @@ static gboolean
 xmpp_disco_unload(GPluginPlugin *plugin, G_GNUC_UNUSED gboolean unload,
                   G_GNUC_UNUSED GError **error)
 {
-	g_hash_table_destroy(iq_callbacks);
-	iq_callbacks = NULL;
+	g_clear_pointer(&iq_callbacks, g_hash_table_destroy);
 
 	purple_signals_disconnect_by_handle(plugin);
 	pidgin_disco_dialogs_destroy_all();

@@ -73,8 +73,7 @@ jabber_adhoc_got_buddy_list(JabberStream *js, const char *from, PurpleXmlNode *q
 		return;
 
 	/* since the list we just received is complete, wipe the old one */
-	g_list_free_full(jbr->commands, (GDestroyNotify)jabber_adhoc_commands_free);
-	jbr->commands = NULL;
+	g_clear_list(&jbr->commands, (GDestroyNotify)jabber_adhoc_commands_free);
 
 	for(item = query->child; item; item = item->next) {
 		JabberAdHocCommands *cmd;
@@ -248,8 +247,7 @@ jabber_adhoc_got_server_list(JabberStream *js, G_GNUC_UNUSED const char *from,
 		return;
 
 	/* clean current list (just in case there is one) */
-	g_list_free_full(js->commands, (GDestroyNotify)jabber_adhoc_commands_free);
-	js->commands = NULL;
+	g_clear_list(&js->commands, (GDestroyNotify)jabber_adhoc_commands_free);
 
 	/* re-fill list */
 	for(item = query->child; item; item = item->next) {

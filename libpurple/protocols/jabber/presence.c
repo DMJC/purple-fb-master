@@ -1244,6 +1244,5 @@ void jabber_presence_init(void)
 
 void jabber_presence_uninit(void)
 {
-	g_hash_table_destroy(presence_handlers);
-	presence_handlers = NULL;
+	g_clear_pointer(&presence_handlers , g_hash_table_destroy);
 }

@@ -201,10 +201,8 @@ purple_media_manager_finalize (GObject *media)
 	g_list_free_full(priv->private_medias, g_object_unref);
 	g_list_free_full(priv->elements, g_object_unref);
 	g_clear_pointer(&priv->video_caps, gst_caps_unref);
-	if (priv->appdata_info) {
-		g_list_free_full(priv->appdata_info,
-		                 (GDestroyNotify)free_appdata_info_locked);
-	}
+	g_clear_list(&priv->appdata_info,
+	             (GDestroyNotify)free_appdata_info_locked);
 	g_mutex_clear (&priv->appdata_mutex);
 	if (priv->device_monitor) {
 		gst_device_monitor_stop(priv->device_monitor);

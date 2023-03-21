@@ -424,9 +424,6 @@ finch_notify_init(void)
 }
 
 void
-finch_notify_uninit(void)
-{
-	g_hash_table_destroy(userinfo);
+finch_notify_uninit(void) {
+	g_clear_pointer(&userinfo, g_hash_table_destroy);
 }
-
-

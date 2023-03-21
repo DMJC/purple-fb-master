@@ -229,8 +229,7 @@ static Prefs credentials[] =
 static void
 free_strings(void)
 {
-	g_list_free_full(pref_request.freestrings, g_free);
-	pref_request.freestrings = NULL;
+	g_clear_list(&pref_request.freestrings, g_free);
 	pref_request.showing = FALSE;
 }
 

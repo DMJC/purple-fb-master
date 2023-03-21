@@ -509,9 +509,6 @@ jabber_ibb_init(void)
 void
 jabber_ibb_uninit(void)
 {
-	g_hash_table_destroy(jabber_ibb_sessions);
-	g_list_free(open_handlers);
-	jabber_ibb_sessions = NULL;
-	open_handlers = NULL;
+	g_clear_pointer(&jabber_ibb_sessions, g_hash_table_destroy);
+	g_clear_list(&open_handlers, NULL);
 }
-

@@ -322,8 +322,7 @@ rebuild_chat_entries(PidginChatData *data, const char *default_chat_name)
 		child = gtk_widget_get_first_child(GTK_WIDGET(data->rq_data.vbox));
 	}
 
-	g_list_free(data->entries);
-	data->entries = NULL;
+	g_clear_list(&data->entries, NULL);
 
 	if(!PURPLE_IS_PROTOCOL_CHAT(protocol)) {
 		return;

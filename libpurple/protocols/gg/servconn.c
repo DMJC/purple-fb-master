@@ -65,7 +65,7 @@ void ggp_servconn_setup(PurpleAccountOption *server_option)
 
 void ggp_servconn_cleanup(void)
 {
-	g_list_free_full(global_data.server_history, &g_free);
+	g_clear_list(&global_data.server_history, g_free);
 }
 
 void ggp_servconn_add_server(const gchar *server)

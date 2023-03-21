@@ -1268,11 +1268,9 @@ purple_savedstatuses_uninit(void)
 		sync_statuses();
 	}
 
-	g_list_free_full(saved_statuses, (GDestroyNotify)free_saved_status);
-	saved_statuses = NULL;
+	g_clear_list(&saved_statuses, (GDestroyNotify)free_saved_status);
 
-	g_hash_table_destroy(creation_times);
-	creation_times = NULL;
+	g_clear_pointer(&creation_times, g_hash_table_destroy);
 
 	g_signal_handlers_disconnect_by_func(manager,
 	                                     G_CALLBACK(purple_savedstatus_unset_all_substatuses),

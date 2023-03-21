@@ -541,8 +541,7 @@ void purple_got_protocol_handler_uri(const char *uri)
 	purple_signal_emit_return_1(purple_get_core(), "uri-handler", proto, cmd, params);
 
 	g_free(cmd);
-	if (params)
-		g_hash_table_destroy(params);
+	g_clear_pointer(&params, g_hash_table_destroy);
 }
 
 const char *

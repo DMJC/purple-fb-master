@@ -256,8 +256,7 @@ purple_idle_unset_all_accounts_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 	/* freeing the list here will cause segfaults if the user idles an account
 	 * after the list is freed */
 	g_list_foreach(idled_accts, (GFunc)set_idle_time, GINT_TO_POINTER(0));
-	g_list_free(idled_accts);
-	idled_accts = NULL;
+	g_clear_list(&idled_accts, NULL);
 }
 
 /******************************************************************************

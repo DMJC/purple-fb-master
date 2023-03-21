@@ -552,8 +552,7 @@ tiny_url_unload(GPluginPlugin *plugin, G_GNUC_UNUSED gboolean shutdown,
 	soup_session_abort(session);
 	g_clear_object(&session);
 
-	g_hash_table_destroy(tinyurl_cache);
-	tinyurl_cache = NULL;
+	g_clear_pointer(&tinyurl_cache, g_hash_table_destroy);
 
 	return TRUE;
 }

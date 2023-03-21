@@ -1844,13 +1844,11 @@ reset_blist_window(G_GNUC_UNUSED GntWidget *window,
 	if (ggblist->typing)
 		g_source_remove(ggblist->typing);
 	remove_peripherals(ggblist);
-	if (ggblist->tagged)
-		g_list_free(ggblist->tagged);
+	g_clear_list(&ggblist->tagged, NULL);
 
 	if (ggblist->new_group_timeout)
 		g_source_remove(ggblist->new_group_timeout);
-	if (ggblist->new_group)
-		g_list_free(ggblist->new_group);
+	g_clear_list(&ggblist->new_group, NULL);
 
 	ggblist = NULL;
 }

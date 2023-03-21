@@ -1672,7 +1672,7 @@ fb_cmds_unregister_free(gpointer data)
 static void
 fb_cmds_unregister(void)
 {
-	g_slist_free_full(fb_cmds, fb_cmds_unregister_free);
+	g_clear_slist(&fb_cmds, fb_cmds_unregister_free);
 }
 
 static GPluginPluginInfo *

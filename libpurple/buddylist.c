@@ -2179,16 +2179,12 @@ purple_blist_uninit(void)
 
 	purple_debug_info("buddylist", "Destroying");
 
-	g_hash_table_destroy(buddies_cache);
-	g_hash_table_destroy(groups_cache);
-
-	buddies_cache = NULL;
-	groups_cache = NULL;
+	g_clear_pointer(&buddies_cache, g_hash_table_destroy);
+	g_clear_pointer(&groups_cache, g_hash_table_destroy);
 
 	g_clear_object(&purplebuddylist);
 
-	g_free(localized_default_group_name);
-	localized_default_group_name = NULL;
+	g_clear_pointer(&localized_default_group_name, g_free);
 
 	purple_signals_disconnect_by_handle(purple_blist_get_handle());
 	purple_signals_unregister_by_instance(purple_blist_get_handle());

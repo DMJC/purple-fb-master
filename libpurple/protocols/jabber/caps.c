@@ -207,8 +207,7 @@ void jabber_caps_uninit(void)
 		save_timer = 0;
 		do_jabber_caps_store(NULL);
 	}
-	g_hash_table_destroy(capstable);
-	capstable = NULL;
+	g_clear_pointer(&capstable, g_hash_table_destroy);
 }
 
 typedef struct {

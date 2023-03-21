@@ -468,8 +468,7 @@ jabber_data_uninit(void)
 {
 	if (purple_debug_is_verbose())
 		purple_debug_info("jabber", "destroying hash tables for data objects");
-	g_hash_table_destroy(local_data_by_alt);
-	g_hash_table_destroy(local_data_by_cid);
-	g_hash_table_destroy(remote_data_by_cid);
-	local_data_by_alt = local_data_by_cid = remote_data_by_cid = NULL;
+	g_clear_pointer(&local_data_by_alt, g_hash_table_destroy);
+	g_clear_pointer(&local_data_by_cid, g_hash_table_destroy);
+	g_clear_pointer(&remote_data_by_cid, g_hash_table_destroy);
 }

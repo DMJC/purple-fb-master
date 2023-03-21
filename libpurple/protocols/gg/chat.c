@@ -197,8 +197,7 @@ void ggp_chat_got_event(PurpleConnection *gc, const struct gg_event *ev)
 			ggp_chat_join_id(gc, *id_p);
 			it = g_slist_next(it);
 		}
-		g_slist_free_full(sdata->pending_joins, g_free);
-		sdata->pending_joins = NULL;
+		g_clear_slist(&sdata->pending_joins, g_free);
 	} else if (ev->type == GG_EVENT_CHAT_INFO_UPDATE) {
 		const struct gg_event_chat_info_update *eciu =
 			&ev->event.chat_info_update;

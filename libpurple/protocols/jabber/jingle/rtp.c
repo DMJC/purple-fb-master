@@ -821,8 +821,7 @@ jingle_rtp_get_media(JingleSession *session)
 			break;
 		}
 	}
-	if (iter != NULL)
-		g_list_free(iter);
+	g_clear_list(&iter, NULL);
 
 	return media;
 }

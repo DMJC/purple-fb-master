@@ -261,8 +261,7 @@ purple_chat_conversation_finalize(GObject *obj) {
 
 	g_clear_pointer(&priv->users, g_hash_table_destroy);
 
-	g_list_free_full(priv->ignored, g_free);
-	priv->ignored = NULL;
+	g_clear_list(&priv->ignored, g_free);
 
 	g_clear_pointer(&priv->who, g_free);
 	g_clear_pointer(&priv->topic, g_free);

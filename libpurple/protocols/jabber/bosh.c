@@ -84,8 +84,7 @@ jabber_bosh_init(void)
 
 void jabber_bosh_uninit(void)
 {
-	g_free(jabber_bosh_useragent);
-	jabber_bosh_useragent = NULL;
+	g_clear_pointer(&jabber_bosh_useragent, g_free);
 }
 
 PurpleJabberBOSHConnection*

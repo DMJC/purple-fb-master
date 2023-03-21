@@ -22,13 +22,9 @@
 
 
 void
-_gstroke_init (struct gstroke_metrics *metrics)
-{
-	if (metrics->pointList != NULL) {
-		g_slist_free_full(metrics->pointList, g_free);
-		metrics->pointList = NULL;
-		metrics->point_count = 0;
-	}
+_gstroke_init(struct gstroke_metrics *metrics) {
+	g_clear_slist(&metrics->pointList, g_free);
+	metrics->point_count = 0;
 }
 
 /* figure out which bin the point falls in */

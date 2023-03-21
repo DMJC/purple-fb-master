@@ -219,13 +219,10 @@ _purple_image_store_init(void)
 void
 _purple_image_store_uninit(void)
 {
-	g_slist_free_full(perm_images, g_object_unref);
-	perm_images = NULL;
+	g_clear_slist(&perm_images, g_object_unref);
 
 	g_hash_table_foreach(temp_images, cancel_temporary, NULL);
-	g_hash_table_destroy(temp_images);
-	temp_images = NULL;
+	g_clear_pointer(&temp_images, g_hash_table_destroy);
 
-	g_hash_table_destroy(id_to_image);
-	id_to_image = NULL;
+	g_clear_pointer(&id_to_image, g_hash_table_destroy);
 }

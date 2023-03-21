@@ -148,16 +148,11 @@ static void ggp_roster_content_free(ggp_roster_content *content)
 {
 	if (content == NULL)
 		return;
-	if (content->xml)
-		purple_xmlnode_free(content->xml);
-	if (content->contact_nodes)
-		g_hash_table_destroy(content->contact_nodes);
-	if (content->group_nodes)
-		g_hash_table_destroy(content->group_nodes);
-	if (content->group_ids)
-		g_hash_table_destroy(content->group_ids);
-	if (content->group_names)
-		g_hash_table_destroy(content->group_names);
+	g_clear_pointer(&content->xml, purple_xmlnode_free);
+	g_clear_pointer(&content->contact_nodes, g_hash_table_destroy);
+	g_clear_pointer(&content->group_nodes, g_hash_table_destroy);
+	g_clear_pointer(&content->group_ids, g_hash_table_destroy);
+	g_clear_pointer(&content->group_names, g_hash_table_destroy);
 	g_free(content->bots_group_id);
 	g_free(content);
 }
@@ -1062,8 +1057,7 @@ static void ggp_roster_reply_ack(PurpleConnection *gc, uint32_t version)
 			ggp_roster_set_synchronized(gc, buddy, FALSE);
 	}
 
-	g_list_free_full(rdata->sent_updates, ggp_roster_change_free);
-	rdata->sent_updates = NULL;
+	g_clear_list(&rdata->sent_updates, ggp_roster_change_free);
 
 	/* bump roster version or update it, if needed */
 	g_return_if_fail(content != NULL);

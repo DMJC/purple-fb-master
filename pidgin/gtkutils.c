@@ -657,8 +657,7 @@ gboolean pidgin_auto_parent_window(GtkWidget *widget)
 			break;
 		}
 	}
-	if (windows)
-		g_list_free(windows);
+	g_clear_list(&windows, NULL);
 	if (parent) {
 		gtk_window_set_transient_for(GTK_WINDOW(widget), parent);
 		return TRUE;

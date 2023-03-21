@@ -392,7 +392,6 @@ void purple_cmds_uninit(void)
 {
 	purple_signals_unregister_by_instance(purple_cmds_get_handle());
 
-	g_list_free_full(cmds, (GDestroyNotify)purple_cmd_free);
-	cmds = NULL;
+	g_clear_list(&cmds, (GDestroyNotify)purple_cmd_free);
 }
 

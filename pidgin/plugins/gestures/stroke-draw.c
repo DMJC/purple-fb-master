@@ -319,9 +319,7 @@ gstroke_cleanup (GtkWidget *widget)
 	struct gstroke_metrics *metrics;
 	GHashTable *hash_table = (GHashTable *)g_object_steal_data(G_OBJECT(widget),
 	                                                           GSTROKE_SIGNALS);
-	if (hash_table) {
-		g_hash_table_destroy(hash_table);
-	}
+	g_clear_pointer(&hash_table, g_hash_table_destroy);
 
 	metrics = (struct gstroke_metrics *)g_object_steal_data(G_OBJECT(widget),
 	                                                        GSTROKE_METRICS);

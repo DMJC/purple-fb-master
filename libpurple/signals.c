@@ -475,8 +475,7 @@ purple_signals_uninit(void)
 {
 	g_return_if_fail(instance_table != NULL);
 
-	g_hash_table_destroy(instance_table);
-	instance_table = NULL;
+	g_clear_pointer(&instance_table, g_hash_table_destroy);
 }
 
 /**************************************************************************

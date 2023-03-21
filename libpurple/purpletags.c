@@ -40,10 +40,7 @@ static void
 purple_tags_dispose(GObject *obj) {
 	PurpleTags *tags = PURPLE_TAGS(obj);
 
-	if(tags->tags != NULL) {
-		g_list_free_full(tags->tags, g_free);
-		tags->tags = NULL;
-	}
+	g_clear_list(&tags->tags, g_free);
 
 	G_OBJECT_CLASS(purple_tags_parent_class)->dispose(obj);
 }

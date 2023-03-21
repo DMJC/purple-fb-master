@@ -553,6 +553,5 @@ void jabber_auth_init(void)
 
 void jabber_auth_uninit(void)
 {
-	g_slist_free(auth_mechs);
-	auth_mechs = NULL;
+	g_clear_slist(&auth_mechs, NULL);
 }

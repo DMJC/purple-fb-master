@@ -2290,6 +2290,5 @@ void
 pidgin_request_uninit(void)
 {
 	purple_signals_disconnect_by_handle(pidgin_request_get_handle());
-	g_hash_table_destroy(datasheet_stock);
-	datasheet_stock = NULL;
+	g_clear_pointer(&datasheet_stock, g_hash_table_destroy);
 }

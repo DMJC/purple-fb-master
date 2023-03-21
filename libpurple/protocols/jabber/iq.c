@@ -557,7 +557,6 @@ void jabber_iq_init(void)
 
 void jabber_iq_uninit(void)
 {
-	g_hash_table_destroy(iq_handlers);
-	g_hash_table_destroy(signal_iq_handlers);
-	iq_handlers = signal_iq_handlers = NULL;
+	g_clear_pointer(&iq_handlers, g_hash_table_destroy);
+	g_clear_pointer(&signal_iq_handlers, g_hash_table_destroy);
 }
