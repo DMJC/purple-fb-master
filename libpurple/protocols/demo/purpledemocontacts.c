@@ -26,58 +26,62 @@
  * Helpers
  *****************************************************************************/
 static void
-purple_demo_protocol_load_status(PurpleAccount *account,
-                                 G_GNUC_UNUSED PurpleGroup *group,
-                                 G_GNUC_UNUSED PurpleMetaContact *contact,
-                                 PurpleBuddy *buddy, JsonObject *buddy_object)
+purple_demo_protocol_load_status(PurpleBuddy *buddy, JsonObject *buddy_object)
 {
+	PurplePresence *presence = NULL;
 	JsonObject *status_object = NULL;
-	const gchar *id = NULL;
 
 	if(!json_object_has_member(buddy_object, "status")) {
 		return;
 	}
 
+	presence = purple_buddy_get_presence(buddy);
+
 	status_object = json_object_get_object_member(buddy_object, "status");
 
-	if(json_object_has_member(status_object, "id")) {
-		id = json_object_get_string_member(status_object, "id");
+	if(json_object_has_member(status_object, "primitive")) {
+		PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
+		const char *name = NULL;
+
+		name = json_object_get_string_member(status_object, "primitive");
+		if(!purple_strempty(name)) {
+			GEnumClass *klass = NULL;
+			GEnumValue *value = NULL;
+
+			klass = g_type_class_ref(PURPLE_TYPE_PRESENCE_PRIMITIVE);
+			value = g_enum_get_value_by_nick(klass, name);
+
+			if(value != NULL) {
+				primitive = value->value;
+			}
+
+			g_type_class_unref(klass);
+		}
+
+		purple_presence_set_primitive(presence, primitive);
 	}
 
-	if(id != NULL) {
-		if(json_object_has_member(status_object, "message")) {
-			const gchar *message = NULL;
+	if(json_object_has_member(status_object, "message")) {
+		const gchar *message = NULL;
 
-			message = json_object_get_string_member(status_object, "message");
+		message = json_object_get_string_member(status_object, "message");
 
-			purple_protocol_got_user_status(account,
-			                                purple_buddy_get_name(buddy),
-			                                id,
-			                                "message", message,
-			                                NULL);
-		} else {
-			purple_protocol_got_user_status(account,
-			                                purple_buddy_get_name(buddy),
-			                                id,
-			                                NULL);
-		}
+		purple_presence_set_message(presence, message);
+	}
 
-		if(json_object_has_member(status_object, "idle")) {
-			PurplePresence *presence = NULL;
-			GDateTime *now = NULL;
-			GDateTime *idle_since = NULL;
-			gint idle_minutes = 0;
+	if(json_object_has_member(status_object, "idle")) {
+		GDateTime *now = NULL;
+		GDateTime *idle_since = NULL;
+		gint idle_minutes = 0;
 
-			idle_minutes = json_object_get_int_member(status_object, "idle");
-			now = g_date_time_new_now_local();
-			idle_since = g_date_time_add_minutes(now, -1 * idle_minutes);
+		idle_minutes = json_object_get_int_member(status_object, "idle");
+		now = g_date_time_new_now_local();
+		idle_since = g_date_time_add_minutes(now, -1 * idle_minutes);
 
-			presence = purple_buddy_get_presence(buddy);
-			purple_presence_set_idle(presence, TRUE, idle_since);
+		purple_presence_set_idle(presence, TRUE, idle_since);
 
-			g_date_time_unref(idle_since);
-			g_date_time_unref(now);
-		}
+		g_date_time_unref(idle_since);
+		g_date_time_unref(now);
 	}
 }
 
@@ -132,8 +136,7 @@ purple_demo_protocol_load_buddies(PurpleAccount *account, PurpleGroup *group,
 			}
 
 			purple_demo_protocol_load_icon(account, name);
-			purple_demo_protocol_load_status(account, group, contact, buddy,
-			                                 buddy_object);
+			purple_demo_protocol_load_status(buddy, buddy_object);
 			if (purple_strequal(name, "Echo")) {
 				purple_protocol_got_media_caps(account, name);
 			}

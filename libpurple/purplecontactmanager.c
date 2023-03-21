@@ -620,6 +620,18 @@ purple_contact_manager_add_buddy(PurpleContactManager *manager,
 	g_object_bind_property(buddy_presence, "active-status", contact_presence,
 	                       "active-status",
 	                       G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+	g_object_bind_property(buddy_presence, "message", contact_presence,
+	                       "message",
+	                       G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+	g_object_bind_property(buddy_presence, "emoji", contact_presence,
+	                       "emoji",
+	                       G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+	g_object_bind_property(buddy_presence, "mobile", contact_presence,
+	                       "mobile",
+	                       G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+	g_object_bind_property(buddy_presence, "primitive", contact_presence,
+	                       "primitive",
+	                       G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
 	g_object_bind_property_full(buddy, "icon", contact, "avatar",
 	                            G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL,

@@ -4,7 +4,7 @@
 		"buddies": [{
 			"name": "Gary",
 			"status": {
-				"id": "available",
+				"primitive": "available",
 				"message": "💤 Sleeping... 😴",
 				"idle": 1337
 			}
@@ -15,7 +15,7 @@
 			"name": "John",
 			"alias": "Rekkanoryo",
 			"status": {
-				"id": "away"
+				"primitive": "away"
 			}
 		}]
 	}],
@@ -23,7 +23,7 @@
 		"buddies": [{
 			"name": "Elliott",
 			"status": {
-				"id": "away",
+				"primitive": "away",
 				"message": "Coding..."
 			}
 		}]
@@ -31,7 +31,7 @@
 		"buddies": [{
 			"name": "Richard",
 			"status": {
-				"id": "available"
+				"primitive": "available"
 			}
 		}]
 	}],
@@ -39,7 +39,7 @@
 		"buddies": [{
 			"name": "Eion",
 			"status": {
-				"id": "available",
+				"primitive": "available",
 				"message": "Writing crazy patches!"
 			}
 		}]
@@ -47,7 +47,7 @@
 		"buddies": [{
 			"name": "Markus",
 			"status": {
-				"id": "extended_away",
+				"primitive": "extended_away",
 				"message": "Running all the things in valgrind..."
 			}
 		}]
@@ -56,7 +56,7 @@
 		"buddies": [{
 			"name": "Echo",
 			"status": {
-				"id": "available",
+				"primitive": "available",
 				"message": "Cursed to speak the last words spoken to me"
 			}
 		}]

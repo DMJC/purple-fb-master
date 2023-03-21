@@ -162,7 +162,7 @@ pidgin_contact_list_message_visible_cb(G_GNUC_UNUSED GtkListItem *item,
 	/* If we have a message, return TRUE because this is bound to the label's
 	 * visibility.
 	 */
-	return (message != NULL);
+	return !purple_strempty(message);
 }
 
 /******************************************************************************
