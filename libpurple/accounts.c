@@ -679,10 +679,8 @@ void
 purple_accounts_uninit(void)
 {
 	gpointer handle = purple_accounts_get_handle();
-	if (save_timer != 0)
-	{
-		g_source_remove(save_timer);
-		save_timer = 0;
+	if(save_timer != 0) {
+		g_clear_handle_id(&save_timer, g_source_remove);
 		sync_accounts();
 	}
 

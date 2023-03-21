@@ -35,10 +35,7 @@ jabber_keepalive_pong_cb(JabberStream *js, G_GNUC_UNUSED const char *from,
                          G_GNUC_UNUSED PurpleXmlNode *packet,
                          G_GNUC_UNUSED gpointer data)
 {
-	if (js->keepalive_timeout != 0) {
-		g_source_remove(js->keepalive_timeout);
-		js->keepalive_timeout = 0;
-	}
+	g_clear_handle_id(&js->keepalive_timeout, g_source_remove);
 }
 
 void

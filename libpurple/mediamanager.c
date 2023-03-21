@@ -479,15 +479,8 @@ free_appdata_info_locked (PurpleMediaAppDataInfo *info)
 	info->readable_cb_token = 0;
 	info->writable_cb_token = 0;
 
-	if (info->readable_timer_id) {
-		g_source_remove (info->readable_timer_id);
-		info->readable_timer_id = 0;
-	}
-
-	if (info->writable_timer_id) {
-		g_source_remove (info->writable_timer_id);
-		info->writable_timer_id = 0;
-	}
+	g_clear_handle_id(&info->readable_timer_id, g_source_remove);
+	g_clear_handle_id(&info->writable_timer_id, g_source_remove);
 
 	g_clear_pointer(&info->current_sample, gst_sample_unref);
 
@@ -1582,15 +1575,8 @@ purple_media_manager_set_application_data_callbacks(PurpleMediaManager *manager,
 		info->notify (info->user_data);
 	}
 
-	if (info->readable_cb_token) {
-		g_source_remove (info->readable_timer_id);
-		info->readable_cb_token = 0;
-	}
-
-	if (info->writable_cb_token) {
-		g_source_remove (info->writable_timer_id);
-		info->writable_cb_token = 0;
-	}
+	g_clear_handle_id(&info->readable_cb_token, g_source_remove);
+	g_clear_handle_id(&info->writable_cb_token, g_source_remove);
 
 	if (callbacks) {
 		info->callbacks = *callbacks;

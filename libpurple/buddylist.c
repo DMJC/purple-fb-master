@@ -2171,9 +2171,8 @@ purple_blist_uninit(void)
 	if (purplebuddylist == NULL)
 		return;
 
-	if (save_timer != 0) {
-		g_source_remove(save_timer);
-		save_timer = 0;
+	if(save_timer != 0) {
+		g_clear_handle_id(&save_timer, g_source_remove);
 		purple_blist_sync();
 	}
 

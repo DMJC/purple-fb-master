@@ -239,8 +239,7 @@ void ggp_roster_cleanup(PurpleConnection *gc)
 {
 	ggp_roster_session_data *rdata = ggp_roster_get_rdata(gc);
 
-	if (rdata->timer)
-		g_source_remove(rdata->timer);
+	g_clear_handle_id(&rdata->timer, g_source_remove);
 	ggp_roster_content_free(rdata->content);
 	g_list_free_full(rdata->sent_updates, ggp_roster_change_free);
 	g_list_free_full(rdata->pending_updates, ggp_roster_change_free);

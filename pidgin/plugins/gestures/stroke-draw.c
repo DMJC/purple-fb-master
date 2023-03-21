@@ -96,10 +96,7 @@ gstroke_cancel(GtkWidget *widget, GdkEvent *event)
 {
 	last_mouse_position.invalid = TRUE;
 
-	if (timer_id > 0)
-	    g_source_remove (timer_id);
-
-	timer_id = 0;
+	g_clear_handle_id(&timer_id, g_source_remove);
 
 	if (event != NULL) {
 		gdk_seat_ungrab(gdk_event_get_seat(event));
@@ -158,9 +155,8 @@ process_event(GtkWidget *widget, GdkEvent *event, gpointer data)
 
       last_mouse_position.invalid = TRUE;
       original_widget = NULL;
-      g_source_remove (timer_id);
+      g_clear_handle_id(&timer_id, g_source_remove);
 	  gdk_seat_ungrab(gdk_event_get_seat(event));
-      timer_id = 0;
 
 			{
 				GtkWidget *history = data;

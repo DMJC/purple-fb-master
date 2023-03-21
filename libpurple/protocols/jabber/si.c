@@ -185,10 +185,7 @@ jabber_si_bytestreams_connect_cb(GObject *source, GAsyncResult *result,
 static void
 jabber_si_bytestreams_ibb_timeout_remove(JabberSIXfer *jsx)
 {
-	if (jsx->ibb_timeout_handle) {
-		g_source_remove(jsx->ibb_timeout_handle);
-		jsx->ibb_timeout_handle = 0;
-	}
+	g_clear_handle_id(&jsx->ibb_timeout_handle, g_source_remove);
 }
 
 static gboolean
@@ -1847,13 +1844,8 @@ jabber_si_xfer_finalize(GObject *obj) {
 		jabber_iq_remove_callback_by_id(js, jsx->iq_id);
 	}
 
-	if (jsx->connect_timeout > 0) {
-		g_source_remove(jsx->connect_timeout);
-	}
-
-	if (jsx->ibb_timeout_handle > 0) {
-		g_source_remove(jsx->ibb_timeout_handle);
-	}
+	g_clear_handle_id(&jsx->connect_timeout, g_source_remove);
+	g_clear_handle_id(&jsx->ibb_timeout_handle, g_source_remove);
 
 	g_list_free_full(jsx->streamhosts, (GDestroyNotify)jabber_bytestreams_streamhost_free);
 

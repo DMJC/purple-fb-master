@@ -292,8 +292,8 @@ fb_data_clear_timeout(FbData *fata, const gchar *name, gboolean remove)
 	ptr = g_hash_table_lookup(fata->evs, name);
 	id = GPOINTER_TO_UINT(ptr);
 
-	if ((id > 0) && remove) {
-		g_source_remove(id);
+	if(remove) {
+		g_clear_handle_id(&id, g_source_remove);
 	}
 
 	g_hash_table_remove(fata->evs, name);

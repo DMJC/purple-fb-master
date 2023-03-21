@@ -274,10 +274,7 @@ purple_im_conversation_start_typing_timeout(PurpleIMConversation *im,
 {
 	g_return_if_fail(PURPLE_IS_IM_CONVERSATION(im));
 
-	if(im->typing_timeout > 0) {
-		purple_im_conversation_stop_typing_timeout(im);
-	}
-
+	purple_im_conversation_stop_typing_timeout(im);
 	im->typing_timeout =
 		g_timeout_add_seconds(timeout, purple_im_conversation_reset_typing_cb,
 		                      im);
@@ -287,12 +284,7 @@ void
 purple_im_conversation_stop_typing_timeout(PurpleIMConversation *im) {
 	g_return_if_fail(PURPLE_IS_IM_CONVERSATION(im));
 
-	if(im->typing_timeout == 0) {
-		return;
-	}
-
-	g_source_remove(im->typing_timeout);
-	im->typing_timeout = 0;
+	g_clear_handle_id(&im->typing_timeout, g_source_remove);
 }
 
 guint
@@ -334,12 +326,7 @@ void
 purple_im_conversation_stop_send_typed_timeout(PurpleIMConversation *im) {
 	g_return_if_fail(PURPLE_IS_IM_CONVERSATION(im));
 
-	if(im->send_typed_timeout == 0) {
-		return;
-	}
-
-	g_source_remove(im->send_typed_timeout);
-	im->send_typed_timeout = 0;
+	g_clear_handle_id(&im->typing_timeout, g_source_remove);
 }
 
 guint

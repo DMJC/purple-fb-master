@@ -50,8 +50,7 @@ free_auto_recon(gpointer data)
 {
 	FinchAutoRecon *info = data;
 
-	if (info->timeout != 0)
-		g_source_remove(info->timeout);
+	g_clear_handle_id(&info->timeout, g_source_remove);
 
 	g_free(info);
 }
@@ -99,8 +98,7 @@ finch_connection_report_disconnect(PurpleConnection *gc,
 			info->delay = g_random_int_range(INITIAL_RECON_DELAY_MIN, INITIAL_RECON_DELAY_MAX);
 		} else {
 			info->delay = MIN(2 * info->delay, MAX_RECON_DELAY);
-			if (info->timeout != 0)
-				g_source_remove(info->timeout);
+			g_clear_handle_id(&info->timeout, g_source_remove);
 		}
 		info->timeout = g_timeout_add_seconds(info->delay, do_signon, account);
 	} else {

@@ -217,10 +217,7 @@ fb_mqtt_close(FbMqtt *mqtt)
 {
 	g_return_if_fail(FB_IS_MQTT(mqtt));
 
-	if(mqtt->tev > 0) {
-		g_source_remove(mqtt->tev);
-		mqtt->tev = 0;
-	}
+	g_clear_handle_id(&mqtt->tev, g_source_remove);
 
 	if(mqtt->cancellable != NULL) {
 		g_cancellable_cancel(mqtt->cancellable);
@@ -303,10 +300,7 @@ fb_mqtt_cb_timeout(gpointer data)
 static void
 fb_mqtt_timeout_clear(FbMqtt *mqtt)
 {
-	if(mqtt->tev > 0) {
-		g_source_remove(mqtt->tev);
-		mqtt->tev = 0;
-	}
+	g_clear_handle_id(&mqtt->tev, g_source_remove);
 }
 
 static void

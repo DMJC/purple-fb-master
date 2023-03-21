@@ -254,8 +254,7 @@ _send_data_write_cb(GObject *stream, gpointer data)
 	writelen = purple_circular_buffer_get_max_read(bconv->tx_buf);
 
 	if (writelen == 0) {
-		g_source_remove(bconv->tx_handler);
-		bconv->tx_handler = 0;
+		g_clear_handle_id(&bconv->tx_handler, g_source_remove);
 		return;
 	}
 
@@ -525,8 +524,7 @@ _start_stream(GObject *stream, gpointer data)
 	bconv->stream_data = NULL;
 
 	/* Stream started; process the send buffer if there is one */
-	g_source_remove(bconv->tx_handler);
-	bconv->tx_handler = 0;
+	g_clear_handle_id(&bconv->tx_handler, g_source_remove);
 	bconv->sent_stream_start = FULLY_SENT;
 
 	bonjour_xmpp_stream_started(bconv);
@@ -1187,14 +1185,8 @@ bonjour_xmpp_close_conversation(BonjourXMPPConversation *bconv)
 		                          G_INPUT_STREAM(bconv->input),
 		                          G_OUTPUT_STREAM(bconv->output));
 	}
-	if (bconv->rx_handler != 0) {
-		g_source_remove(bconv->rx_handler);
-		bconv->rx_handler = 0;
-	}
-	if (bconv->tx_handler != 0) {
-		g_source_remove(bconv->tx_handler);
-		bconv->tx_handler = 0;
-	}
+	g_clear_handle_id(&bconv->rx_handler, g_source_remove);
+	g_clear_handle_id(&bconv->tx_handler, g_source_remove);
 
 	/* Cancel any pending operations. */
 	if (bconv->cancellable != NULL) {
@@ -1218,9 +1210,7 @@ bonjour_xmpp_close_conversation(BonjourXMPPConversation *bconv)
 		bonjour_parser_setup(bconv);
 	}
 
-	if (bconv->close_timeout != 0) {
-		g_source_remove(bconv->close_timeout);
-	}
+	g_clear_handle_id(&bconv->close_timeout, g_source_remove);
 
 	g_free(bconv->buddy_name);
 	g_free(bconv->ip);

@@ -1478,9 +1478,8 @@ purple_prefs_init(void)
 void
 purple_prefs_uninit(void)
 {
-	if (save_timer != 0)
-	{
-		g_source_remove(save_timer);
+	if(save_timer != 0) {
+		g_clear_handle_id(&save_timer, g_source_remove);
 		save_cb(NULL);
 	}
 

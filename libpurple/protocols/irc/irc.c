@@ -708,8 +708,7 @@ irc_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 	g_clear_object(&irc->output);
 	g_clear_object(&irc->conn);
 
-	if (irc->timer)
-		g_source_remove(irc->timer);
+	g_clear_handle_id(&irc->timer, g_source_remove);
 	g_hash_table_destroy(irc->cmds);
 	g_hash_table_destroy(irc->msgs);
 	g_hash_table_destroy(irc->buddies);

@@ -306,9 +306,7 @@ static GList *managers;
 
 static void
 finch_blist_node_free(FinchBlistNode *node) {
-	if(node->signed_timer) {
-		g_source_remove(node->signed_timer);
-	}
+	g_clear_handle_id(&node->signed_timer, g_source_remove);
 
 	g_free(node);
 }
@@ -741,8 +739,7 @@ add_group_cb(FinchBuddyList *ggblist, const char *group)
 	 * make things easier to add buddies to empty groups (new or old) without having
 	 * to turn on 'show empty groups' setting */
 	ggblist->new_group = g_list_prepend(ggblist->new_group, grp);
-	if (ggblist->new_group_timeout)
-		g_source_remove(ggblist->new_group_timeout);
+	g_clear_handle_id(&ggblist->new_group_timeout, g_source_remove);
 	ggblist->new_group_timeout = g_timeout_add_seconds(SHOW_EMPTY_GROUP_TIMEOUT,
 			remove_new_empty_group, NULL);
 
@@ -1841,13 +1838,11 @@ reset_blist_window(G_GNUC_UNUSED GntWidget *window,
 {
 	purple_signals_disconnect_by_handle(finch_blist_get_handle());
 
-	if (ggblist->typing)
-		g_source_remove(ggblist->typing);
+	g_clear_handle_id(&ggblist->typing, g_source_remove);
 	remove_peripherals(ggblist);
 	g_clear_list(&ggblist->tagged, NULL);
 
-	if (ggblist->new_group_timeout)
-		g_source_remove(ggblist->new_group_timeout);
+	g_clear_handle_id(&ggblist->new_group_timeout, g_source_remove);
 	g_clear_list(&ggblist->new_group, NULL);
 
 	ggblist = NULL;
@@ -2070,9 +2065,7 @@ remove_typing_cb(G_GNUC_UNUSED gpointer data)
 	gnt_box_give_focus_to_child(GNT_BOX(ggblist->window), ggblist->tree);
 end:
 	g_free(escnewmessage);
-	if (ggblist->typing)
-		g_source_remove(ggblist->typing);
-	ggblist->typing = 0;
+	g_clear_handle_id(&ggblist->typing, g_source_remove);
 	return FALSE;
 }
 
@@ -2119,9 +2112,7 @@ status_text_changed(G_GNUC_UNUSED GntEntry *entry, const char *text,
 	if ((text[0] == 27 || (text[0] == '\t' && text[1] == '\0')) && ggblist->typing == 0)
 		return FALSE;
 
-	if (ggblist->typing)
-		g_source_remove(ggblist->typing);
-	ggblist->typing = 0;
+	g_clear_handle_id(&ggblist->typing, g_source_remove);
 
 	if (text[0] == '\r' && text[1] == 0)
 	{
@@ -2340,8 +2331,7 @@ buddy_recent_signed_on_off(gpointer data)
 	PurpleBlistNode *node = data;
 	FinchBlistNode *fnode = g_object_get_data(G_OBJECT(node), UI_DATA);
 
-	g_source_remove(fnode->signed_timer);
-	fnode->signed_timer = 0;
+	g_clear_handle_id(&fnode->signed_timer, g_source_remove);
 
 	if (!ggblist->manager->can_add_node(node)) {
 		node_remove(purple_blist_get_default(), node);
@@ -2364,9 +2354,7 @@ buddy_signed_on_off_cb(gpointer data)
 		return FALSE;
 	}
 
-	if(fnode->signed_timer) {
-		g_source_remove(fnode->signed_timer);
-	}
+	g_clear_handle_id(&fnode->signed_timer, g_source_remove);
 
 	g_object_ref(node);
 	fnode->signed_timer = g_timeout_add_seconds(6, (GSourceFunc)buddy_recent_signed_on_off, data);

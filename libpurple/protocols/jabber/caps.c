@@ -202,9 +202,8 @@ void jabber_caps_init(void)
 
 void jabber_caps_uninit(void)
 {
-	if (save_timer != 0) {
-		g_source_remove(save_timer);
-		save_timer = 0;
+	if(save_timer != 0) {
+		g_clear_handle_id(&save_timer, g_source_remove);
 		do_jabber_caps_store(NULL);
 	}
 	g_clear_pointer(&capstable, g_hash_table_destroy);

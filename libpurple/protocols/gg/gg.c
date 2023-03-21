@@ -516,8 +516,7 @@ ggp_async_login_handler(gpointer _gc, G_GNUC_UNUSED gint fd,
 	purple_debug_info("gg", "login_handler: session: check = %d; state = %d;\n",
 			info->session->check, info->session->state);
 
-	g_source_remove(info->inpa);
-	info->inpa = 0;
+	g_clear_handle_id(&info->inpa, g_source_remove);
 
 	/** XXX I think that this shouldn't be done if ev->type is GG_EVENT_CONN_FAILED or GG_EVENT_CONN_SUCCESS -datallah */
 	if (info->session->fd >= 0)
@@ -550,10 +549,7 @@ ggp_async_login_handler(gpointer _gc, G_GNUC_UNUSED gint fd,
 			}
 			break;
 		case GG_EVENT_CONN_FAILED:
-			if (info->inpa > 0) {
-				g_source_remove(info->inpa);
-				info->inpa = 0;
-			}
+			g_clear_handle_id(&info->inpa, g_source_remove);
 			purple_debug_info("gg", "Connection failure: %d\n",
 				ev->event.failure);
 			switch (ev->event.failure) {
@@ -909,8 +905,7 @@ ggp_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 		ggp_message_cleanup(gc);
 		ggp_edisc_cleanup(gc);
 
-		if (info->inpa > 0)
-			g_source_remove(info->inpa);
+		g_clear_handle_id(&info->inpa, g_source_remove);
 		g_free(info->imtoken);
 
 		if (info->http) {

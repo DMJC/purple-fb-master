@@ -701,8 +701,7 @@ static void tls_init(JabberStream *js)
 	GIOStream *tls_conn;
 	GError *error = NULL;
 
-	g_source_remove(js->inpa);
-	js->inpa = 0;
+	g_clear_handle_id(&js->inpa, g_source_remove);
 	js->input = NULL;
 	g_filter_output_stream_set_close_base_stream(
 	        G_FILTER_OUTPUT_STREAM(js->output), FALSE);
@@ -1009,10 +1008,7 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 		 *
 		 * jabber_send_raw(js, "</stream:stream>", -1);
 		 */
-		if(js->inpa) {
-			g_source_remove(js->inpa);
-			js->inpa = 0;
-		}
+		g_clear_handle_id(&js->inpa, g_source_remove);
 		purple_gio_graceful_close(js->stream, js->input,
 		                          G_OUTPUT_STREAM(js->output));
 	}
@@ -1053,12 +1049,9 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 	g_free(js->old_msg);
 	g_free(js->old_avatarhash);
 
-	if (js->keepalive_timeout != 0)
-		g_source_remove(js->keepalive_timeout);
-	if (js->inactivity_timer != 0)
-		g_source_remove(js->inactivity_timer);
-	if (js->conn_close_timeout != 0)
-		g_source_remove(js->conn_close_timeout);
+	g_clear_handle_id(&js->keepalive_timeout, g_source_remove);
+	g_clear_handle_id(&js->inactivity_timer, g_source_remove);
+	g_clear_handle_id(&js->conn_close_timeout, g_source_remove);
 
 	g_cancellable_cancel(js->cancellable);
 	g_object_unref(G_OBJECT(js->cancellable));
@@ -1447,10 +1440,7 @@ inactivity_cb(gpointer data)
 
 void jabber_stream_restart_inactivity_timer(JabberStream *js)
 {
-	if (js->inactivity_timer != 0) {
-		g_source_remove(js->inactivity_timer);
-		js->inactivity_timer = 0;
-	}
+	g_clear_handle_id(&js->inactivity_timer, g_source_remove);
 
 	g_return_if_fail(js->max_inactivity > 0);
 

@@ -282,9 +282,7 @@ idle_reporting_cb(G_GNUC_UNUSED const char *name,
                   G_GNUC_UNUSED PurplePrefType type,
                   G_GNUC_UNUSED gconstpointer val, G_GNUC_UNUSED gpointer data)
 {
-	if (idle_timer)
-		g_source_remove(idle_timer);
-	idle_timer = 0;
+	g_clear_handle_id(&idle_timer, g_source_remove);
 	check_idleness_timer(NULL);
 }
 
@@ -294,9 +292,7 @@ purple_idle_touch(void)
 	time(&last_active_time);
 	if (!no_away)
 	{
-		if (idle_timer)
-			g_source_remove(idle_timer);
-		idle_timer = 0;
+		g_clear_handle_id(&idle_timer, g_source_remove);
 		check_idleness_timer(NULL);
 	}
 }
@@ -373,9 +369,7 @@ purple_idle_uninit(void)
 	purple_prefs_disconnect_by_handle(purple_idle_get_handle());
 
 	/* Remove the idle timer */
-	if (idle_timer > 0)
-		g_source_remove(idle_timer);
-	idle_timer = 0;
+	g_clear_handle_id(&idle_timer, g_source_remove);
 
 	g_clear_object(&idle_ui);
 }

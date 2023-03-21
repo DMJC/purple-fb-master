@@ -837,10 +837,7 @@ purple_connection_dispose(GObject *obj) {
 
 	g_clear_object(&priv->account);
 
-	if(priv->disconnect_timeout > 0) {
-		g_source_remove(priv->disconnect_timeout);
-		priv->disconnect_timeout = 0;
-	}
+	g_clear_handle_id(&priv->disconnect_timeout, g_source_remove);
 
 	G_OBJECT_CLASS(purple_connection_parent_class)->dispose(obj);
 }

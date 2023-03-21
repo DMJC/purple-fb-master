@@ -128,10 +128,7 @@ purple_conversation_member_dispose(GObject *obj) {
 
 	g_clear_object(&member->contact_info);
 
-	if(member->typing_timeout != 0) {
-		g_source_remove(member->typing_timeout);
-		member->typing_timeout = 0;
-	}
+	g_clear_handle_id(&member->typing_timeout, g_source_remove);
 
 	G_OBJECT_CLASS(purple_conversation_member_parent_class)->dispose(obj);
 }
@@ -246,10 +243,7 @@ purple_conversation_member_set_typing_state(PurpleConversationMember *member,
 	g_return_if_fail(PURPLE_IS_CONVERSATION_MEMBER(member));
 
 	/* Remove an existing timeout if necessary. */
-	if(member->typing_timeout != 0) {
-		g_source_remove(member->typing_timeout);
-		member->typing_timeout = 0;
-	}
+	g_clear_handle_id(&member->typing_timeout, g_source_remove);
 
 	/* If the state has changed, notify. */
 	if(state != member->typing_state) {

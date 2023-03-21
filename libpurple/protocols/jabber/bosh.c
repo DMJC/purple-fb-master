@@ -155,8 +155,7 @@ jabber_bosh_connection_destroy(PurpleJabberBOSHConnection *conn)
 		jabber_bosh_connection_send_now(conn);
 	}
 
-	if (conn->send_timer)
-		g_source_remove(conn->send_timer);
+	g_clear_handle_id(&conn->send_timer, g_source_remove);
 
 	soup_session_abort(conn->payload_reqs);
 
@@ -295,10 +294,7 @@ jabber_bosh_connection_send_now(PurpleJabberBOSHConnection *conn)
 
 	g_return_if_fail(conn != NULL);
 
-	if (conn->send_timer != 0) {
-		g_source_remove(conn->send_timer);
-		conn->send_timer = 0;
-	}
+	g_clear_handle_id(&conn->send_timer, g_source_remove);
 
 	if (conn->sid == NULL)
 		return;

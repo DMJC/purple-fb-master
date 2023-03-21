@@ -925,14 +925,8 @@ pidgin_debug_init(void)
 void
 pidgin_debug_uninit(void)
 {
-	if(pref_callback_id != 0) {
-		purple_prefs_disconnect_callback(pref_callback_id);
-	}
-	pref_callback_id = 0;
-	if(debug_enabled_timer != 0) {
-		g_source_remove(debug_enabled_timer);
-	}
-	debug_enabled_timer = 0;
+	g_clear_handle_id(&pref_callback_id, purple_prefs_disconnect_callback);
+	g_clear_handle_id(&debug_enabled_timer, g_source_remove);
 }
 
 void *

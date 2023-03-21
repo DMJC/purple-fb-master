@@ -388,9 +388,7 @@ pidgin_media_dispose(GObject *media)
 
 	g_clear_object(&gtkmedia->priv->ui);
 
-	if (gtkmedia->priv->timeout_id != 0) {
-		g_source_remove(gtkmedia->priv->timeout_id);
-	}
+	g_clear_handle_id(&gtkmedia->priv->timeout_id, g_source_remove);
 
 	g_clear_pointer(&gtkmedia->priv->recv_progressbars, g_hash_table_destroy);
 	g_clear_pointer(&gtkmedia->priv->remote_videos, g_hash_table_destroy);
@@ -768,8 +766,7 @@ pidgin_media_ready_cb(PurpleMedia *media, PidginMedia *gtkmedia, const gchar *si
 	}
 
 	if (purple_media_is_initiator(media, sid, NULL) == FALSE) {
-		if (gtkmedia->priv->timeout_id != 0)
-			g_source_remove(gtkmedia->priv->timeout_id);
+		g_clear_handle_id(&gtkmedia->priv->timeout_id, g_source_remove);
 		gtkmedia->priv->request_type |= type;
 		gtkmedia->priv->timeout_id = g_timeout_add(500,
 				(GSourceFunc)pidgin_request_timeout_cb,

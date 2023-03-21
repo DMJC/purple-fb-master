@@ -115,10 +115,7 @@ ggp_tcpsocket_connected(GObject *source, GAsyncResult *res, gpointer user_data)
 
 	info = purple_connection_get_protocol_data(data->gc);
 
-	if (info->inpa > 0) {
-		g_source_remove(info->inpa);
-		info->inpa = 0;
-	}
+	g_clear_handle_id(&info->inpa, g_source_remove);
 
 	if (info->session->fd < 0)
 		return;

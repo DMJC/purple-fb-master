@@ -173,8 +173,7 @@ irc_dccsend_send_read(gpointer data, int source,
 		return;
 	else if (len <= 0) {
 		/* XXX: Shouldn't this be canceling the transfer? */
-		g_source_remove(xd->inpa);
-		xd->inpa = 0;
+		g_clear_handle_id(&xd->inpa, g_source_remove);
 		return;
 	}
 
@@ -203,8 +202,7 @@ irc_dccsend_send_read(gpointer data, int source,
 		}
 
 		if ((goffset)acked >= purple_xfer_get_size(xfer)) {
-			g_source_remove(xd->inpa);
-			xd->inpa = 0;
+			g_clear_handle_id(&xd->inpa, g_source_remove);
 			purple_xfer_set_completed(xfer, TRUE);
 			purple_xfer_end(xfer);
 			return;
@@ -387,9 +385,7 @@ irc_xfer_finalize(GObject *obj) {
 		g_socket_service_stop(xfer->service);
 	}
 	g_clear_object(&xfer->service);
-	if(xfer->inpa > 0) {
-		g_source_remove(xfer->inpa);
-	}
+	g_clear_handle_id(&xfer->inpa, g_source_remove);
 	g_clear_object(&xfer->conn);
 
 	G_OBJECT_CLASS(irc_xfer_parent_class)->finalize(obj);

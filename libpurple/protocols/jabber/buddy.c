@@ -705,8 +705,7 @@ jabber_setup_set_info(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 static void jabber_buddy_info_destroy(JabberBuddyInfo *jbi)
 {
 	/* Remove the timeout, which would otherwise trigger jabber_buddy_get_info_timeout() */
-	if (jbi->timeout_handle > 0)
-		g_source_remove(jbi->timeout_handle);
+	g_clear_handle_id(&jbi->timeout_handle, g_source_remove);
 
 	g_slist_free(jbi->ids);
 	g_free(jbi->jid);

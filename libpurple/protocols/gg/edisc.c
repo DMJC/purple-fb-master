@@ -1467,10 +1467,7 @@ ggp_xfer_finalize(GObject *obj) {
 #endif
 	g_clear_object(&edisc_xfer->msg);
 
-	if(edisc_xfer->handler) {
-		g_source_remove(edisc_xfer->handler);
-		edisc_xfer->handler = 0;
-	}
+	g_clear_handle_id(&edisc_xfer->handler, g_source_remove);
 
 	if (edisc_xfer->ticket_id != NULL) {
 		g_hash_table_remove(sdata->xfers_initialized,

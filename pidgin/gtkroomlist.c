@@ -80,9 +80,6 @@ pidgin_roomlist_close(PidginRoomlistDialog *dialog)
 	if (dialog->roomlist && purple_roomlist_get_in_progress(dialog->roomlist))
 		purple_roomlist_cancel_get_list(dialog->roomlist);
 
-	if (dialog->pg_update_to > 0)
-		g_source_remove(dialog->pg_update_to);
-
 	if (dialog->roomlist) {
 		PidginRoomlist *rl = NULL;
 
@@ -97,6 +94,8 @@ pidgin_roomlist_close(PidginRoomlistDialog *dialog)
 			rl->dialog = NULL;
 		g_object_unref(dialog->roomlist);
 	}
+
+	g_clear_handle_id(&dialog->pg_update_to, g_source_remove);
 
 	dialog->progress = NULL;
 }
