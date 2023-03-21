@@ -1303,7 +1303,6 @@ static void
 ggp_protocol_client_iface_init(PurpleProtocolClientInterface *client_iface)
 {
 	client_iface->list_emblem            = ggp_list_emblem;
-	client_iface->status_text            = ggp_status_buddy_text;
 	client_iface->tooltip_text           = ggp_tooltip_text;
 	client_iface->buddy_free             = ggp_buddy_free;
 	client_iface->normalize              = ggp_normalize;

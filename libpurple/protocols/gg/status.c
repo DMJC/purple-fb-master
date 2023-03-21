@@ -447,24 +447,3 @@ void ggp_status_got_others_buddy(PurpleConnection *gc, uin_t uin, int status,
 
 	g_free(status_message);
 }
-
-char *
-ggp_status_buddy_text(G_GNUC_UNUSED PurpleProtocolClient *client,
-                      PurpleBuddy *buddy)
-{
-	ggp_buddy_data *buddy_data = ggp_buddy_get_data(buddy);
-	const gchar *purple_message;
-
-	if (buddy_data->blocked)
-		return g_strdup(_("Blocked"));
-	if (buddy_data->not_a_friend)
-		return g_strdup(_("Not a buddy"));
-
-	purple_message = purple_status_get_attr_string(
-		purple_presence_get_active_status(
-			purple_buddy_get_presence(buddy)), "message");
-	if (!purple_message)
-		return NULL;
-
-	return g_markup_escape_text(purple_message, -1);
-}

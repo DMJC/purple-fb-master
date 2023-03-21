@@ -388,29 +388,6 @@ bonjour_set_buddy_icon(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
 	bonjour_dns_sd_update_buddy_icon(bd->dns_sd_data);
 }
 
-
-static char *
-bonjour_status_text(G_GNUC_UNUSED PurpleProtocolClient *client,
-                    PurpleBuddy *buddy)
-{
-	PurplePresence *presence;
-	PurpleStatus *status;
-	const char *message;
-	gchar *ret = NULL;
-
-	presence = purple_buddy_get_presence(buddy);
-	status = purple_presence_get_active_status(presence);
-
-	message = purple_status_get_attr_string(status, "message");
-
-	if (message != NULL) {
-		ret = g_markup_escape_text(message, -1);
-		purple_util_chrreplace(ret, '\n', ' ');
-	}
-
-	return ret;
-}
-
 static void
 bonjour_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client,
                      PurpleBuddy *buddy, PurpleNotifyUserInfo *user_info,
@@ -704,7 +681,6 @@ bonjour_protocol_class_finalize(G_GNUC_UNUSED BonjourProtocolClass *klass)
 static void
 bonjour_protocol_client_iface_init(PurpleProtocolClientInterface *client_iface)
 {
-	client_iface->status_text          = bonjour_status_text;
 	client_iface->tooltip_text         = bonjour_tooltip_text;
 	client_iface->convo_closed         = bonjour_convo_closed;
 	client_iface->get_max_message_size = bonjour_get_max_message_size;

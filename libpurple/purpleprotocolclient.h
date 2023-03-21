@@ -53,8 +53,6 @@ G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
  * @list_emblem: Fills the four <type>char**</type>'s with string identifiers
  *               for "emblems" that the UI will interpret and display as
  *               relevant.
- * @status_text: Gets a short string representing this buddy's status. This
- *               will be shown on the buddy list.
  * @tooltip_text: Allows the protocol to add text to a buddy's tooltip.
  * @blist_node_menu: Returns a list of #PurpleActionMenu structs, which
  *                   represent extra actions to be shown in (for example) the
@@ -120,8 +118,6 @@ struct _PurpleProtocolClientInterface {
 	/*< public >*/
 	const gchar *(*list_emblem)(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
-	gchar *(*status_text)(PurpleProtocolClient *client, PurpleBuddy *buddy);
-
 	void (*tooltip_text)(PurpleProtocolClient *client, PurpleBuddy *buddy, PurpleNotifyUserInfo *user_info,
 						 gboolean full);
 
@@ -161,19 +157,6 @@ G_BEGIN_DECLS
  * Since: 3.0.0
  */
 const gchar *purple_protocol_client_list_emblem(PurpleProtocolClient *client, PurpleBuddy *buddy);
-
-/**
- * purple_protocol_client_status_text:
- * @client: The #PurpleProtocolClient instance.
- * @buddy: The #PurpleBuddy instance.
- *
- * Gets the status text for @buddy.
- *
- * Returns: (transfer full): The status text for @buddy or %NULL.
- *
- * Since: 3.0.0
- */
-gchar *purple_protocol_client_status_text(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 /**
  * purple_protocol_client_tooltip_text:

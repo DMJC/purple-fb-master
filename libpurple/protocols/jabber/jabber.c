@@ -1514,40 +1514,6 @@ jabber_list_emblem(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b)
 	return NULL;
 }
 
-static char *
-jabber_status_text(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b)
-{
-	char *ret = NULL;
-	JabberBuddy *jb = NULL;
-	PurpleAccount *account = purple_buddy_get_account(b);
-	PurpleConnection *gc = purple_account_get_connection(account);
-
-	if (gc && purple_connection_get_protocol_data(gc))
-		jb = jabber_buddy_find(purple_connection_get_protocol_data(gc), purple_buddy_get_name(b), FALSE);
-
-	if(jb && !PURPLE_BUDDY_IS_ONLINE(b) && (jb->subscription & JABBER_SUB_PENDING || !(jb->subscription & JABBER_SUB_TO))) {
-		ret = g_strdup(_("Not Authorized"));
-	} else if(jb && !PURPLE_BUDDY_IS_ONLINE(b) && jb->error_msg) {
-		ret = g_strdup(jb->error_msg);
-	} else {
-		PurplePresence *presence = purple_buddy_get_presence(b);
-		PurpleStatus *status = purple_presence_get_active_status(presence);
-		const char *message;
-
-		if((message = purple_status_get_attr_string(status, "message"))) {
-			ret = g_markup_escape_text(message, -1);
-		} else if (purple_presence_is_status_primitive_active(presence, PURPLE_STATUS_TUNE)) {
-			PurpleStatus *status = purple_presence_get_status(presence, "tune");
-			const char *title = purple_status_get_attr_string(status, PURPLE_TUNE_TITLE);
-			const char *artist = purple_status_get_attr_string(status, PURPLE_TUNE_ARTIST);
-			const char *album = purple_status_get_attr_string(status, PURPLE_TUNE_ALBUM);
-			ret = purple_util_format_song_info(title, artist, album);
-		}
-	}
-
-	return ret;
-}
-
 static void
 jabber_tooltip_add_resource_text(JabberBuddyResource *jbr,
 	PurpleNotifyUserInfo *user_info, gboolean multiple_resources)
@@ -3410,7 +3376,6 @@ static void
 jabber_protocol_client_iface_init(PurpleProtocolClientInterface *client_iface)
 {
 	client_iface->list_emblem     = jabber_list_emblem;
-	client_iface->status_text     = jabber_status_text;
 	client_iface->tooltip_text    = jabber_tooltip_text;
 	client_iface->blist_node_menu = jabber_blist_node_menu;
 	client_iface->convo_closed    = jabber_convo_closed;

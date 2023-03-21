@@ -24,28 +24,6 @@
 /******************************************************************************
  * PurpleProtocolClient Implementation
  *****************************************************************************/
-static gchar *
-purple_demo_protocol_status_text(G_GNUC_UNUSED PurpleProtocolClient *client,
-                                 PurpleBuddy *buddy)
-{
-	PurplePresence *presence = NULL;
-	PurpleStatus *status = NULL;
-	const gchar *message = NULL;
-	gchar *ret = NULL;
-
-	presence = purple_buddy_get_presence(buddy);
-	status = purple_presence_get_active_status(presence);
-
-	message = purple_status_get_attr_string(status, "message");
-	if(message != NULL) {
-		ret = g_markup_escape_text(message, -1);
-		purple_util_chrreplace(ret, '\n', ' ');
-	}
-
-	return ret;
-}
-
 void
-purple_demo_protocol_client_init(PurpleProtocolClientInterface *iface) {
-	iface->status_text = purple_demo_protocol_status_text;
+purple_demo_protocol_client_init(G_GNUC_UNUSED PurpleProtocolClientInterface *iface) {
 }
