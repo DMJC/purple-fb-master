@@ -183,34 +183,6 @@ choice_response_cb(GtkDialog *dialog, gint id, PidginRequestData *data) {
 	purple_request_close(PURPLE_REQUEST_INPUT, data);
 }
 
-static gboolean
-field_string_focus_out_cb(GtkEventControllerFocus *controller,
-                          PurpleRequestFieldString *field)
-{
-	GtkWidget *entry = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(controller));
-	const char *value;
-
-	if (purple_request_field_string_is_multiline(field))
-	{
-		GtkTextBuffer *buffer;
-		GtkTextIter start_iter, end_iter;
-
-		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry));
-
-		gtk_text_buffer_get_start_iter(buffer, &start_iter);
-		gtk_text_buffer_get_end_iter(buffer, &end_iter);
-
-		value = gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, FALSE);
-	}
-	else
-		value = gtk_editable_get_text(GTK_EDITABLE(entry));
-
-	purple_request_field_string_set_value(field,
-			(*value == '\0' ? NULL : value));
-
-	return FALSE;
-}
-
 static void
 field_choice_option_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
                        gpointer data)
@@ -1003,150 +975,128 @@ create_label_field(void) {
 }
 
 static void
-req_entry_field_changed_cb(GtkWidget *entry, PurpleRequestField *field)
+multiline_state_flags_changed_cb(GtkWidget *self, GtkStateFlags flags,
+                                 gpointer data)
 {
-	if(PURPLE_IS_REQUEST_FIELD_INT(field)) {
-		PurpleRequestFieldInt *intfield = PURPLE_REQUEST_FIELD_INT(field);
-		int value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-		purple_request_field_int_set_value(intfield, value);
+	GtkWidget *row = data;
+	gboolean before = FALSE, after = FALSE;
 
-	} else {
-		PurpleRequestFieldString *strfield = PURPLE_REQUEST_FIELD_STRING(field);
-		if(purple_request_field_string_is_multiline(strfield)) {
-			char *text;
-			GtkTextIter start_iter, end_iter;
-
-			gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(entry), &start_iter);
-			gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(entry), &end_iter);
-
-			text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(entry),
-			                                &start_iter, &end_iter, FALSE);
-			purple_request_field_string_set_value(strfield,
-			                                      purple_strempty(text) ? NULL : text);
-			g_free(text);
-
+	before = !!(flags & GTK_STATE_FLAG_FOCUS_WITHIN);
+	after = !!(gtk_widget_get_state_flags(self) & GTK_STATE_FLAG_FOCUS_WITHIN);
+	if(before != after) {
+		if(after) {
+			gtk_widget_add_css_class(row, "focused");
 		} else {
-			const char *text = NULL;
-			text = gtk_editable_get_text(GTK_EDITABLE(entry));
-			purple_request_field_string_set_value(strfield,
-			                                      purple_strempty(text) ? NULL : text);
+			gtk_widget_remove_css_class(row, "focused");
 		}
-	}
-}
-
-static void
-setup_entry_field(GtkWidget *entry, PurpleRequestField *field,
-                  PurpleKeyValuePair **hinted_widget)
-{
-	const char *type_hint;
-
-	g_signal_connect(entry, "changed", G_CALLBACK(req_entry_field_changed_cb),
-	                 field);
-
-	type_hint = purple_request_field_get_type_hint(field);
-	if(type_hint != NULL && g_str_has_prefix(type_hint, "screenname")) {
-		*hinted_widget = purple_key_value_pair_new(type_hint, entry);
 	}
 }
 
 static GtkWidget *
 create_string_field(PurpleRequestField *field,
-                    PurpleKeyValuePair **hinted_widget)
+                    G_GNUC_UNUSED PurpleKeyValuePair **hinted_widget)
 {
 	PurpleRequestFieldString *strfield = PURPLE_REQUEST_FIELD_STRING(field);
 	const char *value;
-	GtkWidget *widget;
-	gboolean is_editable;
+	GtkWidget *row;
 
 	value = purple_request_field_string_get_default_value(strfield);
-	is_editable = purple_request_field_is_sensitive(field);
 
 	if(purple_request_field_string_is_multiline(strfield)) {
-		GtkWidget *textview;
-		GtkEventController *controller;
+		GtkWidget *vbox = NULL;
+		GtkWidget *title = NULL;
+		GtkWidget *textview = NULL;
+		GtkWidget *sw = NULL;
+		GtkTextBuffer *buffer = NULL;
+
+		vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+		gtk_widget_set_margin_top(vbox, 6);
+
+		title = gtk_label_new(NULL);
+		gtk_widget_set_halign(title, GTK_ALIGN_START);
+		gtk_widget_set_margin_start(title, 12);
+		gtk_widget_set_margin_end(title, 12);
+		gtk_widget_add_css_class(title, "subtitle");
+		gtk_box_append(GTK_BOX(vbox), title);
 
 		textview = gtk_text_view_new();
-		gtk_text_view_set_editable(GTK_TEXT_VIEW(textview),
-								   TRUE);
+		gtk_widget_set_margin_start(textview, 12);
+		gtk_widget_set_margin_end(textview, 12);
+		gtk_widget_remove_css_class(textview, "view");
 		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview),
 									GTK_WRAP_WORD_CHAR);
 
-		if (value != NULL)
-		{
-			GtkTextBuffer *buffer;
-
-			buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
-
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+		if(value != NULL) {
 			gtk_text_buffer_set_text(buffer, value, -1);
 		}
+		g_object_bind_property(field, "value", buffer, "text",
+		                       G_BINDING_BIDIRECTIONAL);
 
-		gtk_text_view_set_editable(GTK_TEXT_VIEW(textview), is_editable);
-
-		controller = gtk_event_controller_focus_new();
-		gtk_widget_add_controller(textview, controller);
-		g_signal_connect(controller, "leave",
-						 G_CALLBACK(field_string_focus_out_cb), field);
-
-	    if (purple_request_field_is_required(field))
-	    {
-			GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
-			g_signal_connect(buffer, "changed",
-			                 G_CALLBACK(req_entry_field_changed_cb), field);
-	    }
-
-		widget = gtk_scrolled_window_new();
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(widget),
+		sw = gtk_scrolled_window_new();
+		gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), textview);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw),
 		                               GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-		gtk_widget_set_size_request(widget, -1, 75);
-		gtk_widget_set_hexpand(widget, TRUE);
-		gtk_widget_set_vexpand(widget, TRUE);
-		gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(widget), textview);
-	}
-	else
-	{
-		GtkEventController *controller = NULL;
+		gtk_widget_set_size_request(sw, -1, 75);
+		gtk_widget_set_hexpand(sw, TRUE);
+		gtk_widget_set_vexpand(sw, TRUE);
+		gtk_box_append(GTK_BOX(vbox), sw);
 
+		row = adw_preferences_row_new();
+		g_object_bind_property(row, "title", title, "label",
+		                       G_BINDING_DEFAULT);
+		g_object_bind_property(row, "use-markup", title, "use-markup",
+		                       G_BINDING_DEFAULT);
+		g_object_bind_property(row, "use-underline", title, "use-underline",
+		                       G_BINDING_DEFAULT);
+		gtk_list_box_row_set_child(GTK_LIST_BOX_ROW(row), vbox);
+		gtk_widget_set_focusable(row, FALSE);
+		gtk_widget_add_css_class(row, "entry");
+		g_signal_connect(textview, "state-flags-changed",
+		                 G_CALLBACK(multiline_state_flags_changed_cb), row);
+
+	} else {
 		if(purple_request_field_string_is_masked(strfield)) {
-			widget = gtk_password_entry_new();
-			g_object_set(widget, "activates-default", TRUE,
-			             "show-peek-icon", TRUE, NULL);
+			row = adw_password_entry_row_new();
 		} else {
-			widget = gtk_entry_new();
-			gtk_entry_set_activates_default(GTK_ENTRY(widget), TRUE);
+			row = adw_entry_row_new();
 		}
-
-		setup_entry_field(widget, field, hinted_widget);
 
 		if(value != NULL) {
-			gtk_editable_set_text(GTK_EDITABLE(widget), value);
+			gtk_editable_set_text(GTK_EDITABLE(row), value);
 		}
 
-		gtk_editable_set_editable(GTK_EDITABLE(widget), is_editable);
-
-		controller = gtk_event_controller_focus_new();
-		gtk_widget_add_controller(widget, controller);
-		g_signal_connect(controller, "leave",
-						 G_CALLBACK(field_string_focus_out_cb), field);
+		g_object_bind_property(field, "value", row, "text",
+		                       G_BINDING_BIDIRECTIONAL);
 	}
 
-	return widget;
+	return row;
 }
 
 static GtkWidget *
-create_int_field(PurpleRequestField *field, PurpleKeyValuePair **hinted_widget)
+create_int_field(PurpleRequestField *field,
+                 G_GNUC_UNUSED PurpleKeyValuePair **hinted_widget)
 {
 	PurpleRequestFieldInt *intfield = PURPLE_REQUEST_FIELD_INT(field);
+	GtkWidget *widget = NULL;
+	GtkWidget *spin = NULL;
 	int value;
-	GtkWidget *widget;
 
-	widget = gtk_spin_button_new_with_range(
+	spin = gtk_spin_button_new_with_range(
 		purple_request_field_int_get_lower_bound(intfield),
 		purple_request_field_int_get_upper_bound(intfield), 1);
 
-	setup_entry_field(widget, field, hinted_widget);
-
 	value = purple_request_field_int_get_default_value(intfield);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), value);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), value);
+	g_object_bind_property(field, "value", spin, "value",
+	                       G_BINDING_BIDIRECTIONAL);
+
+	gtk_widget_set_valign(spin, GTK_ALIGN_CENTER);
+
+	widget = adw_action_row_new();
+	gtk_widget_set_focusable(widget, FALSE);
+	adw_action_row_add_suffix(ADW_ACTION_ROW(widget), spin);
+	adw_action_row_set_activatable_widget(ADW_ACTION_ROW(widget), spin);
 
 	return widget;
 }
@@ -1959,6 +1909,7 @@ pidgin_request_fields(const char *title, const char *primary,
 				PurpleKeyValuePair *username_hint = NULL;
 
 				widget = create_string_field(field, &username_hint);
+				was_handled_by_create = TRUE;
 
 				if(username_hint != NULL) {
 					username_widgets = g_slist_prepend(username_widgets,
@@ -1968,6 +1919,7 @@ pidgin_request_fields(const char *title, const char *primary,
 				PurpleKeyValuePair *username_hint = NULL;
 
 				widget = create_int_field(field, &username_hint);
+				was_handled_by_create = TRUE;
 
 				if(username_hint != NULL) {
 					username_widgets = g_slist_prepend(username_widgets,
@@ -2000,11 +1952,8 @@ pidgin_request_fields(const char *title, const char *primary,
 
 			if(!was_handled_by_create) {
 				GtkWidget *row = NULL;
-				if(!PURPLE_IS_REQUEST_FIELD_STRING(field) ||
-				   !purple_request_field_string_is_multiline(PURPLE_REQUEST_FIELD_STRING(field)))
-				{
-						gtk_widget_set_valign(widget, GTK_ALIGN_CENTER);
-				}
+
+				gtk_widget_set_valign(widget, GTK_ALIGN_CENTER);
 
 				row = adw_action_row_new();
 				adw_action_row_add_suffix(ADW_ACTION_ROW(row), widget);
