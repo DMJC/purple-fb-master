@@ -33,7 +33,7 @@
 struct _PurpleRequestPage {
 	GObject parent;
 
-	GList *groups;
+	GPtrArray *groups;
 	GHashTable *invalid_groups;
 
 	GHashTable *fields;
@@ -103,7 +103,7 @@ static guint
 purple_request_page_get_n_items(GListModel *model) {
 	PurpleRequestPage *page = PURPLE_REQUEST_PAGE(model);
 
-	return g_list_length(page->groups);
+	return page->groups->len;
 }
 
 static gpointer
@@ -111,8 +111,8 @@ purple_request_page_get_item(GListModel *model, guint index) {
 	PurpleRequestPage *page = PURPLE_REQUEST_PAGE(model);
 	PurpleRequestGroup *group = NULL;
 
-	group = g_list_nth_data(page->groups, index);
-	if(PURPLE_IS_REQUEST_GROUP(group)) {
+	if(index < page->groups->len) {
+		group = g_ptr_array_index(page->groups, index);
 		g_object_ref(group);
 	}
 
@@ -153,7 +153,7 @@ static void
 purple_request_page_finalize(GObject *obj) {
 	PurpleRequestPage *page = PURPLE_REQUEST_PAGE(obj);
 
-	g_list_free_full(page->groups, g_object_unref);
+	g_clear_pointer(&page->groups, g_ptr_array_unref);
 	g_clear_pointer(&page->invalid_groups, g_hash_table_destroy);
 	g_hash_table_destroy(page->fields);
 
@@ -162,6 +162,7 @@ purple_request_page_finalize(GObject *obj) {
 
 static void
 purple_request_page_init(PurpleRequestPage *page) {
+	page->groups = g_ptr_array_new_with_free_func(g_object_unref);
 	page->fields = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 	page->invalid_groups = g_hash_table_new(g_direct_hash, g_direct_equal);
 }
@@ -207,8 +208,8 @@ purple_request_page_add_group(PurpleRequestPage *page,
 	g_return_if_fail(PURPLE_IS_REQUEST_PAGE(page));
 	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
 
-	position = g_list_length(page->groups);
-	page->groups = g_list_append(page->groups, group);
+	position = page->groups->len;
+	g_ptr_array_add(page->groups, group);
 
 	purple_request_page_notify_group_cb(G_OBJECT(group), NULL, page);
 	g_signal_connect(group, "notify::valid",

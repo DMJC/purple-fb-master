@@ -29,7 +29,7 @@ struct _PurpleRequestGroup {
 
 	char *title;
 
-	GList *fields;
+	GPtrArray *fields;
 	GHashTable *invalid_fields;
 };
 
@@ -89,7 +89,7 @@ static guint
 purple_request_group_get_n_items(GListModel *model) {
 	PurpleRequestGroup *group = PURPLE_REQUEST_GROUP(model);
 
-	return g_list_length(group->fields);
+	return group->fields->len;
 }
 
 static gpointer
@@ -97,8 +97,8 @@ purple_request_group_get_item(GListModel *model, guint index) {
 	PurpleRequestGroup *group = PURPLE_REQUEST_GROUP(model);
 	PurpleRequestField *field = NULL;
 
-	field = g_list_nth_data(group->fields, index);
-	if(PURPLE_IS_REQUEST_FIELD(field)) {
+	if(index < group->fields->len) {
+		field = g_ptr_array_index(group->fields, index);
 		g_object_ref(field);
 	}
 
@@ -160,7 +160,7 @@ purple_request_group_finalize(GObject *obj) {
 
 	g_free(group->title);
 
-	g_list_free_full(group->fields, g_object_unref);
+	g_clear_pointer(&group->fields, g_ptr_array_unref);
 	g_clear_pointer(&group->invalid_fields, g_hash_table_destroy);
 
 	G_OBJECT_CLASS(purple_request_group_parent_class)->finalize(obj);
@@ -168,6 +168,7 @@ purple_request_group_finalize(GObject *obj) {
 
 static void
 purple_request_group_init(PurpleRequestGroup *group) {
+	group->fields = g_ptr_array_new_with_free_func(g_object_unref);
 	group->invalid_fields = g_hash_table_new(g_direct_hash, g_direct_equal);
 }
 
@@ -227,8 +228,8 @@ purple_request_group_add_field(PurpleRequestGroup *group,
 	g_return_if_fail(PURPLE_IS_REQUEST_GROUP(group));
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD(field));
 
-	position = g_list_length(group->fields);
-	group->fields = g_list_append(group->fields, field);
+	position = group->fields->len;
+	g_ptr_array_add(group->fields, field);
 
 	purple_request_group_notify_field_cb(G_OBJECT(field), NULL, group);
 	g_signal_connect(field, "notify::valid",
