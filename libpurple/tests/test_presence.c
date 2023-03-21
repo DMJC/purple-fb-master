@@ -24,65 +24,79 @@
  * Main
  *****************************************************************************/
 static void
-test_purple_presence_migrate_online_without_message(void) {
+test_purple_presence_new(void) {
 	PurplePresence *presence = NULL;
-	PurpleStatus *status = NULL;
-	PurpleStatusType *type = NULL;
 
-	type = purple_status_type_new(PURPLE_STATUS_AVAILABLE,
-	                              "online", "online", TRUE);
 	presence = purple_presence_new();
-	status = purple_status_new(type, presence);
-
-	purple_status_set_active(status, TRUE);
-
-	/* Now verify that the presence returns the correct values for the
-	 * properties.
-	 */
-	g_assert_cmpint(purple_presence_get_primitive(presence), ==,
-	                PURPLE_STATUS_AVAILABLE);
-	g_assert_null(purple_presence_get_message(presence));
+	g_assert_true(PURPLE_IS_PRESENCE(presence));
 
 	/* Cleanup. */
 	g_clear_object(&presence);
-	g_clear_object(&status);
-	g_clear_pointer(&type, purple_status_type_destroy);
 }
 
 static void
-test_purple_presence_migrate_online_with_message(void) {
+test_purple_presence_properties(void) {
 	PurplePresence *presence = NULL;
-	PurpleStatus *status = NULL;
-	PurpleStatusType *type = NULL;
-	GHashTable *attrs =  NULL;
+	PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
+	GDateTime *now = NULL;
+	GDateTime *login = NULL;
+	GDateTime *login1 = NULL;
+	GDateTime *idle = NULL;
+	GDateTime *idle1 = NULL;
+	char *message = NULL;
+	char *emoji = NULL;
+	gboolean mobile = FALSE;
 
-	type = purple_status_type_new_with_attrs(PURPLE_STATUS_AVAILABLE,
-	                                         "online", "online",
-	                                         FALSE, TRUE, TRUE,
-	                                         "message", "message",
-	                                         purple_value_new(G_TYPE_STRING),
-	                                         NULL);
-	presence = purple_presence_new();
+	/* Create the login and idle times. */
+	now = g_date_time_new_now_utc();
+	login = g_date_time_add_hours(now, -1);
+	idle = g_date_time_add_minutes(now, -10);
+	g_clear_pointer(&now, g_date_time_unref);
 
-	status = purple_status_new(type, presence);
-
-	attrs = g_hash_table_new(g_str_hash, g_str_equal);
-	g_hash_table_insert(attrs, "message", "Greetings Programs!");
-	purple_status_set_active_with_attributes(status, TRUE, attrs);
-	g_hash_table_destroy(attrs);
-
-	/* Now verify that the presence returns the correct values for the
-	 * properties.
+	/* Create the presence using g_object_new to make sure set_property is
+	 * wired up correctly.
 	 */
-	g_assert_cmpint(purple_presence_get_primitive(presence), ==,
-	                PURPLE_STATUS_AVAILABLE);
-	g_assert_cmpstr(purple_presence_get_message(presence), ==,
-	                "Greetings Programs!");
+	presence = g_object_new(
+		PURPLE_TYPE_PRESENCE,
+		"primitive", PURPLE_PRESENCE_PRIMITIVE_AVAILABLE,
+		"message", "I'll be back!",
+		"emoji", "🤖",
+		"login-time", login,
+		"idle-time", idle,
+		"mobile", TRUE,
+		NULL);
+
+	/* Grab the values via g_object_get to make sure get_property is wired up
+	 * correctly.
+	 */
+	g_object_get(
+		presence,
+		"primitive", &primitive,
+		"message", &message,
+		"emoji", &emoji,
+		"login-time", &login1,
+		"idle-time", &idle1,
+		"mobile", &mobile,
+		NULL);
+
+	/* Validate! */
+	g_assert_cmpint(primitive, ==, PURPLE_PRESENCE_PRIMITIVE_AVAILABLE);
+	g_assert_cmpstr(message, ==, "I'll be back!");
+	g_assert_cmpstr(emoji, ==, "🤖");
+	g_assert_nonnull(login1);
+	g_assert_true(g_date_time_equal(login, login1));
+	g_assert_nonnull(idle1);
+	g_assert_true(g_date_time_equal(idle, idle1));
+	g_assert_true(mobile);
 
 	/* Cleanup. */
+	g_clear_pointer(&message, g_free);
+	g_clear_pointer(&emoji, g_free);
+	g_clear_pointer(&login, g_date_time_unref);
+	g_clear_pointer(&login1, g_date_time_unref);
+	g_clear_pointer(&idle, g_date_time_unref);
+	g_clear_pointer(&idle1, g_date_time_unref);
 	g_clear_object(&presence);
-	g_clear_object(&status);
-	g_clear_pointer(&type, purple_status_type_destroy);
 }
 
 /******************************************************************************
@@ -92,14 +106,8 @@ gint
 main(gint argc, gchar *argv[]) {
 	g_test_init(&argc, &argv, NULL);
 
-	/* This tests verify that PurplePresence is properly notifying of property
-	 * changes with the 2.x.y and earlier status back end. When PurplePresence
-	 * has replaced that back end, these tests should be removed as well.
-	 */
-	g_test_add_func("/presence/migrate/online-without-message",
-	                test_purple_presence_migrate_online_without_message);
-	g_test_add_func("/presence/migrate/online-with-message",
-	                test_purple_presence_migrate_online_with_message);
+	g_test_add_func("/presence/new", test_purple_presence_new);
+	g_test_add_func("/presence/properties", test_purple_presence_properties);
 
 	return g_test_run();
 }

@@ -36,6 +36,11 @@ typedef struct {
 	GHashTable *status_table;
 
 	PurpleStatus *active_status;
+
+	PurplePresencePrimitive primitive;
+	char *message;
+	char *emoji;
+	gboolean mobile;
 } PurplePresencePrivate;
 
 enum {
@@ -46,6 +51,8 @@ enum {
 	PROP_ACTIVE_STATUS,
 	PROP_PRIMITIVE,
 	PROP_MESSAGE,
+	PROP_EMOJI,
+	PROP_MOBILE,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES];
@@ -98,6 +105,18 @@ purple_presence_set_property(GObject *obj, guint param_id, const GValue *value,
 			purple_presence_set_active_status(presence,
 			                                  g_value_get_object(value));
 			break;
+		case PROP_PRIMITIVE:
+			purple_presence_set_primitive(presence, g_value_get_enum(value));
+			break;
+		case PROP_MESSAGE:
+			purple_presence_set_message(presence, g_value_get_string(value));
+			break;
+		case PROP_EMOJI:
+			purple_presence_set_emoji(presence, g_value_get_string(value));
+			break;
+		case PROP_MOBILE:
+			purple_presence_set_mobile(presence, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -129,6 +148,12 @@ purple_presence_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_MESSAGE:
 			g_value_set_string(value, purple_presence_get_message(presence));
 			break;
+		case PROP_EMOJI:
+			g_value_set_string(value, purple_presence_get_emoji(presence));
+			break;
+		case PROP_MOBILE:
+			g_value_set_boolean(value, purple_presence_get_mobile(presence));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -156,6 +181,9 @@ purple_presence_finalize(GObject *obj) {
 
 	g_clear_pointer(&priv->idle_time, g_date_time_unref);
 	g_clear_pointer(&priv->login_time, g_date_time_unref);
+
+	g_clear_pointer(&priv->message, g_free);
+	g_clear_pointer(&priv->emoji, g_free);
 
 	G_OBJECT_CLASS(purple_presence_parent_class)->finalize(obj);
 }
@@ -219,9 +247,9 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	properties[PROP_PRIMITIVE] = g_param_spec_enum(
 		"primitive", "primitive",
 		"The primitive for the presence",
-		PURPLE_TYPE_STATUS_PRIMITIVE,
-		PURPLE_STATUS_UNSET,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+		PURPLE_TYPE_PRESENCE_PRIMITIVE,
+		PURPLE_PRESENCE_PRIMITIVE_OFFLINE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurplePresence:message:
@@ -234,7 +262,33 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 		"message", "message",
 		"The status message",
 		NULL,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurplePresence:emoji:
+	 *
+	 * The emoji or mood of the presence.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_EMOJI] = g_param_spec_string(
+		"emoji", "emoji",
+		"The emoji for the presence.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurplePresence:mobile:
+	 *
+	 * Whether or not the presence is on a mobile device.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_MOBILE] = g_param_spec_boolean(
+		"mobile", "mobile",
+		"Whether or not the presence is on a mobile device.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
@@ -557,21 +611,34 @@ purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
 	return 0;
 }
 
-PurpleStatusPrimitive
+PurplePresencePrimitive
 purple_presence_get_primitive(PurplePresence *presence) {
 	PurplePresencePrivate *priv = NULL;
-	PurpleStatusType *type = NULL;
 
-	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), PURPLE_STATUS_UNSET);
+	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence),
+	                     PURPLE_PRESENCE_PRIMITIVE_OFFLINE);
 
 	priv = purple_presence_get_instance_private(presence);
 
-	type = purple_status_get_status_type(priv->active_status);
-	if(type != NULL) {
-		return purple_status_type_get_primitive(type);
-	}
+	return priv->primitive;
+}
 
-	return PURPLE_STATUS_UNSET;
+void
+purple_presence_set_primitive(PurplePresence *presence,
+                              PurplePresencePrimitive primitive)
+{
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
+
+	priv = purple_presence_get_instance_private(presence);
+
+	if(priv->primitive != primitive) {
+		priv->primitive = primitive;
+
+		g_object_notify_by_pspec(G_OBJECT(presence),
+		                         properties[PROP_PRIMITIVE]);
+	}
 }
 
 const char *
@@ -582,7 +649,80 @@ purple_presence_get_message(PurplePresence *presence) {
 
 	priv = purple_presence_get_instance_private(presence);
 
+	if(priv->message != NULL) {
+		return priv->message;
+	}
+
 	return purple_status_get_attr_string(priv->active_status, "message");
+}
+
+void
+purple_presence_set_message(PurplePresence *presence, const char *message) {
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
+
+	priv = purple_presence_get_instance_private(presence);
+
+	if(!purple_strequal(priv->message, message)) {
+		g_free(priv->message);
+		priv->message = g_strdup(message);
+
+		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_MESSAGE]);
+	}
+}
+
+const char *
+purple_presence_get_emoji(PurplePresence *presence) {
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), NULL);
+
+	priv = purple_presence_get_instance_private(presence);
+
+	return priv->emoji;
+}
+
+void
+purple_presence_set_emoji(PurplePresence *presence, const char *emoji) {
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
+
+	priv = purple_presence_get_instance_private(presence);
+
+	if(!purple_strequal(priv->emoji, emoji)) {
+		g_free(priv->emoji);
+		priv->emoji = g_strdup(emoji);
+
+		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_EMOJI]);
+	}
+}
+
+gboolean
+purple_presence_get_mobile(PurplePresence *presence) {
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), FALSE);
+
+	priv = purple_presence_get_instance_private(presence);
+
+	return priv->mobile;
+}
+
+void
+purple_presence_set_mobile(PurplePresence *presence, gboolean mobile) {
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
+
+	priv = purple_presence_get_instance_private(presence);
+
+	if(priv->mobile != mobile) {
+		priv->mobile = mobile;
+
+		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_MOBILE]);
+	}
 }
 
 const char *

@@ -298,13 +298,24 @@ gint purple_presence_compare(PurplePresence *presence1, PurplePresence *presence
  * purple_presence_get_primitive:
  * @presence: The instance.
  *
- * Gets the [enum@Purple.StatusPrimitive] for @presence.
+ * Gets the [enum@Purple.PresencePrimitive] for @presence.
  *
  * Returns: The current primitive.
  *
  * Since: 3.0.0
  */
-PurpleStatusPrimitive purple_presence_get_primitive(PurplePresence *presence);
+PurplePresencePrimitive purple_presence_get_primitive(PurplePresence *presence);
+
+/**
+ * purple_presence_set_primitive:
+ * @presence: The instance.
+ * @primitive: The new primitive.
+ *
+ * Sets the [enum@Purple.StatusPrimitive] for @presence to @primitive.
+ *
+ * Since: 3.0.0
+ */
+void purple_presence_set_primitive(PurplePresence *presence, PurplePresencePrimitive primitive);
 
 /**
  * purple_presence_get_message:
@@ -317,6 +328,64 @@ PurpleStatusPrimitive purple_presence_get_primitive(PurplePresence *presence);
  * Since: 3.0.0
  */
 const char *purple_presence_get_message(PurplePresence *presence);
+
+/**
+ * purple_presence_set_message:
+ * @presence: The instance.
+ * @message: (nullable): The new message.
+ *
+ * Sets the status message of @presence to @message.
+ *
+ * Since: 3.0.0
+ */
+void purple_presence_set_message(PurplePresence *presence, const char *message);
+
+/**
+ * purple_presence_get_emoji:
+ * @presence: The instance.
+ *
+ * Gets the current emoji, sometimes referred to as a mood, of @presence.
+ *
+ * Returns: The current emoji or %NULL if none is set.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_presence_get_emoji(PurplePresence *presence);
+
+/**
+ * purple_presence_set_emoji:
+ * @presence: The instance.
+ * @emoji: (nullable): The new emoji to set.
+ *
+ * Sets the current emoji, sometimes referred to as a mood, of @presence to
+ * @emoji.
+ *
+ * Since: 3.0.0
+ */
+void purple_presence_set_emoji(PurplePresence *presence, const char *emoji);
+
+/**
+ * purple_presence_get_mobile:
+ * @presence: The instance.
+ *
+ * Gets whether or not @presence is on a mobile device.
+ *
+ * Returns: %TRUE if @presence is on a mobile device, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_presence_get_mobile(PurplePresence *presence);
+
+/**
+ * purple_presence_set_mobile:
+ * @presence: The instance.
+ * @mobile: The new mobile status.
+ *
+ * Sets whether or not @presence is on a mobile device.
+ *
+ * Since: 3.0.0
+ */
+void purple_presence_set_mobile(PurplePresence *presence, gboolean mobile);
 
 /**
  * purple_presence_primitive_to_string:
