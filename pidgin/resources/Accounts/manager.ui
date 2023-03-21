@@ -52,7 +52,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                         <child>
                           <object class="GtkListBox" id="list_box">
                             <property name="css-classes">boxed-list
-        rich-list</property>
+rich-list</property>
                             <property name="selection-mode">none</property>
                             <property name="show-separators">1</property>
                             <signal name="row-activated" handler="pidgin_account_manager_row_activated_cb" swapped="no"/>

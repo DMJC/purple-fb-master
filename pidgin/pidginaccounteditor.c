@@ -922,17 +922,6 @@ pidgin_account_editor_connection_changed_cb(G_GNUC_UNUSED GObject *obj,
 }
 
 static void
-pidgin_account_editor_response_cb(GtkDialog *dialog, gint response_id,
-                                  G_GNUC_UNUSED gpointer data)
-{
-	if(response_id == GTK_RESPONSE_APPLY) {
-		pidgin_account_editor_save(PIDGIN_ACCOUNT_EDITOR(dialog));
-	}
-
-	gtk_window_destroy(GTK_WINDOW(dialog));
-}
-
-static void
 pidgin_account_editor_protocol_changed_cb(G_GNUC_UNUSED GObject *obj,
                                           G_GNUC_UNUSED GParamSpec *pspec,
                                           gpointer data)
@@ -1197,10 +1186,6 @@ pidgin_account_editor_class_init(PidginAccountEditorClass *klass) {
 
 	gtk_widget_class_set_template_from_resource(widget_class,
 	                                            "/im/pidgin/Pidgin3/Accounts/editor.ui");
-
-	/* Dialog */
-	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_account_editor_response_cb);
 
 	/* Login Options */
 	gtk_widget_class_bind_template_child(widget_class, PidginAccountEditor,
