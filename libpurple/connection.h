@@ -60,9 +60,6 @@ typedef struct _PurpleConnectionUiOps PurpleConnectionUiOps;
  *                                     with links
  * @PURPLE_CONNECTION_FLAG_NO_IMAGES: Connection does not support sending of
  *                                    images
- * @PURPLE_CONNECTION_FLAG_SUPPORT_MOODS: Connection supports setting moods
- * @PURPLE_CONNECTION_FLAG_SUPPORT_MOOD_MESSAGES: Connection supports setting
- *                                                a message on moods
  *
  * Flags to change behavior of the client for a given connection.
  */
@@ -76,8 +73,6 @@ typedef enum /*< flags >*/
 	PURPLE_CONNECTION_FLAG_NO_FONTSIZE = 0x0020,
 	PURPLE_CONNECTION_FLAG_NO_URLDESC = 0x0040,
 	PURPLE_CONNECTION_FLAG_NO_IMAGES = 0x0080,
-	PURPLE_CONNECTION_FLAG_SUPPORT_MOODS = 0x0200,
-	PURPLE_CONNECTION_FLAG_SUPPORT_MOOD_MESSAGES = 0x0400
 } PurpleConnectionFlags;
 
 /**

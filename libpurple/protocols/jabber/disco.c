@@ -413,12 +413,7 @@ jabber_disco_server_info_result_cb(JabberStream *js, const char *from,
 		category = purple_xmlnode_get_attrib(child, "category");
 		type = purple_xmlnode_get_attrib(child, "type");
 		if(purple_strequal(category, "pubsub") && purple_strequal(type, "pep")) {
-			PurpleConnection *gc = js->gc;
 			js->pep = TRUE;
-			purple_connection_set_flags(gc,
-					  purple_connection_get_flags(gc)
-					| PURPLE_CONNECTION_FLAG_SUPPORT_MOODS
-					| PURPLE_CONNECTION_FLAG_SUPPORT_MOOD_MESSAGES);
 		}
 		if (!purple_strequal(category, "server"))
 			continue;

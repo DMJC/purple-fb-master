@@ -81,24 +81,6 @@ typedef struct _PurpleStatusType PurpleStatusType;
  */
 typedef struct _PurpleStatusAttribute PurpleStatusAttribute;
 
-#define PURPLE_TYPE_MOOD (purple_mood_get_type())
-
-/**
- * PurpleMood:
- * @mood: A string representing the mood.
- * @description: A short description of the mood.
- *
- * A structure to represent a mood.
- */
-typedef struct {
-	/*< public >*/
-	const char *mood;
-	const char *description;
-
-	/*< private >*/
-	gpointer padding[4];
-} PurpleMood;
-
 /**
  * PurpleStatusPrimitive:
  * @PURPLE_STATUS_UNSET: The status is not set
@@ -110,7 +92,6 @@ typedef struct {
  * @PURPLE_STATUS_EXTENDED_AWAY: The status is extended away/do not disturb
  * @PURPLE_STATUS_MOBILE: The status is mobile
  * @PURPLE_STATUS_TUNE: The status includes a song title
- * @PURPLE_STATUS_MOOD: The status includes a mood
  * @PURPLE_STATUS_NUM_PRIMITIVES: The number of #PurpleStatusPrimitive<!-- -->s
  *
  * A primitive defining the basic structure of a status type.
@@ -130,7 +111,6 @@ typedef enum
 	PURPLE_STATUS_EXTENDED_AWAY,
 	PURPLE_STATUS_MOBILE,
 	PURPLE_STATUS_TUNE,
-	PURPLE_STATUS_MOOD,
 
 	PURPLE_STATUS_NUM_PRIMITIVES, /*< skip >*/
 } PurpleStatusPrimitive;
@@ -206,9 +186,6 @@ typedef enum
  * A constant for a status attribute that represents the release year of a song.
  */
 #define PURPLE_TUNE_YEAR "tune_year"
-
-#define PURPLE_MOOD_NAME	"mood"
-#define PURPLE_MOOD_COMMENT	"moodtext"
 
 G_BEGIN_DECLS
 
@@ -562,19 +539,6 @@ const char *purple_status_attribute_get_name(const PurpleStatusAttribute *attr);
  * Returns: The status attribute's value.
  */
 GValue *purple_status_attribute_get_value(const PurpleStatusAttribute *attr);
-
-/**************************************************************************/
-/* PurpleMood API                                                         */
-/**************************************************************************/
-
-/**
- * purple_mood_get_type:
- *
- * The standard _get_type function for #PurpleMood.
- *
- * Returns: The #GType for the #PurpleMood boxed structure.
- */
-GType purple_mood_get_type(void);
 
 /**************************************************************************/
 /* PurpleStatus API                                                       */

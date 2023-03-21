@@ -110,7 +110,6 @@ static int primitive_scores[] =
 	-200,   /* extended away            */
 	-400,   /* mobile                   */
 	0,      /* tune                     */
-	0,      /* mood                     */
 	-10,    /* idle, special case.      */
 	-5,     /* idle time, special case. */
 	10      /* Offline messageable      */
@@ -140,7 +139,6 @@ static struct PurpleStatusPrimitiveMap
 	{ PURPLE_STATUS_EXTENDED_AWAY,   "extended_away",   N_("Extended away")       },
 	{ PURPLE_STATUS_MOBILE,          "mobile",          N_("Mobile")              },
 	{ PURPLE_STATUS_TUNE,            "tune",            N_("Listening to music"), },
-	{ PURPLE_STATUS_MOOD,            "mood",            N_("Feeling")             },
 };
 
 int *
@@ -1006,48 +1004,6 @@ purple_status_attribute_get_type(void)
 
 	return type;
 }
-
-/**************************************************************************
-* GBoxed code for PurpleMood
-**************************************************************************/
-static PurpleMood *
-purple_mood_copy(PurpleMood *mood)
-{
-	PurpleMood *mood_copy;
-
-	g_return_val_if_fail(mood != NULL, NULL);
-
-	mood_copy = g_new(PurpleMood, 1);
-
-	mood_copy->mood        = g_strdup(mood->mood);
-	mood_copy->description = g_strdup(mood->description);
-
-	return mood_copy;
-}
-
-static void
-purple_mood_free(PurpleMood *mood)
-{
-	g_free((gchar *)mood->mood);
-	g_free((gchar *)mood->description);
-
-	g_free(mood);
-}
-
-GType
-purple_mood_get_type(void)
-{
-	static GType type = 0;
-
-	if (type == 0) {
-		type = g_boxed_type_register_static("PurpleMood",
-				(GBoxedCopyFunc)purple_mood_copy,
-				(GBoxedFreeFunc)purple_mood_free);
-	}
-
-	return type;
-}
-
 
 /**************************************************************************
 * GObject code

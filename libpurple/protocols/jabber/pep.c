@@ -27,7 +27,6 @@
 #include "iq.h"
 #include <string.h>
 #include "useravatar.h"
-#include "usermood.h"
 #include "usernick.h"
 #include "usertune.h"
 
@@ -39,7 +38,6 @@ void jabber_pep_init(void) {
 
 		/* register PEP handlers */
 		jabber_avatar_init();
-		jabber_mood_init();
 		jabber_tune_init();
 		jabber_nick_init();
 	}

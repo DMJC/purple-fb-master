@@ -49,7 +49,6 @@
 #include "oob.h"
 #include "ping.h"
 #include "si.h"
-#include "usermood.h"
 #include "xdata.h"
 #include "pep.h"
 #include "adhoccommands.h"
@@ -1560,7 +1559,7 @@ jabber_tooltip_add_resource_text(JabberBuddyResource *jbr,
 }
 
 static void
-jabber_tooltip_text(PurpleProtocolClient *client, PurpleBuddy *b,
+jabber_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b,
                     PurpleNotifyUserInfo *user_info, gboolean full)
 {
 	JabberBuddy *jb;
@@ -1586,7 +1585,6 @@ jabber_tooltip_text(PurpleProtocolClient *client, PurpleBuddy *b,
 		PurplePresence *presence = purple_buddy_get_presence(b);
 		const char *sub;
 		GList *l;
-		const char *mood;
 		gboolean multiple_resources =
 			jb->resources && g_list_next(jb->resources);
 		JabberBuddyResource *top_jbr = jabber_buddy_find_resource(jb, NULL);
@@ -1607,34 +1605,6 @@ jabber_tooltip_text(PurpleProtocolClient *client, PurpleBuddy *b,
 		}
 
 		if (full) {
-			PurpleStatus *status;
-
-			status = purple_presence_get_status(presence, "mood");
-			mood = purple_status_get_attr_string(status, PURPLE_MOOD_NAME);
-			if(mood && *mood) {
-				const char *moodtext;
-				/* find the mood */
-				PurpleMood *moods = jabber_get_moods(client, account);
-				const char *description = NULL;
-
-				for (; moods->mood ; moods++) {
-					if (purple_strequal(moods->mood, mood)) {
-						description = moods->description;
-						break;
-					}
-				}
-
-				moodtext = purple_status_get_attr_string(status, PURPLE_MOOD_COMMENT);
-				if(moodtext && *moodtext) {
-					char *moodplustext =
-						g_strdup_printf("%s (%s)", description ? _(description) : mood, moodtext);
-
-					purple_notify_user_info_add_pair_html(user_info, _("Mood"), moodplustext);
-					g_free(moodplustext);
-				} else
-					purple_notify_user_info_add_pair_html(user_info, _("Mood"),
-					    description ? _(description) : mood);
-			}
 			if (purple_presence_is_status_primitive_active(presence, PURPLE_STATUS_TUNE)) {
 				PurpleStatus *tune = purple_presence_get_status(presence, "tune");
 				const char *title = purple_status_get_attr_string(tune, PURPLE_TUNE_TITLE);
@@ -1691,18 +1661,8 @@ jabber_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 			NULL, TRUE, TRUE, FALSE,
 			"priority", _("Priority"), priority_value,
 			"message", _("Message"), purple_value_new(G_TYPE_STRING),
-			"mood", _("Mood"), purple_value_new(G_TYPE_STRING),
-			"moodtext", _("Mood Text"), purple_value_new(G_TYPE_STRING),
 			"nick", _("Nickname"), purple_value_new(G_TYPE_STRING),
 			"buzz", _("Allow Buzz"), buzz_enabled,
-			NULL);
-	types = g_list_prepend(types, type);
-
-
-	type = purple_status_type_new_with_attrs(PURPLE_STATUS_MOOD,
-	    "mood", NULL, TRUE, TRUE, TRUE,
-			PURPLE_MOOD_NAME, _("Mood Name"), purple_value_new(G_TYPE_STRING),
-			PURPLE_MOOD_COMMENT, _("Mood Comment"), purple_value_new(G_TYPE_STRING),
 			NULL);
 	types = g_list_prepend(types, type);
 
@@ -1715,8 +1675,6 @@ jabber_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 			_("Chatty"), TRUE, TRUE, FALSE,
 			"priority", _("Priority"), priority_value,
 			"message", _("Message"), purple_value_new(G_TYPE_STRING),
-			"mood", _("Mood"), purple_value_new(G_TYPE_STRING),
-			"moodtext", _("Mood Text"), purple_value_new(G_TYPE_STRING),
 			"nick", _("Nickname"), purple_value_new(G_TYPE_STRING),
 			"buzz", _("Allow Buzz"), buzz_enabled,
 			NULL);
@@ -1731,8 +1689,6 @@ jabber_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 			NULL, TRUE, TRUE, FALSE,
 			"priority", _("Priority"), priority_value,
 			"message", _("Message"), purple_value_new(G_TYPE_STRING),
-			"mood", _("Mood"), purple_value_new(G_TYPE_STRING),
-			"moodtext", _("Mood Text"), purple_value_new(G_TYPE_STRING),
 			"nick", _("Nickname"), purple_value_new(G_TYPE_STRING),
 			"buzz", _("Allow Buzz"), buzz_enabled,
 			NULL);
@@ -1747,8 +1703,6 @@ jabber_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 			NULL, TRUE, TRUE, FALSE,
 			"priority", _("Priority"), priority_value,
 			"message", _("Message"), purple_value_new(G_TYPE_STRING),
-			"mood", _("Mood"), purple_value_new(G_TYPE_STRING),
-			"moodtext", _("Mood Text"), purple_value_new(G_TYPE_STRING),
 			"nick", _("Nickname"), purple_value_new(G_TYPE_STRING),
 			"buzz", _("Allow Buzz"), buzz_enabled,
 			NULL);
@@ -1761,8 +1715,6 @@ jabber_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 			_("Do Not Disturb"), TRUE, TRUE, FALSE,
 			"priority", _("Priority"), priority_value,
 			"message", _("Message"), purple_value_new(G_TYPE_STRING),
-			"mood", _("Mood"), purple_value_new(G_TYPE_STRING),
-			"moodtext", _("Mood Text"), purple_value_new(G_TYPE_STRING),
 			"nick", _("Nickname"), purple_value_new(G_TYPE_STRING),
 			NULL);
 	types = g_list_prepend(types, type);
@@ -2875,50 +2827,6 @@ jabber_can_receive_file(G_GNUC_UNUSED PurpleProtocolXfer *prplxfer,
 	}
 }
 
-static PurpleCmdRet
-jabber_cmd_mood(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
-                char **args, G_GNUC_UNUSED char **error,
-                G_GNUC_UNUSED gpointer data)
-{
-	PurpleAccount *account = purple_conversation_get_account(conv);
-	JabberStream *js = purple_connection_get_protocol_data(purple_account_get_connection(account));
-
-	if (js->pep) {
-		gboolean ret;
-
-		if (!args || !args[0]) {
-			/* No arguments; unset mood */
-			ret = jabber_mood_set(js, NULL, NULL);
-		} else {
-			/* At least one argument.  Relying on the list of arguments
-			 * being NULL-terminated.
-			 */
-			ret = jabber_mood_set(js, args[0], args[1]);
-			if (!ret) {
-				/* Let's try again */
-				char *tmp = g_strjoin(" ", args[0], args[1], NULL);
-				ret = jabber_mood_set(js, "undefined", tmp);
-				g_free(tmp);
-			}
-		}
-
-		if (ret) {
-			return PURPLE_CMD_RET_OK;
-		} else {
-			purple_conversation_write_system_message(conv,
-				_("Failed to specify mood"),
-				PURPLE_MESSAGE_ERROR);
-			return PURPLE_CMD_RET_FAILED;
-		}
-	} else {
-		/* account does not support PEP, can't set a mood */
-		purple_conversation_write_system_message(conv,
-		    _("Account does not support PEP, can't set mood"),
-		    PURPLE_MESSAGE_ERROR);
-		return PURPLE_CMD_RET_FAILED;
-	}
-}
-
 static void
 jabber_register_commands(PurpleProtocol *protocol)
 {
@@ -3018,13 +2926,6 @@ jabber_register_commands(PurpleProtocol *protocol)
 		PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM |
 		PURPLE_CMD_FLAG_PROTOCOL_ONLY, proto_id, jabber_cmd_ping,
 		_("ping &lt;jid&gt;:  Ping a user/component/server."), NULL);
-	commands = g_slist_prepend(commands, GUINT_TO_POINTER(id));
-
-	id = purple_cmd_register("mood", "ws", PURPLE_CMD_P_PROTOCOL,
-		PURPLE_CMD_FLAG_CHAT | PURPLE_CMD_FLAG_IM |
-		PURPLE_CMD_FLAG_PROTOCOL_ONLY | PURPLE_CMD_FLAG_ALLOW_WRONG_ARGS,
-		proto_id, jabber_cmd_mood,
-		_("mood &lt;mood&gt; [text]: Set current user mood"), NULL);
 	commands = g_slist_prepend(commands, GUINT_TO_POINTER(id));
 
 	g_hash_table_insert(jabber_cmds, protocol, commands);
@@ -3382,7 +3283,6 @@ jabber_protocol_client_iface_init(PurpleProtocolClientInterface *client_iface)
 	client_iface->normalize       = jabber_client_normalize;
 	client_iface->find_blist_chat = jabber_find_blist_chat;
 	client_iface->offline_message = jabber_offline_message;
-	client_iface->get_moods       = jabber_get_moods;
 }
 
 static void

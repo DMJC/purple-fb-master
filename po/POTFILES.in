@@ -152,7 +152,6 @@ libpurple/protocols/jabber/tests/test_jabber_digest_md5.c
 libpurple/protocols/jabber/tests/test_jabber_jutil.c
 libpurple/protocols/jabber/tests/test_jabber_scram.c
 libpurple/protocols/jabber/useravatar.c
-libpurple/protocols/jabber/usermood.c
 libpurple/protocols/jabber/usernick.c
 libpurple/protocols/jabber/usertune.c
 libpurple/protocols/jabber/xdata.c
@@ -282,7 +281,6 @@ pidgin/pidgininfopane.c
 pidgin/pidgininvitedialog.c
 pidgin/pidginkeypad.c
 pidgin/pidginmessage.c
-pidgin/pidginmooddialog.c
 pidgin/pidginplugininfo.c
 pidgin/pidginpluginsdialog.c
 pidgin/pidginpluginsmenu.c

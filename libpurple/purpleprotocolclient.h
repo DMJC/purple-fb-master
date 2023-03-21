@@ -89,8 +89,6 @@ G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
  *                                          The hash table should be destroyed
  *                                          by the caller when it's no longer
  *                                          needed.
- * @get_moods: Returns an array of #PurpleMood's, with the last one having
- *             "mood" set to %NULL.
  * @get_max_message_size: Gets the maximum message size in bytes for the
  *                        conversation.
  *                        <sbr/>It may depend on connection-specific or
@@ -134,8 +132,6 @@ struct _PurpleProtocolClientInterface {
 	gboolean (*offline_message)(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 	GHashTable *(*get_account_text_table)(PurpleProtocolClient *client, PurpleAccount *account);
-
-	PurpleMood *(*get_moods)(PurpleProtocolClient *client, PurpleAccount *account);
 
 	gssize (*get_max_message_size)(PurpleProtocolClient *client, PurpleConversation *conv);
 
@@ -275,19 +271,6 @@ gboolean purple_protocol_client_offline_message(PurpleProtocolClient *client, Pu
  *             used by GaduGadu for a single item and should be replaced.
  */
 GHashTable *purple_protocol_client_get_account_text_table(PurpleProtocolClient *client, PurpleAccount *account);
-
-/**
- * purple_protocol_client_get_moods:
- * @client: The #PurpleProtocolClient instance.
- * @account: A #PurpleAccount instance.
- *
- * Gets the mood's for @account.
- *
- * Returns: (transfer none): A %NULL terminated array of #PurpleMood's.
- *
- * Since: 3.0.0
- */
-PurpleMood *purple_protocol_client_get_moods(PurpleProtocolClient *client, PurpleAccount *account);
 
 /**
  * purple_protocol_client_get_max_message_size:

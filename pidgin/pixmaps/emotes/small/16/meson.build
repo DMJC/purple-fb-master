@@ -1,26 +1,3 @@
-# These are mood images that are NOT also used in the smiley theme.
-MOODS = [
-    'afraid.png',
-    'bathing.png',
-    'cinema.png',
-    'disappointed.png',
-    'embarrassed.png',
-    'grumpy.png',
-    'hot.png',
-    'internet.png',
-    'invincible.png',
-    'music.png',
-    'restroom.png',
-    'search.png',
-    'shopping.png',
-    'studying.png',
-    'suit.png',
-    'surfing.png',
-    'typing.png',
-    'working.png',
-    'writing.png'
-]
-
 SMILEYS = [
     'amorous.png',
     'angel.png',
@@ -94,4 +71,4 @@ custom_target('small-theme',
     install : true,
     install_dir : pidginsmileypixdir)
 
-install_data(MOODS + SMILEYS, install_dir : pidginsmileypixdir)
+install_data(SMILEYS, install_dir : pidginsmileypixdir)

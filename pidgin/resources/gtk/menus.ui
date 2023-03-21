@@ -183,11 +183,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           <attribute name="accel">&lt;Primary&gt;P</attribute>
         </item>
         <item>
-          <attribute name="label" translatable="yes">Set _Mood</attribute>
-          <attribute name="action">app.set-mood</attribute>
-          <attribute name="accel">&lt;Primary&gt;D</attribute>
-        </item>
-        <item>
           <attribute name="label" translatable="yes">_Statuses</attribute>
           <attribute name="action">app.status-manager</attribute>
         </item>

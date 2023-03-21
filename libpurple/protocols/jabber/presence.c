@@ -31,7 +31,6 @@
 #include "jutil.h"
 #include "adhoccommands.h"
 
-#include "usermood.h"
 #include "usertune.h"
 
 static GHashTable *presence_handlers = NULL;
@@ -168,16 +167,6 @@ jabber_set_status(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
 
 	gc = purple_account_get_connection(account);
 	js = purple_connection_get_protocol_data(gc);
-
-	/* it's a mood update */
-	if (purple_status_type_get_primitive(purple_status_get_status_type(status)) == PURPLE_STATUS_MOOD) {
-		const char *mood =
-			purple_status_get_attr_string(status, PURPLE_MOOD_NAME);
-		const char *mood_text =
-			purple_status_get_attr_string(status, PURPLE_MOOD_COMMENT);
-		jabber_mood_set(js, mood, mood_text);
-		return;
-	}
 
 	jabber_presence_send(js, FALSE);
 }

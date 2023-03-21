@@ -48,7 +48,6 @@
 #include "pidgincore.h"
 #include "pidgindebug.h"
 #include "pidgindisplaywindow.h"
-#include "pidginmooddialog.h"
 #include "pidginpluginsdialog.h"
 #include "pidginpluginsmenu.h"
 #include "pidginprefs.h"
@@ -220,7 +219,6 @@ static const gchar *pidgin_application_online_actions[] = {
 	"add-group",
 	"get-user-info",
 	"new-message",
-	"set-mood",
 };
 
 /*< private >
@@ -549,14 +547,6 @@ pidgin_application_room_list(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_application_set_mood(G_GNUC_UNUSED GSimpleAction *simple,
-                            G_GNUC_UNUSED GVariant *parameter,
-                            G_GNUC_UNUSED gpointer data)
-{
-	pidgin_mood_dialog_show(NULL);
-}
-
-static void
 pidgin_application_show_status_manager(G_GNUC_UNUSED GSimpleAction *simple,
                                        G_GNUC_UNUSED GVariant *parameter,
                                        gpointer data)
@@ -641,9 +631,6 @@ static GActionEntry app_entries[] = {
 	}, {
 		.name = "room-list",
 		.activate = pidgin_application_room_list,
-	}, {
-		.name = "set-mood",
-		.activate = pidgin_application_set_mood,
 	}, {
 		.name = "status-manager",
 		.activate = pidgin_application_show_status_manager,

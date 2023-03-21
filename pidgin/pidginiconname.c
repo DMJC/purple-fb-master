@@ -50,7 +50,6 @@ pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primitive,
 			break;
 		case PURPLE_STATUS_MOBILE:
 		case PURPLE_STATUS_TUNE:
-		case PURPLE_STATUS_MOOD:
 		case PURPLE_STATUS_UNSET:
 		default:
 			break;

@@ -189,23 +189,6 @@ purple_protocol_client_get_account_text_table(PurpleProtocolClient *client,
 	return NULL;
 }
 
-PurpleMood *
-purple_protocol_client_get_moods(PurpleProtocolClient *client,
-                                 PurpleAccount *account)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client), NULL);
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->get_moods != NULL) {
-		return iface->get_moods(client, account);
-	}
-
-	return NULL;
-}
-
 gssize
 purple_protocol_client_get_max_message_size(PurpleProtocolClient *client,
                                             PurpleConversation *conv)
