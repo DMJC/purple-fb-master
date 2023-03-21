@@ -329,12 +329,8 @@ jabber_bosh_connection_send_now(PurpleJabberBOSHConnection *conn)
 	g_string_free(data, FALSE);
 
 	if (conn->is_terminating) {
-#if SOUP_MAJOR_VERSION >= 3
 		soup_session_send_async(conn->payload_reqs, req, G_PRIORITY_DEFAULT,
 		                        NULL, NULL, NULL);
-#else
-		soup_session_send_async(conn->payload_reqs, req, NULL, NULL, NULL);
-#endif
 		g_free(conn->sid);
 		conn->sid = NULL;
 	} else {

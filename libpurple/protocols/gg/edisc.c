@@ -620,8 +620,6 @@ ggp_edisc_xfer_send_init(PurpleXfer *xfer)
 	                 xfer);
 }
 
-#if SOUP_MAJOR_VERSION >= 3
-
 static void
 ggp_edisc_xfer_send_done(GObject *source, GAsyncResult *async_result,
                          gpointer data)
@@ -682,75 +680,6 @@ ggp_edisc_xfer_send_start_msg_cb(SoupMessage *msg, gpointer data) {
 	                              purple_xfer_get_size(xfer));
 }
 
-#else /* SOUP_MAJOR_VERSION >= 3 */
-
-static void
-ggp_edisc_xfer_send_reader(SoupMessage *msg, gpointer _xfer)
-{
-	PurpleXfer *xfer = _xfer;
-	guchar *buffer;
-	/* FIXME: The read/write xfer implementation sizes this dynamically. */
-	gsize length = 4096;
-	gssize stored;
-
-	buffer = g_new(guchar, length);
-	stored = purple_xfer_read_file(xfer, buffer, length);
-
-	if (stored < 0) {
-		GGPXfer *edisc_xfer = GGP_XFER(xfer);
-		ggp_edisc_session_data *sdata = ggp_edisc_get_sdata(edisc_xfer->gc);
-		soup_session_cancel_message(sdata->session, msg, SOUP_STATUS_IO_ERROR);
-		return;
-	}
-
-	soup_message_body_append(msg->request_body, SOUP_MEMORY_TAKE, buffer,
-	                         stored);
-	if (purple_xfer_get_bytes_sent(xfer) >= purple_xfer_get_size(xfer)) {
-		soup_message_body_complete(msg->request_body);
-	}
-}
-
-static void
-ggp_edisc_xfer_send_done(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
-                         gpointer _xfer)
-{
-	PurpleXfer *xfer = _xfer;
-	GGPXfer *edisc_xfer = GGP_XFER(xfer);
-	JsonParser *parser;
-	JsonObject *result;
-	int result_status = -1;
-
-	if (purple_xfer_is_cancelled(xfer)) {
-		return;
-	}
-
-	g_return_if_fail(edisc_xfer != NULL);
-
-	edisc_xfer->msg = NULL;
-
-	if (!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(msg))) {
-		ggp_edisc_xfer_error(xfer, _("Error while sending a file"));
-		return;
-	}
-
-	parser = ggp_json_parse(msg->response_body->data);
-	result = json_node_get_object(json_parser_get_root(parser));
-	result = json_object_get_object_member(result, "result");
-	if (json_object_has_member(result, "status")) {
-		result_status = json_object_get_int_member(result, "status");
-	}
-	g_object_unref(parser);
-
-	if (result_status == 0) {
-		purple_xfer_set_completed(xfer, TRUE);
-		purple_xfer_end(xfer);
-	} else {
-		ggp_edisc_xfer_error(xfer, _("Error while sending a file"));
-	}
-}
-
-#endif /* SOUP_MAJOR_VERSION >= 3 */
-
 static void ggp_edisc_xfer_send_start(PurpleXfer *xfer)
 {
 	ggp_edisc_session_data *sdata;
@@ -785,7 +714,6 @@ static void ggp_edisc_xfer_send_start(PurpleXfer *xfer)
 	                                        purple_xfer_get_size(xfer));
 	edisc_xfer->msg = msg;
 
-#if SOUP_MAJOR_VERSION >= 3
 	g_signal_connect(msg, "starting",
 	                 G_CALLBACK(ggp_edisc_xfer_send_start_msg_cb), xfer);
 	g_signal_connect(msg, "restarted",
@@ -793,16 +721,6 @@ static void ggp_edisc_xfer_send_start(PurpleXfer *xfer)
 	soup_session_send_and_read_async(sdata->session, msg, G_PRIORITY_DEFAULT,
 	                                 edisc_xfer->cancellable,
 	                                 ggp_edisc_xfer_send_done, xfer);
-#else
-	soup_message_set_flags(msg, SOUP_MESSAGE_CAN_REBUILD);
-	soup_message_body_set_accumulate(msg->request_body, FALSE);
-	g_signal_connect(msg, "wrote-headers",
-	                 G_CALLBACK(ggp_edisc_xfer_send_reader), xfer);
-	g_signal_connect(msg, "wrote-chunk", G_CALLBACK(ggp_edisc_xfer_send_reader),
-	                 xfer);
-	soup_session_queue_message(sdata->session, msg, ggp_edisc_xfer_send_done,
-	                           xfer);
-#endif
 }
 
 PurpleXfer *
@@ -967,8 +885,6 @@ static void ggp_edisc_xfer_recv_ticket_completed(PurpleXfer *xfer)
 	purple_xfer_start(xfer, -1, NULL, 0);
 }
 
-#if SOUP_MAJOR_VERSION >= 3
-
 static gboolean
 ggp_edisc_xfer_recv_pollable_source_cb(GObject *pollable_stream, gpointer data)
 {
@@ -1072,65 +988,6 @@ ggp_edisc_xfer_recv_done_cb(GObject *source, GAsyncResult *result,
 	g_clear_object(&edisc_xfer->msg);
 }
 
-#else /* SOUP_MAJOR_VERSION >= 3 */
-
-static void
-ggp_edisc_xfer_recv_writer(SoupMessage *msg, SoupBuffer *chunk, gpointer _xfer)
-{
-	PurpleXfer *xfer = _xfer;
-	GGPXfer *edisc_xfer = GGP_XFER(xfer);
-	ggp_edisc_session_data *sdata = ggp_edisc_get_sdata(edisc_xfer->gc);
-	gboolean stored;
-
-	if (chunk->length > purple_xfer_get_bytes_remaining(xfer)) {
-		purple_debug_error(
-		        "gg",
-		        "ggp_edisc_xfer_recv_writer: saved too much (%" G_GSIZE_FORMAT
-		        " > %" G_GOFFSET_FORMAT ")",
-		        chunk->length, purple_xfer_get_bytes_remaining(xfer));
-		soup_session_cancel_message(sdata->session, msg, SOUP_STATUS_IO_ERROR);
-		return;
-	}
-
-	stored = purple_xfer_write_file(xfer, (const guchar *)chunk->data,
-	                                chunk->length);
-
-	if (!stored) {
-		purple_debug_error("gg", "ggp_edisc_xfer_recv_writer: saved too less");
-		soup_session_cancel_message(sdata->session, msg, SOUP_STATUS_IO_ERROR);
-		return;
-	}
-}
-
-static void
-ggp_edisc_xfer_recv_done(G_GNUC_UNUSED SoupSession *session, SoupMessage *msg,
-                         gpointer _xfer)
-{
-	PurpleXfer *xfer = _xfer;
-	GGPXfer *edisc_xfer = GGP_XFER(xfer);
-
-	if (purple_xfer_is_cancelled(xfer))
-		return;
-
-	edisc_xfer->msg = NULL;
-
-	if (!SOUP_STATUS_IS_SUCCESSFUL(soup_message_get_status(msg))) {
-		ggp_edisc_xfer_error(xfer, _("Error while receiving a file"));
-		return;
-	}
-
-	if (purple_xfer_get_bytes_remaining(xfer) == 0) {
-		purple_xfer_set_completed(xfer, TRUE);
-		purple_xfer_end(xfer);
-	} else {
-		purple_debug_warning("gg", "ggp_edisc_xfer_recv_done: didn't "
-			"received everything\n");
-		ggp_edisc_xfer_error(xfer, _("Error while receiving a file"));
-	}
-}
-
-#endif /* SOUP_MAJOR_VERSION >= 3 */
-
 static void
 ggp_edisc_xfer_recv_start(PurpleXfer *xfer)
 {
@@ -1158,18 +1015,9 @@ ggp_edisc_xfer_recv_start(PurpleXfer *xfer)
 	// purple_http_request_set_max_len(msg, purple_xfer_get_size(xfer) + 1);
 
 	edisc_xfer->msg = msg;
-#if SOUP_MAJOR_VERSION >= 3
 	soup_session_send_async(sdata->session, msg, G_PRIORITY_DEFAULT,
 	                        edisc_xfer->cancellable,
 	                        ggp_edisc_xfer_recv_done_cb, xfer);
-#else
-	soup_message_body_set_accumulate(msg->response_body, FALSE);
-	g_signal_connect(msg, "got-chunk", G_CALLBACK(ggp_edisc_xfer_recv_writer),
-	                 xfer);
-
-	soup_session_queue_message(sdata->session, msg, ggp_edisc_xfer_recv_done,
-	                           xfer);
-#endif
 }
 
 static void
@@ -1461,10 +1309,6 @@ ggp_xfer_finalize(GObject *obj) {
 	g_free(edisc_xfer->filename);
 	g_cancellable_cancel(edisc_xfer->cancellable);
 	g_clear_object(&edisc_xfer->cancellable);
-#if SOUP_MAJOR_VERSION < 3
-	soup_session_cancel_message(sdata->session, edisc_xfer->msg,
-	                            SOUP_STATUS_CANCELLED);
-#endif
 	g_clear_object(&edisc_xfer->msg);
 
 	g_clear_handle_id(&edisc_xfer->handler, g_source_remove);
