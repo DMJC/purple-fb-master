@@ -1579,7 +1579,6 @@ tooltip_for_buddy(PurpleBuddy *buddy, GString *str, gboolean full)
 	PurpleContactInfo *info = NULL;
 	PurpleNotifyUserInfo *user_info;
 	PurplePresence *presence = NULL;
-	PurpleProtocol *protocol = NULL;
 	const char *alias = purple_buddy_get_alias(buddy);
 	char *tmp, *strip;
 
@@ -1598,11 +1597,6 @@ tooltip_for_buddy(PurpleBuddy *buddy, GString *str, gboolean full)
 	                      purple_account_get_protocol_name(account));
 	purple_notify_user_info_add_pair_plaintext(user_info, _("Account"), tmp);
 	g_free(tmp);
-
-	protocol = purple_account_get_protocol(account);
-	if (protocol) {
-		purple_protocol_client_tooltip_text(PURPLE_PROTOCOL_CLIENT(protocol), buddy, user_info, full);
-	}
 
 	if (purple_prefs_get_bool("/finch/blist/idletime")) {
 		PurplePresence *pre = purple_buddy_get_presence(buddy);

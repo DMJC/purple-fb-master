@@ -53,7 +53,6 @@ G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
  * @list_emblem: Fills the four <type>char**</type>'s with string identifiers
  *               for "emblems" that the UI will interpret and display as
  *               relevant.
- * @tooltip_text: Allows the protocol to add text to a buddy's tooltip.
  * @blist_node_menu: Returns a list of #PurpleActionMenu structs, which
  *                   represent extra actions to be shown in (for example) the
  *                   right-click menu for @node.
@@ -116,9 +115,6 @@ struct _PurpleProtocolClientInterface {
 	/*< public >*/
 	const gchar *(*list_emblem)(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
-	void (*tooltip_text)(PurpleProtocolClient *client, PurpleBuddy *buddy, PurpleNotifyUserInfo *user_info,
-						 gboolean full);
-
 	GList *(*blist_node_menu)(PurpleProtocolClient *client, PurpleBlistNode *node);
 
 	void (*buddy_free)(PurpleProtocolClient *client, PurpleBuddy *buddy);
@@ -153,20 +149,6 @@ G_BEGIN_DECLS
  * Since: 3.0.0
  */
 const gchar *purple_protocol_client_list_emblem(PurpleProtocolClient *client, PurpleBuddy *buddy);
-
-/**
- * purple_protocol_client_tooltip_text:
- * @client: The #PurpleProtocolClient instance.
- * @buddy: The #PurpleBuddy instance.
- * @user_info: The #PurpleNotifyUserInfo instance.
- * @full: Whether or not additional info should be added.
- *
- * Asks @client to update @user_info for @buddy.  If @full is %TRUE then
- * more detailed information will added.
- *
- * Since: 3.0.0
- */
-void purple_protocol_client_tooltip_text(PurpleProtocolClient *client, PurpleBuddy *buddy, PurpleNotifyUserInfo *user_info, gboolean full);
 
 /**
  * purple_protocol_client_blist_node_menu:

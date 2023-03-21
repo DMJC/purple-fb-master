@@ -756,44 +756,6 @@ ggp_normalize(G_GNUC_UNUSED PurpleProtocolClient *client,
 	return normalized;
 }
 
-/* TODO:
- * - move to status.c ?
- * - add information about not adding to his buddy list (not_a_friend)
- */
-static void
-ggp_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b,
-                 PurpleNotifyUserInfo *user_info,
-                 G_GNUC_UNUSED gboolean full)
-{
-	PurpleStatus *status;
-	char *tmp;
-	const char *name, *alias;
-	gchar *msg;
-
-	g_return_if_fail(b != NULL);
-
-	status = purple_presence_get_active_status(purple_buddy_get_presence(b));
-	name = purple_status_get_name(status);
-	alias = purple_buddy_get_alias(b);
-	ggp_status_from_purplestatus(status, &msg);
-
-	purple_notify_user_info_add_pair_plaintext(user_info, _("Alias"), alias);
-
-	if (msg != NULL) {
-		if (PURPLE_BUDDY_IS_ONLINE(b)) {
-			tmp = g_strdup_printf("%s: %s", name, msg);
-			purple_notify_user_info_add_pair_plaintext(user_info, _("Status"), tmp);
-			g_free(tmp);
-		} else {
-			purple_notify_user_info_add_pair_plaintext(user_info, _("Message"), msg);
-		}
-		g_free(msg);
-	/* We don't want to duplicate 'Status: Offline'. */
-	} else if (PURPLE_BUDDY_IS_ONLINE(b)) {
-		purple_notify_user_info_add_pair_plaintext(user_info, _("Status"), name);
-	}
-}
-
 static void
 ggp_login(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleAccount *account) {
 	PurpleConnection *gc = purple_account_get_connection(account);
@@ -1303,7 +1265,6 @@ static void
 ggp_protocol_client_iface_init(PurpleProtocolClientInterface *client_iface)
 {
 	client_iface->list_emblem            = ggp_list_emblem;
-	client_iface->tooltip_text           = ggp_tooltip_text;
 	client_iface->buddy_free             = ggp_buddy_free;
 	client_iface->normalize              = ggp_normalize;
 	client_iface->offline_message        = ggp_offline_message;

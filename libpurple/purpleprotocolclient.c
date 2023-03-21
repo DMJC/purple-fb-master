@@ -53,24 +53,6 @@ purple_protocol_client_list_emblem(PurpleProtocolClient *client,
 	return NULL;
 }
 
-void
-purple_protocol_client_tooltip_text(PurpleProtocolClient *client,
-                                    PurpleBuddy *buddy,
-                                    PurpleNotifyUserInfo *user_info,
-                                    gboolean full)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client));
-	g_return_if_fail(PURPLE_IS_BUDDY(buddy));
-	g_return_if_fail(user_info != NULL);
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->tooltip_text != NULL) {
-		iface->tooltip_text(client, buddy, user_info, full);
-	}
-}
-
 GList *
 purple_protocol_client_blist_node_menu(PurpleProtocolClient *client,
                                        PurpleBlistNode *node)

@@ -1160,28 +1160,6 @@ fb_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 	return g_list_reverse(types);
 }
 
-static void
-fb_client_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client,
-                       PurpleBuddy *buddy, PurpleNotifyUserInfo *info,
-                       G_GNUC_UNUSED gboolean full)
-{
-	const gchar *name;
-	PurplePresence *presence;
-	PurpleStatus *status;
-
-	presence = purple_buddy_get_presence(buddy);
-	status = purple_presence_get_active_status(presence);
-
-	if (!PURPLE_BUDDY_IS_ONLINE(buddy)) {
-		/* Prevent doubles statues for Offline buddies */
-		/* See: pidgin_get_tooltip_text() in gtkblist.c */
-		purple_notify_user_info_remove_last_item(info);
-	}
-
-	name = purple_status_get_name(status);
-	purple_notify_user_info_add_pair_plaintext(info, _("Status"), name);
-}
-
 static GList *
 fb_client_blist_node_menu(G_GNUC_UNUSED PurpleProtocolClient *client,
                           PurpleBlistNode *node)
@@ -1608,7 +1586,6 @@ facebook_protocol_class_finalize(G_GNUC_UNUSED FacebookProtocolClass *klass)
 static void
 facebook_protocol_client_iface_init(PurpleProtocolClientInterface *iface)
 {
-	iface->tooltip_text    = fb_client_tooltip_text;
 	iface->blist_node_menu = fb_client_blist_node_menu;
 	iface->offline_message = fb_client_offline_message;
 }

@@ -1507,123 +1507,6 @@ jabber_list_emblem(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b)
 	return NULL;
 }
 
-static void
-jabber_tooltip_add_resource_text(JabberBuddyResource *jbr,
-	PurpleNotifyUserInfo *user_info, gboolean multiple_resources)
-{
-	char *text = NULL;
-	char *res = NULL;
-	char *label, *value;
-	const char *state;
-
-	if(jbr->status) {
-		text = g_markup_escape_text(jbr->status, -1);
-	}
-
-	if(jbr->name)
-		res = g_strdup_printf(" (%s)", jbr->name);
-
-	state = jabber_buddy_state_get_name(jbr->state);
-	if (text != NULL && !purple_utf8_strcasecmp(state, text)) {
-		g_free(text);
-		text = NULL;
-	}
-
-	label = g_strdup_printf("%s%s", _("Status"), (res ? res : ""));
-	value = g_strdup_printf("%s%s%s", state, (text ? ": " : ""), (text ? text : ""));
-
-	purple_notify_user_info_add_pair_html(user_info, label, value);
-	g_free(label);
-	g_free(value);
-	g_free(text);
-
-	/* if the resource is idle, show that */
-	/* only show it if there is more than one resource available for
-	the buddy, since the "general" idleness will be shown anyway,
-	this way we can see see the idleness of lower-priority resources */
-	if (jbr->idle && multiple_resources) {
-		gchar *idle_str =
-			purple_str_seconds_to_string(time(NULL) - jbr->idle);
-		label = g_strdup_printf("%s%s", _("Idle"), (res ? res : ""));
-		purple_notify_user_info_add_pair_plaintext(user_info, label, idle_str);
-		g_free(idle_str);
-		g_free(label);
-	}
-	g_free(res);
-}
-
-static void
-jabber_tooltip_text(G_GNUC_UNUSED PurpleProtocolClient *client, PurpleBuddy *b,
-                    PurpleNotifyUserInfo *user_info, gboolean full)
-{
-	JabberBuddy *jb;
-	PurpleAccount *account;
-	PurpleConnection *gc;
-	JabberStream *js;
-
-	g_return_if_fail(b != NULL);
-
-	account = purple_buddy_get_account(b);
-	g_return_if_fail(account != NULL);
-
-	gc = purple_account_get_connection(account);
-	g_return_if_fail(gc != NULL);
-
-	js = purple_connection_get_protocol_data(gc);
-	g_return_if_fail(js != NULL);
-
-	jb = jabber_buddy_find(js, purple_buddy_get_name(b), FALSE);
-
-	if(jb) {
-		JabberBuddyResource *jbr = NULL;
-		const char *sub;
-		GList *l;
-		gboolean multiple_resources =
-			jb->resources && g_list_next(jb->resources);
-		JabberBuddyResource *top_jbr = jabber_buddy_find_resource(jb, NULL);
-
-		/* resource-specific info for the top resource */
-		if (top_jbr) {
-			jabber_tooltip_add_resource_text(top_jbr, user_info,
-				multiple_resources);
-		}
-
-		for(l=jb->resources; l; l = l->next) {
-			jbr = l->data;
-			/* the remaining resources */
-			if (jbr != top_jbr) {
-				jabber_tooltip_add_resource_text(jbr, user_info,
-					multiple_resources);
-			}
-		}
-
-		if (full) {
-			if(jb->subscription & JABBER_SUB_FROM) {
-				if(jb->subscription & JABBER_SUB_TO)
-					sub = _("Both");
-				else if(jb->subscription & JABBER_SUB_PENDING)
-					sub = _("From (To pending)");
-				else
-					sub = _("From");
-			} else {
-				if(jb->subscription & JABBER_SUB_TO)
-					sub = _("To");
-				else if(jb->subscription & JABBER_SUB_PENDING)
-					sub = _("None (To pending)");
-				else
-					sub = _("None");
-			}
-
-			purple_notify_user_info_add_pair_html(user_info, _("Subscription"), sub);
-
-		}
-
-		if(!PURPLE_BUDDY_IS_ONLINE(b) && jb->error_msg) {
-			purple_notify_user_info_add_pair_html(user_info, _("Error"), jb->error_msg);
-		}
-	}
-}
-
 static GList *
 jabber_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
                     G_GNUC_UNUSED PurpleAccount *account)
@@ -3244,7 +3127,6 @@ static void
 jabber_protocol_client_iface_init(PurpleProtocolClientInterface *client_iface)
 {
 	client_iface->list_emblem     = jabber_list_emblem;
-	client_iface->tooltip_text    = jabber_tooltip_text;
 	client_iface->blist_node_menu = jabber_blist_node_menu;
 	client_iface->convo_closed    = jabber_convo_closed;
 	client_iface->normalize       = jabber_client_normalize;
