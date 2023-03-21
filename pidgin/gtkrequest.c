@@ -29,6 +29,7 @@
 #include "gtkblist.h"
 #include "gtkutils.h"
 #include "pidginaccountchooser.h"
+#include "pidginaccountdisplay.h"
 #include "pidginaccountfilterconnected.h"
 #include "pidgincore.h"
 
@@ -86,28 +87,19 @@ static GtkWidget * create_account_field(PurpleRequestField *field);
 static void
 pidgin_widget_decorate_account(GtkWidget *cont, PurpleAccount *account)
 {
-	PurpleContactInfo *info = NULL;
-	PurpleProtocol *protocol = NULL;
-	GtkWidget *image;
-	const gchar *icon_name = NULL;
+	GtkWidget *display = NULL;
 
 	if(!PURPLE_IS_ACCOUNT(account)) {
 		return;
 	}
 
-	info = PURPLE_CONTACT_INFO(account);
-	protocol = purple_account_get_protocol(account);
-	icon_name = purple_protocol_get_icon_name(protocol);
-
-	image = gtk_image_new_from_icon_name(icon_name);
-
-	gtk_widget_set_tooltip_text(image, purple_contact_info_get_username(info));
-
-	if (GTK_IS_BOX(cont)) {
-		gtk_widget_set_halign(image, GTK_ALIGN_START);
-		gtk_widget_set_valign(image, GTK_ALIGN_START);
-		gtk_box_append(GTK_BOX(cont), image);
+	if(!GTK_IS_BOX(cont)) {
+		return;
 	}
+
+	display = pidgin_account_display_new(account);
+	gtk_widget_set_halign(display, GTK_ALIGN_CENTER);
+	gtk_box_append(GTK_BOX(cont), display);
 }
 
 static void
@@ -509,7 +501,8 @@ pidgin_request_input(const char *title, const char *primary,
 	gtk_widget_set_hexpand(vbox, TRUE);
 	gtk_box_append(GTK_BOX(hbox), vbox);
 
-	pidgin_widget_decorate_account(hbox, purple_request_cpar_get_account(cpar));
+	pidgin_widget_decorate_account(vbox,
+	                               purple_request_cpar_get_account(cpar));
 
 	/* Descriptive label */
 	primary_esc = pidgin_request_escape(cpar, primary);
@@ -667,13 +660,14 @@ pidgin_request_choice(const char *title, const char *primary,
 	gtk_widget_set_valign(img, GTK_ALIGN_START);
 	gtk_box_append(GTK_BOX(hbox), img);
 
-	pidgin_widget_decorate_account(hbox, purple_request_cpar_get_account(cpar));
-
 	pidgin_request_add_help(GTK_DIALOG(dialog), cpar);
 
 	/* Vertical box */
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_append(GTK_BOX(hbox), vbox);
+
+	pidgin_widget_decorate_account(vbox,
+	                               purple_request_cpar_get_account(cpar));
 
 	/* Descriptive label */
 	primary_esc = pidgin_request_escape(cpar, primary);
@@ -814,8 +808,8 @@ pidgin_request_action(const char *title, const char *primary,
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_append(GTK_BOX(hbox), vbox);
 
-	pidgin_widget_decorate_account(hbox,
-		purple_request_cpar_get_account(cpar));
+	pidgin_widget_decorate_account(vbox,
+	                               purple_request_cpar_get_account(cpar));
 
 	pidgin_request_add_help(GTK_DIALOG(dialog), cpar);
 
@@ -932,8 +926,8 @@ pidgin_request_wait(const char *title, const char *primary,
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_append(GTK_BOX(hbox), vbox);
 
-	pidgin_widget_decorate_account(hbox,
-		purple_request_cpar_get_account(cpar));
+	pidgin_widget_decorate_account(vbox,
+	                               purple_request_cpar_get_account(cpar));
 
 	pidgin_request_add_help(GTK_DIALOG(dialog), cpar);
 
@@ -1929,13 +1923,13 @@ pidgin_request_fields(const char *title, const char *primary,
 	}
 	gtk_dialog_set_default_response(GTK_DIALOG(win), response);
 
-	pidgin_widget_decorate_account(hbox,
-		purple_request_cpar_get_account(cpar));
-
 	/* Setup the vbox */
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_widget_set_hexpand(vbox, TRUE);
 	gtk_box_append(GTK_BOX(hbox), vbox);
+
+	pidgin_widget_decorate_account(vbox,
+	                               purple_request_cpar_get_account(cpar));
 
 	sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	datasheet_buttons_sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
