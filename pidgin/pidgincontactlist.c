@@ -139,6 +139,7 @@ pidgin_contact_list_activate_cb(GtkListView *self, guint position,
 	if(!PURPLE_IS_PERSON(person)) {
 		g_warning("we seem to have activated a zombie.. RUN!!!!!!");
 
+		g_clear_object(&person);
 		return;
 	}
 
@@ -153,6 +154,8 @@ pidgin_contact_list_activate_cb(GtkListView *self, guint position,
 		conversation = purple_im_conversation_new(account, name);
 		purple_conversation_manager_register(manager, conversation);
 	}
+
+	g_clear_object(&person);
 }
 
 static gboolean

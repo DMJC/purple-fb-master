@@ -175,8 +175,10 @@ pidgin_protocol_chooser_set_protocol(PidginProtocolChooser *chooser,
 
 			if(this_protocol == protocol) {
 				position = i;
+				g_object_unref(this_protocol);
 				break;
 			}
+			g_object_unref(this_protocol);
 		}
 	}
 

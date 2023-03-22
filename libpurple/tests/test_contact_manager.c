@@ -292,6 +292,7 @@ test_purple_contact_manager_add_buddy(void) {
 	contact = purple_contact_manager_find_with_id(manager, account, id);
 	g_assert_nonnull(contact);
 	g_assert_true(PURPLE_IS_CONTACT(contact));
+	g_clear_object(&contact);
 
 	/* Verify that we can find the created contact via username. */
 	contact = purple_contact_manager_find_with_username(manager, account,

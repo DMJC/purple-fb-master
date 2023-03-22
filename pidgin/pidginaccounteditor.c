@@ -615,10 +615,12 @@ pidgin_account_editor_update_proxy_options(PidginAccountEditor *editor) {
 	}
 
 	model = adw_combo_row_get_model(ADW_COMBO_ROW(editor->proxy_type));
-	for(guint i = 0; i < g_list_model_get_n_items(model); i++) {
-		GtkStringObject *obj = g_list_model_get_item(model, i);
-		if(purple_strequal(type, gtk_string_object_get_string(obj))) {
-			position = i;
+	for(guint index = 0; index < g_list_model_get_n_items(model); index++) {
+		const char *value = gtk_string_list_get_string(GTK_STRING_LIST(model),
+		                                               index);
+
+		if(purple_strequal(type, value)) {
+			position = index;
 			break;
 		}
 	}

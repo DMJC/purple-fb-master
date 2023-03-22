@@ -378,16 +378,15 @@ bind_combo_row_set(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec,
 
 void
 pidgin_prefs_bind_combo_row(const gchar *key, GtkWidget *widget) {
-	GListModel *model = NULL;
+	GtkStringList *model = NULL;
 	const char *pref_value = NULL;
 	guint selected = GTK_INVALID_LIST_POSITION;
 
 	pref_value = purple_prefs_get_string(key);
-	model = adw_combo_row_get_model(ADW_COMBO_ROW(widget));
+	model = GTK_STRING_LIST(adw_combo_row_get_model(ADW_COMBO_ROW(widget)));
 
-	for(guint i = 0; i < g_list_model_get_n_items(model); i++) {
-		GtkStringObject *obj = g_list_model_get_item(model, i);
-		const gchar *value = gtk_string_object_get_string(obj);
+	for(guint i = 0; i < g_list_model_get_n_items(G_LIST_MODEL(model)); i++) {
+		const char *value = gtk_string_list_get_string(model, i);
 
 		if (purple_strequal(pref_value, value)) {
 			selected = i;

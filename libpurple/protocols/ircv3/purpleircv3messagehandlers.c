@@ -110,6 +110,7 @@ purple_ircv3_message_handler_privmsg(GHashTable *tags,
 		purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), source);
 		purple_contact_manager_add(contact_manager, contact);
 	}
+	g_clear_object(&contact);
 
 	target = params[0];
 	conversation_manager = purple_conversation_manager_get_default();

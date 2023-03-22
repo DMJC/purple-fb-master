@@ -119,7 +119,7 @@ GListModel *purple_contact_manager_get_all(PurpleContactManager *manager, Purple
  * Looks for a [class@Purple.Contact] that belongs to @account with a username
  * of @username.
  *
- * Returns: (transfer none): The [class@Purple.Contact] if found, otherwise
+ * Returns: (transfer full): The [class@Purple.Contact] if found, otherwise
  *          %NULL.
  *
  * Since: 3.0.0
@@ -134,7 +134,7 @@ PurpleContact *purple_contact_manager_find_with_username(PurpleContactManager *m
  *
  * Looks for a [class@Purple.Contact] that belongs to @account with a id of @id.
  *
- * Returns: (transfer none): The [class@Purple.Contact] if found, otherwise
+ * Returns: (transfer full): The [class@Purple.Contact] if found, otherwise
  *          %NULL.
  *
  * Since: 3.0.0
