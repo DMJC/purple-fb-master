@@ -221,7 +221,12 @@ purple_markup_html_to_xhtml(const char *html, char **xhtml_out,
 							if (cdata && url &&
 									(!g_string_equal(cdata, url) && (g_ascii_strncasecmp(url->str, "mailto:", 7) != 0 ||
 									                                 g_utf8_collate(url->str + 7, cdata->str) != 0)))
-									g_string_append_printf(plain, " <%s>", g_strstrip(purple_unescape_html(url->str)));
+							{
+								char *unescaped = purple_unescape_html(url->str);
+								g_string_append_printf(plain, " <%s>",
+								                       g_strstrip(unescaped));
+								g_free(unescaped);
+							}
 							if (cdata) {
 								g_string_free(cdata, TRUE);
 								cdata = NULL;
@@ -393,10 +398,14 @@ purple_markup_html_to_xhtml(const char *html, char **xhtml_out,
 					if(src && xhtml)
 						g_string_append_printf(xhtml, "<img src='%s' alt='%s' />", g_strstrip(src->str), alt ? alt->str : "");
 					if(alt) {
-						if(plain)
-							plain = g_string_append(plain, purple_unescape_html(alt->str));
-						if(!src && xhtml)
+						if(plain) {
+							char *unescaped = purple_unescape_html(alt->str);
+							plain = g_string_append(plain, unescaped);
+							g_free(unescaped);
+						}
+						if(!src && xhtml) {
 							xhtml = g_string_append(xhtml, alt->str);
+						}
 						g_string_free(alt, TRUE);
 					}
 					g_string_free(src, TRUE);
@@ -614,7 +623,7 @@ purple_markup_html_to_xhtml(const char *html, char **xhtml_out,
 				g_string_append_printf(xhtml, "</%s>", pt->dest_tag);
 		}
 	}
-	g_list_free(tags);
+	g_clear_list(&tags, g_free);
 	if(xhtml_out)
 		*xhtml_out = g_string_free(xhtml, FALSE);
 	if(plain_out)

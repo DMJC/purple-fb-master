@@ -217,6 +217,16 @@ test_purple_markup_html_to_xhtml(void) {
 
 		g_assert_cmpstr(data[i].plaintext, ==, plaintext);
 		g_free(plaintext);
+
+		/* Check only asking for xhtml works. */
+		purple_markup_html_to_xhtml(data[i].markup, &xhtml, NULL);
+		g_assert_cmpstr(data[i].xhtml, ==, xhtml);
+		g_free(xhtml);
+
+		/* Check only asking for plaintext works. */
+		purple_markup_html_to_xhtml(data[i].markup, NULL, &plaintext);
+		g_assert_cmpstr(data[i].plaintext, ==, plaintext);
+		g_free(plaintext);
 	}
 }
 
