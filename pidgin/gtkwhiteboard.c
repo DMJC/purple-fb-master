@@ -24,6 +24,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <gtk/gtk.h>
+#include <adwaita.h>
 
 #include <math.h>
 #ifndef M_PI
@@ -354,18 +355,19 @@ static void pidgin_whiteboard_clear(PurpleWhiteboard *wb)
 }
 
 static void
-pidgin_whiteboard_clear_response(GtkDialog *self, gint response, gpointer data)
+pidgin_whiteboard_clear_response(G_GNUC_UNUSED AdwMessageDialog *self,
+                                 char *response, gpointer data)
 {
 	PidginWhiteboard *gtkwb = (PidginWhiteboard *)data;
 
-	if(response == GTK_RESPONSE_YES) {
-		pidgin_whiteboard_clear(gtkwb->wb);
-
-		/* Do protocol specific clearing procedures */
-		purple_whiteboard_send_clear(gtkwb->wb);
+	if(!purple_strequal(response, "yes")) {
+		return;
 	}
 
-	gtk_window_destroy(GTK_WINDOW(self));
+	pidgin_whiteboard_clear(gtkwb->wb);
+
+	/* Do protocol specific clearing procedures */
+	purple_whiteboard_send_clear(gtkwb->wb);
 }
 
 static void
@@ -373,17 +375,26 @@ pidgin_whiteboard_button_clear_press(G_GNUC_UNUSED GtkWidget *widget,
                                      gpointer data)
 {
 	PidginWhiteboard *gtkwb = (PidginWhiteboard*)(data);
+	AdwMessageDialog *dialog = NULL;
 
 	/* Confirm whether the user really wants to clear */
-	GtkWidget *dialog = gtk_message_dialog_new(
-	        GTK_WINDOW(gtkwb), GTK_DIALOG_DESTROY_WITH_PARENT,
-	        GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s",
-	        _("Do you really want to clear?"));
+	dialog = ADW_MESSAGE_DIALOG(adw_message_dialog_new(
+	        GTK_WINDOW(gtkwb),
+	        _("Clear whiteboard?"),
+	        _("Do you want to clear this whiteboard?")));
+
+	adw_message_dialog_add_responses(dialog, "no", _("_No"), "yes", _("_Yes"),
+	                                 NULL);
+	adw_message_dialog_set_response_appearance(dialog, "yes",
+	                                           ADW_RESPONSE_DESTRUCTIVE);
+	adw_message_dialog_set_default_response(dialog, "yes");
+	adw_message_dialog_set_close_response(dialog, "no");
 
 	g_signal_connect(dialog, "response",
 	                 G_CALLBACK(pidgin_whiteboard_clear_response), gtkwb);
 
-	gtk_widget_show(dialog);
+	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+	gtk_window_present_with_time(GTK_WINDOW(dialog), GDK_CURRENT_TIME);
 }
 
 static void
