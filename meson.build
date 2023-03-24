@@ -527,6 +527,11 @@ devenv.set('XDG_CONFIG_HOME', config_home)
 
 meson.add_devenv(devenv)
 
+if meson.backend() == 'ninja'
+	run_target('turtles',
+		command : ['ninja', '-C', '@BUILD_ROOT@', 'pidgin-pot', 'all', 'test'])
+endif
+
 summary({
     'prefix': get_option('prefix'),
     'bindir': get_option('bindir'),
