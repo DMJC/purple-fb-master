@@ -144,6 +144,8 @@ pidgin_about_dialog_load_json(AdwPreferencesPage *page,
 
 	if(!json_parser_load_from_stream(parser, istream, NULL, &error)) {
 		g_critical("%s", error->message);
+		g_clear_error(&error);
+		return;
 	}
 
 	root_node = json_parser_get_root(parser);

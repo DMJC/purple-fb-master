@@ -87,6 +87,7 @@ jabber_oob_xfer_writer(GObject *source, GAsyncResult *result, gpointer data) {
 		purple_xfer_end(xfer);
 		g_clear_pointer(&bytes, g_bytes_unref);
 		g_clear_object(&input);
+		g_clear_error(&error);
 		jox->msg = NULL;
 		return;
 	}
@@ -137,6 +138,7 @@ jabber_oob_xfer_send_cb(GObject *source, GAsyncResult *result, gpointer data) {
 		purple_xfer_set_status(xfer, PURPLE_XFER_STATUS_CANCEL_REMOTE);
 		purple_xfer_end(xfer);
 		g_clear_object(&input);
+		g_clear_error(&error);
 		jox->msg = NULL;
 		return;
 	}

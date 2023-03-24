@@ -177,9 +177,7 @@ purple_media_manager_init (PurpleMediaManager *media)
 		purple_debug_error("mediamanager",
 				"GStreamer failed to initialize: %s.",
 				error ? error->message : "");
-		if (error) {
-			g_error_free(error);
-		}
+		g_clear_error(&error);
 	}
 
 	purple_prefs_add_none("/purple/media");

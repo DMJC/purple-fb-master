@@ -242,6 +242,8 @@ purple_demo_contacts_load(PurpleAccount *account) {
 
 	if(!json_parser_load_from_stream(parser, istream, NULL, &error)) {
 		g_critical("%s", error->message);
+		g_clear_error(&error);
+		return;
 	}
 
 	/* Load our data */

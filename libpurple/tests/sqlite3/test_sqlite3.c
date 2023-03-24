@@ -33,6 +33,7 @@ test_sqlite3_get_schema_version_null(void) {
 
 		version = purple_sqlite3_get_schema_version(NULL, &error);
 		g_assert_error(error, PURPLE_SQLITE3_DOMAIN, 0);
+		g_clear_error(&error);
 		g_assert_cmpint(version, ==, -1);
 	}
 

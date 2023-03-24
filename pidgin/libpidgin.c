@@ -118,6 +118,7 @@ mainloop_sighandler(GIOChannel *source, G_GNUC_UNUSED GIOCondition cond,
 	if (stat != G_IO_STATUS_NORMAL) {
 		purple_debug_error("sighandler", "Signal callback failed to read "
 				"from signal socket: %s", error->message);
+		g_clear_error(&error);
 		purple_core_quit();
 		return FALSE;
 	}

@@ -136,8 +136,7 @@ static GObject *purple_gdk_pixbuf_from_data_helper(const guchar *buf, gsize coun
 		purple_debug_warning("gtkutils", "gdk_pixbuf_loader_write() "
 				"failed with size=%" G_GSIZE_FORMAT ": %s\n", count,
 				error ? error->message : "(no error message)");
-		if (error)
-			g_error_free(error);
+		g_clear_error(&error);
 		g_object_unref(G_OBJECT(loader));
 		return NULL;
 	}
@@ -146,8 +145,7 @@ static GObject *purple_gdk_pixbuf_from_data_helper(const guchar *buf, gsize coun
 		purple_debug_warning("gtkutils", "gdk_pixbuf_loader_close() "
 				"failed for image of size %" G_GSIZE_FORMAT ": %s\n", count,
 				error ? error->message : "(no error message)");
-		if (error)
-			g_error_free(error);
+		g_clear_error(&error);
 		g_object_unref(G_OBJECT(loader));
 		return NULL;
 	}
@@ -198,10 +196,8 @@ GdkPixbuf *purple_gdk_pixbuf_new_from_file(const gchar *filename)
 				pixbuf ? "something" : "nothing",
 				filename,
 				error ? error->message : "(no error message)");
-		if (error)
-			g_error_free(error);
-		if (pixbuf)
-			g_object_unref(G_OBJECT(pixbuf));
+		g_clear_error(&error);
+		g_clear_object(&pixbuf);
 		return NULL;
 	}
 
@@ -224,10 +220,8 @@ GdkPixbuf *purple_gdk_pixbuf_new_from_file_at_size(const char *filename, int wid
 				pixbuf ? "something" : "nothing",
 				filename,
 				error ? error->message : "(no error message)");
-		if (error)
-			g_error_free(error);
-		if (pixbuf)
-			g_object_unref(G_OBJECT(pixbuf));
+		g_clear_error(&error);
+		g_clear_object(&pixbuf);
 		return NULL;
 	}
 

@@ -221,6 +221,7 @@ request_password_write_cb(GObject *obj, GAsyncResult *res, gpointer data) {
 		                  "failed to save password for account \"%s\": %s",
 		                  name,
 		                  error != NULL ? error->message : "unknown error");
+		g_clear_error(&error);
 	}
 
 	purple_account_real_connect(account, password);

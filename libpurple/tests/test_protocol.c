@@ -66,7 +66,7 @@ test_purple_protocol_can_connect_async(PurpleProtocol *protocol,
 
 	task = g_task_new(protocol, cancellable, callback, data);
 	if(test_protocol->error != NULL) {
-		g_task_return_error(task, test_protocol->error);
+		g_task_return_error(task, g_error_copy(test_protocol->error));
 	} else {
 		g_task_return_boolean(task, test_protocol->result);
 	}
@@ -155,6 +155,7 @@ test_purple_protocol_can_connect_cb(GObject *obj, GAsyncResult *res,
 
 	if(test_protocol->error != NULL) {
 		g_assert_error(error, TEST_PROTOCOL_DOMAIN, 0);
+		g_clear_error(&error);
 	} else {
 		g_assert_no_error(error);
 	}

@@ -410,9 +410,7 @@ purple_prefs_load(void)
 	if(!g_file_get_contents(filename, &contents, &length, &error)) {
 		const gchar *sysconfdir = PURPLE_SYSCONFDIR;
 		g_free(filename);
-		g_error_free(error);
-
-		error = NULL;
+		g_clear_error(&error);
 
 		if (sysconfdir == NULL)
 			sysconfdir = "";

@@ -236,7 +236,6 @@ regex_change_color(GtkWidget *w, gboolean success) {
 static void
 do_regex(PidginDebugWindow *win, GtkTextIter *start, GtkTextIter *end)
 {
-	GError *error = NULL;
 	GMatchInfo *match;
 	gint initial_position;
 	gint start_pos, end_pos;
@@ -297,7 +296,7 @@ do_regex(PidginDebugWindow *win, GtkTextIter *start, GtkTextIter *end)
 			}
 		}
 
-		g_match_info_next(match, &error);
+		g_match_info_next(match, NULL);
 	}
 
 	g_match_info_free(match);
