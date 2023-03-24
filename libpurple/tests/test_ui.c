@@ -182,3 +182,8 @@ test_ui_purple_init(void) {
 	 * the preferences using purple_plugins_save_loaded() */
 	purple_plugins_load_saved("/purple/test_ui/plugins/saved");
 }
+
+void
+test_ui_purple_uninit(void) {
+	purple_core_quit();
+}

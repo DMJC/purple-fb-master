@@ -153,6 +153,7 @@ test_image_new_from_file(void) {
 		"image/png"
 	);
 
+	g_free(edata);
 	g_free(path);
 }
 

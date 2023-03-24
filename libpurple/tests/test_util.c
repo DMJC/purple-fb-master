@@ -44,10 +44,19 @@ test_util_filename_escape(void) {
  *****************************************************************************/
 static void
 test_util_text_strip_mnemonic(void) {
-	g_assert_cmpstr("", ==, purple_text_strip_mnemonic(""));
-	g_assert_cmpstr("foo", ==, purple_text_strip_mnemonic("foo"));
-	g_assert_cmpstr("foo", ==, purple_text_strip_mnemonic("_foo"));
+	char *result = NULL;
 
+	result = purple_text_strip_mnemonic("");
+	g_assert_cmpstr("", ==, result);
+	g_free(result);
+
+	result = purple_text_strip_mnemonic("foo");
+	g_assert_cmpstr("foo", ==, result);
+	g_free(result);
+
+	result = purple_text_strip_mnemonic("_foo");
+	g_assert_cmpstr("foo", ==, result);
+	g_free(result);
 }
 
 /******************************************************************************

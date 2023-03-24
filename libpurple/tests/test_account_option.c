@@ -68,6 +68,9 @@ test_purple_account_option_copy_int(void) {
 	opt2 = purple_account_option_copy(opt1);
 
 	test_purple_account_option_compare(opt1, opt2);
+
+	purple_account_option_destroy(opt1);
+	purple_account_option_destroy(opt2);
 }
 
 static void
@@ -84,6 +87,9 @@ test_purple_account_option_copy_int_with_default(void) {
 	g_assert_cmpint(purple_account_option_get_default_int(opt1),
 	                ==,
 	                purple_account_option_get_default_int(opt2));
+
+	purple_account_option_destroy(opt1);
+	purple_account_option_destroy(opt2);
 }
 
 static void
@@ -94,6 +100,9 @@ test_purple_account_option_copy_string(void) {
 
 	opt2 = purple_account_option_copy(opt1);
 	test_purple_account_option_compare_string(opt1, opt2);
+
+	purple_account_option_destroy(opt1);
+	purple_account_option_destroy(opt2);
 }
 
 static void
@@ -105,6 +114,9 @@ test_purple_account_option_copy_string_with_default(void) {
 
 	opt2 = purple_account_option_copy(opt1);
 	test_purple_account_option_compare_string(opt1, opt2);
+
+	purple_account_option_destroy(opt1);
+	purple_account_option_destroy(opt2);
 }
 
 static void
@@ -116,6 +128,9 @@ test_purple_account_option_copy_string_with_masked(void) {
 
 	opt2 = purple_account_option_copy(opt1);
 	test_purple_account_option_compare_string(opt1, opt2);
+
+	purple_account_option_destroy(opt1);
+	purple_account_option_destroy(opt2);
 }
 
 /******************************************************************************

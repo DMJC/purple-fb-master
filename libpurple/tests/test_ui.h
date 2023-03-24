@@ -27,6 +27,7 @@
 G_BEGIN_DECLS
 
 void test_ui_purple_init(void);
+void test_ui_purple_uninit(void);
 
 G_END_DECLS
 

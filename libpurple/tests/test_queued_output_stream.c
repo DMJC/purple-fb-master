@@ -255,6 +255,7 @@ test_queued_output_stream_push_bytes_async_error(void) {
 	g_assert_no_error(err);
 	g_assert_true(ret);
 
+	g_clear_object(&cancellable);
 	g_clear_object(&queued);
 	g_clear_object(&output);
 }

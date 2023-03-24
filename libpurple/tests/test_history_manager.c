@@ -315,6 +315,7 @@ static void
 test_purple_history_manager_no_adapter_write(void) {
 	PurpleAccount *account = NULL;
 	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *conversation_manager = NULL;
 	PurpleHistoryManager *manager = NULL;
 	PurpleMessage *message = NULL;
 	GError *error = NULL;
@@ -337,11 +338,15 @@ test_purple_history_manager_no_adapter_write(void) {
 
 	g_assert_false(result);
 
-	/* TODO: someone is freeing our ref. */
-	/* g_clear_object(&account); */
+	/* TODO: Conversations are automatically registered on construction for
+	 * legacy reasons, so we need to explicitly unregister to clean them up,
+	 * but this can go away once that stops happening. */
+	conversation_manager = purple_conversation_manager_get_default();
+	purple_conversation_manager_unregister(conversation_manager, conversation);
 
 	g_clear_object(&message);
 	g_clear_object(&conversation);
+	g_clear_object(&account);
 	g_clear_object(&manager);
 }
 
@@ -429,6 +434,7 @@ static void
 test_purple_history_manager_adapter_write(void) {
 	PurpleAccount *account = NULL;
 	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *conversation_manager = NULL;
 	PurpleHistoryManager *manager = NULL;
 	PurpleHistoryAdapter *adapter = NULL;
 	PurpleMessage *message = NULL;
@@ -471,10 +477,14 @@ test_purple_history_manager_adapter_write(void) {
 	g_clear_object(&adapter);
 	g_clear_object(&message);
 
-	/* TODO: something is freeing our ref. */
-	/* g_clear_object(&account); */
+	/* TODO: Conversations are automatically registered on construction for
+	 * legacy reasons, so we need to explicitly unregister to clean them up,
+	 * but this can go away once that stops happening. */
+	conversation_manager = purple_conversation_manager_get_default();
+	purple_conversation_manager_unregister(conversation_manager, conversation);
 
 	g_clear_object(&conversation);
+	g_clear_object(&account);
 	g_clear_object(&manager);
 }
 
@@ -515,7 +525,10 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_history_manager_no_adapter_remove);
 	g_test_add_func("/history-manager/no-adapter/write",
 	                test_purple_history_manager_no_adapter_write);
+
 	ret = g_test_run();
+
+	test_ui_purple_uninit();
 
 	return ret;
 }

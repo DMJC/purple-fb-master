@@ -31,6 +31,7 @@ test_purple_conversation_properties(void) {
 	PurpleAccount *account1 = NULL;
 	PurpleConnectionFlags features = 0;
 	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *conversation_manager = NULL;
 	GListModel *members = NULL;
 	gchar *name = NULL;
 	gchar *title = NULL;
@@ -71,6 +72,12 @@ test_purple_conversation_properties(void) {
 	g_assert_cmpstr(title, ==, "title1");
 #endif
 
+	/* TODO: Conversations are automatically registered on construction for
+	 * legacy reasons, so we need to explicitly unregister to clean them up,
+	 * but this can go away once that stops happening. */
+	conversation_manager = purple_conversation_manager_get_default();
+	purple_conversation_manager_unregister(conversation_manager, conversation);
+
 	/* Free/unref all the things. */
 	g_clear_object(&account1);
 	g_clear_object(&members);
@@ -107,6 +114,7 @@ test_purple_conversation_members_add_remove(void) {
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *info = NULL;
 	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *conversation_manager = NULL;
 	PurpleConversationMember *member = NULL;
 	PurpleConversationMember *member1 = NULL;
 	gboolean removed = FALSE;
@@ -164,6 +172,12 @@ test_purple_conversation_members_add_remove(void) {
 	g_assert_false(removed);
 	g_assert_cmpint(removed_called, ==, 1);
 
+	/* TODO: Conversations are automatically registered on construction for
+	 * legacy reasons, so we need to explicitly unregister to clean them up,
+	 * but this can go away once that stops happening. */
+	conversation_manager = purple_conversation_manager_get_default();
+	purple_conversation_manager_unregister(conversation_manager, conversation);
+
 	/* Clean up everything. */
 	g_clear_object(&info);
 	g_clear_object(&member);
@@ -176,6 +190,8 @@ test_purple_conversation_members_add_remove(void) {
  *****************************************************************************/
 gint
 main(gint argc, gchar *argv[]) {
+	gint ret = 0;
+
 	g_test_init(&argc, &argv, NULL);
 
 	test_ui_purple_init();
@@ -186,5 +202,9 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/conversation/members/add-remove",
 	                test_purple_conversation_members_add_remove);
 
-	return g_test_run();
+	ret = g_test_run();
+
+	test_ui_purple_uninit();
+
+	return ret;
 }

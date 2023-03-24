@@ -311,6 +311,7 @@ test_purple_credential_manager_no_provider_read_password_cb(GObject *obj,
 	password = purple_credential_manager_read_password_finish(manager, res,
 	                                                          &error);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
+	g_clear_error(&error);
 	g_assert_null(password);
 
 	g_clear_object(&account);
@@ -360,6 +361,7 @@ test_purple_credential_manager_no_provider_write_password_cb(GObject *obj,
 	r = purple_credential_manager_write_password_finish(manager, res, &error);
 	g_assert_false(r);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
+	g_clear_error(&error);
 
 	g_clear_object(&account);
 
@@ -409,6 +411,7 @@ test_purple_credential_manager_no_provider_clear_password_cb(GObject *obj,
 	r = purple_credential_manager_clear_password_finish(manager, res, &error);
 	g_assert_false(r);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
+	g_clear_error(&error);
 
 	g_clear_object(&account);
 
@@ -695,6 +698,8 @@ main(gint argc, gchar *argv[]) {
 	ret = g_test_run();
 
 	g_main_loop_unref(loop);
+
+	test_ui_purple_uninit();
 
 	return ret;
 }

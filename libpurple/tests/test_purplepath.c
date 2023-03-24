@@ -45,6 +45,8 @@ test_purplepath_data_dir(void) {
 
 gint
 main(gint argc, gchar **argv) {
+	gint ret = 0;
+
 	g_test_init(&argc, &argv, NULL);
 
 	test_ui_purple_init();
@@ -57,5 +59,10 @@ main(gint argc, gchar **argv) {
 	                test_purplepath_config_dir);
 	g_test_add_func("/purplepath/datadir",
 	                test_purplepath_data_dir);
-	return g_test_run();
+
+	ret = g_test_run();
+
+	test_ui_purple_uninit();
+
+	return ret;
 }

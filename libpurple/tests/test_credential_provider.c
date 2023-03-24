@@ -539,5 +539,7 @@ main(gint argc, gchar *argv[]) {
 
 	g_main_loop_unref(loop);
 
+	test_ui_purple_uninit();
+
 	return ret;
 }

@@ -117,51 +117,71 @@ test_purple_protocol_xfer_new(void) {
  *****************************************************************************/
 static void
 test_purple_protocol_xfer_can_receive_func(void) {
-	TestPurpleProtocolXfer *xfer = test_purple_protocol_xfer_new();
-	PurpleAccount *a = purple_account_new("prpl-xfer-can-receive", "prpl-xfer");
-	PurpleConnection *c = g_object_new(PURPLE_TYPE_CONNECTION, "account", a, NULL);
+	TestPurpleProtocolXfer *xfer = NULL;
+	PurpleAccount *account = NULL;
+	PurpleConnection *connection = NULL;
 	gboolean actual = FALSE;
+
+	xfer = test_purple_protocol_xfer_new();
+	account = purple_account_new("prpl-xfer-can-receive", "prpl-xfer");
+	connection = g_object_new(PURPLE_TYPE_CONNECTION, "account", account, NULL);
 
 	g_assert_true(PURPLE_IS_PROTOCOL_XFER(xfer));
 
 	xfer->can_send = FALSE;
-	actual = purple_protocol_xfer_can_receive(
-		PURPLE_PROTOCOL_XFER(xfer),
-		c,
-		"foo"
-	);
+	actual = purple_protocol_xfer_can_receive(PURPLE_PROTOCOL_XFER(xfer),
+	                                          connection, "foo");
 	g_assert_false(actual);
 
 	xfer->can_send = TRUE;
 	actual = purple_protocol_xfer_can_receive(
 		PURPLE_PROTOCOL_XFER(xfer),
-		c,
+		connection,
 		"foo"
 	);
 	g_assert_true(actual);
+
+	g_clear_object(&account);
+	g_clear_object(&xfer);
 }
 
 static void
 test_purple_protocol_xfer_send_file_func(void) {
-	TestPurpleProtocolXfer *prplxfer = g_object_new(test_purple_protocol_xfer_get_type(), NULL);
-	PurpleAccount *a = purple_account_new("prpl-xfer-send", "prpl-xfer");
-	PurpleConnection *c = g_object_new(PURPLE_TYPE_CONNECTION, "account", a, NULL);
+	TestPurpleProtocolXfer *prplxfer = NULL;
+	PurpleAccount *account = NULL;
+	PurpleConnection *connection = NULL;
 
-	purple_protocol_xfer_send_file(PURPLE_PROTOCOL_XFER(prplxfer), c, "foo", "somefile");
+	prplxfer = g_object_new(test_purple_protocol_xfer_get_type(), NULL);
+	account = purple_account_new("prpl-xfer-send", "prpl-xfer");
+	connection = g_object_new(PURPLE_TYPE_CONNECTION, "account", account, NULL);
+
+	purple_protocol_xfer_send_file(PURPLE_PROTOCOL_XFER(prplxfer), connection,
+	                               "foo", "somefile");
 	g_assert_true(prplxfer->send_called);
+
+	g_clear_object(&account);
+	g_clear_object(&prplxfer);
 }
 
 static void
 test_purple_protocol_xfer_new_func(void) {
-	TestPurpleProtocolXfer *prplxfer = g_object_new(test_purple_protocol_xfer_get_type(), NULL);
-	PurpleAccount *a = purple_account_new("prpl-xfer-new-xfer", "prpl-xfer");
-	PurpleConnection *c = g_object_new(PURPLE_TYPE_CONNECTION, "account", a, NULL);
+	TestPurpleProtocolXfer *prplxfer = NULL;
+	PurpleAccount *account = NULL;
+	PurpleConnection *connection = NULL;
 	PurpleXfer *xfer = NULL;
 
-	xfer = purple_protocol_xfer_new_xfer(PURPLE_PROTOCOL_XFER(prplxfer), c, "foo");
+	prplxfer = g_object_new(test_purple_protocol_xfer_get_type(), NULL);
+	account = purple_account_new("prpl-xfer-new-xfer", "prpl-xfer");
+	connection = g_object_new(PURPLE_TYPE_CONNECTION, "account", account, NULL);
+
+	xfer = purple_protocol_xfer_new_xfer(PURPLE_PROTOCOL_XFER(prplxfer),
+	                                     connection, "foo");
 	g_assert_true(PURPLE_IS_XFER(xfer));
 	g_assert_cmpstr("foo", ==, purple_xfer_get_remote_user(xfer));
 	g_assert_true(prplxfer->new_xfer_called);
+
+	g_clear_object(&account);
+	g_clear_object(&prplxfer);
 }
 
 /******************************************************************************
@@ -193,6 +213,9 @@ main(gint argc, gchar **argv) {
 	);
 
 	res = g_test_run();
+
+	/* FIXME: We cannot call test_ui_purple_uninit() here because connections
+	 * are not easily destroyed if they haven't been fully implemented. */
 
 	return res;
 }

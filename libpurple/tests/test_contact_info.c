@@ -437,6 +437,8 @@ test_purple_contact_info_presence_changed_signal(void) {
  *****************************************************************************/
 gint
 main(gint argc, gchar *argv[]) {
+	gint ret = 0;
+
 	g_test_init(&argc, &argv, NULL);
 
 	test_ui_purple_init();
@@ -486,5 +488,9 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/contact-info/presence-changed-signal",
 	                test_purple_contact_info_presence_changed_signal);
 
-	return g_test_run();
+	ret = g_test_run();
+
+	test_ui_purple_uninit();
+
+	return ret;
 }

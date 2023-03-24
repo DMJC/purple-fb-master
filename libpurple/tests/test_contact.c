@@ -83,6 +83,8 @@ test_purple_contact_properties(void) {
  *****************************************************************************/
 gint
 main(gint argc, gchar *argv[]) {
+	gint ret = 0;
+
 	g_test_init(&argc, &argv, NULL);
 
 	test_ui_purple_init();
@@ -92,5 +94,9 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/contact/properties",
 	                test_purple_contact_properties);
 
-	return g_test_run();
+	ret = g_test_run();
+
+	test_ui_purple_uninit();
+
+	return ret;
 }

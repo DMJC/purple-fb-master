@@ -236,6 +236,7 @@ static void
 test_purple_history_adapter_test_write(void) {
 	PurpleAccount *account = NULL;
 	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *conversation_manager = NULL;
 	PurpleHistoryAdapter *adapter = test_purple_history_adapter_new();
 	PurpleMessage *message = NULL;
 	TestPurpleHistoryAdapter *ta = TEST_PURPLE_HISTORY_ADAPTER(adapter);
@@ -262,10 +263,14 @@ test_purple_history_adapter_test_write(void) {
 	g_clear_object(&adapter);
 	g_clear_object(&message);
 
-	/* TODO: something is freeing our ref. */
-	/* g_clear_object(&account); */
+	/* TODO: Conversations are automatically registered on construction for
+	 * legacy reasons, so we need to explicitly unregister to clean them up,
+	 * but this can go away once that stops happening. */
+	conversation_manager = purple_conversation_manager_get_default();
+	purple_conversation_manager_unregister(conversation_manager, conversation);
 
 	g_clear_object(&conversation);
+	g_clear_object(&account);
 }
 
 
@@ -274,6 +279,8 @@ test_purple_history_adapter_test_write(void) {
  *****************************************************************************/
 gint
 main(gint argc, gchar *argv[]) {
+	gint ret = 0;
+
 	g_test_init(&argc, &argv, NULL);
 
 	test_ui_purple_init();
@@ -291,5 +298,9 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/history-adapter/write",
 	                test_purple_history_adapter_test_write);
 
-	return g_test_run();
+	ret = g_test_run();
+
+	test_ui_purple_uninit();
+
+	return ret;
 }
