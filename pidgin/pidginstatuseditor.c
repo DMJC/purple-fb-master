@@ -47,10 +47,6 @@ struct _PidginStatusEditor {
 
 	GtkWidget *title;
 	GtkWidget *primitive;
-	GtkWidget *message;
-
-	GtkWidget *use;
-	GtkWidget *save;
 };
 
 G_DEFINE_TYPE(PidginStatusEditor, pidgin_status_editor, GTK_TYPE_DIALOG)
@@ -173,8 +169,10 @@ pidgin_status_editor_title_changed_cb(G_GNUC_UNUSED GtkEditable *editable,
 		gboolean duplicated = purple_savedstatus_find(title) != NULL;
 
 		if(duplicated) {
-			gtk_widget_set_sensitive(editor->use, FALSE);
-			gtk_widget_set_sensitive(editor->save, FALSE);
+			gtk_dialog_set_response_sensitive(GTK_DIALOG(editor),
+			                                  RESPONSE_USE, FALSE);
+			gtk_dialog_set_response_sensitive(GTK_DIALOG(editor),
+			                                  RESPONSE_SAVE, FALSE);
 
 			return;
 		}
@@ -182,8 +180,10 @@ pidgin_status_editor_title_changed_cb(G_GNUC_UNUSED GtkEditable *editable,
 
 	sensitive = !purple_strequal(title, "");
 
-	gtk_widget_set_sensitive(editor->use, sensitive);
-	gtk_widget_set_sensitive(editor->save, sensitive);
+	gtk_dialog_set_response_sensitive(GTK_DIALOG(editor), RESPONSE_USE,
+	                                  sensitive);
+	gtk_dialog_set_response_sensitive(GTK_DIALOG(editor), RESPONSE_SAVE,
+	                                  sensitive);
 }
 
 /******************************************************************************
@@ -266,13 +266,6 @@ pidgin_status_editor_class_init(PidginStatusEditorClass *klass) {
 	                                     title);
 	gtk_widget_class_bind_template_child(widget_class, PidginStatusEditor,
 	                                     primitive);
-	gtk_widget_class_bind_template_child(widget_class, PidginStatusEditor,
-	                                     message);
-
-	gtk_widget_class_bind_template_child(widget_class, PidginStatusEditor,
-	                                     use);
-	gtk_widget_class_bind_template_child(widget_class, PidginStatusEditor,
-	                                     save);
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_status_editor_response_cb);

@@ -24,12 +24,10 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <template class="PidginStatusPrimitiveChooser" parent="AdwBin">
-    <property name="child">
-      <object class="GtkDropDown" id="chooser">
-        <property name="factory">
-          <object class="GtkBuilderListItemFactory">
-            <property name="bytes">
+  <template class="PidginStatusPrimitiveChooser" parent="AdwComboRow">
+    <property name="factory">
+      <object class="GtkBuilderListItemFactory">
+        <property name="bytes">
 <![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
@@ -62,21 +60,19 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   </template>
 </interface>
 ]]>
-            </property>
-          </object>
         </property>
-        <property name="model">
-          <object class="GtkStringList">
-            <items>
-              <item>offline</item>
-              <item>available</item>
-              <item>unavailable</item>
-              <item>invisible</item>
-              <item>away</item>
-              <item>extended-away</item>
-            </items>
-          </object>
-        </property>
+      </object>
+    </property>
+    <property name="model">
+      <object class="GtkStringList">
+        <items>
+          <item>offline</item>
+          <item>available</item>
+          <item>unavailable</item>
+          <item>invisible</item>
+          <item>away</item>
+          <item>extended-away</item>
+        </items>
       </object>
     </property>
   </template>

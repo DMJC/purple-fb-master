@@ -25,13 +25,11 @@
 #include <pidgin/pidginiconname.h>
 
 struct _PidginStatusPrimitiveChooser {
-	AdwBin parent;
-
-	GtkDropDown *chooser;
+	AdwComboRow parent;
 };
 
 G_DEFINE_TYPE(PidginStatusPrimitiveChooser, pidgin_status_primitive_chooser,
-              ADW_TYPE_BIN)
+              ADW_TYPE_COMBO_ROW)
 
 /******************************************************************************
  * Helpers
@@ -110,10 +108,6 @@ pidgin_status_primitive_chooser_class_init(PidginStatusPrimitiveChooserClass *kl
 	gtk_widget_class_set_template_from_resource(
 	        widget_class, "/im/pidgin/Pidgin3/statusprimitivechooser.ui");
 
-	gtk_widget_class_bind_template_child(widget_class,
-	                                     PidginStatusPrimitiveChooser,
-	                                     chooser);
-
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_status_primitive_chooser_icon_name_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
@@ -136,7 +130,7 @@ pidgin_status_primitive_chooser_get_selected(PidginStatusPrimitiveChooser *choos
 	g_return_val_if_fail(PIDGIN_IS_STATUS_PRIMITIVE_CHOOSER(chooser),
 	                     PURPLE_STATUS_UNSET);
 
-	selected = gtk_drop_down_get_selected_item(chooser->chooser);
+	selected = adw_combo_row_get_selected_item(ADW_COMBO_ROW(chooser));
 	value = gtk_string_object_get_string(selected);
 
 	return pidgin_status_primitive_chooser_primitive_from_string(value);
@@ -147,23 +141,22 @@ pidgin_status_primitive_chooser_set_selected(PidginStatusPrimitiveChooser *choos
                                              PurpleStatusPrimitive primitive)
 {
 	GListModel *model = NULL;
+	GtkStringList *list = NULL;
 
 	g_return_if_fail(PIDGIN_IS_STATUS_PRIMITIVE_CHOOSER(chooser));
 
-	model = gtk_drop_down_get_model(chooser->chooser);
+	model = adw_combo_row_get_model(ADW_COMBO_ROW(chooser));
+	list = GTK_STRING_LIST(model);
 	for(guint i = 0; i < g_list_model_get_n_items(model); i++) {
 		PurpleStatusPrimitive candidate = PURPLE_STATUS_UNSET;
-		GtkStringObject *str = NULL;
 		const char *value = NULL;
 
-		str = g_list_model_get_item(model, i);
-		value = gtk_string_object_get_string(str);
-
+		value = gtk_string_list_get_string(list, i);
 		candidate = pidgin_status_primitive_chooser_primitive_from_string(value);
-		g_clear_object(&str);
 
 		if(primitive == candidate) {
-			gtk_drop_down_set_selected(chooser->chooser, i);
+			adw_combo_row_set_selected(ADW_COMBO_ROW(chooser), i);
+			break;
 		}
 	}
 }

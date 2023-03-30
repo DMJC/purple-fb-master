@@ -27,87 +27,59 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
   <template class="PidginStatusEditor" parent="GtkDialog">
     <property name="title" translatable="1">Status</property>
     <property name="destroy-with-parent">1</property>
+    <property name="resizable">0</property>
     <signal name="response" handler="pidgin_status_editor_response_cb" swapped="no"/>
     <child internal-child="content_area">
       <object class="GtkBox">
         <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
         <child>
-          <object class="GtkBox">
-            <property name="vexpand">1</property>
-            <property name="orientation">vertical</property>
+          <object class="AdwPreferencesGroup">
+            <property name="margin-start">24</property>
+            <property name="margin-end">24</property>
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">24</property>
             <child>
-              <object class="GtkBox">
-                <property name="vexpand">1</property>
-                <child>
-                  <object class="GtkLabel" id="label1">
-                    <property name="label" translatable="1">_Title:</property>
-                    <property name="use-underline">1</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <property name="mnemonic-widget">title</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="title">
-                    <property name="hexpand">1</property>
-                    <property name="focusable">1</property>
-                    <signal name="changed" handler="pidgin_status_editor_title_changed_cb" object="PidginStatusEditor" swapped="no"/>
-                  </object>
-                </child>
+              <object class="AdwEntryRow" id="title">
+                <property name="title" translatable="1">_Title</property>
+                <property name="use-underline">1</property>
+                <signal name="changed" handler="pidgin_status_editor_title_changed_cb"/>
               </object>
             </child>
             <child>
-              <object class="GtkBox">
-                <property name="vexpand">1</property>
-                <child>
-                  <object class="GtkLabel" id="label2">
-                    <property name="label" translatable="1">St_atus:</property>
-                    <property name="use-underline">1</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <property name="mnemonic-widget">primitive</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="PidginStatusPrimitiveChooser" id="primitive">
-                    <property name="hexpand">1</property>
-                  </object>
-                </child>
+              <object class="PidginStatusPrimitiveChooser" id="primitive">
+                <property name="title" translatable="1">St_atus</property>
+                <property name="use-underline">1</property>
               </object>
             </child>
             <child>
-              <object class="GtkBox">
-                <property name="vexpand">1</property>
+              <object class="AdwPreferencesRow">
+                <property name="focusable">0</property>
                 <child>
-                  <object class="GtkLabel" id="label3">
-                    <property name="label" translatable="1">_Message:</property>
-                    <property name="use-underline">1</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <property name="mnemonic-widget">message</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="TalkatuEditor">
-                    <property name="hexpand">1</property>
+                  <object class="GtkBox">
                     <property name="orientation">vertical</property>
-                    <property name="vexpand">1</property>
-                    <child internal-child="send_button">
-                      <object class="GtkButton">
-                        <property name="visible">0</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="css-classes">subtitle</property>
+                        <property name="label" translatable="1">_Message</property>
+                        <property name="mnemonic-widget">message</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <property name="xalign">0</property>
+                        <property name="use-underline">1</property>
                       </object>
                     </child>
-                    <child internal-child="toolbar">
-                      <object class="TalkatuToolbar"/>
-                    </child>
-                    <child internal-child="input">
-                      <object class="TalkatuInput" id="message">
-                        <property name="buffer">buffer</property>
+                    <child>
+                      <object class="TalkatuEditor" id="editor">
                         <property name="hexpand">1</property>
-                        <property name="vexpand">1</property>
-                        <property name="width-request">450</property>
-                        <property name="wrap-mode">word</property>
+                        <property name="show-send-button">0</property>
+                        <child internal-child="input">
+                          <object class="TalkatuInput" id="message">
+                            <property name="buffer">buffer</property>
+                            <property name="hexpand">1</property>
+                            <property name="width-request">450</property>
+                            <property name="wrap-mode">word</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -150,13 +122,6 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
       <action-widget response="1">save</action-widget>
     </action-widgets>
   </template>
-  <object class="GtkSizeGroup">
-    <widgets>
-      <widget name="label1"/>
-      <widget name="label2"/>
-      <widget name="label3"/>
-    </widgets>
-  </object>
   <object class="TalkatuBuffer" id="buffer">
     <property name="action-group">
       <object class="TalkatuActionGroup">
