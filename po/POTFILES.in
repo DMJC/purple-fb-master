@@ -111,11 +111,6 @@ libpurple/protocols/gg/tcpsocket.c
 libpurple/protocols/gg/utils.c
 libpurple/protocols/gg/validator.c
 libpurple/protocols/gg/xml.c
-libpurple/protocols/irc/cmds.c
-libpurple/protocols/irc/dcc_send.c
-libpurple/protocols/irc/irc.c
-libpurple/protocols/irc/msgs.c
-libpurple/protocols/irc/parse.c
 libpurple/protocols/jabber/adhoccommands.c
 libpurple/protocols/jabber/auth.c
 libpurple/protocols/jabber/auth_digest_md5.c
