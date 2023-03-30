@@ -79,14 +79,6 @@ libpurple/protocols.c
 libpurple/protocols/demo/purpledemocontacts.c
 libpurple/protocols/demo/purpledemoplugin.c
 libpurple/protocols/demo/purpledemoprotocol.c
-libpurple/protocols/facebook/api.c
-libpurple/protocols/facebook/data.c
-libpurple/protocols/facebook/facebook.c
-libpurple/protocols/facebook/http.c
-libpurple/protocols/facebook/json.c
-libpurple/protocols/facebook/mqtt.c
-libpurple/protocols/facebook/thrift.c
-libpurple/protocols/facebook/util.c
 libpurple/protocols/gg/avatar.c
 libpurple/protocols/gg/blist.c
 libpurple/protocols/gg/chat.c
