@@ -168,6 +168,57 @@ pidgin_contact_list_message_visible_cb(G_GNUC_UNUSED GtkListItem *item,
 	return !purple_strempty(message);
 }
 
+static char *
+pidgin_contact_list_get_primitive_as_string(G_GNUC_UNUSED GObject *self,
+                                            PurplePresence *presence,
+                                            G_GNUC_UNUSED gpointer data)
+{
+	PurplePresencePrimitive primitive;
+	GDateTime *idle = NULL;
+	GString *str = g_string_new(NULL);
+	const char *tmp = NULL;
+
+	if(!PURPLE_IS_PRESENCE(presence)) {
+		return g_string_free(str, FALSE);
+	}
+
+	primitive = purple_presence_get_primitive(presence);
+	tmp = purple_presence_primitive_to_string(primitive);
+	if(tmp != NULL) {
+		g_string_append_printf(str, " - %s", tmp);
+	}
+
+	idle = purple_presence_get_idle_time(presence);
+	if(idle != NULL) {
+		GDateTime *now = NULL;
+		GTimeSpan duration;
+		guint days;
+		guint hours;
+		guint minutes;
+
+		now = g_date_time_new_now_utc();
+		duration = g_date_time_difference(now, idle);
+		g_date_time_unref(now);
+
+		days = duration / G_TIME_SPAN_DAY;
+		duration %= G_TIME_SPAN_DAY;
+		hours = duration / G_TIME_SPAN_HOUR;
+		duration %= G_TIME_SPAN_HOUR;
+		minutes = duration / G_TIME_SPAN_MINUTE;
+
+		if(days > 0) {
+			g_string_append_printf(str, _(" Idle %dd %dh %02dm"), days, hours,
+			                       minutes);
+		} else if(hours > 0) {
+			g_string_append_printf(str, _(" Idle %dh %02dm"), hours, minutes);
+		} else if(minutes > 0) {
+			g_string_append_printf(str, _(" Idle %02dm"), minutes);
+		}
+	}
+
+	return g_string_free(str, FALSE);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -212,6 +263,8 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 	                                        pidgin_contact_list_activate_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_contact_list_message_visible_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_contact_list_get_primitive_as_string);
 }
 
 /******************************************************************************
