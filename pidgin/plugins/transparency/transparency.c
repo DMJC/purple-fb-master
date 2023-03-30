@@ -49,13 +49,9 @@
  *  LOCALS
  */
 #define OPT_SCHEMA "im.pidgin.Pidgin.plugin.Transparency"
-#define OPT_WINTRANS_IM_ENABLED "im-enabled"
-#define OPT_WINTRANS_IM_ALPHA "im-alpha"
-#define OPT_WINTRANS_IM_SLIDER "im-slider"
-#define OPT_WINTRANS_IM_ONFOCUS "im-solid-onfocus"
-#define OPT_WINTRANS_BL_ENABLED "bl-enabled"
-#define OPT_WINTRANS_BL_ALPHA "bl-alpha"
-#define OPT_WINTRANS_BL_ONFOCUS "bl-solid-onfocus"
+#define OPT_WINTRANS_ALPHA "alpha"
+#define OPT_WINTRANS_SLIDER "slider"
+#define OPT_WINTRANS_ONFOCUS "solid-on-focus"
 
 /*
  *  CODE
@@ -88,17 +84,13 @@ focus_conv_win_cb(GtkEventControllerFocus *self, gpointer data) {
 	settings = g_settings_new_with_backend(OPT_SCHEMA,
 	                                       purple_core_get_settings_backend());
 
-	if(!g_settings_get_boolean(settings, OPT_WINTRANS_IM_ENABLED)) {
-		g_object_unref(settings);
-		return;
-	}
-	if(!g_settings_get_boolean(settings, OPT_WINTRANS_IM_ONFOCUS)) {
+	if(!g_settings_get_boolean(settings, OPT_WINTRANS_ONFOCUS)) {
 		g_object_unref(settings);
 		return;
 	}
 
 	window = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self));
-	set_wintrans(window, g_settings_get_int(settings, OPT_WINTRANS_IM_ALPHA),
+	set_wintrans(window, g_settings_get_int(settings, OPT_WINTRANS_ALPHA),
 	             !enter);
 
 	g_object_unref(settings);
@@ -136,11 +128,11 @@ static void change_alpha(GtkWidget *w, gpointer data) {
 	settings = g_settings_new_with_backend(OPT_SCHEMA,
 	                                       purple_core_get_settings_backend());
 
-	g_settings_set_int(settings, OPT_WINTRANS_IM_ALPHA, alpha);
+	g_settings_set_int(settings, OPT_WINTRANS_ALPHA, alpha);
 
 	/* If we're in no-transparency on focus mode,
 	 * don't take effect immediately */
-	if(!g_settings_get_boolean(settings, OPT_WINTRANS_IM_ONFOCUS)) {
+	if(!g_settings_get_boolean(settings, OPT_WINTRANS_ONFOCUS)) {
 		set_wintrans(GTK_WIDGET(data), alpha, TRUE);
 	}
 
@@ -211,6 +203,9 @@ static void add_slider(GtkWidget *win) {
 	gtk_widget_set_margin_end(slider_frame, 6);
 	gtk_box_prepend(GTK_BOX(vbox), slider_frame);
 
+	g_settings_bind(settings, OPT_WINTRANS_SLIDER, slider_frame, "visible",
+	                G_SETTINGS_BIND_DEFAULT);
+
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_frame_set_child(GTK_FRAME(slider_frame), hbox);
 
@@ -221,18 +216,18 @@ static void add_slider(GtkWidget *win) {
 	gtk_widget_set_hexpand(slider, TRUE);
 	gtk_box_append(GTK_BOX(hbox), slider);
 
-	imalpha = g_settings_get_int(settings, OPT_WINTRANS_IM_ALPHA);
+	imalpha = g_settings_get_int(settings, OPT_WINTRANS_ALPHA);
 	gtk_range_set_value(GTK_RANGE(slider), imalpha);
 	/* On slider val change, update window's transparency level */
 	g_signal_connect(G_OBJECT(slider), "value-changed",
 	                 G_CALLBACK(change_alpha), win);
 
 	/* We cannot use g_settings_bind because GtkScale has no value property. */
-	g_signal_connect_object(settings, "changed::" OPT_WINTRANS_IM_ALPHA,
+	g_signal_connect_object(settings, "changed::" OPT_WINTRANS_ALPHA,
 	                        G_CALLBACK(update_slider), slider, 0);
 
 	/* Set the initial transparency level */
-	set_wintrans(win, g_settings_get_int(settings, OPT_WINTRANS_IM_ALPHA),
+	set_wintrans(win, g_settings_get_int(settings, OPT_WINTRANS_ALPHA),
 	             TRUE);
 
 	/* Set window data, to track that it has a slider */
@@ -246,16 +241,9 @@ static void add_slider(GtkWidget *win) {
 static void remove_convs_wintrans(gboolean remove_signal) {
 	GApplication *application = NULL;
 	GList *wins;
-	GSettings *settings = NULL;
-	gboolean im_enabled = FALSE;
 
 	application = g_application_get_default();
 	wins = gtk_application_get_windows(GTK_APPLICATION(application));
-
-	settings = g_settings_new_with_backend(OPT_SCHEMA,
-	                                       purple_core_get_settings_backend());
-	im_enabled = g_settings_get_boolean(settings, OPT_WINTRANS_IM_ENABLED);
-	g_object_unref(settings);
 
 	for(; wins; wins = wins->next) {
 		GtkWidget *window = wins->data;
@@ -264,9 +252,7 @@ static void remove_convs_wintrans(gboolean remove_signal) {
 			continue;
 		}
 
-		if (im_enabled) {
-			set_wintrans(window, 0, FALSE);
-		}
+		set_wintrans(window, 0, FALSE);
 
 		/* Remove the focus cbs */
 		if (remove_signal) {
@@ -284,47 +270,12 @@ set_conv_window_trans(GtkWidget *window) {
 	settings = g_settings_new_with_backend(OPT_SCHEMA,
 	                                       purple_core_get_settings_backend());
 
-	/* check prefs to see if we want trans */
-	if (g_settings_get_boolean(settings, OPT_WINTRANS_IM_ENABLED)) {
-		set_wintrans(window,
-		             g_settings_get_int(settings, OPT_WINTRANS_IM_ALPHA),
-		             TRUE);
+	set_wintrans(window, g_settings_get_int(settings, OPT_WINTRANS_ALPHA),
+	             TRUE);
 
-		if (g_settings_get_boolean(settings, OPT_WINTRANS_IM_SLIDER)) {
-			add_slider(window);
-		}
-	}
+	add_slider(window);
 
 	g_object_unref(settings);
-}
-
-static void update_convs_wintrans(GtkWidget *toggle_btn, const char *pref) {
-	purple_prefs_set_bool(pref, gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(toggle_btn)));
-
-	if (purple_prefs_get_bool(OPT_WINTRANS_IM_ENABLED)) {
-		GApplication *application = NULL;
-		GList *wins;
-
-		application = g_application_get_default();
-		wins = gtk_application_get_windows(GTK_APPLICATION(application));
-
-		for(; wins; wins = wins->next) {
-			GtkWidget *win = wins->data;
-
-			if(!PIDGIN_IS_DISPLAY_WINDOW(win)) {
-				continue;
-			}
-
-			set_conv_window_trans(win);
-
-			if (!purple_prefs_get_bool(OPT_WINTRANS_IM_SLIDER)) {
-				g_object_set_data(G_OBJECT(win), WINTRANS_SLIDER_KEY, NULL);
-			}
-		}
-	} else {
-		remove_convs_wintrans(FALSE);
-	}
 }
 
 static void
@@ -337,37 +288,6 @@ new_conversation_cb(G_GNUC_UNUSED GtkApplication *application,
 
 	set_conv_window_trans(GTK_WIDGET(window));
 	add_focus_controller_to_conv_win(GTK_WIDGET(window));
-}
-
-static void alpha_change(GtkWidget *w, G_GNUC_UNUSED gpointer data) {
-	GApplication *application = NULL;
-	GList *wins;
-	int imalpha = gtk_range_get_value(GTK_RANGE(w));
-
-	application = g_application_get_default();
-	wins = gtk_application_get_windows(GTK_APPLICATION(application));
-
-	for(; wins; wins = wins->next) {
-		GtkWidget *window = wins->data;
-
-		if(!PIDGIN_IS_DISPLAY_WINDOW(window)) {
-			continue;
-		}
-
-		set_wintrans(window, imalpha, TRUE);
-	}
-}
-
-static void
-alpha_pref_set_int(GtkEventControllerFocus *self, gpointer data) {
-	const char *pref = data;
-	GtkWidget *slider = NULL;
-	int alpha = 255;
-
-	slider = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self));
-	alpha = gtk_range_get_value(GTK_RANGE(slider));
-
-	purple_prefs_set_int(pref, alpha);
 }
 
 static void
@@ -391,84 +311,6 @@ update_existing_convs(void) {
 	}
 }
 
-static GtkWidget *
-get_config_frame(G_GNUC_UNUSED PurplePlugin *plugin) {
-	GtkWidget *ret;
-	GtkWidget *imtransbox;
-	GtkWidget *hbox;
-	GtkWidget *label, *slider;
-	GtkWidget *button;
-	GtkWidget *trans_box;
-	GtkEventController *focus = NULL;
-
-	ret = gtk_box_new(GTK_ORIENTATION_VERTICAL, 18);
-	gtk_widget_set_margin_start(ret, 12);
-	gtk_widget_set_margin_end(ret, 12);
-	gtk_widget_set_margin_top(ret, 12);
-	gtk_widget_set_margin_bottom(ret, 12);
-
-	/* IM Convo trans options */
-	imtransbox = pidgin_make_frame(ret, _("IM Conversation Windows"));
-	button = pidgin_prefs_checkbox(_("_IM window transparency"),
-		OPT_WINTRANS_IM_ENABLED, imtransbox);
-	g_signal_connect(G_OBJECT(button), "clicked",
-		G_CALLBACK(update_convs_wintrans),
-		(gpointer) OPT_WINTRANS_IM_ENABLED);
-
-	trans_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 18);
-	g_object_bind_property(button, "active", trans_box, "sensitive",
-			G_BINDING_SYNC_CREATE);
-
-	button = pidgin_prefs_checkbox(_("_Show slider bar in IM window"),
-		OPT_WINTRANS_IM_SLIDER, trans_box);
-	g_signal_connect(G_OBJECT(button), "clicked",
-		G_CALLBACK(update_convs_wintrans),
-		(gpointer) OPT_WINTRANS_IM_SLIDER);
-
-	button = pidgin_prefs_checkbox(
-		_("Remove IM window transparency on focus"),
-		OPT_WINTRANS_IM_ONFOCUS, trans_box);
-
-	gtk_box_append(GTK_BOX(imtransbox), trans_box);
-
-	/* IM transparency slider */
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-
-	label = gtk_label_new(_("Opacity:"));
-	gtk_box_append(GTK_BOX(hbox), label);
-
-	slider = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 50, 255, 1);
-	gtk_range_set_value(GTK_RANGE(slider),
-		purple_prefs_get_int(OPT_WINTRANS_IM_ALPHA));
-
-	g_signal_connect(G_OBJECT(slider), "value-changed",
-		G_CALLBACK(alpha_change), NULL);
-	focus = gtk_event_controller_focus_new();
-	g_signal_connect(focus, "leave", G_CALLBACK(alpha_pref_set_int),
-	                 (gpointer)OPT_WINTRANS_IM_ALPHA);
-	gtk_widget_add_controller(slider, focus);
-
-	gtk_box_append(GTK_BOX(hbox), slider);
-
-	gtk_box_append(GTK_BOX(trans_box), hbox);
-
-	/* IM transparency slider */
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-
-	label = gtk_label_new(_("Opacity:"));
-	gtk_box_append(GTK_BOX(hbox), label);
-
-	slider = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 50, 255, 1);
-	gtk_range_set_value(GTK_RANGE(slider),
-		purple_prefs_get_int(OPT_WINTRANS_BL_ALPHA));
-
-	gtk_box_append(GTK_BOX(hbox), slider);
-
-	gtk_box_append(GTK_BOX(trans_box), hbox);
-
-	return ret;
-}
-
 static GPluginPluginInfo *
 transparency_query(G_GNUC_UNUSED GError **error) {
 	const gchar * const authors[] = {
@@ -486,7 +328,7 @@ transparency_query(G_GNUC_UNUSED GError **error) {
 		"authors", authors,
 		"website", PURPLE_WEBSITE,
 		"abi-version", PURPLE_ABI_VERSION,
-		"gtk-config-frame-cb", get_config_frame,
+		"settings-schema", OPT_SCHEMA,
 		NULL
 	);
 }
