@@ -33,6 +33,7 @@ struct _PidginNotificationAddContact {
 
 	PurpleNotification *notification;
 
+	GtkWidget *icon;
 	GtkWidget *add;
 	GtkWidget *message;
 };
@@ -64,7 +65,7 @@ pidgin_notification_add_contact_update(PidginNotificationAddContact *add_contact
 		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(add_contact),
 		                              _("Notification missing"));
 
-		adw_action_row_set_icon_name(ADW_ACTION_ROW(add_contact), NULL);
+		gtk_image_set_from_icon_name(GTK_IMAGE(add_contact->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(add_contact), NULL);
 
 		gtk_widget_hide(add_contact->add);
@@ -78,7 +79,7 @@ pidgin_notification_add_contact_update(PidginNotificationAddContact *add_contact
 		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(add_contact),
 		                              _("Notification is missing an account"));
 
-		adw_action_row_set_icon_name(ADW_ACTION_ROW(add_contact), NULL);
+		gtk_image_set_from_icon_name(GTK_IMAGE(add_contact->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(add_contact), NULL);
 
 		gtk_widget_hide(add_contact->add);
@@ -101,7 +102,7 @@ pidgin_notification_add_contact_update(PidginNotificationAddContact *add_contact
 			icon_name = "dialog-question";
 		}
 	}
-	adw_action_row_set_icon_name(ADW_ACTION_ROW(add_contact), icon_name);
+	gtk_image_set_from_icon_name(GTK_IMAGE(add_contact->icon), icon_name);
 
 	title = purple_notification_get_title(add_contact->notification);
 	adw_preferences_row_set_title(ADW_PREFERENCES_ROW(add_contact), title);
@@ -267,6 +268,9 @@ pidgin_notification_add_contact_class_init(PidginNotificationAddContactClass *kl
 	    "/im/pidgin/Pidgin3/Notifications/addcontact.ui"
 	);
 
+	gtk_widget_class_bind_template_child(widget_class,
+	                                     PidginNotificationAddContact,
+	                                     icon);
 	gtk_widget_class_bind_template_child(widget_class,
 	                                     PidginNotificationAddContact,
 	                                     add);

@@ -33,6 +33,7 @@ struct _PidginNotificationAuthorizationRequest {
 
 	PurpleNotification *notification;
 
+	GtkWidget *icon;
 	GtkWidget *accept;
 	GtkWidget *deny;
 	GtkWidget *message;
@@ -64,7 +65,7 @@ pidgin_notification_authorization_request_update(PidginNotificationAuthorization
 		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(request),
 		                              _("Notification missing"));
 
-		adw_action_row_set_icon_name(ADW_ACTION_ROW(request), NULL);
+		gtk_image_set_from_icon_name(GTK_IMAGE(request->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(request), NULL);
 
 		gtk_widget_hide(request->accept);
@@ -79,7 +80,7 @@ pidgin_notification_authorization_request_update(PidginNotificationAuthorization
 		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(request),
 		                              _("Notification is missing an account"));
 
-		adw_action_row_set_icon_name(ADW_ACTION_ROW(request), NULL);
+		gtk_image_set_from_icon_name(GTK_IMAGE(request->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(request), NULL);
 
 		gtk_widget_hide(request->accept);
@@ -103,7 +104,7 @@ pidgin_notification_authorization_request_update(PidginNotificationAuthorization
 			icon_name = "dialog-question";
 		}
 	}
-	adw_action_row_set_icon_name(ADW_ACTION_ROW(request), icon_name);
+	gtk_image_set_from_icon_name(GTK_IMAGE(request->icon), icon_name);
 
 	title = purple_notification_get_title(request->notification);
 	adw_preferences_row_set_title(ADW_PREFERENCES_ROW(request), title);
@@ -298,6 +299,9 @@ pidgin_notification_authorization_request_class_init(PidginNotificationAuthoriza
 	    "/im/pidgin/Pidgin3/Notifications/authorizationrequest.ui"
 	);
 
+	gtk_widget_class_bind_template_child(widget_class,
+	                                     PidginNotificationAuthorizationRequest,
+	                                     icon);
 	gtk_widget_class_bind_template_child(widget_class,
 	                                     PidginNotificationAuthorizationRequest,
 	                                     accept);

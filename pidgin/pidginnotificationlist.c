@@ -78,11 +78,17 @@ pidgin_notification_list_unknown_notification(PurpleNotification *notification) 
 static GtkWidget *
 pidgin_notification_generic_new(PurpleNotification *notification) {
 	GtkWidget *row = NULL;
+	GtkWidget *icon = NULL;
+
+	icon = gtk_image_new();
+	gtk_image_set_icon_size(GTK_IMAGE(icon), GTK_ICON_SIZE_LARGE);
+	g_object_bind_property(notification, "icon-name", icon, "icon-name",
+	                       G_BINDING_SYNC_CREATE);
 
 	row = adw_action_row_new();
+	adw_action_row_add_prefix(ADW_ACTION_ROW(row), icon);
+
 	g_object_bind_property(notification, "title", row, "title",
-	                       G_BINDING_SYNC_CREATE);
-	g_object_bind_property(notification, "icon-name", row, "icon-name",
 	                       G_BINDING_SYNC_CREATE);
 	g_object_bind_property_full(notification, "data", row, "subtitle",
 	                            G_BINDING_SYNC_CREATE,

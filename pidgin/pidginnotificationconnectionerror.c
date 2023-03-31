@@ -31,6 +31,7 @@ struct _PidginNotificationConnectionError {
 
 	PurpleNotification *notification;
 
+	GtkWidget *icon;
 	GtkWidget *reconnect;
 	GtkWidget *reenable;
 	GtkWidget *modify;
@@ -62,7 +63,7 @@ pidgin_notification_connection_error_update(PidginNotificationConnectionError *e
 		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(error),
 		                              _("Notification missing"));
 
-		adw_action_row_set_icon_name(ADW_ACTION_ROW(error), NULL);
+		gtk_image_set_from_icon_name(GTK_IMAGE(error->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(error), NULL);
 
 		gtk_widget_hide(error->reconnect);
@@ -77,7 +78,7 @@ pidgin_notification_connection_error_update(PidginNotificationConnectionError *e
 		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(error),
 		                              _("Notification is missing an account"));
 
-		adw_action_row_set_icon_name(ADW_ACTION_ROW(error), NULL);
+		gtk_image_set_from_icon_name(GTK_IMAGE(error->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(error), NULL);
 
 		gtk_widget_hide(error->reconnect);
@@ -99,7 +100,7 @@ pidgin_notification_connection_error_update(PidginNotificationConnectionError *e
 	/* Set the icon name if one was specified. */
 	icon_name = purple_notification_get_icon_name(error->notification);
 	if(icon_name != NULL) {
-		adw_action_row_set_icon_name(ADW_ACTION_ROW(error), icon_name);
+		gtk_image_set_from_icon_name(GTK_IMAGE(error->icon), icon_name);
 	}
 
 	enabled = purple_account_get_enabled(account);
@@ -238,6 +239,9 @@ pidgin_notification_connection_error_class_init(PidginNotificationConnectionErro
 	    "/im/pidgin/Pidgin3/Notifications/connectionerror.ui"
 	);
 
+	gtk_widget_class_bind_template_child(widget_class,
+	                                     PidginNotificationConnectionError,
+	                                     icon);
 	gtk_widget_class_bind_template_child(widget_class,
 	                                     PidginNotificationConnectionError,
 	                                     reconnect);
