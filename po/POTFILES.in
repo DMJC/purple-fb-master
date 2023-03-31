@@ -233,7 +233,6 @@ pidgin/gtkdialogs.c
 pidgin/gtkidle.c
 pidgin/gtkmedia.c
 pidgin/gtknotify.c
-pidgin/gtkpluginpref.c
 pidgin/gtkrequest.c
 pidgin/gtkroomlist.c
 pidgin/gtksavedstatuses.c

@@ -32,7 +32,6 @@
 
 #include <purple.h>
 
-#include "gtkpluginpref.h"
 #include "pidgincore.h"
 
 struct _PidginPluginsDialog {
