@@ -1182,8 +1182,12 @@ version 3.0.0 (??/??/????):
 		* pidgin_pounces_init
 		* pidgin_pounces_manager_hide
 		* pidgin_pounces_manager_show
+		* pidgin_prefs_checkbox
+		* pidgin_prefs_dropdown
+		* pidgin_prefs_dropdown_from_list
 		* pidgin_prefs_labeled_entry
 		* pidgin_prefs_labeled_password
+		* pidgin_prefs_labeled_spin_button
 		* pidgin_prefs_show
 		* pidgin_privacy_dialog_hide
 		* pidgin_privacy_dialog_show
