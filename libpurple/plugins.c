@@ -30,6 +30,8 @@
 #include "debug.h"
 #include "plugins.h"
 #include "purpleenums.h"
+#include "purplenotification.h"
+#include "purplenotificationmanager.h"
 #include "signals.h"
 #include "util.h"
 #ifdef _WIN32
@@ -424,8 +426,9 @@ purple_plugins_load_saved(const char *key)
 
 	for (l = files; l; l = l->next)
 	{
-		char *file;
 		PurplePlugin *plugin;
+		GError *error = NULL;
+		char *file;
 
 		if (l->data == NULL)
 			continue;
@@ -434,10 +437,38 @@ purple_plugins_load_saved(const char *key)
 		plugin = purple_plugins_find_by_filename(file);
 
 		if (plugin) {
-			purple_debug_info("plugins", "Loading saved plugin %s\n", file);
-			purple_plugin_load(plugin, NULL);
+			purple_debug_info("plugins", "Loading saved plugin %s", file);
+			purple_plugin_load(plugin, &error);
 		} else {
-			purple_debug_error("plugins", "Unable to find saved plugin %s\n", file);
+			error = g_error_new(PURPLE_PLUGINS_DOMAIN, 0,
+			                    _("Unable to find saved plugin %s"), file);
+			purple_debug_error("plugins", "Unable to find saved plugin %s", file);
+		}
+
+		if(error != NULL) {
+			PurpleNotification *notification = NULL;
+			PurpleNotificationManager *manager = NULL;
+			char *msg = NULL;
+			char *title = NULL;
+
+			if(error->message != NULL) {
+				msg = g_strdup(error->message);
+			} else {
+				msg = g_strdup(_("Unknown error"));
+			}
+			g_clear_error(&error);
+
+			notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
+			                                       NULL, msg, g_free);
+
+			purple_notification_set_icon_name(notification,
+			                                  "dialog-error-symbolic");
+			title = g_strdup_printf(_("Failed to load saved plugin %s"), file);
+			purple_notification_set_title(notification, title);
+			g_free(title);
+
+			manager = purple_notification_manager_get_default();
+			purple_notification_manager_add(manager, notification);
 		}
 
 		g_free(l->data);

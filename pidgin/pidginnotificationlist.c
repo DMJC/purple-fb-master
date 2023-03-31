@@ -41,6 +41,17 @@ G_DEFINE_TYPE(PidginNotificationList, pidgin_notification_list, GTK_TYPE_BOX)
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static gboolean
+pidgin_notification_gpointer_to_char(G_GNUC_UNUSED GBinding *binding,
+                                     const GValue *from_value,
+                                     GValue *to_value,
+                                     G_GNUC_UNUSED gpointer user_data)
+{
+	g_value_set_string(to_value, (char *)g_value_get_pointer(from_value));
+
+	return TRUE;
+}
+
 static GtkWidget *
 pidgin_notification_list_unknown_notification(PurpleNotification *notification) {
 	GtkWidget *widget = NULL;
@@ -65,6 +76,25 @@ pidgin_notification_list_unknown_notification(PurpleNotification *notification) 
 }
 
 static GtkWidget *
+pidgin_notification_generic_new(PurpleNotification *notification) {
+	GtkWidget *row = NULL;
+
+	row = adw_action_row_new();
+	g_object_bind_property(notification, "title", row, "title",
+	                       G_BINDING_SYNC_CREATE);
+	g_object_bind_property(notification, "icon-name", row, "icon-name",
+	                       G_BINDING_SYNC_CREATE);
+	g_object_bind_property_full(notification, "data", row, "subtitle",
+	                            G_BINDING_SYNC_CREATE,
+	                            pidgin_notification_gpointer_to_char,
+	                            NULL,
+	                            NULL,
+	                            NULL);
+
+	return row;
+}
+
+static GtkWidget *
 pidgin_notification_list_create_widget_func(gpointer item,
                                             G_GNUC_UNUSED gpointer data)
 {
@@ -72,6 +102,9 @@ pidgin_notification_list_create_widget_func(gpointer item,
 	GtkWidget *widget = NULL;
 
 	switch(purple_notification_get_notification_type(notification)) {
+		case PURPLE_NOTIFICATION_TYPE_GENERIC:
+			widget = pidgin_notification_generic_new(notification);
+			break;
 		case PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR:
 			widget = pidgin_notification_connection_error_new(notification);
 			break;
