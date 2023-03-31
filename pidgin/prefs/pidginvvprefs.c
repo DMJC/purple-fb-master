@@ -40,8 +40,8 @@ struct _PidginVVPrefs {
 	AdwPreferencesPage parent;
 
 	struct {
-		PidginPrefCombo input;
-		PidginPrefCombo output;
+		AdwComboRow *input;
+		AdwComboRow *output;
 		GtkWidget *threshold_row;
 		GtkWidget *threshold;
 		GtkWidget *volume;
@@ -52,8 +52,8 @@ struct _PidginVVPrefs {
 	} voice;
 
 	struct {
-		PidginPrefCombo input;
-		PidginPrefCombo output;
+		AdwComboRow *input;
+		AdwComboRow *output;
 		GtkWidget *frame;
 		GtkWidget *test;
 		GstElement *pipeline;
@@ -70,31 +70,37 @@ G_DEFINE_TYPE(PidginVVPrefs, pidgin_vv_prefs, ADW_TYPE_PREFERENCES_PAGE)
  * Helpers
  *****************************************************************************/
 static void
-populate_vv_device_menuitems(PurpleMediaElementType type, GtkListStore *store)
+populate_vv_device_menuitems(AdwComboRow *row, PurpleMediaElementType type,
+                             const char *active)
 {
 	PurpleMediaManager *manager = NULL;
+	GListStore *store = NULL;
 	GList *devices;
+	guint selected = 0; /* Default to auto{audio,video}{src,sink} elements. */
 
-	gtk_list_store_clear(store);
+	store = G_LIST_STORE(adw_combo_row_get_model(row));
+
+	g_list_store_remove_all(store);
 
 	manager = purple_media_manager_get();
 	devices = purple_media_manager_enumerate_elements(manager, type);
 	for (; devices; devices = g_list_delete_link(devices, devices)) {
 		PurpleMediaElementInfo *info = devices->data;
-		GtkTreeIter iter;
-		char *name, *id;
+		char *id;
 
-		name = purple_media_element_info_get_name(info);
 		id = purple_media_element_info_get_id(info);
-
-		gtk_list_store_append(store, &iter);
-		gtk_list_store_set(store, &iter, PIDGIN_PREF_COMBO_TEXT, name,
-		                   PIDGIN_PREF_COMBO_VALUE, id, -1);
-
-		g_free(name);
+		if(purple_strequal(id, active)) {
+			/* The index will be for the *next* appended item. */
+			selected = g_list_model_get_n_items(G_LIST_MODEL(store));
+		}
 		g_free(id);
+
+		g_list_store_append(store, info);
+
 		g_object_unref(info);
 	}
+
+	adw_combo_row_set_selected(row, selected);
 }
 
 static GstElement *
@@ -435,66 +441,80 @@ purple_media_type_to_preference_key(PurpleMediaElementType type)
 }
 
 static void
-bind_vv_dropdown(PidginPrefCombo *combo, PurpleMediaElementType element_type)
+vv_combo_row_set(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data)
 {
-	const gchar *preference_key;
-	GtkTreeModel *model;
+	const char *key = data;
+	PurpleMediaElementInfo *item = NULL;
+	char *id = NULL;
 
-	preference_key = purple_media_type_to_preference_key(element_type);
-	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo->combo));
-	populate_vv_device_menuitems(element_type, GTK_LIST_STORE(model));
-
-	combo->type = PURPLE_PREF_STRING;
-	combo->key = preference_key;
-	pidgin_prefs_bind_dropdown(combo);
+	item = adw_combo_row_get_selected_item(ADW_COMBO_ROW(obj));
+	id = purple_media_element_info_get_id(item);
+	purple_prefs_set_string(key, id);
+	g_free(id);
 }
 
 static void
-bind_vv_frame(PidginVVPrefs *prefs, PidginPrefCombo *combo,
+bind_vv_combo(PidginVVPrefs *prefs, AdwComboRow *row,
               PurpleMediaElementType type)
 {
-	bind_vv_dropdown(combo, type);
+	const char *pref_key = NULL;
+	const char *pref_value = NULL;
 
-	purple_prefs_connect_callback(combo->combo,
-	                              purple_media_type_to_preference_key(type),
-	                              vv_device_changed_cb, prefs);
-	g_signal_connect_swapped(combo->combo, "destroy",
+	pref_key = purple_media_type_to_preference_key(type);
+	pref_value = purple_prefs_get_string(pref_key);
+
+	populate_vv_device_menuitems(row, type, pref_value);
+
+	g_signal_connect(row, "notify::selected", G_CALLBACK(vv_combo_row_set),
+	                 (gpointer)pref_key);
+
+	purple_prefs_connect_callback(row, pref_key, vv_device_changed_cb, prefs);
+	g_signal_connect_swapped(row, "destroy",
 	                         G_CALLBACK(purple_prefs_disconnect_by_handle),
-	                         combo->combo);
+	                         row);
 
-	g_object_set_data(G_OBJECT(combo->combo), "vv_media_type",
-	                  (gpointer)type);
-	g_object_set_data(G_OBJECT(combo->combo), "vv_combo", combo);
+	g_object_set_data(G_OBJECT(row), "vv_media_type", GINT_TO_POINTER(type));
 }
 
 static void
 device_list_changed_cb(G_GNUC_UNUSED PurpleMediaManager *manager,
-                       GtkWidget *widget)
+                       gpointer data)
 {
-	PidginPrefCombo *combo;
+	AdwComboRow *row = data;
+	PurpleMediaElementInfo *original = NULL;
+	PurpleMediaElementInfo *selected = NULL;
 	PurpleMediaElementType media_type;
-	const gchar *preference_key;
-	guint signal_id;
-	GtkTreeModel *model;
+	const char *pref_key = NULL;
+	const char *pref_value = NULL;
 
-	combo = g_object_get_data(G_OBJECT(widget), "vv_combo");
-	media_type = (PurpleMediaElementType)GPOINTER_TO_INT(g_object_get_data(
-			G_OBJECT(widget),
-			"vv_media_type"));
-	preference_key = purple_media_type_to_preference_key(media_type);
+	original = g_object_ref(adw_combo_row_get_selected_item(row));
+
+	media_type = (PurpleMediaElementType)GPOINTER_TO_INT(
+	    g_object_get_data(
+	        G_OBJECT(row),
+	        "vv_media_type"));
+	pref_key = purple_media_type_to_preference_key(media_type);
+	pref_value = purple_prefs_get_string(pref_key);
 
 	/* Block signals so pref doesn't get re-saved while changing UI. */
-	signal_id = g_signal_lookup("changed", GTK_TYPE_COMBO_BOX);
-	g_signal_handlers_block_matched(combo->combo, G_SIGNAL_MATCH_ID, signal_id,
-	                                0, NULL, NULL, NULL);
+	g_signal_handlers_block_by_func(row, vv_combo_row_set, (gpointer)pref_key);
 
-	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo->combo));
-	populate_vv_device_menuitems(media_type, GTK_LIST_STORE(model));
-	gtk_combo_box_set_active_id(GTK_COMBO_BOX(combo->combo),
-	                            purple_prefs_get_string(preference_key));
+	populate_vv_device_menuitems(row, media_type, pref_value);
 
-	g_signal_handlers_unblock_matched(combo->combo, G_SIGNAL_MATCH_ID,
-	                                  signal_id, 0, NULL, NULL, NULL);
+	g_signal_handlers_unblock_by_func(row, vv_combo_row_set,
+	                                  (gpointer)pref_key);
+
+	selected = adw_combo_row_get_selected_item(row);
+	if(original != selected) {
+		/* We blocked signals to prevent accidentally changing the selected
+		 * element while the combo row repopulates, but now the original
+		 * element is gone, so we need to push this change back to the pref. */
+		char *id = purple_media_element_info_get_id(selected);
+		purple_prefs_set_string(pref_key, id);
+		g_free(id);
+	}
+
+	g_clear_object(&original);
 }
 
 /******************************************************************************
@@ -511,9 +531,9 @@ pidgin_vv_prefs_class_init(PidginVVPrefsClass *klass)
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginVVPrefs,
-	                                     voice.input.combo);
+	                                     voice.input);
 	gtk_widget_class_bind_template_child(widget_class, PidginVVPrefs,
-	                                     voice.output.combo);
+	                                     voice.output);
 	gtk_widget_class_bind_template_child(widget_class, PidginVVPrefs,
 	                                     voice.volume);
 	gtk_widget_class_bind_template_child(widget_class, PidginVVPrefs,
@@ -533,9 +553,9 @@ pidgin_vv_prefs_class_init(PidginVVPrefsClass *klass)
 	                                        toggle_voice_test_cb);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginVVPrefs,
-	                                     video.input.combo);
+	                                     video.input);
 	gtk_widget_class_bind_template_child(widget_class, PidginVVPrefs,
-	                                     video.output.combo);
+	                                     video.output);
 	gtk_widget_class_bind_template_child(widget_class, PidginVVPrefs,
 	                                     video.frame);
 	gtk_widget_class_bind_template_child(widget_class, PidginVVPrefs,
@@ -553,31 +573,31 @@ pidgin_vv_prefs_init(PidginVVPrefs *prefs)
 
 	manager = purple_media_manager_get();
 
-	bind_vv_frame(prefs, &prefs->voice.input,
+	bind_vv_combo(prefs, prefs->voice.input,
 	              PURPLE_MEDIA_ELEMENT_AUDIO | PURPLE_MEDIA_ELEMENT_SRC);
 	g_signal_connect_object(manager, "elements-changed::audiosrc",
 	                        G_CALLBACK(device_list_changed_cb),
-	                        prefs->voice.input.combo, 0);
+	                        prefs->voice.input, 0);
 
-	bind_vv_frame(prefs, &prefs->voice.output,
+	bind_vv_combo(prefs, prefs->voice.output,
 	              PURPLE_MEDIA_ELEMENT_AUDIO | PURPLE_MEDIA_ELEMENT_SINK);
 	g_signal_connect_object(manager, "elements-changed::audiosink",
 	                        G_CALLBACK(device_list_changed_cb),
-	                        prefs->voice.output.combo, 0);
+	                        prefs->voice.output, 0);
 
 	bind_voice_test(prefs);
 
-	bind_vv_frame(prefs, &prefs->video.input,
+	bind_vv_combo(prefs, prefs->video.input,
 	              PURPLE_MEDIA_ELEMENT_VIDEO | PURPLE_MEDIA_ELEMENT_SRC);
 	g_signal_connect_object(manager, "elements-changed::videosrc",
 	                        G_CALLBACK(device_list_changed_cb),
-	                        prefs->video.input.combo, 0);
+	                        prefs->video.input, 0);
 
-	bind_vv_frame(prefs, &prefs->video.output,
+	bind_vv_combo(prefs, prefs->video.output,
 	              PURPLE_MEDIA_ELEMENT_VIDEO | PURPLE_MEDIA_ELEMENT_SINK);
 	g_signal_connect_object(manager, "elements-changed::videosink",
 	                        G_CALLBACK(device_list_changed_cb),
-	                        prefs->video.output.combo, 0);
+	                        prefs->video.output, 0);
 }
 
 /******************************************************************************

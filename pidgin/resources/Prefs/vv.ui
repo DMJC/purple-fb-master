@@ -33,78 +33,51 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
-  <object class="GtkListStore" id="video.input.store">
-    <columns>
-      <!-- column-name text -->
-      <column type="gchararray"/>
-      <!-- column-name value -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="video.output.store">
-    <columns>
-      <!-- column-name text -->
-      <column type="gchararray"/>
-      <!-- column-name value -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="voice.input.store">
-    <columns>
-      <!-- column-name text -->
-      <column type="gchararray"/>
-      <!-- column-name value -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="voice.output.store">
-    <columns>
-      <!-- column-name text -->
-      <column type="gchararray"/>
-      <!-- column-name value -->
-      <column type="gchararray"/>
-    </columns>
+  <object class="GtkBuilderListItemFactory" id="element-info-factory">
+    <property name="bytes">
+<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkLabel">
+        <property name="xalign">0</property>
+        <binding name="label">
+          <lookup name="name" type="PurpleMediaElementInfo">
+            <lookup name="item">GtkListItem</lookup>
+          </lookup>
+        </binding>
+      </object>
+    </property>
+  </template>
+</interface>
+]]>
+    </property>
   </object>
   <template class="PidginVVPrefs" parent="AdwPreferencesPage">
     <child>
       <object class="AdwPreferencesGroup">
         <property name="title" translatable="1">Audio</property>
         <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">voice.input.combo</property>
+          <object class="AdwComboRow" id="voice.input">
             <property name="title" translatable="1" context="Input for Audio">Input Device</property>
-            <child>
-              <object class="GtkComboBox" id="voice.input.combo">
-                <property name="id-column">1</property>
-                <property name="model">voice.input.store</property>
-                <property name="valign">center</property>
-                <child>
-                  <object class="GtkCellRendererText"/>
-                  <attributes>
-                    <attribute name="text">0</attribute>
-                  </attributes>
-                </child>
+            <property name="factory">element-info-factory</property>
+            <property name="model">
+              <object class="GListStore">
+                <property name="item-type">PurpleMediaElementInfo</property>
               </object>
-            </child>
+            </property>
           </object>
         </child>
         <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">voice.output.combo</property>
+          <object class="AdwComboRow" id="voice.output">
             <property name="title" translatable="1" context="Device for Audio Output">Output Device</property>
-            <child>
-              <object class="GtkComboBox" id="voice.output.combo">
-                <property name="id-column">1</property>
-                <property name="model">voice.output.store</property>
-                <property name="valign">center</property>
-                <child>
-                  <object class="GtkCellRendererText"/>
-                  <attributes>
-                    <attribute name="text">0</attribute>
-                  </attributes>
-                </child>
+            <property name="factory">element-info-factory</property>
+            <property name="model">
+              <object class="GListStore">
+                <property name="item-type">PurpleMediaElementInfo</property>
               </object>
-            </child>
+            </property>
           </object>
         </child>
         <child>
@@ -188,43 +161,25 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       <object class="AdwPreferencesGroup">
         <property name="title" translatable="1">Video</property>
         <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">video.input.combo</property>
+          <object class="AdwComboRow" id="video.input">
             <property name="title" translatable="1" context="Device for Video Input">Input Device</property>
-            <child>
-              <object class="GtkComboBox" id="video.input.combo">
-                <property name="id-column">1</property>
-                <property name="hexpand">1</property>
-                <property name="model">video.input.store</property>
-                <property name="valign">center</property>
-                <child>
-                  <object class="GtkCellRendererText"/>
-                  <attributes>
-                    <attribute name="text">0</attribute>
-                  </attributes>
-                </child>
+            <property name="factory">element-info-factory</property>
+            <property name="model">
+              <object class="GListStore">
+                <property name="item-type">PurpleMediaElementInfo</property>
               </object>
-            </child>
+            </property>
           </object>
         </child>
         <child>
-          <object class="AdwActionRow">
-            <property name="activatable-widget">video.output.combo</property>
+          <object class="AdwComboRow" id="video.output">
             <property name="title" translatable="1" context="Device for Video Output">Output Device</property>
-            <child>
-              <object class="GtkComboBox" id="video.output.combo">
-                <property name="hexpand">1</property>
-                <property name="id-column">1</property>
-                <property name="valign">center</property>
-                <property name="model">video.output.store</property>
-                <child>
-                  <object class="GtkCellRendererText"/>
-                  <attributes>
-                    <attribute name="text">0</attribute>
-                  </attributes>
-                </child>
+            <property name="factory">element-info-factory</property>
+            <property name="model">
+              <object class="GListStore">
+                <property name="item-type">PurpleMediaElementInfo</property>
               </object>
-            </child>
+            </property>
           </object>
         </child>
         <child>
