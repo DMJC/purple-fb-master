@@ -28,7 +28,6 @@ tasks:
   docs-clean:
     type: convey/clean
     files:
-      - facebook3-docs
       - finch3-docs
       - pidgin3-docs
       - purple3-docs
@@ -48,7 +47,6 @@ tasks:
       - build-docs/doc/reference/finch/finch/:finch3-docs
       - build-docs/doc/reference/libpurple/libpurple/:purple3-docs
       - build-docs/doc/reference/pidgin/pidgin/:pidgin3-docs
-      - build-docs/doc/reference/protocols/facebook/facebook/:facebook3-docs
 
   export:
     type: docker/export
