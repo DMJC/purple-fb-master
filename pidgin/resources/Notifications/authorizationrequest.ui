@@ -77,17 +77,13 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       <object class="GtkButton" id="remove">
         <property name="focusable">1</property>
         <property name="receives-default">1</property>
+        <property name="icon-name">edit-delete-symbolic</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
         <signal name="clicked" handler="pidgin_notification_authorization_request_remove_cb" object="PidginNotificationAuthorizationRequest" swapped="no"/>
         <style>
           <class name="flat"/>
         </style>
-        <child>
-          <object class="GtkImage">
-            <property name="icon-name">edit-delete-symbolic</property>
-          </object>
-        </child>
       </object>
     </child>
   </template>
