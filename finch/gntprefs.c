@@ -33,7 +33,7 @@
 #include <string.h>
 
 static struct {
-	GList *freestrings;  /* strings to be freed when the pref-window is closed */
+	GList *list_data;  /* Data to be freed when the pref-window is closed */
 	gboolean showing;
 	GntWidget *window;
 } pref_request;
@@ -61,40 +61,47 @@ finch_prefs_update_old(void)
 {
 }
 
-typedef struct
-{
+typedef struct {
 	PurplePrefType type;
 	const char *pref;
 	const char *label;
-	GList *(*lv)(void);   /* If the value is to be selected from a number of choices */
+	GList *(*choices)(void);   /* If the value is to be selected from a number of choices */
 } Prefs;
 
 static GList *
-get_idle_options(void)
-{
+get_idle_options(void) {
 	GList *list = NULL;
-	list = g_list_append(list, (char *)_("Based on keyboard use"));
-	list = g_list_append(list, "system");
-	list = g_list_append(list, (char*)_("From last sent message"));
-	list = g_list_append(list, "purple");
-	list = g_list_append(list, (char*)_("Never"));
-	list = g_list_append(list, "never");
+	PurpleKeyValuePair *pair = NULL;
+
+	pair = purple_key_value_pair_new(_("Based on keyboard use"), "system");
+	list = g_list_append(list, pair);
+
+	pair = purple_key_value_pair_new(_("From last sent message"), "purple");
+	list = g_list_append(list, pair);
+
+	pair = purple_key_value_pair_new(_("Never"), "never");
+	list = g_list_append(list, pair);
+
 	return list;
 }
 
 static GList *
-get_status_titles(void)
-{
+get_status_titles(void) {
 	GList *list = NULL;
-	GList *iter;
-	for (iter = purple_savedstatuses_get_all(); iter; iter = iter->next) {
-		char *str;
-		if (purple_savedstatus_is_transient(iter->data))
+
+	for(GList *iter = purple_savedstatuses_get_all(); iter; iter = iter->next) {
+		PurpleKeyValuePair *pair = NULL;
+		const char *title = NULL;
+		char *str = NULL;
+
+		if(purple_savedstatus_is_transient(iter->data)) {
 			continue;
+		}
+
 		str = g_strdup_printf("%ld", purple_savedstatus_get_creation_time(iter->data));
-		list = g_list_append(list, (char*)purple_savedstatus_get_title(iter->data));
-		list = g_list_append(list, str);
-		pref_request.freestrings = g_list_prepend(pref_request.freestrings, str);
+		title = purple_savedstatus_get_title(iter->data);
+		pair = purple_key_value_pair_new_full(title, str, g_free);
+		list = g_list_append(list, pair);
 	}
 	return list;
 }
@@ -104,13 +111,13 @@ get_credential_provider_options_helper(PurpleCredentialProvider *provider,
                                        gpointer data)
 {
 	GList **list = data;
-	const gchar *value = NULL;
+	PurpleKeyValuePair *pair = NULL;
+	const char *name, *id;
 
-	value = purple_credential_provider_get_name(provider);
-	*list = g_list_append(*list, (gpointer)value);
-
-	value = purple_credential_provider_get_id(provider);
-	*list = g_list_append(*list, (gpointer)value);
+	name = purple_credential_provider_get_name(provider);
+	id = purple_credential_provider_get_id(provider);
+	pair = purple_key_value_pair_new(name, (gpointer)id);
+	*list = g_list_append(*list, pair);
 }
 
 static GList *
@@ -127,109 +134,148 @@ get_credential_provider_options(void) {
 }
 
 static PurpleRequestField *
-get_pref_field(Prefs *prefs)
-{
+get_pref_field(Prefs *prefs) {
 	PurpleRequestField *field = NULL;
 
-	if (prefs->lv == NULL)
-	{
-		switch (prefs->type)
-		{
+	if(prefs->choices == NULL) {
+		switch(prefs->type) {
 			case PURPLE_PREF_BOOLEAN:
-				field = purple_request_field_bool_new(prefs->pref, _(prefs->label),
-						purple_prefs_get_bool(prefs->pref));
+				field = purple_request_field_bool_new(prefs->pref,
+				                                      _(prefs->label),
+				                                      purple_prefs_get_bool(prefs->pref));
 				break;
 			case PURPLE_PREF_INT:
-				field = purple_request_field_int_new(prefs->pref, _(prefs->label),
-						purple_prefs_get_int(prefs->pref), INT_MIN, INT_MAX);
+				field = purple_request_field_int_new(prefs->pref,
+				                                     _(prefs->label),
+				                                     purple_prefs_get_int(prefs->pref),
+				                                     INT_MIN, INT_MAX);
 				break;
 			case PURPLE_PREF_STRING:
-				field = purple_request_field_string_new(prefs->pref, _(prefs->label),
-						purple_prefs_get_string(prefs->pref), FALSE);
+				field = purple_request_field_string_new(prefs->pref,
+				                                        _(prefs->label),
+				                                        purple_prefs_get_string(prefs->pref),
+				                                        FALSE);
 				break;
 			default:
 				break;
 		}
-	}
-	else
-	{
-		PurpleRequestFieldList *lfield = NULL;
+	} else {
+		PurpleRequestFieldChoice *choice = NULL;
 		GList *list = NULL;
 
-		list = prefs->lv();
+		list = prefs->choices();
 		if(list != NULL) {
-			field = purple_request_field_list_new(prefs->pref, _(prefs->label));
-			lfield = PURPLE_REQUEST_FIELD_LIST(field);
+			field = purple_request_field_choice_new(prefs->pref,
+			                                        _(prefs->label), NULL);
+			choice = PURPLE_REQUEST_FIELD_CHOICE(field);
 		}
+
 		for(GList *iter = list; iter; iter = iter->next) {
+			PurpleKeyValuePair *pair = iter->data;
 			gboolean select = FALSE;
-			const char *data = iter->data;
 			int idata;
-			iter = iter->next;
-			switch (prefs->type)
-			{
+
+			switch(prefs->type) {
 				case PURPLE_PREF_BOOLEAN:
-					if (sscanf(iter->data, "%d", &idata) != 1)
+					if(sscanf(pair->value, "%d", &idata) != 1) {
 						idata = FALSE;
-					if (purple_prefs_get_bool(prefs->pref) == idata)
+					}
+					if(purple_prefs_get_bool(prefs->pref) == idata) {
 						select = TRUE;
+					}
 					break;
 				case PURPLE_PREF_INT:
-					if (sscanf(iter->data, "%d", &idata) != 1)
+					if(sscanf(pair->value, "%d", &idata) != 1) {
 						idata = 0;
-					if (purple_prefs_get_int(prefs->pref) == idata)
+					}
+					if(purple_prefs_get_int(prefs->pref) == idata) {
 						select = TRUE;
+					}
 					break;
 				case PURPLE_PREF_STRING:
-					if (purple_strequal(purple_prefs_get_string(prefs->pref), iter->data))
+					if(purple_strequal(purple_prefs_get_string(prefs->pref),
+					                   pair->value))
+					{
 						select = TRUE;
+					}
 					break;
 				default:
 					break;
 			}
-			purple_request_field_list_add_icon(lfield, data, NULL, iter->data);
+
+			purple_request_field_choice_add(choice, pair->key, pair->value);
 			if(select) {
-				purple_request_field_list_add_selected(lfield, data);
+				purple_request_field_choice_set_default_value(choice,
+				                                              pair->value);
+				purple_request_field_choice_set_value(choice, pair->value);
 			}
 		}
-		g_list_free(list);
+
+		pref_request.list_data = g_list_concat(pref_request.list_data, list);
 	}
 	return field;
 }
 
-static Prefs blist[] =
-{
-	{PURPLE_PREF_BOOLEAN, "/finch/blist/idletime", N_("Show Idle Time"), NULL},
-	{PURPLE_PREF_BOOLEAN, "/finch/blist/showoffline", N_("Show Offline Buddies"), NULL},
-	{PURPLE_PREF_NONE, NULL, NULL, NULL}
+static Prefs blist[] = {
+	{
+		.type = PURPLE_PREF_BOOLEAN,
+		.pref = "/finch/blist/idletime",
+		.label = N_("Show Idle Time"),
+	}, {
+		.type = PURPLE_PREF_BOOLEAN,
+		.pref = "/finch/blist/showoffline",
+		.label = N_("Show Offline Buddies"),
+	},
 };
 
-static Prefs convs[] =
-{
-	{PURPLE_PREF_BOOLEAN, "/finch/conversations/timestamps", N_("Show Timestamps"), NULL},
-	{PURPLE_PREF_BOOLEAN, "/finch/conversations/notify_typing", N_("Notify buddies when you are typing"), NULL},
-	{PURPLE_PREF_NONE, NULL, NULL, NULL}
+static Prefs convs[] = {
+	{
+		.type = PURPLE_PREF_BOOLEAN,
+		.pref = "/finch/conversations/timestamps",
+		.label = N_("Show Timestamps"),
+	}, {
+		.type = PURPLE_PREF_BOOLEAN,
+		.pref = "/finch/conversations/notify_typing",
+		.label = N_("Notify buddies when you are typing"),
+	},
 };
 
-static Prefs idle[] =
-{
-	{PURPLE_PREF_STRING, "/purple/away/idle_reporting", N_("Report Idle time"), get_idle_options},
-	{PURPLE_PREF_BOOLEAN, "/purple/away/away_when_idle", N_("Change status when idle"), NULL},
-	{PURPLE_PREF_INT, "/purple/away/mins_before_away", N_("Minutes before changing status"), NULL},
-	{PURPLE_PREF_INT, "/purple/savedstatus/idleaway", N_("Change status to"), get_status_titles},
-	{PURPLE_PREF_NONE, NULL, NULL, NULL},
+static Prefs idle[] = {
+	{
+		.type = PURPLE_PREF_STRING,
+		.pref = "/purple/away/idle_reporting",
+		.label = N_("Report Idle time"),
+		.choices = get_idle_options,
+	}, {
+		.type = PURPLE_PREF_BOOLEAN,
+		.pref = "/purple/away/away_when_idle",
+		.label = N_("Change status when idle"),
+	}, {
+		.type = PURPLE_PREF_INT,
+		.pref = "/purple/away/mins_before_away",
+		.label = N_("Minutes before changing status"),
+	}, {
+		.type = PURPLE_PREF_INT,
+		.pref = "/purple/savedstatus/idleaway",
+		.label = N_("Change status to"),
+		.choices = get_status_titles,
+	},
 };
 
-static Prefs credentials[] =
-{
-	{PURPLE_PREF_STRING, "/purple/credentials/active-provider", N_("Provider"), get_credential_provider_options},
-	{PURPLE_PREF_NONE, NULL, NULL, NULL},
+static Prefs credentials[] = {
+	{
+		.type = PURPLE_PREF_STRING,
+		.pref = "/purple/credentials/active-provider",
+		.label = N_("Provider"),
+		.choices = get_credential_provider_options,
+	},
 };
 
 static void
 free_strings(void)
 {
-	g_clear_list(&pref_request.freestrings, g_free);
+	g_clear_list(&pref_request.list_data,
+	             (GDestroyNotify)purple_key_value_pair_free);
 	pref_request.showing = FALSE;
 }
 
@@ -240,18 +286,20 @@ save_cb(void *data, PurpleRequestPage *page) {
 }
 
 static void
-add_pref_group(PurpleRequestPage *page, const char *title, Prefs *prefs) {
-	PurpleRequestField *field;
-	PurpleRequestGroup *group;
-	int i;
+add_pref_group(PurpleRequestPage *page, const char *title, Prefs *prefs,
+               guint n_prefs)
+{
+	PurpleRequestGroup *group = NULL;
 
 	group = purple_request_group_new(title);
 	purple_request_page_add_group(page, group);
-	for (i = 0; prefs[i].pref; i++)
-	{
-		field = get_pref_field(prefs + i);
-		if (field)
+
+	for(guint i = 0; i < n_prefs; i++) {
+		PurpleRequestField *field = get_pref_field(&prefs[i]);
+
+		if(PURPLE_IS_REQUEST_FIELD(field)) {
 			purple_request_group_add_field(group, field);
+		}
 	}
 }
 
@@ -267,10 +315,11 @@ finch_prefs_show_all(void)
 
 	page = purple_request_page_new();
 
-	add_pref_group(page, _("Buddy List"), blist);
-	add_pref_group(page, _("Conversations"), convs);
-	add_pref_group(page, _("Idle"), idle);
-	add_pref_group(page, _("Credentials"), credentials);
+	add_pref_group(page, _("Buddy List"), blist, G_N_ELEMENTS(blist));
+	add_pref_group(page, _("Conversations"), convs, G_N_ELEMENTS(convs));
+	add_pref_group(page, _("Idle"), idle, G_N_ELEMENTS(idle));
+	add_pref_group(page, _("Credentials"), credentials,
+	               G_N_ELEMENTS(credentials));
 
 	pref_request.showing = TRUE;
 	pref_request.window = purple_request_fields(NULL, _("Preferences"), NULL, NULL, page,

@@ -907,7 +907,10 @@ finch_request_save_in_prefs(G_GNUC_UNUSED gpointer data,
 			field = g_list_model_get_item(group, field_index);
 			id = purple_request_field_get_id(field);
 
-			if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
+			if(PURPLE_IS_REQUEST_FIELD_CHOICE(field)) {
+				PurpleRequestFieldChoice *choice = PURPLE_REQUEST_FIELD_CHOICE(field);
+				val = purple_request_field_choice_get_value(choice);
+			} else if(PURPLE_IS_REQUEST_FIELD_LIST(field)) {
 				PurpleRequestFieldList *lfield = PURPLE_REQUEST_FIELD_LIST(field);
 				val = purple_request_field_list_get_selected(lfield)->data;
 				val = purple_request_field_list_get_data(lfield, val);
