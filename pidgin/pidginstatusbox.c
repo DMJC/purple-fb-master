@@ -28,153 +28,112 @@
 
 #include "pidginstatusbox.h"
 #include "pidginiconname.h"
+#include "pidginstatusdisplay.h"
 
-#define PRIMITIVE_FORMAT "primitive_%d"
 #define SAVEDSTATUS_FORMAT "savedstatus_%lu"
-
-typedef enum {
-	PIDGIN_STATUS_BOX_TYPE_SEPARATOR,
-	PIDGIN_STATUS_BOX_TYPE_PRIMITIVE,
-	PIDGIN_STATUS_BOX_TYPE_POPULAR,
-	PIDGIN_STATUS_BOX_TYPE_ACTION,
-	PIDGIN_STATUS_BOX_NUM_TYPES
-} PidginStatusBoxItemType;
 
 struct _PidginStatusBox {
 	GtkBox parent;
 
-	GtkListStore *model;
-	GtkWidget *combo;
+	GtkWidget *button;
+	PidginStatusDisplay *display;
+	GtkPopover *popover;
 
-	/* This is used to flipback to the correct status when one of the actions
-	 * items is selected.
-	 */
-	gchar *active_id;
-};
-
-enum {
-	ID_COLUMN,
-	TYPE_COLUMN, /* PidginStatusBoxItemType */
-	ICON_NAME_COLUMN,
-	PRIMITIVE_COLUMN,
-	TEXT_COLUMN,
-	/* This value depends on TYPE_COLUMN. For POPULAR types, this is the
-	 * creation time.
-	 */
-	DATA_COLUMN,
-	EMBLEM_VISIBLE_COLUMN,
-	NUM_COLUMNS
+	GMenu *primitives;
+	GMenu *saved_statuses;
+	GList *custom_widgets;
 };
 
 G_DEFINE_TYPE(PidginStatusBox, pidgin_status_box, GTK_TYPE_BOX)
 
-/* This prototype is necessary so we can block this signal handler when we are
- * manually updating the combobox.
- */
-static void pidgin_status_box_combo_changed_cb(GtkComboBox *combo, gpointer user_data);
-
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static GtkWidget *
+pidgin_status_box_make_primitive_widget(const char *action, const char *id) {
+	GtkWidget *button = NULL;
+	GtkWidget *display = NULL;
+	PurpleStatusPrimitive primitive = PURPLE_STATUS_UNSET;
+
+	primitive = purple_primitive_get_type_from_id(id);
+	display = pidgin_status_display_new_for_primitive(primitive);
+
+	button = gtk_button_new();
+	gtk_widget_add_css_class(button, "flat");
+	gtk_button_set_child(GTK_BUTTON(button), display);
+
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button), action);
+	gtk_actionable_set_action_target(GTK_ACTIONABLE(button),
+	                                 (const char *)G_VARIANT_TYPE_INT32,
+	                                 primitive);
+
+	return button;
+}
+
 static void
-pidgin_status_box_update_to_status(PidginStatusBox *status_box,
-                                   PurpleSavedStatus *status)
+pidgin_status_box_populate_primitives(PidginStatusBox *status_box) {
+	GtkPopoverMenu *popover = GTK_POPOVER_MENU(status_box->popover);
+	GMenuModel *menu = G_MENU_MODEL(status_box->primitives);
+	gint n_items = 0;
+
+	n_items = g_menu_model_get_n_items(menu);
+	for(gint index = 0; index < n_items; index++) {
+		GtkWidget *button = NULL;
+		char *action = NULL;
+		char *target = NULL;
+		char *custom_id = NULL;
+
+		g_menu_model_get_item_attribute(menu, index, G_MENU_ATTRIBUTE_ACTION,
+		                                "s", &action);
+		g_menu_model_get_item_attribute(menu, index, G_MENU_ATTRIBUTE_TARGET,
+		                                "s", &target);
+		g_menu_model_get_item_attribute(menu, index, "custom", "s", &custom_id);
+
+		button = pidgin_status_box_make_primitive_widget(action, target);
+		gtk_popover_menu_add_child(popover, button, custom_id);
+
+		g_free(action);
+		g_free(target);
+		g_free(custom_id);
+	}
+}
+
+static char *
+pidgin_status_box_make_savedstatus_widget(PurpleSavedStatus *saved_status,
+                                          GtkWidget **widget)
 {
-	gchar *id = NULL;
-	gboolean set = FALSE;
+	GtkWidget *button = NULL;
+	GtkWidget *display = NULL;
 	time_t creation_time = 0;
 
-	/* Try to set the combo box to the saved status. */
-	creation_time = purple_savedstatus_get_creation_time(status);
-	id = g_strdup_printf(SAVEDSTATUS_FORMAT, creation_time);
+	display = pidgin_status_display_new_for_saved_status(saved_status);
 
-	set = gtk_combo_box_set_active_id(GTK_COMBO_BOX(status_box->combo), id);
-	g_free(id);
-
-	/* If we failed to set via the savedstatus, fallback to the primitive. */
-	if(!set) {
-		PurpleStatusPrimitive primitive;
-
-		primitive = purple_savedstatus_get_primitive_type(status);
-		id = g_strdup_printf(PRIMITIVE_FORMAT, primitive);
-
-		gtk_combo_box_set_active_id(GTK_COMBO_BOX(status_box->combo), id);
-		g_free(id);
+	if(!purple_savedstatus_is_transient(saved_status)) {
+		GtkWidget *image = gtk_image_new_from_icon_name("document-save");
+		gtk_widget_set_halign(image, GTK_ALIGN_END);
+		gtk_widget_set_hexpand(image, TRUE);
+		gtk_box_append(GTK_BOX(display), image);
 	}
+
+	button = gtk_button_new();
+	gtk_widget_add_css_class(button, "flat");
+	gtk_button_set_child(GTK_BUTTON(button), display);
+
+	creation_time = purple_savedstatus_get_creation_time(saved_status);
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button), "status.set-saved");
+	gtk_actionable_set_action_target(GTK_ACTIONABLE(button),
+	                                 (const char *)G_VARIANT_TYPE_INT64,
+	                                 creation_time);
+	*widget = button;
+
+	return g_strdup_printf(SAVEDSTATUS_FORMAT, creation_time);
 }
 
 static void
-pidgin_status_box_add(PidginStatusBox *status_box,
-                      PidginStatusBoxItemType type,
-                      PurpleStatusPrimitive primitive, const gchar *text,
-                      gpointer data)
+pidgin_status_box_populate_saved_statuses(PidginStatusBox *status_box)
 {
-	GtkTreeIter iter;
-	gchar *id = NULL, *escaped_text = NULL;
-	const gchar *icon_name = NULL;
-	gboolean emblem_visible = FALSE;
-
-	escaped_text = g_markup_escape_text(text, -1);
-
-	if(type == PIDGIN_STATUS_BOX_TYPE_POPULAR) {
-		PurpleSavedStatus *saved_status = NULL;
-		time_t creation_time = GPOINTER_TO_INT(data);
-
-		saved_status = purple_savedstatus_find_by_creation_time(creation_time);
-
-		if(saved_status != NULL) {
-			id = g_strdup_printf(SAVEDSTATUS_FORMAT, creation_time);
-
-			if(!purple_savedstatus_is_transient(saved_status)) {
-				emblem_visible = TRUE;
-			}
-		}
-	}
-
-	if(id == NULL && primitive != PURPLE_STATUS_UNSET) {
-		id = g_strdup_printf(PRIMITIVE_FORMAT, primitive);
-	}
-
-	icon_name = pidgin_icon_name_from_status_primitive(primitive, NULL);
-
-	gtk_list_store_append(status_box->model, &iter);
-	gtk_list_store_set(status_box->model, &iter,
-	                   ID_COLUMN, id,
-	                   TYPE_COLUMN, type,
-	                   ICON_NAME_COLUMN, icon_name,
-	                   PRIMITIVE_COLUMN, primitive,
-	                   TEXT_COLUMN, escaped_text,
-	                   DATA_COLUMN, data,
-	                   EMBLEM_VISIBLE_COLUMN, emblem_visible,
-	                   -1);
-
-	g_free(escaped_text);
-	g_free(id);
-}
-
-static gboolean
-pidgin_status_box_row_separator_func(GtkTreeModel *model, GtkTreeIter *iter,
-                                     G_GNUC_UNUSED gpointer data)
-{
-	PidginStatusBoxItemType type;
-
-	gtk_tree_model_get(model, iter, TYPE_COLUMN, &type, -1);
-
-	return type == PIDGIN_STATUS_BOX_TYPE_SEPARATOR;
-}
-
-static void
-pidgin_status_box_add_separator(PidginStatusBox *status_box) {
-	GtkTreeIter iter;
-
-	gtk_list_store_append(status_box->model, &iter);
-	gtk_list_store_set(status_box->model, &iter,
-	                   TYPE_COLUMN, PIDGIN_STATUS_BOX_TYPE_SEPARATOR,
-	                   -1);
-}
-
-static void
-pidgin_status_box_update_saved_statuses(PidginStatusBox *status_box) {
+	GtkPopoverMenu *popover_menu = NULL;
+	GMenu *menu = NULL;
 	GList *list, *cur;
 
 	list = purple_savedstatuses_get_popular(6);
@@ -183,124 +142,84 @@ pidgin_status_box_update_saved_statuses(PidginStatusBox *status_box) {
 		return;
 	}
 
+	popover_menu = GTK_POPOVER_MENU(status_box->popover);
+	menu = status_box->saved_statuses;
 	for(cur = list; cur != NULL; cur = cur->next) {
 		PurpleSavedStatus *saved = cur->data;
-		GString *text = NULL;
-		time_t creation_time;
+		GtkWidget *widget = NULL;
+		char *id = NULL;
+		GMenuItem *item = NULL;
 
-		text = g_string_new(purple_savedstatus_get_title(saved));
+		id = pidgin_status_box_make_savedstatus_widget(saved, &widget);
+		item = g_menu_item_new(NULL, NULL);
+		g_menu_item_set_attribute(item, "custom", "s", id);
+		g_menu_append_item(menu, item);
+		gtk_popover_menu_add_child(popover_menu, widget, id);
+		status_box->custom_widgets = g_list_prepend(status_box->custom_widgets,
+		                                            widget);
 
-		if(!purple_savedstatus_is_transient(saved)) {
-			/*
-			 * Transient statuses do not have a title, so the savedstatus
-			 * API returns the message when purple_savedstatus_get_title() is
-			 * called, so we don't need to get the message a second time.
-			 */
-			const gchar *message = NULL;
-
-			message = purple_savedstatus_get_message(saved);
-			if(message != NULL) {
-				gchar *stripped = purple_markup_strip_html(message);
-
-				purple_util_chrreplace(stripped, '\n', ' ');
-				g_string_append_printf(text, " - %s", stripped);
-				g_free(stripped);
-			}
-		}
-
-		creation_time = purple_savedstatus_get_creation_time(saved);
-		pidgin_status_box_add(status_box, PIDGIN_STATUS_BOX_TYPE_POPULAR,
-		                      purple_savedstatus_get_primitive_type(saved),
-		                      text->str, GINT_TO_POINTER(creation_time));
-
-		g_string_free(text, TRUE);
+		g_free(id);
 	}
 
 	g_list_free(list);
-
-	pidgin_status_box_add_separator(status_box);
-}
-
-static void
-pidgin_status_box_populate(PidginStatusBox *status_box) {
-	pidgin_status_box_add(status_box, PIDGIN_STATUS_BOX_TYPE_PRIMITIVE,
-	                      PURPLE_STATUS_AVAILABLE, _("Available"), NULL);
-	pidgin_status_box_add(status_box, PIDGIN_STATUS_BOX_TYPE_PRIMITIVE,
-	                      PURPLE_STATUS_AWAY, _("Away"), NULL);
-	pidgin_status_box_add(status_box, PIDGIN_STATUS_BOX_TYPE_PRIMITIVE,
-	                      PURPLE_STATUS_UNAVAILABLE, _("Do not disturb"),
-	                      NULL);
-	pidgin_status_box_add(status_box, PIDGIN_STATUS_BOX_TYPE_PRIMITIVE,
-	                      PURPLE_STATUS_INVISIBLE, _("Invisible"), NULL);
-	pidgin_status_box_add(status_box, PIDGIN_STATUS_BOX_TYPE_PRIMITIVE,
-	                      PURPLE_STATUS_OFFLINE, _("Offline"), NULL);
-
-	pidgin_status_box_add_separator(status_box);
-
-	pidgin_status_box_update_saved_statuses(status_box);
-
-	pidgin_status_box_add(status_box, PIDGIN_STATUS_BOX_TYPE_ACTION,
-	                      PURPLE_STATUS_UNSET, _("New Status..."),
-	                      "new-status");
-	pidgin_status_box_add(status_box, PIDGIN_STATUS_BOX_TYPE_ACTION,
-	                      PURPLE_STATUS_UNSET, _("Saved Statuses..."),
-	                      "status-manager");
 }
 
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
 static void
-pidgin_status_box_combo_changed_cb(GtkComboBox *combo, gpointer user_data) {
-	PidginStatusBox *status_box = user_data;
-	PidginStatusBoxItemType type;
+pidgin_status_box_set_primitive(G_GNUC_UNUSED GSimpleAction *action,
+                                GVariant *parameter, gpointer data)
+{
+	PidginStatusBox *status_box = data;
 	PurpleSavedStatus *saved_status = NULL;
 	PurpleStatusPrimitive primitive;
-	GtkTreeIter iter;
-	gchar *id = NULL;
-	gpointer data;
 
-	if(!gtk_combo_box_get_active_iter(combo, &iter)) {
+	gtk_menu_button_popdown(GTK_MENU_BUTTON(status_box->button));
+
+	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_INT32)) {
+		g_critical("status.set-primitive action parameter is of incorrect type %s",
+		           g_variant_get_type_string(parameter));
 		return;
 	}
 
-	gtk_tree_model_get(GTK_TREE_MODEL(status_box->model), &iter,
-	                   ID_COLUMN, &id,
-	                   TYPE_COLUMN, &type,
-	                   PRIMITIVE_COLUMN, &primitive,
-	                   DATA_COLUMN, &data,
-	                   -1);
+	primitive = g_variant_get_int32(parameter);
 
-	if(type == PIDGIN_STATUS_BOX_TYPE_PRIMITIVE) {
-		saved_status = purple_savedstatus_find_transient_by_type_and_message(primitive, NULL);
-		if(saved_status == NULL) {
-			saved_status = purple_savedstatus_new(NULL, primitive);
-		}
-	} else if(type == PIDGIN_STATUS_BOX_TYPE_POPULAR) {
-		time_t creation_time = GPOINTER_TO_INT(data);
-
-		saved_status = purple_savedstatus_find_by_creation_time(creation_time);
-	} else if(type == PIDGIN_STATUS_BOX_TYPE_ACTION) {
-		GApplication *application = NULL;
-		const gchar *action_name = (const gchar *)data;
-
-		application = g_application_get_default();
-
-		g_action_group_activate_action(G_ACTION_GROUP(application),
-		                               action_name, NULL);
-
-		gtk_combo_box_set_active_id(combo, status_box->active_id);
+	saved_status = purple_savedstatus_find_transient_by_type_and_message(primitive, NULL);
+	if(saved_status == NULL) {
+		saved_status = purple_savedstatus_new(NULL, primitive);
 	}
 
 	if(saved_status != NULL) {
 		if(saved_status != purple_savedstatus_get_current()) {
 			purple_savedstatus_activate(saved_status);
 		}
+	}
+}
 
-		g_free(status_box->active_id);
-		status_box->active_id = id;
-	} else {
-		g_free(id);
+static void
+pidgin_status_box_set_saved_status(G_GNUC_UNUSED GSimpleAction *action,
+                                   GVariant *parameter, gpointer data)
+{
+	PidginStatusBox *status_box = data;
+	PurpleSavedStatus *saved_status = NULL;
+	time_t creation_time = 0;
+
+	gtk_menu_button_popdown(GTK_MENU_BUTTON(status_box->button));
+
+	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_INT64)) {
+		g_critical("status.set-saved action parameter is of incorrect type %s",
+		           g_variant_get_type_string(parameter));
+		return;
+	}
+
+	creation_time = (time_t)g_variant_get_int64(parameter);
+	saved_status = purple_savedstatus_find_by_creation_time(creation_time);
+
+	if(saved_status != NULL) {
+		if(saved_status != purple_savedstatus_get_current()) {
+			purple_savedstatus_activate(saved_status);
+		}
 	}
 }
 
@@ -316,7 +235,14 @@ pidgin_status_box_savedstatus_changed_cb(PurpleSavedStatus *now,
 		return;
 	}
 
-	pidgin_status_box_update_to_status(status_box, now);
+	pidgin_status_display_set_saved_status(status_box->display, now);
+}
+
+static void
+pidgin_status_box_remove_custom_widget(GtkWidget *widget, gpointer user_data) {
+	GtkPopoverMenu *popover_menu = user_data;
+
+	gtk_popover_menu_remove_child(popover_menu, widget);
 }
 
 static void
@@ -324,27 +250,14 @@ pidgin_status_box_savedstatus_updated_cb(G_GNUC_UNUSED PurpleSavedStatus *status
                                          gpointer data)
 {
 	PidginStatusBox *status_box = data;
-	PurpleSavedStatus *current = NULL;
-	static gboolean getting_current = FALSE;
 
-	/* purple_status_get_current will create a new status if this is a brand
-	 * new install or the setting wasn't found. This leads to this handler
-	 * getting stuck in a loop until it segfaults because the stack smashed
-	 * into the heap. Anyways, we use this static boolean to check when this
-	 * function is called by purple_status_get_current so we can bail out and
-	 * break the loop.
-	 */
-	if(getting_current) {
-		return;
-	}
+	g_list_foreach(status_box->custom_widgets,
+	               (GFunc)pidgin_status_box_remove_custom_widget,
+	               status_box->popover);
+	g_clear_list(&status_box->custom_widgets, NULL);
+	g_menu_remove_all(status_box->saved_statuses);
 
-	gtk_list_store_clear(status_box->model);
-	pidgin_status_box_populate(status_box);
-
-	getting_current = TRUE;
-	current = purple_savedstatus_get_current();
-	pidgin_status_box_update_to_status(status_box, current);
-	getting_current = FALSE;
+	pidgin_status_box_populate_saved_statuses(status_box);
 }
 
 /******************************************************************************
@@ -356,7 +269,7 @@ pidgin_status_box_finalize(GObject *obj) {
 
 	purple_signals_disconnect_by_handle(status_box);
 
-	g_free(status_box->active_id);
+	g_clear_list(&status_box->custom_widgets, NULL);
 
 	G_OBJECT_CLASS(pidgin_status_box_parent_class)->finalize(obj);
 }
@@ -364,14 +277,33 @@ pidgin_status_box_finalize(GObject *obj) {
 static void
 pidgin_status_box_init(PidginStatusBox *status_box) {
 	gpointer handle;
+	GSimpleActionGroup *action_group = NULL;
+	GActionEntry actions[] = {
+		{
+			.name = "set-primitive",
+			.activate = pidgin_status_box_set_primitive,
+			.parameter_type = (const char *)G_VARIANT_TYPE_INT32,
+		}, {
+			.name = "set-saved",
+			.activate = pidgin_status_box_set_saved_status,
+			.parameter_type = (const char *)G_VARIANT_TYPE_INT64,
+		},
+	};
 
 	gtk_widget_init_template(GTK_WIDGET(status_box));
 
-	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(status_box->combo),
-	                                     pidgin_status_box_row_separator_func,
-	                                     NULL, NULL);
+	action_group = g_simple_action_group_new();
+	g_action_map_add_action_entries(G_ACTION_MAP(action_group),
+	                                actions, G_N_ELEMENTS(actions),
+	                                status_box);
+	gtk_widget_insert_action_group(GTK_WIDGET(status_box), "status",
+	                               G_ACTION_GROUP(action_group));
 
-	pidgin_status_box_populate(status_box);
+	status_box->popover = gtk_menu_button_get_popover(GTK_MENU_BUTTON(status_box->button));
+	gtk_popover_set_has_arrow(status_box->popover, FALSE);
+
+	pidgin_status_box_populate_primitives(status_box);
+	pidgin_status_box_populate_saved_statuses(status_box);
 
 	handle = purple_savedstatuses_get_handle();
 	purple_signal_connect(handle, "savedstatus-changed", status_box,
@@ -390,13 +322,13 @@ pidgin_status_box_init(PidginStatusBox *status_box) {
 
 static void
 pidgin_status_box_constructed(GObject *obj) {
+	PidginStatusBox *status_box = PIDGIN_STATUS_BOX(obj);
 	PurpleSavedStatus *status = NULL;
 
 	G_OBJECT_CLASS(pidgin_status_box_parent_class)->constructed(obj);
 
 	status = purple_savedstatus_get_current();
-
-	pidgin_status_box_update_to_status(PIDGIN_STATUS_BOX(obj), status);
+	pidgin_status_display_set_saved_status(status_box->display, status);
 }
 
 static void
@@ -413,12 +345,13 @@ pidgin_status_box_class_init(PidginStatusBoxClass *klass) {
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginStatusBox,
-	                                     model);
+	                                     button);
 	gtk_widget_class_bind_template_child(widget_class, PidginStatusBox,
-	                                     combo);
-
-	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_status_box_combo_changed_cb);
+	                                     display);
+	gtk_widget_class_bind_template_child(widget_class, PidginStatusBox,
+	                                     primitives);
+	gtk_widget_class_bind_template_child(widget_class, PidginStatusBox,
+	                                     saved_statuses);
 }
 
 /******************************************************************************
