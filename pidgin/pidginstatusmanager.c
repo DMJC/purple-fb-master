@@ -125,12 +125,11 @@ pidgin_status_manager_add(PidginStatusManager *manager,
 	GObject *wrapper = NULL;
 	PurpleStatusPrimitive primitive;
 	gchar *message = NULL;
-	const gchar *icon_name = NULL, *type = NULL;
+	const char *type = NULL;
 
 	message = purple_markup_strip_html(purple_savedstatus_get_message(status));
 
 	primitive = purple_savedstatus_get_primitive_type(status);
-	icon_name = pidgin_icon_name_from_status_primitive(primitive, NULL);
 	type = purple_primitive_get_name_from_type(primitive);
 
 	/* PurpleSavedStatus is a boxed type, so it can't be put in a GListModel;
@@ -140,7 +139,6 @@ pidgin_status_manager_add(PidginStatusManager *manager,
 	g_object_set_data_full(wrapper, "title",
 	                       g_strdup(purple_savedstatus_get_title(status)),
 	                       g_free);
-	g_object_set_data_full(wrapper, "icon-name", g_strdup(icon_name), g_free);
 	g_object_set_data_full(wrapper, "type", g_strdup(type), g_free);
 	g_object_set_data_full(wrapper, "message", g_strdup(message), g_free);
 
@@ -206,6 +204,21 @@ pidgin_status_manager_response_cb(GtkDialog *dialog, gint response_id,
 			gtk_window_destroy(GTK_WINDOW(dialog));
 			break;
 	}
+}
+
+static PurpleStatusPrimitive
+pidgin_status_manager_lookup_primitive_cb(G_GNUC_UNUSED GObject *self,
+                                          GObject *wrapper,
+                                          G_GNUC_UNUSED gpointer data)
+{
+	PurpleStatusPrimitive primitive = PURPLE_STATUS_UNSET;
+
+	if(G_IS_OBJECT(wrapper)) {
+		PurpleSavedStatus *status = g_object_get_data(wrapper, "savedstatus");
+		primitive = purple_savedstatus_get_primitive_type(status);
+	}
+
+	return primitive;
 }
 
 static char *
@@ -387,6 +400,8 @@ pidgin_status_manager_class_init(PidginStatusManagerClass *klass) {
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_status_manager_response_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_status_manager_lookup_primitive_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_status_manager_lookup_text_data_cb);
 	gtk_widget_class_bind_template_callback(widget_class,

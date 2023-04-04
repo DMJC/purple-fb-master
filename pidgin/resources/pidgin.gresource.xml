@@ -39,6 +39,7 @@
     <file compressed="true" preprocess="xml-stripblanks">Protocols/detailed-view.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Roomlist/roomlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Status/box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">Status/display.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Status/editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Status/manager.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Whiteboard/whiteboard.ui</file>
