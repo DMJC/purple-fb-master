@@ -84,12 +84,15 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 		return NULL;
 	}
 
+	info = purple_person_get_priority_contact_info(person);
+	if(!PURPLE_IS_CONTACT_INFO(info)) {
+		return NULL;
+	}
+
 	pixbuf = purple_person_get_avatar_for_display(person);
 	if(GDK_IS_PIXBUF(pixbuf)) {
 		return gdk_texture_new_for_pixbuf(pixbuf);
 	}
-
-	info = purple_person_get_priority_contact_info(person);
 
 	/* All of the contact info in the manager are PurpleContact's so this cast
 	 * is fine.

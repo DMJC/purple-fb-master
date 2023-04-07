@@ -653,6 +653,10 @@ purple_presence_get_message(PurplePresence *presence) {
 		return priv->message;
 	}
 
+	if(priv->active_status == NULL) {
+		return NULL;
+	}
+
 	return purple_status_get_attr_string(priv->active_status, "message");
 }
 
