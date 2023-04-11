@@ -212,7 +212,7 @@ add_project_arguments(
 #######################################################################
 # Check for gdk-pixbuf (required)
 #######################################################################
-gdk_pixbuf = dependency('gdk-pixbuf-2.0')
+gdk_pixbuf = dependency('gdk-pixbuf-2.0', version : '>= 2.26.0')
 
 #######################################################################
 # Check for GObject Introspection

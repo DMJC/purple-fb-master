@@ -26,199 +26,214 @@
  * Helpers
  *****************************************************************************/
 static void
-purple_demo_protocol_load_status(PurpleBuddy *buddy, JsonObject *buddy_object)
+purple_demo_contacts_load_contact_icon(PurpleContactInfo *info,
+                                       const char *name)
 {
-	PurplePresence *presence = NULL;
-	JsonObject *status_object = NULL;
+	GdkPixbuf *pixbuf = NULL;
+	GError *error = NULL;
+	char *path = NULL;
 
-	if(!json_object_has_member(buddy_object, "status")) {
+	path = g_strdup_printf("/im/pidgin/purple/demo/buddy_icons/%s.png", name);
+	pixbuf = gdk_pixbuf_new_from_resource(path, &error);
+
+	if(error != NULL) {
+		g_message("Failed to load find an icon for %s: %s", path,
+		          error->message);
+
+		g_free(path);
+		g_clear_error(&error);
+
 		return;
 	}
 
-	presence = purple_buddy_get_presence(buddy);
+	g_free(path);
 
-	status_object = json_object_get_object_member(buddy_object, "status");
+	if(GDK_IS_PIXBUF(pixbuf)) {
+		purple_contact_info_set_avatar(info, pixbuf);
 
-	if(json_object_has_member(status_object, "primitive")) {
-		PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
-		const char *name = NULL;
+		g_clear_object(&pixbuf);
+	}
+}
 
-		name = json_object_get_string_member(status_object, "primitive");
-		if(!purple_strempty(name)) {
-			GEnumClass *klass = NULL;
-			GEnumValue *value = NULL;
+static void
+purple_demo_contacts_load_contact_person(JsonObject *person_object,
+                                         PurpleContactInfo *info)
+{
+	PurplePerson *person = NULL;
+	const char *value = NULL;
 
-			klass = g_type_class_ref(PURPLE_TYPE_PRESENCE_PRIMITIVE);
-			value = g_enum_get_value_by_nick(klass, name);
+	/* If the person has an id, grab it so we can use it when constructing the
+	 * person object.
+	 */
+	if(json_object_has_member(person_object, "id")) {
+		value = json_object_get_string_member(person_object, "id");
+	}
 
-			if(value != NULL) {
-				primitive = value->value;
-			}
+	/* Now create the person with the optional id. */
+	person = g_object_new(PURPLE_TYPE_PERSON, "id", value, NULL);
 
-			g_type_class_unref(klass);
+	/* Alias */
+	if(json_object_has_member(person_object, "alias")) {
+		value = json_object_get_string_member(person_object, "alias");
+		if(!purple_strempty(value)) {
+			purple_person_set_alias(person, value);
 		}
-
-		purple_presence_set_primitive(presence, primitive);
 	}
 
-	if(json_object_has_member(status_object, "message")) {
-		const gchar *message = NULL;
+	/* Create the link between the person and the contact info. */
+	purple_person_add_contact_info(person, info);
+	purple_contact_info_set_person(info, person);
 
-		message = json_object_get_string_member(status_object, "message");
+	g_clear_object(&person);
+}
 
-		purple_presence_set_message(presence, message);
+static void
+purple_demo_contacts_load_contact_presence(JsonObject *presence_object,
+                                           PurpleContactInfo *info)
+{
+	PurplePresence *presence = NULL;
+	const gchar *value = NULL;
+
+	presence = purple_contact_info_get_presence(info);
+
+	/* Emoji */
+	if(json_object_has_member(presence_object, "emoji")) {
+		value = json_object_get_string_member(presence_object, "emoji");
+		if(!purple_strempty(value)) {
+			purple_presence_set_emoji(presence, value);
+		}
 	}
 
-	if(json_object_has_member(status_object, "idle")) {
+	/* Idle Time */
+	if(json_object_has_member(presence_object, "idle")) {
 		GDateTime *now = NULL;
 		GDateTime *idle_since = NULL;
-		gint idle_minutes = 0;
+		gint64 ivalue = 0;
 
-		idle_minutes = json_object_get_int_member(status_object, "idle");
+		ivalue = json_object_get_int_member(presence_object, "idle");
+
 		now = g_date_time_new_now_local();
-		idle_since = g_date_time_add_minutes(now, -1 * idle_minutes);
+		idle_since = g_date_time_add_minutes(now, -1 * ivalue);
 
 		purple_presence_set_idle(presence, TRUE, idle_since);
 
 		g_date_time_unref(idle_since);
 		g_date_time_unref(now);
 	}
-}
 
-static void
-purple_demo_protocol_load_icon(PurpleAccount *account, const gchar *name)
-{
-	gchar *path = NULL;
-	GBytes *icon = NULL;
-	gpointer icon_data = NULL;
-	gsize icon_len = 0;
-
-	path = g_strdup_printf("/im/pidgin/purple/demo/buddy_icons/%s.png", name);
-	icon = g_resource_lookup_data(purple_demo_get_resource(), path, G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
-	g_free(path);
-
-	if(icon == NULL) {
-		/* No stored icon. */
-		return;
+	/* Message */
+	if(json_object_has_member(presence_object, "message")) {
+		value = json_object_get_string_member(presence_object, "message");
+		if(!purple_strempty(value)) {
+			purple_presence_set_message(presence, value);
+		}
 	}
 
-	icon_data = g_bytes_unref_to_data(icon, &icon_len);
-	purple_buddy_icons_set_for_user(account, name, icon_data, icon_len, NULL);
-}
+	/* Mobile */
+	if(json_object_has_member(presence_object, "mobile")) {
+		gboolean bvalue = FALSE;
+		bvalue = json_object_get_boolean_member(presence_object, "mobile");
+		purple_presence_set_mobile(presence, bvalue);
+	}
 
-static void
-purple_demo_protocol_load_buddies(PurpleAccount *account, PurpleGroup *group,
-                                  PurpleMetaContact *contact, GList *buddies)
-{
-	while(buddies != NULL) {
-		JsonNode *buddy_node = NULL;
-		JsonObject *buddy_object = NULL;
-		const gchar *name = NULL, *alias = NULL;
+	/* Primitive */
+	if(json_object_has_member(presence_object, "primitive")) {
+		PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
 
-		buddy_node = (JsonNode *)buddies->data;
-		buddy_object = json_node_get_object(buddy_node);
+		value = json_object_get_string_member(presence_object, "primitive");
+		if(!purple_strempty(value)) {
+			GEnumClass *enum_class = NULL;
+			GEnumValue *enum_value = NULL;
 
-		if(json_object_has_member(buddy_object, "name")) {
-			name = json_object_get_string_member(buddy_object, "name");
-		}
+			enum_class = g_type_class_ref(PURPLE_TYPE_PRESENCE_PRIMITIVE);
+			enum_value = g_enum_get_value_by_nick(enum_class, value);
 
-		if(json_object_has_member(buddy_object, "alias")) {
-			alias = json_object_get_string_member(buddy_object, "alias");
-		}
-
-		if(name != NULL) {
-			PurpleBuddy *buddy = NULL;
-
-			buddy = purple_blist_find_buddy(account, name);
-			if(buddy == NULL) {
-				buddy = purple_buddy_new(account, name, alias);
-				purple_blist_add_buddy(buddy, contact, group, NULL);
+			if(enum_value != NULL) {
+				primitive = enum_value->value;
 			}
 
-			purple_demo_protocol_load_icon(account, name);
-			purple_demo_protocol_load_status(buddy, buddy_object);
-			if (purple_strequal(name, "Echo")) {
-				purple_protocol_got_media_caps(account, name);
-			}
+			g_type_class_unref(enum_class);
 		}
 
-		buddies = g_list_delete_link(buddies, buddies);
+		purple_presence_set_primitive(presence, primitive);
 	}
 }
 
 static void
-purple_demo_protocol_load_contacts(PurpleAccount *account, PurpleGroup *group,
-                                   GList *contacts)
+purple_demo_contacts_load_contact(PurpleContactManager *manager,
+                                  PurpleAccount *account,
+                                  JsonObject *contact_object)
 {
-	while(contacts != NULL) {
-		PurpleMetaContact *contact = NULL;
-		JsonNode *contact_node = NULL;
-		JsonObject *contact_object = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactInfo *info = NULL;
+	const char *id = NULL;
+	const char *value = NULL;
 
-		contact_node = (JsonNode *)contacts->data;
-		contact_object = json_node_get_object(contact_node);
-
-		contact = purple_meta_contact_new();
-
-		/* Set the contact's alias if one was specified. */
-		if(json_object_has_member(contact_object, "alias")) {
-			const gchar *alias = NULL;
-
-			alias = json_object_get_string_member(contact_object, "alias");
-
-			purple_meta_contact_set_alias(contact, alias);
-		}
-
-		/* Add the contact to the group. */
-		purple_blist_add_contact(contact, group, NULL);
-
-		/* Finally add the buddies */
-		if(json_object_has_member(contact_object, "buddies")) {
-			JsonArray *buddies_array = NULL;
-			GList *buddies = NULL;
-
-			buddies_array = json_object_get_array_member(contact_object,
-			                                             "buddies");
-			buddies = json_array_get_elements(buddies_array);
-
-			purple_demo_protocol_load_buddies(account, group, contact,
-			                                  buddies);
-		}
-
-		contacts = g_list_delete_link(contacts, contacts);
+	/* If we have an id, grab so we can create the contact with it. */
+	if(json_object_has_member(contact_object, "id")) {
+		id = json_object_get_string_member(contact_object, "id");
 	}
-}
 
-static void
-purple_demo_protocol_load_groups(PurpleAccount *account,
-                                 JsonObject *root_object)
-{
-	PurpleGroup *last = NULL;
-	GList *groups = NULL;
+	/* Create the contact using the id if one was provided. */
+	contact = purple_contact_new(account, id);
+	info = PURPLE_CONTACT_INFO(contact);
 
-	/* Get the members of the root object, this is our list of group names. */
-	groups = json_object_get_members(root_object);
-
-	while(groups != NULL) {
-		PurpleGroup *group = NULL;
-		JsonArray *group_array = NULL;
-		GList *contacts = NULL;
-		const gchar *group_name = (const gchar *)groups->data;
-
-		/* Add each group according to the json file. */
-		group = purple_group_new(group_name);
-		purple_blist_add_group(group, PURPLE_BLIST_NODE(last));
-
-		/* Now get the contacts and add them. */
-		group_array = json_object_get_array_member(root_object, group_name);
-		contacts = json_array_get_elements(group_array);
-
-		purple_demo_protocol_load_contacts(account, group, contacts);
-
-		groups = g_list_delete_link(groups, groups);
-
-		last = group;
+	/* Alias */
+	if(json_object_has_member(contact_object, "alias")) {
+		value = json_object_get_string_member(contact_object, "alias");
+		if(!purple_strempty(value)) {
+			purple_contact_info_set_alias(info, value);
+		}
 	}
+
+	/* Color */
+	if(json_object_has_member(contact_object, "color")) {
+		value = json_object_get_string_member(contact_object, "color");
+		if(!purple_strempty(value)) {
+			purple_contact_info_set_color(info, value);
+		}
+	}
+
+	/* Display Name */
+	if(json_object_has_member(contact_object, "display_name")) {
+		value = json_object_get_string_member(contact_object, "display_name");
+		if(!purple_strempty(value)) {
+			purple_contact_info_set_display_name(info, value);
+		}
+	}
+
+	/* Username */
+	if(json_object_has_member(contact_object, "username")) {
+		value = json_object_get_string_member(contact_object, "username");
+		if(!purple_strempty(value)) {
+			purple_contact_info_set_username(info, value);
+
+			purple_demo_contacts_load_contact_icon(info, value);
+		}
+	}
+
+	/* Load the person. */
+	if(json_object_has_member(contact_object, "person")) {
+		JsonObject *person_object = NULL;
+
+		person_object = json_object_get_object_member(contact_object,
+		                                              "person");
+
+		purple_demo_contacts_load_contact_person(person_object, info);
+	}
+
+	/* Load the presence. */
+	if(json_object_has_member(contact_object, "presence")) {
+		JsonObject *presence_object = NULL;
+
+		presence_object = json_object_get_object_member(contact_object,
+		                                                "presence");
+
+		purple_demo_contacts_load_contact_presence(presence_object, info);
+	}
+
+	/* Finally add the contact to the contact manager. */
+	purple_contact_manager_add(manager, contact);
 }
 
 /******************************************************************************
@@ -226,11 +241,13 @@ purple_demo_protocol_load_groups(PurpleAccount *account,
  *****************************************************************************/
 void
 purple_demo_contacts_load(PurpleAccount *account) {
-	GInputStream *istream = NULL;
+	PurpleContactManager *manager = NULL;
 	GError *error = NULL;
-	JsonParser *parser = NULL;
+	GInputStream *istream = NULL;
+	GList *contacts = NULL;
+	JsonArray *contacts_array = NULL;
 	JsonNode *root_node = NULL;
-	JsonObject *root_object = NULL;
+	JsonParser *parser = NULL;
 
 	/* get a stream to the contacts.json resource */
 	istream = g_resource_open_stream(purple_demo_get_resource(),
@@ -246,12 +263,24 @@ purple_demo_contacts_load(PurpleAccount *account) {
 		return;
 	}
 
-	/* Load our data */
 	root_node = json_parser_get_root(parser);
-	root_object = json_node_get_object(root_node);
 
-	/* Load the groups! */
-	purple_demo_protocol_load_groups(account, root_object);
+	manager = purple_contact_manager_get_default();
+
+	/* Load the contacts! */
+	contacts_array = json_node_get_array(root_node);
+	contacts = json_array_get_elements(contacts_array);
+	while(contacts != NULL) {
+		JsonNode *contact_node = NULL;
+		JsonObject *contact_object = NULL;
+
+		contact_node = contacts->data;
+		contact_object = json_node_get_object(contact_node);
+
+		purple_demo_contacts_load_contact(manager, account, contact_object);
+
+		contacts = g_list_delete_link(contacts, contacts);
+	}
 
 	/* Clean up everything else... */
 	g_clear_object(&parser);
