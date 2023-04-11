@@ -650,19 +650,18 @@ void
 purple_contact_manager_add_person(PurpleContactManager *manager,
                                   PurplePerson *person)
 {
-	guint index = 0;
-
 	g_return_if_fail(PURPLE_IS_CONTACT_MANAGER(manager));
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 
 	/* If the person is already known, bail. */
-	if(g_ptr_array_find(manager->people, person, &index)) {
+	if(g_ptr_array_find(manager->people, person, NULL)) {
 		return;
 	}
 
 	/* Add the person and emit our signals. */
 	g_ptr_array_add(manager->people, g_object_ref(person));
-	g_list_model_items_changed(G_LIST_MODEL(manager), index, 0, 1);
+	g_list_model_items_changed(G_LIST_MODEL(manager), manager->people->len - 1,
+	                           0, 1);
 	g_signal_emit(manager, signals[SIG_PERSON_ADDED], 0, person);
 }
 
