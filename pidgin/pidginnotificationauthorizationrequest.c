@@ -68,9 +68,9 @@ pidgin_notification_authorization_request_update(PidginNotificationAuthorization
 		gtk_image_set_from_icon_name(GTK_IMAGE(request->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(request), NULL);
 
-		gtk_widget_hide(request->accept);
-		gtk_widget_hide(request->deny);
-		gtk_widget_hide(request->message);
+		gtk_widget_set_visible(request->accept, FALSE);
+		gtk_widget_set_visible(request->deny, FALSE);
+		gtk_widget_set_visible(request->message, FALSE);
 
 		return;
 	}
@@ -83,9 +83,9 @@ pidgin_notification_authorization_request_update(PidginNotificationAuthorization
 		gtk_image_set_from_icon_name(GTK_IMAGE(request->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(request), NULL);
 
-		gtk_widget_hide(request->accept);
-		gtk_widget_hide(request->deny);
-		gtk_widget_hide(request->message);
+		gtk_widget_set_visible(request->accept, FALSE);
+		gtk_widget_set_visible(request->deny, FALSE);
+		gtk_widget_set_visible(request->message, FALSE);
 
 		return;
 	}
@@ -112,9 +112,9 @@ pidgin_notification_authorization_request_update(PidginNotificationAuthorization
 	message = purple_authorization_request_get_message(purple_request);
 	adw_action_row_set_subtitle(ADW_ACTION_ROW(request), message);
 
-	gtk_widget_show(request->accept);
-	gtk_widget_show(request->deny);
-	gtk_widget_show(request->message);
+	gtk_widget_set_visible(request->accept, TRUE);
+	gtk_widget_set_visible(request->deny, TRUE);
+	gtk_widget_set_visible(request->message, TRUE);
 }
 
 static void

@@ -68,8 +68,8 @@ pidgin_notification_add_contact_update(PidginNotificationAddContact *add_contact
 		gtk_image_set_from_icon_name(GTK_IMAGE(add_contact->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(add_contact), NULL);
 
-		gtk_widget_hide(add_contact->add);
-		gtk_widget_hide(add_contact->message);
+		gtk_widget_set_visible(add_contact->add, FALSE);
+		gtk_widget_set_visible(add_contact->message, FALSE);
 
 		return;
 	}
@@ -82,8 +82,8 @@ pidgin_notification_add_contact_update(PidginNotificationAddContact *add_contact
 		gtk_image_set_from_icon_name(GTK_IMAGE(add_contact->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(add_contact), NULL);
 
-		gtk_widget_hide(add_contact->add);
-		gtk_widget_hide(add_contact->message);
+		gtk_widget_set_visible(add_contact->add, FALSE);
+		gtk_widget_set_visible(add_contact->message, FALSE);
 
 		return;
 	}
@@ -110,8 +110,8 @@ pidgin_notification_add_contact_update(PidginNotificationAddContact *add_contact
 	message = purple_add_contact_request_get_message(request);
 	adw_action_row_set_subtitle(ADW_ACTION_ROW(add_contact), message);
 
-	gtk_widget_show(add_contact->add);
-	gtk_widget_show(add_contact->message);
+	gtk_widget_set_visible(add_contact->add, TRUE);
+	gtk_widget_set_visible(add_contact->message, TRUE);
 }
 
 static void

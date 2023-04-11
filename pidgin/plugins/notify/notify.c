@@ -876,7 +876,7 @@ get_config_frame(PurplePlugin *plugin)
 	                 G_CALLBACK(notify_toggle_cb), "notify_switch");
 #endif
 
-	gtk_widget_show_all(ret);
+	gtk_widget_set_visible(ret, TRUE);
 	return ret;
 }
 

@@ -437,7 +437,7 @@ pidgin_roomlist_dialog_new_with_account(PurpleAccount *account)
 	}
 
 	/* show the dialog window and return the dialog */
-	gtk_widget_show(GTK_WIDGET(dialog));
+	gtk_widget_set_visible(GTK_WIDGET(dialog), TRUE);
 
 	return dialog;
 }

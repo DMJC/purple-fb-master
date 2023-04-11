@@ -233,7 +233,7 @@ pidgin_display_window_invite(G_GNUC_UNUSED GSimpleAction *simple,
 			                 NULL);
 		}
 
-		gtk_widget_show(invite_dialog);
+		gtk_widget_set_visible(invite_dialog, TRUE);
 	}
 }
 

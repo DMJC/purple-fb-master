@@ -233,7 +233,7 @@ gstroke_enable (GtkWidget *widget)
 		                                     GDK_BUTTON_RELEASE_MASK |
 		                                     GDK_BUTTON2_MOTION_MASK);
 		gtk_widget_set_app_paintable(event, TRUE);
-		gtk_widget_show(event);
+		gtk_widget_set_visible(event, TRUE);
 
 		parent = gtk_widget_get_parent(widget);
 		g_object_ref(widget);

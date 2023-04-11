@@ -92,7 +92,7 @@ pidgin_conversation_prefs_init(PidginConversationPrefs *prefs)
 	pidgin_prefs_bind_switch(PIDGIN_PREFS_ROOT "/win32/blink_im",
 	                         prefs->win32.blink_im);
 #else
-	gtk_widget_hide(prefs->win32.blink_im_row);
+	gtk_widget_set_visible(prefs->win32.blink_im_row, FALSE);
 #endif
 
 	pidgin_prefs_bind_spin_button(

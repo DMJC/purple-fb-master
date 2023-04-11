@@ -2127,7 +2127,6 @@ get_config_frame(PurplePlugin *plugin)
 
 	vbox = pidgin_make_frame(ret, _("Text Replacements"));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
-	gtk_widget_show(vbox);
 
 	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(model));
 	gtk_widget_set_size_request(tree, -1, 200);
@@ -2196,7 +2195,6 @@ get_config_frame(PurplePlugin *plugin)
 
 	hbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	gtk_widget_show(hbox);
 
 	button = gtk_button_new_with_mnemonic(_("_Delete"));
 	g_signal_connect(G_OBJECT(button), "clicked",
@@ -2207,16 +2205,12 @@ get_config_frame(PurplePlugin *plugin)
 	g_signal_connect(G_OBJECT(gtk_tree_view_get_selection(GTK_TREE_VIEW(tree))),
 		"changed", G_CALLBACK(on_selection_changed), button);
 
-	gtk_widget_show(button);
-
 	vbox = pidgin_make_frame(ret, _("Add a new text replacement"));
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
-	gtk_widget_show(hbox);
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, TRUE, 0);
-	gtk_widget_show(vbox2);
 
 	sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	sg2 = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
@@ -2238,12 +2232,10 @@ get_config_frame(PurplePlugin *plugin)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(complete_toggle), TRUE);
 	g_signal_connect(G_OBJECT(complete_toggle), "clicked",
                          G_CALLBACK(whole_words_button_toggled), case_toggle);
-	gtk_widget_show(complete_toggle);
 	gtk_box_pack_start(GTK_BOX(vbox2), complete_toggle, FALSE, FALSE, 0);
 
 	/* The button is created above so it can be passed to whole_words_button_toggled. */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_toggle), FALSE);
-	gtk_widget_show(case_toggle);
 	gtk_box_pack_start(GTK_BOX(vbox2), case_toggle, FALSE, FALSE, 0);
 
 	button = gtk_button_new_with_mnemonic(_("_Add"));
@@ -2251,12 +2243,10 @@ get_config_frame(PurplePlugin *plugin)
 			   G_CALLBACK(list_add_new), NULL);
 	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox3, TRUE, FALSE, 0);
-	gtk_widget_show(vbox3);
 	gtk_box_pack_end(GTK_BOX(vbox3), button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(bad_entry), "changed", G_CALLBACK(on_entry_changed), button);
 	g_signal_connect(G_OBJECT(good_entry), "changed", G_CALLBACK(on_entry_changed), button);
 	gtk_widget_set_sensitive(button, FALSE);
-	gtk_widget_show(button);
 
 #if 0
 	vbox = pidgin_make_frame(ret, _("General Text Replacement Options"));
@@ -2264,7 +2254,6 @@ get_config_frame(PurplePlugin *plugin)
 	                        "/plugins/gtk/spellchk/last_word_replace", vbox);
 #endif
 
-	gtk_widget_show_all(ret);
 	g_object_unref(sg);
 	g_object_unref(sg2);
 	return ret;

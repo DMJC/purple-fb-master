@@ -518,7 +518,7 @@ pidgin_whiteboard_create(PurpleWhiteboard *wb)
 	                           &color);
 
 	/* Make all this (window) visible */
-	gtk_widget_show(GTK_WIDGET(gtkwb));
+	gtk_widget_set_visible(GTK_WIDGET(gtkwb), TRUE);
 
 	/* TODO Specific protocol/whiteboard assignment here? Needs a UI Op? */
 	/* Set default brush size and color */

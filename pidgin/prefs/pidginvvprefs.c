@@ -369,7 +369,7 @@ enable_video_test(PidginVVPrefs *prefs)
 
 	sink = g_object_get_data(G_OBJECT(prefs->video.pipeline), "sink");
 	g_object_get(sink, "widget", &video, NULL);
-	gtk_widget_show(video);
+	gtk_widget_set_visible(video, TRUE);
 
 	gtk_widget_set_size_request(prefs->video.frame, 400, 300);
 	gtk_aspect_frame_set_child(GTK_ASPECT_FRAME(prefs->video.frame), video);

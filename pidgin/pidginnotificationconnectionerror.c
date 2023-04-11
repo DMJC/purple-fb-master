@@ -66,9 +66,9 @@ pidgin_notification_connection_error_update(PidginNotificationConnectionError *e
 		gtk_image_set_from_icon_name(GTK_IMAGE(error->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(error), NULL);
 
-		gtk_widget_hide(error->reconnect);
-		gtk_widget_hide(error->reenable);
-		gtk_widget_hide(error->modify);
+		gtk_widget_set_visible(error->reconnect, FALSE);
+		gtk_widget_set_visible(error->reenable, FALSE);
+		gtk_widget_set_visible(error->modify, FALSE);
 
 		return;
 	}
@@ -81,9 +81,9 @@ pidgin_notification_connection_error_update(PidginNotificationConnectionError *e
 		gtk_image_set_from_icon_name(GTK_IMAGE(error->icon), NULL);
 		adw_action_row_set_subtitle(ADW_ACTION_ROW(error), NULL);
 
-		gtk_widget_hide(error->reconnect);
-		gtk_widget_hide(error->reenable);
-		gtk_widget_hide(error->modify);
+		gtk_widget_set_visible(error->reconnect, FALSE);
+		gtk_widget_set_visible(error->reenable, FALSE);
+		gtk_widget_set_visible(error->modify, FALSE);
 
 		return;
 	}

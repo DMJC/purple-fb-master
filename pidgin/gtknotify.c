@@ -223,7 +223,7 @@ pidgin_notify_message(PurpleNotifyMessageType type, const char *title,
 		purple_request_cpar_get_parent_from(cpar));
 	pidgin_auto_parent_window(dialog);
 
-	gtk_widget_show(dialog);
+	gtk_widget_set_visible(dialog, TRUE);
 
 	return dialog;
 }
@@ -321,7 +321,7 @@ pidgin_notify_formatted(const char *title, const char *primary,
 	/* Show the window */
 	pidgin_auto_parent_window(window);
 
-	gtk_widget_show(window);
+	gtk_widget_set_visible(window, TRUE);
 
 	return window;
 }
@@ -524,7 +524,7 @@ pidgin_notify_searchresults(PurpleConnection *gc, const char *title,
 	/* Show the window */
 	pidgin_auto_parent_window(window);
 
-	gtk_widget_show(window);
+	gtk_widget_set_visible(window, TRUE);
 	return data;
 }
 

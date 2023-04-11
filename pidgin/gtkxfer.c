@@ -311,8 +311,8 @@ update_buttons(PidginXferDialog *dialog, PurpleXfer *xfer)
 		gtk_widget_set_sensitive(dialog->open_button, FALSE);
 		gtk_widget_set_sensitive(dialog->stop_button, FALSE);
 
-		gtk_widget_show(dialog->stop_button);
-		gtk_widget_hide(dialog->remove_button);
+		gtk_widget_set_visible(dialog->stop_button, TRUE);
+		gtk_widget_set_visible(dialog->remove_button, FALSE);
 
 		return;
 	}
@@ -321,8 +321,8 @@ update_buttons(PidginXferDialog *dialog, PurpleXfer *xfer)
 		return;
 
 	if (purple_xfer_is_completed(xfer)) {
-		gtk_widget_hide(dialog->stop_button);
-		gtk_widget_show(dialog->remove_button);
+		gtk_widget_set_visible(dialog->stop_button, FALSE);
+		gtk_widget_set_visible(dialog->remove_button, TRUE);
 
 #ifdef _WIN32
 		/* If using Win32... */
@@ -341,15 +341,15 @@ update_buttons(PidginXferDialog *dialog, PurpleXfer *xfer)
 
 		gtk_widget_set_sensitive(dialog->remove_button, TRUE);
 	} else if (purple_xfer_is_cancelled(xfer)) {
-		gtk_widget_hide(dialog->stop_button);
-		gtk_widget_show(dialog->remove_button);
+		gtk_widget_set_visible(dialog->stop_button, FALSE);
+		gtk_widget_set_visible(dialog->remove_button, TRUE);
 
 		gtk_widget_set_sensitive(dialog->open_button,  FALSE);
 
 		gtk_widget_set_sensitive(dialog->remove_button, TRUE);
 	} else {
-		gtk_widget_show(dialog->stop_button);
-		gtk_widget_hide(dialog->remove_button);
+		gtk_widget_set_visible(dialog->stop_button, TRUE);
+		gtk_widget_set_visible(dialog->remove_button, FALSE);
 
 		gtk_widget_set_sensitive(dialog->open_button,  FALSE);
 		gtk_widget_set_sensitive(dialog->stop_button,   TRUE);
@@ -582,7 +582,7 @@ pidgin_xfer_dialog_show(PidginXferDialog *dialog)
 			pidgin_set_xfer_dialog(tmp);
 		}
 
-		gtk_widget_show(GTK_WIDGET(tmp));
+		gtk_widget_set_visible(GTK_WIDGET(tmp), TRUE);
 	} else {
 		gtk_window_present(GTK_WINDOW(dialog));
 	}
@@ -595,7 +595,7 @@ pidgin_xfer_dialog_hide(PidginXferDialog *dialog)
 
 	purple_notify_close_with_handle(dialog);
 
-	gtk_widget_hide(GTK_WIDGET(dialog));
+	gtk_widget_set_visible(GTK_WIDGET(dialog), FALSE);
 }
 
 void

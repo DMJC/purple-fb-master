@@ -439,7 +439,7 @@ pidgin_blist_joinchat_show(void)
 
 	rebuild_chat_entries(data, NULL);
 
-	gtk_widget_show(data->rq_data.window);
+	gtk_widget_set_visible(data->rq_data.window, TRUE);
 }
 
 static void
@@ -451,7 +451,7 @@ pidgin_blist_request_add_buddy(G_GNUC_UNUSED PurpleBuddyList *list,
 
 	dialog = pidgin_add_buddy_dialog_new(account, username, alias, NULL, group);
 
-	gtk_widget_show(dialog);
+	gtk_widget_set_visible(dialog, TRUE);
 }
 
 static void
@@ -463,7 +463,7 @@ pidgin_blist_request_add_chat(G_GNUC_UNUSED PurpleBuddyList *list,
 
 	dialog = pidgin_add_chat_dialog_new(account, group, alias, name);
 
-	gtk_widget_show(dialog);
+	gtk_widget_set_visible(dialog, TRUE);
 }
 
 static void

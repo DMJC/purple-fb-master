@@ -688,7 +688,7 @@ pidgin_media_ready_cb(PurpleMedia *media, PidginMedia *gtkmedia, const gchar *si
 			sink = gst_bin_get_by_name(GST_BIN(pipeline), "gtksink");
 		}
 		g_object_get(G_OBJECT(sink), "widget", &remote_video, NULL);
-		gtk_widget_show(remote_video);
+		gtk_widget_set_visible(remote_video, TRUE);
 		gtk_widget_set_vexpand(remote_video, TRUE);
 		gtk_box_append(GTK_BOX(recv_widget), remote_video);
 
@@ -710,7 +710,7 @@ pidgin_media_ready_cb(PurpleMedia *media, PidginMedia *gtkmedia, const gchar *si
 			sink = gst_bin_get_by_name(GST_BIN(pipeline), "gtksink");
 		}
 		g_object_get(G_OBJECT(sink), "widget", &local_video, NULL);
-		gtk_widget_show(local_video);
+		gtk_widget_set_visible(local_video, TRUE);
 		gtk_widget_set_vexpand(local_video, TRUE);
 		gtk_box_append(GTK_BOX(send_widget), local_video);
 
@@ -819,7 +819,7 @@ pidgin_media_stream_info_cb(G_GNUC_UNUSED PurpleMedia *media,
 		pidgin_media_emit_message(gtkmedia, _("Call in progress."));
 		gtk_statusbar_push(GTK_STATUSBAR(gtkmedia->priv->statusbar),
 				0, _("Call in progress"));
-		gtk_widget_show(GTK_WIDGET(gtkmedia));
+		gtk_widget_set_visible(GTK_WIDGET(gtkmedia), TRUE);
 	} else if (type == PURPLE_MEDIA_INFO_MUTE && !local) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gtkmedia->priv->mute), TRUE);
 	} else if (type == PURPLE_MEDIA_INFO_UNMUTE && !local) {

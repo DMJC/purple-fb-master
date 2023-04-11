@@ -84,7 +84,7 @@ pidgin_status_manager_show_editor(PidginStatusManager *manager) {
 		                        G_CALLBACK(pidgin_status_editor_destroy_cb),
 		                        manager, 0);
 
-		gtk_widget_show(editor);
+		gtk_widget_set_visible(editor, TRUE);
 	} else {
 		gtk_window_present_with_time(GTK_WINDOW(editor), GDK_CURRENT_TIME);
 	}
@@ -190,7 +190,7 @@ pidgin_status_manager_response_cb(GtkDialog *dialog, gint response_id,
 			editor = pidgin_status_editor_new(NULL);
 			gtk_window_set_transient_for(GTK_WINDOW(editor),
 			                             GTK_WINDOW(manager));
-			gtk_widget_show(editor);
+			gtk_widget_set_visible(editor, TRUE);
 			break;
 		case RESPONSE_MODIFY:
 			pidgin_status_manager_show_editor(manager);

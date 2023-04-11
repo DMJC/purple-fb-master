@@ -550,7 +550,7 @@ pidgin_request_input(const char *title, const char *primary,
 	pidgin_auto_parent_window(dialog);
 
 	/* Show everything. */
-	gtk_widget_show(dialog);
+	gtk_widget_set_visible(dialog, TRUE);
 
 	return data;
 }
@@ -683,7 +683,7 @@ pidgin_request_choice(const char *title, const char *primary,
 	/* Show everything. */
 	pidgin_auto_parent_window(dialog);
 
-	gtk_widget_show(dialog);
+	gtk_widget_set_visible(dialog, TRUE);
 
 	return data;
 }
@@ -811,7 +811,7 @@ pidgin_request_action(const char *title, const char *primary,
 	/* Show everything. */
 	pidgin_auto_parent_window(dialog);
 
-	gtk_widget_show(dialog);
+	gtk_widget_set_visible(dialog, TRUE);
 
 	return data;
 }
@@ -929,7 +929,7 @@ pidgin_request_wait(const char *title, const char *primary,
 	/* Show everything. */
 	pidgin_auto_parent_window(dialog);
 
-	gtk_widget_show(dialog);
+	gtk_widget_set_visible(dialog, TRUE);
 
 	return data;
 }
@@ -2002,7 +2002,7 @@ pidgin_request_fields(const char *title, const char *primary,
 
 	pidgin_auto_parent_window(win);
 
-	gtk_widget_show(win);
+	gtk_widget_set_visible(win, TRUE);
 
 	return data;
 }

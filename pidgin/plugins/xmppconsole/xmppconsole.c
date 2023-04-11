@@ -598,8 +598,6 @@ pidgin_xmpp_console_init(PidginXmppConsole *console) {
 
 	dropdown_changed_cb(G_OBJECT(console->account_chooser), NULL, console);
 	entry_changed_cb(console->entry_buffer, console);
-
-	gtk_widget_show(GTK_WIDGET(console));
 }
 
 /******************************************************************************

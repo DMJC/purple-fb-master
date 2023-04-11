@@ -94,7 +94,7 @@ stroke_new_win(GtkWidget *widget, void *data)
 	                                  conv);
 	pidgin_display_window_add(PIDGIN_DISPLAY_WINDOW(new_win), conv);
 
-	gtk_widget_show_all(new_win);
+	gtk_widget_set_visible(new_win, TRUE);
 }
 
 static void
@@ -185,7 +185,7 @@ get_config_frame(PurplePlugin *plugin)
 	g_signal_connect(G_OBJECT(toggle), "toggled",
 					 G_CALLBACK(toggle_draw_cb), NULL);
 
-	gtk_widget_show_all(ret);
+	gtk_widget_set_visible(ret, TRUE);
 
 	return ret;
 }

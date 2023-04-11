@@ -519,7 +519,7 @@ PidginDiscoDialog *
 pidgin_disco_dialog_new(void)
 {
 	PidginDiscoDialog *dialog = g_object_new(PIDGIN_TYPE_DISCO_DIALOG, NULL);
-	gtk_widget_show(GTK_WIDGET(dialog));
+	gtk_widget_set_visible(GTK_WIDGET(dialog), TRUE);
 	return dialog;
 }
 
