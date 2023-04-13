@@ -50,14 +50,25 @@ purple_demo_protocol_failure_tick(gpointer data,
 	                                              "reaping-time"));
 	timeout--;
 	if(timeout > 0) {
+		PurpleContact *contact = NULL;
+		PurpleContactManager *manager = NULL;
+
 		g_object_set_data(G_OBJECT(connection), "reaping-time",
 		                  GINT_TO_POINTER(timeout));
 
-		message = g_strdup_printf(ngettext(tick_str, tick_plural_str, timeout),
-		                          timeout);
-		purple_protocol_got_user_status(account, REAPER_BUDDY_NAME,
-		                                "available", "message", message, NULL);
-		g_free(message);
+		manager = purple_contact_manager_get_default();
+		contact = purple_contact_manager_find_with_username(manager, account,
+		                                                    REAPER_BUDDY_NAME);
+
+		if(PURPLE_IS_CONTACT(contact)) {
+			PurpleContactInfo *info = PURPLE_CONTACT_INFO(contact);
+			PurplePresence *presence = purple_contact_info_get_presence(info);
+			const char *format = ngettext(tick_str, tick_plural_str, timeout);
+
+			message = g_strdup_printf(format, timeout);
+			purple_presence_set_message(presence, message);
+			g_free(message);
+		}
 
 		return G_SOURCE_CONTINUE;
 	}
@@ -94,11 +105,12 @@ purple_demo_protocol_failure_action_activate(G_GNUC_UNUSED GSimpleAction *action
                                              const gchar *tick_plural_str,
                                              GSourceFunc cb)
 {
-	PurpleConnection *connection = NULL;
-	const gchar *account_id = NULL;
-	PurpleAccountManager *manager = NULL;
+	PurpleAccountManager *account_manager = NULL;
 	PurpleAccount *account = NULL;
-	gchar *status = NULL;
+	PurpleConnection *connection = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *contact_manager = NULL;
+	const char *account_id = NULL;
 
 	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
 		g_critical("Demo failure action parameter is of incorrect type %s",
@@ -107,8 +119,8 @@ purple_demo_protocol_failure_action_activate(G_GNUC_UNUSED GSimpleAction *action
 	}
 
 	account_id = g_variant_get_string(parameter, NULL);
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find_by_id(manager, account_id);
+	account_manager = purple_account_manager_get_default();
+	account = purple_account_manager_find_by_id(account_manager, account_id);
 	connection = purple_account_get_connection(account);
 
 	/* Do nothing if disconnected, or already in process of reaping. */
@@ -119,13 +131,25 @@ purple_demo_protocol_failure_action_activate(G_GNUC_UNUSED GSimpleAction *action
 		return;
 	}
 
-	purple_protocol_got_user_idle(account, REAPER_BUDDY_NAME, FALSE, 0);
-	status = g_strdup_printf(
-	        ngettext(tick_str, tick_plural_str, DEFAULT_REAP_TIME),
-	        DEFAULT_REAP_TIME);
-	purple_protocol_got_user_status(account, REAPER_BUDDY_NAME, "available",
-	                                "message", status, NULL);
-	g_free(status);
+	/* Find the reaper. */
+	contact_manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(contact_manager,
+	                                                    account,
+	                                                    REAPER_BUDDY_NAME);
+
+	if(PURPLE_IS_CONTACT(contact)) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(contact);
+		PurplePresence *presence = purple_contact_info_get_presence(info);
+		const char *format = NULL;
+		char *message = NULL;
+
+		format = ngettext(tick_str, tick_plural_str, DEFAULT_REAP_TIME);
+		message = g_strdup_printf(format, DEFAULT_REAP_TIME);
+
+		purple_presence_set_idle(presence, FALSE, NULL);
+		purple_presence_set_message(presence, message);
+		g_free(message);
+	}
 
 	g_object_set_data(G_OBJECT(connection), "reaping-time",
 	                  GINT_TO_POINTER(DEFAULT_REAP_TIME));
