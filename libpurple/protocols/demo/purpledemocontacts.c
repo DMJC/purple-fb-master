@@ -60,6 +60,7 @@ purple_demo_contacts_load_contact_person(JsonObject *person_object,
                                          PurpleContactInfo *info)
 {
 	PurplePerson *person = NULL;
+	gboolean new_person = FALSE;
 	const char *value = NULL;
 
 	/* If the person has an id, grab it so we can use it when constructing the
@@ -69,8 +70,27 @@ purple_demo_contacts_load_contact_person(JsonObject *person_object,
 		value = json_object_get_string_member(person_object, "id");
 	}
 
-	/* Now create the person with the optional id. */
-	person = g_object_new(PURPLE_TYPE_PERSON, "id", value, NULL);
+	/* See if the contact has an existing person. */
+	person = purple_contact_info_get_person(info);
+	if(PURPLE_IS_PERSON(person)) {
+		const char *existing_id = NULL;
+
+		/* If the existing person's id doesn't match the new one, NULL out
+		 * person so it'll be recreated with the new id.
+		 */
+		existing_id = purple_person_get_id(person);
+		if(!purple_strequal(existing_id, value)) {
+			person = NULL;
+		}
+	}
+
+	/* If the person didn't exist or it had a different id, create a new person
+	 * with the id.
+	 */
+	if(!PURPLE_IS_PERSON(person)) {
+		person = g_object_new(PURPLE_TYPE_PERSON, "id", value, NULL);
+		new_person = TRUE;
+	}
 
 	/* Alias */
 	if(json_object_has_member(person_object, "alias")) {
@@ -81,10 +101,12 @@ purple_demo_contacts_load_contact_person(JsonObject *person_object,
 	}
 
 	/* Create the link between the person and the contact info. */
-	purple_person_add_contact_info(person, info);
-	purple_contact_info_set_person(info, person);
+	if(new_person) {
+		purple_person_add_contact_info(person, info);
+		purple_contact_info_set_person(info, person);
 
-	g_clear_object(&person);
+		g_clear_object(&person);
+	}
 }
 
 static void
@@ -166,6 +188,7 @@ purple_demo_contacts_load_contact(PurpleContactManager *manager,
 {
 	PurpleContact *contact = NULL;
 	PurpleContactInfo *info = NULL;
+	gboolean new_contact = FALSE;
 	const char *id = NULL;
 	const char *value = NULL;
 
@@ -174,8 +197,21 @@ purple_demo_contacts_load_contact(PurpleContactManager *manager,
 		id = json_object_get_string_member(contact_object, "id");
 	}
 
-	/* Create the contact using the id if one was provided. */
-	contact = purple_contact_new(account, id);
+	/* Look for an existing contact before creating a new one. This stops us
+	 * from getting multiples when we trigger connection errors.
+	 */
+	if(!purple_strempty(id)) {
+		contact = purple_contact_manager_find_with_id(manager, account, id);
+	}
+
+	/* If we didn't find an existing contact, create it now with the provided
+	 * id.
+	 */
+	if(!PURPLE_IS_CONTACT(contact)) {
+		contact = purple_contact_new(account, id);
+		new_contact = TRUE;
+	}
+
 	info = PURPLE_CONTACT_INFO(contact);
 
 	/* Alias */
@@ -232,8 +268,12 @@ purple_demo_contacts_load_contact(PurpleContactManager *manager,
 		purple_demo_contacts_load_contact_presence(presence_object, info);
 	}
 
-	/* Finally add the contact to the contact manager. */
-	purple_contact_manager_add(manager, contact);
+	/* Finally add the contact to the contact manager if it's new. */
+	if(new_contact) {
+		purple_contact_manager_add(manager, contact);
+	}
+
+	g_clear_object(&contact);
 }
 
 /******************************************************************************
