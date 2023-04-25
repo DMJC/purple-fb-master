@@ -29,6 +29,7 @@ PROGS = [
     'request_field',
     'request_group',
     'request_page',
+    'saved_presence',
     'str',
     'tags',
     'util',
