@@ -1239,13 +1239,13 @@ create_account_field(PurpleRequestField *field, GtkWidget **account_hint)
 	pidgin_account_chooser_set_selected(PIDGIN_ACCOUNT_CHOOSER(widget),
 	                                    account);
 
+	g_signal_connect(widget, "notify::account", G_CALLBACK(field_account_cb),
+	                 field);
+
 	if(GTK_IS_FILTER(filter)) {
 		pidgin_account_chooser_set_filter(PIDGIN_ACCOUNT_CHOOSER(widget), filter);
 		g_object_unref(filter);
 	}
-
-	g_signal_connect(widget, "notify::account", G_CALLBACK(field_account_cb),
-	                 field);
 
 	type_hint = purple_request_field_get_type_hint(field);
 	if(purple_strequal(type_hint, "account")) {
