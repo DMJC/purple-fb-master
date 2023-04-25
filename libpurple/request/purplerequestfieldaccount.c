@@ -33,7 +33,7 @@ struct _PurpleRequestFieldAccount {
 	PurpleAccount *account;
 	gboolean show_all;
 
-	PurpleFilterAccountFunc filter_func;
+	GClosure *filter_func;
 };
 
 enum {
@@ -108,6 +108,7 @@ purple_request_field_account_finalize(GObject *obj) {
 
 	g_clear_object(&field->default_account);
 	g_clear_object(&field->account);
+	g_clear_pointer(&field->filter_func, g_closure_unref);
 
 	G_OBJECT_CLASS(purple_request_field_account_parent_class)->finalize(obj);
 }
@@ -261,11 +262,20 @@ purple_request_field_account_set_show_all(PurpleRequestFieldAccount *field,
 
 void
 purple_request_field_account_set_filter(PurpleRequestFieldAccount *field,
-                                        PurpleFilterAccountFunc filter_func)
+                                        PurpleRequestFieldAccountFilterFunc filter_func,
+                                        gpointer user_data,
+                                        GDestroyNotify destroy_data)
 {
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field));
 
-	field->filter_func = filter_func;
+	g_clear_pointer(&field->filter_func, g_closure_unref);
+	if(filter_func != NULL) {
+		field->filter_func = g_cclosure_new(G_CALLBACK(filter_func), user_data,
+		                                    (GClosureNotify)G_CALLBACK(destroy_data));
+		g_closure_ref(field->filter_func);
+		g_closure_sink(field->filter_func);
+		g_closure_set_marshal(field->filter_func, g_cclosure_marshal_generic);
+	}
 }
 
 PurpleAccount *
@@ -285,14 +295,34 @@ purple_request_field_account_get_value(PurpleRequestFieldAccount *field) {
 
 gboolean
 purple_request_field_account_get_show_all(PurpleRequestFieldAccount *field) {
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), FALSE);
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field), FALSE);
 
 	return field->show_all;
 }
 
-PurpleFilterAccountFunc
-purple_request_field_account_get_filter(PurpleRequestFieldAccount *field) {
-	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD(field), NULL);
+gboolean
+purple_request_field_account_match(PurpleRequestFieldAccount *field,
+                                   PurpleAccount *account)
+{
+	gboolean ret = TRUE;
 
-	return field->filter_func;
+	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field), FALSE);
+
+	if(field->filter_func != NULL) {
+		GValue result = G_VALUE_INIT;
+		GValue params[] = {G_VALUE_INIT};
+		g_value_init(&result, G_TYPE_BOOLEAN);
+		g_value_set_instance(g_value_init(&params[0], PURPLE_TYPE_ACCOUNT),
+		                     account);
+		g_closure_invoke(field->filter_func, &result,
+		                 G_N_ELEMENTS(params), params, NULL);
+		ret = g_value_get_boolean(&result);
+		g_value_unset(&result);
+		for(gsize i = 0; i < G_N_ELEMENTS(params); i++) {
+			g_value_unset(&params[i]);
+		}
+	}
+
+
+	return ret;
 }

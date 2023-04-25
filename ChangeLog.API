@@ -134,6 +134,9 @@ version 3.0.0 (??/??/????):
 		* PurpleContact and PurpleGroup inherit PurpleCountingNode
 		* PurpleBuddyList is now a GObject. Please see the documentation for
 		  details.
+		* PurpleFilterAccountFunc renamed to
+		  PurpleRequestFieldAccountFilterFunc, and now takes a user
+		  data parameter
 		* purple_find_buddies renamed to purple_blist_find_buddies
 		* purple_find_buddy_in_group renamed to purple_blist_find_buddy_in_group
 		* purple_find_buddy renamed to purple_blist_find_buddy

@@ -35,7 +35,7 @@
 static GList *idled_accts = NULL;
 
 static gboolean
-unidle_filter(PurpleAccount *acct)
+unidle_filter(PurpleAccount *acct, G_GNUC_UNUSED gpointer data)
 {
 	if (g_list_find(idled_accts, acct))
 		return TRUE;
@@ -44,7 +44,7 @@ unidle_filter(PurpleAccount *acct)
 }
 
 static gboolean
-idleable_filter(PurpleAccount *account)
+idleable_filter(PurpleAccount *account, G_GNUC_UNUSED gpointer data)
 {
 	PurpleProtocol *protocol;
 
@@ -89,7 +89,7 @@ idle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	int tm = purple_request_page_get_integer(page, "mins");
 
 	/* only add the account to the GList if it's not already been idled */
-	if(!unidle_filter(acct)) {
+	if(!unidle_filter(acct, NULL)) {
 		purple_debug_misc("idle", "%s hasn't been idled yet; adding to list.",
 		                  purple_contact_info_get_username(info));
 		idled_accts = g_list_append(idled_accts, acct);
@@ -110,7 +110,7 @@ idle_all_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	for(iter = list; iter; iter = iter->next) {
 		acct = (PurpleAccount *)(iter->data);
 
-		if(acct && idleable_filter(acct)) {
+		if(acct && idleable_filter(acct, NULL)) {
 			PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
 
 			purple_debug_misc("idle", "Idling %s.\n",
@@ -164,7 +164,7 @@ purple_idle_set_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 
 	field = purple_request_field_account_new("acct", _("Account"), NULL);
 	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
-	purple_request_field_account_set_filter(afield, idleable_filter);
+	purple_request_field_account_set_filter(afield, idleable_filter, NULL, NULL);
 	purple_request_field_account_set_show_all(afield, FALSE);
 	purple_request_group_add_field(group, field);
 
@@ -204,7 +204,7 @@ purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 
 	field = purple_request_field_account_new("acct", _("Account"), NULL);
 	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
-	purple_request_field_account_set_filter(afield, unidle_filter);
+	purple_request_field_account_set_filter(afield, unidle_filter, NULL, NULL);
 	purple_request_field_account_set_show_all(afield, FALSE);
 	purple_request_group_add_field(group, field);
 

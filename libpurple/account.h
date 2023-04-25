@@ -33,8 +33,6 @@
 
 typedef struct _PurpleAccount       PurpleAccount;
 
-typedef gboolean (*PurpleFilterAccountFunc)(PurpleAccount *account);
-
 #include "buddy.h"
 #include "connection.h"
 #include "group.h"

@@ -1192,12 +1192,12 @@ create_image_field(PurpleRequestField *field)
 }
 
 static gboolean
-field_custom_account_filter_cb(gpointer item, G_GNUC_UNUSED gpointer data) {
-	PurpleFilterAccountFunc func = data;
+field_custom_account_filter_cb(gpointer item, gpointer data) {
+	PurpleRequestFieldAccount *field = data;
 	gboolean ret = FALSE;
 
 	if(PURPLE_IS_ACCOUNT(item)) {
-		ret = func(PURPLE_ACCOUNT(item));
+		ret = purple_request_field_account_match(field, PURPLE_ACCOUNT(item));
 	}
 
 	return ret;
@@ -1209,7 +1209,7 @@ create_account_field(PurpleRequestField *field, GtkWidget **account_hint)
 	PurpleRequestFieldAccount *afield = NULL;
 	GtkWidget *widget = NULL;
 	PurpleAccount *account = NULL;
-	PurpleFilterAccountFunc account_filter = NULL;
+	GtkCustomFilter *custom_filter = NULL;
 	GtkFilter *filter = NULL;
 	const char *type_hint = NULL;
 
@@ -1217,15 +1217,9 @@ create_account_field(PurpleRequestField *field, GtkWidget **account_hint)
 	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
 	account = purple_request_field_account_get_default_value(afield);
 
-	account_filter = purple_request_field_account_get_filter(afield);
-	if(account_filter != NULL) {
-		GtkCustomFilter *custom_filter = NULL;
-
-		custom_filter = gtk_custom_filter_new(field_custom_account_filter_cb,
-		                                      account_filter, NULL);
-
-		filter = GTK_FILTER(custom_filter);
-	}
+	custom_filter = gtk_custom_filter_new(field_custom_account_filter_cb,
+	                                      afield, NULL);
+	filter = GTK_FILTER(custom_filter);
 
 	if(!purple_request_field_account_get_show_all(afield)) {
 		GtkEveryFilter *every = NULL;
