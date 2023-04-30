@@ -1719,7 +1719,7 @@ draw_tooltip(FinchBuddyList *ggblist)
 	 * top of that, if the selected buddy belongs to the disconnected
 	 * account, then retrieving the tooltip for that causes crash. So
 	 * let's make sure we wait for all the buddies to be removed first.*/
-	int id = g_timeout_add(0, (GSourceFunc)draw_tooltip_real, ggblist);
+	int id = g_timeout_add(0, G_SOURCE_FUNC(draw_tooltip_real), ggblist);
 	g_object_set_data_full(G_OBJECT(ggblist->window), "draw_tooltip_calback",
 				GINT_TO_POINTER(id), (GDestroyNotify)g_source_remove);
 }
@@ -2086,7 +2086,9 @@ status_selection_changed(G_GNUC_UNUSED GntComboBox *box,
 		/* Move the focus to the entry box */
 		/* XXX: Make sure the selected status can have a message */
 		gnt_box_move_focus(GNT_BOX(ggblist->window), 1);
-		ggblist->typing = g_timeout_add_seconds(TYPING_TIMEOUT_S, (GSourceFunc)remove_typing_cb, NULL);
+		ggblist->typing = g_timeout_add_seconds(TYPING_TIMEOUT_S,
+		                                        G_SOURCE_FUNC(remove_typing_cb),
+		                                        NULL);
 	}
 	else if (now->type == STATUS_SAVED_ALL)
 	{
@@ -2121,7 +2123,9 @@ status_text_changed(G_GNUC_UNUSED GntEntry *entry, const char *text,
 		return TRUE;
 	}
 
-	ggblist->typing = g_timeout_add_seconds(TYPING_TIMEOUT_S, (GSourceFunc)remove_typing_cb, NULL);
+	ggblist->typing = g_timeout_add_seconds(TYPING_TIMEOUT_S,
+	                                        G_SOURCE_FUNC(remove_typing_cb),
+	                                        NULL);
 	return FALSE;
 }
 
@@ -2357,7 +2361,9 @@ buddy_signed_on_off_cb(gpointer data)
 	g_clear_handle_id(&fnode->signed_timer, g_source_remove);
 
 	g_object_ref(node);
-	fnode->signed_timer = g_timeout_add_seconds(6, (GSourceFunc)buddy_recent_signed_on_off, data);
+	fnode->signed_timer = g_timeout_add_seconds(6,
+	                                            G_SOURCE_FUNC(buddy_recent_signed_on_off),
+	                                            data);
 	update_node_display(node, ggblist);
 	if (purple_blist_node_get_parent(node) && PURPLE_IS_META_CONTACT(purple_blist_node_get_parent(node)))
 		update_node_display(purple_blist_node_get_parent(node), ggblist);

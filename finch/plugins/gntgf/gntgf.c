@@ -215,7 +215,8 @@ notify(PurpleConversation *conv, const char *fmt, ...)
 	}
 	gnt_widget_draw(window);
 
-	toast->timer = g_timeout_add_seconds(4, (GSourceFunc)remove_toaster, toast);
+	toast->timer = g_timeout_add_seconds(4, G_SOURCE_FUNC(remove_toaster),
+	                                     toast);
 	toasters = g_list_prepend(toasters, toast);
 }
 

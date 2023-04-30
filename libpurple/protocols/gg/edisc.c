@@ -981,7 +981,7 @@ ggp_edisc_xfer_recv_done_cb(GObject *source, GAsyncResult *result,
 	poll = g_pollable_input_stream_create_source(G_POLLABLE_INPUT_STREAM(input),
 	                                             edisc_xfer->cancellable);
 	g_source_set_callback(poll,
-	                      (GSourceFunc)(gpointer)ggp_edisc_xfer_recv_pollable_source_cb,
+	                      G_SOURCE_FUNC(ggp_edisc_xfer_recv_pollable_source_cb),
 	                      xfer, NULL);
 	edisc_xfer->handler = g_source_attach(poll, NULL);
 	g_source_unref(poll);

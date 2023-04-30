@@ -537,7 +537,7 @@ jabber_keepalive(G_GNUC_UNUSED PurpleProtocolServer *protocol_server,
 	if (js->keepalive_timeout == 0) {
 		jabber_keepalive_ping(js);
 		js->keepalive_timeout = g_timeout_add_seconds(120,
-				(GSourceFunc)(jabber_keepalive_timeout), gc);
+				G_SOURCE_FUNC(jabber_keepalive_timeout), gc);
 	}
 }
 

@@ -238,7 +238,7 @@ join_part_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
 	                    G_CALLBACK(received_chat_msg_cb), users);
 
 	/* Cleanup every 5 minutes */
-	id = g_timeout_add_seconds(60 * 5, (GSourceFunc)clean_users_hash, users);
+	id = g_timeout_add_seconds(60 * 5, G_SOURCE_FUNC(clean_users_hash), users);
 
 	g_object_set_data(G_OBJECT(plugin), "users", users);
 	g_object_set_data(G_OBJECT(plugin), "id", GUINT_TO_POINTER(id));
