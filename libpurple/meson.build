@@ -342,10 +342,12 @@ purple_builtheaders = [
 	enums_h,
 ]
 
+subdir('data')
+
 libpurple_inc = include_directories('.')
 libpurple = library('purple3',
                     purple_coresources + purple_builtsources +
-                    purple_builtheaders,
+                    purple_builtheaders + purple_schemas,
                     'purpleprivate.h',
                     c_args : ['-DPURPLE_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple"'],
                     include_directories : [toplevel_inc, libpurple_inc],
@@ -408,7 +410,6 @@ libpurple_dep = declare_dependency(
 
 meson.override_dependency(purple_filebase, libpurple_dep)
 
-subdir('data')
 subdir('tests')
 subdir('plugins')
 subdir('protocols')
