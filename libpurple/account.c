@@ -111,6 +111,8 @@ static GParamSpec *properties[PROP_LAST];
 
 enum {
 	SIG_SETTING_CHANGED,
+	SIG_CONNECTED,
+	SIG_DISCONNECTED,
 	N_SIGNALS
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -415,6 +417,23 @@ purple_account_changed_cb(GObject *obj, GParamSpec *pspec,
 		  */
 		purple_blist_save_account(purple_blist_get_default(),
 		                          PURPLE_ACCOUNT(obj));
+	}
+}
+
+static void
+purple_account_connection_state_cb(GObject *obj,
+                                   G_GNUC_UNUSED GParamSpec *pspec,
+                                   gpointer data)
+{
+	PurpleAccount *account = data;
+	PurpleConnection *connection = PURPLE_CONNECTION(obj);
+	PurpleConnectionState state = PURPLE_CONNECTION_STATE_DISCONNECTED;
+
+	state = purple_connection_get_state(connection);
+	if(state == PURPLE_CONNECTION_STATE_CONNECTED) {
+		g_signal_emit(account, signals[SIG_CONNECTED], 0);
+	} else if(state == PURPLE_CONNECTION_STATE_DISCONNECTED) {
+		g_signal_emit(account, signals[SIG_DISCONNECTED], 0);
 	}
 }
 
@@ -927,6 +946,48 @@ purple_account_class_init(PurpleAccountClass *klass) {
 		G_TYPE_NONE,
 		1,
 		G_TYPE_STRING);
+
+	/**
+	 * PurpleAccount::connected:
+	 * @account: The account instance.
+	 *
+	 * This is emitted when the [property@Account:connection]'s
+	 * [property@Connection:state] has changed to
+	 * %PURPLE_CONNECTION_STATE_CONNECTED.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_CONNECTED] = g_signal_new_class_handler(
+		"connected",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		0);
+
+	/**
+	 * PurpleAccount::disconnected:
+	 * @account: The account instance.
+	 *
+	 * This is emitted when the [property@Account:connection]'s
+	 * [property@Connection:state] has changed to
+	 * %PURPLE_CONNECTION_STATE_DISCONNECTED.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_DISCONNECTED] = g_signal_new_class_handler(
+		"disconnected",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		0);
 }
 
 /******************************************************************************
@@ -1223,9 +1284,34 @@ void
 purple_account_set_connection(PurpleAccount *account, PurpleConnection *gc) {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
+	/* If we got the same pointer, bail. */
+	if(account->gc == gc) {
+		return;
+	}
+
+	/* Remove our old signal handler. */
+	if(PURPLE_IS_CONNECTION(account->gc)) {
+		g_signal_handlers_disconnect_by_func(account->gc,
+		                                     purple_account_connection_state_cb,
+		                                     account);
+	}
+
 	if(g_set_object(&account->gc, gc)) {
+		if(PURPLE_IS_CONNECTION(account->gc)) {
+			g_signal_connect(account->gc, "notify::state",
+			                 G_CALLBACK(purple_account_connection_state_cb),
+			                 account);
+		}
+
 		g_object_notify_by_pspec(G_OBJECT(account),
 		                         properties[PROP_CONNECTION]);
+	} else {
+		/* If the set didn't work, restore our old signal. */
+		if(PURPLE_IS_CONNECTION(account->gc)) {
+			g_signal_connect(account->gc, "notify::state",
+			                 G_CALLBACK(purple_account_connection_state_cb),
+			                 account);
+		}
 	}
 }
 
