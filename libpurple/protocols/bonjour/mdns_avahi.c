@@ -109,9 +109,10 @@ _resolver_callback(AvahiServiceResolver *r, AvahiIfIndex interface,
                    uint16_t port, AvahiStringList *txt,
                    G_GNUC_UNUSED AvahiLookupResultFlags flags, void *userdata)
 {
-	PurpleBuddy *pb;
-	BonjourBuddy *bb;
+	BonjourBuddy *bb = NULL;
 	PurpleAccount *account = userdata;
+	PurpleContactManager *manager = NULL;
+	PurpleContact *contact = NULL;
 	AvahiStringList *l;
 	size_t size;
 	char *key, *value;
@@ -122,8 +123,12 @@ _resolver_callback(AvahiServiceResolver *r, AvahiIfIndex interface,
 
 	g_return_if_fail(r != NULL);
 
-	pb = purple_blist_find_buddy(account, name);
-	bb = (pb != NULL) ? purple_buddy_get_protocol_data(pb) : NULL;
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager, account,
+	                                                    name);
+	if(PURPLE_IS_CONTACT(contact)) {
+		bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
+	}
 
 	switch (event) {
 		case AVAHI_RESOLVER_FAILURE:
@@ -143,8 +148,9 @@ _resolver_callback(AvahiServiceResolver *r, AvahiIfIndex interface,
 					_cleanup_resolver_data(rd);
 
 					/* If this was the last resolver, remove the buddy */
-					if (b_impl->resolvers == NULL)
-						bonjour_buddy_signed_off(pb);
+					if (b_impl->resolvers == NULL) {
+						bonjour_buddy_signed_off(contact);
+					}
 				}
 			}
 			break;
@@ -219,20 +225,23 @@ _resolver_callback(AvahiServiceResolver *r, AvahiIfIndex interface,
 				_cleanup_resolver_data(rd);
 				/* If this was the last resolver, remove the buddy */
 				if (b_impl->resolvers == NULL) {
-					if (pb != NULL)
-						bonjour_buddy_signed_off(pb);
-					else
+					if (PURPLE_IS_CONTACT(contact)) {
+						bonjour_buddy_signed_off(contact);
+					} else {
 						bonjour_buddy_delete(bb);
+					}
 				}
-			} else
+			} else {
 				/* Add or update the buddy in our buddy list */
-				bonjour_buddy_add_to_purple(bb, pb);
+				bonjour_buddy_add_to_purple(bb);
+			}
 
 			break;
 		default:
 			purple_debug_info("bonjour", "Unrecognized Service Resolver event: %d.\n", event);
 	}
 
+	g_clear_object(&contact);
 }
 
 static void
@@ -242,7 +251,6 @@ _browser_callback(AvahiServiceBrowser *b, AvahiIfIndex interface,
                   G_GNUC_UNUSED AvahiLookupResultFlags flags, void *userdata)
 {
 	PurpleAccount *account = userdata;
-	PurpleBuddy *pb = NULL;
 
 	switch (event) {
 		case AVAHI_BROWSER_FAILURE:
@@ -263,15 +271,22 @@ _browser_callback(AvahiServiceBrowser *b, AvahiIfIndex interface,
 				}
 			}
 			break;
-		case AVAHI_BROWSER_REMOVE:
+		case AVAHI_BROWSER_REMOVE: {
+			PurpleContact *contact = NULL;
+			PurpleContactManager *manager = NULL;
+
 			purple_debug_info("bonjour", "_browser_callback - Remove service\n");
-			pb = purple_blist_find_buddy(account, name);
-			if (pb != NULL) {
-				BonjourBuddy *bb = purple_buddy_get_protocol_data(pb);
+
+			manager = purple_contact_manager_get_default();
+			contact = purple_contact_manager_find_with_username(manager,
+			                                                    account, name);
+			if (PURPLE_IS_CONTACT(contact)) {
+				BonjourBuddy *bb = NULL;
 				AvahiBuddyImplData *b_impl;
 				GSList *l;
 				AvahiSvcResolverData *rd_search;
 
+				bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
 				g_return_if_fail(bb != NULL);
 
 				b_impl = bb->mdns_impl_data;
@@ -301,11 +316,16 @@ _browser_callback(AvahiServiceBrowser *b, AvahiIfIndex interface,
 					_cleanup_resolver_data(rd);
 
 					/* If this was the last resolver, remove the buddy */
-					if (b_impl->resolvers == NULL)
-						bonjour_buddy_signed_off(pb);
+					if (b_impl->resolvers == NULL) {
+						bonjour_buddy_signed_off(contact);
+					}
 				}
 			}
+
+			g_clear_object(&contact);
+
 			break;
+		}
 		case AVAHI_BROWSER_ALL_FOR_NOW:
 		case AVAHI_BROWSER_CACHE_EXHAUSTED:
 			break;

@@ -52,8 +52,8 @@ PurpleXfer *bonjour_new_xfer(PurpleProtocolXfer *prplxfer, PurpleConnection *gc,
  */
 void bonjour_send_file(PurpleProtocolXfer *prplxfer, PurpleConnection *gc, const char *who, const char *file);
 
-void xep_si_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleBuddy *pb);
-void xep_bytestreams_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleBuddy *pb);
+void xep_si_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleContact *contact);
+void xep_bytestreams_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleContact *contact);
 
 void xep_xfer_register(GTypeModule *module);
 

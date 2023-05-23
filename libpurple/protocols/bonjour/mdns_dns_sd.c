@@ -151,7 +151,7 @@ _mdns_record_query_callback(G_GNUC_UNUSED DNSServiceRef DNSServiceRef,
 			/* New Buddy */
 			BonjourBuddy *bb = (BonjourBuddy*) context;
 			_mdns_parse_text_record(bb, rdata, rdlen);
-			bonjour_buddy_add_to_purple(bb, NULL);
+			bonjour_buddy_add_to_purple(bb);
 		} else if (rrtype == kDNSServiceType_NULL) {
 			/* Buddy Icon response */
 			BonjourBuddy *bb = (BonjourBuddy*) context;
@@ -181,16 +181,21 @@ _mdns_resolve_host_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
 {
 	ResolveCallbackArgs *args = (ResolveCallbackArgs*) context;
 	Win32BuddyImplData *idata = args->bb->mdns_impl_data;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
 	gboolean delete_buddy = FALSE;
-	PurpleBuddy *pb = NULL;
 
 	g_source_remove(args->resolver_query->input_handler);
 	DNSServiceRefDeallocate(args->resolver_query->sdRef);
 	g_free(args->resolver_query);
 	args->resolver_query = NULL;
 
-	if ((pb = purple_blist_find_buddy(args->account, args->res_data->name))) {
-		if (purple_buddy_get_protocol_data(pb) != args->bb) {
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager, args->account,
+	                                                    args->res_data->name);
+
+	if (PURPLE_IS_CONTACT(contact)) {
+		if (g_object_get_data(G_OBJECT(contact), "bonjour-buddy") != args->bb) {
 			purple_debug_error("bonjour", "Found purple buddy for %s not matching bonjour buddy record.",
 				args->res_data->name);
 			goto cleanup;
@@ -236,7 +241,7 @@ _mdns_resolve_host_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
 			args->res_data->txt_query->input_handler = purple_input_add(DNSServiceRefSockFD(txt_query_sr),
 				PURPLE_INPUT_READ, _mdns_handle_event, args->res_data->txt_query);
 
-			bonjour_buddy_add_to_purple(args->bb, NULL);
+			bonjour_buddy_add_to_purple(args->bb);
 		} else {
 			purple_debug_error("bonjour", "Unable to set up record watcher for buddy %s (%d)\n", args->bb->name, errorCode);
 			delete_buddy = TRUE;
@@ -251,10 +256,11 @@ _mdns_resolve_host_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
 
 		/* If this was the last resolver, remove the buddy */
 		if (idata->resolvers == NULL) {
-			if (pb)
-				bonjour_buddy_signed_off(pb);
-			else
+			if (PURPLE_IS_CONTACT(contact)) {
+				bonjour_buddy_signed_off(contact);
+			} else {
 				bonjour_buddy_delete(args->bb);
+			}
 
 			/* Remove from the pending list */
 			pending_buddies = g_slist_remove(pending_buddies, args->bb);
@@ -267,6 +273,8 @@ _mdns_resolve_host_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
 	/* free the remaining args memory */
 	g_free(args->full_service_name);
 	g_free(args);
+
+	g_clear_object(&contact);
 }
 
 static void DNSSD_API
@@ -319,15 +327,24 @@ _mdns_service_resolve_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
 
 	/* If this was the last resolver, remove the buddy */
 	if (idata->resolvers == NULL) {
-		PurpleBuddy *pb;
-		/* See if this is now attached to a PurpleBuddy */
-		if ((pb = purple_blist_find_buddy(args->account, args->bb->name)))
-			bonjour_buddy_signed_off(pb);
-		else {
+		PurpleContact *contact = NULL;
+		PurpleContactManager *manager = NULL;
+
+		manager = purple_contact_manager_get_default();
+		contact = purple_contact_manager_find_with_username(manager,
+		                                                    args->account,
+		                                                    args->bb->name);
+
+		/* See if this is now attached to a PurpleContact */
+		if(PURPLE_IS_CONTACT(contact)) {
+			bonjour_buddy_signed_off(contact);
+		} else {
 			/* Remove from the pending list */
 			pending_buddies = g_slist_remove(pending_buddies, args->bb);
 			bonjour_buddy_delete(args->bb);
 		}
+
+		g_clear_object(&contact);
 	}
 
 	g_free(args);
@@ -432,19 +449,23 @@ _mdns_service_browse_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
 			}
 		}
 	} else {
-		PurpleBuddy *pb = NULL;
+		PurpleContact *contact = NULL;
+		PurpleContactManager *manager = NULL;
+
+		manager = purple_contact_manager_get_default();
+		contact = purple_contact_manager_find_with_username(manager, account,
+		                                                    serviceName);
 
 		/* A peer has sent a goodbye packet, remove them from the buddy list */
 		purple_debug_info("bonjour", "Received remove notification for '%s' on iface %u (%s, %s)\n",
 						  serviceName, interfaceIndex, regtype ? regtype : "",
 						  replyDomain ? replyDomain : "");
 
-		pb = purple_blist_find_buddy(account, serviceName);
-		if (pb != NULL) {
+		if(PURPLE_IS_CONTACT(contact)) {
 			GSList *l;
 			/* There may be multiple presences, we should only get rid of this one */
 			Win32SvcResolverData *rd_search;
-			BonjourBuddy *bb = purple_buddy_get_protocol_data(pb);
+			BonjourBuddy *bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
 			Win32BuddyImplData *idata;
 
 			g_return_if_fail(bb != NULL);
@@ -475,13 +496,15 @@ _mdns_service_browse_callback(G_GNUC_UNUSED DNSServiceRef sdRef,
 				if (idata->resolvers == NULL) {
 					purple_debug_info("bonjour", "Removed last presence for buddy '%s'; signing off buddy.\n",
 							  serviceName);
-					bonjour_buddy_signed_off(pb);
+					bonjour_buddy_signed_off(contact);
 				}
 			}
 		} else {
-			purple_debug_warning("bonjour", "Unable to find buddy (%s) to remove\n", serviceName ? serviceName : "(null)");
+			purple_debug_warning("bonjour", "Unable to find contact (%s) to remove\n", serviceName ? serviceName : "(null)");
 			/* TODO: Should we look in the pending buddies list? */
 		}
+
+		g_clear_object(&contact);
 	}
 }
 

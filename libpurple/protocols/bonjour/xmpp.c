@@ -49,17 +49,19 @@ enum sent_stream_start_types {
 };
 
 static void
-xep_iq_parse(PurpleXmlNode *packet, PurpleBuddy *pb);
+xep_iq_parse(PurpleXmlNode *packet, PurpleContact *contact);
 
 static BonjourXMPPConversation *
-bonjour_xmpp_conv_new(PurpleBuddy *pb, PurpleAccount *account, const char *ip) {
+bonjour_xmpp_conv_new(PurpleContact *contact, PurpleAccount *account,
+                      const char *ip)
+{
 
 	BonjourXMPPConversation *bconv = g_new0(BonjourXMPPConversation, 1);
 	bconv->cancellable = g_cancellable_new();
 	bconv->tx_buf = purple_circular_buffer_new(512);
 	bconv->tx_handler = 0;
 	bconv->rx_handler = 0;
-	bconv->pb = pb;
+	bconv->contact = contact;
 	bconv->account = account;
 	bconv->ip = g_strdup(ip);
 
@@ -111,11 +113,17 @@ get_xmlnode_contents(PurpleXmlNode *node)
 }
 
 static void
-_xmpp_parse_and_write_message_to_ui(PurpleXmlNode *message_node, PurpleBuddy *pb)
+_xmpp_parse_and_write_message_to_ui(PurpleXmlNode *message_node,
+                                    PurpleContact *contact)
 {
 	PurpleXmlNode *body_node, *html_node, *events_node;
-	PurpleConnection *gc = purple_account_get_connection(purple_buddy_get_account(pb));
+	PurpleAccount *account = NULL;
+	PurpleConnection *gc = NULL;
 	gchar *body = NULL;
+	const char *username = NULL;
+
+	account = purple_contact_get_account(contact);
+	gc = purple_account_get_connection(account);
 
 	body_node = purple_xmlnode_get_child(message_node, "body");
 	html_node = purple_xmlnode_get_child(message_node, "html");
@@ -196,61 +204,53 @@ _xmpp_parse_and_write_message_to_ui(PurpleXmlNode *message_node, PurpleBuddy *pb
 	}
 
 	/* Send the message to the UI */
-	purple_serv_got_im(gc, purple_buddy_get_name(pb), body, 0, time(NULL));
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact));
+	purple_serv_got_im(gc, username, body, 0, time(NULL));
 
 	g_free(body);
-}
-
-struct _match_buddies_by_address {
-	const char *address;
-	GSList *matched_buddies;
-};
-
-static void
-_match_buddies_by_address(gpointer value, gpointer data)
-{
-	PurpleBuddy *pb = value;
-	struct _match_buddies_by_address *mbba = data;
-	BonjourBuddy *bb = purple_buddy_get_protocol_data(pb);
-
-	if (!bb) {
-		return;
-	}
-
-	/*
-	 * If the current PurpleBuddy's data is not null, then continue to determine
-	 * whether one of the buddies IPs matches the target IP.
-	 */
-	if (g_slist_find_custom(bb->ips, mbba->address, (GCompareFunc)g_ascii_strcasecmp)) {
-		mbba->matched_buddies = g_slist_prepend(mbba->matched_buddies, pb);
-	}
 }
 
 static GSList *
 _find_match_buddies_by_address(const BonjourXMPP *jdata, const char *address)
 {
-	struct _match_buddies_by_address mbba = {
-		.address = address,
-		.matched_buddies = NULL
-	};
-	GSList *buddies = purple_blist_find_buddies(jdata->account, NULL);
+	PurpleContactManager *manager = NULL;
+	GListModel *contacts = NULL;
+	GSList *ret = NULL;
 
-	g_slist_foreach(buddies, _match_buddies_by_address, &mbba);
-	g_slist_free(buddies);
+	manager = purple_contact_manager_get_default();
+	contacts = purple_contact_manager_get_all(manager, jdata->account);
+	for(guint i = 0; i < g_list_model_get_n_items(contacts); i++) {
+		PurpleContact *contact = NULL;
+		BonjourBuddy *bb = NULL;
 
-	return mbba.matched_buddies;
+		contact = g_list_model_get_item(contacts, i);
+		bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
+		if(bb != NULL) {
+			if(g_slist_find_custom(bb->ips, address,
+			                       (GCompareFunc)g_ascii_strcasecmp))
+			{
+				ret = g_slist_prepend(ret, contact);
+			}
+		}
+
+		g_clear_object(&contact);
+	}
+
+	return ret;
 }
 
 static void
 _send_data_write_cb(GObject *stream, gpointer data)
 {
-	PurpleBuddy *pb = data;
-	BonjourBuddy *bb = purple_buddy_get_protocol_data(pb);
-	BonjourXMPPConversation *bconv = bb->conversation;
+	PurpleContact *contact = data;
+	BonjourBuddy *bb = NULL;
+	BonjourXMPPConversation *bconv = NULL;
 	gsize writelen;
 	gssize ret;
 	GError *error = NULL;
 
+	bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
+	bconv = bb->conversation;
 	writelen = purple_circular_buffer_get_max_read(bconv->tx_buf);
 
 	if (writelen == 0) {
@@ -276,10 +276,10 @@ _send_data_write_cb(GObject *stream, gpointer data)
 		purple_debug_error(
 		        "bonjour",
 		        "Error sending message to buddy %s error: %s",
-		        purple_buddy_get_name(pb),
+		        purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact)),
 		        error ? error->message : "(null)");
 
-		account = purple_buddy_get_account(pb);
+		account = purple_contact_get_account(contact);
 
 		conv = purple_conversation_manager_find_im(manager, account, bb->name);
 		if (conv != NULL) {
@@ -291,6 +291,7 @@ _send_data_write_cb(GObject *stream, gpointer data)
 		bonjour_xmpp_close_conversation(bb->conversation);
 		bb->conversation = NULL;
 		g_clear_error(&error);
+
 		return;
 	}
 
@@ -298,9 +299,9 @@ _send_data_write_cb(GObject *stream, gpointer data)
 }
 
 static gint
-_send_data(PurpleBuddy *pb, char *message)
+_send_data(PurpleContact *contact, char *message)
 {
-	BonjourBuddy *bb = purple_buddy_get_protocol_data(pb);
+	BonjourBuddy *bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
 	BonjourXMPPConversation *bconv = bb->conversation;
 	gsize len = strlen(message);
 	gssize ret;
@@ -333,10 +334,10 @@ _send_data(PurpleBuddy *pb, char *message)
 		purple_debug_error(
 		        "bonjour",
 		        "Error sending message to buddy %s error: %s",
-		        purple_buddy_get_name(pb),
+		        purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact)),
 		        error ? error->message : "(null)");
 
-		account = purple_buddy_get_account(pb);
+		account = purple_contact_get_account(contact);
 
 		conv = purple_conversation_manager_find_im(manager, account, bb->name);
 		if (conv != NULL) {
@@ -361,7 +362,7 @@ _send_data(PurpleBuddy *pb, char *message)
 			                bconv->cancellable);
 			g_source_set_callback(source,
 			                      G_SOURCE_FUNC(_send_data_write_cb),
-			                      pb, NULL);
+			                      g_object_ref(contact), g_object_unref);
 			bconv->tx_handler = g_source_attach(source, NULL);
 			g_source_unref(source);
 		}
@@ -371,36 +372,41 @@ _send_data(PurpleBuddy *pb, char *message)
 	return ret;
 }
 
-void bonjour_xmpp_process_packet(PurpleBuddy *pb, PurpleXmlNode *packet) {
-
+void
+bonjour_xmpp_process_packet(PurpleContact *contact, PurpleXmlNode *packet) {
+	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 	g_return_if_fail(packet != NULL);
-	g_return_if_fail(pb != NULL);
 
-	if (purple_strequal(packet->name, "message"))
-		_xmpp_parse_and_write_message_to_ui(packet, pb);
-	else if (purple_strequal(packet->name, "iq"))
-		xep_iq_parse(packet, pb);
-	else {
+	if (purple_strequal(packet->name, "message")) {
+		_xmpp_parse_and_write_message_to_ui(packet, contact);
+	} else if (purple_strequal(packet->name, "iq")) {
+		xep_iq_parse(packet, contact);
+	} else {
 		purple_debug_warning("bonjour", "Unknown packet: %s\n",
 			packet->name ? packet->name : "(null)");
 	}
 }
 
-static void bonjour_xmpp_stream_ended(BonjourXMPPConversation *bconv) {
-
+static void
+bonjour_xmpp_stream_ended(BonjourXMPPConversation *bconv) {
 	/* Inform the user that the conversation has been closed */
 	BonjourBuddy *bb = NULL;
-	const gchar *name = bconv->pb ? purple_buddy_get_name(bconv->pb) : "(unknown)";
+	const gchar *name = "(unknown)";
+
+	if(PURPLE_IS_CONTACT(bconv->contact)) {
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(bconv->contact);
+
+		name = purple_contact_info_get_username(info);
+		bb = g_object_get_data(G_OBJECT(bconv->contact), "bonjour-buddy");
+	}
 
 	purple_debug_info("bonjour", "Received conversation close notification from %s.\n", name);
 
-	if(bconv->pb != NULL)
-		bb = purple_buddy_get_protocol_data(bconv->pb);
-
 	/* Close the socket, clear the watcher and free memory */
 	bonjour_xmpp_close_conversation(bconv);
-	if(bb)
+	if(bb != NULL) {
 		bb->conversation = NULL;
+	}
 }
 
 static gboolean
@@ -425,11 +431,14 @@ _client_socket_handler(GObject *stream, gpointer data)
 			        len, error ? error->message : "(null)");
 
 			bonjour_xmpp_close_conversation(bconv);
-			if (bconv->pb != NULL) {
-				BonjourBuddy *bb = purple_buddy_get_protocol_data(bconv->pb);
+			if(PURPLE_IS_CONTACT(bconv->contact)) {
+				BonjourBuddy *bb = NULL;
 
-				if(bb != NULL)
+				bb = g_object_get_data(G_OBJECT(bconv->contact),
+				                       "bonjour-buddy");
+				if(bb != NULL) {
 					bb->conversation = NULL;
+				}
 			}
 
 			/* I guess we really don't need to notify the user.
@@ -438,7 +447,8 @@ _client_socket_handler(GObject *stream, gpointer data)
 		g_clear_error(&error);
 		return FALSE;
 	} else if (len == 0) { /* The other end has closed the socket */
-		const gchar *name = purple_buddy_get_name(bconv->pb);
+		const gchar *name = NULL;
+		name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(bconv->contact));
 		purple_debug_warning("bonjour", "Connection closed (without stream end) by %s.\n", (name) ? name : "(unknown)");
 		bonjour_xmpp_stream_ended(bconv);
 		return FALSE;
@@ -483,9 +493,9 @@ _start_stream(GObject *stream, gpointer data)
 
 		manager = purple_conversation_manager_get_default();
 
-		if(bconv->pb) {
-			bb = purple_buddy_get_protocol_data(bconv->pb);
-			bname = purple_buddy_get_name(bconv->pb);
+		if(PURPLE_IS_CONTACT(bconv->contact)) {
+			bb = g_object_get_data(G_OBJECT(bconv->contact), "bonjour-buddy");
+			bname = purple_contact_info_get_username(PURPLE_CONTACT_INFO(bconv->contact));
 		}
 
 		purple_debug_error(
@@ -541,8 +551,9 @@ bonjour_xmpp_send_stream_init(BonjourXMPPConversation *bconv,
 
 	g_return_val_if_fail(error != NULL, FALSE);
 
-	if (bconv->pb != NULL)
-		bname = purple_buddy_get_name(bconv->pb);
+	if(PURPLE_IS_CONTACT(bconv->contact)) {
+		bname = purple_contact_info_get_username(PURPLE_CONTACT_INFO(bconv->contact));
+	}
 
 	/* If we have no idea who "to" is, use an empty string.
 	 * If we don't know now, it is because the other side isn't playing nice, so they can't complain. */
@@ -568,7 +579,7 @@ bonjour_xmpp_send_stream_init(BonjourXMPPConversation *bconv,
 		        (*bname) ? bname : "(unknown)", bconv->ip,
 		        *error ? (*error)->message : "(null)");
 
-		if (bconv->pb) {
+		if(PURPLE_IS_CONTACT(bconv->contact)) {
 			PurpleConversation *conv;
 			PurpleConversationManager *manager;
 
@@ -628,8 +639,9 @@ bonjour_xmpp_stream_started(BonjourXMPPConversation *bconv)
 	    !bonjour_xmpp_send_stream_init(bconv, &error)) {
 		const char *bname = bconv->buddy_name;
 
-		if (bconv->pb)
-			bname = purple_buddy_get_name(bconv->pb);
+		if(PURPLE_IS_CONTACT(bconv->contact)) {
+			bname = purple_contact_info_get_username(PURPLE_CONTACT_INFO(bconv->contact));
+		}
 
 		purple_debug_error(
 		        "bonjour",
@@ -637,7 +649,7 @@ bonjour_xmpp_stream_started(BonjourXMPPConversation *bconv)
 		        bname ? bname : "(unknown)", bconv->ip,
 		        error ? error->message : "(null)");
 
-		if (bconv->pb) {
+		if(PURPLE_IS_CONTACT(bconv->contact)) {
 			PurpleConversation *conv;
 			PurpleConversationManager *manager;
 
@@ -670,18 +682,22 @@ bonjour_xmpp_stream_started(BonjourXMPPConversation *bconv)
 
 	/* If the stream has been completely started and we know who we're talking to, we can start doing stuff. */
 	/* I don't think the circ_buffer can actually contain anything without a buddy being associated, but lets be explicit. */
-	if (bconv->sent_stream_start == FULLY_SENT && bconv->recv_stream_start
-			&& bconv->pb && purple_circular_buffer_get_max_read(bconv->tx_buf) > 0) {
+	if(bconv->sent_stream_start == FULLY_SENT && bconv->recv_stream_start &&
+	   PURPLE_IS_CONTACT(bconv->contact) &&
+	   purple_circular_buffer_get_max_read(bconv->tx_buf) > 0)
+	{
 		/* Watch for when we can write the buffered messages */
 		GSource *source = g_pollable_output_stream_create_source(
 		        G_POLLABLE_OUTPUT_STREAM(bconv->output),
 		        bconv->cancellable);
 		g_source_set_callback(source, G_SOURCE_FUNC(_send_data_write_cb),
-		                      bconv->pb, NULL);
+		                      g_object_ref(bconv->contact), g_object_unref);
 		bconv->tx_handler = g_source_attach(source, NULL);
 		g_source_unref(source);
 		/* We can probably write the data right now. */
-		_send_data_write_cb(G_OBJECT(bconv->output), bconv->pb);
+		g_object_ref(bconv->contact);
+		_send_data_write_cb(G_OBJECT(bconv->output), bconv->contact);
+		g_object_unref(bconv->contact);
 	}
 }
 
@@ -699,7 +715,7 @@ _server_socket_handler(G_GNUC_UNUSED GSocketService *service,
 	GInetAddress *their_inet_addr;
 	gchar *address_text;
 	BonjourXMPPConversation *bconv;
-	GSList *buddies;
+	GSList *contacts;
 	GSource *source;
 
 	their_addr = g_socket_connection_get_remote_address(connection, NULL);
@@ -725,14 +741,14 @@ _server_socket_handler(G_GNUC_UNUSED GSocketService *service,
 
 	purple_debug_info("bonjour", "Received incoming connection from %s.\n", address_text);
 
-	buddies = _find_match_buddies_by_address(jdata, address_text);
-	if (buddies == NULL) {
+	contacts = _find_match_buddies_by_address(jdata, address_text);
+	if (contacts == NULL) {
 		purple_debug_info("bonjour", "We don't like invisible buddies, this is not a superheroes comic\n");
 		g_free(address_text);
 		return;
 	}
 
-	g_slist_free(buddies);
+	g_slist_free(contacts);
 
 	/* We've established that this *could* be from one of our buddies.
 	 * Wait for the stream open to see if that matches too before assigning it.
@@ -795,17 +811,21 @@ bonjour_xmpp_start(BonjourXMPP *jdata)
 static void
 _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 {
-	PurpleBuddy *pb = user_data;
-	BonjourBuddy *bb = purple_buddy_get_protocol_data(pb);
+	BonjourBuddy *bb = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = user_data;
 	GSocketConnection *conn;
 	GSource *rx_source;
 	GError *error = NULL;
+	const char *username = NULL;
 
+	bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
 	conn = g_socket_client_connect_to_host_finish(G_SOCKET_CLIENT(source),
 	                                              res, &error);
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact));
+	account = purple_contact_get_account(contact);
 
 	if (conn == NULL) {
-		PurpleAccount *account = NULL;
 		PurpleConversation *conv = NULL;
 		PurpleConversationManager *manager = NULL;
 		GSList *tmp;
@@ -813,13 +833,15 @@ _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 		if (error && error->code == G_IO_ERROR_CANCELLED) {
 			/* This conversation was closed before it started. */
 			g_error_free(error);
+			g_clear_object(&contact);
+
 			return;
 		}
 
 		purple_debug_error("bonjour",
 		                   "Error connecting to buddy %s at %s:%d "
 		                   "(%s); Trying next IP address",
-		                   purple_buddy_get_name(pb),
+		                   username,
 		                   bb->conversation->ip, bb->port_p2pj,
 		                   error ? error->message : "(unknown)");
 		g_clear_error(&error);
@@ -832,8 +854,6 @@ _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 		if (tmp)
 			tmp = g_slist_next(tmp);
 
-		account = purple_buddy_get_account(pb);
-
 		if (tmp != NULL) {
 			const gchar *ip;
 			GSocketClient *client;
@@ -841,23 +861,26 @@ _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 			bb->conversation->ip_link = ip = tmp->data;
 
 			purple_debug_info("bonjour", "Starting conversation with %s at %s:%d\n",
-					  purple_buddy_get_name(pb), ip, bb->port_p2pj);
+					  username, ip, bb->port_p2pj);
 
 			/* Make sure to connect without a proxy. */
 			client = g_socket_client_new();
 			if (client != NULL) {
 				g_free(bb->conversation->ip);
 				bb->conversation->ip = g_strdup(ip);
+				/* We pass our reference on contact to the callback. */
 				g_socket_client_connect_to_host_async(
 				        client, ip, bb->port_p2pj,
 				        bb->conversation->cancellable,
-				        _connected_to_buddy, pb);
+				        _connected_to_buddy, contact);
 				g_object_unref(client);
 				return;
 			}
 		}
 
-		purple_debug_error("bonjour", "No more addresses for buddy %s. Aborting", purple_buddy_get_name(pb));
+		purple_debug_error("bonjour",
+		                   "No more addresses for buddy %s. Aborting",
+		                   username);
 
 		manager = purple_conversation_manager_get_default();
 
@@ -870,6 +893,9 @@ _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 
 		bonjour_xmpp_close_conversation(bb->conversation);
 		bb->conversation = NULL;
+
+		g_clear_object(&contact);
+
 		return;
 	}
 
@@ -880,18 +906,15 @@ _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 	        g_object_ref(g_io_stream_get_output_stream(G_IO_STREAM(conn)));
 
 	if (!bonjour_xmpp_send_stream_init(bb->conversation, &error)) {
-		PurpleAccount *account = NULL;
 		PurpleConversation *conv = NULL;
 		PurpleConversationManager *manager = NULL;
 
 		purple_debug_error("bonjour",
 		                   "Error starting stream with buddy %s at "
 		                   "%s:%d error: %s",
-		                   purple_buddy_get_name(pb),
+		                   username,
 		                   bb->conversation->ip, bb->port_p2pj,
 		                   error ? error->message : "(null)");
-
-		account = purple_buddy_get_account(pb);
 
 		manager = purple_conversation_manager_get_default();
 
@@ -905,6 +928,8 @@ _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 		bonjour_xmpp_close_conversation(bb->conversation);
 		bb->conversation = NULL;
 		g_clear_error(&error);
+		g_clear_object(&contact);
+
 		return;
 	}
 
@@ -916,20 +941,31 @@ _connected_to_buddy(GObject *source, GAsyncResult *res, gpointer user_data)
 	                      bb->conversation, NULL);
 	bb->conversation->rx_handler = g_source_attach(rx_source, NULL);
 	g_source_unref(rx_source);
+	g_clear_object(&contact);
 }
 
 void
 bonjour_xmpp_conv_match_by_name(BonjourXMPPConversation *bconv) {
-	PurpleBuddy *pb = NULL;
 	BonjourBuddy *bb = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
 
 	g_return_if_fail(bconv->ip != NULL);
-	g_return_if_fail(bconv->pb == NULL);
+	g_return_if_fail(!PURPLE_IS_CONTACT(bconv->contact));
 
-	pb = purple_blist_find_buddy(bconv->account, bconv->buddy_name);
-	if (pb && (bb = purple_buddy_get_protocol_data(pb))) {
-		purple_debug_info("bonjour", "Found buddy %s for incoming conversation \"from\" attrib.\n",
-			purple_buddy_get_name(pb));
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager,
+	                                                    bconv->account,
+	                                                    bconv->buddy_name);
+
+	if(contact && (bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy"))) {
+		const char *username = NULL;
+
+		username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact));
+
+		purple_debug_info("bonjour",
+		                  "Found buddy %s for incoming conversation \"from\" attrib.\n",
+		                  username);
 
 		/* Check that one of the buddy's IPs matches */
 		if (g_slist_find_custom(bb->ips, bconv->ip, (GCompareFunc)g_ascii_strcasecmp)) {
@@ -938,7 +974,7 @@ bonjour_xmpp_conv_match_by_name(BonjourXMPPConversation *bconv) {
 			BonjourXMPP *jdata = bd->xmpp_data;
 
 			purple_debug_info("bonjour", "Matched buddy %s to incoming conversation \"from\" attrib and IP (%s)",
-			                  purple_buddy_get_name(pb), bconv->ip);
+			                  username, bconv->ip);
 
 			/* Attach conv. to buddy and remove from pending list */
 			jdata->pending_conversations = g_slist_remove(jdata->pending_conversations, bconv);
@@ -948,18 +984,20 @@ bonjour_xmpp_conv_match_by_name(BonjourXMPPConversation *bconv) {
 				bonjour_xmpp_close_conversation(bb->conversation);
 			}
 
-			bconv->pb = pb;
+			bconv->contact = contact;
 			bb->conversation = bconv;
 		}
 	}
 
 	/* We've failed to match a buddy - give up */
-	if (bconv->pb == NULL) {
+	if(!PURPLE_IS_CONTACT(bconv->contact)) {
 		/* This must be asynchronous because it destroys the parser and we
 		 * may be in the middle of parsing.
 		 */
 		async_bonjour_xmpp_close_conversation(bconv);
 	}
+
+	g_clear_object(&contact);
 }
 
 
@@ -968,21 +1006,22 @@ bonjour_xmpp_conv_match_by_ip(BonjourXMPPConversation *bconv) {
 	PurpleConnection *pc = purple_account_get_connection(bconv->account);
 	BonjourData *bd = purple_connection_get_protocol_data(pc);
 	BonjourXMPP *jdata = bd->xmpp_data;
-	GSList *buddies;
+	GSList *contacts;
 
-	buddies = _find_match_buddies_by_address(jdata, bconv->ip);
+	contacts = _find_match_buddies_by_address(jdata, bconv->ip);
 
 	/* If there is exactly one match, use it */
-	if (!buddies) {
+	if (!contacts) {
 		purple_debug_error("bonjour", "No buddies matched for ip %s.", bconv->ip);
-	} else if (buddies->next != NULL) {
+	} else if (contacts->next != NULL) {
 		purple_debug_error("bonjour", "More than one buddy matched for ip %s.", bconv->ip);
 	} else {
-		PurpleBuddy *pb = buddies->data;
-		BonjourBuddy *bb = purple_buddy_get_protocol_data(pb);
+		PurpleContact *contact = contacts->data;
+		BonjourBuddy *bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
 
 		purple_debug_info("bonjour", "Matched buddy %s to incoming conversation using IP (%s)",
-		                  purple_buddy_get_name(pb), bconv->ip);
+		                  purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact)),
+		                  bconv->ip);
 
 		/* Attach conv. to buddy and remove from pending list */
 		jdata->pending_conversations = g_slist_remove(jdata->pending_conversations, bconv);
@@ -992,34 +1031,44 @@ bonjour_xmpp_conv_match_by_ip(BonjourXMPPConversation *bconv) {
 			bonjour_xmpp_close_conversation(bb->conversation);
 		}
 
-		bconv->pb = pb;
+		bconv->contact = contact;
 		bb->conversation = bconv;
 	}
 
 	/* We've failed to match a buddy - give up */
-	if (bconv->pb == NULL) {
+	if(!PURPLE_IS_CONTACT(bconv->contact)) {
 		/* This must be asynchronous because it destroys the parser and we
 		 * may be in the middle of parsing.
 		 */
 		async_bonjour_xmpp_close_conversation(bconv);
 	}
 
-	g_slist_free(buddies);
+	g_slist_free(contacts);
 }
 
-static PurpleBuddy *
+static PurpleContact *
 _find_or_start_conversation(BonjourXMPP *jdata, const gchar *to)
 {
-	PurpleBuddy *pb = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
 	BonjourBuddy *bb = NULL;
 
 	g_return_val_if_fail(jdata != NULL, NULL);
 	g_return_val_if_fail(to != NULL, NULL);
 
-	pb = purple_blist_find_buddy(jdata->account, to);
-	if (pb == NULL || (bb = purple_buddy_get_protocol_data(pb)) == NULL)
-		/* You can not send a message to an offline buddy */
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager,
+	                                                    jdata->account, to);
+
+	if(!PURPLE_IS_CONTACT(contact)) {
 		return NULL;
+	}
+
+	bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
+	if(bb == NULL) {
+		g_clear_object(&contact);
+		return NULL;
+	}
 
 	/* Check if there is a previously open conversation */
 	if (bb->conversation == NULL) {
@@ -1037,18 +1086,20 @@ _find_or_start_conversation(BonjourXMPP *jdata, const gchar *to)
 			purple_debug_error("bonjour",
 			                   "Unable to connect to buddy (%s).",
 			                   to);
+			g_clear_object(&contact);
 			return NULL;
 		}
 
-		bb->conversation = bonjour_xmpp_conv_new(pb, jdata->account, ip);
+		bb->conversation = bonjour_xmpp_conv_new(contact, jdata->account, ip);
 		bb->conversation->ip_link = ip;
 
 		g_socket_client_connect_to_host_async(
 		        client, ip, bb->port_p2pj,
-		        bb->conversation->cancellable, _connected_to_buddy, pb);
+		        bb->conversation->cancellable, _connected_to_buddy,
+		        g_object_ref(contact));
 		g_object_unref(client);
 	}
-	return pb;
+	return contact;
 }
 
 int
@@ -1056,13 +1107,16 @@ bonjour_xmpp_send_message(BonjourXMPP *jdata, const gchar *to, const gchar *body
 {
 	PurpleXmlNode *message_node, *node, *node2;
 	gchar *message, *xhtml;
-	PurpleBuddy *pb;
+	PurpleContact *contact = NULL;
 	BonjourBuddy *bb;
 	int ret;
 
-	pb = _find_or_start_conversation(jdata, to);
-	if (pb == NULL || (bb = purple_buddy_get_protocol_data(pb)) == NULL) {
+	contact = _find_or_start_conversation(jdata, to);
+	if(!PURPLE_IS_CONTACT(contact) ||
+	   (bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy")) == NULL)
+	{
 		purple_debug_info("bonjour", "Can't send a message to an offline buddy (%s).\n", to);
+		g_clear_object(&contact);
 		/* You can not send a message to an offline buddy */
 		return -10000;
 	}
@@ -1096,9 +1150,11 @@ bonjour_xmpp_send_message(BonjourXMPP *jdata, const gchar *to, const gchar *body
 	message = purple_xmlnode_to_str(message_node, NULL);
 	purple_xmlnode_free(message_node);
 
-	ret = _send_data(pb, message) >= 0;
+	ret = _send_data(contact, message) >= 0;
 
 	g_free(message);
+
+	g_clear_object(&contact);
 
 	return ret;
 }
@@ -1119,8 +1175,8 @@ async_bonjour_xmpp_close_conversation(BonjourXMPPConversation *bconv) {
 	jdata->pending_conversations = g_slist_remove(jdata->pending_conversations, bconv);
 
 	/* Disconnect this conv. from the buddy here so it can't be disposed of twice.*/
-	if(bconv->pb != NULL) {
-		BonjourBuddy *bb = purple_buddy_get_protocol_data(bconv->pb);
+	if(PURPLE_IS_CONTACT(bconv->contact)) {
+		BonjourBuddy *bb = g_object_get_data(G_OBJECT(bconv->contact), "bonjour-buddy");
 		if (bb->conversation == bconv)
 			bb->conversation = NULL;
 	}
@@ -1149,17 +1205,24 @@ bonjour_xmpp_close_conversation(BonjourXMPPConversation *bconv)
 
 	/* Cancel any file transfers that are waiting to begin */
 	/* There won't be any transfers if it hasn't been attached to a buddy */
-	if (bconv->pb != NULL && bd != NULL) {
+	if (PURPLE_IS_CONTACT(bconv->contact) && bd != NULL) {
 		GSList *xfers, *tmp_next;
+		const char *username = NULL;
+
 		xfers = bd->xfer_lists;
+		username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(bconv->contact));
+
 		while (xfers != NULL) {
 			PurpleXfer *xfer = xfers->data;
+
 			tmp_next = xfers->next;
+
 			/* We only need to cancel this if it hasn't actually started transferring. */
 			/* This will change if we ever support IBB transfers. */
-			if (purple_strequal(purple_xfer_get_remote_user(xfer), purple_buddy_get_name(bconv->pb))
+			if (purple_strequal(purple_xfer_get_remote_user(xfer), username)
 					&& (purple_xfer_get_status(xfer) == PURPLE_XFER_STATUS_NOT_STARTED
-						|| purple_xfer_get_status(xfer) == PURPLE_XFER_STATUS_UNKNOWN)) {
+						|| purple_xfer_get_status(xfer) == PURPLE_XFER_STATUS_UNKNOWN))
+			{
 				purple_xfer_cancel_remote(xfer);
 			}
 			xfers = tmp_next;
@@ -1229,20 +1292,26 @@ bonjour_xmpp_stop(BonjourXMPP *jdata)
 
 	/* Close all the conversation sockets and remove all the watchers after sending end streams */
 	if (!purple_account_is_disconnected(jdata->account)) {
-		GSList *buddies, *l;
+		PurpleContactManager *manager = NULL;
+		GListModel *model = NULL;
 
-		buddies = purple_blist_find_buddies(jdata->account, NULL);
-		for (l = buddies; l; l = l->next) {
-			BonjourBuddy *bb = purple_buddy_get_protocol_data((PurpleBuddy*) l->data);
-			if (bb && bb->conversation) {
+		manager = purple_contact_manager_get_default();
+		model = purple_contact_manager_get_all(manager, jdata->account);
+
+		for(guint i = 0; i < g_list_model_get_n_items(model); i++) {
+			PurpleContact *contact = g_list_model_get_item(model, i);
+			BonjourBuddy *bb = g_object_get_data(G_OBJECT(contact),
+			                                     "bonjour-buddy");
+
+			if(bb != NULL && bb->conversation != NULL) {
 				/* Any ongoing connection attempt is cancelled
 				 * when a connection is destroyed */
 				bonjour_xmpp_close_conversation(bb->conversation);
 				bb->conversation = NULL;
 			}
-		}
 
-		g_slist_free(buddies);
+			g_clear_object(&contact);
+		}
 	}
 
 	g_slist_free_full(jdata->pending_conversations, (GDestroyNotify)bonjour_xmpp_close_conversation);
@@ -1292,34 +1361,37 @@ xep_iq_new(void *data, XepIqType type, const char *to, const char *from, const c
 }
 
 static void
-xep_iq_parse(PurpleXmlNode *packet, PurpleBuddy *pb)
-{
+xep_iq_parse(PurpleXmlNode *packet, PurpleContact *contact) {
 	PurpleAccount *account;
 	PurpleConnection *gc;
 
-	account = purple_buddy_get_account(pb);
+	account = purple_contact_get_account(contact);
 	gc = purple_account_get_connection(account);
 
-	if (purple_xmlnode_get_child(packet, "si") != NULL || purple_xmlnode_get_child(packet, "error") != NULL)
-		xep_si_parse(gc, packet, pb);
-	else
-		xep_bytestreams_parse(gc, packet, pb);
+	if(purple_xmlnode_get_child(packet, "si") != NULL ||
+	   purple_xmlnode_get_child(packet, "error") != NULL)
+	{
+		xep_si_parse(gc, packet, contact);
+	} else {
+		xep_bytestreams_parse(gc, packet, contact);
+	}
 }
 
 int
 xep_iq_send_and_free(XepIq *iq)
 {
 	int ret = -1;
-	PurpleBuddy *pb = NULL;
+	PurpleContact *contact = NULL;
 
 	/* start the talk, reuse the message socket  */
-	pb = _find_or_start_conversation((BonjourXMPP*) iq->data, iq->to);
+	contact = _find_or_start_conversation((BonjourXMPP*) iq->data, iq->to);
 	/* Send the message */
-	if (pb != NULL) {
+	if(PURPLE_IS_CONTACT(contact)) {
 		/* Convert xml node into stream */
 		gchar *msg = purple_xmlnode_to_str(iq->node, NULL);
-		ret = _send_data(pb, msg);
+		ret = _send_data(contact, msg);
 		g_free(msg);
+		g_clear_object(&contact);
 	}
 
 	purple_xmlnode_free(iq->node);

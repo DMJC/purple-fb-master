@@ -119,73 +119,108 @@ bonjour_buddy_check(BonjourBuddy *buddy)
  * the buddy.
  */
 void
-bonjour_buddy_add_to_purple(BonjourBuddy *bonjour_buddy, PurpleBuddy *buddy)
+bonjour_buddy_add_to_purple(BonjourBuddy *bonjour_buddy)
 {
-	PurpleGroup *group;
 	PurpleAccount *account = bonjour_buddy->account;
-	const char *status_id, *old_hash, *new_hash, *name;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
+	PurplePerson *person = NULL;
+	PurplePresence *presence = NULL;
+	PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_AVAILABLE;
 
 	/* Translate between the Bonjour status and the Purple status */
-	if (bonjour_buddy->status != NULL && g_ascii_strcasecmp("dnd", bonjour_buddy->status) == 0)
-		status_id = BONJOUR_STATUS_ID_AWAY;
-	else
-		status_id = BONJOUR_STATUS_ID_AVAILABLE;
+	if(bonjour_buddy->status != NULL &&
+	   g_ascii_strcasecmp("dnd", bonjour_buddy->status) == 0)
+	{
+		primitive = PURPLE_PRESENCE_PRIMITIVE_AWAY;
+	}
 
 	/*
 	 * TODO: Figure out the idle time by getting the "away"
 	 * field from the DNS SD.
 	 */
 
-	/* Make sure the Bonjour group exists in our buddy list */
-	group = purple_blist_find_group(BONJOUR_GROUP_NAME); /* Use the buddy's domain, instead? */
-	if (group == NULL) {
-		group = purple_group_new(BONJOUR_GROUP_NAME);
-		purple_blist_add_group(group, NULL);
+	/* Determine if we already know about this contact. */
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager, account,
+	                                                    bonjour_buddy->name);
+
+	/* If not, create the contact and add them to the manager. */
+	if(!PURPLE_IS_CONTACT(contact)) {
+		PurpleTags *tags = NULL;
+
+		contact = purple_contact_new(account, NULL);
+		purple_contact_manager_add(manager, contact);
+
+		purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact),
+		                                 bonjour_buddy->name);
+
+		tags = purple_contact_info_get_tags(PURPLE_CONTACT_INFO(contact));
+		purple_tags_add_with_value(tags, "group", BONJOUR_GROUP_NAME);
 	}
 
-	/* Make sure the buddy exists in our buddy list */
-	if (buddy == NULL)
-		buddy = purple_blist_find_buddy(account, bonjour_buddy->name);
+	/* Make sure we have a person for this contact as we want them to appear in
+	 * the contact list.
+	 */
+	person = purple_contact_info_get_person(PURPLE_CONTACT_INFO(contact));
+	if(!PURPLE_IS_PERSON(person)) {
+		person = g_object_new(PURPLE_TYPE_PERSON, "id", bonjour_buddy->name,
+		                      NULL);
+		purple_contact_info_set_person(PURPLE_CONTACT_INFO(contact), person);
+		purple_person_add_contact_info(person, PURPLE_CONTACT_INFO(contact));
 
-	if (buddy == NULL) {
-		buddy = purple_buddy_new(account, bonjour_buddy->name, NULL);
-		purple_blist_node_set_transient(PURPLE_BLIST_NODE(buddy), TRUE);
-		purple_blist_add_buddy(buddy, NULL, group, NULL);
+		/* We remove our reference as the pointer is valid and we're treating
+		 * it just like if we had called _get_person above but with the new
+		 * instance.
+		 */
+		g_object_unref(person);
 	}
 
-	name = purple_buddy_get_name(buddy);
-	purple_buddy_set_protocol_data(buddy, bonjour_buddy);
-
-	/* Create the alias for the buddy using the first and the last name */
-	if (bonjour_buddy->nick && *bonjour_buddy->nick)
-		purple_serv_got_alias(purple_account_get_connection(account), name, bonjour_buddy->nick);
-	else {
+	/* Set the alias. */
+	if(!purple_strempty(bonjour_buddy->nick)) {
+		purple_contact_info_set_alias(PURPLE_CONTACT_INFO(contact),
+		                              bonjour_buddy->nick);
+	} else {
+		GStrvBuilder *builder = NULL;
+		GStrv parts = NULL;
 		gchar *alias = NULL;
-		const char *first, *last;
-		first = bonjour_buddy->first;
-		last = bonjour_buddy->last;
-		if ((first && *first) || (last && *last))
-			alias = g_strdup_printf("%s%s%s",
-						(first && *first ? first : ""),
-						(first && *first && last && *last ? " " : ""),
-						(last && *last ? last : ""));
-		purple_serv_got_alias(purple_account_get_connection(account), name, alias);
+
+		builder = g_strv_builder_new();
+
+		if(!purple_strempty(bonjour_buddy->first)) {
+			g_strv_builder_add(builder, bonjour_buddy->first);
+		}
+
+		if(!purple_strempty(bonjour_buddy->last)) {
+			g_strv_builder_add(builder, bonjour_buddy->last);
+		}
+
+		parts = g_strv_builder_end(builder);
+
+		alias = g_strjoinv(" ", parts);
+		g_strfreev(parts);
+
+		if(!purple_strempty(alias)) {
+			purple_contact_info_set_alias(PURPLE_CONTACT_INFO(contact), alias);
+		} else {
+			purple_contact_info_set_alias(PURPLE_CONTACT_INFO(contact), NULL);
+		}
 		g_free(alias);
 	}
 
-	/* Set the user's status */
-	if (bonjour_buddy->msg != NULL)
-		purple_protocol_got_user_status(account, name, status_id,
-					    "message", bonjour_buddy->msg, NULL);
-	else
-		purple_protocol_got_user_status(account, name, status_id, NULL);
+	g_object_set_data(G_OBJECT(contact), "bonjour-buddy", bonjour_buddy);
 
-	purple_protocol_got_user_idle(account, name, FALSE, 0);
+	/* Set the user's status */
+	presence = purple_contact_info_get_presence(PURPLE_CONTACT_INFO(contact));
+	purple_presence_set_primitive(presence, primitive);
+	purple_presence_set_message(presence, bonjour_buddy->msg);
+	purple_presence_set_idle(presence, FALSE, NULL);
 
 	/* TODO: Because we don't save Bonjour buddies in blist.xml,
 	 * we will always have to look up the buddy icon at login time.
 	 * I think we should figure out a way to do something about this. */
 
+#if 0
 	/* Deal with the buddy icon */
 	old_hash = purple_buddy_icons_get_checksum_for_user(buddy);
 	new_hash = (bonjour_buddy->phsh && *(bonjour_buddy->phsh)) ? bonjour_buddy->phsh : NULL;
@@ -196,22 +231,27 @@ bonjour_buddy_add_to_purple(BonjourBuddy *bonjour_buddy, PurpleBuddy *buddy)
 		bonjour_dns_sd_retrieve_buddy_icon(bonjour_buddy);
 	} else if (!new_hash)
 		purple_buddy_icons_set_for_user(account, name, NULL, 0, NULL);
+#endif
+
+	g_clear_object(&contact);
 }
 
 /**
  * The buddy has signed off Bonjour.
  * If the buddy is being saved, mark as offline, otherwise delete
  */
-void bonjour_buddy_signed_off(PurpleBuddy *pb) {
-	if (purple_blist_node_is_transient(PURPLE_BLIST_NODE(pb))) {
-		purple_account_remove_buddy(purple_buddy_get_account(pb), pb, NULL);
-		purple_blist_remove_buddy(pb);
-	} else {
-		purple_protocol_got_user_status(purple_buddy_get_account(pb),
-					    purple_buddy_get_name(pb), "offline", NULL);
-		bonjour_buddy_delete(purple_buddy_get_protocol_data(pb));
-		purple_buddy_set_protocol_data(pb, NULL);
+void bonjour_buddy_signed_off(PurpleContact *contact) {
+	BonjourBuddy *bb = NULL;
+	PurplePresence *presence = NULL;
+
+	presence = purple_contact_info_get_presence(PURPLE_CONTACT_INFO(contact));
+	purple_presence_set_primitive(presence, PURPLE_PRESENCE_PRIMITIVE_OFFLINE);
+
+	bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
+	if(bb != NULL) {
+		bonjour_buddy_delete(bb);
 	}
+	g_object_set_data(G_OBJECT(contact), "bonjour-buddy", NULL);
 }
 
 /**

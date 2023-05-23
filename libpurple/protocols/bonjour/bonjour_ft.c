@@ -64,7 +64,7 @@ struct _XepXfer
 	char *proxy_host;
 	int proxy_port;
 	PurpleXmlNode *streamhost;
-	PurpleBuddy *pb;
+	PurpleContact *contact;
 };
 
 G_DEFINE_DYNAMIC_TYPE(XepXfer, xep_xfer, PURPLE_TYPE_XFER);
@@ -360,7 +360,8 @@ bonjour_send_file(PurpleProtocolXfer *prplxfer, PurpleConnection *gc, const char
 static void
 bonjour_xfer_init(PurpleXfer *xfer)
 {
-	PurpleBuddy *buddy;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
 	BonjourBuddy *bb;
 	XepXfer *xf;
 
@@ -368,10 +369,19 @@ bonjour_xfer_init(PurpleXfer *xfer)
 
 	purple_debug_info("bonjour", "Bonjour-xfer-init.\n");
 
-	buddy = purple_blist_find_buddy(purple_xfer_get_account(xfer), purple_xfer_get_remote_user(xfer));
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager,
+	                                                    purple_xfer_get_account(xfer),
+	                                                    purple_xfer_get_remote_user(xfer));
+
 	/* this buddy is offline. */
-	if (buddy == NULL || (bb = purple_buddy_get_protocol_data(buddy)) == NULL)
+	if(!PURPLE_IS_CONTACT(contact) ||
+	   (bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy")) == NULL)
+	{
+		g_clear_object(&contact);
+
 		return;
+	}
 
 	/* Assume it is the first IP. We could do something like keep track of which one is in use or something. */
 	if (bb->ips)
@@ -385,10 +395,13 @@ bonjour_xfer_init(PurpleXfer *xfer)
 		xep_ft_si_result(xfer, purple_xfer_get_remote_user(xfer));
 		purple_debug_info("bonjour", "Bonjour xfer type is PURPLE_XFER_TYPE_RECEIVE.\n");
 	}
+
+	g_clear_object(&contact);
 }
 
 void
-xep_si_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleBuddy *pb)
+xep_si_parse(PurpleConnection *pc, PurpleXmlNode *packet,
+             PurpleContact *contact)
 {
 	const char *type, *id;
 	BonjourData *bd;
@@ -397,15 +410,16 @@ xep_si_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleBuddy *pb)
 
 	g_return_if_fail(pc != NULL);
 	g_return_if_fail(packet != NULL);
-	g_return_if_fail(pb != NULL);
+	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 
 	bd = purple_connection_get_protocol_data(pc);
-	if(bd == NULL)
+	if(bd == NULL) {
 		return;
+	}
 
 	purple_debug_info("bonjour", "xep-si-parse.\n");
 
-	name = purple_buddy_get_name(pb);
+	name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact));
 
 	type = purple_xmlnode_get_attrib(packet, "type");
 	id = purple_xmlnode_get_attrib(packet, "id");
@@ -574,7 +588,7 @@ purple_xmlnode_insert_twin_copy(PurpleXmlNode *node) {
  */
 static gboolean
 add_ipv6_link_local_ifaces(PurpleXmlNode *cur_streamhost, const char *host,
-			   PurpleBuddy *pb)
+                           PurpleContact *contact)
 {
 	PurpleXmlNode *new_streamhost = NULL;
 	GInetAddress *addr;
@@ -592,7 +606,7 @@ add_ipv6_link_local_ifaces(PurpleXmlNode *cur_streamhost, const char *host,
 	}
 	g_clear_object(&addr);
 
-	bb = purple_buddy_get_protocol_data(pb);
+	bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
 
 	for (ip_elem = bb->ips;
 	     (ip_elem = g_slist_find_custom(ip_elem, host, (GCompareFunc)&xep_addr_differ));
@@ -611,8 +625,8 @@ add_ipv6_link_local_ifaces(PurpleXmlNode *cur_streamhost, const char *host,
 }
 
 static gboolean
-__xep_bytestreams_parse(PurpleBuddy *pb, PurpleXfer *xfer, PurpleXmlNode *streamhost,
-			const char *iq_id)
+__xep_bytestreams_parse(PurpleContact *contact, PurpleXfer *xfer,
+                        PurpleXmlNode *streamhost, const char *iq_id)
 {
 	char *tmp_iq_id;
 	const char *jid, *host, *port;
@@ -630,7 +644,7 @@ __xep_bytestreams_parse(PurpleBuddy *pb, PurpleXfer *xfer, PurpleXmlNode *stream
 
 		/* skip IPv6 link local addresses with no interface scope
 		 * (but try to add a new one with an interface scope then) */
-		if(add_ipv6_link_local_ifaces(streamhost, host, pb))
+		if(add_ipv6_link_local_ifaces(streamhost, host, contact))
 			continue;
 
 		tmp_iq_id = g_strdup(iq_id);
@@ -643,7 +657,7 @@ __xep_bytestreams_parse(PurpleBuddy *pb, PurpleXfer *xfer, PurpleXmlNode *stream
 		xf->proxy_host = g_strdup(host);
 		xf->proxy_port = portnum;
 		xf->streamhost = streamhost;
-		xf->pb = pb;
+		xf->contact = contact;
 		purple_debug_info("bonjour", "bytestream offer parse"
 				  "jid=%s host=%s port=%d.\n", jid, host, portnum);
 		bonjour_bytestreams_connect(xfer);
@@ -654,7 +668,8 @@ __xep_bytestreams_parse(PurpleBuddy *pb, PurpleXfer *xfer, PurpleXmlNode *stream
 }
 
 void
-xep_bytestreams_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleBuddy *pb)
+xep_bytestreams_parse(PurpleConnection *pc, PurpleXmlNode *packet,
+                      PurpleContact *contact)
 {
 	const char *type, *from, *iq_id, *sid;
 	PurpleXmlNode *query, *streamhost;
@@ -663,16 +678,17 @@ xep_bytestreams_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleBuddy *
 
 	g_return_if_fail(pc != NULL);
 	g_return_if_fail(packet != NULL);
-	g_return_if_fail(pb != NULL);
+	g_return_if_fail(PURPLE_IS_CONTACT(contact));
 
 	bd = purple_connection_get_protocol_data(pc);
-	if(bd == NULL)
+	if(bd == NULL) {
 		return;
+	}
 
 	purple_debug_info("bonjour", "xep-bytestreams-parse.\n");
 
 	type = purple_xmlnode_get_attrib(packet, "type");
-	from = purple_buddy_get_name(pb);
+	from = purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact));
 	query = purple_xmlnode_get_child(packet,"query");
 	if(!type)
 		return;
@@ -694,7 +710,7 @@ xep_bytestreams_parse(PurpleConnection *pc, PurpleXmlNode *packet, PurpleBuddy *
 	xfer = bonjour_si_xfer_find(bd, sid, from);
 	streamhost = purple_xmlnode_get_child(query, "streamhost");
 
-	if(xfer && streamhost && __xep_bytestreams_parse(pb, xfer, streamhost, iq_id))
+	if(xfer && streamhost && __xep_bytestreams_parse(contact, xfer, streamhost, iq_id))
 		return; /* success */
 
 	purple_debug_error("bonjour", "Didn't find an acceptable streamhost.\n");
@@ -966,7 +982,7 @@ bonjour_bytestreams_handle_failure(PurpleXfer *xfer, const gchar *error_message)
 	                   xf->proxy_host, error_message);
 
 	tmp_node = purple_xmlnode_get_next_twin(xf->streamhost);
-	ret = __xep_bytestreams_parse(xf->pb, xfer, tmp_node, xf->iq_id);
+	ret = __xep_bytestreams_parse(xf->contact, xfer, tmp_node, xf->iq_id);
 
 	if (!ret) {
 		xep_ft_si_reject(xf->data, xf->iq_id, purple_xfer_get_remote_user(xfer),
@@ -1046,7 +1062,7 @@ bonjour_bytestreams_socks5_connect_to_host_cb(GObject *source,
 	GSocketAddress *addr;
 	GInetSocketAddress *inet_addr;
 	GSocketAddress *proxy_addr;
-	PurpleBuddy *pb;
+	PurpleContact *contact = NULL;
 	gchar *hash_input;
 	gchar *dstaddr;
 	GError *error = NULL;
@@ -1089,9 +1105,10 @@ bonjour_bytestreams_socks5_connect_to_host_cb(GObject *source,
 		return;
 	}
 
-	pb = xf->pb;
-	hash_input = g_strdup_printf("%s%s%s", xf->sid, purple_buddy_get_name(pb),
-	                             bonjour_get_jid(purple_buddy_get_account(pb)));
+	contact = xf->contact;
+	hash_input = g_strdup_printf("%s%s%s", xf->sid,
+	                             purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact)),
+	                             bonjour_get_jid(purple_contact_get_account(contact)));
 	dstaddr = g_compute_checksum_for_string(G_CHECKSUM_SHA1, hash_input, -1);
 	g_free(hash_input);
 
@@ -1128,7 +1145,7 @@ bonjour_bytestreams_connect(PurpleXfer *xfer)
 	purple_debug_info("bonjour", "bonjour-bytestreams-connect.");
 
 	xf = XEP_XFER(xfer);
-	account = purple_buddy_get_account(xf->pb);
+	account = purple_contact_get_account(xf->contact);
 
 	xf->client = purple_gio_socket_client_new(account, &error);
 	if (xf->client == NULL) {

@@ -38,7 +38,7 @@ parse_from_attrib_and_find_buddy(BonjourXMPPConversation *bconv, int nb_attribut
 			bconv->buddy_name = g_strndup((char *)attributes[i+3], len);
 			bonjour_xmpp_conv_match_by_name(bconv);
 
-			return (bconv->pb != NULL);
+			return (PURPLE_IS_CONTACT(bconv->contact));
 		}
 	}
 
@@ -67,8 +67,9 @@ bonjour_parser_element_start_libxml(void *user_data,
 		if(!bconv->recv_stream_start) {
 			bconv->recv_stream_start = TRUE;
 
-			if (bconv->pb == NULL)
+			if(!PURPLE_IS_CONTACT(bconv->contact)) {
 				parse_from_attrib_and_find_buddy(bconv, nb_attributes, attributes);
+			}
 
 			bonjour_xmpp_stream_started(bconv);
 		}
@@ -76,14 +77,16 @@ bonjour_parser_element_start_libxml(void *user_data,
 
 		/* If we haven't yet attached a buddy and this isn't "<stream:features />",
 		 * try to get a "from" attribute as a last resort to match our buddy. */
-		if(bconv->pb == NULL
+		if(!PURPLE_IS_CONTACT(bconv->contact)
 				&& !(prefix && !xmlStrcmp(prefix, (xmlChar*) "stream")
 					&& !xmlStrcmp(element_name, (xmlChar*) "features"))
 				&& !parse_from_attrib_and_find_buddy(bconv, nb_attributes, attributes))
+		{
 			/* We've run out of options for finding who the conversation is from
 			   using explicitly specified stuff; see if we can make a good match
 			   by using the IP */
 			bonjour_xmpp_conv_match_by_ip(bconv);
+		}
 
 		if(bconv->current)
 			node = purple_xmlnode_new_child(bconv->current, (const char*) element_name);
@@ -136,7 +139,7 @@ bonjour_parser_element_end_libxml(void *user_data, const xmlChar *element_name,
 	} else {
 		PurpleXmlNode *packet = bconv->current;
 		bconv->current = NULL;
-		bonjour_xmpp_process_packet(bconv->pb, packet);
+		bonjour_xmpp_process_packet(bconv->contact, packet);
 		purple_xmlnode_free(packet);
 	}
 }

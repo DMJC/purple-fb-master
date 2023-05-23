@@ -53,7 +53,7 @@ typedef struct
 	gpointer stream_data;
 	xmlParserCtxt *context;
 	PurpleXmlNode *current;
-	PurpleBuddy *pb;
+	PurpleContact *contact;
 	PurpleAccount *account;
 
 	/* The following are only needed before attaching to a PurpleBuddy */
@@ -79,7 +79,7 @@ void async_bonjour_xmpp_close_conversation(BonjourXMPPConversation *bconv);
 
 void bonjour_xmpp_stream_started(BonjourXMPPConversation *bconv);
 
-void bonjour_xmpp_process_packet(PurpleBuddy *pb, PurpleXmlNode *packet);
+void bonjour_xmpp_process_packet(PurpleContact *contact, PurpleXmlNode *packet);
 
 void bonjour_xmpp_stop(BonjourXMPP *data);
 

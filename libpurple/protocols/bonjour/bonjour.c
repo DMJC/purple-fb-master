@@ -363,20 +363,30 @@ static void
 bonjour_convo_closed(G_GNUC_UNUSED PurpleProtocolClient *client,
                      PurpleConnection *connection, const char *who)
 {
-	PurpleBuddy *buddy = purple_blist_find_buddy(purple_connection_get_account(connection), who);
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
 	BonjourBuddy *bb;
 
-	if (buddy == NULL || (bb = purple_buddy_get_protocol_data(buddy)) == NULL)
+	account = purple_connection_get_account(connection);
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager, account, who);
+
+	if(!PURPLE_IS_CONTACT(contact) ||
+	   (bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy")) == NULL)
 	{
 		/*
 		 * This buddy is not in our buddy list, and therefore does not really
 		 * exist, so we won't have any data about them.
 		 */
+		g_clear_object(&contact);
+
 		return;
 	}
 
 	bonjour_xmpp_close_conversation(bb->conversation);
 	bb->conversation = NULL;
+	g_clear_object(&contact);
 }
 
 static void
@@ -430,9 +440,24 @@ static gboolean
 bonjour_can_receive_file(G_GNUC_UNUSED PurpleProtocolXfer *prplxfer,
                          PurpleConnection *connection, const char *who)
 {
-	PurpleBuddy *buddy = purple_blist_find_buddy(purple_connection_get_account(connection), who);
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
+	gboolean ret = FALSE;
 
-	return (buddy != NULL && purple_buddy_get_protocol_data(buddy) != NULL);
+	account = purple_connection_get_account(connection);
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager, account, who);
+
+	if(PURPLE_IS_CONTACT(contact)) {
+		BonjourBuddy *bb = g_object_get_data(G_OBJECT(contact), "bonjour-buddy");
+
+		ret = (bb != NULL);
+	}
+
+	g_clear_object(&contact);
+
+	return ret;
 }
 
 static gssize
