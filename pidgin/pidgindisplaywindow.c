@@ -391,12 +391,13 @@ pidgin_display_window_selected_item_changed_cb(GObject *self,
  * GObject Implementation
  *****************************************************************************/
 static void
-pidgin_display_window_dispose(GObject *obj) {
+pidgin_display_window_finalize(GObject *obj) {
 	PidginDisplayWindow *window = PIDGIN_DISPLAY_WINDOW(obj);
 
 	g_clear_object(&window->conversation_model);
+	g_clear_object(&window->selection_model);
 
-	G_OBJECT_CLASS(pidgin_display_window_parent_class)->dispose(obj);
+	G_OBJECT_CLASS(pidgin_display_window_parent_class)->finalize(obj);
 }
 
 static void
@@ -405,6 +406,12 @@ pidgin_display_window_init(PidginDisplayWindow *window) {
 	GtkTreeListModel *tree_model = NULL;
 
 	gtk_widget_init_template(GTK_WIDGET(window));
+
+	/* Add a reference to the selection model as we use it internally and with
+	 * out it we get some weird call backs being called when it's nulled out
+	 * during destruction.
+	 */
+	g_object_ref(window->selection_model);
 
 	/* Setup the tree list model. */
 	tree_model = gtk_tree_list_model_new(window->base_model, FALSE, TRUE,
@@ -437,7 +444,7 @@ pidgin_display_window_class_init(PidginDisplayWindowClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
-	obj_class->dispose = pidgin_display_window_dispose;
+	obj_class->finalize = pidgin_display_window_finalize;
 
 	/**
 	 * PidginDisplayWindow::conversation-switched:
