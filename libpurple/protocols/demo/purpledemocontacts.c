@@ -248,6 +248,24 @@ purple_demo_contacts_load_contact(PurpleContactManager *manager,
 		}
 	}
 
+	/* Load the tags. */
+	if(json_object_has_member(contact_object, "tags")) {
+		PurpleTags *tags = purple_contact_info_get_tags(info);
+		JsonArray *array = NULL;
+		GList *elements = NULL;
+
+		array = json_object_get_array_member(contact_object, "tags");
+		elements = json_array_get_elements(array);
+		while(elements != NULL) {
+			JsonNode *tag_node = elements->data;
+			const char *tag = json_node_get_string(tag_node);
+
+			purple_tags_add(tags, tag);
+
+			elements = g_list_delete_link(elements, elements);
+		}
+	}
+
 	/* Load the person. */
 	if(json_object_has_member(contact_object, "person")) {
 		JsonObject *person_object = NULL;
