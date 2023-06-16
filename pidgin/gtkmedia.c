@@ -74,9 +74,8 @@ struct _PidginMediaPrivate
 	gchar *screenname;
 	gulong level_handler_id;
 
-	GtkBuilder *ui;
 	GtkWidget *menubar;
-	GtkWidget *statusbar;
+	GtkLabel *status;
 
 	GtkWidget *hold;
 	GtkWidget *mute;
@@ -159,7 +158,7 @@ pidgin_media_class_init (PidginMediaClass *klass)
 	gtk_widget_class_bind_template_child_private(widget_class, PidginMedia,
 	                                             display);
 	gtk_widget_class_bind_template_child_private(widget_class, PidginMedia,
-	                                             statusbar);
+	                                             status);
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_media_close_request_cb);
@@ -252,8 +251,7 @@ pidgin_media_init (PidginMedia *media)
 			media_action_entries,
 			G_N_ELEMENTS(media_action_entries), media);
 
-	gtk_statusbar_push(GTK_STATUSBAR(media->priv->statusbar),
-			0, _("Calling..."));
+	gtk_label_set_text(media->priv->status, _("Calling..."));
 
 	media->priv->recv_progressbars =
 			g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
@@ -386,8 +384,6 @@ pidgin_media_dispose(GObject *media)
 		g_clear_object(&gtkmedia->priv->media);
 	}
 
-	g_clear_object(&gtkmedia->priv->ui);
-
 	g_clear_handle_id(&gtkmedia->priv->timeout_id, g_source_remove);
 
 	g_clear_pointer(&gtkmedia->priv->recv_progressbars, g_hash_table_destroy);
@@ -446,8 +442,7 @@ pidgin_media_error_cb(G_GNUC_UNUSED PidginMedia *media, const char *error,
 		                    purple_request_cpar_from_conversation(conv));
 	}
 
-	gtk_statusbar_push(GTK_STATUSBAR(gtkmedia->priv->statusbar),
-	                   0, error);
+	gtk_label_set_text(gtkmedia->priv->status, error);
 
 	g_object_unref(account);
 }
@@ -817,8 +812,7 @@ pidgin_media_stream_info_cb(G_GNUC_UNUSED PurpleMedia *media,
 		}
 		pidgin_media_set_state(gtkmedia, PIDGIN_MEDIA_ACCEPTED);
 		pidgin_media_emit_message(gtkmedia, _("Call in progress."));
-		gtk_statusbar_push(GTK_STATUSBAR(gtkmedia->priv->statusbar),
-				0, _("Call in progress"));
+		gtk_label_set_text(gtkmedia->priv->status, _("Call in progress"));
 		gtk_widget_set_visible(GTK_WIDGET(gtkmedia), TRUE);
 	} else if (type == PURPLE_MEDIA_INFO_MUTE && !local) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gtkmedia->priv->mute), TRUE);
