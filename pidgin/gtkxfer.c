@@ -434,11 +434,20 @@ selection_changed_cb(GtkTreeSelection *selection, PidginXferDialog *dialog)
 static void
 open_button_cb(G_GNUC_UNUSED GtkButton *button, PidginXferDialog *dialog)
 {
+#if GTK_CHECK_VERSION(4, 10, 0)
+	GtkUriLauncher *launcher = NULL;
+#endif
 	gchar *uri = NULL;
 
 	uri = g_strdup_printf("file://%s",
 	                      purple_xfer_get_local_filename(dialog->selected_xfer));
+#if GTK_CHECK_VERSION(4, 10, 0)
+	launcher = gtk_uri_launcher_new(uri);
+	gtk_uri_launcher_launch(launcher, GTK_WINDOW(dialog), NULL, NULL, NULL);
+	g_object_unref(launcher);
+#else
 	gtk_show_uri(GTK_WINDOW(dialog), uri, GDK_CURRENT_TIME);
+#endif
 	g_free(uri);
 }
 
