@@ -25,8 +25,6 @@
 #include <gplugin.h>
 #include <gplugin-native.h>
 
-#include <sasl/sasl.h>
-
 #include <purple.h>
 
 G_BEGIN_DECLS
