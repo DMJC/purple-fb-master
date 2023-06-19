@@ -29,24 +29,39 @@ tasks:
     type: convey/clean
     files:
       - finch3-docs
+      - finch3-docs.zip
       - pidgin3-docs
+      - pidgin3-docs.zip
       - purple3-docs
+      - purple3-docs.zip
 
   docs-build:
     type: docker/run
     image: ${DOCS_BUILD_IMAGE}
     workdir: ${CONVEY_WORKSPACE}
+    shell: /bin/bash
     script:
       - set -ex
-      - meson -Ddoc=true build-docs
+      - meson setup build-docs -Ddoc=true
       - ninja -C build-docs doc
+      - pushd build-docs/doc/reference/finch
+      - mv finch finch3
+      - zip -9r finch3-docs.zip finch3
+      - popd
+      - pushd build-docs/doc/reference/pidgin
+      - mv pidgin pidgin3
+      - zip -9r pidgin3-docs.zip pidgin3
+      - popd
+      - pushd build-docs/doc/reference/libpurple
+      - mv libpurple purple3
+      - zip -9r purple3-docs.zip purple3
 
   docs-export:
     type: docker/export
     files:
-      - build-docs/doc/reference/finch/finch/:finch3-docs
-      - build-docs/doc/reference/libpurple/libpurple/:purple3-docs
-      - build-docs/doc/reference/pidgin/pidgin/:pidgin3-docs
+      - build-docs/doc/reference/finch/finch3-docs.zip:finch3-docs.zip
+      - build-docs/doc/reference/libpurple/purple3-docs.zip:purple3-docs.zip
+      - build-docs/doc/reference/pidgin/pidgin3-docs.zip:pidgin3-docs.zip
 
   export:
     type: docker/export
