@@ -17,13 +17,11 @@ tasks:
   clean:
     type: convey/clean
     files:
-      - appimage-x86_64
       - clang
       - debian-bookworm-amd64
-      - fedora-36-amd64
-      - fedora-37-amd64
+      - fedora-38-amd64
       - scanbuild
-      - ubuntu-kinetic-amd64
+      - ubuntu-lunar-amd64
 
   docs-clean:
     type: convey/clean
@@ -72,14 +70,6 @@ tasks:
     files: ${TARGET}:${TARGET}
 
 plans:
-  pidgin3-appimage-x86_64:
-    environment:
-      - TARGET=appimage-x86_64
-      - RECIPE=Pidgin3
-      - CONFIGURE_ARGS=-Dconsoleui=False
-    stages:
-      - tasks: [import, build, bare-export]
-
   clang:
     environment: [TARGET=clang]
     stages:
@@ -102,15 +92,8 @@ plans:
     stages:
       - tasks: [docs-clean, import, docs-build, docs-export]
 
-  fedora-36-amd64:
-    environment: [TARGET=fedora-36-amd64]
-    stages:
-      - tasks: [import, build]
-      - tasks: [export]
-        run: always
-
-  fedora-37-amd64:
-    environment: [TARGET=fedora-37-amd64]
+  fedora-38-amd64:
+    environment: [TARGET=fedora-38-amd64]
     stages:
       - tasks: [import, build]
       - tasks: [export]
@@ -123,8 +106,8 @@ plans:
       - tasks: [export]
         run: always
 
-  ubuntu-kinetic-amd64:
-    environment: [TARGET=ubuntu-kinetic-amd64]
+  ubuntu-lunar-amd64:
+    environment: [TARGET=ubuntu-lunar-amd64]
     stages:
       - tasks: [import, build]
       - tasks: [export]
