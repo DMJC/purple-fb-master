@@ -47,7 +47,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           </object>
         </child>
         <child>
-          <object class="GtkBox">
+          <object class="GtkBox" id="toolbar">
             <property name="halign">center</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -69,14 +69,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                 <property name="receives-default">1</property>
                 <property name="use-underline">1</property>
                 <signal name="clicked" handler="pidgin_whiteboard_button_save_press" object="PidginWhiteboard" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkColorButton" id="color_button">
-                <property name="valign">center</property>
-                <property name="focusable">1</property>
-                <property name="receives-default">1</property>
-                <signal name="color-set" handler="color_selected" object="PidginWhiteboard" swapped="no"/>
               </object>
             </child>
           </object>
