@@ -17,6 +17,7 @@ tasks:
   clean:
     type: convey/clean
     files:
+      - alpine-edge-amd64
       - clang
       - debian-bookworm-amd64
       - fedora-38-amd64
@@ -70,6 +71,13 @@ tasks:
     files: ${TARGET}:${TARGET}
 
 plans:
+  alpine-edge-amd64:
+    environment: [TARGET=alpine-edge-amd64]
+    stages:
+      - tasks: [import, build]
+      - tasks: [export]
+        run: always
+
   clang:
     environment: [TARGET=clang]
     stages:
