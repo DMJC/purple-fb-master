@@ -94,6 +94,184 @@ test_purple_saved_presence_properties(void) {
 	g_clear_object(&presence);
 }
 
+static void
+test_purple_saved_presence_equal_null_null(void) {
+	g_assert_true(purple_saved_presence_equal(NULL, NULL));
+}
+
+static void
+test_purple_saved_presence_equal_null_a(void) {
+	PurpleSavedPresence *b = purple_saved_presence_new();
+
+	g_assert_false(purple_saved_presence_equal(NULL, b));
+
+	g_clear_object(&b);
+}
+
+static void
+test_purple_saved_presence_equal_null_b(void) {
+	PurpleSavedPresence *a = purple_saved_presence_new();
+
+	g_assert_false(purple_saved_presence_equal(a, NULL));
+
+	g_clear_object(&a);
+}
+
+static void
+test_purple_saved_presence_equal_default(void) {
+	PurpleSavedPresence *a = purple_saved_presence_new();
+	PurpleSavedPresence *b = purple_saved_presence_new();
+
+	g_assert_true(purple_saved_presence_equal(a, b));
+
+	g_clear_object(&a);
+	g_clear_object(&b);
+}
+
+static void
+test_purple_saved_presence_equal_last_used(void) {
+	PurpleSavedPresence *a = purple_saved_presence_new();
+	PurpleSavedPresence *b = purple_saved_presence_new();
+	GDateTime *now = g_date_time_new_now_utc();
+	GDateTime *yesterday = g_date_time_add_days(now, -1);
+
+	/* Set the last used time for a but not b. */
+	purple_saved_presence_set_last_used(a, now);
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the last used time for b to the same as a. */
+	purple_saved_presence_set_last_used(b, now);
+	g_assert_true(purple_saved_presence_equal(a, b));
+
+	/* Set the last used time for b to yesterday. */
+	purple_saved_presence_set_last_used(b, yesterday);
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the last used time for a to NULL. */
+	purple_saved_presence_set_last_used(a, NULL);
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the last used time for b to NULL. */
+	purple_saved_presence_set_last_used(b, NULL);
+	g_assert_true(purple_saved_presence_equal(a, b));
+
+	g_clear_object(&a);
+	g_clear_object(&b);
+	g_clear_pointer(&now, g_date_time_unref);
+	g_clear_pointer(&yesterday, g_date_time_unref);
+}
+
+static void
+test_purple_saved_presence_equal_use_count(void) {
+	PurpleSavedPresence *a = purple_saved_presence_new();
+	PurpleSavedPresence *b = purple_saved_presence_new();
+
+	/* Set the use-count of a to 100. */
+	purple_saved_presence_set_use_count(a, 100);
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Check an explicit value is equal. */
+	purple_saved_presence_set_use_count(b, 100);
+	g_assert_true(purple_saved_presence_equal(a, b));
+
+	/* Set the use-count of b to 101. */
+	purple_saved_presence_set_use_count(b, 101);
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	g_clear_object(&a);
+	g_clear_object(&b);
+}
+
+static void
+test_purple_saved_presence_equal_name(void) {
+	PurpleSavedPresence *a = purple_saved_presence_new();
+	PurpleSavedPresence *b = purple_saved_presence_new();
+
+	/* Set the name of a. */
+	purple_saved_presence_set_name(a, "present");
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the name of b to the same as a. */
+	purple_saved_presence_set_name(b, "present");
+	g_assert_true(purple_saved_presence_equal(a, b));
+
+	/* Set the name of b to something else. */
+	purple_saved_presence_set_name(b, "future");
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the name of a to NULL. */
+	purple_saved_presence_set_name(a, NULL);
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	g_clear_object(&a);
+	g_clear_object(&b);
+}
+
+static void
+test_purple_saved_presence_equal_primitive(void) {
+	PurpleSavedPresence *a = purple_saved_presence_new();
+	PurpleSavedPresence *b = purple_saved_presence_new();
+
+	/* Set the primitive of a to streaming. */
+	purple_saved_presence_set_primitive(a,
+	                                    PURPLE_PRESENCE_PRIMITIVE_STREAMING);
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the primitive of b to idle. */
+	purple_saved_presence_set_primitive(b, PURPLE_PRESENCE_PRIMITIVE_IDLE);
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the primitives to the same value. */
+	purple_saved_presence_set_primitive(b,
+	                                    PURPLE_PRESENCE_PRIMITIVE_STREAMING);
+	g_assert_true(purple_saved_presence_equal(a, b));
+
+	g_clear_object(&a);
+	g_clear_object(&b);
+}
+
+static void
+test_purple_saved_presence_equal_message(void) {
+	PurpleSavedPresence *a = purple_saved_presence_new();
+	PurpleSavedPresence *b = purple_saved_presence_new();
+
+	/* Set the message for a. */
+	purple_saved_presence_set_message(a, "sleeping...");
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the message for b. */
+	purple_saved_presence_set_message(b, "working!");
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the messages to the same. */
+	purple_saved_presence_set_message(a, "working!");
+	g_assert_true(purple_saved_presence_equal(a, b));
+
+	g_clear_object(&a);
+	g_clear_object(&b);
+}
+
+static void
+test_purple_saved_presence_equal_emoji(void) {
+	PurpleSavedPresence *a = purple_saved_presence_new();
+	PurpleSavedPresence *b = purple_saved_presence_new();
+
+	/* Set the emoji for a. */
+	purple_saved_presence_set_emoji(a, "💤");
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the emoji for b. */
+	purple_saved_presence_set_emoji(b, "🏢");
+	g_assert_false(purple_saved_presence_equal(a, b));
+
+	/* Set the emoji to the same. */
+	purple_saved_presence_set_emoji(a, "🏢");
+	g_assert_true(purple_saved_presence_equal(a, b));
+
+	g_clear_object(&a);
+	g_clear_object(&b);
+}
+
 /******************************************************************************
  * Main
  *****************************************************************************/
@@ -106,6 +284,27 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/saved-presence/properties",
 	                test_purple_saved_presence_properties);
 
+	g_test_add_func("/saved-presence/equal/null_null",
+	                test_purple_saved_presence_equal_null_null);
+	g_test_add_func("/saved-presence/equal/null_a",
+	                test_purple_saved_presence_equal_null_a);
+	g_test_add_func("/saved-presence/equal/null_b",
+	                test_purple_saved_presence_equal_null_b);
+	g_test_add_func("/saved-presence/equal/default",
+	                test_purple_saved_presence_equal_default);
+
+	g_test_add_func("/saved-presence/equal/last-used",
+	                test_purple_saved_presence_equal_last_used);
+	g_test_add_func("/saved-presence/equal/use-count",
+	                test_purple_saved_presence_equal_use_count);
+	g_test_add_func("/saved-presence/equal/name",
+	                test_purple_saved_presence_equal_name);
+	g_test_add_func("/saved-presence/equal/primitive",
+	                test_purple_saved_presence_equal_primitive);
+	g_test_add_func("/saved-presence/equal/message",
+	                test_purple_saved_presence_equal_message);
+	g_test_add_func("/saved-presence/equal/emoji",
+	                test_purple_saved_presence_equal_emoji);
 
 	return g_test_run();
 }

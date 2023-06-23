@@ -192,6 +192,20 @@ const char *purple_saved_presence_get_emoji(PurpleSavedPresence *presence);
  */
 void purple_saved_presence_set_emoji(PurpleSavedPresence *presence, const char *emoji);
 
+/**
+ * purple_saved_presence_equal:
+ * @a: (nullable): The first instance.
+ * @b: (nullable): The second instance.
+ *
+ * Checks if @a is equal to @b. This is done by checking each property for
+ * equality.
+ *
+ * Returns: %TRUE if @a is equal to @b, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_saved_presence_equal(PurpleSavedPresence *a, PurpleSavedPresence *b);
+
 G_END_DECLS
 
 #endif /* PURPLE_SAVED_PRESENCE_H */

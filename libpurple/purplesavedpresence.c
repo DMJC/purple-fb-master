@@ -374,3 +374,63 @@ purple_saved_presence_set_emoji(PurpleSavedPresence *presence,
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_EMOJI]);
 	}
 }
+
+gboolean
+purple_saved_presence_equal(PurpleSavedPresence *a, PurpleSavedPresence *b) {
+	/* Check if both objects are null. */
+	if(a == NULL && b == NULL) {
+		return TRUE;
+	}
+
+	/* Check if either object is null. */
+	if(a == NULL || b == NULL) {
+		return FALSE;
+	}
+
+	/* Check that both objects are a saved presence. */
+	if(!PURPLE_IS_SAVED_PRESENCE(a) || !PURPLE_IS_SAVED_PRESENCE(b)) {
+		return FALSE;
+	}
+
+	/* If last used is non-null on both compare them. */
+	if(a->last_used != NULL && b->last_used != NULL) {
+		if(!g_date_time_equal(a->last_used, b->last_used)) {
+			return FALSE;
+		}
+	}
+
+	if(a->last_used == NULL && b->last_used != NULL) {
+		return FALSE;
+	}
+
+	if(a->last_used != NULL && b->last_used == NULL) {
+		return FALSE;
+	}
+
+	/* Check the use counts. */
+	if(a->use_count != b->use_count) {
+		return FALSE;
+	}
+
+	/* Check the name. */
+	if(!purple_strequal(a->name, b->name)) {
+		return FALSE;
+	}
+
+	/* Check the primitive. */
+	if(a->primitive != b->primitive) {
+		return FALSE;
+	}
+
+	/* Check the message. */
+	if(!purple_strequal(a->message, b->message)) {
+		return FALSE;
+	}
+
+	/* Check the emoji. */
+	if(!purple_strequal(a->emoji, b->emoji)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
