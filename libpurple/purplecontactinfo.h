@@ -343,8 +343,8 @@ const char *purple_contact_info_get_name_for_display(PurpleContactInfo *info);
 
 /**
  * purple_contact_info_compare:
- * @a: The first instance.
- * @b: The second instance.
+ * @a: (nullable): The first instance.
+ * @b: (nullable): The second instance.
  *
  * Compares contacts @a and @b
  *
