@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
+#if !defined(PURPLE_IRCV3_GLOBAL_HEADER_INSIDE) && \
+    !defined(PURPLE_IRCV3_COMPILATION)
+# error "only <libpurple/protocols/ircv3.h> may be included directly"
+#endif
 
 #ifndef PURPLE_IRCV3_MESSAGE_HANDLERS_H
 #define PURPLE_IRCV3_MESSAGE_HANDLERS_H
@@ -32,8 +36,8 @@ G_BEGIN_DECLS
  * @source: The source of the command.
  * @command: The command or numeric of the message.
  * @n_params: The number of parameters.
- * @params: (array_length=n_params): The parameters of the message.
- * @error: (nullable) (optional): A return address for a [type@GLib.Error].
+ * @params: (array length=n_params): The parameters of the message.
+ * @error: (nullable): A return address for a [type@GLib.Error].
  * @data: The user data that was passed to [method@PurpleIRCv3.Parser.parse].
  *
  * Defines the type of a function that will be called to handle a message.

@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
+#if !defined(PURPLE_IRCV3_GLOBAL_HEADER_INSIDE) && \
+    !defined(PURPLE_IRCV3_COMPILATION)
+# error "only <libpurple/protocols/ircv3.h> may be included directly"
+#endif
 
 #ifndef PURPLE_IRCV3_SASL_H
 #define PURPLE_IRCV3_SASL_H

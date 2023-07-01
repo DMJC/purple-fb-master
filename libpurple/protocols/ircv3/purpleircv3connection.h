@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
+#if !defined(PURPLE_IRCV3_GLOBAL_HEADER_INSIDE) && \
+    !defined(PURPLE_IRCV3_COMPILATION)
+# error "only <libpurple/protocols/ircv3.h> may be included directly"
+#endif
 
 #ifndef PURPLE_IRCV3_CONNECTION_H
 #define PURPLE_IRCV3_CONNECTION_H
@@ -43,8 +47,26 @@ struct _PurpleIRCv3ConnectionClass {
 	gpointer reserved[8];
 };
 
+/**
+ * purple_ircv3_connection_register: (skip)
+ * @plugin: The GTypeModule
+ *
+ * Registers the dynamic type using @plugin.
+ *
+ * Since: 3.0.0
+ */
 G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugin);
 
+/**
+ * purple_ircv3_connection_get_cancellable: (skip)
+ * @connection: The instance.
+ *
+ * This is a private method that is not exposed externally.
+ *
+ * Gets the cancellable for @connection.
+ *
+ * Since: 3.0.0
+ */
 G_GNUC_INTERNAL GCancellable *purple_ircv3_connection_get_cancellable(PurpleIRCv3Connection *connection);
 
 /**
@@ -66,7 +88,7 @@ void purple_ircv3_connection_writef(PurpleIRCv3Connection *connection, const cha
  *
  * Gets the list of capabilities that the server supplied during registration.
  *
- * Returns: The list of capabilities that the server supports.
+ * Returns: (transfer none): The list of capabilities that the server supports.
  */
 PurpleIRCv3Capabilities *purple_ircv3_connection_get_capabilities(PurpleIRCv3Connection *connection);
 

@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
+#if !defined(PURPLE_IRCV3_GLOBAL_HEADER_INSIDE) && \
+    !defined(PURPLE_IRCV3_COMPILATION)
+# error "only <libpurple/protocols/ircv3.h> may be included directly"
+#endif
 
 #ifndef PURPLE_IRCV3_CAPABILITIES_H
 #define PURPLE_IRCV3_CAPABILITIES_H
@@ -35,6 +39,14 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Capabilities, purple_ircv3_capabilities,
 
 #include "purpleircv3connection.h"
 
+/**
+ * purple_ircv3_capabilities_register: (skip)
+ * @plugin: The [class@GPlugin.NativePlugin] instance.
+ *
+ * Dynamically registers the PurpleIRCv3Capabilities type.
+ *
+ * Since: 3.0.0
+ */
 G_GNUC_INTERNAL void purple_ircv3_capabilities_register(GPluginNativePlugin *plugin);
 
 G_GNUC_INTERNAL PurpleIRCv3Capabilities *purple_ircv3_capabilities_new(PurpleIRCv3Connection *connection);

@@ -58,6 +58,7 @@ purple_ircv3_query(G_GNUC_UNUSED GError **error) {
 		"website", PURPLE_WEBSITE,
 		"abi-version", PURPLE_ABI_VERSION,
 		"flags", flags,
+		"bind-global", TRUE,
 		NULL);
 }
 
@@ -76,13 +77,16 @@ purple_ircv3_load(GPluginPlugin *plugin, GError **error) {
 	purple_ircv3_connection_register(GPLUGIN_NATIVE_PLUGIN(plugin));
 	purple_ircv3_protocol_register(GPLUGIN_NATIVE_PLUGIN(plugin));
 
-	manager = purple_protocol_manager_get_default();
-
 	ircv3_protocol = purple_ircv3_protocol_new();
-	if(!purple_protocol_manager_register(manager, ircv3_protocol, error)) {
-		g_clear_object(&ircv3_protocol);
 
-		return FALSE;
+	manager = purple_protocol_manager_get_default();
+	/* Manager can be NULL when we're generating the GIR stuff. */
+	if(PURPLE_IS_PROTOCOL_MANAGER(manager)) {
+		if(!purple_protocol_manager_register(manager, ircv3_protocol, error)) {
+			g_clear_object(&ircv3_protocol);
+
+			return FALSE;
+		}
 	}
 
 	return TRUE;
@@ -103,8 +107,13 @@ purple_ircv3_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
 	}
 
 	manager = purple_protocol_manager_get_default();
-	if(!purple_protocol_manager_unregister(manager, ircv3_protocol, error)) {
-		return FALSE;
+	/* Manager can be NULL when we're generating the GIR stuff. */
+	if(PURPLE_IS_PROTOCOL_MANAGER(manager)) {
+		if(!purple_protocol_manager_unregister(manager, ircv3_protocol,
+		                                       error))
+		{
+			return FALSE;
+		}
 	}
 
 	g_clear_object(&ircv3_protocol);
