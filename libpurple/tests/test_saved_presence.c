@@ -21,6 +21,19 @@
 #include <purple.h>
 
 /******************************************************************************
+ * Callback helpers
+ *****************************************************************************/
+static void
+test_purple_saved_presence_notify_called(G_GNUC_UNUSED GObject *obj,
+                                         G_GNUC_UNUSED GParamSpec *pspec,
+                                         gpointer data)
+{
+	guint *counter = data;
+
+	*counter = *counter + 1;
+}
+
+/******************************************************************************
  * Tests
  *****************************************************************************/
 static void
@@ -40,9 +53,10 @@ test_purple_saved_presence_properties(void) {
 	GDateTime *last_used = NULL;
 	GDateTime *last_used1 = NULL;
 	guint use_count;
-	char *name;
-	char *message;
-	char *emoji;
+	char *name = NULL;
+	char *escaped_name = NULL;
+	char *message = NULL;
+	char *emoji = NULL;
 
 	last_used = g_date_time_new_now_local();
 
@@ -66,6 +80,7 @@ test_purple_saved_presence_properties(void) {
 		"last-used", &last_used1,
 		"use-count", &use_count,
 		"name", &name,
+		"escaped-name", &escaped_name,
 		"primitive", &primitive,
 		"message", &message,
 		"emoji", &emoji,
@@ -81,6 +96,9 @@ test_purple_saved_presence_properties(void) {
 	g_assert_cmpstr(name, ==, "my saved status");
 	g_clear_pointer(&name, g_free);
 
+	g_assert_cmpstr(escaped_name, ==, "my%20saved%20status");
+	g_clear_pointer(&escaped_name, g_free);
+
 	g_assert_cmpint(primitive, ==, PURPLE_PRESENCE_PRIMITIVE_STREAMING);
 
 	g_assert_cmpstr(message, ==,
@@ -91,6 +109,34 @@ test_purple_saved_presence_properties(void) {
 	g_clear_pointer(&emoji, g_free);
 
 	g_clear_pointer(&last_used, g_date_time_unref);
+	g_clear_object(&presence);
+}
+
+static void
+test_purple_saved_presence_escaped_name(void) {
+	PurpleSavedPresence *presence = NULL;
+	guint counter = 0;
+
+	presence = g_object_new(
+		PURPLE_TYPE_SAVED_PRESENCE,
+		"name", "{\"text/json\":null}",
+		NULL);
+
+	g_signal_connect(presence, "notify",
+	                 G_CALLBACK(test_purple_saved_presence_notify_called),
+	                 &counter);
+
+	g_assert_cmpstr(purple_saved_presence_get_name(presence), ==,
+	                "{\"text/json\":null}");
+	g_assert_cmpstr(purple_saved_presence_get_escaped_name(presence), ==,
+	                "%7B%22text%2Fjson%22%3Anull%7D");
+
+	purple_saved_presence_set_name(presence, "🐧🐶🐱");
+	g_assert_cmpstr(purple_saved_presence_get_escaped_name(presence), ==,
+	                "🐧🐶🐱");
+
+	g_assert_cmpuint(counter, ==, 2);
+
 	g_clear_object(&presence);
 }
 
@@ -283,6 +329,8 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_saved_presence_new);
 	g_test_add_func("/saved-presence/properties",
 	                test_purple_saved_presence_properties);
+	g_test_add_func("/saved-presence/escaped-name",
+	                test_purple_saved_presence_escaped_name);
 
 	g_test_add_func("/saved-presence/equal/null_null",
 	                test_purple_saved_presence_equal_null_null);

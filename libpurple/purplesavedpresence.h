@@ -122,6 +122,19 @@ const char *purple_saved_presence_get_name(PurpleSavedPresence *presence);
 void purple_saved_presence_set_name(PurpleSavedPresence *presence, const char *name);
 
 /**
+ * purple_saved_presence_get_escaped_name:
+ * @presence: The instance.
+ *
+ * Gets the escaped version of [property@SavedPresence:name] of @presence. The
+ * escaped name is suitable for serialization.
+ *
+ * Returns: The escaped name.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_saved_presence_get_escaped_name(PurpleSavedPresence *presence);
+
+/**
  * purple_saved_presence_get_primitive:
  * @presence: The instance.
  *

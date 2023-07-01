@@ -33,6 +33,7 @@ struct _PurpleSavedPresence {
 	guint use_count;
 
 	char *name;
+	char *escaped_name;
 
 	PurplePresencePrimitive primitive;
 	char *message;
@@ -44,6 +45,7 @@ enum {
 	PROP_LAST_USED,
 	PROP_USE_COUNT,
 	PROP_NAME,
+	PROP_ESCAPED_NAME,
 	PROP_PRIMITIVE,
 	PROP_MESSAGE,
 	PROP_EMOJI,
@@ -112,6 +114,10 @@ purple_saved_presence_get_property(GObject *obj, guint param_id, GValue *value,
 			g_value_set_string(value,
 			                   purple_saved_presence_get_name(presence));
 			break;
+		case PROP_ESCAPED_NAME:
+			g_value_set_string(value,
+			                   purple_saved_presence_get_escaped_name(presence));
+			break;
 		case PROP_PRIMITIVE:
 			g_value_set_enum(value,
 			                 purple_saved_presence_get_primitive(presence));
@@ -141,6 +147,7 @@ purple_saved_presence_finalize(GObject *obj) {
 	g_clear_pointer(&presence->last_used, g_date_time_unref);
 
 	g_clear_pointer(&presence->name, g_free);
+	g_clear_pointer(&presence->escaped_name, g_free);
 	g_clear_pointer(&presence->message, g_free);
 	g_clear_pointer(&presence->emoji, g_free);
 
@@ -193,6 +200,20 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 		"The name of this saved presence.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleSavedPresence:escaped-name:
+	 *
+	 * An escaped version of [property@PurpleSavedPresence:name] that's
+	 * suitable for serialization.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_ESCAPED_NAME] = g_param_spec_string(
+		"escaped-name", "escaped-name",
+		"The escaped version of the name.",
+		NULL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleSavedPresence:primitive:
@@ -304,11 +325,31 @@ purple_saved_presence_set_name(PurpleSavedPresence *presence,
 	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
 
 	if(!purple_strequal(presence->name, name)) {
+		GObject *obj = G_OBJECT(presence);
+
 		g_free(presence->name);
 		presence->name = g_strdup(name);
 
-		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_NAME]);
+		g_free(presence->escaped_name);
+		if(!purple_strempty(presence->name)) {
+			presence->escaped_name = g_uri_escape_string(presence->name, NULL,
+			                                             TRUE);
+		} else {
+			presence->escaped_name = NULL;
+		}
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_NAME]);
+		g_object_notify_by_pspec(obj, properties[PROP_ESCAPED_NAME]);
+		g_object_thaw_notify(obj);
 	}
+}
+
+const char *
+purple_saved_presence_get_escaped_name(PurpleSavedPresence *presence) {
+	g_return_val_if_fail(PURPLE_IS_SAVED_PRESENCE(presence), NULL);
+
+	return presence->escaped_name;
 }
 
 PurplePresencePrimitive
