@@ -32,7 +32,6 @@
 
 #include "pidginui.h"
 
-#include "gtkaccount.h"
 #include "gtkblist.h"
 #include "gtkconv.h"
 #include "gtkidle.h"
@@ -185,7 +184,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
 	purple_whiteboard_set_ui_ops(pidgin_whiteboard_get_ui_ops());
 	purple_idle_set_ui(pidgin_idle_new());
 
-	pidgin_accounts_init();
 	pidgin_request_init();
 	pidgin_conversations_init();
 	pidgin_commands_init();
@@ -206,7 +204,6 @@ pidgin_ui_stop(G_GNUC_UNUSED PurpleUi *ui) {
 	pidgin_commands_uninit();
 	pidgin_conversations_uninit();
 	pidgin_request_uninit();
-	pidgin_accounts_uninit();
 	pidgin_xfers_uninit();
 	pidgin_debug_window_hide();
 	pidgin_debug_uninit();

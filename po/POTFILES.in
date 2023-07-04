@@ -226,7 +226,6 @@ libpurple/win32/libc_interface.c
 libpurple/win32/win32dep.c
 libpurple/xfer.c
 libpurple/xmlnode.c
-pidgin/gtkaccount.c
 pidgin/gtkblist.c
 pidgin/gtkconv.c
 pidgin/gtkdialogs.c

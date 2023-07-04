@@ -39,8 +39,6 @@
 
 #include <talkatu.h>
 
-#include "gtkaccount.h"
-
 #include "gtkconv.h"
 #include "gtkdialogs.h"
 #include "gtkrequest.h"

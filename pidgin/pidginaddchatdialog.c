@@ -24,7 +24,6 @@
 
 #include "pidginaddchatdialog.h"
 
-#include "gtkaccount.h"
 #include "gtkroomlist.h"
 #include "pidginaccountchooser.h"
 #include "pidgincore.h"

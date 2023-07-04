@@ -26,7 +26,6 @@
 
 #include "pidginaccountmanager.h"
 
-#include "gtkaccount.h"
 #include "pidgincore.h"
 #include "pidginaccounteditor.h"
 #include "pidginaccountrow.h"

@@ -24,7 +24,6 @@
 
 #include "pidginaddbuddydialog.h"
 
-#include "gtkaccount.h"
 #include "pidginaccountchooser.h"
 #include "pidgincore.h"
 
