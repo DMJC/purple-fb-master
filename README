@@ -1,3 +1,5 @@
+[![pidgin wordmark](img/wordmark.png)](https://pidgin.im/)
+
 # Purple, Pidgin and Finch
 
 libpurple is a library intended to be used by programmers seeking to write an
@@ -69,3 +71,11 @@ additional third party plugins at
 
 You can find more information about Pidgin development in the
 [development section](https://pidgin.im/development/) of our website.
+
+## Sponsors
+
+Pidgin is supported by DigitalOcean who graciously sponsors all of our
+infrastructure.
+
+[![DigitalOcean referal link](img/DO_Logo_horizontal_blue.png)](https://www.digitalocean.com/?refcode=b69e5dddf595&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+
