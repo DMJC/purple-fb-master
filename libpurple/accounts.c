@@ -453,6 +453,7 @@ load_accounts(void) {
 		new_acct = parse_account(child);
 
 		purple_account_manager_add(manager, new_acct);
+		g_clear_object(&new_acct);
 	}
 
 	purple_xmlnode_free(node);

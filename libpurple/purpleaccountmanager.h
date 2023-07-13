@@ -77,7 +77,7 @@ GListModel *purple_account_manager_get_default_as_model(void);
 /**
  * purple_account_manager_add:
  * @manager: The account manager instance.
- * @account: (transfer full): The account to add.
+ * @account: (transfer none): The account to add.
  *
  * Adds @account to @manager.
  *

@@ -141,6 +141,12 @@ save_account_cb(AccountEditDialog *dialog)
 		account = purple_account_new(username->str, purple_protocol_get_id(protocol));
 		info = PURPLE_CONTACT_INFO(account);
 		purple_account_manager_add(manager, account);
+
+		/* We don't have a cleanup function for this dialog, so we can really
+		 * only unref this new instance here. The pointer will remain valid as
+		 * the account manager adds a reference.
+		 */
+		g_object_unref(G_OBJECT(account));
 	} else {
 		account = dialog->account;
 		info = PURPLE_CONTACT_INFO(account);

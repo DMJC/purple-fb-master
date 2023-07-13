@@ -28,6 +28,8 @@ enum {
 	SIG_REMOVED,
 	SIG_ACCOUNT_CHANGED,
 	SIG_ACCOUNT_SETTING_CHANGED,
+	SIG_ACCOUNT_CONNECTED,
+	SIG_ACCOUNT_DISCONNECTED,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -65,6 +67,20 @@ purple_account_manager_account_setting_changed_cb(PurpleAccount *account,
 {
 	g_signal_emit(data, signals[SIG_ACCOUNT_SETTING_CHANGED],
 	              g_quark_from_string(name), account, name);
+}
+
+static void
+purple_account_manager_account_connected_cb(PurpleAccount *account,
+                                            gpointer data)
+{
+	g_signal_emit(data, signals[SIG_ACCOUNT_CONNECTED], 0, account);
+}
+
+static void
+purple_account_manager_account_disconnected_cb(PurpleAccount *account,
+                                               gpointer data)
+{
+	g_signal_emit(data, signals[SIG_ACCOUNT_DISCONNECTED], 0, account);
 }
 
 /******************************************************************************
@@ -231,6 +247,52 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 		2,
 		PURPLE_TYPE_ACCOUNT,
 		G_TYPE_STRING);
+
+	/**
+	 * PurpleAccountManager::account-connected:
+	 * @manager: The account manager instance.
+	 * @account: The account that was connected.
+	 *
+	 * This is a propagation of [signal@Purple.Account::connected] signal. This
+	 * means that your callback will be called for any account that @manager
+	 * knows about.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_ACCOUNT_CONNECTED] = g_signal_new_class_handler(
+		"account-connected",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		PURPLE_TYPE_ACCOUNT);
+
+	/**
+	 * PurpleAccountManager::account-disconnected:
+	 * @manager: The account manager instance.
+	 * @account: The account that was disconnected.
+	 *
+	 * This is a propagation of [signal@Purple.Account::disconnected] signal.
+	 * This means that your callback will be called for any account that
+	 * @manager knows about.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_ACCOUNT_DISCONNECTED] = g_signal_new_class_handler(
+		"account-disconnected",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		PURPLE_TYPE_ACCOUNT);
 }
 
 /******************************************************************************
@@ -284,7 +346,7 @@ purple_account_manager_add(PurpleAccountManager *manager,
 	 * interfaces and the most likely to have configuration issues as it's a
 	 * new account.
 	 */
-	g_ptr_array_insert(manager->accounts, 0, account);
+	g_ptr_array_insert(manager->accounts, 0, g_object_ref(account));
 
 	/* Connect to the signals of the account that we want to propagate. */
 	g_signal_connect_object(account, "notify",
@@ -292,6 +354,12 @@ purple_account_manager_add(PurpleAccountManager *manager,
 	                        manager, 0);
 	g_signal_connect_object(account, "setting-changed",
 	                        G_CALLBACK(purple_account_manager_account_setting_changed_cb),
+	                        manager, 0);
+	g_signal_connect_object(account, "connected",
+	                        G_CALLBACK(purple_account_manager_account_connected_cb),
+	                        manager, 0);
+	g_signal_connect_object(account, "disconnected",
+	                        G_CALLBACK(purple_account_manager_account_disconnected_cb),
 	                        manager, 0);
 
 	purple_accounts_schedule_save();
@@ -314,6 +382,21 @@ purple_account_manager_remove(PurpleAccountManager *manager,
 		g_list_model_items_changed(G_LIST_MODEL(manager), index, 1, 0);
 	}
 
+	/* Disconnect all the signals we added for the account. */
+	g_signal_handlers_disconnect_by_func(account,
+	                                     purple_account_manager_account_notify_cb,
+	                                     manager);
+	g_signal_handlers_disconnect_by_func(account,
+	                                     purple_account_manager_account_setting_changed_cb,
+	                                     manager);
+	g_signal_handlers_disconnect_by_func(account,
+	                                     purple_account_manager_account_connected_cb,
+	                                     manager);
+	g_signal_handlers_disconnect_by_func(account,
+	                                     purple_account_manager_account_disconnected_cb,
+	                                     manager);
+
+	/* Save the list. */
 	purple_accounts_schedule_save();
 
 	/* Clearing the error ensures that account-error-changed is emitted,
@@ -322,6 +405,11 @@ purple_account_manager_remove(PurpleAccountManager *manager,
 	purple_account_set_error(account, NULL);
 
 	g_signal_emit(manager, signals[SIG_REMOVED], 0, account);
+
+	/* Since we stole the index from the GPtrArray, we need to unref it
+	 * ourselves.
+	 */
+	g_object_unref(account);
 }
 
 GList *
