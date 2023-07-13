@@ -39,17 +39,6 @@ G_DECLARE_FINAL_TYPE(PurpleSavedPresence, purple_saved_presence, PURPLE,
                      SAVED_PRESENCE, GObject)
 
 /**
- * purple_saved_presence_new:
- *
- * Creates a new saved_presence instance.
- *
- * Returns: (transfer full): The new instance.
- *
- * Since: 3.0.0
- */
-PurpleSavedPresence *purple_saved_presence_new(void);
-
-/**
  * purple_saved_presence_get_last_used:
  * @presence: The instance.
  *
@@ -96,6 +85,19 @@ guint purple_saved_presence_get_use_count(PurpleSavedPresence *presence);
  * Since: 3.0.0
  */
 void purple_saved_presence_set_use_count(PurpleSavedPresence *presence, guint use_count);
+
+/**
+ * purple_saved_presence_get_id:
+ * @presence: The instance.
+ *
+ * Gets the identifier for @presence. If an identifier was not specified when
+ * @presence was created a random one will have been generated.
+ *
+ * Returns: The identifier for @presence.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_saved_presence_get_id(PurpleSavedPresence *presence);
 
 /**
  * purple_saved_presence_get_name:

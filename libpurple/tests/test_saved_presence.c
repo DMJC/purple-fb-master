@@ -21,31 +21,8 @@
 #include <purple.h>
 
 /******************************************************************************
- * Callback helpers
- *****************************************************************************/
-static void
-test_purple_saved_presence_notify_called(G_GNUC_UNUSED GObject *obj,
-                                         G_GNUC_UNUSED GParamSpec *pspec,
-                                         gpointer data)
-{
-	guint *counter = data;
-
-	*counter = *counter + 1;
-}
-
-/******************************************************************************
  * Tests
  *****************************************************************************/
-static void
-test_purple_saved_presence_new(void) {
-	PurpleSavedPresence *presence = NULL;
-
-	presence = purple_saved_presence_new();
-	g_assert_true(PURPLE_IS_SAVED_PRESENCE(presence));
-
-	g_clear_object(&presence);
-}
-
 static void
 test_purple_saved_presence_properties(void) {
 	PurpleSavedPresence *presence = NULL;
@@ -53,8 +30,8 @@ test_purple_saved_presence_properties(void) {
 	GDateTime *last_used = NULL;
 	GDateTime *last_used1 = NULL;
 	guint use_count;
+	char *id = NULL;
 	char *name = NULL;
-	char *escaped_name = NULL;
 	char *message = NULL;
 	char *emoji = NULL;
 
@@ -68,6 +45,7 @@ test_purple_saved_presence_properties(void) {
 		PURPLE_TYPE_SAVED_PRESENCE,
 		"last-used", last_used,
 		"use-count", 123,
+		"id", "leeloo dallas multipass",
 		"name", "my saved status",
 		"primitive", PURPLE_PRESENCE_PRIMITIVE_STREAMING,
 		"message", "I'm live on twitch at https://twitch.tv/rw_grim/",
@@ -79,8 +57,8 @@ test_purple_saved_presence_properties(void) {
 		presence,
 		"last-used", &last_used1,
 		"use-count", &use_count,
+		"id", &id,
 		"name", &name,
-		"escaped-name", &escaped_name,
 		"primitive", &primitive,
 		"message", &message,
 		"emoji", &emoji,
@@ -93,11 +71,11 @@ test_purple_saved_presence_properties(void) {
 
 	g_assert_cmpuint(use_count, ==, 123);
 
+	g_assert_cmpstr(id, ==, "leeloo dallas multipass");
+	g_clear_pointer(&id, g_free);
+
 	g_assert_cmpstr(name, ==, "my saved status");
 	g_clear_pointer(&name, g_free);
-
-	g_assert_cmpstr(escaped_name, ==, "my%20saved%20status");
-	g_clear_pointer(&escaped_name, g_free);
 
 	g_assert_cmpint(primitive, ==, PURPLE_PRESENCE_PRIMITIVE_STREAMING);
 
@@ -113,29 +91,15 @@ test_purple_saved_presence_properties(void) {
 }
 
 static void
-test_purple_saved_presence_escaped_name(void) {
+test_purple_saved_presence_generates_id(void) {
 	PurpleSavedPresence *presence = NULL;
-	guint counter = 0;
+	const char *id = NULL;
 
-	presence = g_object_new(
-		PURPLE_TYPE_SAVED_PRESENCE,
-		"name", "{\"text/json\":null}",
-		NULL);
+	presence = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
-	g_signal_connect(presence, "notify",
-	                 G_CALLBACK(test_purple_saved_presence_notify_called),
-	                 &counter);
-
-	g_assert_cmpstr(purple_saved_presence_get_name(presence), ==,
-	                "{\"text/json\":null}");
-	g_assert_cmpstr(purple_saved_presence_get_escaped_name(presence), ==,
-	                "%7B%22text%2Fjson%22%3Anull%7D");
-
-	purple_saved_presence_set_name(presence, "🐧🐶🐱");
-	g_assert_cmpstr(purple_saved_presence_get_escaped_name(presence), ==,
-	                "🐧🐶🐱");
-
-	g_assert_cmpuint(counter, ==, 2);
+	id = purple_saved_presence_get_id(presence);
+	g_assert_nonnull(id);
+	g_assert_cmpstr(id, !=, "");
 
 	g_clear_object(&presence);
 }
@@ -147,7 +111,7 @@ test_purple_saved_presence_equal_null_null(void) {
 
 static void
 test_purple_saved_presence_equal_null_a(void) {
-	PurpleSavedPresence *b = purple_saved_presence_new();
+	PurpleSavedPresence *b = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
 	g_assert_false(purple_saved_presence_equal(NULL, b));
 
@@ -156,7 +120,7 @@ test_purple_saved_presence_equal_null_a(void) {
 
 static void
 test_purple_saved_presence_equal_null_b(void) {
-	PurpleSavedPresence *a = purple_saved_presence_new();
+	PurpleSavedPresence *a = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
 	g_assert_false(purple_saved_presence_equal(a, NULL));
 
@@ -165,8 +129,8 @@ test_purple_saved_presence_equal_null_b(void) {
 
 static void
 test_purple_saved_presence_equal_default(void) {
-	PurpleSavedPresence *a = purple_saved_presence_new();
-	PurpleSavedPresence *b = purple_saved_presence_new();
+	PurpleSavedPresence *a = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	PurpleSavedPresence *b = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
 	g_assert_true(purple_saved_presence_equal(a, b));
 
@@ -176,8 +140,8 @@ test_purple_saved_presence_equal_default(void) {
 
 static void
 test_purple_saved_presence_equal_last_used(void) {
-	PurpleSavedPresence *a = purple_saved_presence_new();
-	PurpleSavedPresence *b = purple_saved_presence_new();
+	PurpleSavedPresence *a = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	PurpleSavedPresence *b = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 	GDateTime *now = g_date_time_new_now_utc();
 	GDateTime *yesterday = g_date_time_add_days(now, -1);
 
@@ -209,8 +173,8 @@ test_purple_saved_presence_equal_last_used(void) {
 
 static void
 test_purple_saved_presence_equal_use_count(void) {
-	PurpleSavedPresence *a = purple_saved_presence_new();
-	PurpleSavedPresence *b = purple_saved_presence_new();
+	PurpleSavedPresence *a = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	PurpleSavedPresence *b = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
 	/* Set the use-count of a to 100. */
 	purple_saved_presence_set_use_count(a, 100);
@@ -230,8 +194,8 @@ test_purple_saved_presence_equal_use_count(void) {
 
 static void
 test_purple_saved_presence_equal_name(void) {
-	PurpleSavedPresence *a = purple_saved_presence_new();
-	PurpleSavedPresence *b = purple_saved_presence_new();
+	PurpleSavedPresence *a = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	PurpleSavedPresence *b = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
 	/* Set the name of a. */
 	purple_saved_presence_set_name(a, "present");
@@ -255,8 +219,8 @@ test_purple_saved_presence_equal_name(void) {
 
 static void
 test_purple_saved_presence_equal_primitive(void) {
-	PurpleSavedPresence *a = purple_saved_presence_new();
-	PurpleSavedPresence *b = purple_saved_presence_new();
+	PurpleSavedPresence *a = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	PurpleSavedPresence *b = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
 	/* Set the primitive of a to streaming. */
 	purple_saved_presence_set_primitive(a,
@@ -278,8 +242,8 @@ test_purple_saved_presence_equal_primitive(void) {
 
 static void
 test_purple_saved_presence_equal_message(void) {
-	PurpleSavedPresence *a = purple_saved_presence_new();
-	PurpleSavedPresence *b = purple_saved_presence_new();
+	PurpleSavedPresence *a = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	PurpleSavedPresence *b = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
 	/* Set the message for a. */
 	purple_saved_presence_set_message(a, "sleeping...");
@@ -299,8 +263,8 @@ test_purple_saved_presence_equal_message(void) {
 
 static void
 test_purple_saved_presence_equal_emoji(void) {
-	PurpleSavedPresence *a = purple_saved_presence_new();
-	PurpleSavedPresence *b = purple_saved_presence_new();
+	PurpleSavedPresence *a = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	PurpleSavedPresence *b = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
 
 	/* Set the emoji for a. */
 	purple_saved_presence_set_emoji(a, "💤");
@@ -325,12 +289,11 @@ gint
 main(gint argc, gchar *argv[]) {
 	g_test_init(&argc, &argv, NULL);
 
-	g_test_add_func("/saved-presence/new",
-	                test_purple_saved_presence_new);
 	g_test_add_func("/saved-presence/properties",
 	                test_purple_saved_presence_properties);
-	g_test_add_func("/saved-presence/escaped-name",
-	                test_purple_saved_presence_escaped_name);
+
+	g_test_add_func("/saved-presence/generates-id",
+	                test_purple_saved_presence_generates_id);
 
 	g_test_add_func("/saved-presence/equal/null_null",
 	                test_purple_saved_presence_equal_null_null);
