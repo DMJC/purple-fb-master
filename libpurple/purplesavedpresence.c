@@ -29,8 +29,10 @@
 struct _PurpleSavedPresence {
 	GObject parent;
 
+	GSettings *settings;
+
 	GDateTime *last_used;
-	guint use_count;
+	guint64 use_count;
 
 	char *id;
 	char *name;
@@ -42,6 +44,7 @@ struct _PurpleSavedPresence {
 
 enum {
 	PROP_0,
+	PROP_SETTINGS,
 	PROP_LAST_USED,
 	PROP_USE_COUNT,
 	PROP_ID,
@@ -58,6 +61,108 @@ G_DEFINE_TYPE(PurpleSavedPresence, purple_saved_presence, G_TYPE_OBJECT)
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static gboolean
+purple_saved_presence_get_last_used_mapping(GValue *value, GVariant *variant,
+                                            G_GNUC_UNUSED gpointer data)
+{
+	GDateTime *datetime = NULL;
+	GTimeZone *tz = NULL;
+	const char *timestamp = NULL;
+
+	timestamp = g_variant_get_string(variant, NULL);
+	tz = g_time_zone_new_utc();
+	datetime = g_date_time_new_from_iso8601(timestamp, tz);
+	g_time_zone_unref(tz);
+
+	if(datetime != NULL) {
+		g_value_take_boxed(value, datetime);
+	}
+
+	return TRUE;
+}
+
+static GVariant *
+purple_saved_presence_set_last_used_mapping(const GValue *value,
+                                            const GVariantType *expected,
+                                            G_GNUC_UNUSED gpointer data)
+{
+	GDateTime *datetime = NULL;
+	char *timestamp = NULL;
+
+	if(!g_variant_type_equal(expected, G_VARIANT_TYPE_STRING)) {
+		return NULL;
+	}
+
+	datetime = g_value_get_boxed(value);
+	timestamp = g_date_time_format_iso8601(datetime);
+	if(timestamp != NULL) {
+		GVariant *variant = NULL;
+
+		variant = g_variant_new_string(timestamp);
+		g_free(timestamp);
+
+		return variant;
+	}
+
+	return NULL;
+}
+
+static void
+purple_saved_presence_bind_settings(PurpleSavedPresence *presence,
+                                    GSettings *settings)
+{
+	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
+	g_return_if_fail(G_IS_SETTINGS(settings));
+
+	g_settings_bind_with_mapping(settings, "last-used",
+	                             presence, "last-used",
+	                             G_SETTINGS_BIND_DEFAULT,
+	                             purple_saved_presence_get_last_used_mapping,
+	                             purple_saved_presence_set_last_used_mapping,
+	                             NULL, NULL);
+	g_settings_bind(settings, "use-count", presence, "use-count",
+	                G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, "name", presence, "name",
+	                G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, "primitive", presence, "primitive",
+	                G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, "message", presence, "message",
+	                G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, "emoji", presence, "emoji",
+	                G_SETTINGS_BIND_DEFAULT);
+}
+
+static void
+purple_saved_presence_set_settings(PurpleSavedPresence *presence,
+                                   GSettings *settings)
+{
+	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
+
+	if(G_IS_SETTINGS(settings)) {
+		char *schema_id = NULL;
+
+		g_object_get(G_OBJECT(settings), "schema-id", &schema_id, NULL);
+
+		if(!purple_strequal("im.pidgin.Purple.SavedPresence", schema_id)) {
+			g_warning("expected schema id of im.pidgin.Purple.SavedPresence, "
+			          "but found %s", schema_id);
+
+			g_free(schema_id);
+
+			return;
+		}
+
+		g_free(schema_id);
+	}
+
+	if(g_set_object(&presence->settings, settings)) {
+		g_object_notify_by_pspec(G_OBJECT(presence),
+		                         properties[PROP_SETTINGS]);
+
+		purple_saved_presence_bind_settings(presence, settings);
+	}
+}
+
 static void
 purple_saved_presence_set_id(PurpleSavedPresence *presence, const char *id) {
 	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
@@ -95,13 +200,17 @@ purple_saved_presence_set_property(GObject *obj, guint param_id,
 	PurpleSavedPresence *presence = PURPLE_SAVED_PRESENCE(obj);
 
 	switch(param_id) {
+		case PROP_SETTINGS:
+			purple_saved_presence_set_settings(presence,
+			                                   g_value_get_object(value));
+			break;
 		case PROP_LAST_USED:
 			purple_saved_presence_set_last_used(presence,
 			                                    g_value_get_boxed(value));
 			break;
 		case PROP_USE_COUNT:
 			purple_saved_presence_set_use_count(presence,
-			                                    g_value_get_uint(value));
+			                                    g_value_get_uint64(value));
 			break;
 		case PROP_ID:
 			purple_saved_presence_set_id(presence, g_value_get_string(value));
@@ -140,8 +249,8 @@ purple_saved_presence_get_property(GObject *obj, guint param_id, GValue *value,
 			                  purple_saved_presence_get_last_used(presence));
 			break;
 		case PROP_USE_COUNT:
-			g_value_set_uint(value,
-			                 purple_saved_presence_get_use_count(presence));
+			g_value_set_uint64(value,
+			                   purple_saved_presence_get_use_count(presence));
 			break;
 		case PROP_ID:
 			g_value_set_string(value,
@@ -177,6 +286,8 @@ static void
 purple_saved_presence_finalize(GObject *obj) {
 	PurpleSavedPresence *presence = PURPLE_SAVED_PRESENCE(obj);
 
+	g_clear_object(&presence->settings);
+
 	g_clear_pointer(&presence->last_used, g_date_time_unref);
 
 	g_clear_pointer(&presence->id, g_free);
@@ -195,6 +306,24 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	obj_class->finalize = purple_saved_presence_finalize;
 	obj_class->get_property = purple_saved_presence_get_property;
 	obj_class->set_property = purple_saved_presence_set_property;
+
+	/**
+	 * PurpleSavedPresence:settings:
+	 *
+	 * The [class@Gio.Settings] for this saved presence. This settings object
+	 * is typically created by PurplePresenceManager and is expecting the
+	 * im.pidgin.Purple.SavedPresence schema.
+	 *
+	 * When this is non-null, this saved presence will bind all of its
+	 * properties to the settings object.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_SETTINGS] = g_param_spec_object(
+		"settings", "settings",
+		"The GSettings for this saved presence.",
+		G_TYPE_SETTINGS,
+		G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleSavedPresence:last-used:
@@ -216,10 +345,10 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 *
 	 * Since: 3.0.0
 	 */
-	properties[PROP_USE_COUNT] = g_param_spec_uint(
+	properties[PROP_USE_COUNT] = g_param_spec_uint64(
 		"use-count", "use-count",
 		"The number of times this saved presence has been used.",
-		0, G_MAXUINT, 0,
+		0, G_MAXUINT64, 0,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -319,7 +448,7 @@ purple_saved_presence_set_last_used(PurpleSavedPresence *presence,
 	}
 }
 
-guint
+guint64
 purple_saved_presence_get_use_count(PurpleSavedPresence *presence) {
 	g_return_val_if_fail(PURPLE_IS_SAVED_PRESENCE(presence), 0);
 
@@ -328,7 +457,7 @@ purple_saved_presence_get_use_count(PurpleSavedPresence *presence) {
 
 void
 purple_saved_presence_set_use_count(PurpleSavedPresence *presence,
-                                    guint use_count)
+                                    guint64 use_count)
 {
 	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
 

@@ -14,7 +14,8 @@ i18n.merge_file(
 
 schemas_dir = get_option('prefix') / get_option('datadir') / 'glib-2.0' / 'schemas'
 settings_schemas = [
-  'im.pidgin.Purple.gschema.xml',
+    'im.pidgin.Purple.gschema.xml',
+    'im.pidgin.Purple.PresenceManager.gschema.xml',
 ]
 
 install_data(settings_schemas, install_dir: schemas_dir)

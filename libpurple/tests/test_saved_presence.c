@@ -18,7 +18,12 @@
 
 #include <glib.h>
 
+#define G_SETTINGS_ENABLE_BACKEND
+#include <gio/gsettingsbackend.h>
+
 #include <purple.h>
+
+#define SCHEMA_ID "im.pidgin.Purple.SavedPresence"
 
 /******************************************************************************
  * Tests
@@ -29,7 +34,7 @@ test_purple_saved_presence_properties(void) {
 	PurplePresencePrimitive primitive;
 	GDateTime *last_used = NULL;
 	GDateTime *last_used1 = NULL;
-	guint use_count;
+	guint64 use_count;
 	char *id = NULL;
 	char *name = NULL;
 	char *message = NULL;
@@ -102,6 +107,118 @@ test_purple_saved_presence_generates_id(void) {
 	g_assert_cmpstr(id, !=, "");
 
 	g_clear_object(&presence);
+}
+
+static void
+test_purple_saved_presence_set_settings(void) {
+	PurpleSavedPresence *presence = NULL;
+	PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
+	GSettingsBackend *backend = NULL;
+	GSettings *settings = NULL;
+	GDateTime *last_used = NULL;
+	guint64 use_count = 0;
+	const char *name = NULL;
+	const char *message = NULL;
+	const char *emoji = NULL;
+	char *timestamp = NULL;
+
+	backend = g_memory_settings_backend_new();
+	settings = g_settings_new_with_backend_and_path(SCHEMA_ID, backend, "/");
+
+	presence = g_object_new(
+		PURPLE_TYPE_SAVED_PRESENCE,
+		"settings", settings,
+		NULL);
+
+	/* Set each setting and verify that the property matches what we set. */
+	g_settings_set_string(settings, "last-used", "2023-07-06T05:32:24Z");
+	last_used = purple_saved_presence_get_last_used(presence);
+	g_assert_nonnull(last_used);
+	timestamp = g_date_time_format_iso8601(last_used);
+	g_assert_cmpstr(timestamp, ==, "2023-07-06T05:32:24Z");
+	g_free(timestamp);
+
+	g_settings_set_uint64(settings, "use-count", 42);
+	use_count = purple_saved_presence_get_use_count(presence);
+	g_assert_cmpuint(use_count, ==, 42);
+
+	g_settings_set_string(settings, "name", "brb");
+	name = purple_saved_presence_get_name(presence);
+	g_assert_cmpstr(name, ==, "brb");
+
+	g_settings_set_enum(settings, "primitive", PURPLE_PRESENCE_PRIMITIVE_AWAY);
+	primitive = purple_saved_presence_get_primitive(presence);
+	g_assert_cmpuint(primitive, ==, PURPLE_PRESENCE_PRIMITIVE_AWAY);
+
+	g_settings_set_string(settings, "message", "message in a bottle");
+	message = purple_saved_presence_get_message(presence);
+	g_assert_cmpstr(message, ==, "message in a bottle");
+
+	g_settings_set_string(settings, "emoji", "🍾");
+	emoji = purple_saved_presence_get_emoji(presence);
+	g_assert_cmpstr(emoji, ==, "🍾");
+
+	g_clear_object(&presence);
+	g_clear_object(&settings);
+	g_clear_object(&backend);
+}
+
+static void
+test_purple_saved_presence_set_properties(void) {
+	PurpleSavedPresence *presence = NULL;
+	PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
+	GSettingsBackend *backend = NULL;
+	GSettings *settings = NULL;
+	GDateTime *last_used = NULL;
+	guint64 use_count = 0;
+	char *name = NULL;
+	char *message = NULL;
+	char *emoji = NULL;
+	char *timestamp = NULL;
+
+	backend = g_memory_settings_backend_new();
+	settings = g_settings_new_with_backend_and_path(SCHEMA_ID, backend, "/");
+
+	presence = g_object_new(
+		PURPLE_TYPE_SAVED_PRESENCE,
+		"settings", settings,
+		NULL);
+
+	/* Set each setting and verify that the property matches what we set. */
+	last_used = g_date_time_new_from_iso8601("2023-07-06T05:32:24Z", NULL);
+	purple_saved_presence_set_last_used(presence, last_used);
+	g_date_time_unref(last_used);
+	timestamp = g_settings_get_string(settings, "last-used");
+	g_assert_cmpstr(timestamp, ==, "2023-07-06T05:32:24Z");
+	g_free(timestamp);
+
+	purple_saved_presence_set_use_count(presence, 42);
+	use_count = g_settings_get_uint64(settings, "use-count");
+	g_assert_cmpuint(use_count, ==, 42);
+
+	purple_saved_presence_set_name(presence, "brb");
+	name = g_settings_get_string(settings, "name");
+	g_assert_cmpstr(name, ==, "brb");
+	g_free(name);
+
+	purple_saved_presence_set_primitive(presence,
+	                                    PURPLE_PRESENCE_PRIMITIVE_AWAY);
+	primitive = g_settings_get_enum(settings, "primitive");
+	g_assert_cmpuint(primitive, ==, PURPLE_PRESENCE_PRIMITIVE_AWAY);
+
+	purple_saved_presence_set_message(presence, "message in a bottle");
+	message = g_settings_get_string(settings, "message");
+	g_assert_cmpstr(message, ==, "message in a bottle");
+	g_free(message);
+
+	purple_saved_presence_set_emoji(presence, "🍾");
+	emoji = g_settings_get_string(settings, "emoji");
+	g_assert_cmpstr(emoji, ==, "🍾");
+	g_free(emoji);
+
+	g_clear_object(&presence);
+	g_clear_object(&settings);
+	g_clear_object(&backend);
 }
 
 static void
@@ -294,6 +411,11 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/saved-presence/generates-id",
 	                test_purple_saved_presence_generates_id);
+
+	g_test_add_func("/saved-presence/settings/set-settings",
+	                test_purple_saved_presence_set_settings);
+	g_test_add_func("/saved-presence/settings/set-properties",
+	                test_purple_saved_presence_set_properties);
 
 	g_test_add_func("/saved-presence/equal/null_null",
 	                test_purple_saved_presence_equal_null_null);

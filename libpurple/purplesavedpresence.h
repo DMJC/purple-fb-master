@@ -73,7 +73,7 @@ void purple_saved_presence_set_last_used(PurpleSavedPresence *presence, GDateTim
  *
  * Since: 3.0.0
  */
-guint purple_saved_presence_get_use_count(PurpleSavedPresence *presence);
+guint64 purple_saved_presence_get_use_count(PurpleSavedPresence *presence);
 
 /**
  * purple_saved_presence_set_use_count:
@@ -84,7 +84,7 @@ guint purple_saved_presence_get_use_count(PurpleSavedPresence *presence);
  *
  * Since: 3.0.0
  */
-void purple_saved_presence_set_use_count(PurpleSavedPresence *presence, guint use_count);
+void purple_saved_presence_set_use_count(PurpleSavedPresence *presence, guint64 use_count);
 
 /**
  * purple_saved_presence_get_id:
