@@ -35,7 +35,6 @@ G_DEFINE_TYPE(PurpleTags, purple_tags, G_TYPE_OBJECT)
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-
 static void
 purple_tags_dispose(GObject *obj) {
 	PurpleTags *tags = PURPLE_TAGS(obj);
@@ -174,6 +173,34 @@ purple_tags_get_all(PurpleTags *tags) {
 	g_return_val_if_fail(PURPLE_IS_TAGS(tags), NULL);
 
 	return tags->tags;
+}
+
+GList *
+purple_tags_get_all_with_name(PurpleTags *tags, const char *name) {
+	GList *ret = NULL;
+	size_t name_len = 0;
+
+	g_return_val_if_fail(PURPLE_IS_TAGS(tags), NULL);
+	g_return_val_if_fail(!purple_strempty(name), NULL);
+
+	name_len = strlen(name);
+
+	for(GList *l = tags->tags; l != NULL; l = l->next) {
+		char *tag = l->data;
+
+		if(g_str_has_prefix(tag, name)) {
+			const char *value = tag + name_len;
+
+			/* Make sure this is a tag with no value and that we didn't get a
+			 * partial match on the name.
+			 */
+			if(*value == '\0' || *value == ':') {
+				ret = g_list_prepend(ret, tag);
+			}
+		}
+	}
+
+	return g_list_reverse(ret);
 }
 
 gchar *

@@ -154,6 +154,20 @@ guint purple_tags_get_count(PurpleTags *tags);
 GList *purple_tags_get_all(PurpleTags *tags);
 
 /**
+ * purple_tags_get_all_with_name:
+ * @tags: The instance.
+ * @name: The name of the tags to get.
+ *
+ * Gets a list of all tags that are named @name.
+ *
+ * Returns: (transfer container) (element-type utf8): The list of matching
+ *          tags.
+ *
+ * Since: 3.0.0
+ */
+GList *purple_tags_get_all_with_name(PurpleTags *tags, const char *name);
+
+/**
  * purple_tags_to_string:
  * @tags: The instance.
  * @separator: (nullable): A string to separate the items.

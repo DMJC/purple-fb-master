@@ -228,6 +228,47 @@ test_purple_tags_get_all(void) {
 }
 
 static void
+test_purple_tags_get_all_with_name(void) {
+	PurpleTags *tags = purple_tags_new();
+	GList *named = NULL;
+	GList *expected = NULL;
+
+	/* Make sure we get null back on no matches. */
+	named = purple_tags_get_all_with_name(tags, "group");
+	g_assert_null(named);
+
+	/* Add some tags and make sure we get the right ones back. */
+	purple_tags_add(tags, "group");
+	purple_tags_add(tags, "groups");
+	purple_tags_add(tags, "group:");
+	purple_tags_add(tags, "grouping");
+	purple_tags_add(tags, "group:a");
+	purple_tags_add(tags, "grouped");
+
+	/* Setup our expected list in the order that the items should be in. */
+	expected = g_list_prepend(expected, "group");
+	expected = g_list_prepend(expected, "group:");
+	expected = g_list_prepend(expected, "group:a");
+	expected = g_list_reverse(expected);
+
+	/* Do the look up and start asserting! */
+	named = purple_tags_get_all_with_name(tags, "group");
+	g_assert_nonnull(named);
+	g_assert_cmpuint(g_list_length(named), ==, g_list_length(expected));
+
+	for(guint i = 0; i < g_list_length(expected); i++) {
+		const char *a = g_list_nth_data(expected, i);
+		const char *b = g_list_nth_data(named, i);
+
+		g_assert_cmpstr(a, ==, b);
+	}
+
+	g_clear_list(&named, NULL);
+	g_clear_list(&expected, NULL);
+	g_clear_object(&tags);
+}
+
+static void
 test_purple_tags_to_string_single(void) {
 	PurpleTags *tags = purple_tags_new();
 	gchar *value = NULL;
@@ -351,6 +392,8 @@ main(gint argc, gchar **argv) {
 	g_test_add_func("/tags/get-multiple", test_purple_tags_get_multiple);
 
 	g_test_add_func("/tags/get-all", test_purple_tags_get_all);
+	g_test_add_func("/tags/get-all-with-name",
+	                test_purple_tags_get_all_with_name);
 
 	g_test_add_func("/tags/to-string-single",
 	                test_purple_tags_to_string_single);
