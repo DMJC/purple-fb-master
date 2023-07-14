@@ -30,6 +30,7 @@ struct _PidginContactList {
 	GtkBox parent;
 
 	GtkFilterListModel *filter_model;
+	GtkCustomFilter *account_connected_filter;
 	GtkCustomFilter *search_filter;
 
 	GtkWidget *search_entry;
@@ -41,6 +42,64 @@ G_DEFINE_TYPE(PidginContactList, pidgin_contact_list, GTK_TYPE_BOX)
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static gboolean
+pidgin_contact_list_account_connected_filter(GObject *item,
+                                             G_GNUC_UNUSED gpointer data)
+{
+	PurplePerson *person = PURPLE_PERSON(item);
+	PurpleContactInfo *info = NULL;
+
+	info = purple_person_get_priority_contact_info(person);
+	if(!PURPLE_IS_CONTACT_INFO(info)) {
+		return FALSE;
+	}
+
+	/* This should always be a PurpleContact as it's in the contact manager,
+	 * but it doesn't hurt to check.
+	 */
+	if(PURPLE_IS_CONTACT(info)) {
+		PurpleConnection *connection = NULL;
+		PurpleContact *contact = PURPLE_CONTACT(info);
+		PurpleAccount *account = NULL;
+
+		account = purple_contact_get_account(contact);
+		connection = purple_account_get_connection(account);
+
+		if(PURPLE_IS_CONNECTION(connection)) {
+			PurpleConnectionState state = PURPLE_CONNECTION_STATE_DISCONNECTED;
+
+			state = purple_connection_get_state(connection);
+
+			return (state == PURPLE_CONNECTION_STATE_CONNECTED);
+		}
+
+	}
+
+	return FALSE;
+}
+
+static void
+pidgin_contact_list_account_connected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                                         G_GNUC_UNUSED PurpleAccount *account,
+                                         gpointer data)
+{
+	PidginContactList *list = data;
+
+	gtk_filter_changed(GTK_FILTER(list->account_connected_filter),
+	                   GTK_FILTER_CHANGE_LESS_STRICT);
+}
+
+static void
+pidgin_contact_list_account_disconnected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                                            G_GNUC_UNUSED PurpleAccount *account,
+                                            gpointer data)
+{
+	PidginContactList *list = data;
+
+	gtk_filter_changed(GTK_FILTER(list->account_connected_filter),
+	                   GTK_FILTER_CHANGE_MORE_STRICT);
+}
+
 static gboolean
 pidgin_contact_list_search_filter(GObject *item, gpointer data) {
 	PidginContactList *list = data;
@@ -227,13 +286,29 @@ pidgin_contact_list_get_primitive_as_string(G_GNUC_UNUSED GObject *self,
  *****************************************************************************/
 static void
 pidgin_contact_list_init(PidginContactList *list) {
-	PurpleContactManager *manager = NULL;
+	PurpleAccountManager *account_manager = NULL;
+	PurpleContactManager *contact_manager = NULL;
 
 	gtk_widget_init_template(GTK_WIDGET(list));
 
-	manager = purple_contact_manager_get_default();
-	gtk_filter_list_model_set_model(list->filter_model, G_LIST_MODEL(manager));
+	contact_manager = purple_contact_manager_get_default();
+	gtk_filter_list_model_set_model(list->filter_model,
+	                                G_LIST_MODEL(contact_manager));
 
+
+	/* Setup the filter connected accounts. */
+	account_manager = purple_account_manager_get_default();
+	gtk_custom_filter_set_filter_func(list->account_connected_filter,
+	                                  (GtkCustomFilterFunc)pidgin_contact_list_account_connected_filter,
+	                                  list, NULL);
+	g_signal_connect_object(account_manager, "account-connected",
+	                        G_CALLBACK(pidgin_contact_list_account_connected_cb),
+	                        list, 0);
+	g_signal_connect_object(account_manager, "account-disconnected",
+	                        G_CALLBACK(pidgin_contact_list_account_disconnected_cb),
+	                        list, 0);
+
+	/* Setup the search filter. */
 	gtk_custom_filter_set_filter_func(list->search_filter,
 	                                  (GtkCustomFilterFunc)pidgin_contact_list_search_filter,
 	                                  list, NULL);
@@ -250,6 +325,8 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 
 	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
 	                                     filter_model);
+	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
+	                                     account_connected_filter);
 	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
 	                                     search_filter);
 

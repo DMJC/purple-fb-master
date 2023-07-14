@@ -146,7 +146,14 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
               <object class="GtkFilterListModel" id="filter_model">
                 <property name="incremental">0</property>
                 <property name="filter">
-                  <object class="GtkCustomFilter" id="search_filter"/>
+                  <object class="GtkEveryFilter">
+                    <child>
+                      <object class="GtkCustomFilter" id="account_connected_filter"/>
+                    </child>
+                    <child>
+                      <object class="GtkCustomFilter" id="search_filter"/>
+                    </child>
+                  </object>
                 </property>
               </object>
             </property>
