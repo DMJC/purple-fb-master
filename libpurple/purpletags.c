@@ -161,6 +161,25 @@ purple_tags_remove(PurpleTags *tags, const gchar *tag) {
 	return FALSE;
 }
 
+gboolean
+purple_tags_remove_with_value(PurpleTags *tags, const char *name, const char *value) {
+	gboolean ret = FALSE;
+
+	g_return_val_if_fail(PURPLE_IS_TAGS(tags), FALSE);
+	g_return_val_if_fail(name != NULL, FALSE);
+
+	if(value == NULL) {
+		ret = purple_tags_remove(tags, name);
+	} else {
+		char *tag = g_strdup_printf("%s:%s", name, value);
+
+		ret = purple_tags_remove(tags, tag);
+		g_free(tag);
+	}
+
+	return ret;
+}
+
 guint
 purple_tags_get_count(PurpleTags *tags) {
 	g_return_val_if_fail(PURPLE_IS_TAGS(tags), 0);

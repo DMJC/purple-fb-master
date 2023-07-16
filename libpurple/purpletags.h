@@ -120,14 +120,29 @@ void purple_tags_add_with_value(PurpleTags *tags, const char *name, const char *
  * @tags: The instance.
  * @tag: The tag data.
  *
- * Removes the first occurrence of @tag from @tags. Note that this is the tag
- * name and value not just the name.
+ * Removes @tag from @tags. Note that this is the tag name and value not just
+ * the name.
  *
  * Returns: %TRUE if @tag was found and removed, otherwise %FALSE.
  *
  * Since: 3.0.0
  */
 gboolean purple_tags_remove(PurpleTags *tags, const gchar *tag);
+
+/**
+ * purple_tags_remove_with_value:
+ * @tags: The instance.
+ * @name: The tag name.
+ * @value: (nullable): The tag value.
+ *
+ * A helper function around [method@Tags.remove] that builds the tag variable
+ * from @name and @value.
+ *
+ * Returns: %TRUE if a tag was found and removed, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_tags_remove_with_value(PurpleTags *tags, const char *name, const char *value);
 
 /**
  * purple_tags_get_count:

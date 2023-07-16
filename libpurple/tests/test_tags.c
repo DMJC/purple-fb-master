@@ -94,8 +94,40 @@ test_purple_tags_add_duplicate_bare(void) {
 static void
 test_purple_tags_remove_non_existent_bare(void) {
 	PurpleTags *tags = purple_tags_new();
+	gboolean ret = FALSE;
 
-	purple_tags_remove(tags, "tag1");
+	ret = purple_tags_remove(tags, "tag1");
+	g_assert_false(ret);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+
+	g_clear_object(&tags);
+}
+
+static void
+test_purple_tags_add_remove(void) {
+	PurpleTags *tags = purple_tags_new();
+	gboolean ret = FALSE;
+
+	purple_tags_add(tags, "tag1:purple");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
+
+	ret = purple_tags_remove(tags, "tag1:purple");
+	g_assert_true(ret);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+
+	g_clear_object(&tags);
+}
+
+static void
+test_purple_tags_add_remove_with_null_value(void) {
+	PurpleTags *tags = purple_tags_new();
+	gboolean ret = FALSE;
+
+	purple_tags_add_with_value(tags, "tag1", NULL);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
+
+	ret = purple_tags_remove_with_value(tags, "tag1", NULL);
+	g_assert_true(ret);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
 
 	g_clear_object(&tags);
@@ -104,11 +136,13 @@ test_purple_tags_remove_non_existent_bare(void) {
 static void
 test_purple_tags_add_remove_with_value(void) {
 	PurpleTags *tags = purple_tags_new();
+	gboolean ret = FALSE;
 
-	purple_tags_add(tags, "tag1:purple");
+	purple_tags_add_with_value(tags, "tag1", "purple");
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
-	purple_tags_remove(tags, "tag1:purple");
+	ret = purple_tags_remove_with_value(tags, "tag1", "purple");
+	g_assert_true(ret);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
 
 	g_clear_object(&tags);
@@ -381,6 +415,10 @@ main(gint argc, gchar **argv) {
 	g_test_add_func("/tags/add-with-value-null",
 	                test_purple_tags_add_with_value_null);
 
+	g_test_add_func("/tags/add-remove",
+	                test_purple_tags_add_remove);
+	g_test_add_func("/tags/add-remove-with-null-value",
+	                test_purple_tags_add_remove_with_null_value);
 	g_test_add_func("/tags/add-remove-with-value",
 	                test_purple_tags_add_remove_with_value);
 	g_test_add_func("/tags/add-duplicate-with-value",
