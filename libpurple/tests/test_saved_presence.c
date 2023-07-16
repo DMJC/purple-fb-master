@@ -34,6 +34,7 @@ test_purple_saved_presence_properties(void) {
 	PurplePresencePrimitive primitive;
 	GDateTime *last_used = NULL;
 	GDateTime *last_used1 = NULL;
+	guint64 expected_use_count = 123;
 	guint64 use_count;
 	char *id = NULL;
 	char *name = NULL;
@@ -49,7 +50,7 @@ test_purple_saved_presence_properties(void) {
 	presence = g_object_new(
 		PURPLE_TYPE_SAVED_PRESENCE,
 		"last-used", last_used,
-		"use-count", 123,
+		"use-count", expected_use_count,
 		"id", "leeloo dallas multipass",
 		"name", "my saved status",
 		"primitive", PURPLE_PRESENCE_PRIMITIVE_STREAMING,
@@ -74,7 +75,7 @@ test_purple_saved_presence_properties(void) {
 	g_assert_true(g_date_time_equal(last_used, last_used1));
 	g_clear_pointer(&last_used1, g_date_time_unref);
 
-	g_assert_cmpuint(use_count, ==, 123);
+	g_assert_cmpuint(use_count, ==, expected_use_count);
 
 	g_assert_cmpstr(id, ==, "leeloo dallas multipass");
 	g_clear_pointer(&id, g_free);

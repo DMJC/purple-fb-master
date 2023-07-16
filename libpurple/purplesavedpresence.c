@@ -94,6 +94,10 @@ purple_saved_presence_set_last_used_mapping(const GValue *value,
 	}
 
 	datetime = g_value_get_boxed(value);
+	if(datetime == NULL) {
+		return NULL;
+	}
+
 	timestamp = g_date_time_format_iso8601(datetime);
 	if(timestamp != NULL) {
 		GVariant *variant = NULL;
