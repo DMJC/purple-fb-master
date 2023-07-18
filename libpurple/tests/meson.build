@@ -23,6 +23,7 @@ PROGS = [
     'presence',
     'protocol',
     'protocol_action',
+    'protocol_roster',
     'protocol_xfer',
     'purplepath',
     'queued_output_stream',
