@@ -36,17 +36,16 @@ static GMainLoop *loop = NULL;
  *****************************************************************************/
 static gboolean
 test_purple_credential_manager_timeout_cb(gpointer data) {
-	g_main_loop_quit((GMainLoop *)data);
+	g_main_loop_quit(data);
 
 	g_warning("timed out waiting for the callback function to be called");
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 /******************************************************************************
  * TestPurpleCredentialProvider Implementation
  *****************************************************************************/
-#define TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER (test_purple_credential_provider_get_type())
 G_DECLARE_FINAL_TYPE(TestPurpleCredentialProvider,
                      test_purple_credential_provider,
                      TEST_PURPLE, CREDENTIAL_PROVIDER,
@@ -153,7 +152,7 @@ test_purple_credential_provider_class_init(TestPurpleCredentialProviderClass *kl
 static PurpleCredentialProvider *
 test_purple_credential_provider_new(void) {
 	return g_object_new(
-		TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER,
+		test_purple_credential_provider_get_type(),
 		"id", "test-provider",
 		"name", "Test Provider",
 		NULL);
@@ -197,9 +196,10 @@ test_purple_credential_manager_registration(void) {
 
 	/* Register again and verify the error. */
 	r = purple_credential_manager_register(manager, provider, &error);
-	g_assert_false(r);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
 	g_clear_error(&error);
+
+	g_assert_false(r);
 
 	/* Unregister the provider. */
 	r = purple_credential_manager_unregister(manager, provider, &error);
@@ -208,9 +208,10 @@ test_purple_credential_manager_registration(void) {
 
 	/* Unregister the provider again and verify the error. */
 	r = purple_credential_manager_unregister(manager, provider, &error);
-	g_assert_false(r);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
 	g_clear_error(&error);
+
+	g_assert_false(r);
 
 	/* Final clean ups. */
 	g_clear_object(&provider);
@@ -246,9 +247,10 @@ test_purple_credential_manager_set_active_non_existent(void) {
 
 	ret = purple_credential_manager_set_active(manager, "foo", &error);
 
-	g_assert_false(ret);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
 	g_clear_error(&error);
+
+	g_assert_false(ret);
 
 	g_clear_object(&manager);
 }
@@ -276,9 +278,9 @@ test_purple_credential_manager_set_active_normal(void) {
 
 	/* Verify that unregistering the provider fails. */
 	r = purple_credential_manager_unregister(manager, provider, &error);
-	g_assert_false(r);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
 	g_clear_error(&error);
+	g_assert_false(r);
 
 	/* Now unset the active provider. */
 	r = purple_credential_manager_set_active(manager, NULL, &error);
@@ -301,10 +303,10 @@ test_purple_credential_manager_set_active_normal(void) {
 static void
 test_purple_credential_manager_no_provider_read_password_cb(GObject *obj,
                                                             GAsyncResult *res,
-                                                            gpointer d)
+                                                            gpointer data)
 {
 	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	PurpleAccount *account = data;
 	GError *error = NULL;
 	gchar *password = NULL;
 
@@ -321,7 +323,7 @@ test_purple_credential_manager_no_provider_read_password_cb(GObject *obj,
 
 static gboolean
 test_purple_credential_manager_no_provider_read_password_idle(gpointer data) {
-	PurpleCredentialManager *m = PURPLE_CREDENTIAL_MANAGER(data);
+	PurpleCredentialManager *m = data;
 	PurpleAccount *account = NULL;
 
 	account = purple_account_new("test", "test");
@@ -331,7 +333,7 @@ test_purple_credential_manager_no_provider_read_password_idle(gpointer data) {
 	                                              test_purple_credential_manager_no_provider_read_password_cb,
 	                                              account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -351,17 +353,18 @@ test_purple_credential_manager_no_provider_read_password_async(void) {
 static void
 test_purple_credential_manager_no_provider_write_password_cb(GObject *obj,
                                                              GAsyncResult *res,
-                                                             gpointer d)
+                                                             gpointer data)
 {
 	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	PurpleAccount *account = data;
 	GError *error = NULL;
 	gboolean r = FALSE;
 
 	r = purple_credential_manager_write_password_finish(manager, res, &error);
-	g_assert_false(r);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
 	g_clear_error(&error);
+
+	g_assert_false(r);
 
 	g_clear_object(&account);
 
@@ -370,7 +373,7 @@ test_purple_credential_manager_no_provider_write_password_cb(GObject *obj,
 
 static gboolean
 test_purple_credential_manager_no_provider_write_password_idle(gpointer data) {
-	PurpleCredentialManager *m = PURPLE_CREDENTIAL_MANAGER(data);
+	PurpleCredentialManager *m = data;
 	PurpleAccount *account = NULL;
 
 	account = purple_account_new("test", "test");
@@ -380,7 +383,7 @@ test_purple_credential_manager_no_provider_write_password_idle(gpointer data) {
 	                                               test_purple_credential_manager_no_provider_write_password_cb,
 	                                               account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -401,17 +404,18 @@ test_purple_credential_manager_no_provider_write_password_async(void) {
 static void
 test_purple_credential_manager_no_provider_clear_password_cb(GObject *obj,
                                                              GAsyncResult *res,
-                                                             gpointer d)
+                                                             gpointer data)
 {
 	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	PurpleAccount *account = data;
 	GError *error = NULL;
 	gboolean r = FALSE;
 
 	r = purple_credential_manager_clear_password_finish(manager, res, &error);
-	g_assert_false(r);
 	g_assert_error(error, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0);
 	g_clear_error(&error);
+
+	g_assert_false(r);
 
 	g_clear_object(&account);
 
@@ -420,7 +424,7 @@ test_purple_credential_manager_no_provider_clear_password_cb(GObject *obj,
 
 static gboolean
 test_purple_credential_manager_no_provider_clear_password_idle(gpointer data) {
-	PurpleCredentialManager *m = PURPLE_CREDENTIAL_MANAGER(data);
+	PurpleCredentialManager *m = data;
 	PurpleAccount *account = NULL;
 
 	account = purple_account_new("test", "test");
@@ -430,7 +434,7 @@ test_purple_credential_manager_no_provider_clear_password_idle(gpointer data) {
 	                                               test_purple_credential_manager_no_provider_clear_password_cb,
 	                                               account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -453,10 +457,10 @@ test_purple_credential_manager_no_provider_clear_password_async(void) {
  *****************************************************************************/
 static void
 test_purple_credential_manager_read_password_cb(GObject *obj, GAsyncResult *res,
-                                                gpointer d)
+                                                gpointer data)
 {
 	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	PurpleAccount *account = data;
 	GError *error = NULL;
 	gchar *password = NULL;
 
@@ -473,7 +477,7 @@ test_purple_credential_manager_read_password_cb(GObject *obj, GAsyncResult *res,
 
 static gboolean
 test_purple_credential_manager_read_password_idle(gpointer data) {
-	PurpleCredentialManager *m = PURPLE_CREDENTIAL_MANAGER(data);
+	PurpleCredentialManager *m = data;
 	PurpleAccount *account = NULL;
 
 	account = purple_account_new("test", "test");
@@ -483,7 +487,7 @@ test_purple_credential_manager_read_password_idle(gpointer data) {
 	                                              test_purple_credential_manager_read_password_cb,
 	                                              account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -523,10 +527,11 @@ test_purple_credential_manager_read_password_async(void) {
 
 static void
 test_purple_credential_manager_write_password_cb(GObject *obj,
-                                                 GAsyncResult *res, gpointer d)
+                                                 GAsyncResult *res,
+                                                 gpointer data)
 {
 	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	PurpleAccount *account = data;
 	GError *error = NULL;
 	gboolean r = FALSE;
 
@@ -541,7 +546,7 @@ test_purple_credential_manager_write_password_cb(GObject *obj,
 
 static gboolean
 test_purple_credential_manager_write_password_idle(gpointer data) {
-	PurpleCredentialManager *m = PURPLE_CREDENTIAL_MANAGER(data);
+	PurpleCredentialManager *m = data;
 	PurpleAccount *account = NULL;
 
 	account = purple_account_new("test", "test");
@@ -551,7 +556,7 @@ test_purple_credential_manager_write_password_idle(gpointer data) {
 	                                               test_purple_credential_manager_write_password_cb,
 	                                               account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -591,10 +596,11 @@ test_purple_credential_manager_write_password_async(void) {
 
 static void
 test_purple_credential_manager_clear_password_cb(GObject *obj,
-                                                 GAsyncResult *res, gpointer d)
+                                                 GAsyncResult *res,
+                                                 gpointer data)
 {
 	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	PurpleAccount *account = data;
 	GError *error = NULL;
 	gboolean r = FALSE;
 
@@ -609,7 +615,7 @@ test_purple_credential_manager_clear_password_cb(GObject *obj,
 
 static gboolean
 test_purple_credential_manager_clear_password_idle(gpointer data) {
-	PurpleCredentialManager *m = PURPLE_CREDENTIAL_MANAGER(data);
+	PurpleCredentialManager *m = data;
 	PurpleAccount *account = NULL;
 
 	account = purple_account_new("test", "test");
@@ -619,7 +625,7 @@ test_purple_credential_manager_clear_password_idle(gpointer data) {
 	                                               test_purple_credential_manager_clear_password_cb,
 	                                               account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
