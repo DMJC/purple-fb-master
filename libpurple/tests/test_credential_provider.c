@@ -34,7 +34,6 @@ static GMainLoop *loop = NULL;
 /******************************************************************************
  * TestCredentialProviderEmpty
  *****************************************************************************/
-#define TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER_EMPTY (test_purple_credential_provider_empty_get_type())
 G_DECLARE_FINAL_TYPE(TestPurpleCredentialProviderEmpty,
                      test_purple_credential_provider_empty,
                      TEST_PURPLE, CREDENTIAL_PROVIDER_EMPTY,
@@ -102,7 +101,7 @@ test_purple_credential_provider_is_valid_no_id(void) {
 	GError *error = NULL;
 
 	provider = g_object_new(
-		TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER_EMPTY,
+		test_purple_credential_provider_empty_get_type(),
 		"name", "name",
 		NULL);
 
@@ -119,7 +118,7 @@ test_purple_credential_provider_is_valid_no_name(void) {
 	GError *error = NULL;
 
 	provider = g_object_new(
-		TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER_EMPTY,
+		test_purple_credential_provider_empty_get_type(),
 		"id", "id",
 		NULL);
 
@@ -137,7 +136,7 @@ test_purple_credential_provider_is_valid_no_reader(void) {
 	GError *error = NULL;
 
 	provider = g_object_new(
-		TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER_EMPTY,
+		test_purple_credential_provider_empty_get_type(),
 		"id", "id",
 		"name", "name",
 		NULL);
@@ -162,7 +161,7 @@ test_purple_credential_provider_is_valid_no_writer(void) {
 	GError *error = NULL;
 
 	provider = g_object_new(
-		TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER_EMPTY,
+		test_purple_credential_provider_empty_get_type(),
 		"id", "id",
 		"name", "name",
 		NULL);
@@ -188,7 +187,7 @@ test_purple_credential_provider_is_valid_valid(void) {
 	gboolean ret = FALSE;
 
 	provider = g_object_new(
-		TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER_EMPTY,
+		test_purple_credential_provider_empty_get_type(),
 		"id", "id",
 		"name", "name",
 		NULL);
@@ -209,7 +208,6 @@ test_purple_credential_provider_is_valid_valid(void) {
 /******************************************************************************
  * TestPurpleCredentialProvider
  *****************************************************************************/
-#define TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER (test_purple_credential_provider_get_type())
 G_DECLARE_FINAL_TYPE(TestPurpleCredentialProvider,
                      test_purple_credential_provider,
                      TEST_PURPLE, CREDENTIAL_PROVIDER,
@@ -249,14 +247,14 @@ test_purple_credential_provider_read_password_async(PurpleCredentialProvider *p,
 
 static gchar *
 test_purple_credential_provider_read_password_finish(PurpleCredentialProvider *p,
-                                                     G_GNUC_UNUSED GAsyncResult *result,
-                                                     G_GNUC_UNUSED GError **error)
+                                                     GAsyncResult *result,
+                                                     GError **error)
 {
 	TestPurpleCredentialProvider *provider = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
 
 	provider->read_password_finish = TRUE;
 
-	return NULL;
+	return g_task_propagate_pointer(G_TASK(result), error);
 }
 
 static void
@@ -279,14 +277,14 @@ test_purple_credential_provider_write_password_async(PurpleCredentialProvider *p
 
 static gboolean
 test_purple_credential_provider_write_password_finish(PurpleCredentialProvider *p,
-                                                      G_GNUC_UNUSED GAsyncResult *result,
-                                                      G_GNUC_UNUSED GError **error)
+                                                      GAsyncResult *result,
+                                                      GError **error)
 {
 	TestPurpleCredentialProvider *provider = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
 
 	provider->write_password_finish = TRUE;
 
-	return FALSE;
+	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
 static void
@@ -308,14 +306,14 @@ test_purple_credential_provider_clear_password_async(PurpleCredentialProvider *p
 
 static gboolean
 test_purple_credential_provider_clear_password_finish(PurpleCredentialProvider *p,
-                                                      G_GNUC_UNUSED GAsyncResult *result,
-                                                      G_GNUC_UNUSED GError **error)
+                                                      GAsyncResult *result,
+                                                      GError **error)
 {
 	TestPurpleCredentialProvider *provider = TEST_PURPLE_CREDENTIAL_PROVIDER(p);
 
 	provider->clear_password_finish = TRUE;
 
-	return FALSE;
+	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
 static void
@@ -338,7 +336,7 @@ test_purple_credential_provider_class_init(TestPurpleCredentialProviderClass *kl
 static PurpleCredentialProvider *
 test_purple_credential_provider_new(void) {
 	return g_object_new(
-		TEST_PURPLE_TYPE_CREDENTIAL_PROVIDER,
+		test_purple_credential_provider_get_type(),
 		"id", "test-provider",
 		"name", "Test Provider",
 		NULL);
@@ -349,29 +347,30 @@ test_purple_credential_provider_new(void) {
  *****************************************************************************/
 static gboolean
 test_purple_credential_provider_timeout_cb(gpointer data) {
-	g_main_loop_quit((GMainLoop *)data);
+	g_main_loop_quit(data);
 
 	g_warning("timed out waiting for the callback function to be called");
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
 test_purple_credential_provider_test_read_cb(GObject *obj, GAsyncResult *res,
-                                             gpointer d)
+                                             gpointer data)
 {
 	PurpleCredentialProvider *provider = PURPLE_CREDENTIAL_PROVIDER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	PurpleAccount *account = data;
+	GError *error = NULL;
 	gchar *password = NULL;
 
 	password = purple_credential_provider_read_password_finish(provider, res,
-	                                                           NULL);
+	                                                           &error);
+	g_assert_no_error(error);
+	g_assert_null(password);
 
-	g_object_unref(G_OBJECT(account));
+	g_clear_object(&account);
 
 	g_main_loop_quit(loop);
-
-	g_assert_null(password);
 }
 
 static gboolean
@@ -385,7 +384,7 @@ test_purple_credential_provider_test_read_idle(gpointer data) {
 	                                               test_purple_credential_provider_test_read_cb,
 	                                               account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -405,7 +404,7 @@ test_purple_credential_provider_test_read(void) {
 	g_assert_false(tp->clear_password_async);
 	g_assert_false(tp->clear_password_finish);
 
-	g_object_unref(p);
+	g_clear_object(&p);
 }
 
 static void
@@ -414,10 +413,15 @@ test_purple_credential_provider_test_write_cb(GObject *obj, GAsyncResult *res,
 {
 	PurpleCredentialProvider *provider = PURPLE_CREDENTIAL_PROVIDER(obj);
 	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	GError *error = NULL;
+	gboolean ret = FALSE;
 
-	test_purple_credential_provider_write_password_finish(provider, res, NULL);
+	ret = purple_credential_provider_write_password_finish(provider, res,
+	                                                       &error);
+	g_assert_no_error(error);
+	g_assert_true(ret);
 
-	g_object_unref(G_OBJECT(account));
+	g_clear_object(&account);
 
 	g_main_loop_quit(loop);
 }
@@ -433,7 +437,7 @@ test_purple_credential_provider_test_write_idle(gpointer data) {
 	                                                test_purple_credential_provider_test_write_cb,
 	                                                account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -453,19 +457,24 @@ test_purple_credential_provider_test_write(void) {
 	g_assert_false(tp->clear_password_async);
 	g_assert_false(tp->clear_password_finish);
 
-	g_object_unref(G_OBJECT(p));
+	g_clear_object(&p);
 }
 
 static void
 test_purple_credential_provider_test_clear_cb(GObject *obj, GAsyncResult *res,
-                                              gpointer d)
+                                              gpointer data)
 {
 	PurpleCredentialProvider *provider = PURPLE_CREDENTIAL_PROVIDER(obj);
-	PurpleAccount *account = PURPLE_ACCOUNT(d);
+	PurpleAccount *account = data;
+	GError *error = NULL;
+	gboolean ret = FALSE;
 
-	test_purple_credential_provider_clear_password_finish(provider, res, NULL);
+	ret = purple_credential_provider_clear_password_finish(provider, res,
+	                                                       &error);
+	g_assert_no_error(error);
+	g_assert_true(ret);
 
-	g_object_unref(G_OBJECT(account));
+	g_clear_object(&account);
 
 	g_main_loop_quit(loop);
 }
@@ -481,7 +490,7 @@ test_purple_credential_provider_test_clear_idle(gpointer data) {
 	                                                test_purple_credential_provider_test_clear_cb,
 	                                                account);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -501,7 +510,7 @@ test_purple_credential_provider_test_clear(void) {
 	g_assert_true(tp->clear_password_async);
 	g_assert_true(tp->clear_password_finish);
 
-	g_object_unref(p);
+	g_clear_object(&p);
 }
 
 /******************************************************************************
