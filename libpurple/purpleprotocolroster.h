@@ -135,6 +135,11 @@ gboolean purple_protocol_roster_add_finish(PurpleProtocolRoster *roster, GAsyncR
  * @callback is called, [method@ProtocolRoster.update_finish] should be called
  * to get the result.
  *
+ * This would include things that the libpurple user can change about a remote
+ * contact. Including but not limited to [property@ContactInfo:alias],
+ * [property@ContactInfo:permission], [property@ContactInfo:person], and
+ * [property@ContactInfo:tags].
+ *
  * Since: 3.0.0
  */
 void purple_protocol_roster_update_async(PurpleProtocolRoster *roster, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);

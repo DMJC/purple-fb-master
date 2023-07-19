@@ -22,6 +22,7 @@
 
 #include "purplegdkpixbuf.h"
 #include "purpleprivate.h"
+#include "purpleprotocolroster.h"
 #include "util.h"
 
 enum {
@@ -135,9 +136,33 @@ purple_contact_manager_convert_avatar_to_icon(G_GNUC_UNUSED GBinding *binding,
 	return TRUE;
 }
 
+static void
+purple_contact_manager_protocol_roster_update(PurpleContact *contact) {
+	PurpleAccount *account = NULL;
+
+	account = purple_contact_get_account(contact);
+	if(PURPLE_IS_ACCOUNT(account)) {
+		PurpleProtocol *protocol = NULL;
+
+		protocol = purple_account_get_protocol(account);
+		if(PURPLE_IS_PROTOCOL_ROSTER(protocol)) {
+			purple_protocol_roster_update_async(PURPLE_PROTOCOL_ROSTER(protocol),
+			                                    contact, NULL, NULL, NULL);
+		}
+	}
+}
+
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
+static void
+purple_contact_manager_contact_update_cb(GObject *obj,
+                                         G_GNUC_UNUSED GParamSpec *pspec,
+                                         G_GNUC_UNUSED gpointer data)
+{
+	purple_contact_manager_protocol_roster_update(PURPLE_CONTACT(obj));
+}
+
 static void
 purple_contact_manager_contact_person_changed_cb(GObject *obj,
                                                  G_GNUC_UNUSED GParamSpec *pspec,
@@ -159,6 +184,19 @@ purple_contact_manager_contact_person_changed_cb(GObject *obj,
 	 * person.
 	 */
 	purple_contact_manager_add_person(manager, person);
+
+	/* Finally tell the ProtocolRoster about this change. */
+	purple_contact_manager_protocol_roster_update(contact);
+}
+
+static void
+purple_contact_manager_tags_changed_cb(G_GNUC_UNUSED PurpleTags *tags,
+                                       G_GNUC_UNUSED const char *tag,
+                                       G_GNUC_UNUSED const char *name,
+                                       G_GNUC_UNUSED const char *value,
+                                       gpointer data)
+{
+	purple_contact_manager_protocol_roster_update(data);
 }
 
 /******************************************************************************
@@ -404,6 +442,7 @@ purple_contact_manager_add(PurpleContactManager *manager,
 	if(added) {
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(contact);
 		PurplePerson *person = purple_contact_info_get_person(info);
+		PurpleTags *tags = NULL;
 
 		/* If the contact already has a person, add the person to our list of
 		 * people.
@@ -412,10 +451,24 @@ purple_contact_manager_add(PurpleContactManager *manager,
 			purple_contact_manager_add_person(manager, person);
 		}
 
-		/* Add a notify on the person property to track changes. */
+		tags = purple_contact_info_get_tags(info);
+
+		/* Add some notify signals to track changes. */
+		g_signal_connect_object(contact, "notify::alias",
+		                        G_CALLBACK(purple_contact_manager_contact_update_cb),
+		                        manager, 0);
+		g_signal_connect_object(contact, "notify::permission",
+		                        G_CALLBACK(purple_contact_manager_contact_update_cb),
+		                        manager, 0);
 		g_signal_connect_object(contact, "notify::person",
 		                        G_CALLBACK(purple_contact_manager_contact_person_changed_cb),
 		                        manager, 0);
+		g_signal_connect_object(tags, "added",
+		                        G_CALLBACK(purple_contact_manager_tags_changed_cb),
+		                        contact, 0);
+		g_signal_connect_object(tags, "removed",
+		                        G_CALLBACK(purple_contact_manager_tags_changed_cb),
+		                        contact, 0);
 
 		g_signal_emit(manager, signals[SIG_ADDED], 0, contact);
 	}
@@ -439,6 +492,7 @@ purple_contact_manager_remove(PurpleContactManager *manager,
 	}
 
 	if(g_list_store_find(contacts, contact, &position)) {
+		PurpleTags *tags = NULL;
 		gboolean removed = FALSE;
 		guint len = 0;
 
@@ -452,6 +506,14 @@ purple_contact_manager_remove(PurpleContactManager *manager,
 		if(g_list_model_get_n_items(G_LIST_MODEL(contacts)) < len) {
 			removed = TRUE;
 		}
+
+		/* Remove the signals for the contact's tags changing as we're no
+		 * longer tracking the contact they belong to.
+		 */
+		tags = purple_contact_info_get_tags(PURPLE_CONTACT_INFO(contact));
+		g_signal_handlers_disconnect_by_func(tags,
+		                                     purple_contact_manager_tags_changed_cb,
+		                                     contact);
 
 		if(removed) {
 			g_signal_emit(manager, signals[SIG_REMOVED], 0, contact);
