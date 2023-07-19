@@ -23,7 +23,7 @@
 #include "purpleprotocolroster.h"
 
 /******************************************************************************
- * GObject Implementation
+ * GInterface Implementation
  *****************************************************************************/
 G_DEFINE_INTERFACE(PurpleProtocolRoster, purple_protocol_roster,
                    PURPLE_TYPE_PROTOCOL)
@@ -51,6 +51,9 @@ purple_protocol_roster_add_async(PurpleProtocolRoster *roster,
 	iface = PURPLE_PROTOCOL_ROSTER_GET_IFACE(roster);
 	if(iface != NULL && iface->add_async != NULL) {
 		iface->add_async(roster, contact, cancellable, callback, data);
+	} else {
+		g_warning("%s does not implement the add_async method",
+		          G_OBJECT_TYPE_NAME(roster));
 	}
 }
 
@@ -85,6 +88,9 @@ purple_protocol_roster_update_async(PurpleProtocolRoster *roster,
 	iface = PURPLE_PROTOCOL_ROSTER_GET_IFACE(roster);
 	if(iface != NULL && iface->update_async != NULL) {
 		iface->update_async(roster, contact, cancellable, callback, data);
+	} else {
+		g_warning("%s does not implement the update_async method",
+		          G_OBJECT_TYPE_NAME(roster));
 	}
 }
 
@@ -119,6 +125,9 @@ purple_protocol_roster_remove_async(PurpleProtocolRoster *roster,
 	iface = PURPLE_PROTOCOL_ROSTER_GET_IFACE(roster);
 	if(iface != NULL && iface->remove_async != NULL) {
 		iface->remove_async(roster, contact, cancellable, callback, data);
+	} else {
+		g_warning("%s does not implement the remove_async method",
+		          G_OBJECT_TYPE_NAME(roster));
 	}
 }
 
