@@ -2960,8 +2960,8 @@ jabber_do_uninit(void)
 	jabber_presence_uninit();
 	jabber_iq_uninit();
 
-	g_signal_handlers_disconnect_by_func(G_OBJECT(purple_media_manager_get()),
-			G_CALLBACK(jabber_caps_broadcast_change), NULL);
+	g_signal_handlers_disconnect_by_func(purple_media_manager_get(),
+	                                     jabber_caps_broadcast_change, NULL);
 
 	jabber_auth_uninit();
 	g_clear_list(&jabber_features, (GDestroyNotify)jabber_feature_free);

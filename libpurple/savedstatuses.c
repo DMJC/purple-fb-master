@@ -1271,7 +1271,7 @@ purple_savedstatuses_uninit(void)
 	g_clear_pointer(&creation_times, g_hash_table_destroy);
 
 	g_signal_handlers_disconnect_by_func(manager,
-	                                     G_CALLBACK(purple_savedstatus_unset_all_substatuses),
+	                                     purple_savedstatus_unset_all_substatuses,
 	                                     NULL);
 	purple_signals_unregister_by_instance(handle);
 	purple_signals_disconnect_by_handle(handle);

@@ -388,7 +388,7 @@ purple_notification_manager_remove(PurpleNotificationManager *manager,
 		 * with our unread count accounting.
 		 */
 		g_signal_handlers_disconnect_by_func(notification,
-		                                     G_CALLBACK(purple_notification_manager_notify_cb),
+		                                     purple_notification_manager_notify_cb,
 		                                     manager);
 
 		/* If the notification is not read, we need to decrement the unread

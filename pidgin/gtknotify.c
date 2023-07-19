@@ -580,7 +580,8 @@ pidgin_notify_userinfo(PurpleConnection *gc, const char *who,
 	} else {
 		char *primary = g_strdup_printf(_("Info for %s"), who);
 		ui_handle = pidgin_notify_formatted(_("Buddy Information"), primary, NULL, info);
-		g_signal_handlers_disconnect_by_func(G_OBJECT(ui_handle), G_CALLBACK(formatted_close_cb), NULL);
+		g_signal_handlers_disconnect_by_func(ui_handle, formatted_close_cb,
+		                                     NULL);
 		g_signal_connect(ui_handle, "response", G_CALLBACK(remove_userinfo),
 		                 key);
 		g_free(primary);

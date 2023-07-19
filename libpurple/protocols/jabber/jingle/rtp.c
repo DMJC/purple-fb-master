@@ -212,15 +212,15 @@ jingle_rtp_stream_info_cb(PurpleMedia *media, PurpleMediaInfoType type,
 				session, type == PURPLE_MEDIA_INFO_HANGUP ?
 				"success" : "decline"));
 
-		g_signal_handlers_disconnect_by_func(G_OBJECT(media),
-				G_CALLBACK(jingle_rtp_state_changed_cb),
-				session);
-		g_signal_handlers_disconnect_by_func(G_OBJECT(media),
-				G_CALLBACK(jingle_rtp_stream_info_cb),
-				session);
-		g_signal_handlers_disconnect_by_func(G_OBJECT(media),
-				G_CALLBACK(jingle_rtp_new_candidate_cb),
-				session);
+		g_signal_handlers_disconnect_by_func(media,
+		                                     jingle_rtp_state_changed_cb,
+		                                     session);
+		g_signal_handlers_disconnect_by_func(media,
+		                                     jingle_rtp_stream_info_cb,
+		                                     session);
+		g_signal_handlers_disconnect_by_func(media,
+		                                     jingle_rtp_new_candidate_cb,
+		                                     session);
 
 		g_object_unref(session);
 	/* The same signal is emitted *four* times in case of acceptance
@@ -256,15 +256,14 @@ jingle_rtp_ready(JingleSession *session)
 					JINGLE_SESSION_ACCEPT));
 		}
 
-		g_signal_handlers_disconnect_by_func(G_OBJECT(media),
-				G_CALLBACK(jingle_rtp_candidates_prepared_cb),
-				session);
-		g_signal_handlers_disconnect_by_func(G_OBJECT(media),
-				G_CALLBACK(jingle_rtp_codecs_changed_cb),
-				session);
-		g_signal_connect(G_OBJECT(media), "new-candidate",
-				G_CALLBACK(jingle_rtp_new_candidate_cb),
-				session);
+		g_signal_handlers_disconnect_by_func(media,
+		                                     jingle_rtp_candidates_prepared_cb,
+		                                     session);
+		g_signal_handlers_disconnect_by_func(media,
+		                                     jingle_rtp_codecs_changed_cb,
+		                                     session);
+		g_signal_connect(media, "new-candidate",
+		                 G_CALLBACK(jingle_rtp_new_candidate_cb), session);
 	}
 }
 

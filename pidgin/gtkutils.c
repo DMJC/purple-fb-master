@@ -385,9 +385,10 @@ buddyname_autocomplete_destroyed_cb(GtkWidget *widget, gpointer data)
 	purple_signals_disconnect_by_handle(widget);
 
 	g_signal_handlers_disconnect_by_func(manager,
-	                 G_CALLBACK(autocomplete_account_added_cb), data);
+	                                     autocomplete_account_added_cb, data);
 	g_signal_handlers_disconnect_by_func(manager,
-	                 G_CALLBACK(autocomplete_account_removed_cb), data);
+	                                     autocomplete_account_removed_cb,
+	                                     data);
 
 	g_free(data);
 }

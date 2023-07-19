@@ -1273,7 +1273,7 @@ pidgin_account_editor_set_account(PidginAccountEditor *editor,
 	/* Disconnect the notify handler from the previous account. */
 	if(PURPLE_IS_ACCOUNT(editor->account)) {
 		g_signal_handlers_disconnect_by_func(editor->account,
-		                                     G_CALLBACK(pidgin_account_editor_connection_changed_cb),
+		                                     pidgin_account_editor_connection_changed_cb,
 		                                     editor);
 	}
 

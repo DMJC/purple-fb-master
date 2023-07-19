@@ -417,6 +417,5 @@ void finch_media_manager_init(void)
 void finch_media_manager_uninit(void)
 {
 	PurpleMediaManager *manager = purple_media_manager_get();
-	g_signal_handlers_disconnect_by_func(G_OBJECT(manager),
-			G_CALLBACK(finch_new_media), NULL);
+	g_signal_handlers_disconnect_by_func(manager, finch_new_media, NULL);
 }

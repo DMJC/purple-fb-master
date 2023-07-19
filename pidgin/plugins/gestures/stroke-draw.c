@@ -262,10 +262,8 @@ gstroke_disable(GtkWidget *widget)
 
 	g_return_if_fail(GTK_IS_EVENT_BOX(event));
 
-	g_signal_handlers_disconnect_by_func(G_OBJECT(event),
-	                                     G_CALLBACK(process_event), widget);
-	g_signal_handlers_disconnect_by_func(G_OBJECT(event),
-	                                     G_CALLBACK(gstroke_draw_cb), NULL);
+	g_signal_handlers_disconnect_by_func(event, process_event, widget);
+	g_signal_handlers_disconnect_by_func(event, gstroke_draw_cb, NULL);
 }
 
 void

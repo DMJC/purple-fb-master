@@ -140,8 +140,7 @@ finch_connections_uninit(void)
 {
 	PurpleAccountManager *manager = purple_account_manager_get_default();
 
-	g_signal_handlers_disconnect_by_func(manager,
-	                                     G_CALLBACK(account_removed_cb), NULL);
+	g_signal_handlers_disconnect_by_func(manager, account_removed_cb, NULL);
 
 	g_clear_pointer(&hash, g_hash_table_destroy);
 }

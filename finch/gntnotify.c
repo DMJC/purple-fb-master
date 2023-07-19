@@ -116,8 +116,8 @@ static void finch_close_notify(PurpleNotifyType type, void *handle)
 		purple_notify_searchresults_free(g_object_get_data(handle, "notify-results"));
 #if 1
 	/* This did not seem to be necessary */
-	g_signal_handlers_disconnect_by_func(G_OBJECT(widget),
-			G_CALLBACK(notify_msg_window_destroy_cb), GINT_TO_POINTER(type));
+	g_signal_handlers_disconnect_by_func(widget, notify_msg_window_destroy_cb,
+	                                     GINT_TO_POINTER(type));
 #endif
 	gnt_widget_destroy(widget);
 }

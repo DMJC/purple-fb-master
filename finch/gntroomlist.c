@@ -265,8 +265,8 @@ static void
 fl_show_with_account(PurpleAccount *account)
 {
 	setup_roomlist(account);
-	g_signal_handlers_disconnect_matched(G_OBJECT(froomlist.window), G_SIGNAL_MATCH_FUNC,
-			0, 0, NULL, G_CALLBACK(size_changed_cb), NULL);
+	g_signal_handlers_disconnect_matched(froomlist.window, G_SIGNAL_MATCH_FUNC,
+	                                     0, 0, NULL, size_changed_cb, NULL);
 	gnt_widget_show(froomlist.window);
 	gnt_screen_resize_widget(froomlist.window,
 			purple_prefs_get_int(PREF_ROOT "/size/width"),
