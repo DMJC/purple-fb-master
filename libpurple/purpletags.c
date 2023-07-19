@@ -24,6 +24,13 @@
 
 #include "util.h"
 
+enum {
+	SIG_ADDED,
+	SIG_REMOVED,
+	N_SIGNALS,
+};
+static guint signals[N_SIGNALS];
+
 struct _PurpleTags {
 	GObject parent;
 
@@ -31,6 +38,45 @@ struct _PurpleTags {
 };
 
 G_DEFINE_TYPE(PurpleTags, purple_tags, G_TYPE_OBJECT)
+
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static void
+purple_tags_real_add(PurpleTags *tags, const char *tag, const char *name,
+                     const char *value)
+{
+	/* If this tag exists, remove it. */
+	purple_tags_remove(tags, tag);
+
+	/* Add the new tag. */
+	tags->tags = g_list_append(tags->tags, g_strdup(tag));
+
+	/* Finally emit the signal. */
+	g_signal_emit(tags, signals[SIG_ADDED], 0, tag, name, value);
+}
+
+static gboolean
+purple_tags_real_remove(PurpleTags *tags, const char *tag, const char *name,
+                        const char *value)
+{
+	/* Walk through the tags looking for the one that was passed in. */
+	for(GList *l = tags->tags; l != NULL; l = l->next) {
+		gchar *etag = l->data;
+
+		/* If we found it, remove it and exit early. */
+		if(purple_strequal(etag, tag)) {
+			g_free(etag);
+			tags->tags = g_list_delete_link(tags->tags, l);
+
+			g_signal_emit(tags, signals[SIG_REMOVED], 0, tag, name, value);
+
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
 
 /******************************************************************************
  * GObject Implementation
@@ -53,6 +99,66 @@ purple_tags_class_init(PurpleTagsClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
 	obj_class->dispose = purple_tags_dispose;
+
+	/**
+	 * PurpleTags::added:
+	 * @tags: The instance.
+	 * @tag: The tag value.
+	 * @name: The name of the tag.
+	 * @value: The value of the tag.
+	 *
+	 * Emitted when a tag is added. The tag as well as its name and value are
+	 * provided to be as flexible as possible.
+	 *
+	 * > NOTE: When a duplicate tag is added, the original one will be removed
+	 * > which will emit the [signal@Tags::removed] signal and then the new tag
+	 * > will be added which will emit [signal@Tags::added].
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_ADDED] = g_signal_new_class_handler(
+		"added",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		3,
+		G_TYPE_STRING,
+		G_TYPE_STRING,
+		G_TYPE_STRING);
+
+	/**
+	 * PurpleTags::removed:
+	 * @tags: The instance.
+	 * @tag: The tag value.
+	 * @name: The name of the tag.
+	 * @value: The value of the tag.
+	 *
+	 * Emitted when a tag is removed. The tag as well as its name and value are
+	 * provided to be as flexible as possible.
+	 *
+	 * > NOTE: When a duplicate tag is added, the original one will be removed
+	 * > which will emit the [signal@Tags::removed] signal and then the new tag
+	 * > will be added which will emit [signal@Tags::added].
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_REMOVED] = g_signal_new_class_handler(
+		"removed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		3,
+		G_TYPE_STRING,
+		G_TYPE_STRING,
+		G_TYPE_STRING);
 }
 
 /******************************************************************************
@@ -112,14 +218,16 @@ purple_tags_get(PurpleTags *tags, const gchar *name) {
 
 void
 purple_tags_add(PurpleTags *tags, const gchar *tag) {
+	char *name = NULL;
+	char *value = NULL;
+
 	g_return_if_fail(PURPLE_IS_TAGS(tags));
 	g_return_if_fail(tag != NULL);
 
-	/* Remove any existing tags with this value. */
-	purple_tags_remove(tags, tag);
-
-	/* Add the new tag. */
-	tags->tags = g_list_append(tags->tags, g_strdup(tag));
+	purple_tag_parse(tag, &name, &value);
+	purple_tags_real_add(tags, tag, name, value);
+	g_clear_pointer(&name, g_free);
+	g_clear_pointer(&value, g_free);
 }
 
 void
@@ -137,45 +245,46 @@ purple_tags_add_with_value(PurpleTags *tags, const char *name,
 		tag = g_strdup(name);
 	}
 
-	purple_tags_add(tags, tag);
+	purple_tags_real_add(tags, tag, name, value);
 
 	g_free(tag);
 }
 
 gboolean
 purple_tags_remove(PurpleTags *tags, const gchar *tag) {
+	gchar *name = NULL;
+	gchar *value = NULL;
+	gboolean ret = FALSE;
+
 	g_return_val_if_fail(PURPLE_IS_TAGS(tags), FALSE);
 	g_return_val_if_fail(tag != NULL, FALSE);
 
-	for(GList *l = tags->tags; l != NULL; l = l->next) {
-		gchar *etag = l->data;
+	purple_tag_parse(tag, &name, &value);
+	ret = purple_tags_real_remove(tags, tag, name, value);
+	g_clear_pointer(&name, g_free);
+	g_clear_pointer(&value, g_free);
 
-		if(purple_strequal(etag, tag)) {
-			g_free(etag);
-			tags->tags = g_list_delete_link(tags->tags, l);
-
-			return TRUE;
-		}
-	}
-
-	return FALSE;
+	return ret;
 }
 
 gboolean
 purple_tags_remove_with_value(PurpleTags *tags, const char *name, const char *value) {
+	char *tag = NULL;
 	gboolean ret = FALSE;
 
 	g_return_val_if_fail(PURPLE_IS_TAGS(tags), FALSE);
 	g_return_val_if_fail(name != NULL, FALSE);
 
+	/* If there's no value, the tag and name are the same so we can avoid an
+	 * unnecessary allocation.
+	 */
 	if(value == NULL) {
-		ret = purple_tags_remove(tags, name);
-	} else {
-		char *tag = g_strdup_printf("%s:%s", name, value);
-
-		ret = purple_tags_remove(tags, tag);
-		g_free(tag);
+		return purple_tags_real_remove(tags, name, name, NULL);
 	}
+
+	tag = g_strdup_printf("%s:%s", name, value);
+	ret = purple_tags_real_remove(tags, tag, name, value);
+	g_free(tag);
 
 	return ret;
 }

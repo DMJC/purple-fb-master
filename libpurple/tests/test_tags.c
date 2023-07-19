@@ -25,26 +25,53 @@
 #include <purple.h>
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+test_purple_tags_counter_cb(G_GNUC_UNUSED PurpleTags *tags,
+                            G_GNUC_UNUSED const char *tag,
+                            G_GNUC_UNUSED const char *name,
+                            G_GNUC_UNUSED const char *value,
+                            gpointer data)
+{
+	guint *counter = data;
+
+	/* Increment the counter so we know we were called. */
+	*counter = *counter + 1;
+}
+
+/******************************************************************************
  * Tests
  *****************************************************************************/
 static void
 test_purple_tags_lookup_exists(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
 	gboolean found = FALSE;
 	const gchar *value = NULL;
+	guint counter = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &counter);
 
 	purple_tags_add(tags, "foo");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
+	g_assert_cmpuint(counter, ==, 1);
 	value = purple_tags_lookup(tags, "foo", &found);
 	g_assert_null(value);
 	g_assert_true(found);
 
 	purple_tags_add(tags, "bar:baz");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 2);
+	g_assert_cmpuint(counter, ==, 2);
 	value = purple_tags_lookup(tags, "bar", &found);
 	g_assert_cmpstr(value, ==, "baz");
 	g_assert_true(found);
 
 	/* make sure that a name of pur doesn't match a tag of purple */
 	purple_tags_add(tags, "purple");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 3);
+	g_assert_cmpuint(counter, ==, 3);
 	value = purple_tags_lookup(tags, "pur", &found);
 	g_assert_null(value);
 	g_assert_false(found);
@@ -67,12 +94,22 @@ test_purple_tags_lookup_non_existent(void) {
 
 static void
 test_purple_tags_add_remove_bare(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
+	guint added = 0;
+	guint removed = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &added);
+	g_signal_connect(tags, "removed", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &removed);
 
 	purple_tags_add(tags, "tag1");
+	g_assert_cmpuint(added, ==, 1);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	purple_tags_remove(tags, "tag1");
+	g_assert_cmpuint(removed, ==, 1);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
 
 	g_clear_object(&tags);
@@ -80,12 +117,24 @@ test_purple_tags_add_remove_bare(void) {
 
 static void
 test_purple_tags_add_duplicate_bare(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
+	guint added = 0;
+	guint removed = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &added);
+	g_signal_connect(tags, "removed", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &removed);
 
 	purple_tags_add(tags, "tag1");
+	g_assert_cmpuint(added, ==, 1);
+	g_assert_cmpuint(removed, ==, 0);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	purple_tags_add(tags, "tag1");
+	g_assert_cmpuint(added, ==, 2);
+	g_assert_cmpuint(removed, ==, 1);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	g_clear_object(&tags);
@@ -93,10 +142,16 @@ test_purple_tags_add_duplicate_bare(void) {
 
 static void
 test_purple_tags_remove_non_existent_bare(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
 	gboolean ret = FALSE;
+	guint counter = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "removed", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &counter);
 
 	ret = purple_tags_remove(tags, "tag1");
+	g_assert_cmpuint(counter, ==, 0);
 	g_assert_false(ret);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
 
@@ -105,13 +160,23 @@ test_purple_tags_remove_non_existent_bare(void) {
 
 static void
 test_purple_tags_add_remove(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
 	gboolean ret = FALSE;
+	guint added = 0;
+	guint removed = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &added);
+	g_signal_connect(tags, "removed", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &removed);
 
 	purple_tags_add(tags, "tag1:purple");
+	g_assert_cmpuint(added, ==, 1);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	ret = purple_tags_remove(tags, "tag1:purple");
+	g_assert_cmpuint(removed, ==, 1);
 	g_assert_true(ret);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
 
@@ -120,13 +185,25 @@ test_purple_tags_add_remove(void) {
 
 static void
 test_purple_tags_add_remove_with_null_value(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
 	gboolean ret = FALSE;
+	guint added = 0;
+	guint removed = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &added);
+	g_signal_connect(tags, "removed", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &removed);
 
 	purple_tags_add_with_value(tags, "tag1", NULL);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
+	g_assert_cmpuint(added, ==, 1);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	ret = purple_tags_remove_with_value(tags, "tag1", NULL);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+	g_assert_cmpuint(removed, ==, 1);
 	g_assert_true(ret);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
 
@@ -135,13 +212,23 @@ test_purple_tags_add_remove_with_null_value(void) {
 
 static void
 test_purple_tags_add_remove_with_value(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
 	gboolean ret = FALSE;
+	guint added = 0;
+	guint removed = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &added);
+	g_signal_connect(tags, "removed", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &removed);
 
 	purple_tags_add_with_value(tags, "tag1", "purple");
+	g_assert_cmpuint(added, ==, 1);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	ret = purple_tags_remove_with_value(tags, "tag1", "purple");
+	g_assert_cmpuint(removed, ==, 1);
 	g_assert_true(ret);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
 
@@ -150,12 +237,24 @@ test_purple_tags_add_remove_with_value(void) {
 
 static void
 test_purple_tags_add_duplicate_with_value(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
+	guint added = 0;
+	guint removed = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &added);
+	g_signal_connect(tags, "removed", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &removed);
 
 	purple_tags_add(tags, "tag1:purple");
+	g_assert_cmpuint(added, ==, 1);
+	g_assert_cmpuint(removed, ==, 0);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	purple_tags_add(tags, "tag1:purple");
+	g_assert_cmpuint(added, ==, 2);
+	g_assert_cmpuint(removed, ==, 1);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	g_clear_object(&tags);
@@ -163,11 +262,17 @@ test_purple_tags_add_duplicate_with_value(void) {
 
 static void
 test_purple_tags_add_with_value(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
 	const char *value = NULL;
 	gboolean found = FALSE;
+	guint counter = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &counter);
 
 	purple_tags_add_with_value(tags, "tag1", "purple");
+	g_assert_cmpuint(counter, ==, 1);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	value = purple_tags_lookup(tags, "tag1", &found);
@@ -179,11 +284,17 @@ test_purple_tags_add_with_value(void) {
 
 static void
 test_purple_tags_add_with_value_null(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
 	const char *value = NULL;
 	gboolean found = FALSE;
+	guint counter = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "added", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &counter);
 
 	purple_tags_add_with_value(tags, "tag1", NULL);
+	g_assert_cmpuint(counter, ==, 1);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
 
 	value = purple_tags_lookup(tags, "tag1", &found);
@@ -195,9 +306,15 @@ test_purple_tags_add_with_value_null(void) {
 
 static void
 test_purple_tags_remove_non_existent_with_value(void) {
-	PurpleTags *tags = purple_tags_new();
+	PurpleTags *tags = NULL;
+	guint counter = 0;
+
+	tags = purple_tags_new();
+	g_signal_connect(tags, "removed", G_CALLBACK(test_purple_tags_counter_cb),
+	                 &counter);
 
 	purple_tags_remove(tags, "tag1:purple");
+	g_assert_cmpuint(counter, ==, 0);
 	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
 
 	g_clear_object(&tags);
