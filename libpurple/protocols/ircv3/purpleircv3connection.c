@@ -596,9 +596,7 @@ purple_ircv3_connection_writef(PurpleIRCv3Connection *connection,
 	g_string_append(msg, "\r\n");
 
 	/* Finally turn the string into bytes and send it! */
-	bytes = g_bytes_new_take(msg->str, msg->len);
-	g_string_free(msg, FALSE);
-
+	bytes = g_string_free_to_bytes(msg);
 	purple_queued_output_stream_push_bytes_async(priv->output, bytes,
 	                                             G_PRIORITY_DEFAULT,
 	                                             priv->cancellable,
