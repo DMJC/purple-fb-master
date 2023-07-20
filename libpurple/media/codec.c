@@ -362,7 +362,6 @@ purple_media_codec_to_string(PurpleMediaCodec *codec)
 	PurpleMediaCodecPrivate *priv;
 	GString *string = NULL;
 	GList *item;
-	gchar *charstring;
 	const gchar *media_type_str = NULL;
 
 	if (codec == NULL) {
@@ -391,9 +390,6 @@ purple_media_codec_to_string(PurpleMediaCodec *codec)
 				param->key, (gchar *)param->value);
 	}
 
-	charstring = string->str;
-	g_string_free (string, FALSE);
-
-	return charstring;
+	return g_string_free(string, FALSE);
 }
 
