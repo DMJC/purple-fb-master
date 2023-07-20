@@ -589,14 +589,10 @@ static void
 pidgin_about_dialog_open_url_cb(G_GNUC_UNUSED TalkatuView *view,
                                 const char *url, gpointer data)
 {
-#if GTK_CHECK_VERSION(4, 10, 0)
 	GtkUriLauncher *launcher = NULL;
 	launcher = gtk_uri_launcher_new(url);
 	gtk_uri_launcher_launch(launcher, GTK_WINDOW(data), NULL, NULL, NULL);
 	g_object_unref(launcher);
-#else
-	gtk_show_uri(GTK_WINDOW(data), url, GDK_CURRENT_TIME);
-#endif
 }
 
 static void

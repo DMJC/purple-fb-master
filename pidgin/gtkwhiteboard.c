@@ -455,7 +455,6 @@ pidgin_whiteboard_button_save_press(G_GNUC_UNUSED GtkWidget *widget,
 	gtk_native_dialog_show(GTK_NATIVE_DIALOG(chooser));
 }
 
-#if GTK_CHECK_VERSION(4, 10, 0)
 static void
 notify_color_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data) {
 	PidginWhiteboard *gtkwb = data;
@@ -473,25 +472,6 @@ notify_color_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data) {
 	purple_whiteboard_get_brush(wb, &old_size, &old_color);
 	purple_whiteboard_send_brush(wb, old_size, new_color);
 }
-#else
-static void
-color_selected(GtkColorButton *button, PidginWhiteboard *gtkwb)
-{
-	GdkRGBA color;
-	PurpleWhiteboard *wb = gtkwb->wb;
-	int old_size, old_color;
-	int new_color;
-
-	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), &color);
-
-	new_color = (unsigned int)(color.red * 255) << 16;
-	new_color |= (unsigned int)(color.green * 255) << 8;
-	new_color |= (unsigned int)(color.blue * 255);
-
-	purple_whiteboard_get_brush(wb, &old_size, &old_color);
-	purple_whiteboard_send_brush(wb, old_size, new_color);
-}
-#endif
 
 static void
 pidgin_whiteboard_create(PurpleWhiteboard *wb)
@@ -535,13 +515,8 @@ pidgin_whiteboard_create(PurpleWhiteboard *wb)
 	                            gtkwb->width, gtkwb->height);
 
 	pidgin_whiteboard_rgb24_to_rgba(gtkwb->brush_color, &color);
-#if GTK_CHECK_VERSION(4, 10, 0)
 	gtk_color_dialog_button_set_rgba(GTK_COLOR_DIALOG_BUTTON(gtkwb->color_button),
 	                                 &color);
-#else
-	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(gtkwb->color_button),
-	                           &color);
-#endif
 
 	/* Make all this (window) visible */
 	gtk_widget_set_visible(GTK_WIDGET(gtkwb), TRUE);
@@ -576,15 +551,9 @@ static void
 pidgin_whiteboard_init(PidginWhiteboard *self) {
 	gtk_widget_init_template(GTK_WIDGET(self));
 
-#if GTK_CHECK_VERSION(4, 10, 0)
 	self->color_button = gtk_color_dialog_button_new(gtk_color_dialog_new());
 	g_signal_connect(self->color_button, "notify::rgba",
 	                 G_CALLBACK(notify_color_cb), self);
-#else
-	self->color_button = gtk_color_button_new();
-	g_signal_connect(self->color_button, "color-set",
-	                 G_CALLBACK(color_selected), self);
-#endif
 	gtk_box_append(self->toolbar, GTK_WIDGET(self->color_button));
 }
 

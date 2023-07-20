@@ -612,14 +612,10 @@ pidgin_close_notify(PurpleNotifyType type, void *ui_handle)
 
 static void *
 pidgin_notify_uri(const char *uri) {
-#if GTK_CHECK_VERSION(4, 10, 0)
 	GtkUriLauncher *launcher = NULL;
 	launcher = gtk_uri_launcher_new(uri);
 	gtk_uri_launcher_launch(launcher, NULL, NULL, NULL, NULL);
 	g_object_unref(launcher);
-#else
-	gtk_show_uri(NULL, uri, GDK_CURRENT_TIME);
-#endif
 
 	return NULL;
 }

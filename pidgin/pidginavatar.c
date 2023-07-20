@@ -468,10 +468,9 @@ pidgin_avatar_init(PidginAvatar *avatar) {
 
 	gtk_widget_init_template(GTK_WIDGET(avatar));
 
-#if GTK_CHECK_VERSION(4,8,0)
 	gtk_picture_set_content_fit(GTK_PICTURE(avatar->icon),
 	                            GTK_CONTENT_FIT_SCALE_DOWN);
-#endif
+
 	/* Now setup our actions. */
 	group = g_simple_action_group_new();
 	g_action_map_add_action_entries(G_ACTION_MAP(group), actions,

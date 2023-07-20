@@ -198,15 +198,15 @@ endif
 #######################################################################
 # Once we require >= 2.74.0, remove the hack in the if(TRUE) block in
 # libpurple/core.c.
-glib = dependency('glib-2.0', version : '>= 2.70.0')
+glib = dependency('glib-2.0', version : '>= 2.76.0')
 gio = dependency('gio-2.0')
 gobject = dependency('gobject-2.0')
 gthread = dependency('gthread-2.0')
 gnome = import('gnome')
 
 add_project_arguments(
-	'-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_70',
-	'-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_70',
+	'-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_76',
+	'-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_76',
 	language : 'c',)
 
 #######################################################################
@@ -228,7 +228,7 @@ conf.set('ENABLE_INTROSPECTION', enable_introspection)
 # Check Pidgin dependencies
 #######################################################################
 if get_option('gtkui')
-	gtk = dependency('gtk4', version : '>= 4.6.0')
+	gtk = dependency('gtk4', version : '>= 4.10.0')
 	libadwaita = dependency('libadwaita-1', version : '>= 1.2')
 
 	talkatu_dep = dependency('talkatu',
