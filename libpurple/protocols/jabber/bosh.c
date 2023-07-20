@@ -55,7 +55,7 @@ struct _PurpleJabberBOSHConnection {
 };
 
 static SoupMessage *jabber_bosh_connection_http_request_new(
-        PurpleJabberBOSHConnection *conn, const GString *data);
+        PurpleJabberBOSHConnection *conn, GString *data);
 static void
 jabber_bosh_connection_session_create(PurpleJabberBOSHConnection *conn);
 static void
@@ -326,7 +326,6 @@ jabber_bosh_connection_send_now(PurpleJabberBOSHConnection *conn)
 		purple_debug_misc("jabber-bosh", "sending: %s\n", data->str);
 
 	req = jabber_bosh_connection_http_request_new(conn, data);
-	g_string_free(data, FALSE);
 
 	if (conn->is_terminating) {
 		soup_session_send_async(conn->payload_reqs, req, G_PRIORITY_DEFAULT,
@@ -519,8 +518,6 @@ jabber_bosh_connection_session_create(PurpleJabberBOSHConnection *conn)
 		++conn->rid, conn->js->user->domain, JABBER_BOSH_TIMEOUT);
 
 	req = jabber_bosh_connection_http_request_new(conn, data);
-	g_string_free(data, FALSE);
-
 	g_object_set_data(G_OBJECT(req), "bosh-connection", conn);
 	soup_session_send_and_read_async(conn->payload_reqs, req,
 	                                 G_PRIORITY_DEFAULT, NULL,
@@ -530,7 +527,7 @@ jabber_bosh_connection_session_create(PurpleJabberBOSHConnection *conn)
 
 static SoupMessage *
 jabber_bosh_connection_http_request_new(PurpleJabberBOSHConnection *conn,
-                                        const GString *data)
+                                        GString *data)
 {
 	SoupMessage *req;
 	GBytes *body = NULL;
@@ -538,7 +535,7 @@ jabber_bosh_connection_http_request_new(PurpleJabberBOSHConnection *conn,
 	jabber_stream_restart_inactivity_timer(conn->js);
 
 	req = soup_message_new("POST", conn->url);
-	body = g_bytes_new_take(data->str, data->len);
+	body = g_string_free_to_bytes(data);
 	soup_message_set_request_body_from_bytes(req, "text/xml; charset=utf-8",
 	                                         body);
 	g_bytes_unref(body);
