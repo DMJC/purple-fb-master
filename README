@@ -32,7 +32,6 @@ You can quickly build Pidgin with the following commands:
 meson setup build
 cd build
 ninja
-ninja install
 ```
 
 There are quite a few options for the build that you can view by running
@@ -50,13 +49,31 @@ cd build
 meson configure -Ddebug=true
 ```
 
-## Running
+## Installing/Running
 
-Currently Pidgin can not be run from a build directory, which means you must
-install it first. Once you've done that, you only need to run `pidgin3` or
-`finch3`. If it fails to launch you may need to run `ldconfig` as root.
+Previously while developing in our code base you would need to install
+everything to be able to run or test anything. With meson this is no longer the
+case. You can compile via the steps above, and then run directly from the build
+directory with the following command to run Pidgin 3:
 
-To get started, simply add a new account.
+```
+cd build
+meson devenv pidgin3
+```
+
+If you're working against Finch 3 you can use:
+
+```
+cd build
+meson devenv finch3
+```
+
+Obviously you're still free to install into your system directly, but then
+you'll most likely end up having orphaned files laying around that our build
+system doesn't know how to remove once they're removed from our code base. This
+is one of the primary reasons we recommend building and running from a devenv.
+Another benefit is that the devenv uses a configuration directory inside of
+the build directory rather than in your home directory.
 
 If you come across a bug, please report it at:
 [issues.imfreedom.org/issues/PIDGIN](https://issues.imfreedom.org/issues/PIDGIN)
