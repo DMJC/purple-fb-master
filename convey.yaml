@@ -3,7 +3,7 @@ environment:
   - BUILD_NUMBER
   - REPOSITORY=pidgin/builders
   - REGISTRY=docker.io
-  - DOCS_BUILD_IMAGE=${REGISTRY}/${REPOSITORY}:debian-bookworm-amd64
+  - DOCS_BUILD_IMAGE=${REGISTRY}/${REPOSITORY}:debian-trixie-amd64
 
 tasks:
   import:
@@ -19,7 +19,7 @@ tasks:
     files:
       - alpine-edge-amd64
       - clang
-      - debian-bookworm-amd64
+      - debian-trixie-amd64
       - fedora-38-amd64
       - scanbuild
       - ubuntu-lunar-amd64
@@ -89,8 +89,8 @@ plans:
     stages:
       - tasks: [clean, docs-clean]
 
-  debian-bookworm-amd64:
-    environment: [TARGET=debian-bookworm-amd64]
+  debian-trixie-amd64:
+    environment: [TARGET=debian-trixie-amd64]
     stages:
       - tasks: [import, build]
       - tasks: [export]
