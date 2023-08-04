@@ -96,11 +96,12 @@ test_purple_protocol_roster_empty_add(void) {
 
 		account = purple_account_new("test", "test");
 		contact = purple_contact_new(account, NULL);
-		g_clear_object(&account);
 
-		purple_protocol_roster_add_async(roster, contact, NULL, NULL, NULL);
+		purple_protocol_roster_add_async(roster, account, contact, NULL, NULL,
+		                                 NULL);
 
 		g_clear_object(&roster);
+		g_clear_object(&account);
 		g_clear_object(&contact);
 	}
 
@@ -120,11 +121,12 @@ test_purple_protocol_roster_empty_update(void) {
 
 		account = purple_account_new("test", "test");
 		contact = purple_contact_new(account, NULL);
-		g_clear_object(&account);
 
-		purple_protocol_roster_update_async(roster, contact, NULL, NULL, NULL);
+		purple_protocol_roster_update_async(roster, account, contact, NULL,
+		                                    NULL, NULL);
 
 		g_clear_object(&roster);
+		g_clear_object(&account);
 		g_clear_object(&contact);
 	}
 
@@ -144,11 +146,12 @@ test_purple_protocol_roster_empty_remove(void) {
 
 		account = purple_account_new("test", "test");
 		contact = purple_contact_new(account, NULL);
-		g_clear_object(&account);
 
-		purple_protocol_roster_remove_async(roster, contact, NULL, NULL, NULL);
+		purple_protocol_roster_remove_async(roster, account, contact, NULL,
+		                                    NULL, NULL);
 
 		g_clear_object(&roster);
+		g_clear_object(&account);
 		g_clear_object(&contact);
 	}
 
@@ -177,6 +180,7 @@ struct _TestPurpleProtocolRoster {
 
 static void
 test_purple_protocol_roster_add_async(PurpleProtocolRoster *r,
+                                      G_GNUC_UNUSED PurpleAccount *account,
                                       G_GNUC_UNUSED PurpleContact *contact,
                                       GCancellable *cancellable,
                                       GAsyncReadyCallback callback,
@@ -212,6 +216,7 @@ test_purple_protocol_roster_add_finish(PurpleProtocolRoster *r,
 
 static void
 test_purple_protocol_roster_update_async(PurpleProtocolRoster *r,
+                                         G_GNUC_UNUSED PurpleAccount *account,
                                          G_GNUC_UNUSED PurpleContact *contact,
                                          GCancellable *cancellable,
                                          GAsyncReadyCallback callback,
@@ -247,6 +252,7 @@ test_purple_protocol_roster_update_finish(PurpleProtocolRoster *r,
 
 static void
 test_purple_protocol_roster_remove_async(PurpleProtocolRoster *r,
+                                         G_GNUC_UNUSED PurpleAccount *account,
                                          G_GNUC_UNUSED PurpleContact *contact,
                                          GCancellable *cancellable,
                                          GAsyncReadyCallback callback,
@@ -341,11 +347,12 @@ test_purple_protocol_roster_add_idle(gpointer data) {
 
 	account = purple_account_new("test", "test");
 	contact = purple_contact_new(account, NULL);
-	g_clear_object(&account);
 
-	purple_protocol_roster_add_async(roster, contact, NULL,
+	purple_protocol_roster_add_async(roster, account, contact, NULL,
 	                                 test_purple_protocol_roster_add_cb,
 	                                 contact);
+
+	g_clear_object(&account);
 
 	return G_SOURCE_REMOVE;
 }
@@ -429,11 +436,12 @@ test_purple_protocol_roster_update_idle(gpointer data) {
 
 	account = purple_account_new("test", "test");
 	contact = purple_contact_new(account, NULL);
-	g_clear_object(&account);
 
-	purple_protocol_roster_update_async(roster, contact, NULL,
+	purple_protocol_roster_update_async(roster, account, contact, NULL,
 	                                    test_purple_protocol_roster_update_cb,
 	                                    contact);
+
+	g_clear_object(&account);
 
 	return G_SOURCE_REMOVE;
 }
@@ -517,11 +525,12 @@ test_purple_protocol_roster_remove_idle(gpointer data) {
 
 	account = purple_account_new("test", "test");
 	contact = purple_contact_new(account, NULL);
-	g_clear_object(&account);
 
-	purple_protocol_roster_remove_async(roster, contact, NULL,
+	purple_protocol_roster_remove_async(roster, account, contact, NULL,
 	                                    test_purple_protocol_roster_remove_cb,
 	                                    contact);
+
+	g_clear_object(&account);
 
 	return G_SOURCE_REMOVE;
 }

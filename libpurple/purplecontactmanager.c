@@ -147,7 +147,8 @@ purple_contact_manager_protocol_roster_update(PurpleContact *contact) {
 		protocol = purple_account_get_protocol(account);
 		if(PURPLE_IS_PROTOCOL_ROSTER(protocol)) {
 			purple_protocol_roster_update_async(PURPLE_PROTOCOL_ROSTER(protocol),
-			                                    contact, NULL, NULL, NULL);
+			                                    account, contact, NULL, NULL,
+			                                    NULL);
 		}
 	}
 }

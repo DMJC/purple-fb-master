@@ -72,13 +72,13 @@ struct _PurpleProtocolRosterInterface {
 	GTypeInterface parent;
 
 	/*< public >*/
-	void (*add_async)(PurpleProtocolRoster *roster, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	void (*add_async)(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*add_finish)(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);
 
-	void (*update_async)(PurpleProtocolRoster *roster, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	void (*update_async)(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*update_finish)(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);
 
-	void (*remove_async)(PurpleProtocolRoster *roster, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	void (*remove_async)(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*remove_finish)(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);
 
 	/*< private >*/
@@ -90,6 +90,7 @@ G_BEGIN_DECLS
 /**
  * purple_protocol_roster_add_async:
  * @roster: The instance.
+ * @account: The [class@Account] to use.
  * @contact: The [class@Contact] to add.
  * @cancellable: A [class@Gio.Cancellable].
  * @callback: A [callback@Gio.AsyncReadyCallback] to call when the request has
@@ -102,7 +103,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
-void purple_protocol_roster_add_async(PurpleProtocolRoster *roster, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+void purple_protocol_roster_add_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
  * purple_protocol_roster_add_finish:
@@ -125,6 +126,7 @@ gboolean purple_protocol_roster_add_finish(PurpleProtocolRoster *roster, GAsyncR
 /**
  * purple_protocol_roster_update_async:
  * @roster: The instance.
+ * @account: The [class@Account] to use.
  * @contact: The [class@Contact] to update.
  * @cancellable: A [class@Gio.Cancellable].
  * @callback: A [callback@Gio.AsyncReadyCallback] to call when the request has
@@ -142,7 +144,7 @@ gboolean purple_protocol_roster_add_finish(PurpleProtocolRoster *roster, GAsyncR
  *
  * Since: 3.0.0
  */
-void purple_protocol_roster_update_async(PurpleProtocolRoster *roster, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+void purple_protocol_roster_update_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
  * purple_protocol_roster_update_finish:
@@ -165,6 +167,7 @@ gboolean purple_protocol_roster_update_finish(PurpleProtocolRoster *roster, GAsy
 /**
  * purple_protocol_roster_remove_async:
  * @roster: The instance.
+ * @account: The [class@Account] to use.
  * @contact: The [class@Contact] to remove.
  * @cancellable: A [class@Gio.Cancellable].
  * @callback: A [callback@Gio.AsyncReadyCallback] to call when the request has
@@ -177,7 +180,7 @@ gboolean purple_protocol_roster_update_finish(PurpleProtocolRoster *roster, GAsy
  *
  * Since: 3.0.0
  */
-void purple_protocol_roster_remove_async(PurpleProtocolRoster *roster, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+void purple_protocol_roster_remove_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
  * purple_protocol_roster_remove_finish:
