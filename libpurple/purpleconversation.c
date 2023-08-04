@@ -28,6 +28,7 @@
 #include "purplehistorymanager.h"
 #include "purplemarkup.h"
 #include "purpleprivate.h"
+#include "server.h"
 
 typedef struct {
 	PurpleAccount *account;

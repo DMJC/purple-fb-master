@@ -28,6 +28,8 @@
 #include <libpurple/purpleprivate.h>
 #include <libpurple/purpleprotocolclient.h>
 
+#include "server.h"
+
 struct _PurpleIMConversation {
 	PurpleConversation parent;
 

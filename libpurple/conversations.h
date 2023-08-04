@@ -27,7 +27,6 @@
 #define PURPLE_CONVERSATIONS_H
 
 #include <purpleconversation.h>
-#include "server.h"
 
 G_BEGIN_DECLS
 
