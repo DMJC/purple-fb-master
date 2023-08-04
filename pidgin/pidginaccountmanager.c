@@ -151,12 +151,6 @@ pidgin_account_manager_back_clicked_cb(G_GNUC_UNUSED GtkButton *self,
 	adw_preferences_page_scroll_to_top(ADW_PREFERENCES_PAGE(manager->editor));
 #endif
 
-	/* Disconnect the account which will remove all of the account options as
-	 * well.
-	 */
-	pidgin_account_editor_set_account(PIDGIN_ACCOUNT_EDITOR(manager->editor),
-	                                  NULL);
-
 	pidgin_account_manager_show_overview(manager);
 }
 
@@ -171,7 +165,7 @@ pidgin_account_manager_save_clicked_cb(G_GNUC_UNUSED GtkButton *self,
 	if(manager->edit_only) {
 		gtk_window_destroy(GTK_WINDOW(manager));
 	} else {
-		gtk_stack_set_visible_child_name(GTK_STACK(manager->stack), "overview");
+		pidgin_account_manager_show_overview(manager);
 	}
 }
 
@@ -236,6 +230,9 @@ pidgin_account_manager_show_overview(PidginAccountManager *manager) {
 	g_return_if_fail(PIDGIN_IS_ACCOUNT_MANAGER(manager));
 
 	gtk_stack_set_visible_child_name(GTK_STACK(manager->stack), "overview");
+
+	pidgin_account_editor_set_account(PIDGIN_ACCOUNT_EDITOR(manager->editor),
+	                                  NULL);
 }
 
 void

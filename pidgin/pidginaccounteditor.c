@@ -106,12 +106,23 @@ pidgin_account_editor_add_user_split(gpointer data, gpointer user_data) {
 
 	if(!purple_account_user_split_is_constant(split)) {
 		GtkWidget *row = NULL;
+		gboolean sensitive = TRUE;
+
+		if(PURPLE_IS_ACCOUNT(editor->account)) {
+			if(purple_account_is_connected(editor->account)) {
+				sensitive = FALSE;
+			}
+		}
 
 		row = adw_entry_row_new();
 		editor->user_split_rows = g_list_append(editor->user_split_rows, row);
 		gtk_list_box_append(GTK_LIST_BOX(editor->user_splits), row);
 
 		gtk_widget_set_focusable(row, FALSE);
+		if(!sensitive) {
+			gtk_widget_set_sensitive(row, sensitive);
+		}
+
 		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row),
 		                              purple_account_user_split_get_text(split));
 	}
@@ -129,6 +140,31 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 	gboolean require_password = FALSE;
 	gboolean ret = FALSE;
 
+	/* Make the username field sensitive as it may have previously be made
+	 * insensitive.
+	 */
+	gtk_widget_set_sensitive(editor->username, TRUE);
+
+	/* If we have an account, populate its values. */
+	if(PURPLE_IS_ACCOUNT(editor->account)) {
+		/* The username will be split apart below and eventually set as the text
+		 * in the username entry.
+		 */
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
+
+		username = g_strdup(purple_contact_info_get_username(info));
+		require_password = purple_account_get_require_password(editor->account);
+
+		if(purple_account_is_connected(editor->account)) {
+			gtk_widget_set_sensitive(editor->username, FALSE);
+		}
+	} else {
+		/* If we don't have an account reset the fields that are static. */
+		pidgin_protocol_chooser_set_protocol(PIDGIN_PROTOCOL_CHOOSER(editor->protocol),
+		                                     NULL);
+		gtk_editable_set_text(GTK_EDITABLE(editor->username), "");
+	}
+
 	/* Now remove the rows we added to the preference group for each non
 	 * constant user split.
 	 */
@@ -143,16 +179,6 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 	/* Add the user splits for the protocol. */
 	user_splits = purple_protocol_get_user_splits(protocol);
 	g_list_foreach(user_splits, pidgin_account_editor_add_user_split, editor);
-
-	/* If we have an account, populate its values. */
-	if(PURPLE_IS_ACCOUNT(editor->account)) {
-		/* The username will be split apart below and eventually set as the text
-		 * in the username entry.
-		 */
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
-
-		username = g_strdup(purple_contact_info_get_username(info));
-	}
 
 	/* Filling out the user splits is a pain. If we have an account, we created
 	 * a copy of the username above. We then iterate the user splits backwards
@@ -214,9 +240,6 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 	gtk_widget_set_visible(editor->require_password_row,
 	                       options & OPT_PROTO_PASSWORD_OPTIONAL);
 
-	if(PURPLE_IS_ACCOUNT(editor->account)) {
-		require_password = purple_account_get_require_password(editor->account);
-	}
 	gtk_switch_set_active(GTK_SWITCH(editor->require_password),
 	                      require_password);
 
@@ -652,11 +675,11 @@ pidgin_account_editor_update(PidginAccountEditor *editor) {
 	PurpleProtocol *protocol = NULL;
 	gboolean sensitive = FALSE;
 
+	/* Reset the sensitivity of the protocol chooser to sensitive. */
+	gtk_widget_set_sensitive(editor->protocol, TRUE);
 	if(PURPLE_IS_ACCOUNT(editor->account)) {
-		PurpleConnection *connection = NULL;
-
-		connection = purple_account_get_connection(editor->account);
-		if(PURPLE_IS_CONNECTION(connection)) {
+		if(purple_account_is_connected(editor->account)) {
+			/* If the account is connected, disable the protocol chooser. */
 			gtk_widget_set_sensitive(editor->protocol, FALSE);
 		}
 	}
