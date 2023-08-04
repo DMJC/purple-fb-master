@@ -28,6 +28,10 @@ typedef struct  {
 	char *display_name;
 	char *alias;
 	char *color;
+	char *email;
+	char *phone_number;
+	GTimeZone *time_zone;
+	char *note;
 
 	char *name_for_display;
 
@@ -49,6 +53,10 @@ enum {
 	PROP_DISPLAY_NAME,
 	PROP_ALIAS,
 	PROP_COLOR,
+	PROP_EMAIL,
+	PROP_PHONE_NUMBER,
+	PROP_TIME_ZONE,
+	PROP_NOTE,
 	PROP_AVATAR,
 	PROP_PRESENCE,
 	PROP_TAGS,
@@ -171,6 +179,19 @@ purple_contact_info_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_COLOR:
 			g_value_set_string(value, purple_contact_info_get_color(info));
 			break;
+		case PROP_EMAIL:
+			g_value_set_string(value, purple_contact_info_get_email(info));
+			break;
+		case PROP_PHONE_NUMBER:
+			g_value_set_string(value,
+			                   purple_contact_info_get_phone_number(info));
+			break;
+		case PROP_TIME_ZONE:
+			g_value_set_boxed(value, purple_contact_info_get_time_zone(info));
+			break;
+		case PROP_NOTE:
+			g_value_set_string(value, purple_contact_info_get_note(info));
+			break;
 		case PROP_AVATAR:
 			g_value_set_object(value, purple_contact_info_get_avatar(info));
 			break;
@@ -219,6 +240,19 @@ purple_contact_info_set_property(GObject *obj, guint param_id,
 		case PROP_COLOR:
 			purple_contact_info_set_color(info, g_value_get_string(value));
 			break;
+		case PROP_EMAIL:
+			purple_contact_info_set_email(info, g_value_get_string(value));
+			break;
+		case PROP_PHONE_NUMBER:
+			purple_contact_info_set_phone_number(info,
+			                                     g_value_get_string(value));
+			break;
+		case PROP_TIME_ZONE:
+			purple_contact_info_set_time_zone(info, g_value_get_boxed(value));
+			break;
+		case PROP_NOTE:
+			purple_contact_info_set_note(info, g_value_get_string(value));
+			break;
 		case PROP_AVATAR:
 			purple_contact_info_set_avatar(info, g_value_get_object(value));
 			break;
@@ -261,6 +295,10 @@ purple_contact_info_finalize(GObject *obj) {
 	g_clear_pointer(&priv->display_name, g_free);
 	g_clear_pointer(&priv->alias, g_free);
 	g_clear_pointer(&priv->color, g_free);
+	g_clear_pointer(&priv->email, g_free);
+	g_clear_pointer(&priv->phone_number, g_free);
+	g_clear_pointer(&priv->time_zone, g_time_zone_unref);
+	g_clear_pointer(&priv->note, g_free);
 	g_clear_pointer(&priv->name_for_display, g_free);
 
 	G_OBJECT_CLASS(purple_contact_info_parent_class)->finalize(obj);
@@ -379,10 +417,67 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
+	 * PurpleContactInfo:email:
+	 *
+	 * The primary email address for the contact. This may also be controlled
+	 * via a protocol plugin in the event that the protocol makes it available.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_EMAIL] = g_param_spec_string(
+		"email", "email",
+		"The primary email address for the contact.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleContactInfo:phone-number:
+	 *
+	 * The primary phone number for the contact. This may also be set via a
+	 * protocol plugin in the event that the protocol knows it.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_PHONE_NUMBER] = g_param_spec_string(
+		"phone-number", "phone-number",
+		"The primary phone number for the contact.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleContactInfo:time-zone:
+	 *
+	 * The time zone for this contact. This is typically controlled by the
+	 * protocol and should only be read by others.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TIME_ZONE] = g_param_spec_boxed(
+		"time-zone", "time-zone",
+		"The time zone for the contact.",
+		G_TYPE_TIME_ZONE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleContactInfo:note:
+	 *
+	 * A note for this contact. Many protocols will allow you to set a note on
+	 * a contact and store it server side. This property is where that is kept
+	 * track of.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_NOTE] = g_param_spec_string(
+		"note", "note",
+		"A note for the contact.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
 	 * PurpleContactInfo:avatar:
 	 *
-	 * The avatar for this contact. This is typically controlled by the protocol
-	 * and should only be read by others.
+	 * The avatar for this contact. This is typically controlled by the
+	 * protocol and should only be read by others.
 	 *
 	 * Since: 3.0.0
 	 */
@@ -687,6 +782,125 @@ purple_contact_info_set_color(PurpleContactInfo *info, const char *color) {
 		priv->color = g_strdup(color);
 
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_COLOR]);
+	}
+}
+
+const char *
+purple_contact_info_get_email(PurpleContactInfo *info) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	return priv->email;
+}
+
+void
+purple_contact_info_set_email(PurpleContactInfo *info, const char *email) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	if(!purple_strequal(priv->email, email)) {
+		g_free(priv->email);
+		priv->email = g_strdup(email);
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_EMAIL]);
+	}
+}
+
+const char *
+purple_contact_info_get_phone_number(PurpleContactInfo *info) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	return priv->phone_number;
+}
+
+void
+purple_contact_info_set_phone_number(PurpleContactInfo *info,
+                                     const char *phone_number)
+{
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	if(!purple_strequal(priv->phone_number, phone_number)) {
+		g_free(priv->phone_number);
+		priv->phone_number = g_strdup(phone_number);
+
+		g_object_notify_by_pspec(G_OBJECT(info),
+		                         properties[PROP_PHONE_NUMBER]);
+	}
+}
+
+GTimeZone *
+purple_contact_info_get_time_zone(PurpleContactInfo *info) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	return priv->time_zone;
+}
+
+void
+purple_contact_info_set_time_zone(PurpleContactInfo *info,
+                                  GTimeZone *time_zone)
+{
+	PurpleContactInfoPrivate *priv = NULL;
+	GTimeZone *old = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
+
+	priv = purple_contact_info_get_instance_private(info);
+	old = priv->time_zone;
+
+	priv->time_zone = NULL;
+	if(time_zone != NULL) {
+		priv->time_zone = g_time_zone_ref(time_zone);
+	}
+
+	if(old != NULL) {
+		g_time_zone_unref(old);
+	}
+
+	g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_TIME_ZONE]);
+}
+
+const char *
+purple_contact_info_get_note(PurpleContactInfo *info) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	return priv->note;
+}
+
+void
+purple_contact_info_set_note(PurpleContactInfo *info, const char *note) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	if(!purple_strequal(priv->note, note)) {
+		g_free(priv->note);
+		priv->note = g_strdup(note);
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_NOTE]);
 	}
 }
 

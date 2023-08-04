@@ -231,6 +231,98 @@ const char *purple_contact_info_get_color(PurpleContactInfo *info);
 void purple_contact_info_set_color(PurpleContactInfo *info, const char *color);
 
 /**
+ * purple_contact_info_get_email:
+ * @info: The instance.
+ *
+ * Gets the primary email address from @info.
+ *
+ * Returns: (nullable): The primary email address or %NULL if not set.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_contact_info_get_email(PurpleContactInfo *info);
+
+/**
+ * purple_contact_info_set_email:
+ * @info: The instance.
+ * @email: (nullable): The new email address.
+ *
+ * Sets the primary email address for @info.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_info_set_email(PurpleContactInfo *info, const char *email);
+
+/**
+ * purple_contact_info_get_phone_number:
+ * @info: The instance:
+ *
+ * Gets the primary phone number for the contact.
+ *
+ * Returns: (nullable): The primary phone number for the contact.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_contact_info_get_phone_number(PurpleContactInfo *info);
+
+/**
+ * purple_contact_info_set_phone_number:
+ * @info: The instance.
+ * @phone_number: (nullable): The new phone number to set.
+ *
+ * Sets the primary phone number for @info.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_info_set_phone_number(PurpleContactInfo *info, const char *phone_number);
+
+/**
+ * purple_contact_info_get_time_zone:
+ * @info: The instance.
+ *
+ * Gets the [struct@GLib.TimeZone] for @info.
+ *
+ * Returns: (transfer none) (nullable): The time zone if set, otherwise %NULL.
+ *
+ * Since: 3.0.0
+ */
+GTimeZone *purple_contact_info_get_time_zone(PurpleContactInfo *info);
+
+/**
+ * purple_contact_info-set_time_zone:
+ * @info: The instance.
+ * @time_zone: (transfer none) (nullable): The new time zone.
+ *
+ * Sets the time zone of @info to @time_zone.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_info_set_time_zone(PurpleContactInfo *info, GTimeZone *timezone);
+
+/**
+ * purple_contact_info_get_note:
+ * @info: The instance.
+ *
+ * Gets the "note" for and @info.
+ *
+ * Returns: The note.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_contact_info_get_note(PurpleContactInfo *info);
+
+/**
+ * purple_contact_info_set_note:
+ * @info: The instance.
+ * @note: (nullable): The new note.
+ *
+ * Sets the note for @info to @note.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_info_set_note(PurpleContactInfo *info, const char *note);
+
+/**
  * purple_contact_info_get_avatar:
  * @info: The instance.
  *

@@ -46,15 +46,22 @@ test_purple_contact_info_properties(void) {
 	PurpleTags *tags = NULL;
 	GdkPixbuf *avatar = NULL;
 	GdkPixbuf *avatar1 = NULL;
+	GTimeZone *time_zone = NULL;
+	GTimeZone *time_zone1 = NULL;
 	char *id = NULL;
 	char *username = NULL;
 	char *display_name = NULL;
 	char *alias = NULL;
 	char *color = NULL;
+	char *email = NULL;
+	char *phone_number = NULL;
+	char *note = NULL;
 	char *name_for_display = NULL;
 
 	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
 	person = purple_person_new();
+
+	time_zone = g_time_zone_new_utc();
 
 	/* Use g_object_new so we can test setting properties by name. All of them
 	 * call the setter methods, so by doing it this way we exercise more of the
@@ -67,6 +74,10 @@ test_purple_contact_info_properties(void) {
 		"display-name", "display-name",
 		"alias", "alias",
 		"color", "#e9c636",
+		"email", "pidgin@example.com",
+		"phone-number", "+10123456789",
+		"time-zone", time_zone,
+		"note", "message in a bottle",
 		"avatar", avatar,
 		"person", person,
 		"permission", PURPLE_CONTACT_INFO_PERMISSION_ALLOW,
@@ -79,6 +90,10 @@ test_purple_contact_info_properties(void) {
 		"display-name", &display_name,
 		"alias", &alias,
 		"color", &color,
+		"email", &email,
+		"phone-number", &phone_number,
+		"time-zone", &time_zone1,
+		"note", &note,
 		"avatar", &avatar1,
 		"presence", &presence1,
 		"tags", &tags,
@@ -93,6 +108,11 @@ test_purple_contact_info_properties(void) {
 	g_assert_cmpstr(display_name, ==, "display-name");
 	g_assert_cmpstr(alias, ==, "alias");
 	g_assert_cmpstr(color, ==, "#e9c636");
+	g_assert_cmpstr(email, ==, "pidgin@example.com");
+	g_assert_cmpstr(phone_number, ==, "+10123456789");
+	g_assert_cmpstr(g_time_zone_get_identifier(time_zone1), ==,
+	                g_time_zone_get_identifier(time_zone));
+	g_assert_cmpstr(note, ==, "message in a bottle");
 	g_assert_cmpstr(name_for_display, ==, "alias");
 	g_assert_true(avatar1 == avatar);
 	g_assert_nonnull(presence1);
@@ -106,6 +126,10 @@ test_purple_contact_info_properties(void) {
 	g_clear_pointer(&display_name, g_free);
 	g_clear_pointer(&alias, g_free);
 	g_clear_pointer(&color, g_free);
+	g_clear_pointer(&email, g_free);
+	g_clear_pointer(&phone_number, g_free);
+	g_clear_pointer(&time_zone, g_time_zone_unref);
+	g_clear_pointer(&note, g_free);
 	g_clear_pointer(&name_for_display, g_free);
 	g_clear_object(&avatar1);
 	g_clear_object(&presence1);
