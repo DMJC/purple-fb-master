@@ -1427,17 +1427,6 @@ purple_account_set_status_attrs(PurpleAccount *account, const char *status_id,
 }
 
 void
-purple_account_clear_settings(PurpleAccount *account)
-{
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	g_hash_table_destroy(account->settings);
-
-	account->settings = g_hash_table_new_full(g_str_hash, g_str_equal,
-	                                          g_free, delete_setting);
-}
-
-void
 purple_account_set_int(PurpleAccount *account, const char *name, int value)
 {
 	PurpleAccountSetting *setting;

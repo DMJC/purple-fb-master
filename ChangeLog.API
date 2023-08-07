@@ -105,6 +105,7 @@ version 3.0.0 (??/??/????):
 		  parameter
 		* PurpleAccount is now a GObject. Please see the documentation for
 		  details.
+		* purple_account_clear_settings
 		* purple_account_get_alias renamed to purple_account_get_private_alias
 		* purple_account_set_alias renamed to purple_account_set_private_alias
 		* purple_account_set_status_list renamed to

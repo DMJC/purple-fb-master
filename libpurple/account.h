@@ -293,14 +293,6 @@ void purple_account_set_status_attrs(PurpleAccount *account,
 	const char *status_id, gboolean active, GHashTable *attrs);
 
 /**
- * purple_account_clear_settings:
- * @account: The account.
- *
- * Clears all protocol-specific settings on an account.
- */
-void purple_account_clear_settings(PurpleAccount *account);
-
-/**
  * purple_account_set_int:
  * @account: The account.
  * @name:    The name of the setting.
