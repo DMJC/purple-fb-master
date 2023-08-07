@@ -208,28 +208,6 @@ purple_normalize(PurpleAccount *account, const char *str)
 	return ret;
 }
 
-/*
- * You probably don't want to call this directly, it is
- * mainly for use as a protocol callback function.  See the
- * comments in util.h.
- */
-const char *
-purple_normalize_nocase(const char *str)
-{
-	static char buf[BUF_LEN];
-	char *tmp1, *tmp2;
-
-	g_return_val_if_fail(str != NULL, NULL);
-
-	tmp1 = g_utf8_strdown(str, -1);
-	tmp2 = g_utf8_normalize(tmp1, -1, G_NORMALIZE_DEFAULT);
-	g_snprintf(buf, sizeof(buf), "%s", tmp2 ? tmp2 : "");
-	g_free(tmp2);
-	g_free(tmp1);
-
-	return buf;
-}
-
 gboolean
 purple_validate(PurpleProtocol *protocol, const char *str)
 {
@@ -282,15 +260,6 @@ purple_strdup_withhtml(const gchar *src)
 	dest[destsize-1] = '\0';
 
 	return dest;
-}
-
-gboolean
-purple_str_has_caseprefix(const gchar *s, const gchar *p)
-{
-	g_return_val_if_fail(s, FALSE);
-	g_return_val_if_fail(p, FALSE);
-
-	return (g_ascii_strncasecmp(s, p, strlen(p)) == 0);
 }
 
 void
@@ -711,75 +680,6 @@ purple_utf8_strip_unprintables(const gchar *str)
 
 	return workstr;
 }
-
-char *
-purple_utf8_ncr_encode(const char *str)
-{
-	GString *out;
-
-	g_return_val_if_fail(str != NULL, NULL);
-	g_return_val_if_fail(g_utf8_validate(str, -1, NULL), NULL);
-
-	out = g_string_new("");
-
-	for(; *str; str = g_utf8_next_char(str)) {
-		gunichar wc = g_utf8_get_char(str);
-
-		/* super simple check. hopefully not too wrong. */
-		if(wc >= 0x80) {
-			g_string_append_printf(out, "&#%u;", (guint32) wc);
-		} else {
-			g_string_append_unichar(out, wc);
-		}
-	}
-
-	return g_string_free(out, FALSE);
-}
-
-
-char *
-purple_utf8_ncr_decode(const char *str)
-{
-	GString *out;
-	char *buf, *b;
-
-	g_return_val_if_fail(str != NULL, NULL);
-	g_return_val_if_fail(g_utf8_validate(str, -1, NULL), NULL);
-
-	buf = (char *) str;
-	out = g_string_new("");
-
-	while( (b = strstr(buf, "&#")) ) {
-		gunichar wc;
-		int base = 0;
-
-		/* append everything leading up to the &# */
-		g_string_append_len(out, buf, b-buf);
-
-		b += 2; /* skip past the &# */
-
-		/* strtoul will treat 0x prefix as hex, but not just x */
-		if(*b == 'x' || *b == 'X') {
-			base = 16;
-			b++;
-		}
-
-		/* advances buf to the end of the ncr segment */
-		wc = (gunichar) strtoul(b, &buf, base);
-
-		/* this mimics the previous impl of ncr_decode */
-		if(*buf == ';') {
-			g_string_append_unichar(out, wc);
-			buf++;
-		}
-	}
-
-	/* append whatever's left */
-	g_string_append(out, buf);
-
-	return g_string_free(out, FALSE);
-}
-
 
 int
 purple_utf8_strcasecmp(const char *a, const char *b)

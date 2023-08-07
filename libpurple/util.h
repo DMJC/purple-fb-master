@@ -246,20 +246,6 @@ purple_strempty(const char *str) {
 const char *purple_normalize(PurpleAccount *account, const char *str);
 
 /**
- * purple_normalize_nocase:
- * @str:      The string to normalize.
- *
- * Normalizes a string, so that it is suitable for comparison.
- *
- * This is one possible implementation for the protocol callback
- * function "normalize."  It returns a lowercase and UTF-8
- * normalized version of the string.
- *
- * Returns: A pointer to the normalized version stored in a static buffer.
- */
-const char *purple_normalize_nocase(const char *str);
-
-/**
  * purple_validate:
  * @protocol: The protocol the string belongs to.
  * @str:      The string to validate.
@@ -269,19 +255,6 @@ const char *purple_normalize_nocase(const char *str);
  * Returns: TRUE, if string is valid, otherwise FALSE.
  */
 gboolean purple_validate(PurpleProtocol *protocol, const char *str);
-
-/**
- * purple_str_has_caseprefix:
- * @s: The string to check.
- * @p: The prefix in question.
- *
- * Compares two strings to see if the first contains the second as
- * a proper case-insensitive prefix.
- *
- * Returns: %TRUE if @p is a prefix of @s, otherwise %FALSE.
- */
-gboolean
-purple_str_has_caseprefix(const gchar *s, const gchar *p);
 
 /**
  * purple_strdup_withhtml:
@@ -337,34 +310,6 @@ void purple_util_chrreplace(char *string, char delimiter,
  */
 gchar *purple_strreplace(const char *string, const char *delimiter,
 					   const char *replacement);
-
-
-/**
- * purple_utf8_ncr_encode:
- * @in: The string which might contain utf-8 substrings
- *
- * Given a string, this replaces any utf-8 substrings in that string with
- * the corresponding numerical character reference, and returns a newly
- * allocated string.
- *
- * Returns: A new string, with utf-8 replaced with numerical character
- *         references, free this with g_free()
-*/
-char *purple_utf8_ncr_encode(const char *in);
-
-
-/**
- * purple_utf8_ncr_decode:
- * @in: The string which might contain numerical character references.
- *
- * Given a string, this replaces any numerical character references
- * in that string with the corresponding actual utf-8 substrings,
- * and returns a newly allocated string.
- *
- * Returns: A new string, with numerical character references
- *         replaced with actual utf-8, free this with g_free().
- */
-char *purple_utf8_ncr_decode(const char *in);
 
 /**
  * purple_str_seconds_to_string:
