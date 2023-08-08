@@ -105,6 +105,7 @@ enum {
 	PROP_REMEMBER_PASSWORD,
 	PROP_PROXY_INFO,
 	PROP_ERROR,
+	PROP_CONNECTED,
 	PROP_LAST
 };
 static GParamSpec *properties[PROP_LAST];
@@ -705,6 +706,9 @@ purple_account_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_ERROR:
 			g_value_set_boxed(value, purple_account_get_error(account));
 			break;
+		case PROP_CONNECTED:
+			g_value_set_boolean(value, purple_account_is_connected(account));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -917,6 +921,19 @@ purple_account_class_init(PurpleAccountClass *klass) {
 		"The connection error info of the account",
 		PURPLE_TYPE_CONNECTION_ERROR_INFO,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAccount:connected:
+	 *
+	 * Whether or not the account is connected.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_CONNECTED] = g_param_spec_boolean(
+		"connected", "connected",
+		"Whether or not the account is connected.",
+		FALSE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, PROP_LAST, properties);
 
@@ -1297,14 +1314,18 @@ purple_account_set_connection(PurpleAccount *account, PurpleConnection *gc) {
 	}
 
 	if(g_set_object(&account->gc, gc)) {
+		GObject *obj = G_OBJECT(account);
+
 		if(PURPLE_IS_CONNECTION(account->gc)) {
 			g_signal_connect(account->gc, "notify::state",
 			                 G_CALLBACK(purple_account_connection_state_cb),
 			                 account);
 		}
 
-		g_object_notify_by_pspec(G_OBJECT(account),
-		                         properties[PROP_CONNECTION]);
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_CONNECTION]);
+		g_object_notify_by_pspec(obj, properties[PROP_CONNECTED]);
+		g_object_thaw_notify(obj);
 	} else {
 		/* If the set didn't work, restore our old signal. */
 		if(PURPLE_IS_CONNECTION(account->gc)) {
