@@ -107,14 +107,17 @@ pidgin_accounts_enabled_menu_changed_cb(G_GNUC_UNUSED PurpleAccountManager *mana
 }
 
 static void
-pidgin_accounts_enabled_menu_connected_cb(PurpleAccount *account, gpointer data)
+pidgin_accounts_enabled_menu_account_connected_cb(G_GNUC_UNUSED PurpleAccountManager *m,
+                                                  PurpleAccount *account,
+                                                  gpointer data)
 {
 	pidgin_accounts_enabled_menu_update(data, account);
 }
 
 static void
-pidgin_accounts_enabled_menu_disconnected_cb(PurpleAccount *account,
-                                             gpointer data)
+pidgin_accounts_enabled_menu_account_disconnected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                                                     PurpleAccount *account,
+                                                     gpointer data)
 {
 	PidginAccountsEnabledMenu *menu = data;
 	PurpleProtocol *protocol = NULL;
@@ -331,29 +334,21 @@ pidgin_accounts_enabled_menu_constructed(GObject *obj) {
 
 static void
 pidgin_accounts_enabled_menu_init(PidginAccountsEnabledMenu *menu) {
-	PurpleAccountManager *manager = NULL;
+	PurpleAccountManager *account_manager = NULL;
 	PurpleProtocolManager *protocol_manager = NULL;
-	gpointer handle = NULL;
 
 	menu->accounts = g_queue_new();
 
-	manager = purple_account_manager_get_default();
-	g_signal_connect_object(manager, "account-changed::enabled",
+	account_manager = purple_account_manager_get_default();
+	g_signal_connect_object(account_manager, "account-changed::enabled",
 	                        G_CALLBACK(pidgin_accounts_enabled_menu_changed_cb),
 	                        menu, 0);
-
-	/* Wire up the purple signals we care about. */
-	handle = purple_accounts_get_handle();
-
-	/* For the account actions, we also need to know when an account is online
-	 * or offline.
-	 */
-	purple_signal_connect(handle, "account-signed-on", menu,
-	                      G_CALLBACK(pidgin_accounts_enabled_menu_connected_cb),
-	                      menu);
-	purple_signal_connect(handle, "account-signed-off", menu,
-	                      G_CALLBACK(pidgin_accounts_enabled_menu_disconnected_cb),
-	                      menu);
+	g_signal_connect_object(account_manager, "account-connected",
+	                        G_CALLBACK(pidgin_accounts_enabled_menu_account_connected_cb),
+	                        menu, 0);
+	g_signal_connect_object(account_manager, "account-disconnected",
+	                        G_CALLBACK(pidgin_accounts_enabled_menu_account_disconnected_cb),
+	                        menu, 0);
 
 	/* We also need to know when the protocol actions have changed. */
 	protocol_manager = purple_protocol_manager_get_default();
