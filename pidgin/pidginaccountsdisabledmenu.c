@@ -172,13 +172,6 @@ pidgin_accounts_disabled_menu_get_item_links(G_GNUC_UNUSED GMenuModel *model,
  * GObject Implementation
  *****************************************************************************/
 static void
-pidgin_accounts_disabled_menu_dispose(GObject *obj) {
-	purple_signals_disconnect_by_handle(obj);
-
-	G_OBJECT_CLASS(pidgin_accounts_disabled_menu_parent_class)->dispose(obj);
-}
-
-static void
 pidgin_accounts_disabled_menu_constructed(GObject *obj) {
 	G_OBJECT_CLASS(pidgin_accounts_disabled_menu_parent_class)->constructed(obj);
 
@@ -200,7 +193,6 @@ pidgin_accounts_disabled_menu_class_init(PidginAccountsDisabledMenuClass *klass)
 	GMenuModelClass *model_class = G_MENU_MODEL_CLASS(klass);
 
 	obj_class->constructed = pidgin_accounts_disabled_menu_constructed;
-	obj_class->dispose = pidgin_accounts_disabled_menu_dispose;
 
 	model_class->is_mutable = pidgin_accounts_disabled_menu_is_mutable;
 	model_class->get_n_items = pidgin_accounts_disabled_menu_get_n_items;
