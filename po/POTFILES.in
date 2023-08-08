@@ -282,7 +282,6 @@ pidgin/plugins/gestures/gestures.c
 pidgin/plugins/gestures/stroke.c
 pidgin/plugins/gestures/stroke-draw.c
 pidgin/plugins/iconaway/iconaway.c
-pidgin/plugins/notify/notify.c
 pidgin/plugins/transparency/transparency.c
 pidgin/plugins/unity/unity.c
 pidgin/plugins/xmppconsole/console.ui

@@ -1,7 +1,6 @@
 subdir('disco')
 subdir('gestures')
 subdir('iconaway')
-subdir('notify')
 subdir('transparency')
 subdir('unity', if_found : UNITY)
 subdir('xmppconsole')
