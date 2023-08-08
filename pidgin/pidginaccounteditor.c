@@ -158,11 +158,6 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 		if(purple_account_is_connected(editor->account)) {
 			gtk_widget_set_sensitive(editor->username, FALSE);
 		}
-	} else {
-		/* If we don't have an account reset the fields that are static. */
-		pidgin_protocol_chooser_set_protocol(PIDGIN_PROTOCOL_CHOOSER(editor->protocol),
-		                                     NULL);
-		gtk_editable_set_text(GTK_EDITABLE(editor->username), "");
 	}
 
 	/* Now remove the rows we added to the preference group for each non
@@ -1308,6 +1303,11 @@ pidgin_account_editor_set_account(PidginAccountEditor *editor,
 			g_signal_connect_object(account, "notify::connection",
 			                        G_CALLBACK(pidgin_account_editor_connection_changed_cb),
 			                        editor, 0);
+		} else {
+			/* If we don't have an account reset the fields that are static. */
+			pidgin_protocol_chooser_set_protocol(PIDGIN_PROTOCOL_CHOOSER(editor->protocol),
+			                                     NULL);
+			gtk_editable_set_text(GTK_EDITABLE(editor->username), "");
 		}
 
 		g_object_notify_by_pspec(G_OBJECT(editor), properties[PROP_ACCOUNT]);
