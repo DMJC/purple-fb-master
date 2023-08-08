@@ -23,6 +23,7 @@ PROGS = [
     'presence',
     'protocol',
     'protocol_action',
+    'protocol_contact_search',
     'protocol_roster',
     'protocol_xfer',
     'purplepath',
