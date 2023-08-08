@@ -2421,10 +2421,15 @@ reconstruct_plugins_menu_cb(G_GNUC_UNUSED GObject *plugin_manager,
 
 static void
 reconstruct_accounts_menu(void) {
+#if 0
 	PurpleAccountManager *manager = NULL;
+#endif
 	GntWidget *sub;
-	GntMenuItem *acc, *item;
+	GntMenuItem *acc;
+#if 0
+	GntMenuItem *item;
 	GList *iter;
+#endif
 
 	if (!ggblist)
 		return;
@@ -2436,6 +2441,7 @@ reconstruct_accounts_menu(void) {
 	sub = gnt_menu_new(GNT_MENU_POPUP);
 	gnt_menuitem_set_submenu(acc, GNT_MENU(sub));
 
+#if 0
 	manager = purple_account_manager_get_default();
 	iter = purple_account_manager_get_enabled(manager);
 
@@ -2448,7 +2454,6 @@ reconstruct_accounts_menu(void) {
 			continue;
 		protocol = purple_connection_get_protocol(gc);
 
-#if 0
 		/* TODO: port to PurpleProtocolActions */
 		if (PURPLE_PROTOCOL_IMPLEMENTS(protocol, CLIENT, get_actions)) {
 			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
@@ -2456,8 +2461,8 @@ reconstruct_accounts_menu(void) {
 			gnt_menu_add_item(GNT_MENU(sub), item);
 			build_protocol_actions(item, protocol, gc);
 		}
-#endif
 	}
+#endif
 }
 
 static void

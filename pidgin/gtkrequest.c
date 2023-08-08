@@ -265,7 +265,7 @@ pidgin_request_dialog_icon(PurpleRequestType dialog_type,
 	PurpleRequestIconType icon_type;
 	gconstpointer icon_data;
 	gsize icon_size;
-	const gchar *icon_name = "dialog-question";
+	const char *icon_name = NULL;
 
 	/* Dialog icon. */
 	icon_data = purple_request_cpar_get_custom_icon(cpar, &icon_size);

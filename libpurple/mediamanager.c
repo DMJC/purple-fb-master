@@ -2045,7 +2045,7 @@ purple_media_manager_register_static_elements(PurpleMediaManager *manager)
 		/* "aasink", "AALib", Didn't work for me */
 		NULL
 	};
-	const gchar **sinks = VIDEO_SINK_PLUGINS;
+	const gchar **sinks = NULL;
 
 	/* Default auto* elements. */
 

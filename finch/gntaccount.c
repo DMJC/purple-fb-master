@@ -283,6 +283,7 @@ update_user_splits(AccountEditDialog *dialog)
 	GntWidget *hbox;
 	PurpleProtocol *protocol;
 	GList *iter, *entries, *splits;
+	gboolean have_account = PURPLE_IS_ACCOUNT(dialog->account);
 	char *username = NULL;
 
 	if (dialog->splits)
@@ -303,7 +304,7 @@ update_user_splits(AccountEditDialog *dialog)
 	if (!protocol)
 		return;
 
-	if(PURPLE_IS_ACCOUNT(dialog->account)) {
+	if(have_account) {
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(dialog->account);
 
 		username = g_strdup(purple_contact_info_get_username(info));
@@ -339,8 +340,7 @@ update_user_splits(AccountEditDialog *dialog)
 		const char *value = NULL;
 		char *s;
 
-		if (dialog->account)
-		{
+		if(have_account) {
 			if(purple_account_user_split_get_reverse(split))
 				s = strrchr(username, purple_account_user_split_get_separator(split));
 			else
