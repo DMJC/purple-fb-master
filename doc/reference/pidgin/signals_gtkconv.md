@@ -156,21 +156,6 @@ Emitted after a message is displayed in a chat conversation.
 **user_data**
 : User data set when the signal handler was connected.
 
-### conversation-switched
-
-```c
-void user_function(PurpleConversation *conv, gpointer user_data);
-```
-
-Emitted when a window switched from one conversation to another.
-
-**Parameters:**
-
-**new_conv**
-: The now active conversation.
-
-**user_data**
-: User data set when the signal handler was connected.
 
 ### conversation-displayed
 

@@ -80,14 +80,6 @@ G_BEGIN_DECLS
 PurpleConversationUiOps *pidgin_conversations_get_conv_ui_ops(void);
 
 /**
- * pidgin_conv_switch_active_conversation:
- * @conv: The conversation
- *
- * Sets the active conversation within a GTK-conversation.
- */
-void pidgin_conv_switch_active_conversation(PurpleConversation *conv);
-
-/**
  * pidgin_conv_attach_to_conversation:
  * @conv:  The conversation.
  *
