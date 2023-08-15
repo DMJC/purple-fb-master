@@ -562,6 +562,8 @@ purple_presence_get_login_time(PurplePresence *presence) {
 
 gint
 purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
+	PurplePresencePrimitive primitive1 = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
+	PurplePresencePrimitive primitive2 = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
 	GDateTime *idle1 = NULL;
 	GDateTime *idle2 = NULL;
 	GDateTime *now = NULL;
@@ -576,12 +578,15 @@ purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
 		return -1;
 	}
 
-	if(purple_presence_is_online(presence1) &&
-	   !purple_presence_is_online(presence2))
+	primitive1 = purple_presence_get_primitive(presence1);
+	primitive2 = purple_presence_get_primitive(presence2);
+
+	if(primitive1 != PURPLE_PRESENCE_PRIMITIVE_OFFLINE &&
+	   primitive2 == PURPLE_PRESENCE_PRIMITIVE_OFFLINE)
 	{
 		return -1;
-	} else if(purple_presence_is_online(presence2) &&
-	          !purple_presence_is_online(presence1))
+	} else if(primitive1 == PURPLE_PRESENCE_PRIMITIVE_OFFLINE &&
+	          primitive2 != PURPLE_PRESENCE_PRIMITIVE_OFFLINE)
 	{
 		return 1;
 	}

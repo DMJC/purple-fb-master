@@ -47,6 +47,11 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
+static void
+purple_person_priority_contact_info_notify_cb(GObject *obj,
+                                              G_GNUC_UNUSED GParamSpec *pspec,
+                                              gpointer data);
+
 /******************************************************************************
  * Helpers
  *****************************************************************************/
@@ -79,25 +84,11 @@ purple_person_contact_compare(gconstpointer a, gconstpointer b) {
 }
 
 static void
-purple_person_sort_contacts(PurplePerson *person) {
-	PurpleContactInfo *original_priority = NULL;
+purple_person_sort_contacts(PurplePerson *person,
+                            PurpleContactInfo *original_priority)
+{
 	PurpleContactInfo *new_priority = NULL;
 	guint n_items = person->contacts->len;
-
-	if(n_items <= 1) {
-		GObject *obj = G_OBJECT(person);
-
-		g_object_freeze_notify(obj);
-		g_object_notify_by_pspec(obj, properties[PROP_NAME_FOR_DISPLAY]);
-		g_object_notify_by_pspec(obj, properties[PROP_PRIORITY_CONTACT_INFO]);
-		g_object_thaw_notify(obj);
-
-		g_list_model_items_changed(G_LIST_MODEL(person), 0, n_items, n_items);
-
-		return;
-	}
-
-	original_priority = purple_person_get_priority_contact_info(person);
 
 	g_ptr_array_sort(person->contacts, purple_person_contact_compare);
 
@@ -108,6 +99,21 @@ purple_person_sort_contacts(PurplePerson *person) {
 	new_priority = g_ptr_array_index(person->contacts, 0);
 	if(original_priority != new_priority) {
 		GObject *obj = G_OBJECT(person);
+
+		if(PURPLE_IS_CONTACT_INFO(original_priority)) {
+			g_signal_handlers_disconnect_by_func(original_priority,
+			                                     purple_person_priority_contact_info_notify_cb,
+			                                     person);
+		}
+
+		if(PURPLE_IS_CONTACT_INFO(new_priority)) {
+			g_signal_connect_object(new_priority, "notify::name-for-display",
+			                        G_CALLBACK(purple_person_priority_contact_info_notify_cb),
+			                        person, 0);
+			g_signal_connect_object(new_priority, "notify::avatar",
+			                        G_CALLBACK(purple_person_priority_contact_info_notify_cb),
+			                        person, 0);
+		}
 
 		g_object_freeze_notify(obj);
 		g_object_notify_by_pspec(obj, properties[PROP_NAME_FOR_DISPLAY]);
@@ -139,11 +145,34 @@ purple_person_matches_find_func(gconstpointer a, gconstpointer b) {
  * Callbacks
  *****************************************************************************/
 static void
+purple_person_priority_contact_info_notify_cb(G_GNUC_UNUSED GObject *obj,
+                                              GParamSpec *pspec,
+                                              gpointer data)
+{
+	PurplePerson *person = data;
+	const char *property = NULL;
+
+	property = g_param_spec_get_name(pspec);
+	if(purple_strequal(property, "name-for-display")) {
+		g_object_notify_by_pspec(G_OBJECT(person),
+		                         properties[PROP_NAME_FOR_DISPLAY]);
+	} else if(purple_strequal(property, "avatar")) {
+		g_object_notify_by_pspec(G_OBJECT(person),
+		                         properties[PROP_AVATAR_FOR_DISPLAY]);
+	}
+}
+
+static void
 purple_person_presence_notify_cb(G_GNUC_UNUSED GObject *obj,
                                  G_GNUC_UNUSED GParamSpec *pspec,
                                  gpointer data)
 {
-	purple_person_sort_contacts(data);
+	PurplePerson *person = data;
+	PurpleContactInfo *current_priority = NULL;
+
+	current_priority = purple_person_get_priority_contact_info(person);
+
+	purple_person_sort_contacts(person, current_priority);
 }
 
 /******************************************************************************
@@ -514,9 +543,12 @@ purple_person_add_contact_info(PurplePerson *person,
                                PurpleContactInfo *info)
 {
 	PurplePresence *presence = NULL;
+	PurpleContactInfo *current_priority = NULL;
 
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
+
+	current_priority = purple_person_get_priority_contact_info(person);
 
 	g_ptr_array_add(person->contacts, g_object_ref(info));
 
@@ -527,13 +559,14 @@ purple_person_add_contact_info(PurplePerson *person,
 
 	purple_contact_info_set_person(info, person);
 
-	purple_person_sort_contacts(person);
+	purple_person_sort_contacts(person, current_priority);
 }
 
 gboolean
 purple_person_remove_contact_info(PurplePerson *person,
                                   PurpleContactInfo *info)
 {
+	PurpleContactInfo *current_priority = NULL;
 	gboolean removed = FALSE;
 
 	g_return_val_if_fail(PURPLE_IS_PERSON(person), FALSE);
@@ -541,6 +574,8 @@ purple_person_remove_contact_info(PurplePerson *person,
 
 	/* Ref the contact info to avoid a use-after free. */
 	g_object_ref(info);
+
+	current_priority = purple_person_get_priority_contact_info(person);
 
 	/* g_ptr_array_remove calls g_object_unref because we passed it in as a
 	 * GDestroyNotify.
@@ -556,7 +591,7 @@ purple_person_remove_contact_info(PurplePerson *person,
 
 		purple_contact_info_set_person(info, NULL);
 
-		purple_person_sort_contacts(person);
+		purple_person_sort_contacts(person, current_priority);
 	}
 
 	/* Remove our reference. */

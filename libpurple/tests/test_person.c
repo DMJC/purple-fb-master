@@ -42,9 +42,9 @@ test_purple_person_notify_cb(G_GNUC_UNUSED GObject *obj,
                              G_GNUC_UNUSED GParamSpec *pspec,
                              gpointer data)
 {
-	gboolean *called = data;
+	guint *called = data;
 
-	*called = TRUE;
+	*called = *called + 1;
 }
 
 /******************************************************************************
@@ -120,15 +120,21 @@ test_purple_person_avatar_for_display_person(void) {
 	PurpleContactInfo *info = NULL;
 	PurplePerson *person = NULL;
 	GdkPixbuf *avatar = NULL;
+	guint called = 0;
 
 	person = purple_person_new();
+	g_signal_connect(person, "notify::avatar",
+	                 G_CALLBACK(test_purple_person_notify_cb), &called);
+	g_signal_connect(person, "notify::avatar-for-display",
+	                 G_CALLBACK(test_purple_person_notify_cb), &called);
 	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
 	purple_person_set_avatar(person, avatar);
+	g_assert_cmpuint(called, ==, 2);
 
 	info = purple_contact_info_new("id");
 	purple_person_add_contact_info(person, info);
 
-	/* Make sure the person's alias is overriding the contact info. */
+	/* Make sure the person's avatar is overriding the contact info. */
 	g_assert_true(purple_person_get_avatar_for_display(person) == avatar);
 
 	g_clear_object(&info);
@@ -141,16 +147,29 @@ test_purple_person_avatar_for_display_contact(void) {
 	PurpleContactInfo *info = NULL;
 	PurplePerson *person = NULL;
 	GdkPixbuf *avatar = NULL;
+	guint called = 0;
 
 	person = purple_person_new();
+	g_signal_connect(person, "notify::avatar-for-display",
+	                 G_CALLBACK(test_purple_person_notify_cb), &called);
 
 	info = purple_contact_info_new("id");
 	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
 	purple_contact_info_set_avatar(info, avatar);
 	purple_person_add_contact_info(person, info);
+	g_assert_cmpuint(called, ==, 1);
 
 	/* Make sure the person's alias is overriding the contact info. */
 	g_assert_true(purple_person_get_avatar_for_display(person) == avatar);
+	g_clear_object(&avatar);
+
+	/* Now change the avatar on the contact info an verify that we not notified
+	 * of the property changing.
+	 */
+	called = 0;
+	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	purple_contact_info_set_avatar(info, avatar);
+	g_assert_cmpuint(called, ==, 1);
 
 	g_clear_object(&info);
 	g_clear_object(&person);
@@ -180,16 +199,25 @@ static void
 test_purple_person_name_for_display_contact(void) {
 	PurpleContactInfo *info = NULL;
 	PurplePerson *person = NULL;
+	guint called = 0;
 
 	person = purple_person_new();
+	g_signal_connect(person, "notify::name-for-display",
+	                 G_CALLBACK(test_purple_person_notify_cb), &called);
 
 	info = purple_contact_info_new("id");
 	purple_person_add_contact_info(person, info);
+	g_assert_cmpuint(called, ==, 1);
 
-	/* Make sure the contact info's name for display is called when the
-	 * person's alias is unset.
-	 */
+	/* Make sure the name for display matches the id of the contact. */
 	g_assert_cmpstr(purple_person_get_name_for_display(person), ==, "id");
+
+	/* Now set a username on the contact and verify that the name for display
+	 * matches and that the notify signal was emitted for the property.
+	 */
+	purple_contact_info_set_username(info, "clu");
+	g_assert_cmpstr(purple_person_get_name_for_display(person), ==, "clu");
+	g_assert_cmpuint(called, ==, 2);
 
 	g_clear_object(&info);
 	g_clear_object(&person);
@@ -306,9 +334,7 @@ test_purple_person_priority_single(void) {
 	PurpleContactInfo *priority = NULL;
 	PurplePerson *person = NULL;
 	PurplePresence *presence = NULL;
-	PurpleStatus *status = NULL;
-	PurpleStatusType *status_type = NULL;
-	gboolean called = FALSE;
+	guint called = 0;
 
 	person = purple_person_new();
 	g_signal_connect(person, "notify::priority-contact-info",
@@ -320,20 +346,16 @@ test_purple_person_priority_single(void) {
 	info = purple_contact_info_new(NULL);
 	purple_person_add_contact_info(person, info);
 
-	/* Set the status of the contact. */
+	/* Set the presence of the contact. */
 	presence = purple_contact_info_get_presence(info);
-	status_type = purple_status_type_new(PURPLE_STATUS_AVAILABLE, "available",
-	                                     "Available", FALSE);
-	status = purple_status_new(status_type, presence);
-	g_object_set(G_OBJECT(presence), "active-status", status, NULL);
-	g_clear_object(&status);
+	purple_presence_set_primitive(presence,
+	                              PURPLE_PRESENCE_PRIMITIVE_AVAILABLE);
 
-	g_assert_true(called);
+	g_assert_cmpuint(called, ==, 1);
 
 	priority = purple_person_get_priority_contact_info(person);
 	g_assert_true(priority == info);
 
-	purple_status_type_destroy(status_type);
 	g_clear_object(&person);
 	g_clear_object(&info);
 	g_clear_object(&presence);
@@ -346,10 +368,7 @@ test_purple_person_priority_multiple_with_change(void) {
 	PurpleContactInfo *sorted_contact = NULL;
 	PurplePerson *person = NULL;
 	PurplePresence *sorted_presence = NULL;
-	PurpleStatus *status = NULL;
-	PurpleStatusType *available = NULL;
-	PurpleStatusType *offline = NULL;
-	gboolean changed = FALSE;
+	guint called = 0;
 	gint n_infos = 5;
 	guint n_items = 0;
 
@@ -361,29 +380,24 @@ test_purple_person_priority_multiple_with_change(void) {
 	 * we then assert.
 	 */
 
-	/* Create our status types. */
-	available = purple_status_type_new(PURPLE_STATUS_AVAILABLE, "available",
-	                                   "Available", FALSE);
-	offline = purple_status_type_new(PURPLE_STATUS_OFFLINE, "offline",
-	                                 "Offline", FALSE);
-
 	/* Create the person and connected to the notify signal for the
 	 * priority-contact property.
 	 */
 	person = purple_person_new();
 	g_signal_connect(person, "notify::priority-contact-info",
-	                 G_CALLBACK(test_purple_person_notify_cb), &changed);
+	                 G_CALLBACK(test_purple_person_notify_cb), &called);
 	priority = purple_person_get_priority_contact_info(person);
 	g_assert_null(priority);
 
 	/* Create and add all contact infos. */
 	for(gint i = 0; i < n_infos; i++) {
 		PurpleContactInfo *info = NULL;
-		PurplePresence *presence = NULL;
 		gchar *username = NULL;
 
-		/* Set changed to false as it shouldn't be changed. */
-		changed = FALSE;
+		/* Set called to 0 as it shouldn't be called as the priority contact
+		 * info shouldn't change except for the first index.
+		 */
+		called = 0;
 
 		/* Now create a real contact. */
 		username = g_strdup_printf("username%d", i + 1);
@@ -391,23 +405,24 @@ test_purple_person_priority_multiple_with_change(void) {
 		purple_contact_info_set_username(info, username);
 		g_free(username);
 
-		/* Set the status for the contact. */
-		presence = purple_contact_info_get_presence(info);
-		status = purple_status_new(offline, presence);
-		g_object_set(G_OBJECT(presence), "active-status", status, NULL);
-		g_clear_object(&status);
-
 		purple_person_add_contact_info(person, info);
 
 		if(i == 0) {
 			first = g_object_ref(info);
-			g_assert_true(changed);
+			g_assert_cmpuint(called, ==, 1);
 		} else {
-			g_assert_false(changed);
+			g_assert_cmpuint(called, ==, 0);
 
 			if(i == n_infos - 2) {
-				sorted_contact = g_object_ref(info);
+				PurplePresence *presence = NULL;
+
+				/* Add a reference to the presence of this specific contact
+				 * info, as we want to tweak it later.
+				 */
+				presence = purple_contact_info_get_presence(info);
 				sorted_presence = g_object_ref(presence);
+
+				sorted_contact = g_object_ref(info);
 			}
 		}
 
@@ -424,18 +439,14 @@ test_purple_person_priority_multiple_with_change(void) {
 	/* Now set the second from the last contact info's status to available, and
 	 * verify that that contact info is now the priority contact info.
 	 */
-	changed = FALSE;
-	status = purple_status_new(available, sorted_presence);
-	g_object_set(G_OBJECT(sorted_presence), "active-status", status, NULL);
-	g_clear_object(&status);
-	g_assert_true(changed);
+	called = 0;
+	purple_presence_set_primitive(sorted_presence,
+	                              PURPLE_PRESENCE_PRIMITIVE_AVAILABLE);
 	priority = purple_person_get_priority_contact_info(person);
 	g_assert_true(priority == sorted_contact);
+	g_assert_cmpuint(called, ==, 1);
 
 	/* Cleanup. */
-	purple_status_type_destroy(offline);
-	purple_status_type_destroy(available);
-
 	g_clear_object(&sorted_contact);
 	g_clear_object(&sorted_presence);
 
