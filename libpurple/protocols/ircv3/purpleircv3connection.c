@@ -51,6 +51,8 @@ typedef struct {
 	PurpleIRCv3Parser *parser;
 
 	PurpleIRCv3Capabilities *capabilities;
+
+	PurpleConversation *status_conversation;
 } PurpleIRCv3ConnectionPrivate;
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleIRCv3Connection,
@@ -402,6 +404,7 @@ purple_ircv3_connection_dispose(GObject *obj) {
 
 	g_clear_object(&priv->capabilities);
 	g_clear_object(&priv->parser);
+	g_clear_object(&priv->status_conversation);
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->dispose(obj);
 }
@@ -423,13 +426,19 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
 	char **userparts = NULL;
 	const char *username = NULL;
+	char *title = NULL;
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->constructed(obj);
 
 	priv = purple_ircv3_connection_get_instance_private(connection);
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
+	info = PURPLE_CONTACT_INFO(account);
+
+	title = g_strdup_printf(_("status for %s"),
+	                        purple_contact_info_get_username(info));
 
 	/* Split the username into nick and server and store the values. */
 	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
@@ -440,6 +449,23 @@ purple_ircv3_connection_constructed(GObject *obj) {
 
 	/* Free the userparts vector. */
 	g_strfreev(userparts);
+
+	/* Create our status conversation. */
+	priv->status_conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"name", priv->server_name,
+		"title", title,
+		NULL);
+
+	g_clear_pointer(&title, g_free);
+
+	/* TODO later: add an account action that'll register and unregister this
+	 * with the conversation manager.
+	 */
+	purple_conversation_manager_register(purple_conversation_manager_get_default(),
+	                                     priv->status_conversation);
+
 
 	/* Finally create our objects. */
 	priv->cancellable = g_cancellable_new();
@@ -617,4 +643,43 @@ purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection) {
 	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	return priv->registered;
+}
+
+void
+purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
+                                           const char *source,
+                                           const char *command,
+                                           guint n_params,
+                                           GStrv params)
+{
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+	PurpleMessage *message = NULL;
+	GString *str = NULL;
+
+	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
+	g_return_if_fail(command != NULL);
+
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	str = g_string_new(command);
+
+	if(n_params > 0) {
+		char *joined = g_strjoinv(" ", params);
+
+		g_string_append_printf(str, " %s", joined);
+
+		g_free(joined);
+	}
+
+	message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
+		"author", source,
+		"contents", str->str,
+		NULL);
+
+	g_string_free(str, TRUE);
+
+	purple_conversation_write_message(priv->status_conversation, message);
+
+	g_clear_object(&message);
 }

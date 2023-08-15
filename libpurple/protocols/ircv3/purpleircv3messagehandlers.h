@@ -56,6 +56,8 @@ typedef gboolean (*PurpleIRCv3MessageHandler)(GHashTable *tags,
                                               gpointer data);
 
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_fallback(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status_ignore_param0(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_ping(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_privmsg(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
 

@@ -104,6 +104,20 @@ PurpleIRCv3Capabilities *purple_ircv3_connection_get_capabilities(PurpleIRCv3Con
  */
 gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection);
 
+/**
+ * purple_ircv3_connection_add_status_message:
+ * @connection: The instance.
+ * @source: The source/author of the message.
+ * @command: The command name.
+ * @n_params: The number of parameters.
+ * @params: The parameters themselves.
+ *
+ * Adds a message to the status conversation/window for @connection.
+ *
+ * Since: 3.0.0
+ */
+void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, const char *source, const char *command, guint n_params, GStrv params);
+
 G_END_DECLS
 
 #endif /* PURPLE_IRCV3_CONNECTION_H */

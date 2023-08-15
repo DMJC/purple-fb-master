@@ -16,6 +16,8 @@
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <glib/gi18n-lib.h>
+
 #include "purpleircv3messagehandlers.h"
 
 #include "purpleircv3connection.h"
@@ -28,20 +30,59 @@ gboolean
 purple_ircv3_message_handler_fallback(G_GNUC_UNUSED GHashTable *tags,
                                       const char *source,
                                       const char *command,
-                                      G_GNUC_UNUSED guint n_params,
+                                      guint n_params,
                                       GStrv params,
                                       G_GNUC_UNUSED GError **error,
-                                      G_GNUC_UNUSED gpointer data)
+                                      gpointer data)
 {
-	gchar *joined = g_strjoinv(" ", params);
+	PurpleIRCv3Connection *connection = data;
+	char *new_command = NULL;
 
-	g_message("-- unhandled message --");
-	g_message("source: %s", source);
-	g_message("command: %s", command);
-	g_message("params: %s", joined);
-	g_message("-- end of unhandled message --");
+	new_command = g_strdup_printf(_("unknown command '%s'"), command);
+	purple_ircv3_connection_add_status_message(connection, source, new_command,
+	                                           n_params, params);
 
-	g_free(joined);
+	g_clear_pointer(&new_command, g_free);
+
+	return TRUE;
+}
+
+/******************************************************************************
+ * Status Messages
+ *****************************************************************************/
+gboolean
+purple_ircv3_message_handler_status(G_GNUC_UNUSED GHashTable *tags,
+                                    const char *source,
+                                    const char *command,
+                                    guint n_params,
+                                    GStrv params,
+                                    G_GNUC_UNUSED GError **error,
+                                    gpointer data)
+{
+	purple_ircv3_connection_add_status_message(data, source, command, n_params,
+	                                           params);
+
+	return TRUE;
+}
+
+gboolean
+purple_ircv3_message_handler_status_ignore_param0(G_GNUC_UNUSED GHashTable *tags,
+                                                  const char *source,
+                                                  const char *command,
+                                                  guint n_params,
+                                                  GStrv params,
+                                                  GError **error,
+                                                  gpointer data)
+{
+	if(n_params <= 1) {
+		g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
+		            "expected n_params > 1, got %u", n_params);
+
+		return FALSE;
+	}
+
+	purple_ircv3_connection_add_status_message(data, source, command,
+	                                           n_params - 1, params + 1);
 
 	return TRUE;
 }

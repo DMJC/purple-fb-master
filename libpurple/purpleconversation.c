@@ -396,6 +396,8 @@ static void
 purple_conversation_class_init(PurpleConversationClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
+	klass->write_message = _purple_conversation_write_common;
+
 	obj_class->constructed = purple_conversation_constructed;
 	obj_class->dispose = purple_conversation_dispose;
 	obj_class->finalize = purple_conversation_finalize;

@@ -43,7 +43,7 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Parser, purple_ircv3_parser, PURPLE_IRCV3,
  *
  * Since: 3.0.0
  */
-G_GNUC_INTERNAL PurpleIRCv3Parser *purple_ircv3_parser_new(void);
+PurpleIRCv3Parser *purple_ircv3_parser_new(void);
 
 /**
  * purple_ircv3_parser_set_fallback_handler: (skip):
@@ -55,7 +55,7 @@ G_GNUC_INTERNAL PurpleIRCv3Parser *purple_ircv3_parser_new(void);
  *
  * Since: 3.0.0
  */
-G_GNUC_INTERNAL void purple_ircv3_parser_set_fallback_handler(PurpleIRCv3Parser *parser, PurpleIRCv3MessageHandler handler);
+void purple_ircv3_parser_set_fallback_handler(PurpleIRCv3Parser *parser, PurpleIRCv3MessageHandler handler);
 
 /**
  * purple_ircv3_parser_parse:
@@ -70,7 +70,32 @@ G_GNUC_INTERNAL void purple_ircv3_parser_set_fallback_handler(PurpleIRCv3Parser 
  *
  * Since: 3.0.0
  */
-G_GNUC_INTERNAL gboolean purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer, GError **error, gpointer data);
+gboolean purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer, GError **error, gpointer data);
+
+/**
+ * purple_ircv3_parser_add_handler:
+ * @parser: The instance.
+ * @command: The command string.
+ * @handler: (scope forever): The handler to call.
+ *
+ * Calls @handler every time @parser finds the command named @command.
+ *
+ * Since: 3.0.0
+ */
+void purple_ircv3_parser_add_handler(PurpleIRCv3Parser *parser, const char *command, PurpleIRCv3MessageHandler handler);
+
+/**
+ * purple_ircv3_parser_add_handlers:
+ * @parser: The instance.
+ * @handler: (scope forever): The handler to call when the command is received.
+ * @...: A %NULL terminated list of string command names.
+ *
+ * Like [method@Parser.add_handler] but allows you to add multiple commands at
+ * once that share a handler.
+ *
+ * Since: 3.0.0
+ */
+void purple_ircv3_parser_add_handlers(PurpleIRCv3Parser *parser, PurpleIRCv3MessageHandler handler, ...) G_GNUC_NULL_TERMINATED;
 
 /**
  * purple_ircv3_parser_add_default_handlers:
@@ -80,7 +105,7 @@ G_GNUC_INTERNAL gboolean purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, co
  *
  * Since: 3.0.0
  */
-G_GNUC_INTERNAL void purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser);
+void purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser);
 
 G_END_DECLS
 

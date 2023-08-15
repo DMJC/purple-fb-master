@@ -212,18 +212,6 @@ purple_ircv3_parser_build_params(PurpleIRCv3Parser *parser,
 	return result;
 }
 
-static void
-purple_ircv3_parser_add_handler(PurpleIRCv3Parser *parser,
-                                const gchar *command,
-                                PurpleIRCv3MessageHandler handler)
-{
-	g_return_if_fail(PURPLE_IRCV3_IS_PARSER(parser));
-	g_return_if_fail(command != NULL);
-	g_return_if_fail(handler != NULL);
-
-	g_hash_table_insert(parser->handlers, g_strdup(command), handler);
-}
-
 /******************************************************************************
  * Handlers
  *****************************************************************************/
@@ -396,6 +384,38 @@ purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer,
 }
 
 void
+purple_ircv3_parser_add_handler(PurpleIRCv3Parser *parser,
+                                const char *command,
+                                PurpleIRCv3MessageHandler handler)
+{
+	g_return_if_fail(PURPLE_IRCV3_IS_PARSER(parser));
+	g_return_if_fail(command != NULL);
+	g_return_if_fail(handler != NULL);
+
+	g_hash_table_insert(parser->handlers, g_strdup(command), handler);
+}
+
+void
+purple_ircv3_parser_add_handlers(PurpleIRCv3Parser *parser,
+                                 PurpleIRCv3MessageHandler handler,
+                                 ...)
+{
+	va_list vargs;
+	const char *command = NULL;
+
+	g_return_if_fail(PURPLE_IRCV3_IS_PARSER(parser));
+	g_return_if_fail(handler != NULL);
+
+	va_start(vargs, handler);
+
+	while((command = va_arg(vargs, const char *)) != NULL) {
+		purple_ircv3_parser_add_handler(parser, command, handler);
+	}
+
+	va_end(vargs);
+}
+
+void
 purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser) {
 	g_return_if_fail(PURPLE_IRCV3_IS_PARSER(parser));
 
@@ -411,6 +431,21 @@ purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser) {
 	                                purple_ircv3_message_handler_ping);
 	purple_ircv3_parser_add_handler(parser, "PRIVMSG",
 	                                purple_ircv3_message_handler_privmsg);
+
+	/* Post Registration Greetings */
+	purple_ircv3_parser_add_handlers(parser,
+	                                 purple_ircv3_message_handler_status_ignore_param0,
+	                                 "001", "002", "003", "004", NULL);
+
+	/* Luser's */
+	purple_ircv3_parser_add_handlers(parser,
+	                                 purple_ircv3_message_handler_status_ignore_param0,
+	                                 "251", "252", "253", "254", "255", NULL);
+
+	/* MOTD */
+	purple_ircv3_parser_add_handlers(parser,
+	                                 purple_ircv3_message_handler_status_ignore_param0,
+	                                 "372", "375", "376", NULL);
 
 	/* SASL stuff. */
 	purple_ircv3_parser_add_handler(parser, "900",
