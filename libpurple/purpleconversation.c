@@ -261,8 +261,7 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 			priv->name = g_value_dup_string(value);
 			break;
 		case PROP_TITLE:
-			g_free(priv->title);
-			priv->title = g_value_dup_string(value);
+			purple_conversation_set_title(conv, g_value_get_string(value));
 			break;
 		case PROP_FEATURES:
 			purple_conversation_set_features(conv, g_value_get_flags(value));
@@ -374,7 +373,9 @@ purple_conversation_finalize(GObject *object) {
 
 	/* remove from conversations and im/chats lists prior to emit */
 	manager = purple_conversation_manager_get_default();
-	purple_conversation_manager_unregister(manager, conv);
+	if(PURPLE_IS_CONVERSATION_MANAGER(manager)) {
+		purple_conversation_manager_unregister(manager, conv);
+	}
 
 	purple_signal_emit(purple_conversations_get_handle(),
 	                   "deleting-conversation", conv);
@@ -431,7 +432,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"title", "Title",
 		"The title of the conversation.",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_FEATURES] = g_param_spec_flags(
 		"features", "Connection features",

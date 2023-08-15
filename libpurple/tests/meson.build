@@ -7,6 +7,7 @@ PROGS = [
     'contact_info',
     'contact_manager',
     'conversation',
+    'conversation_manager',
     'conversation_member',
     'credential_manager',
     'credential_provider',
