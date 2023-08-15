@@ -863,41 +863,98 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0.0
 	 */
 	properties[PROP_REQUIRE_PASSWORD] = g_param_spec_boolean(
-		"require-password", "Require password",
-		"Whether or not to require a password for this account",
+		"require-password", "require-password",
+		"Whether or not to require a password for this account.",
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	properties[PROP_USER_INFO] = g_param_spec_string("user-info",
-				"User information",
-				"Detailed user information for the account.", NULL,
-				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+	/**
+	 * PurpleAccount:user-info:
+	 *
+	 * The user information or profile for the account.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_USER_INFO] = g_param_spec_string(
+		"user-info", "user-info",
+		"Detailed user information for the account.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	properties[PROP_BUDDY_ICON_PATH] = g_param_spec_string("buddy-icon-path",
-				"Buddy icon path",
-				"Path to the buddyicon for the account.", NULL,
-				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+	/**
+	 * PurpleAccount:buddy-icon-path:
+	 *
+	 * The path to the file to use as the avatar for this account.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_BUDDY_ICON_PATH] = g_param_spec_string(
+		"buddy-icon-path", "buddy-icon-path",
+		"Path to the buddyicon for the account.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	properties[PROP_ENABLED] = g_param_spec_boolean("enabled", "Enabled",
-				"Whether the account is enabled or not.", FALSE,
-				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+	/**
+	 * PurpleAccount:enabled:
+	 *
+	 * Whether or not this account should track the user's global status.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_ENABLED] = g_param_spec_boolean(
+		"enabled", "enabled",
+		"Whether the account is enabled or not.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleAccount:remember-password:
+	 *
+	 * Whether or not the password for this account should be stored in the
+	 * configured [class@CredentialProvider].
+	 *
+	 * Since: 3.0.0
+	 */
 	properties[PROP_REMEMBER_PASSWORD] = g_param_spec_boolean(
-				"remember-password", "Remember password",
-				"Whether to remember and store the password for this account.",
-				FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+		"remember-password", "remember-password",
+		"Whether to remember and store the password for this account.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	properties[PROP_CONNECTION] = g_param_spec_object("connection",
-				"Connection",
-				"The connection for the account.", PURPLE_TYPE_CONNECTION,
-				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+	/**
+	 * PurpleAccount:connection:
+	 *
+	 * The [class@Connection] object for this account. This will be %NULL when
+	 * the account is offline.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_CONNECTION] = g_param_spec_object(
+		"connection", "connection",
+		"The connection for the account.",
+		PURPLE_TYPE_CONNECTION,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	properties[PROP_PROTOCOL_ID] = g_param_spec_string("protocol-id",
-				"Protocol ID",
-				"ID of the protocol that is responsible for the account.", NULL,
-				G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
-				G_PARAM_STATIC_STRINGS);
+	/**
+	 * PurpleAccount:protocol-id:
+	 *
+	 * The identifier of the protocol that this account is using.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_PROTOCOL_ID] = g_param_spec_string(
+		"protocol-id", "protocol-id",
+		"ID of the protocol that is responsible for the account.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleAccount:proxy-info:
+	 *
+	 * The [class@ProxyInfo] for this account.
+	 *
+	 * Since: 3.0.0
+	 */
 	properties[PROP_PROXY_INFO] = g_param_spec_object(
 		"proxy-info", "proxy-info",
 		"The PurpleProxyInfo for this account.",
