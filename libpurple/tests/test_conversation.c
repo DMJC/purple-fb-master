@@ -33,8 +33,9 @@ test_purple_conversation_properties(void) {
 	PurpleConversation *conversation = NULL;
 	PurpleConversationManager *conversation_manager = NULL;
 	GListModel *members = NULL;
-	gchar *name = NULL;
-	gchar *title = NULL;
+	char *id = NULL;
+	char *name = NULL;
+	char *title = NULL;
 
 	account = purple_account_new("test", "test");
 
@@ -44,6 +45,7 @@ test_purple_conversation_properties(void) {
 	 */
 	conversation = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
+		"id", "id1",
 		"account", account,
 		"features", PURPLE_CONNECTION_FLAG_HTML,
 		"name", "name1",
@@ -52,6 +54,7 @@ test_purple_conversation_properties(void) {
 
 	/* Now use g_object_get to read all of the properties. */
 	g_object_get(conversation,
+		"id", &id,
 		"account", &account1,
 		"features", &features,
 		"members", &members,
@@ -60,6 +63,7 @@ test_purple_conversation_properties(void) {
 		NULL);
 
 	/* Compare all the things. */
+	g_assert_cmpstr(id, ==, "id1");
 	g_assert_true(account1 == account);
 	g_assert_cmpint(features, ==, PURPLE_CONNECTION_FLAG_HTML);
 	g_assert_true(G_IS_LIST_MODEL(members));
@@ -79,10 +83,11 @@ test_purple_conversation_properties(void) {
 	purple_conversation_manager_unregister(conversation_manager, conversation);
 
 	/* Free/unref all the things. */
+	g_clear_pointer(&id, g_free);
 	g_clear_object(&account1);
 	g_clear_object(&members);
-	g_free(name);
-	g_free(title);
+	g_clear_pointer(&name, g_free);
+	g_clear_pointer(&title, g_free);
 
 	g_clear_object(&account);
 	g_clear_object(&conversation);

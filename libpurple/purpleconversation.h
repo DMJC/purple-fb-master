@@ -151,6 +151,18 @@ void purple_conversation_set_ui_ops(PurpleConversation *conv, PurpleConversation
 PurpleConversationUiOps *purple_conversation_get_ui_ops(PurpleConversation *conv);
 
 /**
+ * purple_conversation_get_id:
+ * @conversation: The instance.
+ *
+ * Gets the opaque identifier from @conversation.
+ *
+ * Returns: (nullable): The id of @conversation.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_conversation_get_id(PurpleConversation *conversation);
+
+/**
  * purple_conversation_set_account:
  * @conv: The conversation.
  * @account: The purple_account.

@@ -195,6 +195,21 @@ PurpleConversation *purple_conversation_manager_find_chat(PurpleConversationMana
  */
 PurpleConversation *purple_conversation_manager_find_chat_by_id(PurpleConversationManager *manager, PurpleAccount *account, gint id);
 
+/**
+ * purple_conversation_manager_find_with_id:
+ * @manager: The instance.
+ * @account: The account the conversation belongs to.
+ * @id: The identifier of the conversation.
+ *
+ * Looks for a registered conversation belonging to @account with an id of @id.
+ *
+ * Returns: (transfer none) (nullable): The [class@PurpleConversation] if
+ *          found, otherwise %NULL.
+ *
+ * Since: 3.0.0
+ */
+PurpleConversation *purple_conversation_manager_find_with_id(PurpleConversationManager *manager, PurpleAccount *account, const char *id);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONVERSATION_MANAGER_H */

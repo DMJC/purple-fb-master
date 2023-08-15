@@ -76,6 +76,20 @@ purple_conversation_chat_has_id(PurpleConversation *conversation,
 	return (purple_chat_conversation_get_id(chat) == id);
 }
 
+static gboolean
+purple_conversation_has_id(PurpleConversation *conversation, gpointer data) {
+	const char *needle = data;
+	const char *haystack = NULL;
+
+	if(!PURPLE_IS_CONVERSATION(conversation)) {
+		return FALSE;
+	}
+
+	haystack = purple_conversation_get_id(conversation);
+
+	return purple_strequal(needle, haystack);
+}
+
 static PurpleConversation *
 purple_conversation_manager_find_internal(PurpleConversationManager *manager,
                                           PurpleAccount *account,
@@ -329,4 +343,17 @@ purple_conversation_manager_find_chat_by_id(PurpleConversationManager *manager,
 	return purple_conversation_manager_find_internal(manager, account, NULL,
 	                                                 purple_conversation_chat_has_id,
 	                                                 GINT_TO_POINTER(id));
+}
+
+PurpleConversation *
+purple_conversation_manager_find_with_id(PurpleConversationManager *manager,
+                                         PurpleAccount *account,
+                                         const char *id)
+{
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), NULL);
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
+
+	return purple_conversation_manager_find_internal(manager, account, NULL,
+	                                                 purple_conversation_has_id,
+	                                                 (gpointer)id);
 }

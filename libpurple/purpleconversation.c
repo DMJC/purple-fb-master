@@ -31,6 +31,7 @@
 #include "server.h"
 
 typedef struct {
+	char *id;
 	PurpleAccount *account;
 
 	char *name;
@@ -45,6 +46,7 @@ typedef struct {
 
 enum {
 	PROP_0,
+	PROP_ID,
 	PROP_ACCOUNT,
 	PROP_NAME,
 	PROP_TITLE,
@@ -67,6 +69,22 @@ G_DEFINE_TYPE_WITH_PRIVATE(PurpleConversation, purple_conversation,
 /**************************************************************************
  * Helpers
  **************************************************************************/
+static void
+purple_conversation_set_id(PurpleConversation *conversation, const char *id) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(!purple_strequal(id, priv->id)) {
+		g_free(priv->id);
+		priv->id = g_strdup(id);
+
+		g_object_notify_by_pspec(G_OBJECT(conversation), properties[PROP_ID]);
+	}
+}
+
 static gboolean
 purple_conversation_check_member_equal(gconstpointer a, gconstpointer b) {
 	PurpleConversationMember *member_a = (PurpleConversationMember *)a;
@@ -232,6 +250,9 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 	priv = purple_conversation_get_instance_private(conv);
 
 	switch (param_id) {
+		case PROP_ID:
+			purple_conversation_set_id(conv, g_value_get_string(value));
+			break;
 		case PROP_ACCOUNT:
 			purple_conversation_set_account(conv, g_value_get_object(value));
 			break;
@@ -259,6 +280,9 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleConversation *conv = PURPLE_CONVERSATION(obj);
 
 	switch(param_id) {
+		case PROP_ID:
+			g_value_set_string(value, purple_conversation_get_id(conv));
+			break;
 		case PROP_ACCOUNT:
 			g_value_set_object(value, purple_conversation_get_account(conv));
 			break;
@@ -359,6 +383,7 @@ purple_conversation_finalize(GObject *object) {
 		ops->destroy_conversation(conv);
 	}
 
+	g_clear_pointer(&priv->id, g_free);
 	g_clear_pointer(&priv->name, g_free);
 	g_clear_pointer(&priv->title, g_free);
 	g_clear_object(&priv->members);
@@ -375,6 +400,20 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	obj_class->finalize = purple_conversation_finalize;
 	obj_class->get_property = purple_conversation_get_property;
 	obj_class->set_property = purple_conversation_set_property;
+
+	/**
+	 * PurpleConversation::id:
+	 *
+	 * An opaque identifier for this conversation. Generally speaking this is
+	 * protocol dependent and should only be used as a unique identifier.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_ID] = g_param_spec_string(
+		"id", "id",
+		"The identifier for the conversation.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "Account",
@@ -539,6 +578,17 @@ purple_conversation_get_ui_ops(PurpleConversation *conv) {
 	priv = purple_conversation_get_instance_private(conv);
 
 	return priv->ui_ops;
+}
+
+const char *
+purple_conversation_get_id(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->id;
 }
 
 void
