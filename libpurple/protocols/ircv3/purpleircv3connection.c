@@ -424,7 +424,6 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	char **userparts = NULL;
-	const char *sasl_name = NULL;
 	const char *username = NULL;
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->constructed(obj);
@@ -438,14 +437,6 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	purple_connection_set_display_name(PURPLE_CONNECTION(connection),
 	                                   userparts[0]);
 	priv->server_name = g_strdup(userparts[1]);
-
-	/* Check if the SASL login name is not set. If it isn't set, set it to the
-	 * current nick.
-	 */
-	sasl_name = purple_account_get_string(account, "sasl-login-name", "");
-	if(purple_strempty(sasl_name)) {
-		purple_account_set_string(account, "sasl-login-name", userparts[0]);
-	}
 
 	/* Free the userparts vector. */
 	g_strfreev(userparts);

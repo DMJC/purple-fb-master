@@ -197,6 +197,8 @@ purple_ircv3_sasl_logged_in(G_GNUC_UNUSED GHashTable *tags,
 {
 	PurpleIRCv3Connection *connection = user_data;
 	PurpleIRCv3SASLData *data = NULL;
+	PurpleAccount *account = NULL;
+	const char *sasl_name = NULL;
 
 	data = g_object_get_data(G_OBJECT(connection), PURPLE_IRCV3_SASL_DATA_KEY);
 	if(data == NULL) {
@@ -207,11 +209,22 @@ purple_ircv3_sasl_logged_in(G_GNUC_UNUSED GHashTable *tags,
 		return FALSE;
 	}
 
-	/* At this point, we have the users authenticated username, we _may_ want
-	 * to update the account's ID to this, but we'll need more testing to
-	 * verify that.
-	 * -- GK 2023-01-12
+	/* Check if the SASL login name is not set. If it is not set, set it to the
+	 * current nick as it was successful.
 	 */
+	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
+	sasl_name = purple_account_get_string(account, "sasl-login-name", "");
+	if(purple_strempty(sasl_name)) {
+		char **userparts = NULL;
+		const char *username = NULL;
+
+		username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+		userparts = g_strsplit(username, "@", 2);
+
+		purple_account_set_string(account, "sasl-login-name", userparts[0]);
+
+		g_strfreev(userparts);
+	}
 
 	return TRUE;
 }
