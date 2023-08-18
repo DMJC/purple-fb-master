@@ -29,11 +29,6 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#ifndef _WIN32
-# include <netinet/in.h>
-# include <sys/socket.h>
-#endif
-
 G_BEGIN_DECLS
 
 /**************************************************************************/
