@@ -1,5 +1,6 @@
 /*
- * pidgin
+ * Pidgin - Internet Messenger
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Pidgin is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -16,19 +17,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
- *
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
-
-#define _POSIX_C_SOURCE 200809L
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
 #include <glib/gi18n-lib.h>
-#include <glib/gstdio.h>
 
 #include <locale.h>
 
@@ -37,8 +33,8 @@
 #include "pidginapplication.h"
 #include "pidgincore.h"
 
-int pidgin_start(int argc, char *argv[])
-{
+int
+pidgin_start(int argc, char *argv[]) {
 	GApplication *app;
 	int ret;
 
@@ -58,14 +54,16 @@ int pidgin_start(int argc, char *argv[])
 	 * has caused g_application_run() to finish on its own. This can
 	 * happen, for example, if the desktop session is ending.
 	 */
-	if (purple_get_core() != NULL) {
+	if(purple_get_core() != NULL) {
 		purple_core_quit();
 	}
 
-	if (g_application_get_is_registered(app) &&
-			g_application_get_is_remote(app)) {
-		g_printerr("%s\n", _("Exiting because another libpurple client is "
-		                     "already running."));
+	if(g_application_get_is_registered(app) &&
+	   g_application_get_is_remote(app))
+	{
+		g_printerr("%s\n",
+		           _("Exiting because another libpurple client is already "
+		             "running."));
 	}
 
 	/* Now that we're sure purple_core_quit() has been called,
