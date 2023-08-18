@@ -156,31 +156,6 @@ conf.set_quoted('PIDGIN_PLUGINDIR', PIDGIN_PLUGINDIR)
 FINCH_PLUGINDIR = abslibdir / f'finch-@purple_major_version@'
 conf.set_quoted('FINCH_PLUGINDIR', FINCH_PLUGINDIR)
 
-# Check for socklen_t (in Unix98)
-if IS_WIN32
-	socket_header = 'ws2tcpip.h'
-else
-	socket_header = 'sys/socket.h'
-endif
-if not compiler.has_header_symbol(socket_header, 'socklen_t')
-	code = '''
-#include <sys/types.h>
-#include <@0@>
-int accept(int, struct sockaddr *, size_t *);
-int main() {}
-'''.format(socket_header)
-	if compiler.compiles(code, name : 'socklen_t is size_t')
-		conf.set('socklen_t', 'size_t')
-	else
-		conf.set('socklen_t', 'int')
-	endif
-endif
-
-# Some systems do not have sa_len field for struct sockaddr.
-conf.set('HAVE_STRUCT_SOCKADDR_SA_LEN',
-    compiler.has_member('struct sockaddr', 'sa_len',
-        prefix : f'#include <@socket_header@>'))
-
 # Windows and Haiku do not use libm for the math functions, they are part
 # of the C library
 math = compiler.find_library('m', required: false)
@@ -354,11 +329,6 @@ DYNAMIC_GG  = DYNAMIC_PRPLS.contains('gg')
 DYNAMIC_IRC = DYNAMIC_PRPLS.contains('irc')
 DYNAMIC_IRCV3 = DYNAMIC_PRPLS.contains('ircv3')
 DYNAMIC_JABBER = DYNAMIC_PRPLS.contains('jabber')
-
-conf.set('HAVE_SYS_UTSNAME_H',
-    compiler.has_header('sys/utsname.h'))
-conf.set('HAVE_UNAME',
-    compiler.has_function('uname'))
 
 
 add_project_arguments(
