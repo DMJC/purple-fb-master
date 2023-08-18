@@ -50,7 +50,6 @@ libpurple/media/enum-types.c
 libpurple/mediamanager.c
 libpurple/network.c
 libpurple/notify.c
-libpurple/pluginpref.c
 libpurple/plugins/autoaccept/autoaccept.c
 libpurple/plugins/buddynote/buddynote.c
 libpurple/plugins.c

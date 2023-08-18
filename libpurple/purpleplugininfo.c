@@ -29,12 +29,6 @@ typedef struct {
 
 	PurplePluginInfoFlags flags; /* Flags for the plugin */
 
-	/* Callback that returns a preferences frame for a plugin */
-	PurplePluginPrefFrameCb pref_frame_cb;
-
-	/* Callback that returns a preferences request handle for a plugin */
-	PurplePluginPrefRequestCb pref_request_cb;
-
 	/* TRUE if a plugin has been unloaded at least once. Auto-load
 	 * plugins that have been unloaded once will not be auto-loaded again. */
 	gboolean unloaded;
@@ -45,8 +39,6 @@ typedef struct {
 
 enum {
 	PROP_0,
-	PROP_PREF_FRAME_CB,
-	PROP_PREF_REQUEST_CB,
 	PROP_FLAGS,
 	PROP_ACTION_GROUP,
 	PROP_ACTION_MENU,
@@ -107,12 +99,6 @@ purple_plugin_info_set_property(GObject *obj, guint param_id,
 	priv = purple_plugin_info_get_instance_private(info);
 
 	switch (param_id) {
-		case PROP_PREF_FRAME_CB:
-			priv->pref_frame_cb = g_value_get_pointer(value);
-			break;
-		case PROP_PREF_REQUEST_CB:
-			priv->pref_request_cb = g_value_get_pointer(value);
-			break;
 		case PROP_FLAGS:
 			priv->flags = g_value_get_flags(value);
 			break;
@@ -137,14 +123,6 @@ purple_plugin_info_get_property(GObject *obj, guint param_id, GValue *value,
 	PurplePluginInfo *info = PURPLE_PLUGIN_INFO(obj);
 
 	switch (param_id) {
-		case PROP_PREF_FRAME_CB:
-			g_value_set_pointer(value,
-					purple_plugin_info_get_pref_frame_cb(info));
-			break;
-		case PROP_PREF_REQUEST_CB:
-			g_value_set_pointer(value,
-					purple_plugin_info_get_pref_request_cb(info));
-			break;
 		case PROP_FLAGS:
 			g_value_set_flags(value, purple_plugin_info_get_flags(info));
 			break;
@@ -218,16 +196,6 @@ purple_plugin_info_class_init(PurplePluginInfoClass *klass) {
 	obj_class->get_property = purple_plugin_info_get_property;
 	obj_class->set_property = purple_plugin_info_set_property;
 
-	properties[PROP_PREF_FRAME_CB] = g_param_spec_pointer(
-		"pref-frame-cb", "Preferences frame callback",
-		"The callback that returns the preferences frame",
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	properties[PROP_PREF_REQUEST_CB] = g_param_spec_pointer(
-		"pref-request-cb", "Preferences request callback",
-		"Callback that returns preferences request handle",
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
 	properties[PROP_FLAGS] = g_param_spec_flags(
 		"flags", "Plugin flags",
 		"The flags for the plugin",
@@ -283,28 +251,6 @@ purple_plugin_info_new(const char *first_property, ...) {
 	va_end(var_args);
 
 	return GPLUGIN_PLUGIN_INFO(info);
-}
-
-PurplePluginPrefFrameCb
-purple_plugin_info_get_pref_frame_cb(PurplePluginInfo *info) {
-	PurplePluginInfoPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PLUGIN_INFO(info), NULL);
-
-	priv = purple_plugin_info_get_instance_private(info);
-
-	return priv->pref_frame_cb;
-}
-
-PurplePluginPrefRequestCb
-purple_plugin_info_get_pref_request_cb(PurplePluginInfo *info) {
-	PurplePluginInfoPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PLUGIN_INFO(info), NULL);
-
-	priv = purple_plugin_info_get_instance_private(info);
-
-	return priv->pref_request_cb;
 }
 
 PurplePluginInfoFlags

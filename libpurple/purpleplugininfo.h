@@ -30,8 +30,6 @@
 #include <gplugin.h>
 #include <gplugin-native.h>
 
-#include "pluginpref.h"
-
 #define PURPLE_TYPE_PLUGIN_INFO (purple_plugin_info_get_type())
 
 /**
@@ -61,25 +59,6 @@ struct _PurplePluginInfoClass {
 
 	gpointer reserved[4];
 };
-
-/**
- * PurplePluginPrefFrameCb:
- * @plugin: the plugin associated with this callback.
- *
- * Returns the preferences frame for the plugin.
- *
- * Returns: Preference frame.
- */
-typedef PurplePluginPrefFrame *(*PurplePluginPrefFrameCb)(PurplePlugin *plugin);
-
-/**
- * PurplePrefRequestCb:
- *
- * Returns the preferences request handle for a plugin.
- *
- * Returns: Preferences request handle.
- */
-typedef gpointer (*PurplePluginPrefRequestCb)(PurplePlugin *plugin);
 
 /**
  * PurplePluginInfoFlags:
@@ -208,14 +187,6 @@ G_BEGIN_DECLS
  *     <entry>(<type>const gchar * const *</type>) A %NULL-terminated list of
  *       plugin IDs required by the plugin.</entry>
  *   </row>
- *   <row><entry><literal>"pref-frame-cb"</literal></entry>
- *     <entry>(#PurplePluginPrefFrameCb) Callback that returns a
- *       preferences frame for the plugin.</entry>
- *   </row>
- *   <row><entry><literal>"pref-request-cb"</literal></entry>
- *     <entry>(#PurplePluginPrefRequestCb) Callback that returns a
- *       preferences request handle for the plugin.</entry>
- *   </row>
  *   <row><entry><literal>"flags"</literal></entry>
  *     <entry>(#PurplePluginInfoFlags) The flags for a plugin.</entry>
  *   </row>
@@ -230,32 +201,6 @@ G_BEGIN_DECLS
  * Since: 3.0.0
  */
 GPluginPluginInfo *purple_plugin_info_new(const char *first_property, ...) G_GNUC_NULL_TERMINATED;
-
-/**
- * purple_plugin_info_get_pref_frame_cb:
- * @info: The plugin info to get the callback from.
- *
- * Returns the callback that retrieves the preferences frame for a plugin, set
- * via the "pref-frame-cb" property of the plugin info.
- *
- * Returns: The callback that returns the preferences frame.
- *
- * Since: 3.0.0
- */
-PurplePluginPrefFrameCb purple_plugin_info_get_pref_frame_cb(PurplePluginInfo *info);
-
-/**
- * purple_plugin_info_get_pref_request_cb:
- * @info: The plugin info to get the callback from.
- *
- * Returns the callback that retrieves the preferences request handle for a
- * plugin, set via the "pref-request-cb" property of the plugin info.
- *
- * Returns: (transfer none): The callback that returns the preferences request handle.
- *
- * Since: 3.0.0
- */
-PurplePluginPrefRequestCb purple_plugin_info_get_pref_request_cb(PurplePluginInfo *info);
 
 /**
  * purple_plugin_info_get_flags:

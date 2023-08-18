@@ -68,8 +68,6 @@ typedef struct
 G_DEFINE_TYPE_WITH_PRIVATE(FinchPluginInfo, finch_plugin_info,
 		PURPLE_TYPE_PLUGIN_INFO);
 
-static GntWidget *process_pref_frame(PurplePluginPrefFrame *frame);
-
 /* Set method for GObject properties */
 static void
 finch_plugin_info_set_property(GObject *obj, guint param_id, const GValue *value,
@@ -146,12 +144,6 @@ finch_plugin_info_new(const char *first_property, ...)
 	return GPLUGIN_PLUGIN_INFO(info);
 }
 
-static void
-free_stringlist(GList *list)
-{
-	g_list_free_full(list, g_free);
-}
-
 static gboolean
 has_prefs(PurplePlugin *plugin)
 {
@@ -168,9 +160,7 @@ has_prefs(PurplePlugin *plugin)
 		priv = finch_plugin_info_get_instance_private(
 				FINCH_PLUGIN_INFO(info));
 
-	ret = ((priv && priv->pref_frame_cb) ||
-			purple_plugin_info_get_pref_frame_cb(info) ||
-			purple_plugin_info_get_pref_request_cb(info));
+	ret = (priv && priv->pref_frame_cb);
 
 	return ret;
 }
@@ -350,12 +340,6 @@ remove_confwin(G_GNUC_UNUSED GntWidget *window, gpointer _plugin)
 }
 
 static void
-close_plugin_info_request_cb(PurplePluginInfo *info)
-{
-	g_object_set_data(G_OBJECT(info), "finch-ui-data", NULL);
-}
-
-static void
 configure_plugin_cb(G_GNUC_UNUSED GntWidget *button,
                     G_GNUC_UNUSED gpointer data)
 {
@@ -413,25 +397,6 @@ configure_plugin_cb(G_GNUC_UNUSED GntWidget *button,
 
 		ui_data->type = FINCH_PLUGIN_UI_DATA_TYPE_WINDOW;
 		ui_data->u.window = window;
-	}
-	else if (purple_plugin_info_get_pref_request_cb(info))
-	{
-		PurplePluginPrefRequestCb pref_request_cb = purple_plugin_info_get_pref_request_cb(info);
-		gpointer handle;
-
-		ui_data->type = FINCH_PLUGIN_UI_DATA_TYPE_REQUEST;
-		ui_data->u.request_handle = handle = pref_request_cb(plugin);
-		purple_request_add_close_notify(
-		        handle, (GDestroyNotify)close_plugin_info_request_cb, info);
-	}
-	else if (purple_plugin_info_get_pref_frame_cb(info))
-	{
-		PurplePluginPrefFrameCb pref_frame_cb = purple_plugin_info_get_pref_frame_cb(info);
-		GntWidget *win = process_pref_frame(pref_frame_cb(plugin));
-		g_signal_connect(G_OBJECT(win), "destroy", G_CALLBACK(remove_confwin), plugin);
-
-		ui_data->type = FINCH_PLUGIN_UI_DATA_TYPE_WINDOW;
-		ui_data->u.window = win;
 	}
 	else
 	{
@@ -528,6 +493,12 @@ void finch_plugins_show_all(void)
 	gnt_widget_show(window);
 
 	decide_conf_button(gnt_tree_get_selection_data(GNT_TREE(tree)));
+}
+
+#if 0
+static void
+free_stringlist(GList *list) {
+	g_list_free_full(list, g_free);
 }
 
 static GntWidget*
@@ -640,4 +611,4 @@ process_pref_frame(PurplePluginPrefFrame *frame)
 	g_signal_connect_swapped(G_OBJECT(ret), "destroy", G_CALLBACK(free_stringlist), stringlist);
 	return ret;
 }
-
+#endif
