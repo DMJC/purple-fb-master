@@ -16,6 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif /* HAVE_CONFIG_H */
+
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
@@ -89,7 +93,7 @@ set_clip(gchar *string)
 }
 
 static void
-clipboard_changed(GntWM *wm, gchar *string)
+clipboard_changed(G_GNUC_UNUSED GntWM *wm, gchar *string)
 {
 	if (child) {
 		kill(child, SIGTERM);
@@ -124,7 +128,9 @@ gnt_clipboard_query(G_GNUC_UNUSED GError **error) {
 }
 
 static gboolean
-gnt_clipboard_load(G_GNUC_UNUSED GPluginPlugin *plugin, GError **error) {
+gnt_clipboard_load(G_GNUC_UNUSED GPluginPlugin *plugin,
+                   G_GNUC_UNUSED GError **error)
+{
 #ifdef HAVE_X11
 	if (!XOpenDisplay(NULL)) {
 		purple_debug_warning("gntclipboard", "Couldn't find X display\n");
