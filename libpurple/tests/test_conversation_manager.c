@@ -94,6 +94,76 @@ test_purple_conversation_manager_register_unregister(void) {
 }
 
 /******************************************************************************
+ * Signal Tests
+ *****************************************************************************/
+static void
+test_purple_conversation_manager_signal_conversation_changed_cb(PurpleConversationManager *manager,
+                                                                PurpleConversation *conversation,
+                                                                GParamSpec *pspec,
+                                                                gpointer data)
+{
+	guint *counter = data;
+
+	g_assert_true(PURPLE_IS_CONVERSATION_MANAGER(manager));
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+	g_assert_true(G_IS_PARAM_SPEC(pspec));
+
+	*counter = *counter + 1;
+}
+
+static void
+test_purple_conversation_manager_signal_conversation_changed(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversationManager *manager = NULL;
+	PurpleConversation *conversation = NULL;
+	guint counter = 0;
+	guint detailed_counter = 0;
+	gboolean result = FALSE;
+
+	manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
+	g_signal_connect(manager, "conversation-changed",
+	                 G_CALLBACK(test_purple_conversation_manager_signal_conversation_changed_cb),
+	                 &counter);
+	g_signal_connect(manager, "conversation-changed::title",
+	                 G_CALLBACK(test_purple_conversation_manager_signal_conversation_changed_cb),
+	                 &detailed_counter);
+
+	account = purple_account_new("test", "test");
+
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"name", "kool kats",
+		NULL);
+	purple_conversation_manager_register(manager, conversation);
+
+	/* Set the features and title of the conversation, and verify our counters. */
+	purple_conversation_set_features(conversation, PURPLE_CONNECTION_FLAG_NO_IMAGES);
+	purple_conversation_set_title(conversation, "A place for kool kats");
+
+	g_assert_cmpuint(counter, ==, 2);
+	g_assert_cmpuint(detailed_counter, ==, 1);
+
+	/* Unregister the conversation, to make sure signals are no longer
+	 * propagated.
+	 */
+	result = purple_conversation_manager_unregister(manager, conversation);
+	g_assert_true(result);
+
+	counter = 0;
+	detailed_counter = 0;
+	purple_conversation_set_title(conversation,
+	                              "no longer a place for kool kats");
+	g_assert_cmpuint(counter, ==, 0);
+	g_assert_cmpuint(detailed_counter, ==, 0);
+
+	/* Clean up. */
+	g_clear_object(&conversation);
+	g_clear_object(&account);
+	g_clear_object(&manager);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -106,6 +176,9 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/conversation-manager/register-unregister",
 	                test_purple_conversation_manager_register_unregister);
+
+	g_test_add_func("/conversation-manager/signals/conversation-changed",
+	                test_purple_conversation_manager_signal_conversation_changed);
 
 	ret = g_test_run();
 

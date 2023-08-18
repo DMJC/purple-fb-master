@@ -25,6 +25,7 @@
 enum {
 	SIG_REGISTERED,
 	SIG_UNREGISTERED,
+	SIG_CONVERSATION_CHANGED,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -129,6 +130,21 @@ purple_conversation_manager_find_internal(PurpleConversationManager *manager,
 }
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+
+/* This callback propagates the notify signal from conversations. */
+static void
+purple_conversation_manager_conversation_changed_cb(GObject *source,
+                                                    GParamSpec *pspec,
+                                                    gpointer data)
+{
+	g_signal_emit(data, signals[SIG_CONVERSATION_CHANGED],
+	              g_param_spec_get_name_quark(pspec),
+	              source, pspec);
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 static void
@@ -194,6 +210,35 @@ purple_conversation_manager_class_init(PurpleConversationManagerClass *klass) {
 		G_TYPE_NONE,
 		1,
 		PURPLE_TYPE_CONVERSATION);
+
+	/**
+	 * PurpleConversationManager::conversation-changed:
+	 * @manager: The account manager instance.
+	 * @conversation: The conversation that was changed.
+	 * @pspec: The [class@GObject.ParamSpec] for the property that changed.
+	 *
+	 * This is a propagation of the notify signal from @conversation. This
+	 * means that your callback will be called for any conversation that
+	 * @manager knows about.
+	 *
+	 * This also supports details, so you can specify the signal name as
+	 * something like `conversation-changed::title` and your callback will only
+	 * be called when [property@Conversation:title] has been changed.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_CONVERSATION_CHANGED] = g_signal_new_class_handler(
+		"conversation-changed",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		2,
+		PURPLE_TYPE_CONVERSATION,
+		G_TYPE_PARAM);
 }
 
 /******************************************************************************
@@ -236,6 +281,12 @@ purple_conversation_manager_register(PurpleConversationManager *manager,
 	                              g_object_ref(conversation));
 
 	if(registered) {
+		/* Register our signals that need to be propagated. */
+		g_signal_connect_object(conversation, "notify",
+		                        G_CALLBACK(purple_conversation_manager_conversation_changed_cb),
+		                        manager, 0);
+
+		/* Tell everyone about the new conversation. */
 		g_signal_emit(manager, signals[SIG_REGISTERED], 0, conversation);
 	}
 
@@ -253,6 +304,12 @@ purple_conversation_manager_unregister(PurpleConversationManager *manager,
 
 	unregistered = g_hash_table_remove(manager->conversations, conversation);
 	if(unregistered) {
+		/* Disconnect all the signals we added for propagation. */
+		g_signal_handlers_disconnect_by_func(conversation,
+		                                     purple_conversation_manager_conversation_changed_cb,
+		                                     manager);
+
+		/* Tell everyone about the unregistered conversation. */
 		g_signal_emit(manager, signals[SIG_UNREGISTERED], 0, conversation);
 	}
 
