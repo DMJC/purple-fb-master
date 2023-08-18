@@ -26,6 +26,7 @@
 #include <fcntl.h>
 
 #ifdef _WIN32
+# include "win32/libc_interface.h"
 # include <nspapi.h>
 #endif
 
