@@ -22,7 +22,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "internal.h"
 #include "debug.h"
 #include "purpleconversationmanager.h"
 #include "purplechatconversation.h"
@@ -62,6 +61,8 @@ static guint signals[N_SIGNALS] = { 0, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleChatConversation, purple_chat_conversation,
                            PURPLE_TYPE_CONVERSATION);
+
+#define BUF_LONG 4096
 
 /**************************************************************************
  * Helpers

@@ -17,7 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
  */
 
-#include "internal.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif /* HAVE_CONFIG_H */
 
 #include <glib/gi18n-lib.h>
 
@@ -37,6 +39,8 @@
 #include "util.h"
 
 #include <json-glib/json-glib.h>
+
+#define BUF_LEN 2048
 
 void
 purple_util_init(void) {
