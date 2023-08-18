@@ -137,15 +137,6 @@ test_ui_purple_init(void) {
 	PurpleUi *ui = NULL;
 	GError *error = NULL;
 
-#ifndef _WIN32
-	/* libpurple's built-in DNS resolution forks processes to perform
-	 * blocking lookups without blocking the main process.  It does not
-	 * handle SIGCHLD itself, so if the UI does not you quickly get an army
-	 * of zombie subprocesses marching around.
-	 */
-	signal(SIGCHLD, SIG_IGN);
-#endif
-
 	/* set the magic PURPLE_PLUGINS_SKIP environment variable */
 	g_setenv("PURPLE_PLUGINS_SKIP", "1", TRUE);
 
