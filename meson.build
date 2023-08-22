@@ -302,6 +302,7 @@ Then rerun this Meson build
 	endif
 endif
 
+dependency('shoes', required : false)
 
 DEFAULT_PRPLS = ['bonjour', 'demo', 'gg', 'ircv3', 'jabber']
 
@@ -442,10 +443,7 @@ endif
 #######################################################################
 # Check for Hasl
 #######################################################################
-hasl = dependency('hasl', version : '>= 0.1.0')
-
-#AC_MSG_CHECKING(for me pot o' gold)
-#AC_MSG_RESULT(no)
+hasl = dependency('hasl', version : '>= 0.2.0')
 
 #######################################################################
 # Documentation
