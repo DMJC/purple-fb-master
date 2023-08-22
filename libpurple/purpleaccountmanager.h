@@ -154,7 +154,7 @@ GList *purple_account_manager_get_connected(PurpleAccountManager *manager);
  *
  * Looks up an account based on its id property.
  *
- * Returns: (transfer none): The account if found, otherwise %NULL.
+ * Returns: (transfer full): The account if found, otherwise %NULL.
  *
  * Since: 3.0.0
  */
@@ -169,7 +169,7 @@ PurpleAccount *purple_account_manager_find_by_id(PurpleAccountManager *manager, 
  * Attempts to find an account in @manager with the matching @username and
  * @protocol_id.
  *
- * Returns: (transfer none): The account if found, otherwise %NULL.
+ * Returns: (transfer full): The account if found, otherwise %NULL.
  *
  * Since: 3.0.0
  */
@@ -184,7 +184,7 @@ PurpleAccount *purple_account_manager_find(PurpleAccountManager *manager, const 
  *
  * Attempts to find an account in @manager with a custom matching function.
  *
- * Returns: (transfer none): The account if found, otherwise %NULL.
+ * Returns: (transfer full): The account if found, otherwise %NULL.
  *
  * Since: 3.0.0
  */

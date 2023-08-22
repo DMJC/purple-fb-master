@@ -298,6 +298,8 @@ message_source_activated(G_GNUC_UNUSED MessagingMenuApp *app,
 		                                        account, cname);
 	}
 
+	g_clear_object(&account);
+
 	if (conv) {
 		GtkRoot *root = NULL;
 		GtkWidget *win = NULL;

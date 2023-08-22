@@ -106,6 +106,7 @@ do_nick_set_nick(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 	js = purple_connection_get_protocol_data(connection);
 
 	/* since the nickname might have been changed by another resource of this account, we always have to request the old one

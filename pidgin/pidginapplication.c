@@ -341,6 +341,7 @@ pidgin_application_connect_account(G_GNUC_UNUSED GSimpleAction *simple,
 	account = purple_account_manager_find_by_id(manager, id);
 	if(PURPLE_IS_ACCOUNT(account)) {
 		purple_account_connect(account);
+		g_clear_object(&account);
 	}
 }
 
@@ -372,6 +373,8 @@ pidgin_application_disable_account(G_GNUC_UNUSED GSimpleAction *simple,
 		if(purple_account_get_enabled(account)) {
 			purple_account_set_enabled(account, FALSE);
 		}
+
+		g_clear_object(&account);
 	}
 }
 
@@ -413,6 +416,8 @@ pidgin_application_edit_account(G_GNUC_UNUSED GSimpleAction *simple,
 
 		pidgin_application_present_transient_window(application,
 		                                            GTK_WINDOW(account_manager));
+
+		g_clear_object(&account);
 	}
 }
 
@@ -434,6 +439,8 @@ pidgin_application_enable_account(G_GNUC_UNUSED GSimpleAction *simple,
 		if(!purple_account_get_enabled(account)) {
 			purple_account_set_enabled(account, TRUE);
 		}
+
+		g_clear_object(&account);
 	}
 }
 

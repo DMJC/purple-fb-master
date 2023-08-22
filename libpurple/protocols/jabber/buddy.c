@@ -692,6 +692,8 @@ jabber_setup_set_info(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	                      _("Cancel"), NULL,
 	                      purple_request_cpar_from_connection(connection),
 	                      connection);
+
+	g_clear_object(&account);
 }
 
 /*---------------------------------------*/

@@ -110,6 +110,7 @@ free_saved_status_sub(PurpleSavedStatusSub *substatus)
 
 	g_free(substatus->message);
 	purple_request_close_with_handle(substatus);
+	g_clear_object(&substatus->account);
 	g_free(substatus);
 }
 
@@ -399,7 +400,7 @@ parse_substatus(PurpleXmlNode *substatus)
 	}
 
 	if(ret->account == NULL) {
-		g_free(ret);
+		free_saved_status_sub(ret);
 		return NULL;
 	}
 
@@ -412,7 +413,7 @@ parse_substatus(PurpleXmlNode *substatus)
 	}
 
 	if(ret->type == NULL) {
-		g_free(ret);
+		free_saved_status_sub(ret);
 		return NULL;
 	}
 
@@ -673,8 +674,7 @@ purple_savedstatus_unset_substatus(PurpleSavedStatus *saved_status,
 		if (substatus->account == account)
 		{
 			saved_status->substatuses = g_list_delete_link(saved_status->substatuses, iter);
-			g_free(substatus->message);
-			g_free(substatus);
+			free_saved_status_sub(substatus);
 			return;
 		}
 	}

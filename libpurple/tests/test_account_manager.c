@@ -137,13 +137,15 @@ test_purple_account_manager_find(void) {
 	/* Now add an account and verify that we can find it. */
 	purple_account_manager_add(manager, account);
 	found = purple_account_manager_find(manager, "test", "test");
-	g_assert_nonnull(found);
+	g_assert_true(PURPLE_IS_ACCOUNT(found));
+	g_clear_object(&found);
 
 	/* Verify account can be found using a custom function. */
 	found = purple_account_manager_find_custom(manager,
 	                                           test_purple_account_manager_find_func,
 	                                           "test");
-	g_assert_nonnull(found);
+	g_assert_true(PURPLE_IS_ACCOUNT(found));
+	g_clear_object(&found);
 
 	/* Finally remove the account and verify it can't be found. */
 	purple_account_manager_remove(manager, account);

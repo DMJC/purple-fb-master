@@ -203,6 +203,8 @@ ggp_action_buddylist_save(G_GNUC_UNUSED GSimpleAction *action,
 	purple_request_file(action, _("Save buddylist..."), NULL, TRUE,
 		G_CALLBACK(ggp_callback_buddylist_save_ok), NULL,
 		purple_request_cpar_from_connection(connection), connection);
+
+	g_clear_object(&account);
 }
 
 static void
@@ -228,6 +230,8 @@ ggp_action_buddylist_load(G_GNUC_UNUSED GSimpleAction *action,
 	purple_request_file(action, _("Load buddylist from file..."), NULL,
 		FALSE, G_CALLBACK(ggp_callback_buddylist_load_ok), NULL,
 		purple_request_cpar_from_connection(connection), connection);
+
+	g_clear_object(&account);
 }
 
 /* ----- BLOCK BUDDIES -------------------------------------------------- */
@@ -673,6 +677,8 @@ gg_uri_handler(const gchar *scheme, const gchar *screenname,
 	im = purple_im_conversation_new(account, screenname);
 	purple_conversation_present(im);
 
+	g_clear_object(&account);
+
 	return TRUE;
 }
 
@@ -1009,6 +1015,7 @@ ggp_action_multilogon(G_GNUC_UNUSED GSimpleAction *action,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	ggp_multilogon_dialog(connection);
 }
@@ -1032,6 +1039,7 @@ ggp_action_status_broadcasting(G_GNUC_UNUSED GSimpleAction *action,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	ggp_status_broadcasting_dialog(connection);
 }
@@ -1055,6 +1063,7 @@ ggp_action_search(G_GNUC_UNUSED GSimpleAction *action,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	ggp_pubdir_search(connection, NULL);
 }
@@ -1078,6 +1087,7 @@ ggp_action_set_info(G_GNUC_UNUSED GSimpleAction *action,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	ggp_pubdir_set_info(connection);
 }

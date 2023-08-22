@@ -1669,6 +1669,7 @@ jabber_password_change(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 	js = purple_connection_get_protocol_data(connection);
 
 	page = purple_request_page_new();
@@ -2797,7 +2798,7 @@ static PurpleAccount *find_acct(const char *protocol, const char *acct_id)
 	if (acct_id) {
 		acct = purple_account_manager_find(manager, acct_id, protocol);
 		if (acct && !purple_account_is_connected(acct)) {
-			acct = NULL;
+			g_clear_object(&acct);
 		}
 	} else { /* Otherwise find an active account for the protocol */
 		acct = purple_account_manager_find_custom(manager,
@@ -2839,18 +2840,23 @@ xmpp_uri_handler(const char *proto, const char *user, GHashTable *params,
 
 			purple_conversation_present(im);
 
-			if (params != NULL) {
+			if(params != NULL) {
 				body = g_hash_table_lookup(params, "body");
 			}
 
-			if (body && *body)
+			if(body && *body) {
 				purple_conversation_send_confirm(im, body);
+			}
+
+			g_clear_object(&acct);
+
 			return TRUE;
 		}
 	} else if (g_hash_table_lookup_extended(params, "roster", NULL, NULL)) {
 		char *name = g_hash_table_lookup(params, "name");
 		if (user && *user) {
 			purple_blist_request_add_buddy(acct, user, NULL, name);
+			g_clear_object(&acct);
 			return TRUE;
 		}
 	} else if (g_hash_table_lookup_extended(params, "join", NULL, NULL)) {
@@ -2859,8 +2865,11 @@ xmpp_uri_handler(const char *proto, const char *user, GHashTable *params,
 			GHashTable *params = jabber_chat_info_defaults(gc, user);
 			jabber_chat_join(gc, params);
 		}
+		g_clear_object(&acct);
 		return TRUE;
 	}
+
+	g_clear_object(&acct);
 
 	return FALSE;
 }

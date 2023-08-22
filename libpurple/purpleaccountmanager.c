@@ -516,7 +516,7 @@ purple_account_manager_find_by_id(PurpleAccountManager *manager,
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 
 		if(purple_strequal(purple_contact_info_get_id(info), id)) {
-			return account;
+			return g_object_ref(account);
 		}
 	}
 
@@ -553,7 +553,7 @@ purple_account_manager_find(PurpleAccountManager *manager,
 		if(purple_strequal(existing_normalized, normalized)) {
 			g_free(normalized);
 
-			return account;
+			return g_object_ref(account);
 		}
 		g_free(normalized);
 	}
@@ -573,7 +573,7 @@ purple_account_manager_find_custom(PurpleAccountManager *manager,
 	if(g_ptr_array_find_with_equal_func(manager->accounts, data, func, &index)) {
 		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
 
-		return account;
+		return g_object_ref(account);
 	}
 
 	return NULL;

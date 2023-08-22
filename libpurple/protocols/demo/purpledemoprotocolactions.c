@@ -125,9 +125,14 @@ purple_demo_protocol_failure_action_activate(G_GNUC_UNUSED GSimpleAction *action
 
 	/* Do nothing if disconnected, or already in process of reaping. */
 	if(!PURPLE_IS_CONNECTION(connection)) {
+		g_clear_object(&account);
+
 		return;
 	}
+
 	if(g_object_get_data(G_OBJECT(connection), "reaping-time")) {
+		g_clear_object(&account);
+
 		return;
 	}
 
@@ -154,6 +159,8 @@ purple_demo_protocol_failure_action_activate(G_GNUC_UNUSED GSimpleAction *action
 	g_object_set_data(G_OBJECT(connection), "reaping-time",
 	                  GINT_TO_POINTER(DEFAULT_REAP_TIME));
 	g_timeout_add_seconds(1, cb, connection);
+
+	g_clear_object(&account);
 }
 
 static void
@@ -219,6 +226,7 @@ purple_demo_protocol_request_input_activate(G_GNUC_UNUSED GSimpleAction *action,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	/* Alternate through all four combinations of {masked, multiline}. */
 	masked = form % 2 == 1;
@@ -276,6 +284,7 @@ purple_demo_protocol_request_choice_activate(G_GNUC_UNUSED GSimpleAction *action
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	purple_request_choice(connection, _("Request Choice Demo"),
 	                      _("Please pick an option…"), NULL, _("foo"),
@@ -314,6 +323,7 @@ purple_demo_protocol_request_action_activate(G_GNUC_UNUSED GSimpleAction *action
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	purple_request_action(connection, _("Request Action Demo"),
 	                      _("Please choose an action…"), NULL, 1,
@@ -372,6 +382,7 @@ purple_demo_protocol_request_wait_activate(G_GNUC_UNUSED GSimpleAction *action,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	wait = g_new0(PurpleDemoProtocolWaitData, 1);
 
@@ -620,6 +631,8 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	                      G_CALLBACK(purple_demo_protocol_request_fields_cancel_cb),
 	                      purple_request_cpar_from_connection(connection),
 	                      NULL);
+
+	g_clear_object(&account);
 }
 
 static void
@@ -656,6 +669,7 @@ purple_demo_protocol_request_file_activate(G_GNUC_UNUSED GSimpleAction *action,
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	purple_request_file(connection, _("Request File Demo"),
 	                    "example.txt", FALSE,
@@ -685,6 +699,7 @@ purple_demo_protocol_request_folder_activate(G_GNUC_UNUSED GSimpleAction *action
 	manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(manager, account_id);
 	connection = purple_account_get_connection(account);
+	g_clear_object(&account);
 
 	purple_request_folder(connection, _("Request Folder Demo"), NULL,
 	                      G_CALLBACK(purple_demo_protocol_request_path_ok_cb),
@@ -725,6 +740,8 @@ purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
 	if(counter >= G_N_ELEMENTS(contacts)) {
 		counter = 0;
 	}
+
+	g_clear_object(&account);
 }
 
 /******************************************************************************

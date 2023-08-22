@@ -509,6 +509,7 @@ parse_buddy(PurpleGroup *group, PurpleMetaContact *contact, PurpleXmlNode *bnode
 	}
 
 	if(!name) {
+		g_clear_object(&account);
 		return;
 	}
 
@@ -524,6 +525,7 @@ parse_buddy(PurpleGroup *group, PurpleMetaContact *contact, PurpleXmlNode *bnode
 		parse_setting((PurpleBlistNode*)buddy, x);
 	}
 
+	g_clear_object(&account);
 	g_free(name);
 	g_free(alias);
 }
@@ -603,6 +605,7 @@ parse_chat(PurpleGroup *group, PurpleXmlNode *cnode)
 		parse_setting((PurpleBlistNode*)chat, x);
 	}
 
+	g_clear_object(&account);
 	g_free(alias);
 }
 
