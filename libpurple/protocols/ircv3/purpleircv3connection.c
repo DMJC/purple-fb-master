@@ -571,7 +571,19 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
  *****************************************************************************/
 void
 purple_ircv3_connection_register(GPluginNativePlugin *plugin) {
+	GObjectClass *hack = NULL;
+
 	purple_ircv3_connection_register_type(G_TYPE_MODULE(plugin));
+
+	/* Without this hack we get some warnings about no reference on this type
+	 * when generating the gir file. However, there are no changes to the
+	 * generated gir file with or without this hack, so this is purely to get
+	 * rid of the warnings.
+	 *
+	 * - GK 2023-08-21
+	 */
+	hack = g_type_class_ref(purple_ircv3_connection_get_type());
+	g_type_class_unref(hack);
 }
 
 GCancellable *
