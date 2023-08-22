@@ -33,6 +33,12 @@
 
 G_BEGIN_DECLS
 
+/* https://ircv3.net/specs/extensions/capability-negotiation */
+#define PURPLE_IRCV3_CAPABILITY_CAP_LS_VERSION "302"
+
+/* https://ircv3.net/specs/extensions/sasl-3.2 */
+#define PURPLE_IRCV3_CAPABILITY_SASL "sasl"
+
 #define PURPLE_IRCV3_TYPE_CAPABILITIES (purple_ircv3_capabilities_get_type())
 G_DECLARE_FINAL_TYPE(PurpleIRCv3Capabilities, purple_ircv3_capabilities,
                      PURPLE_IRCV3, CAPABILITIES, GObject)

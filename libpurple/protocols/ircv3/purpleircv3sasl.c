@@ -180,9 +180,10 @@ purple_ircv3_sasl_ack_cb(PurpleIRCv3Capabilities *caps,
  *****************************************************************************/
 void
 purple_ircv3_sasl_request(PurpleIRCv3Capabilities *capabilities) {
-	purple_ircv3_capabilities_request(capabilities, "sasl");
+	purple_ircv3_capabilities_request(capabilities,
+	                                  PURPLE_IRCV3_CAPABILITY_SASL);
 
-	g_signal_connect(capabilities, "ack::sasl",
+	g_signal_connect(capabilities, "ack::" PURPLE_IRCV3_CAPABILITY_SASL,
 	                 G_CALLBACK(purple_ircv3_sasl_ack_cb), NULL);
 }
 

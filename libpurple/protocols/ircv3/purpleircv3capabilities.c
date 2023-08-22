@@ -22,8 +22,6 @@
 #include "purpleircv3core.h"
 #include "purpleircv3sasl.h"
 
-#define PURPLE_IRCV3_CAPABILITIES_VERSION "302"
-
 enum {
 	PROP_0,
 	PROP_CONNECTION,
@@ -519,7 +517,7 @@ purple_ircv3_capabilities_new(PurpleIRCv3Connection *connection) {
 void
 purple_ircv3_capabilities_start(PurpleIRCv3Capabilities *capabilities) {
 	purple_ircv3_connection_writef(capabilities->connection, "CAP LS %s",
-	                               PURPLE_IRCV3_CAPABILITIES_VERSION);
+	                               PURPLE_IRCV3_CAPABILITY_CAP_LS_VERSION);
 }
 
 gboolean
