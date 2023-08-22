@@ -145,25 +145,6 @@ purple_protocol_set_options(PurpleProtocol *protocol,
 	g_object_notify_by_pspec(G_OBJECT(protocol), properties[PROP_OPTIONS]);
 }
 
-static void
-purple_protocol_foreach_account_disconnect(PurpleAccount *account,
-                                           gpointer data)
-{
-	const gchar *protocol_id = (const gchar *)data;
-
-	/* I'm not sure that we can finalize a protocol plugin if an account is
-	 * still using it..  Right now accounts don't ref protocols, but maybe
-	 * they should?
-	 */
-	if(purple_account_is_disconnected(account)) {
-		return;
-	}
-
-	if(purple_strequal(protocol_id, purple_account_get_protocol_id(account))) {
-		purple_account_disconnect(account);
-	}
-}
-
 /******************************************************************************
  * PurpleProtocol Implementation
  *****************************************************************************/
@@ -264,15 +245,10 @@ purple_protocol_init(G_GNUC_UNUSED PurpleProtocol *protocol) {
 
 static void
 purple_protocol_finalize(GObject *object) {
-	PurpleAccountManager *manager = purple_account_manager_get_default();
 	PurpleProtocol *protocol = PURPLE_PROTOCOL(object);
 	PurpleProtocolPrivate *priv = NULL;
 
 	priv = purple_protocol_get_instance_private(protocol);
-
-	purple_account_manager_foreach(manager,
-	                               purple_protocol_foreach_account_disconnect,
-	                               priv->id);
 
 	g_clear_pointer(&priv->id, g_free);
 	g_clear_pointer(&priv->name, g_free);
