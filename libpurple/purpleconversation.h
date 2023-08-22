@@ -369,6 +369,228 @@ GList * purple_conversation_get_extended_menu(PurpleConversation *conv);
 gboolean purple_conversation_present_error(const gchar *who, PurpleAccount *account, const gchar *what);
 
 /**
+ * purple_conversation_get_age_restricted:
+ * @conversation: The instance.
+ *
+ * Gets whether or not @conversation is age restricted.
+ *
+ * Returns: %TRUE if age restricted, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_conversation_get_age_restricted(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_age_restricted:
+ * @conversation: The instance.
+ * @age_restricted: The new value.
+ *
+ * Sets whether or not @conversation is age restricted to the value of
+ * @age_restricted.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_age_restricted(PurpleConversation *conversation, gboolean age_restricted);
+
+/**
+ * purple_conversation_get_description:
+ * @conversation: The instance.
+ *
+ * Gets the description of @conversation.
+ *
+ * Returns: The description of @conversation or %NULL.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_conversation_get_description(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_description:
+ * @conversation: The instance.
+ * @description: (nullable): The new description.
+ *
+ * Sets the description of @conversation to @description.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_description(PurpleConversation *conversation, const char *description);
+
+/**
+ * purple_conversation_get_topic:
+ * @conversation: The instance.
+ *
+ * Gets the topic for @conversation.
+ *
+ * Returns: (nullable): The topic of @conversation or %NULL.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_conversation_get_topic(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_topic:
+ * @conversation: The instance.
+ * @topic: (nullable): The new topic.
+ *
+ * Sets the topic of @conversation to @topic.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_topic(PurpleConversation *conversation, const char *topic);
+
+/**
+ * purple_conversation_get_topic_author:
+ * @conversation: The instance.
+ *
+ * Gets the author of the topic for @conversation.
+ *
+ * Returns: (transfer none) (nullable): The author of the topic or %NULL.
+ *
+ * Since: 3.0.0
+ */
+PurpleContactInfo *purple_conversation_get_topic_author(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_topic_author:
+ * @conversation: The instance.
+ * @author: (nullable): The new author of the topic.
+ *
+ * Sets the author of the topic for @conversation to @author.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_topic_author(PurpleConversation *conversation, PurpleContactInfo *author);
+
+/**
+ * purple_conversation_get_topic_updated:
+ * @conversation: The instance.
+ *
+ * Gets the last time that the topic was updated.
+ *
+ * Returns: (transfer none) (nullable): The last time the topic was updated or
+ *          %NULL.
+ *
+ * Since: 3.0.0
+ */
+GDateTime *purple_conversation_get_topic_updated(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_topic_updated:
+ * @conversation: The instance.
+ * @updated: (nullable): The time of the last update.
+ *
+ * Sets the time that the topic was lasted updated for @conversation.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_topic_updated(PurpleConversation *conversation, GDateTime *updated);
+
+/**
+ * purple_conversation_get_user_nickname:
+ * @conversation: The instance.
+ *
+ * Gets the nickname for the user in @conversation.
+ *
+ * Returns: (nullable): The nickname for the user in @conversation.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_conversation_get_user_nickname(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_user_nickname:
+ * @conversation: The instance.
+ * @nickname: (nullable): The new nickname for the user.
+ *
+ * Sets the user's nickname in @conversation to @nickname.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_user_nickname(PurpleConversation *conversation, const char *nickname);
+
+/**
+ * purple_conversation_get_favorite:
+ * @conversation: The instance.
+ *
+ * Gets whether or not @conversation is a favorite conversation.
+ *
+ * Returns: %TRUE if @conversation has been set a as a favorite, otherwise
+ *          %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_conversation_get_favorite(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_favorite:
+ * @conversation: The instance.
+ * @favorite: %TRUE to mark as a favorite.
+ *
+ * Sets whether or not @conversation is a favorite to @favorite.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_favorite(PurpleConversation *conversation, gboolean favorite);
+
+/**
+ * purple_conversation_get_created_on:
+ * @conversation: The instance.
+ *
+ * Gets a [struct@GLib.DateTime] for when @conversation was created.
+ *
+ * Returns: (transfer none) (nullable): The creation time of @conversation.
+ *
+ * Since: 3.0.0
+ */
+GDateTime *purple_conversation_get_created_on(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_created_on:
+ * @conversation: The instance.
+ * @created_on: (nullable): The new created on value.
+ *
+ * Sets the creation time of @conversation to @created_on.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_created_on(PurpleConversation *conversation, GDateTime *created_on);
+
+/**
+ * purple_conversation_get_creator:
+ * @conversation: The instance.
+ *
+ * Gets the [class@ContactInfo] that created @conversation.
+ *
+ * Returns: (transfer none): The creator or %NULL.
+ *
+ * Since: 3.0.0
+ */
+PurpleContactInfo *purple_conversation_get_creator(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_creator:
+ * @conversation: The instance.
+ * @creator: (nullable) (transfer none): The new creator.
+ *
+ * Sets the creator of @conversation to @creator.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_creator(PurpleConversation *conversation, PurpleContactInfo *creator);
+
+/**
+ * purple_conversation_get_tags:
+ * @conversation: The instance.
+ *
+ * Gets the [class@Tags] object from @conversation.
+ *
+ * Returns: (transfer none): The tags from @conversation.
+ *
+ * Since: 3.0.0
+ */
+PurpleTags *purple_conversation_get_tags(PurpleConversation *conversation);
+
+/**
  * purple_conversation_get_members:
  * @conversation: The instance.
  *

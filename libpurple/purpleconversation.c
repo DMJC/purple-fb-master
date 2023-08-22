@@ -28,6 +28,7 @@
 #include "purplehistorymanager.h"
 #include "purplemarkup.h"
 #include "purpleprivate.h"
+#include "purpletags.h"
 #include "server.h"
 
 typedef struct {
@@ -41,6 +42,16 @@ typedef struct {
 
 	PurpleConnectionFlags features;
 
+	gboolean age_restricted;
+	char *description;
+	char *topic;
+	PurpleContactInfo *topic_author;
+	GDateTime *topic_updated;
+	char *user_nickname;
+	gboolean favorite;
+	GDateTime *created_on;
+	PurpleContactInfo *creator;
+	PurpleTags *tags;
 	GListStore *members;
 } PurpleConversationPrivate;
 
@@ -51,6 +62,16 @@ enum {
 	PROP_NAME,
 	PROP_TITLE,
 	PROP_FEATURES,
+	PROP_AGE_RESTRICTED,
+	PROP_DESCRIPTION,
+	PROP_TOPIC,
+	PROP_TOPIC_AUTHOR,
+	PROP_TOPIC_UPDATED,
+	PROP_USER_NICKNAME,
+	PROP_FAVORITE,
+	PROP_CREATED_ON,
+	PROP_CREATOR,
+	PROP_TAGS,
 	PROP_MEMBERS,
 	N_PROPERTIES
 };
@@ -266,6 +287,38 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 		case PROP_FEATURES:
 			purple_conversation_set_features(conv, g_value_get_flags(value));
 			break;
+		case PROP_AGE_RESTRICTED:
+			purple_conversation_set_age_restricted(conv,
+			                                       g_value_get_boolean(value));
+			break;
+		case PROP_DESCRIPTION:
+			purple_conversation_set_description(conv,
+			                                    g_value_get_string(value));
+			break;
+		case PROP_TOPIC:
+			purple_conversation_set_topic(conv, g_value_get_string(value));
+			break;
+		case PROP_TOPIC_AUTHOR:
+			purple_conversation_set_topic_author(conv,
+			                                     g_value_get_object(value));
+			break;
+		case PROP_TOPIC_UPDATED:
+			purple_conversation_set_topic_updated(conv,
+			                                      g_value_get_boxed(value));
+			break;
+		case PROP_USER_NICKNAME:
+			purple_conversation_set_user_nickname(conv,
+			                                      g_value_get_string(value));
+			break;
+		case PROP_FAVORITE:
+			purple_conversation_set_favorite(conv, g_value_get_boolean(value));
+			break;
+		case PROP_CREATED_ON:
+			purple_conversation_set_created_on(conv, g_value_get_boxed(value));
+			break;
+		case PROP_CREATOR:
+			purple_conversation_set_creator(conv, g_value_get_object(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -294,6 +347,41 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_FEATURES:
 			g_value_set_flags(value, purple_conversation_get_features(conv));
 			break;
+		case PROP_AGE_RESTRICTED:
+			g_value_set_boolean(value,
+			                    purple_conversation_get_age_restricted(conv));
+			break;
+		case PROP_DESCRIPTION:
+			g_value_set_string(value,
+			                   purple_conversation_get_description(conv));
+			break;
+		case PROP_TOPIC:
+			g_value_set_string(value, purple_conversation_get_topic(conv));
+			break;
+		case PROP_TOPIC_AUTHOR:
+			g_value_set_object(value,
+			                   purple_conversation_get_topic_author(conv));
+			break;
+		case PROP_TOPIC_UPDATED:
+			g_value_set_boxed(value,
+			                  purple_conversation_get_topic_updated(conv));
+			break;
+		case PROP_USER_NICKNAME:
+			g_value_set_string(value,
+			                   purple_conversation_get_user_nickname(conv));
+			break;
+		case PROP_FAVORITE:
+			g_value_set_boolean(value, purple_conversation_get_favorite(conv));
+			break;
+		case PROP_CREATED_ON:
+			g_value_set_boxed(value, purple_conversation_get_created_on(conv));
+			break;
+		case PROP_CREATOR:
+			g_value_set_object(value, purple_conversation_get_creator(conv));
+			break;
+		case PROP_TAGS:
+			g_value_set_object(value, purple_conversation_get_tags(conv));
+			break;
 		case PROP_MEMBERS:
 			g_value_set_object(value, purple_conversation_get_members(conv));
 			break;
@@ -309,6 +397,7 @@ purple_conversation_init(PurpleConversation *conv) {
 
 	priv = purple_conversation_get_instance_private(conv);
 
+	priv->tags = purple_tags_new();
 	priv->members = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
 }
 
@@ -387,6 +476,15 @@ purple_conversation_finalize(GObject *object) {
 	g_clear_pointer(&priv->id, g_free);
 	g_clear_pointer(&priv->name, g_free);
 	g_clear_pointer(&priv->title, g_free);
+
+	g_clear_pointer(&priv->description, g_free);
+	g_clear_pointer(&priv->topic, g_free);
+	g_clear_object(&priv->topic_author);
+	g_clear_pointer(&priv->topic_updated, g_date_time_unref);
+	g_clear_pointer(&priv->user_nickname, g_free);
+	g_clear_pointer(&priv->created_on, g_date_time_unref);
+	g_clear_object(&priv->creator);
+	g_clear_object(&priv->tags);
 	g_clear_object(&priv->members);
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->finalize(object);
@@ -442,6 +540,158 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		PURPLE_TYPE_CONNECTION_FLAGS,
 		0,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:age-restricted:
+	 *
+	 * Whether or not the conversation is age restricted.
+	 *
+	 * This is typically set only by a protocol plugin.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_AGE_RESTRICTED] = g_param_spec_boolean(
+		"age-restricted", "age-restricted",
+		"Whether or not the conversation is age restricted.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:description:
+	 *
+	 * Sets the description of the conversation. This field is typically used
+	 * to give more information about a conversation than that which would fit
+	 * in [property@Conversation:topic].
+	 *
+	 * This is typically set only by a protocol plugin.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_DESCRIPTION] = g_param_spec_string(
+		"description", "description",
+		"The description for the conversation.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:topic:
+	 *
+	 * The topic of the conversation.
+	 *
+	 * This is normally controlled by the protocol plugin and often times
+	 * requires permission for the user to set.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TOPIC] = g_param_spec_string(
+		"topic", "topic",
+		"The topic for the conversation.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:topic-author:
+	 *
+	 * Sets the author of the topic for the conversation.
+	 *
+	 * This should typically only be set by a protocol plugin.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TOPIC_AUTHOR] = g_param_spec_object(
+		"topic-author", "topic-author",
+		"The author of the topic for the conversation.",
+		PURPLE_TYPE_CONTACT_INFO,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:topic-updated:
+	 *
+	 * Set to the time that the topic was last updated.
+	 *
+	 * This should typically only be set by a protocol plugin.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TOPIC_UPDATED] = g_param_spec_boxed(
+		"topic-updated", "topic-updated",
+		"The time when the topic was last updated for the conversation.",
+		G_TYPE_DATE_TIME,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:user-nickname:
+	 *
+	 * The user's nickname in this conversation.
+	 *
+	 * Some protocols allow the user to use a nickname rather than their normal
+	 * contact information when joining a conversation. This field holds that
+	 * value.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_USER_NICKNAME] = g_param_spec_string(
+		"user-nickname", "user-nickname",
+		"The nickname for the user in the conversation.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:favorite:
+	 *
+	 * Whether or not the conversation has been marked as favorite by the user.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_FAVORITE] = g_param_spec_boolean(
+		"favorite", "favorite",
+		"Whether or not the conversation is a favorite.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:created-on:
+	 *
+	 * The [struct@GLib.DateTime] when this conversation was created. This can
+	 * be %NULL if the value is not known or supported.
+	 *
+	 * This should typically only be set by a protocol plugin.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_CREATED_ON] = g_param_spec_boxed(
+		"created-on", "created-on",
+		"When the conversation was created.",
+		G_TYPE_DATE_TIME,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:creator:
+	 *
+	 * The [class@ContactInfo] that created the conversation.
+	 *
+	 * This should typically only be set by a protocol plugin.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_CREATOR] = g_param_spec_object(
+		"creator", "creator",
+		"The contact info of who created the conversation.",
+		PURPLE_TYPE_CONTACT_INFO,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:tags:
+	 *
+	 * [class@Tags] for the conversation.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TAGS] = g_param_spec_object(
+		"tags", "tags",
+		"The tags for the conversation.",
+		PURPLE_TYPE_TAGS,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversation:members:
@@ -969,6 +1219,284 @@ purple_conversation_get_extended_menu(PurpleConversation *conv) {
 	                   "conversation-extended-menu", conv, &menu);
 
 	return menu;
+}
+
+gboolean
+purple_conversation_get_age_restricted(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->age_restricted;
+}
+
+void
+purple_conversation_set_age_restricted(PurpleConversation *conversation,
+                                       gboolean age_restricted)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(priv->age_restricted != age_restricted) {
+		priv->age_restricted = age_restricted;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_AGE_RESTRICTED]);
+	}
+}
+
+const char *
+purple_conversation_get_description(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->description;
+}
+
+void
+purple_conversation_set_description(PurpleConversation *conversation,
+                                    const char *description)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(!purple_strequal(priv->description, description)) {
+		g_free(priv->description);
+		priv->description = g_strdup(description);
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_DESCRIPTION]);
+	}
+}
+
+const char *
+purple_conversation_get_topic(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->topic;
+}
+
+void
+purple_conversation_set_topic(PurpleConversation *conversation,
+                              const char *topic)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(!purple_strequal(priv->topic, topic)) {
+		g_free(priv->topic);
+		priv->topic = g_strdup(topic);
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_TOPIC]);
+	}
+}
+
+PurpleContactInfo *
+purple_conversation_get_topic_author(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->topic_author;
+}
+
+void
+purple_conversation_set_topic_author(PurpleConversation *conversation,
+                                     PurpleContactInfo *author)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(g_set_object(&priv->topic_author, author)) {
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_TOPIC_AUTHOR]);
+	}
+}
+
+GDateTime *
+purple_conversation_get_topic_updated(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->topic_updated;
+}
+
+void
+purple_conversation_set_topic_updated(PurpleConversation *conversation,
+                                      GDateTime *updated)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(priv->topic_updated != updated) {
+		g_clear_pointer(&priv->topic_updated, g_date_time_unref);
+
+		if(updated != NULL) {
+			priv->topic_updated = g_date_time_ref(updated);
+		}
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_TOPIC_UPDATED]);
+	}
+}
+
+const char *
+purple_conversation_get_user_nickname(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->user_nickname;
+}
+
+void
+purple_conversation_set_user_nickname(PurpleConversation *conversation,
+                                      const char *nickname)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(!purple_strequal(priv->user_nickname, nickname)) {
+		g_free(priv->user_nickname);
+		priv->user_nickname = g_strdup(nickname);
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_USER_NICKNAME]);
+	}
+}
+
+gboolean
+purple_conversation_get_favorite(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->favorite;
+}
+
+void
+purple_conversation_set_favorite(PurpleConversation *conversation,
+                                 gboolean favorite)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(priv->favorite != favorite) {
+		priv->favorite = favorite;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_FAVORITE]);
+	}
+}
+
+GDateTime *
+purple_conversation_get_created_on(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->created_on;
+}
+
+void
+purple_conversation_set_created_on(PurpleConversation *conversation,
+                                   GDateTime *created_on)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(priv->created_on != created_on) {
+		g_clear_pointer(&priv->created_on, g_date_time_unref);
+
+		if(created_on != NULL) {
+			priv->created_on = g_date_time_ref(created_on);
+		}
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_CREATED_ON]);
+	}
+}
+
+PurpleContactInfo *
+purple_conversation_get_creator(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->creator;
+}
+
+void
+purple_conversation_set_creator(PurpleConversation *conversation,
+                                PurpleContactInfo *creator)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+	if(g_set_object(&priv->creator, creator)) {
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_CREATOR]);
+	}
+}
+
+PurpleTags *
+purple_conversation_get_tags(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->tags;
 }
 
 GListModel *
