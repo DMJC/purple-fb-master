@@ -150,6 +150,13 @@ purple_ircv3_capabilities_default_ready_cb(PurpleIRCv3Capabilities *capabilities
 		                 G_CALLBACK(ircv3_capabilities_message_tags_ack_cb),
 		                 NULL);
 	}
+
+	/* The server-time capability just tells the server to send a tag to
+	 * messages, so we just need to request it and then handle the tag when
+	 * we're processing messages if it exists.
+	 */
+	purple_ircv3_capabilities_lookup_and_request(capabilities,
+	                                             PURPLE_IRCV3_CAPABILITY_SERVER_TIME);
 }
 
 /******************************************************************************

@@ -129,6 +129,7 @@ purple_ircv3_message_handler_privmsg(GHashTable *tags,
 	PurpleMessageFlags flags = PURPLE_MESSAGE_RECV;
 	GDateTime *dt = NULL;
 	gpointer raw_id = NULL;
+	gpointer raw_timestamp = NULL;
 	const char *id = NULL;
 	const char *target = NULL;
 
@@ -184,7 +185,23 @@ purple_ircv3_message_handler_privmsg(GHashTable *tags,
 		flags |= PURPLE_MESSAGE_NOTIFY;
 	}
 
-	dt = g_date_time_new_now_local();
+	/* Determine the timestamp of the message. */
+	if(g_hash_table_lookup_extended(tags, "time", NULL, &raw_timestamp)) {
+		const char *timestamp = raw_timestamp;
+
+		if(!purple_strempty(timestamp)) {
+			GTimeZone *tz = g_time_zone_new_utc();
+
+			dt = g_date_time_new_from_iso8601(timestamp, tz);
+
+			g_time_zone_unref(tz);
+		}
+	}
+
+	/* If the server didn't provide a time, use the current local time. */
+	if(dt == NULL) {
+		dt = g_date_time_new_now_local();
+	}
 
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
