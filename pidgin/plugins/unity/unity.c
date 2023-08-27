@@ -157,15 +157,15 @@ static int
 alert(PurpleConversation *conv)
 {
 	gint count;
-	PidginConversation *gtkconv = NULL;
+	PidginConversationOld *gtkconv = NULL;
 	PidginDisplayWindow *displaywin = NULL;
 	GtkRoot *root = NULL;
 	GtkWidget *win = NULL;
 
-	if (conv == NULL || PIDGIN_CONVERSATION(conv) == NULL)
+	if (conv == NULL || PIDGIN_CONVERSATION_OLD(conv) == NULL)
 		return 0;
 
-	gtkconv = PIDGIN_CONVERSATION(conv);
+	gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 	root = gtk_widget_get_root(gtkconv->tab_cont);
 	win = GTK_WIDGET(root);
 	displaywin = PIDGIN_DISPLAY_WINDOW(win);
@@ -305,7 +305,7 @@ message_source_activated(G_GNUC_UNUSED MessagingMenuApp *app,
 		GtkWidget *win = NULL;
 		PidginDisplayWindow *displaywin = NULL;
 
-		root = gtk_widget_get_root(PIDGIN_CONVERSATION(conv)->tab_cont);
+		root = gtk_widget_get_root(PIDGIN_CONVERSATION_OLD(conv)->tab_cont);
 		win = GTK_WIDGET(root);
 		displaywin = PIDGIN_DISPLAY_WINDOW(win);
 
@@ -313,7 +313,7 @@ message_source_activated(G_GNUC_UNUSED MessagingMenuApp *app,
 
 		pidgin_display_window_select(displaywin, conv);
 
-		gtk_root_set_focus(root, PIDGIN_CONVERSATION(conv)->entry);
+		gtk_root_set_focus(root, PIDGIN_CONVERSATION_OLD(conv)->entry);
 	}
 	g_strfreev (sections);
 }
@@ -456,10 +456,10 @@ messaging_menu_config_cb(GtkWidget *widget, gpointer data)
 static int
 attach_signals(PurpleConversation *conv)
 {
-	PidginConversation *gtkconv = NULL;
+	PidginConversationOld *gtkconv = NULL;
 	guint id;
 
-	gtkconv = PIDGIN_CONVERSATION(conv);
+	gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 	if (!gtkconv)
 		return 0;
 
@@ -477,9 +477,9 @@ attach_signals(PurpleConversation *conv)
 static void
 detach_signals(PurpleConversation *conv)
 {
-	PidginConversation *gtkconv = NULL;
+	PidginConversationOld *gtkconv = NULL;
 	guint id;
-	gtkconv = PIDGIN_CONVERSATION(conv);
+	gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 	if (!gtkconv)
 		return;
 

@@ -514,12 +514,12 @@ void
 pidgin_display_window_add(PidginDisplayWindow *window,
                           PurpleConversation *conversation)
 {
-	PidginConversation *gtkconv = NULL;
+	PidginConversationOld *gtkconv = NULL;
 
 	g_return_if_fail(PIDGIN_IS_DISPLAY_WINDOW(window));
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	gtkconv = PIDGIN_CONVERSATION(conversation);
+	gtkconv = PIDGIN_CONVERSATION_OLD(conversation);
 	if(gtkconv != NULL) {
 		PidginDisplayItem *item = NULL;
 		const char *value = NULL;

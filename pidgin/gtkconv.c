@@ -43,7 +43,7 @@
 /* Prototypes. <-- because Paco-Paco hates this comment. */
 gboolean pidgin_conv_has_focus(PurpleConversation *conv);
 
-static void pidgin_conv_placement_place(PidginConversation *conv);
+static void pidgin_conv_placement_place(PidginConversationOld *conv);
 
 /**************************************************************************
  * Callbacks
@@ -52,7 +52,7 @@ static void pidgin_conv_placement_place(PidginConversation *conv);
 static gboolean
 close_this_sucker(gpointer data)
 {
-	PidginConversation *gtkconv = data;
+	PidginConversationOld *gtkconv = data;
 	GList *list = g_list_copy(gtkconv->convs);
 	purple_debug_misc("gtkconv", "closing %s", purple_conversation_get_name(list->data));
 	g_list_free_full(list, g_object_unref);
@@ -60,7 +60,7 @@ close_this_sucker(gpointer data)
 }
 
 static gboolean
-close_conv_cb(G_GNUC_UNUSED GtkButton *button, PidginConversation *gtkconv)
+close_conv_cb(G_GNUC_UNUSED GtkButton *button, PidginConversationOld *gtkconv)
 {
 	/* We are going to destroy the conversations immediately only if the 'close immediately'
 	 * preference is selected. Otherwise, close the conversation after a reasonable timeout
@@ -79,14 +79,14 @@ close_conv_cb(G_GNUC_UNUSED GtkButton *button, PidginConversation *gtkconv)
 static gboolean
 check_for_and_do_command(PurpleConversation *conv)
 {
-	PidginConversation *gtkconv;
+	PidginConversationOld *gtkconv;
 	GtkWidget *input = NULL;
 	GtkTextBuffer *buffer = NULL;
 	gchar *cmd;
 	const gchar *prefix;
 	gboolean retval = FALSE;
 
-	gtkconv = PIDGIN_CONVERSATION(conv);
+	gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 	prefix = "/";
 
 	input = talkatu_editor_get_input(TALKATU_EDITOR(gtkconv->editor));
@@ -184,7 +184,7 @@ check_for_and_do_command(PurpleConversation *conv)
 }
 
 static void
-send_cb(G_GNUC_UNUSED GtkWidget *widget, PidginConversation *gtkconv)
+send_cb(G_GNUC_UNUSED GtkWidget *widget, PidginConversationOld *gtkconv)
 {
 	PurpleConversation *conv = gtkconv->active_conv;
 	PurpleAccount *account;
@@ -233,7 +233,7 @@ send_cb(G_GNUC_UNUSED GtkWidget *widget, PidginConversation *gtkconv)
  * Utility functions
  **************************************************************************/
 static GtkWidget *
-setup_common_pane(PidginConversation *gtkconv)
+setup_common_pane(PidginConversationOld *gtkconv)
 {
 	GSimpleActionGroup *ag = NULL;
 	GtkTextBuffer *buffer = NULL;
@@ -293,7 +293,7 @@ setup_common_pane(PidginConversation *gtkconv)
 	return vbox;
 }
 
-static PidginConversation *
+static PidginConversationOld *
 pidgin_conv_find_gtkconv(PurpleConversation * conv)
 {
 	PurpleBuddy *bud = purple_blist_find_buddy(purple_conversation_get_account(conv), purple_conversation_get_name(conv));
@@ -317,8 +317,8 @@ pidgin_conv_find_gtkconv(PurpleConversation * conv)
 		                                         purple_buddy_get_account(b),
 		                                         purple_buddy_get_name(b));
 
-		if(PIDGIN_CONVERSATION(im)) {
-			return PIDGIN_CONVERSATION(im);
+		if(PIDGIN_CONVERSATION_OLD(im)) {
+			return PIDGIN_CONVERSATION_OLD(im);
 		}
 	}
 
@@ -346,7 +346,7 @@ ignore_middle_click(G_GNUC_UNUSED GtkGestureClick *click,
 static void
 private_gtkconv_new(PurpleConversation *conv, G_GNUC_UNUSED gboolean hidden)
 {
-	PidginConversation *gtkconv;
+	PidginConversationOld *gtkconv;
 	GtkWidget *tab_cont, *pane;
 	GtkGesture *click = NULL;
 
@@ -359,7 +359,7 @@ private_gtkconv_new(PurpleConversation *conv, G_GNUC_UNUSED gboolean hidden)
 	}
 
 	purple_debug_misc("gtkconv", "creating new gtkconv for %p", conv);
-	gtkconv = g_new0(PidginConversation, 1);
+	gtkconv = g_new0(PidginConversationOld, 1);
 	g_object_set_data(G_OBJECT(conv), "pidgin", gtkconv);
 	gtkconv->active_conv = conv;
 	gtkconv->convs = g_list_prepend(gtkconv->convs, conv);
@@ -395,15 +395,15 @@ static void
 pidgin_conv_new(PurpleConversation *conv)
 {
 	private_gtkconv_new(conv, FALSE);
-	if (PIDGIN_IS_PIDGIN_CONVERSATION(conv))
+	if (PIDGIN_IS_PIDGIN_CONVERSATION_OLD(conv))
 		purple_signal_emit(pidgin_conversations_get_handle(),
-				"conversation-displayed", PIDGIN_CONVERSATION(conv));
+				"conversation-displayed", PIDGIN_CONVERSATION_OLD(conv));
 }
 
 void
 pidgin_conversation_detach(PurpleConversation *conv) {
-	if(PIDGIN_IS_PIDGIN_CONVERSATION(conv)) {
-		PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+	if(PIDGIN_IS_PIDGIN_CONVERSATION_OLD(conv)) {
+		PidginConversationOld *gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 
 		close_conv_cb(NULL, gtkconv);
 
@@ -434,7 +434,7 @@ received_im_msg_cb(G_GNUC_UNUSED PurpleAccount *account,
 static void
 pidgin_conv_destroy(PurpleConversation *conv)
 {
-	PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+	PidginConversationOld *gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 	GtkRoot *win = NULL;
 
 	gtkconv->convs = g_list_remove(gtkconv->convs, conv);
@@ -468,7 +468,7 @@ static gboolean
 writing_msg(PurpleConversation *conv, PurpleMessage *msg,
             G_GNUC_UNUSED gpointer _unused)
 {
-	PidginConversation *gtkconv;
+	PidginConversationOld *gtkconv;
 
 	g_return_val_if_fail(msg != NULL, FALSE);
 
@@ -476,7 +476,7 @@ writing_msg(PurpleConversation *conv, PurpleMessage *msg,
 		return FALSE;
 
 	g_return_val_if_fail(conv != NULL, FALSE);
-	gtkconv = PIDGIN_CONVERSATION(conv);
+	gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 	g_return_val_if_fail(gtkconv != NULL, FALSE);
 
 	if (conv == gtkconv->active_conv)
@@ -493,13 +493,13 @@ pidgin_conv_write_conv(PurpleConversation *conv, PurpleMessage *pmsg)
 {
 	PidginMessage *pidgin_msg = NULL;
 	PurpleMessageFlags flags;
-	PidginConversation *gtkconv;
+	PidginConversationOld *gtkconv;
 	PurpleConnection *gc;
 	PurpleAccount *account;
 	gboolean plugin_return;
 
 	g_return_if_fail(conv != NULL);
-	gtkconv = PIDGIN_CONVERSATION(conv);
+	gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 	g_return_if_fail(gtkconv != NULL);
 	flags = purple_message_get_flags(pmsg);
 
@@ -531,7 +531,7 @@ pidgin_conv_write_conv(PurpleConversation *conv, PurpleMessage *pmsg)
 gboolean
 pidgin_conv_has_focus(PurpleConversation *conv)
 {
-	PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+	PidginConversationOld *gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 	GtkRoot *win;
 
 	win = gtk_widget_get_root(gtkconv->tab_cont);
@@ -572,7 +572,7 @@ show_formatting_toolbar_pref_cb(G_GNUC_UNUSED const char *name,
 	GList *list;
 	PurpleConversation *conv;
 	PurpleConversationManager *manager;
-	PidginConversation *gtkconv;
+	PidginConversationOld *gtkconv;
 	gboolean visible = (gboolean)GPOINTER_TO_INT(value);
 
 	manager = purple_conversation_manager_get_default();
@@ -580,13 +580,13 @@ show_formatting_toolbar_pref_cb(G_GNUC_UNUSED const char *name,
 	while(list != NULL) {
 		conv = PURPLE_CONVERSATION(list->data);
 
-		if (!PIDGIN_IS_PIDGIN_CONVERSATION(conv)) {
+		if (!PIDGIN_IS_PIDGIN_CONVERSATION_OLD(conv)) {
 			list = g_list_delete_link(list, list);
 
 			continue;
 		}
 
-		gtkconv = PIDGIN_CONVERSATION(conv);
+		gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 
 		talkatu_editor_set_toolbar_visible(TALKATU_EDITOR(gtkconv->editor), visible);
 
@@ -599,7 +599,7 @@ pidgin_conv_attach(PurpleConversation *conv)
 {
 	int timer;
 	purple_conversation_set_ui_ops(conv, pidgin_conversations_get_conv_ui_ops());
-	if (!PIDGIN_CONVERSATION(conv))
+	if (!PIDGIN_CONVERSATION_OLD(conv))
 		private_gtkconv_new(conv, FALSE);
 	timer = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(conv), "close-timer"));
 	if (timer) {
@@ -610,10 +610,10 @@ pidgin_conv_attach(PurpleConversation *conv)
 
 gboolean pidgin_conv_attach_to_conversation(PurpleConversation *conv)
 {
-	PidginConversation *gtkconv;
+	PidginConversationOld *gtkconv;
 
 	pidgin_conv_attach(conv);
-	gtkconv = PIDGIN_CONVERSATION(conv);
+	gtkconv = PIDGIN_CONVERSATION_OLD(conv);
 
 	purple_signal_emit(pidgin_conversations_get_handle(),
 	                   "conversation-displayed", gtkconv);
@@ -672,7 +672,7 @@ pidgin_conversations_init(void)
 
 	purple_signal_register(handle, "conversation-displayed",
 						 purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
-						 G_TYPE_POINTER); /* (PidginConversation *) */
+						 G_TYPE_POINTER); /* (PidginConversationOld *) */
 
 	/**********************************************************************
 	 * UI operations
@@ -699,7 +699,7 @@ pidgin_conversations_uninit(void)
  * GTK window ops
  **************************************************************************/
 static void
-pidgin_conv_placement_place(PidginConversation *conv) {
+pidgin_conv_placement_place(PidginConversationOld *conv) {
 	GtkWidget *window = NULL;
 	PidginDisplayWindow *display_window = NULL;
 

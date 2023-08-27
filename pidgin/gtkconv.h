@@ -28,12 +28,12 @@
 
 #include <gtk/gtk.h>
 
-typedef struct _PidginConversation PidginConversation;
+typedef struct _PidginConversationOld PidginConversationOld;
 
-#define PIDGIN_CONVERSATION(conv) \
-	((PidginConversation *)g_object_get_data(G_OBJECT(conv), "pidgin"))
+#define PIDGIN_CONVERSATION_OLD(conv) \
+	((PidginConversationOld *)g_object_get_data(G_OBJECT(conv), "pidgin"))
 
-#define PIDGIN_IS_PIDGIN_CONVERSATION(conv) \
+#define PIDGIN_IS_PIDGIN_CONVERSATION_OLD(conv) \
 	(purple_conversation_get_ui_ops(conv) == \
 	 pidgin_conversations_get_conv_ui_ops())
 
@@ -48,7 +48,7 @@ typedef struct _PidginConversation PidginConversation;
  *
  * A GTK conversation pane.
  */
-struct _PidginConversation
+struct _PidginConversationOld
 {
 	PurpleConversation *active_conv;
 	GList *convs;
