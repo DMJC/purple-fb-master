@@ -69,6 +69,19 @@ GtkWidget *pidgin_info_pane_new(PurpleConversation *conversation);
  */
 PurpleConversation *pidgin_info_pane_get_conversation(PidginInfoPane *pane);
 
+/**
+ * pidgin_info_pane_set_conversation:
+ * @pane: The instance.
+ * @conversation: (nullable): The [class@Purple.Conversation] to use.
+ *
+ * Sets the conversation that @pane uses to get its values.
+ *
+ * Typically this is only necessary for the conversation instance itself.
+ *
+ * Since: 3.0.0
+ */
+void pidgin_info_pane_set_conversation(PidginInfoPane *pane, PurpleConversation *conversation);
+
 G_END_DECLS
 
 #endif /* PIDGIN_INFO_PANE_H */

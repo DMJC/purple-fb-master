@@ -35,8 +35,13 @@ struct _PidginInfoPane {
 
 	GtkWidget *hbox;
 	GtkWidget *presence_icon;
+
 	GtkWidget *name;
+	GBinding *name_binding;
+
 	GtkWidget *topic;
+	GBinding *topic_binding;
+
 	GtkWidget *avatar;
 };
 
@@ -48,60 +53,6 @@ enum {
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE(PidginInfoPane, pidgin_info_pane, GTK_TYPE_BOX)
-
-/******************************************************************************
- * Helpers
- *****************************************************************************/
-static void
-pidgin_info_pane_set_conversation(PidginInfoPane *pane,
-                                  PurpleConversation *conversation)
-{
-	if(!g_set_object(&pane->conversation, conversation)) {
-		return;
-	}
-
-	/* Tell the avatar about the new conversation. */
-	pidgin_avatar_set_conversation(PIDGIN_AVATAR(pane->avatar),
-	                               pane->conversation);
-
-	if(PURPLE_IS_CONVERSATION(conversation)) {
-		PidginPresenceIcon *presence_icon = NULL;
-		PurplePresence *presence = NULL;
-		const gchar *fallback = "person";
-
-		g_object_bind_property(G_OBJECT(conversation), "name",
-		                       G_OBJECT(pane->name), "label",
-		                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-
-		if(PURPLE_IS_CHAT_CONVERSATION(conversation)) {
-			g_object_bind_property(G_OBJECT(conversation), "topic",
-			                       G_OBJECT(pane->topic), "label",
-			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-			fallback = "chat";
-		} else if(PURPLE_IS_IM_CONVERSATION(conversation)){
-			PurpleAccount *account = NULL;
-			PurpleBuddy *buddy = NULL;
-			const gchar *name = NULL;
-
-			account = purple_conversation_get_account(conversation);
-			name = purple_conversation_get_name(conversation);
-			buddy = purple_blist_find_buddy(account, name);
-
-			if(PURPLE_IS_BUDDY(buddy)) {
-				presence = purple_buddy_get_presence(buddy);
-			}
-
-			fallback = "person";
-		}
-
-		presence_icon = PIDGIN_PRESENCE_ICON(pane->presence_icon);
-		pidgin_presence_icon_set_fallback(presence_icon, fallback);
-		pidgin_presence_icon_set_presence(presence_icon, presence);
-	}
-
-	/* Notify that we changed. */
-	g_object_notify_by_pspec(G_OBJECT(pane), properties[PROP_CONVERSATION]);
-}
 
 /******************************************************************************
  * GObject Implementation
@@ -170,7 +121,7 @@ pidgin_info_pane_class_init(PidginInfoPaneClass *klass) {
 		"conversation", "conversation",
 		"The PurpleConversation instance",
 		PURPLE_TYPE_CONVERSATION,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
@@ -202,4 +153,64 @@ pidgin_info_pane_get_conversation(PidginInfoPane *pane) {
 	g_return_val_if_fail(PIDGIN_IS_INFO_PANE(pane), NULL);
 
 	return pane->conversation;
+}
+
+void
+pidgin_info_pane_set_conversation(PidginInfoPane *pane,
+                                  PurpleConversation *conversation)
+{
+	g_return_if_fail(PIDGIN_IS_INFO_PANE(pane));
+
+	if(!g_set_object(&pane->conversation, conversation)) {
+		return;
+	}
+
+	/* Remove the old bindings. */
+	g_clear_pointer(&pane->name_binding, g_binding_unbind);
+	g_clear_pointer(&pane->topic_binding, g_binding_unbind);
+
+	/* Tell the avatar about the new conversation. */
+	pidgin_avatar_set_conversation(PIDGIN_AVATAR(pane->avatar),
+	                               pane->conversation);
+
+	if(PURPLE_IS_CONVERSATION(conversation)) {
+		PidginPresenceIcon *presence_icon = NULL;
+		PurplePresence *presence = NULL;
+		const gchar *fallback = "person";
+
+		pane->name_binding =
+			g_object_bind_property(G_OBJECT(conversation), "name",
+			                       G_OBJECT(pane->name), "label",
+			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+
+		pane->topic_binding =
+			g_object_bind_property(G_OBJECT(conversation), "topic",
+			                       G_OBJECT(pane->topic), "label",
+			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+
+		if(PURPLE_IS_CHAT_CONVERSATION(conversation)) {
+			fallback = "chat";
+		} else if(PURPLE_IS_IM_CONVERSATION(conversation)) {
+			PurpleAccount *account = NULL;
+			PurpleBuddy *buddy = NULL;
+			const gchar *name = NULL;
+
+			account = purple_conversation_get_account(conversation);
+			name = purple_conversation_get_name(conversation);
+			buddy = purple_blist_find_buddy(account, name);
+
+			if(PURPLE_IS_BUDDY(buddy)) {
+				presence = purple_buddy_get_presence(buddy);
+			}
+
+			fallback = "person";
+		}
+
+		presence_icon = PIDGIN_PRESENCE_ICON(pane->presence_icon);
+		pidgin_presence_icon_set_fallback(presence_icon, fallback);
+		pidgin_presence_icon_set_presence(presence_icon, presence);
+	}
+
+	/* Notify that we changed. */
+	g_object_notify_by_pspec(G_OBJECT(pane), properties[PROP_CONVERSATION]);
 }
