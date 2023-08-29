@@ -249,7 +249,7 @@ static void ggp_message_got_display(PurpleConnection *gc,
 		info = PURPLE_CONTACT_INFO(account);
 		me = purple_contact_info_get_name_for_display(info);
 
-		pmsg = purple_message_new_outgoing(account, me, NULL, msg->text, 0);
+		pmsg = purple_message_new_outgoing(me, NULL, msg->text, 0);
 
 		dt = g_date_time_new_from_unix_local((gint64)msg->time);
 		purple_message_set_timestamp(pmsg, dt);

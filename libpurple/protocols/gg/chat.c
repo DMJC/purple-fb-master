@@ -568,8 +568,8 @@ void ggp_chat_got_message(PurpleConnection *gc, uint64_t chat_id,
 
 		username = purple_contact_info_get_name_for_display(info);
 
-		pmsg = purple_message_new_outgoing(account, username,
-		                                   ggp_uin_to_str(who), message, 0);
+		pmsg = purple_message_new_outgoing(username, ggp_uin_to_str(who),
+		                                   message, 0);
 
 		dt = g_date_time_new_from_unix_local((gint64)time);
 		purple_message_set_timestamp(pmsg, dt);

@@ -108,11 +108,8 @@ typedef enum /*< prefix=PURPLE_MESSAGE_CONTENT_TYPE,underscore_name=PURPLE_MESSA
 
 G_DECLARE_FINAL_TYPE(PurpleMessage, purple_message, PURPLE, MESSAGE, GObject)
 
-#include "account.h"
-
 /**
  * purple_message_new_outgoing:
- * @account: The account for this message.
  * @author: The author.
  * @recipient: The recipient.
  * @contents: The contents.
@@ -127,11 +124,10 @@ G_DECLARE_FINAL_TYPE(PurpleMessage, purple_message, PURPLE, MESSAGE, GObject)
  *
  * Since: 3.0.0
  */
-PurpleMessage *purple_message_new_outgoing(PurpleAccount *account, const gchar *author, const gchar *recipient, const gchar *contents, PurpleMessageFlags flags);
+PurpleMessage *purple_message_new_outgoing(const gchar *author, const gchar *recipient, const gchar *contents, PurpleMessageFlags flags);
 
 /**
  * purple_message_new_incoming:
- * @account: The account for this message.
  * @who: Message's author.
  * @contents: The contents of a message.
  * @flags: The message flags.
@@ -145,11 +141,10 @@ PurpleMessage *purple_message_new_outgoing(PurpleAccount *account, const gchar *
  *
  * Since: 3.0.0
  */
-PurpleMessage *purple_message_new_incoming(PurpleAccount *account, const gchar *who, const gchar *contents, PurpleMessageFlags flags, guint64 timestamp);
+PurpleMessage *purple_message_new_incoming(const gchar *who, const gchar *contents, PurpleMessageFlags flags, guint64 timestamp);
 
 /**
  * purple_message_new_system:
- * @account: The account for this message.
  * @contents: The contents of a message.
  * @flags: The message flags.
  *
@@ -161,7 +156,7 @@ PurpleMessage *purple_message_new_incoming(PurpleAccount *account, const gchar *
  *
  * Since: 3.0.0
  */
-PurpleMessage *purple_message_new_system(PurpleAccount *account, const gchar *contents, PurpleMessageFlags flags);
+PurpleMessage *purple_message_new_system(const gchar *contents, PurpleMessageFlags flags);
 
 /**
  * purple_message_get_id:

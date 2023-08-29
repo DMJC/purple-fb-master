@@ -214,7 +214,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	/**
 	 * PurpleMessage::id:
 	 *
-	 * The account specific identifier of the message.
+	 * The protocol specific identifier of the message.
 	 *
 	 * Since: 3.0.0
 	 */
@@ -349,8 +349,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
  * Public API
  *****************************************************************************/
 PurpleMessage *
-purple_message_new_outgoing(G_GNUC_UNUSED PurpleAccount *account,
-                            const gchar *author, const gchar *recipient,
+purple_message_new_outgoing(const gchar *author, const gchar *recipient,
                             const gchar *contents, PurpleMessageFlags flags)
 {
 	PurpleMessage *message = NULL;
@@ -377,8 +376,7 @@ purple_message_new_outgoing(G_GNUC_UNUSED PurpleAccount *account,
 }
 
 PurpleMessage *
-purple_message_new_incoming(G_GNUC_UNUSED PurpleAccount *account,
-                            const gchar *who, const gchar *contents,
+purple_message_new_incoming(const gchar *who, const gchar *contents,
                             PurpleMessageFlags flags, guint64 timestamp)
 {
 	PurpleMessage *message = NULL;
@@ -409,9 +407,7 @@ purple_message_new_incoming(G_GNUC_UNUSED PurpleAccount *account,
 }
 
 PurpleMessage *
-purple_message_new_system(G_GNUC_UNUSED PurpleAccount *account,
-                          const gchar *contents, PurpleMessageFlags flags)
-{
+purple_message_new_system(const gchar *contents, PurpleMessageFlags flags) {
 	PurpleMessage *message = NULL;
 	GDateTime *dt = NULL;
 
