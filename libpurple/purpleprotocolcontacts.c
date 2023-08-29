@@ -77,3 +77,37 @@ purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *protocol_con
 
 	return NULL;
 }
+
+GActionGroup *
+purple_protocol_contacts_get_actions(PurpleProtocolContacts *protocol_contacts,
+                                     PurpleContactInfo *info)
+{
+	PurpleProtocolContactsInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONTACTS(protocol_contacts), NULL);
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	iface = PURPLE_PROTOCOL_CONTACTS_GET_IFACE(protocol_contacts);
+	if(iface != NULL && iface->get_actions != NULL) {
+		return iface->get_actions(protocol_contacts, info);
+	}
+
+	return NULL;
+}
+
+GMenuModel *
+purple_protocol_contacts_get_menu(PurpleProtocolContacts *protocol_contacts,
+                                  PurpleContactInfo *info)
+{
+	PurpleProtocolContactsInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONTACTS(protocol_contacts), NULL);
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	iface = PURPLE_PROTOCOL_CONTACTS_GET_IFACE(protocol_contacts);
+	if(iface != NULL && iface->get_menu != NULL) {
+		return iface->get_menu(protocol_contacts, info);
+	}
+
+	return NULL;
+}

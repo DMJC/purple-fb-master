@@ -63,6 +63,9 @@ struct _PurpleProtocolContactsInterface {
 	void (*get_profile_async)(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	char *(*get_profile_finish)(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
 
+	GActionGroup *(*get_actions)(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);
+	GMenuModel *(*get_menu)(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);
+
 	/*< private >*/
 	gpointer reserved[4];
 };
@@ -102,6 +105,36 @@ void purple_protocol_contacts_get_profile_async(PurpleProtocolContacts *protocol
  * Since: 3.0.0
  */
 char *purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
+
+/**
+ * purple_protocol_contacts_get_actions:
+ * @protocol_contacts: The instance.
+ * @info: The [class@ContactInfo] to get the actions for.
+ *
+ * Gets a [iface@Gio.ActionGroup] for @info. When this action group is used,
+ * it should use the prefix of `contact`.
+ *
+ * Returns: (transfer full): The action group or %NULL.
+ *
+ * Since: 3.0.0
+ */
+GActionGroup *purple_protocol_contacts_get_actions(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);
+
+/*
+ * purple_protocol_contacts_get_menu:
+ * @protocol_contacts: The instance.
+ * @info: The [class@ContactInfo] to get the menu for.
+ *
+ * Gets a [class@Gio.MenuModel] for @info.
+ *
+ * This menu will have at least the action groups from [iface@ProtocolActions]
+ * and [iface@ProtocolContacts] available to it.
+ *
+ * Returns: (transfer full): The menu model or %NULL.
+ *
+ * Since: 3.0.0
+ */
+GMenuModel *purple_protocol_contacts_get_menu(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);
 
 G_END_DECLS
 

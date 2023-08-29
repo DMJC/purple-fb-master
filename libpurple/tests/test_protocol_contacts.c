@@ -132,6 +132,40 @@ test_purple_protocol_contacts_empty_get_profile_finish(void) {
 	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolContactsEmpty*get_profile_finish*");
 }
 
+static void
+test_purple_protocol_contacts_empty_get_actions(void) {
+	PurpleProtocolContacts *protocol_contacts = NULL;
+	PurpleContactInfo *info = NULL;
+	GActionGroup *group = NULL;
+
+	protocol_contacts = g_object_new(test_purple_protocol_contacts_empty_get_type(),
+	                                 NULL);
+	info = purple_contact_info_new(NULL);
+
+	group = purple_protocol_contacts_get_actions(protocol_contacts, info);
+	g_assert_null(group);
+
+	g_clear_object(&info);
+	g_clear_object(&protocol_contacts);
+}
+
+static void
+test_purple_protocol_contacts_empty_get_menu(void) {
+	PurpleProtocolContacts *protocol_contacts = NULL;
+	PurpleContactInfo *info = NULL;
+	GMenuModel *model = NULL;
+
+	protocol_contacts = g_object_new(test_purple_protocol_contacts_empty_get_type(),
+	                                 NULL);
+	info = purple_contact_info_new(NULL);
+
+	model = purple_protocol_contacts_get_menu(protocol_contacts, info);
+	g_assert_null(model);
+
+	g_clear_object(&info);
+	g_clear_object(&protocol_contacts);
+}
+
 /******************************************************************************
  * TestProtocolContacts implementation
  *****************************************************************************/
@@ -186,10 +220,31 @@ test_purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *r,
 	return g_task_propagate_pointer(G_TASK(result), error);
 }
 
+static GActionGroup *
+test_purple_protocol_contacts_get_actions(G_GNUC_UNUSED PurpleProtocolContacts *protocol_contacts,
+                                          G_GNUC_UNUSED PurpleContactInfo *info)
+{
+	GSimpleActionGroup *ag = g_simple_action_group_new();
+
+	return G_ACTION_GROUP(ag);
+}
+
+static GMenuModel *
+test_purple_protocol_contacts_get_menu(G_GNUC_UNUSED PurpleProtocolContacts *protocol_contacts,
+                                       G_GNUC_UNUSED PurpleContactInfo *info)
+{
+	GMenu *menu = g_menu_new();
+
+	return G_MENU_MODEL(menu);
+}
+
 static void
 test_purple_protocol_contacts_iface_init(PurpleProtocolContactsInterface *iface) {
 	iface->get_profile_async = test_purple_protocol_contacts_get_profile_async;
 	iface->get_profile_finish = test_purple_protocol_contacts_get_profile_finish;
+
+	iface->get_actions = test_purple_protocol_contacts_get_actions;
+	iface->get_menu = test_purple_protocol_contacts_get_menu;
 }
 
 G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolContacts, test_purple_protocol_contacts,
@@ -278,7 +333,7 @@ test_purple_protocol_contacts_get_profile_normal(void) {
 ;}
 
 static void
-test_purple_protocol_contacts_get_profile_error(void) {
+test_purple_protocol_contacts_get_profile_error_normal(void) {
 	TestPurpleProtocolContacts *protocol_contacts = NULL;
 
 	protocol_contacts = g_object_new(test_purple_protocol_contacts_get_type(),
@@ -294,6 +349,42 @@ test_purple_protocol_contacts_get_profile_error(void) {
 	g_assert_cmpuint(protocol_contacts->get_profile_async, ==, 1);
 	g_assert_cmpuint(protocol_contacts->get_profile_finish, ==, 1);
 
+	g_clear_object(&protocol_contacts);
+}
+
+static void
+test_purple_protocol_contacts_get_actions_normal(void) {
+	PurpleProtocolContacts *protocol_contacts = NULL;
+	PurpleContactInfo *info = NULL;
+	GActionGroup *group = NULL;
+
+	protocol_contacts = g_object_new(test_purple_protocol_contacts_get_type(),
+	                                 NULL);
+
+	info = purple_contact_info_new(NULL);
+	group = purple_protocol_contacts_get_actions(protocol_contacts, info);
+	g_assert_true(G_IS_ACTION_GROUP(group));
+
+	g_clear_object(&group);
+	g_clear_object(&info);
+	g_clear_object(&protocol_contacts);
+}
+
+static void
+test_purple_protocol_contacts_get_menu_normal(void) {
+	PurpleProtocolContacts *protocol_contacts = NULL;
+	PurpleContactInfo *info = NULL;
+	GMenuModel *menu = NULL;
+
+	protocol_contacts = g_object_new(test_purple_protocol_contacts_get_type(),
+	                                 NULL);
+
+	info = purple_contact_info_new(NULL);
+	menu = purple_protocol_contacts_get_menu(protocol_contacts, info);
+	g_assert_true(G_IS_MENU_MODEL(menu));
+
+	g_clear_object(&menu);
+	g_clear_object(&info);
 	g_clear_object(&protocol_contacts);
 }
 
@@ -314,11 +405,19 @@ main(int argc, char **argv) {
 	                test_purple_protocol_contacts_empty_get_profile_async);
 	g_test_add_func("/protocol-contacts/empty/get-profile-finish",
 	                test_purple_protocol_contacts_empty_get_profile_finish);
+	g_test_add_func("/protocol-contacts/empty/get-actions",
+	                test_purple_protocol_contacts_empty_get_actions);
+	g_test_add_func("/protocol-contacts/empty/get-menu",
+	                test_purple_protocol_contacts_empty_get_menu);
 
 	g_test_add_func("/protocol-contacts/normal/get-profile-normal",
 	                test_purple_protocol_contacts_get_profile_normal);
 	g_test_add_func("/protocol-contacts/normal/get-profile-error",
-	                test_purple_protocol_contacts_get_profile_error);
+	                test_purple_protocol_contacts_get_profile_error_normal);
+	g_test_add_func("/protocol-contacts/normal/get-actions",
+	                test_purple_protocol_contacts_get_actions_normal);
+	g_test_add_func("/protocol-contacts/normal/get-menu",
+	                test_purple_protocol_contacts_get_menu_normal);
 
 	ret = g_test_run();
 
