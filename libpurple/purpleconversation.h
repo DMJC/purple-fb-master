@@ -686,6 +686,18 @@ PurpleConversationMember *purple_conversation_add_member(PurpleConversation *con
  */
 gboolean purple_conversation_remove_member(PurpleConversation *conversation, PurpleConversationMember *member, gboolean announce, const char *message);
 
+/**
+ * purple_conversation_get_messages:
+ * @conversation: The instance.
+ *
+ * Gets the list of all messages in @conversation.
+ *
+ * Returns: (transfer none): The list of messages.
+ *
+ * Since: 3.0.0
+ */
+GListModel *purple_conversation_get_messages(PurpleConversation *conversation);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONVERSATION_H */

@@ -259,6 +259,40 @@ test_purple_conversation_members_add_remove(void) {
 }
 
 /******************************************************************************
+ * Message Tests
+ *****************************************************************************/
+static void
+test_purple_conversation_message_write_one(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleMessage *message = NULL;
+	GListModel *messages = NULL;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"name", "this is required",
+		NULL);
+
+	messages = purple_conversation_get_messages(conversation);
+	g_assert_nonnull(messages);
+	g_assert_cmpuint(g_list_model_get_n_items(messages), ==, 0);
+
+	message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
+		"contents", "hello world!",
+		NULL);
+
+	purple_conversation_write_message(conversation, message);
+	g_assert_cmpuint(g_list_model_get_n_items(messages), ==, 1);
+
+	g_clear_object(&message);
+	g_clear_object(&account);
+	g_clear_object(&conversation);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -274,6 +308,9 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/conversation/members/add-remove",
 	                test_purple_conversation_members_add_remove);
+
+	g_test_add_func("/conversation/message/write-one",
+	                test_purple_conversation_message_write_one);
 
 	ret = g_test_run();
 

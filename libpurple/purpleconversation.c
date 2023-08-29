@@ -53,6 +53,8 @@ typedef struct {
 	PurpleContactInfo *creator;
 	PurpleTags *tags;
 	GListStore *members;
+
+	GListStore *messages;
 } PurpleConversationPrivate;
 
 enum {
@@ -73,6 +75,7 @@ enum {
 	PROP_CREATOR,
 	PROP_TAGS,
 	PROP_MEMBERS,
+	PROP_MESSAGES,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES] = { NULL, };
@@ -383,6 +386,9 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_MEMBERS:
 			g_value_set_object(value, purple_conversation_get_members(conv));
 			break;
+		case PROP_MESSAGES:
+			g_value_set_object(value, purple_conversation_get_messages(conv));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -397,6 +403,7 @@ purple_conversation_init(PurpleConversation *conv) {
 
 	priv->tags = purple_tags_new();
 	priv->members = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
+	priv->messages = g_list_store_new(PURPLE_TYPE_MESSAGE);
 }
 
 static void
@@ -484,6 +491,7 @@ purple_conversation_finalize(GObject *object) {
 	g_clear_object(&priv->creator);
 	g_clear_object(&priv->tags);
 	g_clear_object(&priv->members);
+	g_clear_object(&priv->messages);
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->finalize(object);
 }
@@ -701,6 +709,19 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	properties[PROP_MEMBERS] = g_param_spec_object(
 		"members", "members",
 		"The members that are currently in this conversation",
+		G_TYPE_LIST_MODEL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:messages:
+	 *
+	 * A [iface.Gio.ListModel] of all the messages in this conversation.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_MESSAGES] = g_param_spec_object(
+		"messages", "messages",
+		"All of the messages in this conversation's history.",
 		G_TYPE_LIST_MODEL,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -975,6 +996,7 @@ _purple_conversation_write_common(PurpleConversation *conv,
 {
 	PurpleProtocol *protocol = NULL;
 	PurpleConnection *gc = NULL;
+	PurpleConversationPrivate *priv = NULL;
 	PurpleAccount *account;
 	PurpleConversationUiOps *ops;
 	PurpleBuddy *b;
@@ -983,6 +1005,8 @@ _purple_conversation_write_common(PurpleConversation *conv,
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 	g_return_if_fail(pmsg != NULL);
+
+	priv = purple_conversation_get_instance_private(conv);
 
 	ops = purple_conversation_get_ui_ops(conv);
 
@@ -1022,7 +1046,7 @@ _purple_conversation_write_common(PurpleConversation *conv,
 		protocol = purple_account_get_protocol(account);
 
 		if(PURPLE_IS_IM_CONVERSATION(conv) ||
-		   !(purple_protocol_get_options(protocol) & OPT_PROTO_UNIQUE_CHATNAME))
+		   !(protocol != NULL && purple_protocol_get_options(protocol) & OPT_PROTO_UNIQUE_CHATNAME))
 		{
 			if(purple_message_get_flags(pmsg) & PURPLE_MESSAGE_SEND) {
 				PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
@@ -1059,6 +1083,8 @@ _purple_conversation_write_common(PurpleConversation *conv,
 			g_clear_error(&error);
 		}
 	}
+
+	g_list_store_append(priv->messages, pmsg);
 
 	if(ops) {
 		if (PURPLE_IS_CHAT_CONVERSATION(conv) && ops->write_chat) {
@@ -1611,4 +1637,19 @@ purple_conversation_remove_member(PurpleConversation *conversation,
 	g_object_unref(member);
 
 	return TRUE;
+}
+
+GListModel *
+purple_conversation_get_messages(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(G_IS_LIST_MODEL(priv->messages)) {
+		return G_LIST_MODEL(priv->messages);
+	}
+
+	return NULL;
 }
