@@ -33,6 +33,7 @@
 
 typedef struct {
 	char *id;
+	PurpleConversationType type;
 	PurpleAccount *account;
 
 	char *name;
@@ -60,6 +61,7 @@ typedef struct {
 enum {
 	PROP_0,
 	PROP_ID,
+	PROP_TYPE,
 	PROP_ACCOUNT,
 	PROP_NAME,
 	PROP_TITLE,
@@ -275,6 +277,9 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 		case PROP_ID:
 			purple_conversation_set_id(conv, g_value_get_string(value));
 			break;
+		case PROP_TYPE:
+			purple_conversation_set_conversation_type(conv, g_value_get_enum(value));
+			break;
 		case PROP_ACCOUNT:
 			purple_conversation_set_account(conv, g_value_get_object(value));
 			break;
@@ -335,6 +340,10 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 	switch(param_id) {
 		case PROP_ID:
 			g_value_set_string(value, purple_conversation_get_id(conv));
+			break;
+		case PROP_TYPE:
+			g_value_set_enum(value,
+			                 purple_conversation_get_conversation_type(conv));
 			break;
 		case PROP_ACCOUNT:
 			g_value_set_object(value, purple_conversation_get_account(conv));
@@ -509,7 +518,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	obj_class->set_property = purple_conversation_set_property;
 
 	/**
-	 * PurpleConversation::id:
+	 * PurpleConversation:id:
 	 *
 	 * An opaque identifier for this conversation. Generally speaking this is
 	 * protocol dependent and should only be used as a unique identifier.
@@ -521,6 +530,21 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"The identifier for the conversation.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:type:
+	 *
+	 * A type hint for the conversation. This may be useful for protocols, but
+	 * libpurple treats all conversations the same.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_TYPE] = g_param_spec_enum(
+		"type", "type",
+		"The type of the conversation.",
+		PURPLE_TYPE_CONVERSATION_TYPE,
+		PurpleConversationTypeUnset,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "Account",
@@ -861,6 +885,36 @@ purple_conversation_get_id(PurpleConversation *conversation) {
 	priv = purple_conversation_get_instance_private(conversation);
 
 	return priv->id;
+}
+
+PurpleConversationType
+purple_conversation_get_conversation_type(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation),
+	                     PurpleConversationTypeUnset);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->type;
+}
+
+void
+purple_conversation_set_conversation_type(PurpleConversation *conversation,
+                                          PurpleConversationType type)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(type != priv->type) {
+		priv->type = type;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_TYPE]);
+	}
 }
 
 void

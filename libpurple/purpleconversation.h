@@ -86,6 +86,33 @@ typedef enum
 } PurpleConversationUpdateType;
 
 /**
+ * PurpleConversationType:
+ * @PurpleConversationTypeUnset: A value to specify that the property has not
+ *                               been set.
+ * @PurpleConversationTypeDM: A direct message between two contacts.
+ * @PurpleConversationTypeGroupDM: A direct message between a protocol
+ *                                 dependent number of contacts.
+ * @PurpleConversationTypeChannel: A multi-user chat that is available to all
+ *                                 users on the protocol and has features like
+ *                                 moderation.
+ * @PurpleConversationTypeThread: A thread is a subset of messages from a
+ *                                conversation that are related.
+ *
+ * The type of the conversation. This is mostly ignored, but could be useful in
+ * ways we can't imagine right now. If you come up with one in the future,
+ * please let us know!
+ *
+ * Since: 3.0.0
+ */
+typedef enum {
+	PurpleConversationTypeUnset,
+	PurpleConversationTypeDM,
+	PurpleConversationTypeGroupDM,
+	PurpleConversationTypeChannel,
+	PurpleConversationTypeThread,
+} PurpleConversationType;
+
+/**
  * PurpleConversation:
  *
  * A core representation of a conversation between two or more people.
@@ -161,6 +188,32 @@ PurpleConversationUiOps *purple_conversation_get_ui_ops(PurpleConversation *conv
  * Since: 3.0.0
  */
 const char *purple_conversation_get_id(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_get_conversation_type:
+ * @conversation: The instance.
+ *
+ * Gets the type of @conversation.
+ *
+ * Returns: The [enum@ConversationType] of @conversation.
+ *
+ * Since: 3.0.0.
+ */
+PurpleConversationType purple_conversation_get_conversation_type(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_conversation_type:
+ * @conversation: The instance.
+ * @type: The new type.
+ *
+ * Sets the type of @conversation to @type.
+ *
+ * > Note this only for the internal representation in libpurple and the
+ * protocol will not be told to change the type.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_conversation_type(PurpleConversation *conversation, PurpleConversationType type);
 
 /**
  * purple_conversation_set_account:
