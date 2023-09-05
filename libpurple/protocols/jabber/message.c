@@ -842,7 +842,9 @@ jabber_xhtml_plain_equal(const char *xhtml_escaped, const char *plain)
 
 int
 jabber_message_send_im(G_GNUC_UNUSED PurpleProtocolIM *pim,
-                       PurpleConnection *gc, PurpleMessage *msg)
+                       PurpleConnection *gc,
+                       G_GNUC_UNUSED PurpleConversation *conversation,
+                       PurpleMessage *msg)
 {
 	JabberMessage *jm;
 	JabberBuddy *jb;

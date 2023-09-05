@@ -59,7 +59,9 @@ purple_demo_protocol_echo_im_cb(gpointer data)
 
 static gint
 purple_demo_protocol_send_im(G_GNUC_UNUSED PurpleProtocolIM *im,
-                             PurpleConnection *conn, PurpleMessage *msg)
+                             PurpleConnection *conn,
+                             G_GNUC_UNUSED PurpleConversation *conversation,
+                             PurpleMessage *msg)
 {
 	const gchar *who = purple_message_get_recipient(msg);
 

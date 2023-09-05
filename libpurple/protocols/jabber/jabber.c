@@ -2305,7 +2305,7 @@ jabber_cmd_chat_msg(PurpleConversation *conv, G_GNUC_UNUSED const char *cmd,
 
 	msg = purple_message_new_outgoing(me, who, args[1], 0);
 
-	jabber_message_send_im(PURPLE_PROTOCOL_IM(prpl), pc, msg);
+	jabber_message_send_im(PURPLE_PROTOCOL_IM(prpl), pc, NULL, msg);
 
 	g_free(who);
 	return PURPLE_CMD_RET_OK;

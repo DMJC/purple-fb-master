@@ -86,7 +86,7 @@ int purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg)
 	if(PURPLE_IS_PROTOCOL_IM(protocol)) {
 		PurpleProtocolIM *pim = PURPLE_PROTOCOL_IM(protocol);
 
-		val = purple_protocol_im_send(pim, gc, msg);
+		val = purple_protocol_im_send(pim, gc, im, msg);
 	}
 
 	if(im && purple_im_conversation_get_send_typed_timeout(PURPLE_IM_CONVERSATION(im)))

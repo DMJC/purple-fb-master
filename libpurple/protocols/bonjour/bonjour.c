@@ -242,7 +242,9 @@ bonjour_protocol_get_buddy_icon_spec(G_GNUC_UNUSED PurpleProtocol *protocol) {
 
 static int
 bonjour_send_im(G_GNUC_UNUSED PurpleProtocolIM *im,
-                PurpleConnection *connection, PurpleMessage *msg)
+                PurpleConnection *connection,
+                G_GNUC_UNUSED PurpleConversation *conversation,
+                PurpleMessage *msg)
 {
 	BonjourData *bd = purple_connection_get_protocol_data(connection);
 

@@ -28,6 +28,7 @@
 static gint
 purple_ircv3_protocol_send_im(G_GNUC_UNUSED PurpleProtocolIM *im,
                               PurpleConnection *conn,
+                              G_GNUC_UNUSED PurpleConversation *conversation,
                               PurpleMessage *message)
 {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(conn);

@@ -36,7 +36,7 @@ purple_protocol_im_default_init(G_GNUC_UNUSED PurpleProtocolIMInterface *iface)
  *****************************************************************************/
 gint
 purple_protocol_im_send(PurpleProtocolIM *im, PurpleConnection *gc,
-                        PurpleMessage *msg)
+                        PurpleConversation *conversation, PurpleMessage *msg)
 {
 	PurpleProtocolIMInterface *iface = NULL;
 
@@ -44,7 +44,7 @@ purple_protocol_im_send(PurpleProtocolIM *im, PurpleConnection *gc,
 
 	iface = PURPLE_PROTOCOL_IM_GET_IFACE(im);
 	if(iface && iface->send) {
-		return iface->send(im, gc, msg);
+		return iface->send(im, gc, conversation, msg);
 	}
 
 	return -1;

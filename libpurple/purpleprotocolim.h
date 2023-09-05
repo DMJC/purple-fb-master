@@ -31,6 +31,7 @@
 #include <glib-object.h>
 
 #include <libpurple/connection.h>
+#include <libpurple/purpleconversation.h>
 #include <libpurple/purpleprotocol.h>
 
 #define PURPLE_TYPE_PROTOCOL_IM (purple_protocol_im_get_type())
@@ -71,7 +72,7 @@ struct _PurpleProtocolIMInterface {
 
 	/*< public >*/
 	gint (*send)(PurpleProtocolIM *im, PurpleConnection *connection,
-	             PurpleMessage *msg);
+	             PurpleConversation *conversation, PurpleMessage *msg);
 
 	guint (*send_typing)(PurpleProtocolIM *im, PurpleConnection *connection,
 	                     const gchar *name, PurpleIMTypingState state);
@@ -86,6 +87,7 @@ G_BEGIN_DECLS
  * purple_protocol_im_send:
  * @im: The #PurpleProtocolIM instance.
  * @connection: The #PurpleConnection to use.
+ * @conversation: The [class@Conversation] this message is for.
  * @msg: The #PurpleMessage to send.
  *
  * Sends @msg out over @connection.
@@ -95,6 +97,7 @@ G_BEGIN_DECLS
  */
 gint purple_protocol_im_send(PurpleProtocolIM *im,
                              PurpleConnection *connection,
+                             PurpleConversation *conversation,
                              PurpleMessage *msg);
 
 /**
