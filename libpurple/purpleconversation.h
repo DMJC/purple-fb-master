@@ -439,6 +439,23 @@ const char *purple_conversation_get_topic(PurpleConversation *conversation);
 void purple_conversation_set_topic(PurpleConversation *conversation, const char *topic);
 
 /**
+ * purple_conversation_set_topic_full:
+ * @conversation: The instance:
+ * @topic: (nullable): The new topic.
+ * @author: (nullable): The author of the new topic.
+ * @updated: (nullable): The date time of the new topic.
+ *
+ * Sets everything about the topic all at once.
+ *
+ * See also: [method@Conversation.set_topic],
+ *           [method@Conversation.set_topic_author], and
+ *           [method@Conversation.set_topic_updated].
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_topic_full(PurpleConversation *conversation, const char *topic, PurpleContactInfo *author, GDateTime *updated);
+
+/**
  * purple_conversation_get_topic_author:
  * @conversation: The instance.
  *

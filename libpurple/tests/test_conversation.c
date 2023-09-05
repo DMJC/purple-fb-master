@@ -161,6 +161,43 @@ test_purple_conversation_properties(void) {
 	g_clear_object(&conversation);
 }
 
+static void
+test_purple_conversation_set_topic_full(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleContactInfo *author = NULL;
+	GDateTime *updated = NULL;
+	GDateTime *updated1 = NULL;
+	const char *topic = "this is the topic";
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"name", "this is required for some reason",
+		NULL);
+
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+
+	author = purple_contact_info_new(NULL);
+	updated = g_date_time_new_now_utc();
+
+	purple_conversation_set_topic_full(conversation, topic, author, updated);
+
+	g_assert_cmpstr(purple_conversation_get_topic(conversation), ==, topic);
+	g_assert_true(purple_conversation_get_topic_author(conversation) ==
+	              author);
+
+	updated1 = purple_conversation_get_topic_updated(conversation);
+	g_assert_nonnull(updated1);
+	g_assert_true(g_date_time_equal(updated1, updated));
+
+	g_clear_pointer(&updated, g_date_time_unref);
+	g_clear_object(&author);
+	g_clear_object(&account);
+	g_clear_object(&conversation);
+}
+
 /******************************************************************************
  * Membership tests and helpers
  *****************************************************************************/
@@ -305,6 +342,8 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/conversation/properties",
 	                test_purple_conversation_properties);
+	g_test_add_func("/conversation/set-topic-full",
+	                test_purple_conversation_set_topic_full);
 
 	g_test_add_func("/conversation/members/add-remove",
 	                test_purple_conversation_members_add_remove);

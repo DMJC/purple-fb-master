@@ -1329,6 +1329,27 @@ purple_conversation_set_topic(PurpleConversation *conversation,
 	}
 }
 
+void
+purple_conversation_set_topic_full(PurpleConversation *conversation,
+                                   const char *topic,
+                                   PurpleContactInfo *author,
+                                   GDateTime *updated)
+{
+	GObject *obj = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	obj = G_OBJECT(conversation);
+	g_object_freeze_notify(obj);
+
+	purple_conversation_set_topic(conversation, topic);
+	purple_conversation_set_topic_author(conversation, author);
+	purple_conversation_set_topic_updated(conversation, updated);
+
+	g_object_thaw_notify(obj);
+}
+
+
 PurpleContactInfo *
 purple_conversation_get_topic_author(PurpleConversation *conversation) {
 	PurpleConversationPrivate *priv = NULL;
