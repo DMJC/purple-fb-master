@@ -438,18 +438,6 @@ int purple_utf8_strcasecmp(const char *a, const char *b);
 gboolean purple_utf8_has_word(const char *haystack, const char *needle);
 
 /**
- * purple_message_meify:
- * @message: The message to check
- * @len:     The message length, or -1
- *
- * Checks for messages starting (post-HTML) with "/me ", including the space.
- *
- * Returns: TRUE if it starts with "/me ", and it has been removed, otherwise
- *         FALSE
- */
-gboolean purple_message_meify(char *message, gssize len);
-
-/**
  * purple_text_strip_mnemonic:
  * @in:  The string to strip
  *

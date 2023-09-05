@@ -38,6 +38,7 @@ struct _PurpleMessage {
 
 	gchar *contents;
 	PurpleMessageContentType content_type;
+	gboolean action;
 
 	GDateTime *timestamp;
 	PurpleMessageFlags flags;
@@ -56,6 +57,7 @@ enum {
 	PROP_RECIPIENT,
 	PROP_CONTENTS,
 	PROP_CONTENT_TYPE,
+	PROP_ACTION,
 	PROP_TIMESTAMP,
 	PROP_FLAGS,
 	PROP_ERROR,
@@ -116,6 +118,9 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 		case PROP_CONTENT_TYPE:
 			g_value_set_enum(value, purple_message_get_content_type(message));
 			break;
+		case PROP_ACTION:
+			g_value_set_boolean(value, purple_message_get_action(message));
+			break;
 		case PROP_TIMESTAMP:
 			g_value_set_boxed(value, purple_message_get_timestamp(message));
 			break;
@@ -159,6 +164,9 @@ purple_message_set_property(GObject *object, guint param_id,
 			break;
 		case PROP_CONTENT_TYPE:
 			purple_message_set_content_type(message, g_value_get_enum(value));
+			break;
+		case PROP_ACTION:
+			purple_message_set_action(message, g_value_get_boolean(value));
 			break;
 		case PROP_TIMESTAMP:
 			purple_message_set_timestamp(message, g_value_get_boxed(value));
@@ -212,7 +220,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	obj_class->finalize = purple_message_finalize;
 
 	/**
-	 * PurpleMessage::id:
+	 * PurpleMessage:id:
 	 *
 	 * The protocol specific identifier of the message.
 	 *
@@ -225,7 +233,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage::author:
+	 * PurpleMessage:author:
 	 *
 	 * The author of the message.
 	 *
@@ -238,7 +246,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage::author-name-color:
+	 * PurpleMessage:author-name-color:
 	 *
 	 * The hex color for the author's name.
 	 *
@@ -251,7 +259,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage::author-alias:
+	 * PurpleMessage:author-alias:
 	 *
 	 * The alias of the author.
 	 *
@@ -264,7 +272,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage::recipient:
+	 * PurpleMessage:recipient:
 	 *
 	 * The recipient of the message.
 	 *
@@ -277,7 +285,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage::content:
+	 * PurpleMessage:content:
 	 *
 	 * The contents of the message.
 	 *
@@ -290,7 +298,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage::content-type:
+	 * PurpleMessage:content-type:
 	 *
 	 * The content-type of the message.
 	 *
@@ -303,7 +311,25 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage::timestamp:
+	 * PurpleMessage:action:
+	 *
+	 * Whether or not the message is an action.
+	 *
+	 * Typically a message is considered an action when the body starts with
+	 * `/me`. Some protocols handle this differently but this is mostly a user
+	 * interface hint that this message is different than a normal text
+	 * message.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_ACTION] = g_param_spec_boolean(
+		"action", "action",
+		"Whether or not the message is an action.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:timestamp:
 	 *
 	 * The timestamp of the message.
 	 *
@@ -316,7 +342,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage::flags:
+	 * PurpleMessage:flags:
 	 *
 	 * The #PurpleMessageFlags for the message.
 	 *
@@ -669,4 +695,22 @@ purple_message_clear_attachments(PurpleMessage *message) {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
 	g_hash_table_remove_all(message->attachments);
+}
+
+gboolean
+purple_message_get_action(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+
+	return message->action;
+}
+
+void
+purple_message_set_action(PurpleMessage *message, gboolean action) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	if(action != message->action) {
+		message->action = action;
+
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ACTION]);
+	}
 }

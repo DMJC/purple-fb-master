@@ -757,35 +757,6 @@ purple_utf8_has_word(const char *haystack, const char *needle)
 	return ret;
 }
 
-gboolean purple_message_meify(char *message, gssize len)
-{
-	char *c;
-	gboolean inside_html = FALSE;
-
-	g_return_val_if_fail(message != NULL, FALSE);
-
-	if(len == -1)
-		len = strlen(message);
-
-	for (c = message; *c; c++, len--) {
-		if(inside_html) {
-			if(*c == '>')
-				inside_html = FALSE;
-		} else {
-			if(*c == '<')
-				inside_html = TRUE;
-			else
-				break;
-		}
-	}
-
-	if(*c && !g_ascii_strncasecmp(c, "/me ", 4)) {
-		memmove(c, c+4, len-3);
-		return TRUE;
-	}
-
-	return FALSE;
-}
 
 char *purple_text_strip_mnemonic(const char *in)
 {

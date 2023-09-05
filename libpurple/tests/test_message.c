@@ -38,6 +38,7 @@ test_purple_message_properties(void) {
 	char *author_name_color = NULL;
 	char *recipient = NULL;
 	char *contents = NULL;
+	gboolean action = FALSE;
 
 	timestamp = g_date_time_new_from_unix_utc(911347200);
 	error = g_error_new(g_quark_from_static_string("test-message"), 0,
@@ -46,6 +47,7 @@ test_purple_message_properties(void) {
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
 		"id", "id",
+		"action", TRUE,
 		"author", "author",
 		"author-alias", "alias",
 		"author-name-color", "purple",
@@ -60,6 +62,7 @@ test_purple_message_properties(void) {
 	g_object_get(
 		message,
 		"id", &id,
+		"action", &action,
 		"author", &author,
 		"author-alias", &author_alias,
 		"author-name-color", &author_name_color,
@@ -72,6 +75,7 @@ test_purple_message_properties(void) {
 		NULL);
 
 	g_assert_cmpstr(id, ==, "id");
+	g_assert_true(action);
 	g_assert_cmpstr(author, ==, "author");
 	g_assert_cmpstr(author_alias, ==, "alias");
 	g_assert_cmpstr(author_name_color, ==, "purple");

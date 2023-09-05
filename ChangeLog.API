@@ -561,6 +561,7 @@ version 3.0.0 (??/??/????):
 		* purple_marshal_POINTER__POINTER_POINTER_BOOLEAN
 		* purple_marshal_VOID__INT
 		* purple_marshal_VOID__INT_INT
+		* purple_message_meify
 		* PurpleMimeDocument, PurpleMimePart,
 		  purple_mime_document_new, purple_mime_document_free,
 		  purple_mime_document_parse, purple_mime_document_parsen,

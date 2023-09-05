@@ -458,6 +458,33 @@ void purple_message_foreach_attachment(PurpleMessage *message, PurpleAttachmentF
  */
 void purple_message_clear_attachments(PurpleMessage *message);
 
+/**
+ * purple_message_get_action:
+ * @message: The instance.
+ *
+ * Gets whether or not @message is an action.
+ *
+ * See also [property@Message:action] for more information.
+ *
+ * Returns: %TRUE if @message is an action, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_message_get_action(PurpleMessage *message);
+
+/**
+ * purple_message_set_action:
+ * @message: The instance.
+ * @action: Whether or not @message is an action.
+ *
+ * Sets whether or not @message is an action.
+ *
+ * See also: [property@Message:action] for more information.
+ *
+ * Since: 3.0.0
+ */
+void purple_message_set_action(PurpleMessage *message, gboolean action);
+
 G_END_DECLS
 
 #endif /* PURPLE_MESSAGE_H */

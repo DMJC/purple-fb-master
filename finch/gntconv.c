@@ -891,7 +891,7 @@ finch_write_conv(PurpleConversation *conv, PurpleMessage *msg)
 		gboolean me = FALSE;
 		gchar *msg_text = g_strdup(purple_message_get_contents(msg));
 
-		if (purple_message_meify(msg_text, -1)) {
+		if(purple_message_get_action(msg)) {
 			name = g_strdup_printf("*** %s", purple_message_get_author_alias(msg));
 			if (!(flags & PURPLE_MESSAGE_SEND) &&
 					(flags & PURPLE_MESSAGE_NICK))
