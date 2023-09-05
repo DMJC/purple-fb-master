@@ -75,14 +75,6 @@ G_DEFINE_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
  * Helpers
  *****************************************************************************/
 static void
-purple_message_set_id(PurpleMessage *message, const gchar *id) {
-	g_free(message->id);
-	message->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ID]);
-}
-
-static void
 purple_message_set_author(PurpleMessage *message, const gchar *author) {
 	g_free(message->author);
 	message->author = g_strdup(author);
@@ -240,15 +232,15 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	/**
 	 * PurpleMessage:id:
 	 *
-	 * The protocol specific identifier of the message.
+	 * The protocol-specific identifier of the message.
 	 *
 	 * Since: 3.0.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "ID",
-		"The session-unique message id",
+		"The protocol specific message id",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleMessage:author:
@@ -507,6 +499,16 @@ purple_message_get_id(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
 
 	return message->id;
+}
+
+void
+purple_message_set_id(PurpleMessage *message, const gchar *id) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	g_free(message->id);
+	message->id = g_strdup(id);
+
+	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ID]);
 }
 
 const gchar *

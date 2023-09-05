@@ -172,6 +172,20 @@ PurpleMessage *purple_message_new_system(const gchar *contents, PurpleMessageFla
 const gchar *purple_message_get_id(PurpleMessage *message);
 
 /**
+ * purple_message_set_id:
+ * @message: The instance.
+ * @id: (nullable): The new id to set.
+ *
+ * Sets the id of @message to @id.
+ *
+ * > Note: This should really only be used by protocol plugins to update an id
+ * of a sent message when the server has assigned the final id to the message.
+ *
+ * Since: 3.0.0
+ */
+void purple_message_set_id(PurpleMessage *message, const char *id);
+
+/**
  * purple_message_get_author:
  * @message: The message.
  *
