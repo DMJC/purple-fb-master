@@ -126,7 +126,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
     obj_class->finalize = purple_proxy_info_finalize;
 
     /**
-     * PurpleProxyInfo::proxy-type:
+     * PurpleProxyInfo:proxy-type:
      *
      * The [enum@ProxyType] to use for this proxy.
      *
@@ -140,7 +140,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
-     * PurpleProxyInfo::hostname:
+     * PurpleProxyInfo:hostname:
      *
      * The hostname to use for this proxy.
      *
@@ -153,7 +153,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
-     * PurpleProxyInfo::port:
+     * PurpleProxyInfo:port:
      *
      * The port to use for this proxy.
      *
@@ -166,7 +166,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
-     * PurpleProxyInfo::username:
+     * PurpleProxyInfo:username:
      *
      * The username to use for this proxy.
      *
@@ -179,7 +179,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     /**
-     * PurpleProxyInfo::password:
+     * PurpleProxyInfo:password:
      *
      * The password to use for this proxy.
      *

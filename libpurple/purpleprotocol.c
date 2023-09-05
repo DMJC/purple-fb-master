@@ -282,7 +282,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 	klass->create_connection = purple_protocol_default_create_connection;
 
 	/**
-	 * PurpleProtocol::id:
+	 * PurpleProtocol:id:
 	 *
 	 * The identifier for the protocol.
 	 *
@@ -295,7 +295,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleProtocol::name:
+	 * PurpleProtocol:name:
 	 *
 	 * The name to show in user interface for the protocol.
 	 *
@@ -308,7 +308,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleProtocol::description:
+	 * PurpleProtocol:description:
 	 *
 	 * The description to show in user interface for the protocol.
 	 *
@@ -321,7 +321,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleProtocol::icon-name:
+	 * PurpleProtocol:icon-name:
 	 *
 	 * The name of an icon that has been installed to either the path specified
 	 * via PurpleProtocol::icon-search-path or
@@ -336,7 +336,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleProtocol::icon-search-path:
+	 * PurpleProtocol:icon-search-path:
 	 *
 	 * The path to an XDG Icon Theme directory which contains the icons for the
 	 * protocol. See purple_protocol_get_icon_search_path() for more
@@ -351,7 +351,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleProtocol::icon-resource-path:
+	 * PurpleProtocol:icon-resource-path:
 	 *
 	 * A #GResource path which contains the icons for the protocol. See
 	 * purple_protocol_get_icon_resource_path() for more information.
@@ -365,7 +365,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleProtocol::options:
+	 * PurpleProtocol:options:
 	 *
 	 * The #PurpleProtocolOptions for the protocol.
 	 *

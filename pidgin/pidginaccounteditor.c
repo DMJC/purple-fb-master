@@ -1178,7 +1178,7 @@ pidgin_account_editor_class_init(PidginAccountEditorClass *klass) {
 	obj_class->finalize = pidgin_account_editor_finalize;
 
 	/**
-	 * PidginAccountEditor::account:
+	 * PidginAccountEditor:account:
 	 *
 	 * The account that this editor is modifying.
 	 *
@@ -1191,10 +1191,12 @@ pidgin_account_editor_class_init(PidginAccountEditorClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PidginAccountEditor::valid:
+	 * PidginAccountEditor:valid:
 	 *
 	 * Whether or not the account settings are valid and it is okay to save the
 	 * account.
+	 *
+	 * Since: 3.0.0
 	 */
 	properties[PROP_VALID] = g_param_spec_boolean(
 		"valid", "valid",

@@ -204,9 +204,9 @@ purple_plugin_info_class_init(PurplePluginInfoClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurplePluginInfo::action-group:
+	 * PurplePluginInfo:action-group:
 	 *
-	 * A [class@Gio.ActionGroup] of actions that this plugin provides.
+	 * An [iface@Gio.ActionGroup] of actions that this plugin provides.
 	 *
 	 * Since: 3.0.0
 	 */
@@ -217,7 +217,7 @@ purple_plugin_info_class_init(PurplePluginInfoClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurplePluginInfo::action-menu:
+	 * PurplePluginInfo:action-menu:
 	 *
 	 * A [class@Gio.MenuModel] for activating actions.
 	 *

@@ -137,7 +137,7 @@ purple_history_adapter_class_init(PurpleHistoryAdapterClass *klass) {
 	obj_class->finalize = purple_history_adapter_finalize;
 
 	/**
-	 * PurpleHistoryAdapter::id:
+	 * PurpleHistoryAdapter:id:
 	 *
 	 * The ID of the adapter.  Used for preferences and other things that need
 	 * to address it.
@@ -151,7 +151,7 @@ purple_history_adapter_class_init(PurpleHistoryAdapterClass *klass) {
 	);
 
 	/**
-	 * PurpleHistoryAdapter::name:
+	 * PurpleHistoryAdapter:name:
 	 *
 	 * The name of the adapter.
 	 *

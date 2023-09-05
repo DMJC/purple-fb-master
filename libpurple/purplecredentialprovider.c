@@ -194,7 +194,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	obj_class->finalize = purple_credential_provider_finalize;
 
 	/**
-	 * PurpleCredentialProvider::id:
+	 * PurpleCredentialProvider:id:
 	 *
 	 * The ID of the provider.  Used for preferences and other things that need
 	 * to address it.
@@ -208,7 +208,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	);
 
 	/**
-	 * PurpleCredentialProvider::name:
+	 * PurpleCredentialProvider:name:
 	 *
 	 * The name of the provider which will be displayed to the user.
 	 *
@@ -221,7 +221,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	);
 
 	/**
-	 * PurpleCredentialProvider::description:
+	 * PurpleCredentialProvider:description:
 	 *
 	 * The description of the provider which will be displayed to the user.
 	 *
@@ -234,7 +234,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	);
 
 	/**
-	 * PurpleCredentialProvider::settings:
+	 * PurpleCredentialProvider:settings:
 	 *
 	 * The [class@Gio.Settings] used to configure the provider. This may be
 	 * %NULL.

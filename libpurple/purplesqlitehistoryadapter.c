@@ -593,7 +593,7 @@ purple_sqlite_history_adapter_class_init(PurpleSqliteHistoryAdapterClass *klass)
 	adapter_class->write = purple_sqlite_history_adapter_write;
 
 	/**
-	 * PurpleHistoryAdapter::filename:
+	 * PurpleSqliteHistoryAdapter:filename:
 	 *
 	 * The filename that the sqlite database will store data to.
 	 *

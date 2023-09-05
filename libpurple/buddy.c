@@ -242,7 +242,7 @@ static void purple_buddy_class_init(PurpleBuddyClass *klass) {
 	obj_class->set_property = purple_buddy_set_property;
 
 	/**
-	 * PurpleBuddy::id:
+	 * PurpleBuddy:id:
 	 *
 	 * A globally unique identifier for this specific buddy.
 	 *
