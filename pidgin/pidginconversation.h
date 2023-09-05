@@ -63,7 +63,7 @@ GtkWidget *pidgin_conversation_new(PurpleConversation *conversation);
  *
  * Gets the [class@Pidgin.Conversation] that is displaying @conversation.
  *
- * Returns: (nullable): The [class@Pidgin.Conversation] displaying
+ * Returns: (transfer none) (nullable): The [class@Pidgin.Conversation] displaying
  *          @conversation if one exists, otherwise %NULL.
  *
  * Since: 3.0.0

@@ -44,7 +44,7 @@ typedef struct _PidginConversationOld PidginConversationOld;
  **************************************************************************/
 
 /**
- * PidginConversation:
+ * PidginConversationOld:
  *
  * A GTK conversation pane.
  */
