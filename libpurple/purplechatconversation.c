@@ -23,6 +23,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "debug.h"
+#include "purplecontactmanager.h"
 #include "purpleconversationmanager.h"
 #include "purplechatconversation.h"
 #include "purpleenums.h"
@@ -32,21 +33,14 @@
 #include "server.h"
 
 typedef struct {
-	GList *ignored;     /* Ignored users.                            */
-	char  *who;         /* The person who set the topic.             */
-	char  *topic;       /* The topic.                                */
 	int    id;          /* The chat ID.                              */
-	char *nick;         /* Your nick in this chat.                   */
 	gboolean left;      /* We left the chat and kept the window open */
 	GHashTable *users;  /* Hash table of the users in the room.      */
 } PurpleChatConversationPrivate;
 
 enum {
 	PROP_0,
-	PROP_TOPIC_WHO,
-	PROP_TOPIC,
 	PROP_CHAT_ID,
-	PROP_NICK,
 	PROP_LEFT,
 	N_PROPERTIES
 };
@@ -100,24 +94,16 @@ purple_chat_conversation_clear_users_helper(gpointer data, gpointer user_data)
  *****************************************************************************/
 static void
 chat_conversation_write_message(PurpleConversation *conv, PurpleMessage *msg) {
-	PurpleChatConversation *chat_conv = PURPLE_CHAT_CONVERSATION(conv);
-	PurpleChatConversationPrivate *priv = NULL;
 	PurpleMessageFlags flags;
-	const gchar *author = NULL;
 
 	g_return_if_fail(msg != NULL);
 
-	priv = purple_chat_conversation_get_instance_private(chat_conv);
-
-	/* Don't display this if the person who wrote it is ignored. */
-	author = purple_message_get_author(msg);
-	if(purple_chat_conversation_is_ignored_user(chat_conv, author)) {
-		return;
-	}
-
 	flags = purple_message_get_flags(msg);
 	if(flags & PURPLE_MESSAGE_RECV) {
-		if(purple_utf8_has_word(purple_message_get_contents(msg), priv->nick)) {
+		const char *nickname = NULL;
+
+		nickname = purple_conversation_get_user_nickname(conv);
+		if(purple_utf8_has_word(purple_message_get_contents(msg), nickname)) {
 			flags |= PURPLE_MESSAGE_NICK;
 			purple_message_set_flags(msg, flags);
 		}
@@ -139,9 +125,6 @@ purple_chat_conversation_set_property(GObject *obj, guint param_id,
 		case PROP_CHAT_ID:
 			purple_chat_conversation_set_id(chat, g_value_get_int(value));
 			break;
-		case PROP_NICK:
-			purple_chat_conversation_set_nick(chat, g_value_get_string(value));
-			break;
 		case PROP_LEFT:
 			if(g_value_get_boolean(value)) {
 				purple_chat_conversation_leave(chat);
@@ -160,17 +143,8 @@ purple_chat_conversation_get_property(GObject *obj, guint param_id,
 	PurpleChatConversation *chat = PURPLE_CHAT_CONVERSATION(obj);
 
 	switch(param_id) {
-		case PROP_TOPIC_WHO:
-			g_value_set_string(value, purple_chat_conversation_get_topic_who(chat));
-			break;
-		case PROP_TOPIC:
-			g_value_set_string(value, purple_chat_conversation_get_topic(chat));
-			break;
 		case PROP_CHAT_ID:
 			g_value_set_int(value, purple_chat_conversation_get_id(chat));
-			break;
-		case PROP_NICK:
-			g_value_set_string(value, purple_chat_conversation_get_nick(chat));
 			break;
 		case PROP_LEFT:
 			g_value_set_boolean(value, purple_chat_conversation_has_left(chat));
@@ -262,12 +236,6 @@ purple_chat_conversation_finalize(GObject *obj) {
 
 	g_clear_pointer(&priv->users, g_hash_table_destroy);
 
-	g_clear_list(&priv->ignored, g_free);
-
-	g_clear_pointer(&priv->who, g_free);
-	g_clear_pointer(&priv->topic, g_free);
-	g_clear_pointer(&priv->nick, g_free);
-
 	G_OBJECT_CLASS(purple_chat_conversation_parent_class)->finalize(obj);
 }
 
@@ -285,28 +253,6 @@ purple_chat_conversation_class_init(PurpleChatConversationClass *klass) {
 	conv_class->write_message = chat_conversation_write_message;
 
 	/**
-	 * PurpleChatConversation::topic-who:
-	 *
-	 * The username who changed the topic last.
-	 */
-	properties[PROP_TOPIC_WHO] = g_param_spec_string(
-		"topic-who", "who set topic",
-		"Who set the topic of the chat.",
-		NULL,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleChatConversation::topic:
-	 *
-	 * The text of the topic.
-	 */
-	properties[PROP_TOPIC] = g_param_spec_string(
-		"topic", "topic",
-		"The topic of the chat.",
-		NULL,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-
-	/**
 	 * PurpleChatConversation::chat-id:
 	 *
 	 * The identifier of the chat.
@@ -315,17 +261,6 @@ purple_chat_conversation_class_init(PurpleChatConversationClass *klass) {
 		"chat-id", "chat id",
 		"The identifier of the chat.",
 		G_MININT, G_MAXINT, 0,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleChatConversation::nick:
-	 *
-	 * The nickname of the user in the chat.
-	 */
-	properties[PROP_NICK] = g_param_spec_string(
-		"nick", "nick",
-		"The nickname of the user in a chat.",
-		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -455,167 +390,43 @@ purple_chat_conversation_get_users_count(PurpleChatConversation *chat) {
 }
 
 void
-purple_chat_conversation_ignore(PurpleChatConversation *chat,
-                                const gchar *name)
-{
-	PurpleChatConversationPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat));
-	g_return_if_fail(name != NULL);
-
-	priv = purple_chat_conversation_get_instance_private(chat);
-
-	/* Make sure the user isn't already ignored. */
-	if(purple_chat_conversation_is_ignored_user(chat, name)) {
-		return;
-	}
-
-	priv->ignored = g_list_prepend(priv->ignored, g_strdup(name));
-}
-
-void
-purple_chat_conversation_unignore(PurpleChatConversation *chat,
-                                  const gchar *name)
-{
-	PurpleChatConversationPrivate *priv = NULL;
-	GList *item;
-
-	g_return_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat));
-	g_return_if_fail(name != NULL);
-
-	priv = purple_chat_conversation_get_instance_private(chat);
-
-	/* Make sure the user is actually ignored. */
-	if(!purple_chat_conversation_is_ignored_user(chat, name)) {
-		return;
-	}
-
-	item = g_list_find(priv->ignored,
-					   purple_chat_conversation_get_ignored_user(chat, name));
-	g_free(item->data);
-
-	priv->ignored = g_list_delete_link(priv->ignored, item);
-}
-
-GList *
-purple_chat_conversation_set_ignored(PurpleChatConversation *chat,
-                                     GList *ignored)
-{
-	PurpleChatConversationPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat), NULL);
-
-	priv = purple_chat_conversation_get_instance_private(chat);
-
-	priv->ignored = ignored;
-
-	return ignored;
-}
-
-GList *
-purple_chat_conversation_get_ignored(PurpleChatConversation *chat) {
-	PurpleChatConversationPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat), NULL);
-
-	priv = purple_chat_conversation_get_instance_private(chat);
-	return priv->ignored;
-}
-
-const gchar *
-purple_chat_conversation_get_ignored_user(PurpleChatConversation *chat,
-                                          const gchar *user)
-{
-	GList *ignored;
-
-	g_return_val_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat), NULL);
-	g_return_val_if_fail(user != NULL, NULL);
-
-	ignored = purple_chat_conversation_get_ignored(chat);
-	for(; ignored != NULL; ignored = ignored->next) {
-		const gchar *ign = (const gchar *)ignored->data;
-
-		if(!purple_utf8_strcasecmp(user, ign) ||
-			((*ign == '+' || *ign == '%') &&
-			  !purple_utf8_strcasecmp(user, ign + 1)))
-		{
-			return ign;
-		}
-
-		if(*ign == '@') {
-			ign++;
-
-			if((*ign == '+' && !purple_utf8_strcasecmp(user, ign + 1)) ||
-			   (*ign != '+' && !purple_utf8_strcasecmp(user, ign)))
-			{
-				return ign;
-			}
-		}
-	}
-
-	return NULL;
-}
-
-gboolean
-purple_chat_conversation_is_ignored_user(PurpleChatConversation *chat,
-                                         const gchar *user)
-{
-	g_return_val_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat), FALSE);
-	g_return_val_if_fail(user != NULL, FALSE);
-
-	return (purple_chat_conversation_get_ignored_user(chat, user) != NULL);
-}
-
-void
 purple_chat_conversation_set_topic(PurpleChatConversation *chat,
                                    const gchar *who, const gchar *topic)
 {
-	PurpleChatConversationPrivate *priv = NULL;
-	GObject *obj;
+	PurpleAccount *account = NULL;
+	PurpleContactManager *manager = NULL;
+	PurpleContact *contact = NULL;
 
 	g_return_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat));
 
-	priv = purple_chat_conversation_get_instance_private(chat);
+	account = purple_conversation_get_account(PURPLE_CONVERSATION(chat));
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager, account, who);
 
-	g_clear_pointer(&priv->who, g_free);
-	g_clear_pointer(&priv->topic, g_free);
-
-	priv->who = g_strdup(who);
-	priv->topic = g_strdup(topic);
-
-	obj = G_OBJECT(chat);
-	g_object_freeze_notify(obj);
-	g_object_notify_by_pspec(obj, properties[PROP_TOPIC_WHO]);
-	g_object_notify_by_pspec(obj, properties[PROP_TOPIC]);
-	g_object_thaw_notify(obj);
-
-	purple_conversation_update(PURPLE_CONVERSATION(chat),
-	                           PURPLE_CONVERSATION_UPDATE_TOPIC);
-
-	purple_signal_emit(purple_conversations_get_handle(), "chat-topic-changed",
-	                   chat, priv->who, priv->topic);
+	purple_conversation_set_topic(PURPLE_CONVERSATION(chat), topic);
+	if(PURPLE_IS_CONTACT_INFO(contact)) {
+		purple_conversation_set_topic_author(PURPLE_CONVERSATION(chat),
+		                                     PURPLE_CONTACT_INFO(contact));
+	}
+	g_clear_object(&contact);
 }
 
-const gchar *
+const char *
 purple_chat_conversation_get_topic(PurpleChatConversation *chat) {
-	PurpleChatConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat), NULL);
 
-	priv = purple_chat_conversation_get_instance_private(chat);
-
-	return priv->topic;
+	return purple_conversation_get_topic(PURPLE_CONVERSATION(chat));
 }
 
-const gchar *
+const char *
 purple_chat_conversation_get_topic_who(PurpleChatConversation *chat) {
-	PurpleChatConversationPrivate *priv = NULL;
+	PurpleContactInfo *info = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat), NULL);
 
-	priv = purple_chat_conversation_get_instance_private(chat);
+	info = purple_conversation_get_topic_author(PURPLE_CONVERSATION(chat));
 
-	return priv->who;
+	return purple_contact_info_get_username(info);
 }
 
 void
@@ -698,7 +509,10 @@ purple_chat_conversation_add_users(PurpleChatConversation *chat, GList *users,
 		const gchar *extra_msg = (extra_msgs ? extra_msgs->data : NULL);
 
 		if(!(purple_protocol_get_options(protocol) & OPT_PROTO_UNIQUE_CHATNAME)) {
-			if(purple_strequal(priv->nick, purple_normalize(account, user))) {
+			const char *nickname = NULL;
+
+			nickname = purple_conversation_get_user_nickname(conv);
+			if(purple_strequal(nickname, purple_normalize(account, user))) {
 				PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 				const gchar *alias2 = purple_contact_info_get_alias(info);
 				if(alias2 != NULL) {
@@ -718,8 +532,7 @@ purple_chat_conversation_add_users(PurpleChatConversation *chat, GList *users,
 		}
 
 		quiet = GPOINTER_TO_INT(purple_signal_emit_return_1(handle,
-		                        "chat-user-joining", chat, user, flag)) ||
-				purple_chat_conversation_is_ignored_user(chat, user);
+		                        "chat-user-joining", chat, user, flag));
 
 		chatuser = purple_chat_user_new(chat, user, alias, flag);
 
@@ -784,6 +597,7 @@ purple_chat_conversation_rename_user(PurpleChatConversation *chat,
 	PurpleChatUserFlags flags;
 	PurpleChatConversationPrivate *priv;
 	const gchar *new_alias = new_user;
+	const char *nickname = NULL;
 	gchar tmp[BUF_LONG];
 	gboolean is_me = FALSE;
 
@@ -801,7 +615,8 @@ purple_chat_conversation_rename_user(PurpleChatConversation *chat,
 	protocol = purple_connection_get_protocol(gc);
 	g_return_if_fail(PURPLE_IS_PROTOCOL(protocol));
 
-	if(purple_strequal(priv->nick, purple_normalize(account, old_user))) {
+	nickname = purple_conversation_get_user_nickname(conv);
+	if(purple_strequal(nickname, purple_normalize(account, old_user))) {
 		const gchar *alias;
 
 		/* Note this for later. */
@@ -840,20 +655,11 @@ purple_chat_conversation_rename_user(PurpleChatConversation *chat,
 		g_hash_table_remove(priv->users, purple_chat_user_get_name(cb));
 	}
 
-	if(purple_chat_conversation_is_ignored_user(chat, old_user)) {
-		purple_chat_conversation_unignore(chat, old_user);
-		purple_chat_conversation_ignore(chat, new_user);
-	} else if(purple_chat_conversation_is_ignored_user(chat, new_user)) {
-		purple_chat_conversation_unignore(chat, new_user);
-	}
-
 	if(is_me) {
 		purple_chat_conversation_set_nick(chat, new_user);
 	}
 
-	if(purple_prefs_get_bool("/purple/conversations/chat/show_nick_change") &&
-	   !purple_chat_conversation_is_ignored_user(chat, new_user))
-	{
+	if(purple_prefs_get_bool("/purple/conversations/chat/show_nick_change")) {
 		if(is_me) {
 			gchar *escaped = g_markup_escape_text(new_user, -1);
 			g_snprintf(tmp, sizeof(tmp), _("You are now known as %s"),
@@ -933,8 +739,7 @@ purple_chat_conversation_remove_users(PurpleChatConversation *chat,
 	for(l = users; l != NULL; l = l->next) {
 		const gchar *user = (const gchar *)l->data;
 		quiet = GPOINTER_TO_INT(purple_signal_emit_return_1(handle,
-		                        "chat-user-leaving", chat, user, reason)) |
-				purple_chat_conversation_is_ignored_user(chat, user);
+		                        "chat-user-leaving", chat, user, reason));
 
 		cb = purple_chat_conversation_find_user(chat, user);
 
@@ -1009,30 +814,21 @@ void
 purple_chat_conversation_set_nick(PurpleChatConversation *chat,
                                   const gchar *nick)
 {
-	PurpleChatConversationPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 
 	g_return_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat));
 
-	priv = purple_chat_conversation_get_instance_private(chat);
-
 	account = purple_conversation_get_account(PURPLE_CONVERSATION(chat));
 
-	g_free(priv->nick);
-	priv->nick = g_strdup(purple_normalize(account, nick));
-
-	g_object_notify_by_pspec(G_OBJECT(chat), properties[PROP_NICK]);
+	purple_conversation_set_user_nickname(PURPLE_CONVERSATION(chat),
+	                                      purple_normalize(account, nick));
 }
 
 const gchar *
 purple_chat_conversation_get_nick(PurpleChatConversation *chat) {
-	PurpleChatConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat), NULL);
 
-	priv = purple_chat_conversation_get_instance_private(chat);
-
-	return priv->nick;
+	return purple_conversation_get_user_nickname(PURPLE_CONVERSATION(chat));
 }
 
 static void

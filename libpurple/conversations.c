@@ -216,11 +216,6 @@ purple_conversations_init(void)
 						 purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
 						 PURPLE_TYPE_CHAT_CONVERSATION);
 
-	purple_signal_register(handle, "chat-topic-changed",
-						 purple_marshal_VOID__POINTER_POINTER_POINTER,
-						 G_TYPE_NONE, 3, PURPLE_TYPE_CHAT_CONVERSATION,
-						 G_TYPE_STRING, G_TYPE_STRING);
-
 	purple_signal_register(handle, "cleared-message-history",
 	                       purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
 	                       PURPLE_TYPE_CONVERSATION);
