@@ -49,7 +49,7 @@ void ggp_chat_join(PurpleProtocolChat *protocol_chat, PurpleConnection *gc, GHas
 void ggp_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnection *gc, int local_id);
 void ggp_chat_invite(PurpleProtocolChat *protocol_chat, PurpleConnection *gc, int local_id, const char *message,
 	const char *who);
-int ggp_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *gc, int local_id, PurpleMessage *msg);
+int ggp_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *gc, int local_id, PurpleConversation *conversation, PurpleMessage *msg);
 
 void ggp_chat_got_message(PurpleConnection *gc, uint64_t chat_id,
 	const char *message, time_t time, uin_t who);

@@ -123,7 +123,7 @@ struct _PurpleProtocolChatInterface {
 
 	void (*leave)(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id);
 
-	gint (*send)(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, PurpleMessage *message);
+	gint (*send)(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, PurpleConversation *conversation, PurpleMessage *message);
 
 	gchar *(*get_user_real_name)(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, const gchar *who);
 
@@ -235,6 +235,7 @@ void purple_protocol_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnect
  * @protocol_chat: The #PurpleProtocolChat instance.
  * @connection: The #PurpleConnection instance.
  * @id: The id of the chat.
+ * @conversation: The [class@Conversation] of the chat.
  * @message: The message to send.
  *
  * Sends @message to the chat identified by @id.
@@ -243,7 +244,7 @@ void purple_protocol_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnect
  *
  * Since: 3.0.0
  */
-gint purple_protocol_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, PurpleMessage *message);
+gint purple_protocol_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, PurpleConversation *conversation, PurpleMessage *message);
 
 /**
  * purple_protocol_chat_get_user_real_name:

@@ -496,8 +496,9 @@ ggp_chat_invite(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
 
 gint
 ggp_chat_send(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
-              PurpleConnection *gc,
-              gint local_id, PurpleMessage *msg)
+              PurpleConnection *gc, gint local_id,
+              G_GNUC_UNUSED PurpleConversation *conversation,
+              PurpleMessage *msg)
 {
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *contact_info = NULL;

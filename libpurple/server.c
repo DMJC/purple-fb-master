@@ -289,16 +289,25 @@ void purple_serv_chat_leave(PurpleConnection *gc, int id)
 	purple_protocol_chat_leave(PURPLE_PROTOCOL_CHAT(protocol), gc, id);
 }
 
-int purple_serv_chat_send(PurpleConnection *gc, int id, PurpleMessage *msg)
-{
-	PurpleProtocol *protocol;
-	protocol = purple_connection_get_protocol(gc);
+int
+purple_serv_chat_send(PurpleConnection *gc, int id, PurpleMessage *msg) {
+	PurpleAccount *account = NULL;
+	PurpleProtocol *protocol = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *manager = NULL;
 
 	g_return_val_if_fail(msg != NULL, -EINVAL);
 
+	account = purple_connection_get_account(gc);
+	protocol = purple_connection_get_protocol(gc);
+
+	manager = purple_conversation_manager_get_default();
+	conversation = purple_conversation_manager_find_chat_by_id(manager,
+	                                                           account, id);
+
 	if (PURPLE_PROTOCOL_IMPLEMENTS(protocol, CHAT, send)) {
 		return purple_protocol_chat_send(PURPLE_PROTOCOL_CHAT(protocol), gc,
-		                                 id, msg);
+		                                 id, conversation, msg);
 	}
 
 	return -EINVAL;

@@ -907,7 +907,9 @@ jabber_message_send_im(G_GNUC_UNUSED PurpleProtocolIM *pim,
 
 gint
 jabber_message_send_chat(G_GNUC_UNUSED PurpleProtocolChat *protocol_chat,
-                         PurpleConnection *gc, gint id, PurpleMessage *msg)
+                         PurpleConnection *gc, gint id,
+                         G_GNUC_UNUSED PurpleConversation *conversation,
+                         PurpleMessage *msg)
 {
 	JabberChat *chat;
 	JabberMessage *jm;

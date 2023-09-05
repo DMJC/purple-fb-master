@@ -157,6 +157,7 @@ purple_protocol_chat_leave(PurpleProtocolChat *protocol_chat,
 gint
 purple_protocol_chat_send(PurpleProtocolChat *protocol_chat,
                           PurpleConnection *connection, gint id,
+                          PurpleConversation *conversation,
                           PurpleMessage *message)
 {
 	PurpleProtocolChatInterface *iface = NULL;
@@ -167,7 +168,8 @@ purple_protocol_chat_send(PurpleProtocolChat *protocol_chat,
 
 	iface = PURPLE_PROTOCOL_CHAT_GET_IFACE(protocol_chat);
 	if(iface != NULL && iface->send != NULL) {
-		return iface->send(protocol_chat, connection, id, message);
+		return iface->send(protocol_chat, connection, id, conversation,
+		                   message);
 	}
 
 	return -1;
