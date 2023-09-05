@@ -29,6 +29,7 @@
 #include "gtkconv.h"
 #include "gtkdialogs.h"
 #include "gtkutils.h"
+#include "pidginconversation.h"
 #include "pidgindisplayitem.h"
 #include "pidgininvitedialog.h"
 
@@ -179,8 +180,15 @@ pidgin_display_window_close_conversation(G_GNUC_UNUSED GSimpleAction *simple,
 
 	selected = pidgin_display_window_get_selected(window);
 	if(PURPLE_IS_CONVERSATION(selected)) {
+		GtkWidget *conversation = NULL;
+
+		conversation = pidgin_conversation_from_purple_conversation(selected);
+		if(PIDGIN_IS_CONVERSATION(conversation)) {
+			pidgin_conversation_close(PIDGIN_CONVERSATION(conversation));
+			g_clear_object(&conversation);
+		}
+
 		pidgin_display_window_remove(window, selected);
-		pidgin_conversation_detach(selected);
 	}
 }
 
@@ -512,30 +520,35 @@ pidgin_display_window_new(void) {
 
 void
 pidgin_display_window_add(PidginDisplayWindow *window,
-                          PurpleConversation *conversation)
+                          PurpleConversation *purple_conversation)
 {
-	PidginConversationOld *gtkconv = NULL;
+	GtkWidget *pidgin_conversation = NULL;
 
 	g_return_if_fail(PIDGIN_IS_DISPLAY_WINDOW(window));
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(purple_conversation));
 
-	gtkconv = PIDGIN_CONVERSATION_OLD(conversation);
-	if(gtkconv != NULL) {
+	pidgin_conversation = pidgin_conversation_from_purple_conversation(purple_conversation);
+
+	if(!PIDGIN_IS_CONVERSATION(pidgin_conversation)) {
+		pidgin_conversation = pidgin_conversation_new(purple_conversation);
+	}
+
+	if(PIDGIN_IS_CONVERSATION(pidgin_conversation)) {
 		PidginDisplayItem *item = NULL;
-		const char *value = NULL;
+		const char *id = NULL;
 
-		GtkWidget *parent = gtk_widget_get_parent(gtkconv->tab_cont);
+		GtkWidget *parent = gtk_widget_get_parent(pidgin_conversation);
 
 		if(GTK_IS_WIDGET(parent)) {
-			g_object_ref(gtkconv->tab_cont);
-			gtk_widget_unparent(gtkconv->tab_cont);
+			g_object_ref(pidgin_conversation);
+			gtk_widget_unparent(pidgin_conversation);
 		}
 
-		value = purple_conversation_get_name(conversation);
-		item = pidgin_display_item_new(gtkconv->tab_cont, value);
-		g_object_set_data(G_OBJECT(item), "conversation", conversation);
+		id = purple_conversation_get_name(purple_conversation);
+		item = pidgin_display_item_new(pidgin_conversation, id);
+		g_object_set_data(G_OBJECT(item), "conversation", purple_conversation);
 
-		g_object_bind_property(conversation, "title",
+		g_object_bind_property(purple_conversation, "title",
 		                       item, "title",
 		                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 
@@ -543,7 +556,7 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 		g_clear_object(&item);
 
 		if(GTK_IS_WIDGET(parent)) {
-			g_object_unref(gtkconv->tab_cont);
+			g_object_unref(pidgin_conversation);
 		}
 	}
 }

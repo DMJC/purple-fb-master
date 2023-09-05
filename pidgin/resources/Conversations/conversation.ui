@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Pidgin - Internet Messenger
+Copyright (C) Pidgin Developers <devel@pidgin.im>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this library; if not, see <https://www.gnu.org/licenses/>.
+-->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <!-- interface-license-type gplv2 -->
+  <!-- interface-name Pidgin -->
+  <!-- interface-description Internet Messenger -->
+  <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
+  <template class="PidginConversation" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <property name="vexpand">0</property>
+        <child>
+          <object class="PidginInfoPane" id="info_pane">
+            <property name="hexpand">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="toggle_flap">
+            <property name="icon-name">view-dual-symbolic</property>
+            <property name="valign">center</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwFlap">
+        <property name="flap-position">end</property>
+        <property name="fold-policy">auto</property>
+        <property name="swipe-to-close">1</property>
+        <property name="swipe-to-open">1</property>
+        <binding name="reveal-flap">
+          <lookup name="active">toggle_flap</lookup>
+        </binding>
+        <child type="content">
+          <object class="GtkScrolledWindow">
+            <property name="hexpand">1</property>
+            <property name="vadjustment">
+              <object class="TalkatuAutoScroller"/>
+            </property>
+            <property name="vexpand">1</property>
+            <child>
+              <object class="TalkatuHistory" id="history"/>
+            </child>
+          </object>
+        </child>
+        <child type="flap">
+          <object class="AdwStatusPage">
+            <property name="description">This is a placeholder for now</property>
+            <property name="title">Placeholder</property>
+            <property name="icon-name">starred-symbolic</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="TalkatuEditor" id="editor">
+        <property name="vexpand">0</property>
+        <property name="orientation">vertical</property>
+        <child internal-child="input">
+          <object class="TalkatuInput" id="input">
+            <property name="send-binding">return|kp-enter</property>
+            <signal name="send-message" handler="pidgin_conversation_send_message_cb"/>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

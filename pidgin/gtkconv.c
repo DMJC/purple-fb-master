@@ -35,6 +35,7 @@
 #include <purple.h>
 
 #include "gtkconv.h"
+#include "pidginconversation.h"
 #include "pidgincore.h"
 #include "pidgindisplaywindow.h"
 #include "pidgininfopane.h"
@@ -392,6 +393,25 @@ private_gtkconv_new(PurpleConversation *conv, G_GNUC_UNUSED gboolean hidden)
 }
 
 static void
+conversation_create(PurpleConversation *conv) {
+	GtkWidget *window = NULL;
+
+	window = pidgin_display_window_get_default();
+	pidgin_display_window_add(PIDGIN_DISPLAY_WINDOW(window), conv);
+}
+
+static void
+conversation_write(PurpleConversation *conv, PurpleMessage *pmsg) {
+	GtkWidget *conversation = NULL;
+
+	conversation = pidgin_conversation_from_purple_conversation(conv);
+	if(PIDGIN_IS_CONVERSATION(conversation)) {
+		pidgin_conversation_write_message(PIDGIN_CONVERSATION(conversation),
+		                                  pmsg);
+	}
+}
+
+static void
 pidgin_conv_new(PurpleConversation *conv)
 {
 	private_gtkconv_new(conv, FALSE);
@@ -548,9 +568,10 @@ pidgin_conv_has_focus(PurpleConversation *conv)
 
 static PurpleConversationUiOps conversation_ui_ops =
 {
-	.create_conversation = pidgin_conv_new,
+	.create_conversation = conversation_create,
+	.write_conv = conversation_write,
+
 	.destroy_conversation = pidgin_conv_destroy,
-	.write_conv = pidgin_conv_write_conv,
 	.has_focus = pidgin_conv_has_focus,
 };
 
