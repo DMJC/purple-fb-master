@@ -102,8 +102,8 @@ purple_person_sort_contacts(PurplePerson *person,
 	/* See if the priority contact changed. */
 	new_priority = g_ptr_array_index(person->contacts, 0);
 	if(original_priority != new_priority) {
-		GdkPixbuf *old_avatar = NULL;
-		GdkPixbuf *new_avatar = NULL;
+		PurpleAvatar *old_avatar = NULL;
+		PurpleAvatar *new_avatar = NULL;
 		GObject *obj = G_OBJECT(person);
 		const char *old_color = NULL;
 		const char *new_color = NULL;
@@ -144,7 +144,9 @@ purple_person_sort_contacts(PurplePerson *person,
 		 * changed and notify if it has.
 		 */
 		if(!PURPLE_IS_AVATAR(person->avatar)) {
-			g_object_notify_by_pspec(obj, properties[PROP_AVATAR_FOR_DISPLAY]);
+			if(old_avatar != new_avatar) {
+				g_object_notify_by_pspec(obj, properties[PROP_AVATAR_FOR_DISPLAY]);
+			}
 		}
 
 		g_object_thaw_notify(obj);
