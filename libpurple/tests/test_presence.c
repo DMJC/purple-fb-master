@@ -46,6 +46,7 @@ test_purple_presence_properties(void) {
 	char *message = NULL;
 	char *emoji = NULL;
 	gboolean mobile = FALSE;
+	gboolean notifications_disabled = FALSE;
 
 	/* Create the login and idle times. */
 	now = g_date_time_new_now_utc();
@@ -64,6 +65,7 @@ test_purple_presence_properties(void) {
 		"login-time", login,
 		"idle-time", idle,
 		"mobile", TRUE,
+		"notifications-disabled", TRUE,
 		NULL);
 
 	/* Grab the values via g_object_get to make sure get_property is wired up
@@ -77,25 +79,33 @@ test_purple_presence_properties(void) {
 		"login-time", &login1,
 		"idle-time", &idle1,
 		"mobile", &mobile,
+		"notifications-disabled", &notifications_disabled,
 		NULL);
 
-	/* Validate! */
+	/* Test the things! */
 	g_assert_cmpint(primitive, ==, PURPLE_PRESENCE_PRIMITIVE_AVAILABLE);
+
 	g_assert_cmpstr(message, ==, "I'll be back!");
+	g_clear_pointer(&message, g_free);
+
 	g_assert_cmpstr(emoji, ==, "🤖");
+	g_clear_pointer(&emoji, g_free);
+
 	g_assert_nonnull(login1);
 	g_assert_true(g_date_time_equal(login, login1));
+	g_clear_pointer(&login1, g_date_time_unref);
+
 	g_assert_nonnull(idle1);
 	g_assert_true(g_date_time_equal(idle, idle1));
+	g_clear_pointer(&idle1, g_date_time_unref);
+
 	g_assert_true(mobile);
 
+	g_assert_true(notifications_disabled);
+
 	/* Cleanup. */
-	g_clear_pointer(&message, g_free);
-	g_clear_pointer(&emoji, g_free);
 	g_clear_pointer(&login, g_date_time_unref);
-	g_clear_pointer(&login1, g_date_time_unref);
 	g_clear_pointer(&idle, g_date_time_unref);
-	g_clear_pointer(&idle1, g_date_time_unref);
 	g_clear_object(&presence);
 }
 

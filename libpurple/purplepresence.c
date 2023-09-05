@@ -41,6 +41,7 @@ typedef struct {
 	char *message;
 	char *emoji;
 	gboolean mobile;
+	gboolean notifications_disabled;
 } PurplePresencePrivate;
 
 enum {
@@ -53,6 +54,7 @@ enum {
 	PROP_MESSAGE,
 	PROP_EMOJI,
 	PROP_MOBILE,
+	PROP_NOTIFICATIONS_DISABLED,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES];
@@ -117,6 +119,10 @@ purple_presence_set_property(GObject *obj, guint param_id, const GValue *value,
 		case PROP_MOBILE:
 			purple_presence_set_mobile(presence, g_value_get_boolean(value));
 			break;
+		case PROP_NOTIFICATIONS_DISABLED:
+			purple_presence_set_notifications_disabled(presence,
+			                                           g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -153,6 +159,10 @@ purple_presence_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_MOBILE:
 			g_value_set_boolean(value, purple_presence_get_mobile(presence));
+			break;
+		case PROP_NOTIFICATIONS_DISABLED:
+			g_value_set_boolean(value,
+			                    purple_presence_get_notifications_disabled(presence));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -287,6 +297,23 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	properties[PROP_MOBILE] = g_param_spec_boolean(
 		"mobile", "mobile",
 		"Whether or not the presence is on a mobile device.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurplePresence:notifications-disabled:
+	 *
+	 * Whether or not the presence has notifications disabled.
+	 *
+	 * Some protocols, like Slack, allow users to set an available schedule. By
+	 * default it displays that the user has notifications turned off outside
+	 * of that schedule.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_NOTIFICATIONS_DISABLED] = g_param_spec_boolean(
+		"notifications-disabled", "notifications-disabled",
+		"Whether or not this presence has notifications disabled.",
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -731,6 +758,35 @@ purple_presence_set_mobile(PurplePresence *presence, gboolean mobile) {
 		priv->mobile = mobile;
 
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_MOBILE]);
+	}
+}
+
+gboolean
+purple_presence_get_notifications_disabled(PurplePresence *presence) {
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), FALSE);
+
+	priv = purple_presence_get_instance_private(presence);
+
+	return priv->notifications_disabled;
+}
+
+void
+purple_presence_set_notifications_disabled(PurplePresence *presence,
+                                           gboolean notifications_disabled)
+{
+	PurplePresencePrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
+
+	priv = purple_presence_get_instance_private(presence);
+
+	if(priv->notifications_disabled != notifications_disabled) {
+		priv->notifications_disabled = notifications_disabled;
+
+		g_object_notify_by_pspec(G_OBJECT(presence),
+		                         properties[PROP_NOTIFICATIONS_DISABLED]);
 	}
 }
 

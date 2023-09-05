@@ -388,6 +388,29 @@ gboolean purple_presence_get_mobile(PurplePresence *presence);
 void purple_presence_set_mobile(PurplePresence *presence, gboolean mobile);
 
 /**
+ * purple_presence_get_notifications_disabled:
+ * @presence: The instance.
+ *
+ * Gets whether or not @presence has notifications disabled.
+ *
+ * Returns: %TRUE if @presence has notifications disabled, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_presence_get_notifications_disabled(PurplePresence *presence);
+
+/**
+ * purple_presence_set_notifications_disabled:
+ * @presence: The instance.
+ * @notifications_disabled: Whether notifications are disabled or not.
+ *
+ * Sets whether or not @presence has notifications disabled.
+ *
+ * Since: 3.0.0
+ */
+void purple_presence_set_notifications_disabled(PurplePresence *presence, gboolean notifications_disabled);
+
+/**
  * purple_presence_primitive_to_string:
  * @primitive: The [enum@Purple.PresencePrimitive] value.
  *
