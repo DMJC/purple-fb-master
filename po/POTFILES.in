@@ -256,6 +256,7 @@ pidgin/pidginavatar.c
 pidgin/pidgin.c
 pidgin/pidgincolor.c
 pidgin/pidgincommands.c
+pidgin/pidgincontactinfomenu.c
 pidgin/pidgincontactlistwindow.c
 pidgin/pidgindebug.c
 pidgin/pidgindisplaywindow.c

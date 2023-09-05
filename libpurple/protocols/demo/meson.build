@@ -11,6 +11,8 @@ DEMO_SOURCES = [
 	'purpledemoprotocolactions.h',
 	'purpledemoprotocolclient.c',
 	'purpledemoprotocolclient.h',
+	'purpledemoprotocolcontacts.c',
+	'purpledemoprotocolcontacts.h',
 	'purpledemoprotocolim.c',
 	'purpledemoprotocolim.h',
 	'purpledemoprotocolmedia.c',

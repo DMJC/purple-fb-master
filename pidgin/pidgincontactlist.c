@@ -24,6 +24,7 @@
 
 #include <purple.h>
 
+#include "pidgin/pidgincontactinfomenu.h"
 #include "pidgin/pidgincontactlist.h"
 
 struct _PidginContactList {
@@ -281,6 +282,35 @@ pidgin_contact_list_get_primitive_as_string(G_GNUC_UNUSED GObject *self,
 	return g_string_free(str, FALSE);
 }
 
+static void
+pidgin_contact_list_context_cb(GtkGestureSingle *self,
+                               G_GNUC_UNUSED gint n_press,
+                               gdouble x,
+                               gdouble y,
+                               gpointer data)
+{
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
+	PurplePerson *person = NULL;
+	GtkWidget *parent = NULL;
+	GtkListItem *item = data;
+
+	parent = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self));
+
+	/* Maybe eventually we'll make this show all contacts, but for now we'll
+	 * just show the priority contact's menu.
+	 */
+	person = gtk_list_item_get_item(item);
+	info = purple_person_get_priority_contact_info(person);
+
+	/* We know the info is a PurpleContact because that's what the contact list
+	 * is made of so this cast is fine.
+	 */
+	account = purple_contact_get_account(PURPLE_CONTACT(info));
+
+	pidgin_contact_info_menu_popup(info, account, parent, x, y);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -345,6 +375,8 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 	                                        pidgin_contact_list_message_visible_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_contact_list_get_primitive_as_string);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_contact_list_context_cb);
 }
 
 /******************************************************************************

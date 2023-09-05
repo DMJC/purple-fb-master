@@ -53,6 +53,13 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
         <property name="orientation">horizontal</property>
         <property name="spacing">6</property>
         <child>
+          <object class="GtkGestureClick">
+            <property name="button">3</property>
+            <!-- this has to turn off swapped otherwise we get the contact list or something. -->
+            <signal name="released" handler="pidgin_contact_list_context_cb" object="GtkListItem" swapped="no"/>
+          </object>
+        </child>
+        <child>
           <!-- switch to a PidginAvatar when that can take a PurpleAvatar -->
           <object class="GtkImage" id="avatar">
             <property name="icon-size">large</property>

@@ -12,7 +12,8 @@
 	"username": "Gary",
 	"tags": [
 		"group:Family"
-	]
+	],
+	"profile": "Pidgin 3 will be ready when it is ready! 🗿"
 }, {
 	"id": "john",
 	"alias": "Rekkanoryo",
@@ -25,7 +26,8 @@
 	"tags": [
 		"group:Friends"
 	],
-	"username": "John"
+	"username": "John",
+	"profile": "Idiot Windows sysadmin who used to develop for Pidgin and libpurple in the bright days before Windows 8"
 }, {
 	"id": "elliott",
 	"person": {

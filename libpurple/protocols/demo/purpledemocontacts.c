@@ -248,6 +248,15 @@ purple_demo_contacts_load_contact(PurpleContactManager *manager,
 		}
 	}
 
+	/* Load the profile if it exists. */
+	if(json_object_has_member(contact_object, "profile")) {
+		value = json_object_get_string_member(contact_object, "profile");
+		if(!purple_strempty(value)) {
+			g_object_set_data_full(G_OBJECT(info), "demo-profile",
+			                       g_strdup(value), g_free);
+		}
+	}
+
 	/* Load the tags. */
 	if(json_object_has_member(contact_object, "tags")) {
 		PurpleTags *tags = purple_contact_info_get_tags(info);
