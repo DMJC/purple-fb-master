@@ -91,7 +91,7 @@ void purple_protocol_contacts_get_profile_async(PurpleProtocolContacts *protocol
 
 /**
  * purple_protocol_contacts_get_profile_finish:
- * @search: The instance.
+ * @protocol_contacts: The instance.
  * @result: The [iface@Gio.AsyncResult] from the previous
  *          [method@ProtocolContacts.get_profile_async] call.
  * @error: Return address for a #GError, or %NULL.
@@ -120,7 +120,7 @@ char *purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *protoc
  */
 GActionGroup *purple_protocol_contacts_get_actions(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);
 
-/*
+/**
  * purple_protocol_contacts_get_menu:
  * @protocol_contacts: The instance.
  * @info: The [class@ContactInfo] to get the menu for.
