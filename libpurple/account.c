@@ -1826,23 +1826,20 @@ purple_account_add_buddies(PurpleAccount *account, GList *buddies, const char *m
 	PurpleProtocol *protocol = NULL;
 	PurpleConnection *gc = purple_account_get_connection(account);
 
-	if (gc != NULL)
+	if(gc != NULL) {
 		protocol = purple_connection_get_protocol(gc);
+	}
 
-	if (protocol) {
-		GList *groups;
+	if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
+		PurpleProtocolServer *server = PURPLE_PROTOCOL_SERVER(protocol);
 
-		/* Make a list of what group each buddy is in */
-		groups = g_list_copy_deep(buddies,
-		                          (GCopyFunc)(GCallback)purple_buddy_get_group,
-		                          NULL);
+		for(GList *b = buddies; b != NULL; b = b->next) {
+			PurpleBuddy *buddy = b->data;
 
-		if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-			purple_protocol_server_add_buddies(PURPLE_PROTOCOL_SERVER(protocol),
-			                                   gc, buddies, groups, message);
+			purple_protocol_server_add_buddy(server, gc, buddy,
+			                                 purple_buddy_get_group(buddy),
+			                                 message);
 		}
-
-		g_list_free(groups);
 	}
 }
 

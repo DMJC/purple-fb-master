@@ -98,7 +98,6 @@ struct _PurpleProtocolServerInterface {
 	void (*change_passwd)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_pass, const gchar *new_pass);
 
 	void (*add_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group, const gchar *message);
-	void (*add_buddies)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups, const gchar *message);
 	void (*remove_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group);
 	void (*remove_buddies)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups);
 
@@ -200,24 +199,6 @@ void purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server,
  * Since: 3.0.0
  */
 void purple_protocol_server_add_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group, const gchar *message);
-
-/**
- * purple_protocol_server_add_buddies:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- * @buddies: (element-type PurpleBuddy): A #GList of #PurpleBuddy's to add.
- * @groups: (element-type PurpleGroup): A #GList of #PurpleGroup's that
- *          correspond to the @buddies parameter.
- * @message: An optional invite message to send.
- *
- * Similar to purple_protocol_server_add_buddy() but can add multiple buddies
- * at a time. If @protocol_server does not implement this function, this will
- * call purple_protocol_server_add_buddy() for each buddy/group pair in
- * @buddies/@groups.
- *
- * Since: 3.0.0
- */
-void purple_protocol_server_add_buddies(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups, const gchar *message);
 
 /**
  * purple_protocol_server_remove_buddy:

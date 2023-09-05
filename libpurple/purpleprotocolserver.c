@@ -138,35 +138,6 @@ purple_protocol_server_add_buddy(PurpleProtocolServer *protocol_server,
 }
 
 void
-purple_protocol_server_add_buddies(PurpleProtocolServer *protocol_server,
-                                   PurpleConnection *connection,
-                                   GList *buddies, GList *groups,
-                                   const gchar *message)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-	g_return_if_fail(g_list_length(buddies) != g_list_length(groups));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->add_buddies != NULL) {
-		iface->add_buddies(protocol_server, connection, buddies, groups,
-		                   message);
-	} else {
-		while(buddies != NULL && groups != NULL) {
-			purple_protocol_server_add_buddy(protocol_server, connection,
-			                                 PURPLE_BUDDY(buddies->data),
-			                                 PURPLE_GROUP(groups->data),
-			                                 message);
-
-			buddies = g_list_next(buddies);
-			groups = g_list_next(groups);
-		}
-	}
-}
-
-void
 purple_protocol_server_remove_buddy(PurpleProtocolServer *protocol_server,
                                     PurpleConnection *connection,
                                     PurpleBuddy *buddy, PurpleGroup *group)
