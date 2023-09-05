@@ -45,6 +45,8 @@ struct _PurpleMessage {
 
 	GError *error;
 
+	GDateTime *delivered_at;
+
 	GHashTable *attachments;
 };
 
@@ -61,6 +63,8 @@ enum {
 	PROP_TIMESTAMP,
 	PROP_FLAGS,
 	PROP_ERROR,
+	PROP_DELIVERED,
+	PROP_DELIVERED_AT,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES];
@@ -130,6 +134,12 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 		case PROP_ERROR:
 			g_value_set_boxed(value, purple_message_get_error(message));
 			break;
+		case PROP_DELIVERED:
+			g_value_set_boolean(value, purple_message_get_delivered(message));
+			break;
+		case PROP_DELIVERED_AT:
+			g_value_set_boxed(value, purple_message_get_delivered_at(message));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
 			break;
@@ -177,6 +187,12 @@ purple_message_set_property(GObject *object, guint param_id,
 		case PROP_ERROR:
 			purple_message_set_error(message, g_value_get_boxed(value));
 			break;
+		case PROP_DELIVERED:
+			purple_message_set_delivered(message, g_value_get_boolean(value));
+			break;
+		case PROP_DELIVERED_AT:
+			purple_message_set_delivered_at(message, g_value_get_boxed(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
 			break;
@@ -199,6 +215,8 @@ purple_message_finalize(GObject *obj) {
 	if(message->timestamp != NULL) {
 		g_date_time_unref(message->timestamp);
 	}
+
+	g_clear_pointer(&message->delivered_at, g_date_time_unref);
 
 	g_hash_table_destroy(message->attachments);
 
@@ -366,6 +384,36 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		"error", "error",
 		"An error that the message encountered",
 		G_TYPE_ERROR,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:delivered:
+	 *
+	 * Whether or not the message was delivered. This is protocol dependent and
+	 * possibly client dependent as well. So if this is %FALSE that doesn't
+	 * necessarily mean the message was not delivered.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_DELIVERED] = g_param_spec_boolean(
+		"delivered", "delivered",
+		"Whether or not the message was delivered.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:delivered-at:
+	 *
+	 * The time that the message was delivered. This is protocol dependent and
+	 * possibly client dependent as well. So if this is %NULL that doesn't
+	 * necessarily mean the message was not delivered.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_DELIVERED_AT] = g_param_spec_boxed(
+		"delivered-at", "delivered-at",
+		"The time that the message was delivered.",
+		G_TYPE_DATE_TIME,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
@@ -713,4 +761,70 @@ purple_message_set_action(PurpleMessage *message, gboolean action) {
 
 		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ACTION]);
 	}
+}
+
+gboolean
+purple_message_get_delivered(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+
+	return (message->delivered_at != NULL);
+}
+
+void
+purple_message_set_delivered(PurpleMessage *message, gboolean delivered) {
+	GDateTime *datetime = NULL;
+
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	if(delivered) {
+		datetime = g_date_time_new_now_utc();
+	}
+
+	purple_message_set_delivered_at(message, datetime);
+	g_clear_pointer(&datetime, g_date_time_unref);
+}
+
+GDateTime *
+purple_message_get_delivered_at(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
+
+	return message->delivered_at;
+}
+
+void
+purple_message_set_delivered_at(PurpleMessage *message, GDateTime *datetime) {
+	GObject *obj = NULL;
+
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	obj = G_OBJECT(message);
+
+	/* If there are any changes here, we need to manually change both delivered
+	 * and delivered-at because we can't call purple_message_set_delivered as
+	 * it would need to call us, making an infinite loop.
+	 */
+
+	if(datetime == NULL) {
+		if(message->delivered_at == NULL) {
+			return;
+		}
+
+		g_clear_pointer(&message->delivered_at, g_date_time_unref);
+	} else {
+		if(message->delivered_at != NULL) {
+			if(g_date_time_equal(message->delivered_at, datetime)) {
+				return;
+			}
+
+			g_clear_pointer(&message->delivered_at, g_date_time_unref);
+			message->delivered_at = g_date_time_ref(datetime);
+		} else {
+			message->delivered_at = g_date_time_ref(datetime);
+		}
+	}
+
+	g_object_freeze_notify(obj);
+	g_object_notify_by_pspec(obj, properties[PROP_DELIVERED]);
+	g_object_notify_by_pspec(obj, properties[PROP_DELIVERED_AT]);
+	g_object_thaw_notify(obj);
 }

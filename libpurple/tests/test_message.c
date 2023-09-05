@@ -21,6 +21,19 @@
 #include <purple.h>
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+test_purple_message_notify_counter_cb(G_GNUC_UNUSED GObject *obj,
+                                      G_GNUC_UNUSED GParamSpec *pspec,
+                                      gpointer data)
+{
+	guint *counter = data;
+
+	*counter = *counter + 1;
+}
+
+/******************************************************************************
  * Tests
  *****************************************************************************/
 static void
@@ -30,6 +43,7 @@ test_purple_message_properties(void) {
 	PurpleMessageFlags flags = 0;
 	GDateTime *timestamp = NULL;
 	GDateTime *timestamp1 = NULL;
+	GDateTime *delivered_at1 = NULL;
 	GError *error = NULL;
 	GError *error1 = NULL;
 	char *id = NULL;
@@ -39,11 +53,16 @@ test_purple_message_properties(void) {
 	char *recipient = NULL;
 	char *contents = NULL;
 	gboolean action = FALSE;
+	gboolean delivered = FALSE;
 
 	timestamp = g_date_time_new_from_unix_utc(911347200);
 	error = g_error_new(g_quark_from_static_string("test-message"), 0,
 	                    "delivery failed");
 
+	/* We don't set delivered-at here because delivered will set it for us so
+	 * it's impossible to check that here, which is why we have separate tests
+	 * to do that check. We do verify that delivered-at was set though.
+	 */
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
 		"id", "id",
@@ -51,6 +70,7 @@ test_purple_message_properties(void) {
 		"author", "author",
 		"author-alias", "alias",
 		"author-name-color", "purple",
+		"delivered", TRUE,
 		"recipient", "pidgy",
 		"contents", "Now that is a big door",
 		"content-type", PURPLE_MESSAGE_CONTENT_TYPE_MARKDOWN,
@@ -66,6 +86,8 @@ test_purple_message_properties(void) {
 		"author", &author,
 		"author-alias", &author_alias,
 		"author-name-color", &author_name_color,
+		"delivered", &delivered,
+		"delivered-at", &delivered_at1,
 		"recipient", &recipient,
 		"contents", &contents,
 		"content-type", &content_type,
@@ -79,6 +101,8 @@ test_purple_message_properties(void) {
 	g_assert_cmpstr(author, ==, "author");
 	g_assert_cmpstr(author_alias, ==, "alias");
 	g_assert_cmpstr(author_name_color, ==, "purple");
+	g_assert_true(delivered);
+	g_assert_nonnull(delivered_at1);
 	g_assert_cmpstr(recipient, ==, "pidgy");
 	g_assert_cmpstr(contents, ==, "Now that is a big door");
 	g_assert_cmpint(content_type, ==, PURPLE_MESSAGE_CONTENT_TYPE_MARKDOWN);
@@ -90,11 +114,89 @@ test_purple_message_properties(void) {
 	g_clear_pointer(&author, g_free);
 	g_clear_pointer(&author_alias, g_free);
 	g_clear_pointer(&author_name_color, g_free);
+	g_clear_pointer(&delivered_at1, g_date_time_unref);
 	g_clear_pointer(&recipient, g_free);
 	g_clear_pointer(&contents, g_free);
 	g_clear_pointer(&timestamp, g_date_time_unref);
 	g_clear_pointer(&timestamp1, g_date_time_unref);
 	g_clear_error(&error1);
+	g_clear_object(&message);
+}
+
+static void
+test_purple_message_delivered_set_delivered_at(void) {
+	PurpleMessage *message = NULL;
+	guint delivered_counter = 0;
+	guint delivered_at_counter = 0;
+
+	message = g_object_new(PURPLE_TYPE_MESSAGE, NULL);
+	g_signal_connect(message, "notify::delivered",
+	                 G_CALLBACK(test_purple_message_notify_counter_cb),
+	                 &delivered_counter);
+	g_signal_connect(message, "notify::delivered-at",
+	                 G_CALLBACK(test_purple_message_notify_counter_cb),
+	                 &delivered_at_counter);
+
+	/* The default delivery state is FALSE, so setting it to true, should call
+	 * the notify signals and set delivered-at.
+	 */
+	purple_message_set_delivered(message, TRUE);
+	g_assert_true(purple_message_get_delivered(message));
+	g_assert_nonnull(purple_message_get_delivered_at(message));
+	g_assert_cmpuint(delivered_counter, ==, 1);
+	g_assert_cmpuint(delivered_at_counter, ==, 1);
+
+	/* Now clear everything and verify it's empty. */
+	delivered_counter = 0;
+	delivered_at_counter = 0;
+
+	purple_message_set_delivered(message, FALSE);
+	g_assert_false(purple_message_get_delivered(message));
+	g_assert_null(purple_message_get_delivered_at(message));
+	g_assert_cmpuint(delivered_counter, ==, 1);
+	g_assert_cmpuint(delivered_at_counter, ==, 1);
+
+	g_clear_object(&message);
+}
+
+static void
+test_purple_message_delivered_at_set_delivered(void) {
+	PurpleMessage *message = NULL;
+	GDateTime *delivered_at = NULL;
+	GDateTime *delivered_at1 = NULL;
+	guint delivered_counter = 0;
+	guint delivered_at_counter = 0;
+
+	message = g_object_new(PURPLE_TYPE_MESSAGE, NULL);
+	g_signal_connect(message, "notify::delivered",
+	                 G_CALLBACK(test_purple_message_notify_counter_cb),
+	                 &delivered_counter);
+	g_signal_connect(message, "notify::delivered-at",
+	                 G_CALLBACK(test_purple_message_notify_counter_cb),
+	                 &delivered_at_counter);
+
+	/* The default value for delivered-at is NULL, so setting it to non-null
+	 * should emit the signals and everything.
+	 */
+	delivered_at = g_date_time_new_now_utc();
+	purple_message_set_delivered_at(message, delivered_at);
+	g_assert_true(purple_message_get_delivered(message));
+	delivered_at1 = purple_message_get_delivered_at(message);
+	g_assert_nonnull(delivered_at1);
+	g_assert_true(g_date_time_equal(delivered_at1, delivered_at));
+	g_assert_cmpuint(delivered_counter, ==, 1);
+	g_assert_cmpuint(delivered_at_counter, ==, 1);
+
+	/* Now clear everything and make sure it's all good. */
+	delivered_counter = 0;
+	delivered_at_counter = 0;
+	purple_message_set_delivered_at(message, NULL);
+	g_assert_false(purple_message_get_delivered(message));
+	g_assert_null(purple_message_get_delivered_at(message));
+	g_assert_cmpuint(delivered_counter, ==, 1);
+	g_assert_cmpuint(delivered_at_counter, ==, 1);
+
+	g_clear_pointer(&delivered_at, g_date_time_unref);
 	g_clear_object(&message);
 }
 
@@ -107,6 +209,11 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/message/properties",
 	                test_purple_message_properties);
+
+	g_test_add_func("/message/delivered-sets-delivered-at",
+	                test_purple_message_delivered_set_delivered_at);
+	g_test_add_func("/message/delivered-at-sets-delivered",
+	                test_purple_message_delivered_at_set_delivered);
 
 	return g_test_run();
 }

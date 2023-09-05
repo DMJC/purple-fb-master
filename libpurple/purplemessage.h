@@ -377,7 +377,8 @@ PurpleMessageFlags purple_message_get_flags(PurpleMessage *message);
  * @message: The instance.
  * @error: (nullable) (transfer full): The error to set.
  *
- * Sets the error of @message to at @error.
+ * Sets the error of @message to @error. Primarily this will be used for
+ * delivery failure.
  *
  * Since: 3.0.0
  */
@@ -484,6 +485,67 @@ gboolean purple_message_get_action(PurpleMessage *message);
  * Since: 3.0.0
  */
 void purple_message_set_action(PurpleMessage *message, gboolean action);
+
+/**
+ * purple_message_get_delivered:
+ * @message: The instance.
+ *
+ * Gets whether or not the message was delivered.
+ *
+ * > Note: If a protocol does not support delivery receipts this will always
+ * return %FALSE.
+ *
+ * If the protocol does support delivery receipts, [property@Message:error] may
+ * be set as well if delivery failed.
+ *
+ * Returns: %TRUE if @message has been delivered and the protocol supports
+ *          delivery notifications, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_message_get_delivered(PurpleMessage *message);
+
+/**
+ * purple_message_set_delivered:
+ * @message: The instance.
+ * @delivered: Whether or not the message was delivered.
+ *
+ * Sets whether or not a message was delivered.
+ *
+ * > Note: Setting this will also set [property@Message:delivered-at]. If
+ * @delivered is %TRUE it will be set to the current time, otherwise it will be
+ * unset.
+ *
+ * Since: 3.0.0.
+ */
+void purple_message_set_delivered(PurpleMessage *message, gboolean delivered);
+
+/**
+ * purple_message_get_delivered_at:
+ * @message: The instance.
+ *
+ * Gets the time that @message was delivered if it was delivered, otherwise
+ * %NULL.
+ *
+ * Returns: (transfer none) (nullable): The delivery time of @message.
+ *
+ * Since: 3.0.0
+ */
+GDateTime *purple_message_get_delivered_at(PurpleMessage *message);
+
+/**
+ * purple_message_set_delivered_at:
+ * @message: The instance.
+ * @datetime: (nullable): The time of delivery.
+ *
+ * Sets the delivery time of @message to @datetime.
+ *
+ * > Note: Setting this will also set [property@Message:delivered]. If
+ * @datetime is %NULL it will be set to %FALSE, otherwise %TRUE.
+ *
+ * Since: 3.0.0
+ */
+void purple_message_set_delivered_at(PurpleMessage *message, GDateTime *datetime);
 
 G_END_DECLS
 
