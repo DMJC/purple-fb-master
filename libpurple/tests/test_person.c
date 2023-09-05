@@ -70,6 +70,8 @@ test_purple_person_properties(void) {
 	GdkPixbuf *avatar_for_display = NULL;
 	char *id = NULL;
 	char *alias = NULL;
+	char *color = NULL;
+	char *color_for_display = NULL;
 	char *name_for_display = NULL;
 
 	/* Create our avatar for testing. */
@@ -83,6 +85,7 @@ test_purple_person_properties(void) {
 		PURPLE_TYPE_PERSON,
 		"alias", "alias",
 		"avatar", avatar,
+		"color", "#794a85",
 		NULL);
 
 	/* Now use g_object_get to read all of the properties. */
@@ -91,26 +94,38 @@ test_purple_person_properties(void) {
 		"alias", &alias,
 		"avatar", &avatar1,
 		"avatar-for-display", &avatar_for_display,
+		"color", &color,
+		"color-for-display", &color_for_display,
 		"name-for-display", &name_for_display,
 		"tags", &tags,
 		NULL);
 
-	/* Compare all the things. */
+	/* Test all the things. */
 	g_assert_nonnull(id);
-	g_assert_cmpstr(alias, ==, "alias");
-	g_assert_true(avatar1 == avatar);
-	g_assert_true(avatar1 == avatar_for_display);
-	g_assert_cmpstr(name_for_display, ==, "alias");
-	g_assert_nonnull(tags);
-
-	/* Free/unref all the things. */
 	g_clear_pointer(&id, g_free);
+
+	g_assert_cmpstr(alias, ==, "alias");
 	g_clear_pointer(&alias, g_free);
+
+	g_assert_true(avatar1 == avatar);
 	g_clear_object(&avatar1);
+
+	g_assert_true(avatar_for_display == avatar);
 	g_clear_object(&avatar_for_display);
+
+	g_assert_cmpstr(color, ==, "#794a85");
+	g_clear_pointer(&color, g_free);
+
+	g_assert_cmpstr(color_for_display, ==, "#794a85");
+	g_clear_pointer(&color_for_display, g_free);
+
+	g_assert_cmpstr(name_for_display, ==, "alias");
 	g_clear_pointer(&name_for_display, g_free);
+
+	g_assert_nonnull(tags);
 	g_clear_object(&tags);
 
+	/* Additional cleanup. */
 	g_clear_object(&avatar);
 	g_clear_object(&person);
 }
@@ -157,7 +172,9 @@ test_purple_person_avatar_for_display_contact(void) {
 	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
 	purple_contact_info_set_avatar(info, avatar);
 	purple_person_add_contact_info(person, info);
+
 	g_assert_cmpuint(called, ==, 1);
+	called = 0;
 
 	/* Make sure the person's alias is overriding the contact info. */
 	g_assert_true(purple_person_get_avatar_for_display(person) == avatar);
@@ -166,7 +183,6 @@ test_purple_person_avatar_for_display_contact(void) {
 	/* Now change the avatar on the contact info an verify that we not notified
 	 * of the property changing.
 	 */
-	called = 0;
 	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
 	purple_contact_info_set_avatar(info, avatar);
 	g_assert_cmpuint(called, ==, 1);
@@ -174,6 +190,75 @@ test_purple_person_avatar_for_display_contact(void) {
 	g_clear_object(&info);
 	g_clear_object(&person);
 	g_clear_object(&avatar);
+}
+
+static void
+test_purple_person_color_for_display_person(void) {
+	PurpleContactInfo *info = NULL;
+	PurplePerson *person = NULL;
+	const char *color = NULL;
+	guint color_called = 0;
+	guint color_for_display_called = 0;
+
+	person = purple_person_new();
+	g_signal_connect(person, "notify::color",
+	                 G_CALLBACK(test_purple_person_notify_cb), &color_called);
+	g_signal_connect(person, "notify::color-for-display",
+	                 G_CALLBACK(test_purple_person_notify_cb),
+	                 &color_for_display_called);
+	purple_person_set_color(person, "#abcdef");
+
+	g_assert_cmpuint(color_called, ==, 1);
+	color_called = 0;
+
+	g_assert_cmpuint(color_for_display_called, ==, 1);
+	color_for_display_called = 0;
+
+	/* Make sure the person's color is overriding the contact info. */
+	info = purple_contact_info_new("id");
+	purple_person_add_contact_info(person, info);
+
+	color = purple_person_get_color_for_display(person);
+	g_assert_cmpstr(color, ==, "#abcdef");
+
+	g_assert_cmpuint(color_called, ==, 0);
+	g_assert_cmpuint(color_for_display_called, ==, 0);
+
+	/* Cleanup. */
+	g_clear_object(&info);
+	g_clear_object(&person);
+}
+
+static void
+test_purple_person_color_for_display_contact(void) {
+	PurpleContactInfo *info = NULL;
+	PurplePerson *person = NULL;
+	const char *color = NULL;
+	guint called = 0;
+
+	person = purple_person_new();
+	g_signal_connect(person, "notify::color-for-display",
+	                 G_CALLBACK(test_purple_person_notify_cb), &called);
+
+	info = purple_contact_info_new("id");
+	purple_contact_info_set_color(info, "#012345");
+	purple_person_add_contact_info(person, info);
+
+	g_assert_cmpuint(called, ==, 1);
+	called = 0;
+
+	/* Make sure the person's alias is overriding the contact info. */
+	color = purple_person_get_color_for_display(person);
+	g_assert_cmpstr(color, ==, "#012345");
+
+	/* Now change the avatar on the contact info and verify that we are
+	 * notified of the property changing.
+	 */
+	purple_contact_info_set_color(info, "#6789ab");
+	g_assert_cmpuint(called, ==, 1);
+
+	g_clear_object(&info);
+	g_clear_object(&person);
 }
 
 static void
@@ -520,6 +605,11 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_person_avatar_for_display_person);
 	g_test_add_func("/person/avatar-for-display/contact",
 	                test_purple_person_avatar_for_display_contact);
+
+	g_test_add_func("/person/color-for-display/person",
+	                test_purple_person_color_for_display_person);
+	g_test_add_func("/person/color-for-display/contact",
+	                test_purple_person_color_for_display_contact);
 
 	g_test_add_func("/person/name-for-display/person",
 	                test_purple_person_name_for_display_person);

@@ -25,10 +25,12 @@
 struct _PurplePerson {
 	GObject parent;
 
-	gchar *id;
+	char *id;
 
-	gchar *alias;
+	char *alias;
 	GdkPixbuf *avatar;
+	char *color;
+
 	PurpleTags *tags;
 
 	GPtrArray *contacts;
@@ -40,6 +42,8 @@ enum {
 	PROP_ALIAS,
 	PROP_AVATAR,
 	PROP_AVATAR_FOR_DISPLAY,
+	PROP_COLOR,
+	PROP_COLOR_FOR_DISPLAY,
 	PROP_TAGS,
 	PROP_NAME_FOR_DISPLAY,
 	PROP_PRIORITY_CONTACT_INFO,
@@ -56,7 +60,7 @@ purple_person_priority_contact_info_notify_cb(GObject *obj,
  * Helpers
  *****************************************************************************/
 static void
-purple_person_set_id(PurplePerson *person, const gchar *id) {
+purple_person_set_id(PurplePerson *person, const char *id) {
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 
 	g_free(person->id);
@@ -98,19 +102,26 @@ purple_person_sort_contacts(PurplePerson *person,
 	/* See if the priority contact changed. */
 	new_priority = g_ptr_array_index(person->contacts, 0);
 	if(original_priority != new_priority) {
+		GdkPixbuf *old_avatar = NULL;
+		GdkPixbuf *new_avatar = NULL;
 		GObject *obj = G_OBJECT(person);
+		const char *old_color = NULL;
+		const char *new_color = NULL;
 
 		if(PURPLE_IS_CONTACT_INFO(original_priority)) {
+			old_avatar = purple_contact_info_get_avatar(original_priority);
+			old_color = purple_contact_info_get_color(original_priority);
+
 			g_signal_handlers_disconnect_by_func(original_priority,
 			                                     purple_person_priority_contact_info_notify_cb,
 			                                     person);
 		}
 
 		if(PURPLE_IS_CONTACT_INFO(new_priority)) {
-			g_signal_connect_object(new_priority, "notify::name-for-display",
-			                        G_CALLBACK(purple_person_priority_contact_info_notify_cb),
-			                        person, 0);
-			g_signal_connect_object(new_priority, "notify::avatar",
+			new_avatar = purple_contact_info_get_avatar(new_priority);
+			new_color = purple_contact_info_get_color(new_priority);
+
+			g_signal_connect_object(new_priority, "notify",
 			                        G_CALLBACK(purple_person_priority_contact_info_notify_cb),
 			                        person, 0);
 		}
@@ -119,11 +130,24 @@ purple_person_sort_contacts(PurplePerson *person,
 		g_object_notify_by_pspec(obj, properties[PROP_NAME_FOR_DISPLAY]);
 		g_object_notify_by_pspec(obj, properties[PROP_PRIORITY_CONTACT_INFO]);
 
-		/* If the person doesn't have an avatar set, notify that the
-		 * avatar-for-display has changed.
+		/* If the color isn't overridden by the person, check if it has
+		 * changed.
+		 */
+		if(purple_strempty(person->color)) {
+			if(!purple_strequal(old_color, new_color)) {
+				g_object_notify_by_pspec(obj,
+				                         properties[PROP_COLOR_FOR_DISPLAY]);
+			}
+		}
+
+		/* If the person doesn't have an avatar set, check if the avatar
+		 * changed and notify if it has.
 		 */
 		if(!GDK_IS_PIXBUF(person->avatar)) {
-			g_object_notify_by_pspec(obj, properties[PROP_AVATAR_FOR_DISPLAY]);
+			if(old_avatar != new_avatar) {
+				g_object_notify_by_pspec(obj,
+				                         properties[PROP_AVATAR_FOR_DISPLAY]);
+			}
 		}
 
 		g_object_thaw_notify(obj);
@@ -153,12 +177,16 @@ purple_person_priority_contact_info_notify_cb(G_GNUC_UNUSED GObject *obj,
 	const char *property = NULL;
 
 	property = g_param_spec_get_name(pspec);
+
 	if(purple_strequal(property, "name-for-display")) {
 		g_object_notify_by_pspec(G_OBJECT(person),
 		                         properties[PROP_NAME_FOR_DISPLAY]);
 	} else if(purple_strequal(property, "avatar")) {
 		g_object_notify_by_pspec(G_OBJECT(person),
 		                         properties[PROP_AVATAR_FOR_DISPLAY]);
+	} else if(purple_strequal(property, "color")) {
+		g_object_notify_by_pspec(G_OBJECT(person),
+		                         properties[PROP_COLOR_FOR_DISPLAY]);
 	}
 }
 
@@ -236,6 +264,13 @@ purple_person_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_AVATAR_FOR_DISPLAY:
 			g_value_set_object(value, purple_person_get_avatar_for_display(person));
 			break;
+		case PROP_COLOR:
+			g_value_set_string(value, purple_person_get_color(person));
+			break;
+		case PROP_COLOR_FOR_DISPLAY:
+			g_value_set_string(value,
+			                   purple_person_get_color_for_display(person));
+			break;
 		case PROP_TAGS:
 			g_value_set_object(value, purple_person_get_tags(person));
 			break;
@@ -269,6 +304,9 @@ purple_person_set_property(GObject *obj, guint param_id, const GValue *value,
 		case PROP_AVATAR:
 			purple_person_set_avatar(person, g_value_get_object(value));
 			break;
+		case PROP_COLOR:
+			purple_person_set_color(person, g_value_get_string(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -296,6 +334,7 @@ purple_person_finalize(GObject *obj) {
 
 	g_clear_pointer(&person->id, g_free);
 	g_clear_pointer(&person->alias, g_free);
+	g_clear_pointer(&person->color, g_free);
 
 	G_OBJECT_CLASS(purple_person_parent_class)->finalize(obj);
 }
@@ -385,6 +424,40 @@ purple_person_class_init(PurplePersonClass *klass) {
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
+	 * PurplePerson:color:
+	 *
+	 * A custom color to use for this person which will override any colors for
+	 * the contacts that belong to this person.
+	 *
+	 * This is an RGB hex code that user interfaces can use when rendering the
+	 * person.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_COLOR] = g_param_spec_string(
+		"color", "color",
+		"The custom color for this person.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurplePerson:color-for-display:
+	 *
+	 * The color to use for this person.
+	 *
+	 * This will return the value of [property@Person:color] if it is set,
+	 * otherwise it will return the value of [property@ContactInfo:color] of
+	 * the priority contact info.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_COLOR_FOR_DISPLAY] = g_param_spec_string(
+		"color-for-display", "color-for-display",
+		"The color to use when displaying this person.",
+		NULL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
 	 * PurplePerson:tags:
 	 *
 	 * The [class@Purple.Tags] for this person.
@@ -443,14 +516,14 @@ purple_person_new(void) {
 	return g_object_new(PURPLE_TYPE_PERSON, NULL);
 }
 
-const gchar *
+const char *
 purple_person_get_id(PurplePerson *person) {
 	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
 
 	return person->id;
 }
 
-const gchar *
+const char *
 purple_person_get_alias(PurplePerson *person) {
 	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
 
@@ -458,7 +531,7 @@ purple_person_get_alias(PurplePerson *person) {
 }
 
 void
-purple_person_set_alias(PurplePerson *person, const gchar *alias) {
+purple_person_set_alias(PurplePerson *person, const char *alias) {
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 
 	if(!purple_strequal(person->alias, alias)) {
@@ -511,6 +584,48 @@ purple_person_set_avatar(PurplePerson *person, GdkPixbuf *avatar) {
 		g_object_notify_by_pspec(obj, properties[PROP_AVATAR_FOR_DISPLAY]);
 		g_object_thaw_notify(obj);
 	}
+}
+
+const char *
+purple_person_get_color(PurplePerson *person) {
+	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
+
+	return person->color;
+}
+
+void
+purple_person_set_color(PurplePerson *person, const char *color) {
+	g_return_if_fail(PURPLE_IS_PERSON(person));
+
+	if(!purple_strequal(person->color, color)) {
+		GObject *obj = G_OBJECT(person);
+
+		g_free(person->color);
+		person->color = g_strdup(color);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_COLOR]);
+		g_object_notify_by_pspec(obj, properties[PROP_COLOR_FOR_DISPLAY]);
+		g_object_thaw_notify(obj);
+	}
+}
+
+const char *
+purple_person_get_color_for_display(PurplePerson *person) {
+	PurpleContactInfo *priority = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
+
+	if(!purple_strempty(person->color)) {
+		return person->color;
+	}
+
+	priority = purple_person_get_priority_contact_info(person);
+	if(PURPLE_IS_CONTACT_INFO(priority)) {
+		return purple_contact_info_get_color(priority);
+	}
+
+	return NULL;
 }
 
 PurpleTags *

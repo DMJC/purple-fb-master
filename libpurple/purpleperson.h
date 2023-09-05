@@ -67,7 +67,7 @@ PurplePerson *purple_person_new(void);
  *
  * Since: 3.0.0
  */
-const gchar *purple_person_get_id(PurplePerson *person);
+const char *purple_person_get_id(PurplePerson *person);
 
 /**
  * purple_person_get_alias:
@@ -81,7 +81,7 @@ const gchar *purple_person_get_id(PurplePerson *person);
  *
  * Since: 3.0.0
  */
-const gchar *purple_person_get_alias(PurplePerson *person);
+const char *purple_person_get_alias(PurplePerson *person);
 
 /**
  * purple_person_set_alias:
@@ -98,7 +98,7 @@ const gchar *purple_person_get_alias(PurplePerson *person);
  *
  * Since: 3.0.0
  */
-void purple_person_set_alias(PurplePerson *person, const gchar *alias);
+void purple_person_set_alias(PurplePerson *person, const char *alias);
 
 /**
  * purple_person_get_avatar_for_display:
@@ -142,6 +142,44 @@ GdkPixbuf *purple_person_get_avatar(PurplePerson *person);
  * Since: 3.0.0
  */
 void purple_person_set_avatar(PurplePerson *person, GdkPixbuf *avatar);
+
+/**
+ * purple_person_get_color:
+ * @person: The instance.
+ *
+ * Gets the custom color that has been set for this person.
+ *
+ * Returns: (nullable): The custom color or %NULL if one is not set.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_person_get_color(PurplePerson *person);
+
+/**
+ * purple_person_set_color:
+ * @person: The instance.
+ * @color: (nullable): The new color.
+ *
+ * Sets the custom color of @person to @color. If @color is %NULL the custom
+ * color is removed.
+ *
+ * Since: 3.0.0
+ */
+void purple_person_set_color(PurplePerson *person, const char *color);
+
+/**
+ * purple_person_get_color_for_display:
+ * @person: The instance.
+ *
+ * Gets the color that should be used for @person. If [property@Person:color]
+ * is set that will be returned, otherwise the result of
+ * [method@ContactInfo.get_color] on the priority contact will be returned.
+ *
+ * Returns: The color to display for @person.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_person_get_color_for_display(PurplePerson *person);
 
 /**
  * purple_person_get_tags:
