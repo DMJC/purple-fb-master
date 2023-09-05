@@ -26,8 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
-
+#include <libpurple/purpleavatar.h>
 #include <libpurple/purpletags.h>
 
 G_BEGIN_DECLS
@@ -113,7 +112,7 @@ void purple_person_set_alias(PurplePerson *person, const char *alias);
  *
  * Since: 3.0.0
  */
-GdkPixbuf *purple_person_get_avatar_for_display(PurplePerson *person);
+PurpleAvatar *purple_person_get_avatar_for_display(PurplePerson *person);
 
 /**
  * purple_person_get_avatar:
@@ -125,7 +124,7 @@ GdkPixbuf *purple_person_get_avatar_for_display(PurplePerson *person);
  *
  * Since: 3.0.0
  */
-GdkPixbuf *purple_person_get_avatar(PurplePerson *person);
+PurpleAvatar *purple_person_get_avatar(PurplePerson *person);
 
 /**
  * purple_person_set_avatar:
@@ -141,7 +140,7 @@ GdkPixbuf *purple_person_get_avatar(PurplePerson *person);
  *
  * Since: 3.0.0
  */
-void purple_person_set_avatar(PurplePerson *person, GdkPixbuf *avatar);
+void purple_person_set_avatar(PurplePerson *person, PurpleAvatar *avatar);
 
 /**
  * purple_person_get_color:

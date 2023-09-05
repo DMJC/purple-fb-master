@@ -29,12 +29,12 @@ static void
 purple_demo_contacts_load_contact_icon(PurpleContactInfo *info,
                                        const char *name)
 {
-	GdkPixbuf *pixbuf = NULL;
+	PurpleAvatar *avatar = NULL;
 	GError *error = NULL;
 	char *path = NULL;
 
 	path = g_strdup_printf("/im/pidgin/purple/demo/buddy_icons/%s.png", name);
-	pixbuf = gdk_pixbuf_new_from_resource(path, &error);
+	avatar = purple_avatar_new_from_resource(path, &error);
 
 	if(error != NULL) {
 		g_message("Failed to load find an icon for %s: %s", path,
@@ -48,10 +48,10 @@ purple_demo_contacts_load_contact_icon(PurpleContactInfo *info,
 
 	g_free(path);
 
-	if(GDK_IS_PIXBUF(pixbuf)) {
-		purple_contact_info_set_avatar(info, pixbuf);
+	if(PURPLE_IS_AVATAR(avatar)) {
+		purple_contact_info_set_avatar(info, avatar);
 
-		g_clear_object(&pixbuf);
+		g_clear_object(&avatar);
 	}
 }
 

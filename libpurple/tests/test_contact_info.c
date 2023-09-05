@@ -38,14 +38,14 @@ test_purple_contact_info_new(void) {
 
 static void
 test_purple_contact_info_properties(void) {
+	PurpleAvatar *avatar = NULL;
+	PurpleAvatar *avatar1 = NULL;
 	PurpleContactInfo *info = NULL;
 	PurpleContactInfoPermission permission;
 	PurplePerson *person = NULL;
 	PurplePerson *person1 = NULL;
 	PurplePresence *presence1 = NULL;
 	PurpleTags *tags = NULL;
-	GdkPixbuf *avatar = NULL;
-	GdkPixbuf *avatar1 = NULL;
 	GTimeZone *time_zone = NULL;
 	GTimeZone *time_zone1 = NULL;
 	char *id = NULL;
@@ -58,7 +58,7 @@ test_purple_contact_info_properties(void) {
 	char *note = NULL;
 	char *name_for_display = NULL;
 
-	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
 	person = purple_person_new();
 
 	time_zone = g_time_zone_new_utc();

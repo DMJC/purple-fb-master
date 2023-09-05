@@ -130,11 +130,11 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
                               PurplePerson *person,
                               G_GNUC_UNUSED gpointer data)
 {
+	PurpleAvatar *avatar = NULL;
 	PurpleContactInfo *info = NULL;
 	PurpleContact *contact = NULL;
 	PurpleBuddyIcon *icon = NULL;
 	GdkTexture *texture = NULL;
-	GdkPixbuf *pixbuf = NULL;
 
 	/* When filtering we get called for rows that have been filtered out. We
 	 * also get called during finalization. I'm not sure why either of these
@@ -149,9 +149,13 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 		return NULL;
 	}
 
-	pixbuf = purple_person_get_avatar_for_display(person);
-	if(GDK_IS_PIXBUF(pixbuf)) {
-		return gdk_texture_new_for_pixbuf(pixbuf);
+	avatar = purple_person_get_avatar_for_display(person);
+	if(PURPLE_IS_AVATAR(avatar)) {
+		GdkPixbuf *pixbuf = purple_avatar_get_pixbuf(avatar);
+
+		if(GDK_IS_PIXBUF(pixbuf)) {
+			return gdk_texture_new_for_pixbuf(pixbuf);
+		}
 	}
 
 	/* All of the contact info in the manager are PurpleContact's so this cast

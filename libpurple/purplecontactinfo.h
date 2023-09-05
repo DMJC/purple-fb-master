@@ -26,8 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
-
+#include <libpurple/purpleavatar.h>
 #include <libpurple/purplepresence.h>
 #include <libpurple/purpletags.h>
 
@@ -332,7 +331,7 @@ void purple_contact_info_set_note(PurpleContactInfo *info, const char *note);
  *
  * Since: 3.0.0
  */
-GdkPixbuf *purple_contact_info_get_avatar(PurpleContactInfo *info);
+PurpleAvatar *purple_contact_info_get_avatar(PurpleContactInfo *info);
 
 /**
  * purple_contact_info_set_avatar:
@@ -346,7 +345,7 @@ GdkPixbuf *purple_contact_info_get_avatar(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
-void purple_contact_info_set_avatar(PurpleContactInfo *info, GdkPixbuf *avatar);
+void purple_contact_info_set_avatar(PurpleContactInfo *info, PurpleAvatar *avatar);
 
 /**
  * purple_contact_info_get_presence:

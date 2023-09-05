@@ -27,8 +27,8 @@ struct _PurplePerson {
 
 	char *id;
 
-	char *alias;
-	GdkPixbuf *avatar;
+	gchar *alias;
+	PurpleAvatar *avatar;
 	char *color;
 
 	PurpleTags *tags;
@@ -143,11 +143,8 @@ purple_person_sort_contacts(PurplePerson *person,
 		/* If the person doesn't have an avatar set, check if the avatar
 		 * changed and notify if it has.
 		 */
-		if(!GDK_IS_PIXBUF(person->avatar)) {
-			if(old_avatar != new_avatar) {
-				g_object_notify_by_pspec(obj,
-				                         properties[PROP_AVATAR_FOR_DISPLAY]);
-			}
+		if(!PURPLE_IS_AVATAR(person->avatar)) {
+			g_object_notify_by_pspec(obj, properties[PROP_AVATAR_FOR_DISPLAY]);
 		}
 
 		g_object_thaw_notify(obj);
@@ -404,7 +401,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	properties[PROP_AVATAR] = g_param_spec_object(
 		"avatar", "avatar",
 		"The avatar of this person",
-		GDK_TYPE_PIXBUF,
+		PURPLE_TYPE_AVATAR,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -420,7 +417,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	properties[PROP_AVATAR_FOR_DISPLAY] = g_param_spec_object(
 		"avatar-for-display", "avatar-for-display",
 		"The avatar to display for this person",
-		GDK_TYPE_PIXBUF,
+		PURPLE_TYPE_AVATAR,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -547,13 +544,13 @@ purple_person_set_alias(PurplePerson *person, const char *alias) {
 	}
 }
 
-GdkPixbuf *
+PurpleAvatar *
 purple_person_get_avatar_for_display(PurplePerson *person) {
 	PurpleContactInfo *priority = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
 
-	if(GDK_IS_PIXBUF(person->avatar)) {
+	if(PURPLE_IS_AVATAR(person->avatar)) {
 		return person->avatar;
 	}
 
@@ -565,7 +562,7 @@ purple_person_get_avatar_for_display(PurplePerson *person) {
 	return NULL;
 }
 
-GdkPixbuf *
+PurpleAvatar *
 purple_person_get_avatar(PurplePerson *person) {
 	g_return_val_if_fail(PURPLE_IS_PERSON(person), NULL);
 
@@ -573,7 +570,7 @@ purple_person_get_avatar(PurplePerson *person) {
 }
 
 void
-purple_person_set_avatar(PurplePerson *person, GdkPixbuf *avatar) {
+purple_person_set_avatar(PurplePerson *person, PurpleAvatar *avatar) {
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 
 	if(g_set_object(&person->avatar, avatar)) {

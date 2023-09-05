@@ -35,7 +35,7 @@ typedef struct  {
 
 	char *name_for_display;
 
-	GdkPixbuf *avatar;
+	PurpleAvatar *avatar;
 
 	PurplePresence *presence;
 
@@ -484,7 +484,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	properties[PROP_AVATAR] = g_param_spec_object(
 		"avatar", "avatar",
 		"The avatar of the contact",
-		GDK_TYPE_PIXBUF,
+		PURPLE_TYPE_AVATAR,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -904,7 +904,7 @@ purple_contact_info_set_note(PurpleContactInfo *info, const char *note) {
 	}
 }
 
-GdkPixbuf *
+PurpleAvatar *
 purple_contact_info_get_avatar(PurpleContactInfo *info) {
 	PurpleContactInfoPrivate *priv = NULL;
 
@@ -916,7 +916,7 @@ purple_contact_info_get_avatar(PurpleContactInfo *info) {
 }
 
 void
-purple_contact_info_set_avatar(PurpleContactInfo *info, GdkPixbuf *avatar) {
+purple_contact_info_set_avatar(PurpleContactInfo *info, PurpleAvatar *avatar) {
 	PurpleContactInfoPrivate *priv = NULL;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));

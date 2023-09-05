@@ -63,11 +63,11 @@ test_purple_person_new(void) {
 
 static void
 test_purple_person_properties(void) {
+	PurpleAvatar *avatar = NULL;
+	PurpleAvatar *avatar1 = NULL;
+	PurpleAvatar *avatar_for_display = NULL;
 	PurpleContact *person = NULL;
 	PurpleTags *tags = NULL;
-	GdkPixbuf *avatar = NULL;
-	GdkPixbuf *avatar1 = NULL;
-	GdkPixbuf *avatar_for_display = NULL;
 	char *id = NULL;
 	char *alias = NULL;
 	char *color = NULL;
@@ -75,7 +75,7 @@ test_purple_person_properties(void) {
 	char *name_for_display = NULL;
 
 	/* Create our avatar for testing. */
-	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
 
 	/* Use g_object_new so we can test setting properties by name. All of them
 	 * call the setter methods, so by doing it this way we exercise more of the
@@ -132,9 +132,9 @@ test_purple_person_properties(void) {
 
 static void
 test_purple_person_avatar_for_display_person(void) {
+	PurpleAvatar *avatar = NULL;
 	PurpleContactInfo *info = NULL;
 	PurplePerson *person = NULL;
-	GdkPixbuf *avatar = NULL;
 	guint called = 0;
 
 	person = purple_person_new();
@@ -142,7 +142,7 @@ test_purple_person_avatar_for_display_person(void) {
 	                 G_CALLBACK(test_purple_person_notify_cb), &called);
 	g_signal_connect(person, "notify::avatar-for-display",
 	                 G_CALLBACK(test_purple_person_notify_cb), &called);
-	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
 	purple_person_set_avatar(person, avatar);
 	g_assert_cmpuint(called, ==, 2);
 
@@ -159,9 +159,9 @@ test_purple_person_avatar_for_display_person(void) {
 
 static void
 test_purple_person_avatar_for_display_contact(void) {
+	PurpleAvatar *avatar = NULL;
 	PurpleContactInfo *info = NULL;
 	PurplePerson *person = NULL;
-	GdkPixbuf *avatar = NULL;
 	guint called = 0;
 
 	person = purple_person_new();
@@ -169,7 +169,7 @@ test_purple_person_avatar_for_display_contact(void) {
 	                 G_CALLBACK(test_purple_person_notify_cb), &called);
 
 	info = purple_contact_info_new("id");
-	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
 	purple_contact_info_set_avatar(info, avatar);
 	purple_person_add_contact_info(person, info);
 
@@ -183,7 +183,8 @@ test_purple_person_avatar_for_display_contact(void) {
 	/* Now change the avatar on the contact info an verify that we not notified
 	 * of the property changing.
 	 */
-	avatar = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 1, 1);
+	called = 0;
+	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
 	purple_contact_info_set_avatar(info, avatar);
 	g_assert_cmpuint(called, ==, 1);
 
