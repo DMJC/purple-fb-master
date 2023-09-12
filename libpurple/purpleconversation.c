@@ -52,6 +52,8 @@ typedef struct {
 	gboolean favorite;
 	GDateTime *created_on;
 	PurpleContactInfo *creator;
+	gboolean online;
+	gboolean federated;
 	PurpleTags *tags;
 	GListStore *members;
 
@@ -75,6 +77,8 @@ enum {
 	PROP_FAVORITE,
 	PROP_CREATED_ON,
 	PROP_CREATOR,
+	PROP_ONLINE,
+	PROP_FEDERATED,
 	PROP_TAGS,
 	PROP_MEMBERS,
 	PROP_MESSAGES,
@@ -92,6 +96,10 @@ static guint signals[N_SIGNALS] = {0, };
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleConversation, purple_conversation,
                            G_TYPE_OBJECT);
 
+static void purple_conversation_account_connected_cb(GObject *obj,
+                                                     GParamSpec *pspec,
+                                                     gpointer data);
+
 /**************************************************************************
  * Helpers
  **************************************************************************/
@@ -108,6 +116,45 @@ purple_conversation_set_id(PurpleConversation *conversation, const char *id) {
 		priv->id = g_strdup(id);
 
 		g_object_notify_by_pspec(G_OBJECT(conversation), properties[PROP_ID]);
+	}
+}
+
+static void
+purple_conversation_set_account(PurpleConversation *conv,
+                                PurpleAccount *account)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+	priv = purple_conversation_get_instance_private(conv);
+
+	if(g_set_object(&priv->account, account)) {
+		if(PURPLE_IS_ACCOUNT(priv->account)) {
+			g_signal_connect_object(account, "notify::connected",
+			                        G_CALLBACK(purple_conversation_account_connected_cb),
+			                        conv, 0);
+		}
+
+		purple_conversation_update(conv, PURPLE_CONVERSATION_UPDATE_ACCOUNT);
+
+		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_ACCOUNT]);
+	}
+}
+
+static void
+purple_conversation_set_federated(PurpleConversation *conversation,
+                                  gboolean federated)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+	if(priv->federated != federated) {
+		priv->federated = federated;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_FEDERATED]);
 	}
 }
 
@@ -262,6 +309,33 @@ purple_conversation_send_confirm_cb(gpointer *data) {
 }
 
 /**************************************************************************
+ * Callbacks
+ **************************************************************************/
+static void
+purple_conversation_account_connected_cb(GObject *obj,
+                                         G_GNUC_UNUSED GParamSpec *pspec,
+                                         gpointer data)
+{
+	PurpleConversation *conversation = data;
+	PurpleConversationPrivate *priv = NULL;
+	gboolean connected = purple_account_is_connected(PURPLE_ACCOUNT(obj));
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	if(priv->federated) {
+		/* If the account changed to connected and the conversation is
+		 * federated we do nothing. But if the account went offline, we can
+		 * safely set the conversation to offline.
+		 */
+		if(!connected) {
+			purple_conversation_set_online(conversation, FALSE);
+		}
+	} else {
+		purple_conversation_set_online(conversation, connected);
+	}
+}
+
+/**************************************************************************
  * GObject Implementation
  **************************************************************************/
 static void
@@ -324,6 +398,13 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 			break;
 		case PROP_CREATOR:
 			purple_conversation_set_creator(conv, g_value_get_object(value));
+			break;
+		case PROP_ONLINE:
+			purple_conversation_set_online(conv, g_value_get_boolean(value));
+			break;
+		case PROP_FEDERATED:
+			purple_conversation_set_federated(conv,
+			                                  g_value_get_boolean(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -388,6 +469,13 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_CREATOR:
 			g_value_set_object(value, purple_conversation_get_creator(conv));
+			break;
+		case PROP_ONLINE:
+			g_value_set_boolean(value, purple_conversation_get_online(conv));
+			break;
+		case PROP_FEDERATED:
+			g_value_set_boolean(value,
+			                    purple_conversation_get_federated(conv));
 			break;
 		case PROP_TAGS:
 			g_value_set_object(value, purple_conversation_get_tags(conv));
@@ -550,7 +638,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"account", "Account",
 		"The account for the conversation.",
 		PURPLE_TYPE_ACCOUNT,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "Name",
@@ -709,6 +797,50 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"The contact info of who created the conversation.",
 		PURPLE_TYPE_CONTACT_INFO,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:online:
+	 *
+	 * Whether or not the conversation is able to send and receive messages.
+	 *
+	 * This is typically tied to whether or not the account that this
+	 * conversation belongs is online or not.
+	 *
+	 * However, if a protocol supports federated conversation, it is possible
+	 * for a conversation to be offline if the server it is on is currently
+	 * unreachable.
+	 *
+	 * See Also: [property@Conversation:federated].
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_ONLINE] = g_param_spec_boolean(
+		"online", "online",
+		"Whether or not the conversation can send and receive messages.",
+		TRUE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:federated:
+	 *
+	 * Whether or this conversation is federated.
+	 *
+	 * This should only be set by protocols that support federated
+	 * conversations.
+	 *
+	 * When this is %TRUE the [property@Conversation:online] property will not
+	 * be automatically set to match the [property@Account:connected] property
+	 * of the account that this conversation belongs to. It is the
+	 * responsibility of the protocol to manage the online property in this
+	 * case.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_FEDERATED] = g_param_spec_boolean(
+		"federated", "federated",
+		"Whether or not this conversation is federated.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversation:tags:
@@ -914,22 +1046,6 @@ purple_conversation_set_conversation_type(PurpleConversation *conversation,
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_TYPE]);
-	}
-}
-
-void
-purple_conversation_set_account(PurpleConversation *conv,
-                                PurpleAccount *account)
-{
-	PurpleConversationPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-	priv = purple_conversation_get_instance_private(conv);
-
-	if(g_set_object(&priv->account, account)) {
-		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_ACCOUNT]);
-
-		purple_conversation_update(conv, PURPLE_CONVERSATION_UPDATE_ACCOUNT);
 	}
 }
 
@@ -1580,6 +1696,45 @@ purple_conversation_set_creator(PurpleConversation *conversation,
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_CREATOR]);
 	}
+}
+
+gboolean
+purple_conversation_get_online(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->online;
+}
+
+void
+purple_conversation_set_online(PurpleConversation *conversation,
+                               gboolean online)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+	if(priv->online != online) {
+		priv->online = online;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_ONLINE]);
+	}
+}
+
+gboolean
+purple_conversation_get_federated(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->federated;
 }
 
 PurpleTags *

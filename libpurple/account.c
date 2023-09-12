@@ -807,25 +807,11 @@ purple_account_dispose(GObject *object)
 static void
 purple_account_finalize(GObject *object)
 {
-	GList *l;
 	PurpleAccount *account = PURPLE_ACCOUNT(object);
-	PurpleConversationManager *manager = NULL;
 
 	purple_debug_info("account", "Destroying account %p", account);
 
 	purple_account_free_notify_settings(account);
-
-	manager = purple_conversation_manager_get_default();
-	l = purple_conversation_manager_get_all(manager);
-	while(l != NULL) {
-		PurpleConversation *conv = PURPLE_CONVERSATION(l->data);
-
-		if (purple_conversation_get_account(conv) == account) {
-			purple_conversation_set_account(conv, NULL);
-		}
-
-		l = g_list_delete_link(l, l);
-	}
 
 	purple_account_set_status_types(account, NULL);
 

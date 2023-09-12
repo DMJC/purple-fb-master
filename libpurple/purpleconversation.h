@@ -216,18 +216,6 @@ PurpleConversationType purple_conversation_get_conversation_type(PurpleConversat
 void purple_conversation_set_conversation_type(PurpleConversation *conversation, PurpleConversationType type);
 
 /**
- * purple_conversation_set_account:
- * @conv: The conversation.
- * @account: The purple_account.
- *
- * Sets the specified conversation's purple_account.
- *
- * This purple_account represents the user using purple, not the person the user
- * is having a conversation/chat/flame with.
- */
-void purple_conversation_set_account(PurpleConversation *conv, PurpleAccount *account);
-
-/**
  * purple_conversation_get_account:
  * @conv: The conversation.
  *
@@ -647,6 +635,50 @@ PurpleContactInfo *purple_conversation_get_creator(PurpleConversation *conversat
  * Since: 3.0.0
  */
 void purple_conversation_set_creator(PurpleConversation *conversation, PurpleContactInfo *creator);
+
+/**
+ * purple_conversation_get_online:
+ * @conversation: The instance.
+ *
+ * Gets whether or not @conversation is online.
+ *
+ * A conversation is considered offline when messages cannot be sent or
+ * received.
+ *
+ * Returns: %TRUE if messages can be sent and received from @conversation.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_conversation_get_online(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_online:
+ * @conversation: The instance.
+ * @online: Whether or not the conversation is online.
+ *
+ * Sets whether or not the conversation is online, or able to send and receive
+ * messages.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_online(PurpleConversation *conversation, gboolean online);
+
+/**
+ * purple_conversation_get_federated:
+ * @conversation: The instance.
+ *
+ * Gets whether or not @conversation is federated.
+ *
+ * Depending on the underlying protocol, conversations can be federated, which
+ * means they can be running on a different server. When a protocol creates a
+ * federated conversation, it takes the responsibility of managing the
+ * [property@Conversation:online] state of the conversation.
+ *
+ * Returns: %TRUE if @conversation is federated otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_conversation_get_federated(PurpleConversation *conversation);
 
 /**
  * purple_conversation_get_tags:

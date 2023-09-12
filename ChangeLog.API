@@ -499,6 +499,7 @@ version 3.0.0 (??/??/????):
 		* purple_conversation_get_remote_smileys
 		* purple_conversation_get_smiley
 		* purple_conversation_is_logging
+		* purple_conversation_set_account
 		* purple_conversations_add. Use purple_conversation_manager_register
 		  instead.
 		* purple_conversations_remove. Use
