@@ -159,11 +159,24 @@ purple_ircv3_message_handler_privmsg(GHashTable *tags,
 	conversation = purple_conversation_manager_find(conversation_manager,
 	                                                account, target);
 	if(!PURPLE_IS_CONVERSATION(conversation)) {
+		PurpleConversationType type = PurpleConversationTypeUnset;
+		const char *id = NULL;
+
 		if(target[0] == '#') {
-			conversation = purple_chat_conversation_new(account, target);
+			type = PurpleConversationTypeChannel;
+			id = target;
 		} else {
-			conversation = purple_im_conversation_new(account, source);
+			type = PurpleConversationTypeDM;
+			id = source;
 		}
+
+		conversation = g_object_new(
+			PURPLE_TYPE_CONVERSATION,
+			"account", account,
+			"id", id,
+			"name", id,
+			"type", type,
+			NULL);
 
 		purple_conversation_manager_register(conversation_manager,
 		                                     conversation);

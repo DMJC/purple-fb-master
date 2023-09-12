@@ -5,7 +5,7 @@ IRCV3_SOURCES = [
 	'purpleircv3messagehandlers.c',
 	'purpleircv3parser.c',
 	'purpleircv3protocol.c',
-	'purpleircv3protocolim.c',
+	'purpleircv3protocolconversation.c',
 	'purpleircv3sasl.c',
 ]
 
@@ -16,7 +16,7 @@ IRCV3_HEADERS = [
 	'purpleircv3messagehandlers.h',
 	'purpleircv3parser.h',
 	'purpleircv3protocol.h',
-	'purpleircv3protocolim.h',
+	'purpleircv3protocolconversation.h',
 	'purpleircv3sasl.h',
 ]
 
