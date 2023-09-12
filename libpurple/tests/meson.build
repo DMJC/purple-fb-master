@@ -26,6 +26,7 @@ PROGS = [
     'protocol_action',
     'protocol_contacts',
     'protocol_contact_search',
+    'protocol_conversation',
     'protocol_roster',
     'protocol_xfer',
     'purplepath',
