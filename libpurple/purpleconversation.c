@@ -28,6 +28,7 @@
 #include "purplehistorymanager.h"
 #include "purplemarkup.h"
 #include "purpleprivate.h"
+#include "purpleprotocolconversation.h"
 #include "purpletags.h"
 #include "server.h"
 
@@ -172,12 +173,35 @@ purple_conversation_check_member_equal(gconstpointer a, gconstpointer b) {
 }
 
 static void
+purple_conversation_send_message_async_cb(GObject *protocol,
+                                          GAsyncResult *result,
+                                          gpointer data)
+{
+	PurpleProtocolConversation *protocol_conversation = NULL;
+	PurpleMessage *message = data;
+	GError *error = NULL;
+
+	protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
+	purple_protocol_conversation_send_message_finish(protocol_conversation,
+	                                                 result, &error);
+
+	if(error != NULL) {
+		g_warning("failed to send message: %s", error->message);
+
+		g_clear_error(&error);
+	}
+
+	g_clear_object(&message);
+}
+
+static void
 common_send(PurpleConversation *conv, const gchar *message,
             PurpleMessageFlags msgflags)
 {
 	PurpleAccount *account;
 	PurpleConnection *gc;
 	PurpleConversationPrivate *priv = NULL;
+	PurpleProtocol *protocol = NULL;
 	gchar *displayed = NULL;
 	const gchar *sent, *me;
 	gint err = 0;
@@ -194,6 +218,8 @@ common_send(PurpleConversation *conv, const gchar *message,
 
 	gc = purple_account_get_connection(account);
 	g_return_if_fail(PURPLE_IS_CONNECTION(gc));
+
+	protocol = purple_account_get_protocol(account);
 
 	me = purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(account));
 
@@ -219,7 +245,20 @@ common_send(PurpleConversation *conv, const gchar *message,
 
 	handle = purple_conversations_get_handle();
 
-	if(PURPLE_IS_IM_CONVERSATION(conv)) {
+	if(PURPLE_IS_PROTOCOL_CONVERSATION(protocol)) {
+		PurpleMessage *msg = NULL;
+		PurpleProtocolConversation *protocol_conversation = NULL;
+
+		msg = purple_message_new_outgoing(me, NULL, sent, msgflags);
+
+		protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
+		purple_protocol_conversation_send_message_async(protocol_conversation,
+		                                                conv, msg, NULL,
+		                                                purple_conversation_send_message_async_cb,
+		                                                msg);
+
+		g_clear_pointer(&displayed, g_free);
+	} else if(PURPLE_IS_IM_CONVERSATION(conv)) {
 		const gchar *name = NULL;
 		PurpleMessage *msg = NULL;
 
