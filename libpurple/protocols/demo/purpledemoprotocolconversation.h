@@ -16,13 +16,13 @@
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PURPLE_DEMO_PROTOCOL_IM_H
-#define PURPLE_DEMO_PROTOCOL_IM_H
+#ifndef PURPLE_DEMO_PROTOCOL_CONVERSATION_H
+#define PURPLE_DEMO_PROTOCOL_CONVERSATION_H
 
 #include <glib.h>
 
 #include <purple.h>
 
-G_GNUC_INTERNAL void purple_demo_protocol_im_init(PurpleProtocolIMInterface *iface);
+G_GNUC_INTERNAL void purple_demo_protocol_conversation_init(PurpleProtocolConversationInterface *iface);
 
-#endif /* PURPLE_DEMO_PROTOCOL_IM_H */
+#endif /* PURPLE_DEMO_PROTOCOL_CONVERSATION_H */
