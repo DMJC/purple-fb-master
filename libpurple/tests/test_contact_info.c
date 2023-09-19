@@ -56,6 +56,7 @@ test_purple_contact_info_properties(void) {
 	char *email = NULL;
 	char *phone_number = NULL;
 	char *note = NULL;
+	char *sid = NULL;
 	char *name_for_display = NULL;
 
 	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
@@ -81,6 +82,7 @@ test_purple_contact_info_properties(void) {
 		"avatar", avatar,
 		"person", person,
 		"permission", PURPLE_CONTACT_INFO_PERMISSION_ALLOW,
+		"sid", "sid",
 		NULL);
 
 	/* Now use g_object_get to read all of the properties. */
@@ -99,6 +101,7 @@ test_purple_contact_info_properties(void) {
 		"tags", &tags,
 		"person", &person1,
 		"permission", &permission,
+		"sid", &sid,
 		"name-for-display", &name_for_display,
 		NULL);
 
@@ -119,6 +122,7 @@ test_purple_contact_info_properties(void) {
 	g_assert_nonnull(tags);
 	g_assert_true(person1 == person);
 	g_assert_true(permission == PURPLE_CONTACT_INFO_PERMISSION_ALLOW);
+	g_assert_cmpstr(sid, ==, "sid");
 
 	/* Free/unref all the things. */
 	g_clear_pointer(&id, g_free);
@@ -131,6 +135,7 @@ test_purple_contact_info_properties(void) {
 	g_clear_pointer(&time_zone, g_time_zone_unref);
 	g_clear_pointer(&note, g_free);
 	g_clear_pointer(&name_for_display, g_free);
+	g_clear_pointer(&sid, g_free);
 	g_clear_object(&avatar1);
 	g_clear_object(&presence1);
 	g_clear_object(&tags);

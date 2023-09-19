@@ -420,6 +420,29 @@ PurpleContactInfoPermission purple_contact_info_get_permission(PurpleContactInfo
 void purple_contact_info_set_permission(PurpleContactInfo *info, PurpleContactInfoPermission permission);
 
 /**
+ * purple_contact_info_get_sid:
+ * @info: The instance.
+ *
+ * Gets the sid, or secondary id, of @info.
+ *
+ * Returns: (transfer none) (nullable): The sid if set.
+ *
+ * Since: 3.0.0
+ */
+const char *purple_contact_info_get_sid(PurpleContactInfo *info);
+
+/**
+ * purple_contact_info_set_sid:
+ * @info: The instance.
+ * @sid: (nullable): The sid or secondary id.
+ *
+ * Sets the sid, or secondary id, of @info to @sid.
+ *
+ * Since: 3.0.0
+ */
+void purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid);
+
+/**
  * purple_contact_info_get_name_for_display:
  * @info: The instance.
  *

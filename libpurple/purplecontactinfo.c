@@ -32,6 +32,7 @@ typedef struct  {
 	char *phone_number;
 	GTimeZone *time_zone;
 	char *note;
+	char *sid;
 
 	char *name_for_display;
 
@@ -62,6 +63,7 @@ enum {
 	PROP_TAGS,
 	PROP_PERSON,
 	PROP_PERMISSION,
+	PROP_SID,
 	PROP_NAME_FOR_DISPLAY,
 	N_PROPERTIES
 };
@@ -211,6 +213,9 @@ purple_contact_info_get_property(GObject *obj, guint param_id, GValue *value,
 			g_value_set_string(value,
 			                   purple_contact_info_get_name_for_display(info));
 			break;
+		case PROP_SID:
+			g_value_set_string(value, purple_contact_info_get_sid(info));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -262,6 +267,9 @@ purple_contact_info_set_property(GObject *obj, guint param_id,
 		case PROP_PERMISSION:
 			purple_contact_info_set_permission(info, g_value_get_enum(value));
 			break;
+		case PROP_SID:
+			purple_contact_info_set_sid(info, g_value_get_string(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -299,6 +307,7 @@ purple_contact_info_finalize(GObject *obj) {
 	g_clear_pointer(&priv->phone_number, g_free);
 	g_clear_pointer(&priv->time_zone, g_time_zone_unref);
 	g_clear_pointer(&priv->note, g_free);
+	g_clear_pointer(&priv->sid, g_free);
 	g_clear_pointer(&priv->name_for_display, g_free);
 
 	G_OBJECT_CLASS(purple_contact_info_parent_class)->finalize(obj);
@@ -539,6 +548,23 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 		"The permission level of the contact",
 		PURPLE_TYPE_CONTACT_INFO_PERMISSION,
 		PURPLE_CONTACT_INFO_PERMISSION_UNSET,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleContactInfo:sid:
+	 *
+	 * The sid, or secondary id, is an additional identifier field for a
+	 * contact.
+	 *
+	 * This could be used to hold the `ident` for an IRC contact, the
+	 * `resource` for an XMPP contact, or something similar.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_SID] = g_param_spec_string(
+		"sid", "sid",
+		"The secondary id for the contact.",
+		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -1018,6 +1044,33 @@ purple_contact_info_set_permission(PurpleContactInfo *info,
 	priv->permission = permission;
 
 	g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_PERMISSION]);
+}
+
+const char *
+purple_contact_info_get_sid(PurpleContactInfo *info) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	return priv->sid;
+}
+
+void
+purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	if(!purple_strequal(priv->sid, sid)) {
+		g_free(priv->sid);
+		priv->sid = g_strdup(sid);
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_SID]);
+	}
 }
 
 const char *
