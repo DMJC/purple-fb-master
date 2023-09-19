@@ -144,6 +144,64 @@ test_purple_protocol_conversation_empty_send_message_finish(void) {
 	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolConversationEmpty*send_message_finish*");
 }
 
+static void
+test_purple_protocol_conversation_empty_set_topic_async(void) {
+	if(g_test_subprocess()) {
+		PurpleAccount *account = NULL;
+		PurpleConversation *conversation = NULL;
+		PurpleProtocolConversation *protocol = NULL;
+
+		protocol = g_object_new(test_purple_protocol_conversation_empty_get_type(),
+		                        NULL);
+		account = purple_account_new("test", "test");
+		conversation = g_object_new(
+			PURPLE_TYPE_CONVERSATION,
+			"account", account,
+			"name", "this is required at the moment",
+			"type", PurpleConversationTypeDM,
+			NULL);
+
+		purple_protocol_conversation_set_topic_async(protocol, conversation,
+		                                             "what a topic!", NULL,
+		                                             NULL, NULL);
+
+		g_clear_object(&account);
+		g_clear_object(&conversation);
+		g_clear_object(&protocol);
+	}
+
+	g_test_trap_subprocess(NULL, 0, 0);
+	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolConversationEmpty*set_topic_async*");
+}
+
+static void
+test_purple_protocol_conversation_empty_set_topic_finish(void) {
+	if(g_test_subprocess()) {
+		PurpleProtocolConversation *protocol = NULL;
+		GError *error = NULL;
+		GTask *task = NULL;
+		gboolean result = FALSE;
+
+		protocol = g_object_new(test_purple_protocol_conversation_empty_get_type(),
+		                        NULL);
+
+		task = g_task_new(protocol, NULL, NULL, NULL);
+
+		result = purple_protocol_conversation_set_topic_finish(protocol,
+		                                                       G_ASYNC_RESULT(task),
+		                                                       &error);
+		g_assert_no_error(error);
+		g_assert_false(result);
+
+		g_clear_object(&task);
+		g_clear_object(&protocol);
+	}
+
+	g_test_trap_subprocess(NULL, 0, 0);
+	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolConversationEmpty*set_topic_finish*");
+}
+
+
 /******************************************************************************
  * TestProtocolConversation Implementation
  *****************************************************************************/
@@ -158,6 +216,9 @@ struct _TestPurpleProtocolConversation {
 
 	guint send_message_async;
 	guint send_message_finish;
+
+	guint set_topic_async;
+	guint set_topic_finish;
 };
 
 static void
@@ -203,9 +264,55 @@ test_purple_protocol_conversation_send_message_finish(PurpleProtocolConversation
 }
 
 static void
+test_purple_protocol_conversation_set_topic_async(PurpleProtocolConversation *protocol,
+                                                  PurpleConversation *conversation,
+                                                  const char *topic,
+                                                  GCancellable *cancellable,
+                                                  GAsyncReadyCallback callback,
+                                                  gpointer data)
+{
+	TestPurpleProtocolConversation *test_protocol = NULL;
+	GTask *task = NULL;
+
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+	g_assert_false(purple_strempty(topic));
+
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(protocol);
+	test_protocol->set_topic_async += 1;
+
+	task = g_task_new(protocol, cancellable, callback, data);
+	if(test_protocol->should_error) {
+		GError *error = g_error_new_literal(TEST_PURPLE_PROTOCOL_CONVERSATION_DOMAIN,
+		                                    0, "error");
+		g_task_return_error(task, error);
+	} else {
+		g_task_return_boolean(task, TRUE);
+	}
+
+	g_clear_object(&task);
+}
+
+static gboolean
+test_purple_protocol_conversation_set_topic_finish(PurpleProtocolConversation *protocol,
+                                                   GAsyncResult *result,
+                                                   GError **error)
+{
+	TestPurpleProtocolConversation *test_protocol = NULL;
+
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(protocol);
+	test_protocol->set_topic_finish += 1;
+
+	return g_task_propagate_boolean(G_TASK(result), error);
+}
+
+
+static void
 test_purple_protocol_conversation_iface_init(PurpleProtocolConversationInterface *iface) {
 	iface->send_message_async = test_purple_protocol_conversation_send_message_async;
 	iface->send_message_finish = test_purple_protocol_conversation_send_message_finish;
+
+	iface->set_topic_async = test_purple_protocol_conversation_set_topic_async;
+	iface->set_topic_finish = test_purple_protocol_conversation_set_topic_finish;
 }
 
 G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolConversation, test_purple_protocol_conversation,
@@ -218,6 +325,9 @@ test_purple_protocol_conversation_init(TestPurpleProtocolConversation *protocol)
 {
 	protocol->send_message_async = 0;
 	protocol->send_message_finish = 0;
+
+	protocol->set_topic_async = 0;
+	protocol->set_topic_finish = 0;
 }
 
 static void
@@ -308,6 +418,83 @@ test_purple_protocol_conversation_send_message_normal(gconstpointer data) {
 }
 
 /******************************************************************************
+ * TestProtocolConversation SetTopic Tests
+ *****************************************************************************/
+static void
+test_purple_protocol_conversation_set_topic_cb(GObject *obj,
+                                               GAsyncResult *res,
+                                               G_GNUC_UNUSED gpointer data)
+{
+	TestPurpleProtocolConversation *test_protocol = NULL;
+	PurpleProtocolConversation *protocol = NULL;
+	GError *error = NULL;
+	gboolean result = FALSE;
+
+	protocol = PURPLE_PROTOCOL_CONVERSATION(obj);
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(obj);
+
+	result = purple_protocol_conversation_set_topic_finish(protocol, res,
+	                                                       &error);
+
+	if(test_protocol->should_error) {
+		g_assert_error(error, TEST_PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0);
+		g_clear_error(&error);
+		g_assert_false(result);
+	} else {
+		g_assert_no_error(error);
+		g_assert_true(result);
+	}
+
+	g_main_loop_quit(loop);
+}
+
+static gboolean
+test_purple_protocol_conversation_set_topic_idle(gpointer data) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleProtocolConversation *protocol = data;
+
+	account = purple_account_new("test", "test");
+	g_object_set_data_full(G_OBJECT(protocol), "account", account, g_object_unref);
+
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"name", "this is required at the moment",
+		"type", PurpleConversationTypeDM,
+		NULL);
+	g_object_set_data_full(G_OBJECT(protocol), "conversation", conversation,
+	                       g_object_unref);
+
+	purple_protocol_conversation_set_topic_async(protocol, conversation,
+	                                             "woo hoo", NULL,
+	                                             test_purple_protocol_conversation_set_topic_cb,
+	                                             NULL);
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+test_purple_protocol_conversation_set_topic_normal(gconstpointer data) {
+	TestPurpleProtocolConversation *protocol = NULL;
+
+	protocol = g_object_new(test_purple_protocol_conversation_get_type(),
+	                        NULL);
+	protocol->should_error = GPOINTER_TO_INT(data);
+
+	g_idle_add(test_purple_protocol_conversation_set_topic_idle, protocol);
+	g_timeout_add_seconds(10, test_purple_protocol_conversation_timeout_cb,
+	                      loop);
+
+	g_main_loop_run(loop);
+
+	g_assert_cmpuint(protocol->set_topic_async, ==, 1);
+	g_assert_cmpuint(protocol->set_topic_finish, ==, 1);
+
+	g_clear_object(&protocol);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -324,6 +511,10 @@ main(int argc, char **argv) {
 	                test_purple_protocol_conversation_empty_send_message_async);
 	g_test_add_func("/protocol-conversation/empty/send-message-finish",
 	                test_purple_protocol_conversation_empty_send_message_finish);
+	g_test_add_func("/protocol-conversation/empty/set-topic-async",
+	                test_purple_protocol_conversation_empty_set_topic_async);
+	g_test_add_func("/protocol-conversation/empty/set-topic-finish",
+	                test_purple_protocol_conversation_empty_set_topic_finish);
 
 	g_test_add_data_func("/protocol-contacts/normal/send-message-normal",
 	                     GINT_TO_POINTER(FALSE),
@@ -331,6 +522,12 @@ main(int argc, char **argv) {
 	g_test_add_data_func("/protocol-contacts/normal/send-message-error",
 	                     GINT_TO_POINTER(TRUE),
 	                     test_purple_protocol_conversation_send_message_normal);
+	g_test_add_data_func("/protocol-contacts/normal/set-topic-normal",
+	                     GINT_TO_POINTER(FALSE),
+	                     test_purple_protocol_conversation_set_topic_normal);
+	g_test_add_data_func("/protocol-contacts/normal/set-topic-error",
+	                     GINT_TO_POINTER(TRUE),
+	                     test_purple_protocol_conversation_set_topic_normal);
 
 	ret = g_test_run();
 

@@ -57,6 +57,9 @@ struct _PurpleProtocolConversationInterface {
 	void (*send_message_async)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleMessage *message, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*send_message_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
+	void (*set_topic_async)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, const char *topic, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	gboolean (*set_topic_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
 	/*< private >*/
 	gpointer reserved[8];
 };
@@ -95,6 +98,47 @@ void purple_protocol_conversation_send_message_async(PurpleProtocolConversation 
  * Since: 3.0.0
  */
 gboolean purple_protocol_conversation_send_message_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
+/**
+ * purple_protocol_conversation_set_topic_async:
+ * @protocol: The instance.
+ * @conversation: The conversation whose topic to set.
+ * @topic: (nullable): The new topic to set.
+ * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
+ * @callback: (nullable) (scope async): The callback to call after the message
+ *            has been sent.
+ * @data: (nullable): Optional user data to pass to @callback.
+ *
+ * Starts the process of setting the topic of @conversation to @topic.
+ *
+ * It is up to the protocol to define how [property@Conversation:topic] is
+ * updated. It may be able to do this immediately based on a result from the
+ * other end, or it might have to wait until another event comes in telling it
+ * to update it. Regardless, user interfaces should not be updating the topic
+ * directly.
+ *
+ * Since: 3.0.0
+ */
+void purple_protocol_conversation_set_topic_async(PurpleProtocolConversation *protocol, PurpleConversation *conversation, const char *topic, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_protocol_conversation_set_topic_finish:
+ * @protocol: The instance.
+ * @result: The [iface@Gio.AsyncResult] from the previous
+ *          [method@ProtocolConversation.set_topic_async] call.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * Finishes a previous call to
+ * [method@ProtocolConversation.set_topic_async]. This should be called from
+ * the callback of that function to get the result of whether or not the
+ * message was sent successfully.
+ *
+ * Returns: %TRUE if the message was sent successfully, otherwise %FALSE with
+ *          @error possibly set.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_protocol_conversation_set_topic_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 G_END_DECLS
 
