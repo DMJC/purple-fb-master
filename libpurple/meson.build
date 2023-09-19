@@ -88,9 +88,6 @@ purple_coresources = [
 	'purpleprotocolserver.c',
 	'purpleprotocolwhiteboard.c',
 	'purpleproxyinfo.c',
-	'purplerequestfield.c',
-	'purplerequestgroup.c',
-	'purplerequestpage.c',
 	'purpleroomlistroom.c',
 	'purplesavedpresence.c',
 	'purplesqlite3.c',
@@ -102,6 +99,7 @@ purple_coresources = [
 	'purplewhiteboarduiops.c',
 	'queuedoutputstream.c',
 	'request.c',
+	'request/purplerequestfield.c',
 	'request/purplerequestfieldaccount.c',
 	'request/purplerequestfieldbool.c',
 	'request/purplerequestfieldchoice.c',
@@ -111,6 +109,8 @@ purple_coresources = [
 	'request/purplerequestfieldlabel.c',
 	'request/purplerequestfieldlist.c',
 	'request/purplerequestfieldstring.c',
+	'request/purplerequestgroup.c',
+	'request/purplerequestpage.c',
 	'request-datasheet.c',
 	'roomlist.c',
 	'savedstatuses.c',
@@ -210,9 +210,6 @@ purple_coreheaders = [
 	'purpleprotocolserver.h',
 	'purpleprotocolwhiteboard.h',
 	'purpleproxyinfo.h',
-	'purplerequestfield.h',
-	'purplerequestgroup.h',
-	'purplerequestpage.h',
 	'purpleroomlistroom.h',
 	'purplesavedpresence.h',
 	'purplesqlite3.h',
@@ -239,6 +236,7 @@ purple_coreheaders = [
 ]
 
 purple_request_headers = [
+	'request/purplerequestfield.h',
 	'request/purplerequestfieldaccount.h',
 	'request/purplerequestfieldbool.h',
 	'request/purplerequestfieldchoice.h',
@@ -248,6 +246,8 @@ purple_request_headers = [
 	'request/purplerequestfieldlabel.h',
 	'request/purplerequestfieldlist.h',
 	'request/purplerequestfieldstring.h',
+	'request/purplerequestgroup.h',
+	'request/purplerequestpage.h',
 ]
 
 purple_generated_sources = []

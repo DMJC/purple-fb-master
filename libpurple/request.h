@@ -45,9 +45,9 @@ typedef struct _PurpleRequestUiOps PurpleRequestUiOps;
 
 #include "account.h"
 #include "purpleconversation.h"
-#include "purplerequestpage.h"
-#include "purplerequestgroup.h"
-#include "purplerequestfield.h"
+#include "request/purplerequestpage.h"
+#include "request/purplerequestgroup.h"
+#include "request/purplerequestfield.h"
 #include "request-datasheet.h"
 
 #define PURPLE_DEFAULT_ACTION_NONE	-1
