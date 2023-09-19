@@ -42,6 +42,8 @@
 
 #define BONJOUR_DEFAULT_PORT 5298
 
+#define BONJOUR_DOMAIN (g_quark_from_static_string("bonjour"))
+
 #define BONJOUR_TYPE_PROTOCOL (bonjour_protocol_get_type())
 G_DECLARE_FINAL_TYPE(BonjourProtocol, bonjour_protocol, BONJOUR, PROTOCOL,
                      PurpleProtocol)

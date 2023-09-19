@@ -240,20 +240,57 @@ bonjour_protocol_get_buddy_icon_spec(G_GNUC_UNUSED PurpleProtocol *protocol) {
 	                                  PURPLE_ICON_SCALE_DISPLAY);
 }
 
-static int
-bonjour_send_im(G_GNUC_UNUSED PurpleProtocolIM *im,
-                PurpleConnection *connection,
-                G_GNUC_UNUSED PurpleConversation *conversation,
-                PurpleMessage *msg)
+static void
+bonjour_conversation_send_message_async(PurpleProtocolConversation *protocol,
+                                        PurpleConversation *conversation,
+                                        PurpleMessage *message,
+                                        GCancellable *cancellable,
+                                        GAsyncReadyCallback callback,
+                                        gpointer data)
 {
-	BonjourData *bd = purple_connection_get_protocol_data(connection);
+	GTask *task = NULL;
+	const char *target = NULL;
 
-	if (purple_message_is_empty(msg) || !purple_message_get_recipient(msg))
-		return 0;
+	task = g_task_new(protocol, cancellable, callback, data);
 
-	return bonjour_xmpp_send_message(bd->xmpp_data,
-		purple_message_get_recipient(msg),
-		purple_message_get_contents(msg));
+	target = purple_conversation_get_name(conversation);
+	if(purple_strempty(target)) {
+		target = purple_message_get_recipient(message);
+	}
+
+	if(purple_message_is_empty(message) || purple_strempty(target)) {
+		g_task_return_boolean(task, TRUE);
+	} else {
+		BonjourData *bd = NULL;
+		PurpleAccount *account = NULL;
+		PurpleConnection *connection = NULL;
+		int result = 0;
+
+		account = purple_conversation_get_account(conversation);
+		connection = purple_account_get_connection(account);
+		bd = purple_connection_get_protocol_data(connection);
+
+		result = bonjour_xmpp_send_message(bd->xmpp_data, target,
+		                                   purple_message_get_contents(message));
+
+		purple_conversation_write_message(conversation, message);
+
+		if(result >= 0) {
+			g_task_return_boolean(task, TRUE);
+		} else {
+			g_task_return_new_error(task, BONJOUR_DOMAIN, 0, "unknown error");
+		}
+	}
+
+	g_clear_object(&task);
+}
+
+static gboolean
+bonjour_conversation_send_message_finish(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
+                                         GAsyncResult *result,
+                                         GError **error)
+{
+	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
 static void
@@ -657,9 +694,10 @@ bonjour_protocol_server_iface_init(PurpleProtocolServerInterface *server_iface)
 }
 
 static void
-bonjour_protocol_im_iface_init(PurpleProtocolIMInterface *im_iface)
+bonjour_protocol_conversation_iface_init(PurpleProtocolConversationInterface *iface)
 {
-	im_iface->send = bonjour_send_im;
+	iface->send_message_async = bonjour_conversation_send_message_async;
+	iface->send_message_finish = bonjour_conversation_send_message_finish;
 }
 
 static void
@@ -679,8 +717,8 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	                              bonjour_protocol_client_iface_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_SERVER,
 	                              bonjour_protocol_server_iface_init)
-	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_IM,
-	                              bonjour_protocol_im_iface_init)
+	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CONVERSATION,
+	                              bonjour_protocol_conversation_iface_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_XFER,
 	                              bonjour_protocol_xfer_iface_init))
 
