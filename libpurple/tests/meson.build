@@ -12,6 +12,7 @@ PROGS = [
     'conversation_member',
     'credential_manager',
     'credential_provider',
+    'file_transfer',
     'history_adapter',
     'history_manager',
     'image',
