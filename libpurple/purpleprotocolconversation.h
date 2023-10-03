@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "account.h"
+#include "purplechanneljoindetails.h"
 #include "purpleconversation.h"
 #include "purplemessage.h"
 #include "purpleprotocol.h"
@@ -59,6 +61,10 @@ struct _PurpleProtocolConversationInterface {
 
 	void (*set_topic_async)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, const char *topic, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*set_topic_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
+	PurpleChannelJoinDetails *(*get_channel_join_details)(PurpleProtocolConversation *protocol, PurpleAccount *account);
+	void (*join_channel_async)(PurpleProtocolConversation *protocol, PurpleAccount *account, PurpleChannelJoinDetails *details, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	gboolean (*join_channel_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 	/*< private >*/
 	gpointer reserved[8];
@@ -139,6 +145,59 @@ void purple_protocol_conversation_set_topic_async(PurpleProtocolConversation *pr
  * Since: 3.0.0
  */
 gboolean purple_protocol_conversation_set_topic_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
+/**
+ * purple_protocol_conversation_get_channel_join_details:
+ * @protocol: The instance.
+ * @account: The account that will be joining a channel.
+ *
+ * User interfaces will use this function to get an instance of
+ * [class@ChannelJoinDetails] that can be presented to a user for them to edit.
+ *
+ * Returns: (transfer full): The new join channel details.
+ *
+ * Since: 3.0.0
+ */
+PurpleChannelJoinDetails *purple_protocol_conversation_get_channel_join_details(PurpleProtocolConversation *protocol, PurpleAccount *account);
+
+/**
+ * purple_protocol_conversation_join_channel_async:
+ * @protocol: The instance.
+ * @account: The account that's joining the channel.
+ * @details: The details of the channel that's being joined.
+ * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
+ * @callback: (nullable) (scope async): The callback to call after the message
+ *            has been sent.
+ * @data: (nullable): Optional user data to pass to @callback.
+ *
+ * Attempts to join the channel identified by @details using @account.
+ *
+ * If the channel is joined successfully, it is the responsibility of
+ * @protocol to add the conversation to the [class@ConversationManager] during
+ * this process.
+ *
+ * Since: 3.0.0
+ */
+void purple_protocol_conversation_join_channel_async(PurpleProtocolConversation *protocol, PurpleAccount *account, PurpleChannelJoinDetails *details, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_protocol_conversation_join_channel_finish:
+ * @protocol: The instance.
+ * @result: The [iface@Gio.AsyncResult] from the previous
+ *          [method@ProtocolConversation.join_channel_async] call.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * Finishes a previous call to
+ * [method@ProtocolConversation.join_channel_async]. This should be called from
+ * the callback of that function to get the result of whether or not the
+ * channel was joined successfully.
+ *
+ * Returns: %TRUE if the channel was joined successfully, otherwise %FALSE with
+ *          @error possibly set.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_protocol_conversation_join_channel_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 G_END_DECLS
 

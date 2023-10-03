@@ -202,6 +202,82 @@ test_purple_protocol_conversation_empty_set_topic_finish(void) {
 }
 
 
+static void
+test_purple_protocol_conversation_empty_get_channel_join_details(void) {
+	if(g_test_subprocess()) {
+		PurpleAccount *account = NULL;
+		PurpleChannelJoinDetails *result = NULL;
+		PurpleProtocolConversation *protocol = NULL;
+
+		protocol = g_object_new(test_purple_protocol_conversation_empty_get_type(),
+		                        NULL);
+		account = purple_account_new("test", "test");
+
+		result = purple_protocol_conversation_get_channel_join_details(protocol,
+		                                                               account);
+
+		g_assert_null(result);
+
+		g_clear_object(&account);
+		g_clear_object(&protocol);
+	}
+
+	g_test_trap_subprocess(NULL, 0, 0);
+	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolConversationEmpty*get_channel_join_details*");
+}
+
+static void
+test_purple_protocol_conversation_empty_join_channel_async(void) {
+	if(g_test_subprocess()) {
+		PurpleAccount *account = NULL;
+		PurpleChannelJoinDetails *details = NULL;
+		PurpleProtocolConversation *protocol = NULL;
+
+		protocol = g_object_new(test_purple_protocol_conversation_empty_get_type(),
+		                        NULL);
+		account = purple_account_new("test", "test");
+		details = purple_channel_join_details_new(FALSE, FALSE);
+
+		purple_protocol_conversation_join_channel_async(protocol, account,
+		                                                details, NULL, NULL,
+		                                                NULL);
+
+		g_clear_object(&account);
+		g_clear_object(&details);
+		g_clear_object(&protocol);
+	}
+
+	g_test_trap_subprocess(NULL, 0, 0);
+	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolConversationEmpty*join_channel_async*");
+}
+
+static void
+test_purple_protocol_conversation_empty_join_channel_finish(void) {
+	if(g_test_subprocess()) {
+		PurpleProtocolConversation *protocol = NULL;
+		GError *error = NULL;
+		GTask *task = NULL;
+		gboolean result = FALSE;
+
+		protocol = g_object_new(test_purple_protocol_conversation_empty_get_type(),
+		                        NULL);
+
+		task = g_task_new(protocol, NULL, NULL, NULL);
+
+		result = purple_protocol_conversation_join_channel_finish(protocol,
+		                                                          G_ASYNC_RESULT(task),
+		                                                          &error);
+		g_assert_no_error(error);
+		g_assert_false(result);
+
+		g_clear_object(&task);
+		g_clear_object(&protocol);
+	}
+
+	g_test_trap_subprocess(NULL, 0, 0);
+	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolConversationEmpty*join_channel_finish*");
+}
+
 /******************************************************************************
  * TestProtocolConversation Implementation
  *****************************************************************************/
@@ -219,6 +295,10 @@ struct _TestPurpleProtocolConversation {
 
 	guint set_topic_async;
 	guint set_topic_finish;
+
+	guint get_channel_join_details;
+	guint join_channel_async;
+	guint join_channel_finish;
 };
 
 static void
@@ -259,6 +339,63 @@ test_purple_protocol_conversation_send_message_finish(PurpleProtocolConversation
 
 	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(protocol);
 	test_protocol->send_message_finish += 1;
+
+	return g_task_propagate_boolean(G_TASK(result), error);
+}
+
+static PurpleChannelJoinDetails *
+test_purple_protocol_conversation_get_channel_join_details(PurpleProtocolConversation *protocol,
+                                                           PurpleAccount *account)
+{
+	TestPurpleProtocolConversation *test_protocol = NULL;
+
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(protocol);
+	test_protocol->get_channel_join_details += 1;
+
+	g_assert_true(PURPLE_IS_PROTOCOL_CONVERSATION(protocol));
+	g_assert_true(PURPLE_IS_ACCOUNT(account));
+
+	return purple_channel_join_details_new(TRUE, TRUE);
+}
+
+static void
+test_purple_protocol_conversation_join_channel_async(PurpleProtocolConversation *protocol,
+                                                     PurpleAccount *account,
+                                                     PurpleChannelJoinDetails *details,
+                                                     GCancellable *cancellable,
+                                                     GAsyncReadyCallback callback,
+                                                     gpointer data)
+{
+	TestPurpleProtocolConversation *test_protocol = NULL;
+	GTask *task = NULL;
+
+	g_assert_true(PURPLE_IS_ACCOUNT(account));
+	g_assert_true(PURPLE_IS_CHANNEL_JOIN_DETAILS(details));
+
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(protocol);
+	test_protocol->join_channel_async += 1;
+
+	task = g_task_new(protocol, cancellable, callback, data);
+	if(test_protocol->should_error) {
+		GError *error = g_error_new_literal(TEST_PURPLE_PROTOCOL_CONVERSATION_DOMAIN,
+		                                    0, "error");
+		g_task_return_error(task, error);
+	} else {
+		g_task_return_boolean(task, TRUE);
+	}
+
+	g_clear_object(&task);
+}
+
+static gboolean
+test_purple_protocol_conversation_join_channel_finish(PurpleProtocolConversation *protocol,
+                                                      GAsyncResult *result,
+                                                      GError **error)
+{
+	TestPurpleProtocolConversation *test_protocol = NULL;
+
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(protocol);
+	test_protocol->join_channel_finish += 1;
 
 	return g_task_propagate_boolean(G_TASK(result), error);
 }
@@ -313,6 +450,10 @@ test_purple_protocol_conversation_iface_init(PurpleProtocolConversationInterface
 
 	iface->set_topic_async = test_purple_protocol_conversation_set_topic_async;
 	iface->set_topic_finish = test_purple_protocol_conversation_set_topic_finish;
+
+	iface->get_channel_join_details = test_purple_protocol_conversation_get_channel_join_details;
+	iface->join_channel_async = test_purple_protocol_conversation_join_channel_async;
+	iface->join_channel_finish = test_purple_protocol_conversation_join_channel_finish;
 }
 
 G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolConversation, test_purple_protocol_conversation,
@@ -328,6 +469,10 @@ test_purple_protocol_conversation_init(TestPurpleProtocolConversation *protocol)
 
 	protocol->set_topic_async = 0;
 	protocol->set_topic_finish = 0;
+
+	protocol->get_channel_join_details = 0;
+	protocol->join_channel_async = 0;
+	protocol->join_channel_finish = 0;
 }
 
 static void
@@ -495,6 +640,104 @@ test_purple_protocol_conversation_set_topic_normal(gconstpointer data) {
 }
 
 /******************************************************************************
+ * TestProtocolConversation Channel Join Tests
+ ****************************************************************************/
+static void
+test_purple_protocol_conversation_get_channel_join_details_normal(void) {
+	TestPurpleProtocolConversation *test_protocol = NULL;
+	PurpleAccount *account = NULL;
+	PurpleChannelJoinDetails *details = NULL;
+	PurpleProtocolConversation *protocol = NULL;
+
+	test_protocol = g_object_new(test_purple_protocol_conversation_get_type(),
+	                        NULL);
+	protocol = PURPLE_PROTOCOL_CONVERSATION(test_protocol);
+
+	account = purple_account_new("test", "test");
+
+	details = purple_protocol_conversation_get_channel_join_details(protocol,
+	                                                                account);
+
+	g_assert_true(PURPLE_IS_CHANNEL_JOIN_DETAILS(details));
+
+	g_assert_cmpuint(test_protocol->get_channel_join_details, ==, 1);
+
+	g_clear_object(&details);
+	g_clear_object(&account);
+	g_clear_object(&test_protocol);
+}
+
+static void
+test_purple_protocol_conversation_join_channel_cb(GObject *obj,
+                                                  GAsyncResult *res,
+                                                  G_GNUC_UNUSED gpointer data)
+{
+	TestPurpleProtocolConversation *test_protocol = NULL;
+	PurpleProtocolConversation *protocol = NULL;
+	GError *error = NULL;
+	gboolean result = FALSE;
+
+	protocol = PURPLE_PROTOCOL_CONVERSATION(obj);
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(obj);
+
+	result = purple_protocol_conversation_join_channel_finish(protocol, res,
+	                                                          &error);
+
+	if(test_protocol->should_error) {
+		g_assert_error(error, TEST_PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0);
+		g_clear_error(&error);
+		g_assert_false(result);
+	} else {
+		g_assert_no_error(error);
+		g_assert_true(result);
+	}
+
+	g_main_loop_quit(loop);
+}
+
+static gboolean
+test_purple_protocol_conversation_join_channel_idle(gpointer data) {
+	PurpleAccount *account = NULL;
+	PurpleChannelJoinDetails *details = NULL;
+	PurpleProtocolConversation *protocol = data;
+
+	account = purple_account_new("test", "test");
+	g_object_set_data_full(G_OBJECT(protocol), "account", account,
+	                       g_object_unref);
+
+	details = purple_channel_join_details_new(FALSE, FALSE);
+	g_object_set_data_full(G_OBJECT(protocol), "details", details,
+	                       g_object_unref);
+
+	purple_protocol_conversation_join_channel_async(protocol, account, details,
+	                                                NULL,
+	                                                test_purple_protocol_conversation_join_channel_cb,
+	                                                NULL);
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+test_purple_protocol_conversation_join_channel_normal(gconstpointer data) {
+	TestPurpleProtocolConversation *protocol = NULL;
+
+	protocol = g_object_new(test_purple_protocol_conversation_get_type(),
+	                        NULL);
+	protocol->should_error = GPOINTER_TO_INT(data);
+
+	g_idle_add(test_purple_protocol_conversation_join_channel_idle, protocol);
+	g_timeout_add_seconds(10, test_purple_protocol_conversation_timeout_cb,
+	                      loop);
+
+	g_main_loop_run(loop);
+
+	g_assert_cmpuint(protocol->join_channel_async, ==, 1);
+	g_assert_cmpuint(protocol->join_channel_finish, ==, 1);
+
+	g_clear_object(&protocol);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -507,6 +750,7 @@ main(int argc, char **argv) {
 
 	loop = g_main_loop_new(NULL, FALSE);
 
+	/* Empty send message tests. */
 	g_test_add_func("/protocol-conversation/empty/send-message-async",
 	                test_purple_protocol_conversation_empty_send_message_async);
 	g_test_add_func("/protocol-conversation/empty/send-message-finish",
@@ -516,10 +760,19 @@ main(int argc, char **argv) {
 	g_test_add_func("/protocol-conversation/empty/set-topic-finish",
 	                test_purple_protocol_conversation_empty_set_topic_finish);
 
-	g_test_add_data_func("/protocol-contacts/normal/send-message-normal",
+	/* Empty join channel tests. */
+	g_test_add_func("/protocol-conversation/empty/get-channel-join-details",
+	                test_purple_protocol_conversation_empty_get_channel_join_details);
+	g_test_add_func("/protocol-conversation/empty/join_channel_async",
+	                test_purple_protocol_conversation_empty_join_channel_async);
+	g_test_add_func("/protocol-conversation/empty/join_channel_finish",
+	                test_purple_protocol_conversation_empty_join_channel_finish);
+
+	/* Normal send message tests. */
+	g_test_add_data_func("/protocol-conversation/normal/send-message-normal",
 	                     GINT_TO_POINTER(FALSE),
 	                     test_purple_protocol_conversation_send_message_normal);
-	g_test_add_data_func("/protocol-contacts/normal/send-message-error",
+	g_test_add_data_func("/protocol-conversation/normal/send-message-error",
 	                     GINT_TO_POINTER(TRUE),
 	                     test_purple_protocol_conversation_send_message_normal);
 	g_test_add_data_func("/protocol-contacts/normal/set-topic-normal",
@@ -528,6 +781,16 @@ main(int argc, char **argv) {
 	g_test_add_data_func("/protocol-contacts/normal/set-topic-error",
 	                     GINT_TO_POINTER(TRUE),
 	                     test_purple_protocol_conversation_set_topic_normal);
+
+	/* Normal join channel tests. */
+	g_test_add_func("/protocol-conversation/normal/get-channel-join-details",
+	                test_purple_protocol_conversation_get_channel_join_details_normal);
+	g_test_add_data_func("/protocol-conversation/normal/join-channel-normal",
+	                     GINT_TO_POINTER(FALSE),
+	                     test_purple_protocol_conversation_join_channel_normal);
+	g_test_add_data_func("/protocol-conversation/normal/join-channel-error",
+	                     GINT_TO_POINTER(TRUE),
+	                     test_purple_protocol_conversation_join_channel_normal);
 
 	ret = g_test_run();
 
