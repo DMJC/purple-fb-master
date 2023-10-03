@@ -188,11 +188,7 @@ purple_ircv3_sasl_request(PurpleIRCv3Capabilities *capabilities) {
 }
 
 gboolean
-purple_ircv3_sasl_logged_in(G_GNUC_UNUSED GHashTable *tags,
-                            G_GNUC_UNUSED const char *source,
-                            G_GNUC_UNUSED const char *command,
-                            G_GNUC_UNUSED guint n_params,
-                            G_GNUC_UNUSED GStrv params,
+purple_ircv3_sasl_logged_in(G_GNUC_UNUSED PurpleIRCv3Message *message,
                             G_GNUC_UNUSED GError **error,
                             gpointer user_data)
 {
@@ -231,11 +227,7 @@ purple_ircv3_sasl_logged_in(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_sasl_logged_out(G_GNUC_UNUSED GHashTable *tags,
-                             G_GNUC_UNUSED const char *source,
-                             G_GNUC_UNUSED const char *command,
-                             G_GNUC_UNUSED guint n_params,
-                             G_GNUC_UNUSED GStrv params,
+purple_ircv3_sasl_logged_out(G_GNUC_UNUSED PurpleIRCv3Message *message,
                              G_GNUC_UNUSED GError **error,
                              gpointer user_data)
 {
@@ -261,16 +253,13 @@ purple_ircv3_sasl_logged_out(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_sasl_nick_locked(G_GNUC_UNUSED GHashTable *tags,
-                              G_GNUC_UNUSED const char *source,
-                              G_GNUC_UNUSED const char *command,
-                              G_GNUC_UNUSED guint n_params,
-                              GStrv params,
+purple_ircv3_sasl_nick_locked(PurpleIRCv3Message *v3_message,
                               GError **error,
                               gpointer user_data)
 {
 	PurpleIRCv3Connection *connection = user_data;
 	PurpleIRCv3SASLData *data = NULL;
+	GStrv params = NULL;
 	char *message = NULL;
 
 	data = g_object_get_data(G_OBJECT(connection), PURPLE_IRCV3_SASL_DATA_KEY);
@@ -282,6 +271,7 @@ purple_ircv3_sasl_nick_locked(G_GNUC_UNUSED GHashTable *tags,
 		return FALSE;
 	}
 
+	params = purple_ircv3_message_get_params(v3_message);
 	message = g_strjoinv(" ", params);
 
 	g_set_error(error, PURPLE_CONNECTION_ERROR,
@@ -295,11 +285,7 @@ purple_ircv3_sasl_nick_locked(G_GNUC_UNUSED GHashTable *tags,
 
 
 gboolean
-purple_ircv3_sasl_success(G_GNUC_UNUSED GHashTable *tags,
-                          G_GNUC_UNUSED const char *source,
-                          G_GNUC_UNUSED const char *command,
-                          G_GNUC_UNUSED guint n_params,
-                          G_GNUC_UNUSED GStrv params,
+purple_ircv3_sasl_success(G_GNUC_UNUSED PurpleIRCv3Message *message,
                           GError **error,
                           gpointer user_data)
 {
@@ -330,11 +316,7 @@ purple_ircv3_sasl_success(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_sasl_failed(G_GNUC_UNUSED GHashTable *tags,
-                         G_GNUC_UNUSED const char *source,
-                         G_GNUC_UNUSED const char *command,
-                         G_GNUC_UNUSED guint n_params,
-                         G_GNUC_UNUSED GStrv params,
+purple_ircv3_sasl_failed(G_GNUC_UNUSED PurpleIRCv3Message *message,
                          G_GNUC_UNUSED GError **error,
                          gpointer user_data)
 {
@@ -355,11 +337,7 @@ purple_ircv3_sasl_failed(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_sasl_message_too_long(G_GNUC_UNUSED GHashTable *tags,
-                                   G_GNUC_UNUSED const char *source,
-                                   G_GNUC_UNUSED const char *command,
-                                   G_GNUC_UNUSED guint n_params,
-                                   G_GNUC_UNUSED GStrv params,
+purple_ircv3_sasl_message_too_long(G_GNUC_UNUSED PurpleIRCv3Message *message,
                                    G_GNUC_UNUSED GError **error,
                                    gpointer user_data)
 {
@@ -379,11 +357,7 @@ purple_ircv3_sasl_message_too_long(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_sasl_aborted(G_GNUC_UNUSED GHashTable *tags,
-                          G_GNUC_UNUSED const char *source,
-                          G_GNUC_UNUSED const char *command,
-                          G_GNUC_UNUSED guint n_params,
-                          G_GNUC_UNUSED GStrv params,
+purple_ircv3_sasl_aborted(G_GNUC_UNUSED PurpleIRCv3Message *message,
                           G_GNUC_UNUSED GError **error,
                           gpointer user_data)
 {
@@ -409,11 +383,7 @@ purple_ircv3_sasl_aborted(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_sasl_already_authed(G_GNUC_UNUSED GHashTable *tags,
-                                 G_GNUC_UNUSED const char *source,
-                                 G_GNUC_UNUSED const char *command,
-                                 G_GNUC_UNUSED guint n_params,
-                                 G_GNUC_UNUSED GStrv params,
+purple_ircv3_sasl_already_authed(G_GNUC_UNUSED PurpleIRCv3Message *message,
                                  G_GNUC_UNUSED GError **error,
                                  gpointer user_data)
 {
@@ -439,16 +409,14 @@ purple_ircv3_sasl_already_authed(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_sasl_mechanisms(G_GNUC_UNUSED GHashTable *tags,
-                             G_GNUC_UNUSED const char *source,
-                             G_GNUC_UNUSED const char *command,
-                             guint n_params,
-                             GStrv params,
+purple_ircv3_sasl_mechanisms(PurpleIRCv3Message *message,
                              G_GNUC_UNUSED GError **error,
                              gpointer user_data)
 {
 	PurpleIRCv3Connection *connection = user_data;
 	PurpleIRCv3SASLData *data = NULL;
+	GStrv params = NULL;
+	guint n_params = 0;
 
 	data = g_object_get_data(G_OBJECT(connection), PURPLE_IRCV3_SASL_DATA_KEY);
 	if(data == NULL) {
@@ -457,6 +425,11 @@ purple_ircv3_sasl_mechanisms(G_GNUC_UNUSED GHashTable *tags,
 		                    "present");
 
 		return FALSE;
+	}
+
+	params = purple_ircv3_message_get_params(message);
+	if(params != NULL) {
+		n_params = g_strv_length(params);
 	}
 
 	/* We need to find a server that sends this message. The specification says
@@ -483,18 +456,21 @@ purple_ircv3_sasl_mechanisms(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_sasl_authenticate(G_GNUC_UNUSED GHashTable *tags,
-                               G_GNUC_UNUSED const char *source,
-                               G_GNUC_UNUSED const char *command,
-                               guint n_params,
-                               GStrv params,
+purple_ircv3_sasl_authenticate(PurpleIRCv3Message *message,
                                GError **error,
                                gpointer user_data)
 {
 	PurpleIRCv3Connection *connection = user_data;
 	PurpleIRCv3SASLData *data = NULL;
+	GStrv params = NULL;
 	char *payload = NULL;
 	gboolean done = FALSE;
+	guint n_params = 0;
+
+	params = purple_ircv3_message_get_params(message);
+	if(params != NULL) {
+		n_params = g_strv_length(params);
+	}
 
 	if(n_params != 1) {
 		g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,

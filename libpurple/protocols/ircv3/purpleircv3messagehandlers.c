@@ -27,20 +27,19 @@
  * Fallback
  *****************************************************************************/
 gboolean
-purple_ircv3_message_handler_fallback(G_GNUC_UNUSED GHashTable *tags,
-                                      const char *source,
-                                      const char *command,
-                                      guint n_params,
-                                      GStrv params,
+purple_ircv3_message_handler_fallback(PurpleIRCv3Message *message,
                                       G_GNUC_UNUSED GError **error,
                                       gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
 	char *new_command = NULL;
+	const char *command = NULL;
+
+	command = purple_ircv3_message_get_command(message);
 
 	new_command = g_strdup_printf(_("unknown command '%s'"), command);
-	purple_ircv3_connection_add_status_message(connection, source, new_command,
-	                                           n_params, params);
+	purple_ircv3_message_set_command(message, new_command);
+	purple_ircv3_connection_add_status_message(connection, message);
 
 	g_clear_pointer(&new_command, g_free);
 
@@ -51,29 +50,29 @@ purple_ircv3_message_handler_fallback(G_GNUC_UNUSED GHashTable *tags,
  * Status Messages
  *****************************************************************************/
 gboolean
-purple_ircv3_message_handler_status(G_GNUC_UNUSED GHashTable *tags,
-                                    const char *source,
-                                    const char *command,
-                                    guint n_params,
-                                    GStrv params,
+purple_ircv3_message_handler_status(PurpleIRCv3Message *message,
                                     G_GNUC_UNUSED GError **error,
                                     gpointer data)
 {
-	purple_ircv3_connection_add_status_message(data, source, command, n_params,
-	                                           params);
+	purple_ircv3_connection_add_status_message(data, message);
 
 	return TRUE;
 }
 
 gboolean
-purple_ircv3_message_handler_status_ignore_param0(G_GNUC_UNUSED GHashTable *tags,
-                                                  const char *source,
-                                                  const char *command,
-                                                  guint n_params,
-                                                  GStrv params,
+purple_ircv3_message_handler_status_ignore_param0(PurpleIRCv3Message *message,
                                                   GError **error,
                                                   gpointer data)
 {
+	GStrv params = NULL;
+	GStrv new_params = NULL;
+	guint n_params = 0;
+
+	params = purple_ircv3_message_get_params(message);
+	if(params != NULL) {
+		n_params = g_strv_length(params);
+	}
+
 	if(n_params <= 1) {
 		g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
 		            "expected n_params > 1, got %u", n_params);
@@ -81,8 +80,14 @@ purple_ircv3_message_handler_status_ignore_param0(G_GNUC_UNUSED GHashTable *tags
 		return FALSE;
 	}
 
-	purple_ircv3_connection_add_status_message(data, source, command,
-	                                           n_params - 1, params + 1);
+	/* We need to make a copy because otherwise we'd get a use after free in
+	 * set_params.
+	 */
+	new_params = g_strdupv(params + 1);
+	purple_ircv3_message_set_params(message, new_params);
+	g_clear_pointer(&new_params, g_strfreev);
+
+	purple_ircv3_connection_add_status_message(data, message);
 
 	return TRUE;
 }
@@ -91,17 +96,16 @@ purple_ircv3_message_handler_status_ignore_param0(G_GNUC_UNUSED GHashTable *tags
  * General Commands
  *****************************************************************************/
 gboolean
-purple_ircv3_message_handler_ping(G_GNUC_UNUSED GHashTable *tags,
-                                  G_GNUC_UNUSED const char *source,
-                                  G_GNUC_UNUSED const char *command,
-                                  guint n_params,
-                                  GStrv params,
+purple_ircv3_message_handler_ping(PurpleIRCv3Message *message,
                                   G_GNUC_UNUSED GError **error,
                                   gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
+	GStrv params = NULL;
 
-	if(n_params == 1) {
+	params = purple_ircv3_message_get_params(message);
+
+	if(params != NULL && g_strv_length(params) == 1) {
 		purple_ircv3_connection_writef(connection, "PONG %s", params[0]);
 	} else {
 		purple_ircv3_connection_writef(connection, "PONG");
@@ -111,11 +115,7 @@ purple_ircv3_message_handler_ping(G_GNUC_UNUSED GHashTable *tags,
 }
 
 gboolean
-purple_ircv3_message_handler_privmsg(GHashTable *tags,
-                                     const char *source,
-                                     const char *command,
-                                     guint n_params,
-                                     GStrv params,
+purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
                                      G_GNUC_UNUSED GError **error,
                                      gpointer data)
 {
@@ -128,12 +128,21 @@ purple_ircv3_message_handler_privmsg(GHashTable *tags,
 	PurpleMessage *message = NULL;
 	PurpleMessageFlags flags = PURPLE_MESSAGE_RECV;
 	GDateTime *dt = NULL;
+	GHashTable *tags = NULL;
+	GStrv params = NULL;
 	gpointer raw_id = NULL;
 	gpointer raw_timestamp = NULL;
+	const char *command = NULL;
 	const char *id = NULL;
+	const char *source = NULL;
 	const char *target = NULL;
 
-	if(n_params != 2) {
+	command = purple_ircv3_message_get_command(v3_message);
+	params = purple_ircv3_message_get_params(v3_message);
+	source = purple_ircv3_message_get_source(v3_message);
+	tags = purple_ircv3_message_get_tags(v3_message);
+
+	if(params != NULL && g_strv_length(params) != 2) {
 		char *body = g_strjoinv(" ", params);
 		g_warning("unknown privmsg message format: '%s'", body);
 		g_free(body);

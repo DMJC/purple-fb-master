@@ -38,6 +38,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
                          PURPLE_IRCV3, CONNECTION, PurpleConnection)
 
 #include "purpleircv3capabilities.h"
+#include "purpleircv3message.h"
 
 struct _PurpleIRCv3ConnectionClass {
 	/*< private >*/
@@ -107,16 +108,13 @@ gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connectio
 /**
  * purple_ircv3_connection_add_status_message:
  * @connection: The instance.
- * @source: The source/author of the message.
- * @command: The command name.
- * @n_params: The number of parameters.
- * @params: The parameters themselves.
+ * @message: The message.
  *
  * Adds a message to the status conversation/window for @connection.
  *
  * Since: 3.0.0
  */
-void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, const char *source, const char *command, guint n_params, GStrv params);
+void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, PurpleIRCv3Message *message);
 
 G_END_DECLS
 

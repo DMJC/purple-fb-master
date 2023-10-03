@@ -20,6 +20,7 @@
 
 #include <purple.h>
 
+#include "../purpleircv3message.h"
 #include "../purpleircv3parser.h"
 
 #define TEST_IRCV3_PARSER_DOMAIN (g_quark_from_static_string("test-ircv3-parser"))
@@ -36,13 +37,26 @@ typedef struct {
  * Handlers
  *****************************************************************************/
 static gboolean
-test_purple_ircv3_test_handler(GHashTable *tags, const gchar *source,
-                               const gchar *command, guint n_params,
-                               GStrv params, G_GNUC_UNUSED GError **error,
+test_purple_ircv3_test_handler(PurpleIRCv3Message *message,
+                               G_GNUC_UNUSED GError **error,
                                gpointer data)
 {
 	TestPurpleIRCv3ParserData *d = data;
+	GHashTable *tags = NULL;
 	GHashTableIter iter;
+	GStrv params = NULL;
+	const char *command = NULL;
+	const char *source = NULL;
+	guint n_params = 0;
+
+	command = purple_ircv3_message_get_command(message);
+	params = purple_ircv3_message_get_params(message);
+	source = purple_ircv3_message_get_source(message);
+	tags = purple_ircv3_message_get_tags(message);
+
+	if(params != NULL) {
+		n_params = g_strv_length(params);
+	}
 
 	/* Make sure we have an expected tags hash table before checking them. */
 	if(d->tags != NULL) {
@@ -71,17 +85,6 @@ test_purple_ircv3_test_handler(GHashTable *tags, const gchar *source,
 		}
 	}
 
-	/* If the expected strings values are NULL, set them to empty string as
-	 * that's what g_match_info_get_named will return for them.
-	 */
-	if(d->source == NULL) {
-		d->source = "";
-	}
-
-	if(d->command == NULL) {
-		d->command = "";
-	}
-
 	/* Walk through the params checking against the expected values. */
 	if(d->n_params > 0) {
 		g_assert_cmpuint(n_params, ==, d->n_params);
@@ -103,11 +106,7 @@ test_purple_ircv3_test_handler(GHashTable *tags, const gchar *source,
 }
 
 static gboolean
-test_purple_ircv3_test_handler_error(G_GNUC_UNUSED GHashTable *tags,
-                                     G_GNUC_UNUSED const gchar *source,
-                                     G_GNUC_UNUSED const gchar *command,
-                                     G_GNUC_UNUSED guint n_params,
-                                     G_GNUC_UNUSED GStrv params,
+test_purple_ircv3_test_handler_error(G_GNUC_UNUSED PurpleIRCv3Message *message,
                                      GError **error,
                                      G_GNUC_UNUSED gpointer data)
 {

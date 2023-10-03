@@ -528,19 +528,22 @@ purple_ircv3_capabilities_start(PurpleIRCv3Capabilities *capabilities) {
 }
 
 gboolean
-purple_ircv3_capabilities_message_handler(G_GNUC_UNUSED GHashTable *tags,
-                                          G_GNUC_UNUSED const char *source,
-                                          G_GNUC_UNUSED const char *command,
-                                          guint n_params,
-                                          GStrv params,
+purple_ircv3_capabilities_message_handler(PurpleIRCv3Message *message,
                                           GError **error,
                                           gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
 	PurpleIRCv3Capabilities *capabilities = NULL;
-	const char *subcommand = NULL;
-	guint n_subparams = 0;
+	GStrv params = NULL;
 	GStrv subparams = NULL;
+	const char *subcommand = NULL;
+	guint n_params = 0;
+	guint n_subparams = 0;
+
+	params = purple_ircv3_message_get_params(message);
+	if(params != NULL) {
+		n_params = g_strv_length(params);
+	}
 
 	if(n_params < 2) {
 		return FALSE;

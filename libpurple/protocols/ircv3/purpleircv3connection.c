@@ -659,23 +659,25 @@ purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection) {
 
 void
 purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
-                                           const char *source,
-                                           const char *command,
-                                           guint n_params,
-                                           GStrv params)
+                                           PurpleIRCv3Message *v3_message)
 {
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleMessage *message = NULL;
 	GString *str = NULL;
+	GStrv params = NULL;
+	const char *command = NULL;
 
 	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
-	g_return_if_fail(command != NULL);
+	g_return_if_fail(PURPLE_IRCV3_IS_MESSAGE(v3_message));
 
 	priv = purple_ircv3_connection_get_instance_private(connection);
 
+	command = purple_ircv3_message_get_command(v3_message);
+
 	str = g_string_new(command);
 
-	if(n_params > 0) {
+	params = purple_ircv3_message_get_params(v3_message);
+	if(params != NULL && params[0] != NULL) {
 		char *joined = g_strjoinv(" ", params);
 
 		g_string_append_printf(str, " %s", joined);
@@ -685,7 +687,7 @@ purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
 
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
-		"author", source,
+		"author", purple_ircv3_message_get_source(v3_message),
 		"contents", str->str,
 		NULL);
 

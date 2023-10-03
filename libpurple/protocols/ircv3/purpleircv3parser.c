@@ -20,6 +20,7 @@
 
 #include "purpleircv3capabilities.h"
 #include "purpleircv3core.h"
+#include "purpleircv3message.h"
 #include "purpleircv3messagehandlers.h"
 #include "purpleircv3sasl.h"
 
@@ -193,21 +194,20 @@ purple_ircv3_parser_build_params(PurpleIRCv3Parser *parser,
 {
 	GStrvBuilder *builder = g_strv_builder_new();
 	GStrv result = NULL;
-	guint count = 0;
 
-	*n_params = 0;
-
-	count = purple_ircv3_parser_extract_params(parser, builder, middle);
-	*n_params = *n_params + count;
+	purple_ircv3_parser_extract_params(parser, builder, middle);
 
 	if(*coda != '\0') {
 		g_strv_builder_add(builder, trailing);
-		*n_params = *n_params + 1;
 	}
 
 	result = g_strv_builder_end(builder);
 
 	g_strv_builder_unref(builder);
+
+	if(result != NULL && n_params != NULL) {
+		*n_params = g_strv_length(result);
+	}
 
 	return result;
 }
@@ -216,16 +216,12 @@ purple_ircv3_parser_build_params(PurpleIRCv3Parser *parser,
  * Handlers
  *****************************************************************************/
 static gboolean
-purple_ircv3_fallback_handler(G_GNUC_UNUSED GHashTable *tags,
-                              G_GNUC_UNUSED const gchar *source,
-                              G_GNUC_UNUSED const gchar *command,
-                              G_GNUC_UNUSED guint n_params,
-                              G_GNUC_UNUSED GStrv params,
+purple_ircv3_fallback_handler(PurpleIRCv3Message *message,
                               GError **error,
                               G_GNUC_UNUSED gpointer data)
 {
 	g_set_error(error, PURPLE_IRCV3_DOMAIN, 0, "no handler for command %s",
-	            command);
+	            purple_ircv3_message_get_command(message));
 
 	return FALSE;
 }
@@ -296,6 +292,7 @@ gboolean
 purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer,
                           GError **error, gpointer data)
 {
+	PurpleIRCv3Message *message = NULL;
 	PurpleIRCv3MessageHandler handler = NULL;
 	GError *local_error = NULL;
 	GHashTable *tags = NULL;
@@ -309,7 +306,6 @@ purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer,
 	gchar *trailing = NULL;
 	gboolean matches = FALSE;
 	gboolean result = FALSE;
-	guint n_params = 0;
 
 	g_return_val_if_fail(PURPLE_IRCV3_IS_PARSER(parser), FALSE);
 	g_return_val_if_fail(buffer != NULL, FALSE);
@@ -346,6 +342,8 @@ purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer,
 	/* If we made it this far, we have our handler, so lets get the rest of the
 	 * parameters and call the handler.
 	 */
+	message = purple_ircv3_message_new(command);
+
 	tags_string = g_match_info_fetch_named(info, "tags");
 	tags = purple_ircv3_parser_parse_tags(parser, tags_string, &local_error);
 	g_free(tags_string);
@@ -353,32 +351,44 @@ purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer,
 		g_propagate_error(error, local_error);
 
 		g_free(command);
+		g_clear_object(&message);
 		g_hash_table_destroy(tags);
 		g_match_info_unref(info);
 
 		return FALSE;
 	}
+	if(tags != NULL) {
+		purple_ircv3_message_set_tags(message, tags);
+		g_hash_table_unref(tags);
+	}
 
 	source = g_match_info_fetch_named(info, "source");
+	if(!purple_strempty(source)) {
+		purple_ircv3_message_set_source(message, source);
+	}
+	g_free(source);
+
 	middle = g_match_info_fetch_named(info, "middle");
 	coda = g_match_info_fetch_named(info, "coda");
 	trailing = g_match_info_fetch_named(info, "trailing");
-
 	params = purple_ircv3_parser_build_params(parser, middle, coda, trailing,
-	                                          &n_params);
+	                                          NULL);
+	if(params != NULL) {
+		purple_ircv3_message_set_params(message, params);
+	}
 
-	/* Call the handler. */
-	result = handler(tags, source, command, n_params, params, error, data);
-
-	/* Cleanup everything. */
-	g_free(source);
 	g_free(command);
 	g_free(middle);
 	g_free(coda);
 	g_free(trailing);
 	g_strfreev(params);
-	g_hash_table_destroy(tags);
+
+	/* Call the handler. */
+	result = handler(message, error, data);
+
+	/* Cleanup the left overs. */
 	g_match_info_unref(info);
+	g_clear_object(&message);
 
 	return result;
 }

@@ -47,6 +47,7 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Capabilities, purple_ircv3_capabilities,
                      PURPLE_IRCV3, CAPABILITIES, GObject)
 
 #include "purpleircv3connection.h"
+#include "purpleircv3message.h"
 
 /**
  * purple_ircv3_capabilities_register: (skip)
@@ -62,7 +63,7 @@ G_GNUC_INTERNAL PurpleIRCv3Capabilities *purple_ircv3_capabilities_new(PurpleIRC
 
 G_GNUC_INTERNAL void purple_ircv3_capabilities_start(PurpleIRCv3Capabilities *capabilities);
 
-G_GNUC_INTERNAL gboolean purple_ircv3_capabilities_message_handler(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_capabilities_message_handler(PurpleIRCv3Message *message, GError **error, gpointer data);
 
 /**
  * purple_ircv3_capabilities_get_connection:

@@ -28,21 +28,22 @@
 #include <purple.h>
 
 #include "purpleircv3capabilities.h"
+#include "purpleircv3message.h"
 
 G_BEGIN_DECLS
 
 G_GNUC_INTERNAL void purple_ircv3_sasl_request(PurpleIRCv3Capabilities *capabilities);
 
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_logged_in(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_logged_out(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_nick_locked(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_success(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_failed(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_message_too_long(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_aborted(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_already_authed(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_mechanisms(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_sasl_authenticate(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_logged_in(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_logged_out(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_nick_locked(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_success(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_failed(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_message_too_long(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_aborted(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_already_authed(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_mechanisms(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_sasl_authenticate(PurpleIRCv3Message *message, GError **error, gpointer data);
 
 G_END_DECLS
 

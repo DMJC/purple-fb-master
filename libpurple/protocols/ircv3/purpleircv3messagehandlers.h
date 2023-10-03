@@ -27,39 +27,32 @@
 
 #include <purple.h>
 
+#include "purpleircv3message.h"
+
 G_BEGIN_DECLS
 
 /**
  * PurpleIRCv3MessageHandler:
- * @tags: (element-type utf8 utf8): A [struct@GLib.HashTable] of tags for this
- *        message.
- * @source: The source of the command.
- * @command: The command or numeric of the message.
- * @n_params: The number of parameters.
- * @params: (array length=n_params): The parameters of the message.
+ * @message: The [class@Message] to handle.
  * @error: (nullable): A return address for a [type@GLib.Error].
  * @data: The user data that was passed to [method@PurpleIRCv3.Parser.parse].
  *
- * Defines the type of a function that will be called to handle a message.
+ * Defines the type of a function that will be called to handle @message.
  *
  * Returns: %TRUE if the command was handled properly, otherwise %FALSE and
  *          @error may be set.
  *
  * Since: 3.0.0
  */
-typedef gboolean (*PurpleIRCv3MessageHandler)(GHashTable *tags,
-                                              const char *source,
-                                              const char *command,
-                                              guint n_params,
-                                              GStrv params,
+typedef gboolean (*PurpleIRCv3MessageHandler)(PurpleIRCv3Message *message,
                                               GError **error,
                                               gpointer data);
 
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_fallback(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status_ignore_param0(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_ping(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_privmsg(GHashTable *tags, const char *source, const char *command, guint n_params, GStrv params, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_fallback(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status_ignore_param0(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_ping(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *message, GError **error, gpointer data);
 
 G_END_DECLS
 
