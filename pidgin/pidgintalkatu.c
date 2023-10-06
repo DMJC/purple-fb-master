@@ -20,7 +20,7 @@
  *
  */
 
-#include <pidgin/pidgintalkatu.h>
+#include "pidgintalkatu.h"
 
 GtkWidget *
 pidgin_talkatu_editor_new_for_connection(PurpleConnection *pc) {

@@ -20,9 +20,9 @@
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <pidgin/pidginstatusprimitivechooser.h>
+#include "pidginstatusprimitivechooser.h"
 
-#include <pidgin/pidginiconname.h>
+#include "pidginiconname.h"
 
 struct _PidginStatusPrimitiveChooser {
 	AdwComboRow parent;
