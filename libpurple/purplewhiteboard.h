@@ -32,7 +32,7 @@ typedef struct _PurpleWhiteboard PurpleWhiteboard;
 
 #include "account.h"
 
-#include <libpurple/purplewhiteboardops.h>
+#include "purplewhiteboardops.h"
 
 /**
  * PurpleWhiteboard:

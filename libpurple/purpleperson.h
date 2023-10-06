@@ -26,15 +26,15 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/purpleavatar.h>
-#include <libpurple/purpletags.h>
+#include "purpleavatar.h"
+#include "purpletags.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_PERSON (purple_person_get_type())
 G_DECLARE_FINAL_TYPE(PurplePerson, purple_person, PURPLE, PERSON, GObject)
 
-#include <libpurple/purplecontactinfo.h>
+#include "purplecontactinfo.h"
 
 /**
  * PurplePerson:

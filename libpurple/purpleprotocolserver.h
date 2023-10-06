@@ -30,12 +30,12 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/account.h>
-#include <libpurple/buddy.h>
-#include <libpurple/connection.h>
-#include <libpurple/group.h>
-#include <libpurple/purplemessage.h>
-#include <libpurple/purpleprotocol.h>
+#include "account.h"
+#include "buddy.h"
+#include "connection.h"
+#include "group.h"
+#include "purplemessage.h"
+#include "purpleprotocol.h"
 
 #define PURPLE_TYPE_PROTOCOL_SERVER (purple_protocol_server_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolServer, purple_protocol_server, PURPLE,

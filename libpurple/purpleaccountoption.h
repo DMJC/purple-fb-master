@@ -29,7 +29,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/prefs.h>
+#include "prefs.h"
 
 #define PURPLE_TYPE_ACCOUNT_OPTION (purple_account_option_get_type())
 

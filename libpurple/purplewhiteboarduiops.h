@@ -33,7 +33,7 @@
 #define PURPLE_TYPE_WHITEBOARD_UI_OPS (purple_whiteboard_ui_ops_get_type())
 typedef struct _PurpleWhiteboardUiOps PurpleWhiteboardUiOps;
 
-#include <libpurple/purplewhiteboard.h>
+#include "purplewhiteboard.h"
 
 G_BEGIN_DECLS
 

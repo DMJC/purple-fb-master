@@ -30,9 +30,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/account.h>
-#include <libpurple/media.h>
-#include <libpurple/purpleprotocol.h>
+#include "account.h"
+#include "media.h"
+#include "purpleprotocol.h"
 
 #define PURPLE_TYPE_PROTOCOL_MEDIA (purple_protocol_media_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolMedia, purple_protocol_media, PURPLE,

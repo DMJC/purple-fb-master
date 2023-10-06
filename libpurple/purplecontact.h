@@ -28,7 +28,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include <libpurple/purplecontactinfo.h>
+#include "purplecontactinfo.h"
 
 G_BEGIN_DECLS
 
@@ -36,7 +36,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT,
                      PurpleContactInfo)
 
-#include <libpurple/account.h>
+#include "account.h"
 
 /**
  * PurpleContact:

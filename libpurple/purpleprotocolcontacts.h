@@ -30,7 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/purpleprotocol.h>
+#include "purpleprotocol.h"
 
 #define PURPLE_TYPE_PROTOCOL_CONTACTS (purple_protocol_contacts_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolContacts,

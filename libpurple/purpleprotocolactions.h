@@ -30,8 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/connection.h>
-#include <libpurple/purpleprotocol.h>
+#include "connection.h"
+#include "purpleprotocol.h"
 
 #define PURPLE_TYPE_PROTOCOL_ACTIONS (purple_protocol_actions_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolActions, purple_protocol_actions, PURPLE,

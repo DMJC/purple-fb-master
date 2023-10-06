@@ -28,7 +28,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include <libpurple/purpletags.h>
+#include "purpletags.h"
 
 G_BEGIN_DECLS
 

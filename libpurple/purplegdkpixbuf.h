@@ -31,7 +31,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include <libpurple/image.h>
+#include "image.h"
 
 G_BEGIN_DECLS
 

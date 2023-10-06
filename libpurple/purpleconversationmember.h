@@ -26,9 +26,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/purplecontactinfo.h>
-#include <libpurple/purpletags.h>
-#include <libpurple/purpletyping.h>
+#include "purplecontactinfo.h"
+#include "purpletags.h"
+#include "purpletyping.h"
 
 G_BEGIN_DECLS
 

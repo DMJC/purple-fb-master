@@ -30,8 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/account.h>
-#include <libpurple/purplewhiteboard.h>
+#include "account.h"
+#include "purplewhiteboard.h"
 
 #define PURPLE_TYPE_PROTOCOL_WHITEBOARD (purple_protocol_whiteboard_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolWhiteboard, purple_protocol_whiteboard, PURPLE,

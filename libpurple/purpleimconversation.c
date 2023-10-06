@@ -19,14 +19,14 @@
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <libpurple/purpleimconversation.h>
+#include "purpleimconversation.h"
 
-#include <libpurple/debug.h>
-#include <libpurple/conversations.h>
-#include <libpurple/purpleconversationmanager.h>
-#include <libpurple/purpleenums.h>
-#include <libpurple/purpleprivate.h>
-#include <libpurple/purpleprotocolclient.h>
+#include "debug.h"
+#include "conversations.h"
+#include "purpleconversationmanager.h"
+#include "purpleenums.h"
+#include "purpleprivate.h"
+#include "purpleprotocolclient.h"
 
 #include "server.h"
 

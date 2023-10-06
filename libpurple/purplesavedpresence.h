@@ -30,7 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/purplepresence.h>
+#include "purplepresence.h"
 
 G_BEGIN_DECLS
 

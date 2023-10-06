@@ -16,10 +16,10 @@
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <libpurple/purplepath.h>
+#include "purplepath.h"
 
-#include <libpurple/core.h>
-#include <libpurple/purpleui.h>
+#include "core.h"
+#include "purpleui.h"
 
 #ifdef _WIN32
 # include "win32/win32dep.h"

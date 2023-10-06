@@ -26,7 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/purplewhiteboard.h>
+#include "purplewhiteboard.h"
 
 G_BEGIN_DECLS
 

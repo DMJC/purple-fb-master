@@ -29,7 +29,7 @@
 
 #include <glib-object.h>
 
-#include <libpurple/purpleattachment.h>
+#include "purpleattachment.h"
 
 G_BEGIN_DECLS
 

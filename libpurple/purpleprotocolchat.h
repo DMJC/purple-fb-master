@@ -30,9 +30,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/connection.h>
-#include <libpurple/purplemessage.h>
-#include <libpurple/purpleprotocol.h>
+#include "connection.h"
+#include "purplemessage.h"
+#include "purpleprotocol.h"
 
 #define PURPLE_TYPE_PROTOCOL_CHAT (purple_protocol_chat_get_type())
 

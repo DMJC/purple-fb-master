@@ -30,9 +30,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/connection.h>
-#include <libpurple/purpleconversation.h>
-#include <libpurple/purpleprotocol.h>
+#include "connection.h"
+#include "purpleconversation.h"
+#include "purpleprotocol.h"
 
 #define PURPLE_TYPE_PROTOCOL_IM (purple_protocol_im_get_type())
 

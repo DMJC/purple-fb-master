@@ -30,9 +30,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/account.h>
-#include <libpurple/purplecontact.h>
-#include <libpurple/purpleprotocol.h>
+#include "account.h"
+#include "purplecontact.h"
+#include "purpleprotocol.h"
 
 #define PURPLE_TYPE_PROTOCOL_ROSTER (purple_protocol_roster_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolRoster, purple_protocol_roster, PURPLE,

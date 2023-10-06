@@ -26,9 +26,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/purpleavatar.h>
-#include <libpurple/purplepresence.h>
-#include <libpurple/purpletags.h>
+#include "purpleavatar.h"
+#include "purplepresence.h"
+#include "purpletags.h"
 
 G_BEGIN_DECLS
 
@@ -55,7 +55,7 @@ typedef enum {
 	PURPLE_CONTACT_INFO_PERMISSION_DENY,
 } PurpleContactInfoPermission;
 
-#include <libpurple/purpleperson.h>
+#include "purpleperson.h"
 
 /**
  * PurpleContactInfoClass:

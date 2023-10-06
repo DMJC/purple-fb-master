@@ -29,7 +29,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/purpleui.h>
+#include "purpleui.h"
 
 typedef struct PurpleCore PurpleCore;
 

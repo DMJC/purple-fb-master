@@ -30,9 +30,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libpurple/account.h>
-#include <libpurple/connection.h>
-#include <libpurple/purpleprotocol.h>
+#include "account.h"
+#include "connection.h"
+#include "purpleprotocol.h"
 
 #define PURPLE_TYPE_PROTOCOL_CLIENT (purple_protocol_client_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,

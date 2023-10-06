@@ -63,7 +63,7 @@ typedef enum /*< flags >*/
 G_DECLARE_FINAL_TYPE(PurpleChatUser, purple_chat_user, PURPLE, CHAT_USER,
                      GObject)
 
-#include <libpurple/purplechatconversation.h>
+#include "purplechatconversation.h"
 
 G_BEGIN_DECLS
 
