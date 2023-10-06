@@ -22,7 +22,7 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <pidginprivate.h>
+#include "pidginprivate.h"
 
 /******************************************************************************
  * Command Implementations
