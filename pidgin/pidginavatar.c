@@ -147,43 +147,46 @@ pidgin_avatar_update(PidginAvatar *avatar) {
  * Actions
  *****************************************************************************/
 static void
-pidgin_avatar_save_response_cb(GtkNativeDialog *native, gint response,
-                               gpointer data)
+pidgin_avatar_save_dialog_cb(GObject *source, GAsyncResult *result,
+                             gpointer data)
 {
-	PidginAvatar *avatar = PIDGIN_AVATAR(data);
+	PidginAvatar *avatar = data;
 	PurpleBuddy *buddy = NULL;
 	PurpleBuddyIcon *icon = NULL;
+	GtkFileDialog *dialog = GTK_FILE_DIALOG(source);
+	GError *error = NULL;
+	GFile *file = NULL;
 
-	if(response != GTK_RESPONSE_ACCEPT) {
-		gtk_native_dialog_destroy(native);
+	file = gtk_file_dialog_save_finish(dialog, result, &error);
+	if(error != NULL) {
+		g_warning("failed to select custom avatar destination: %s",
+		          error->message);
+
+		g_clear_error(&error);
+		g_clear_object(&file);
 
 		return;
 	}
 
 	buddy = pidgin_avatar_get_effective_buddy(avatar);
 	if(!PURPLE_IS_BUDDY(buddy)) {
-		gtk_native_dialog_destroy(native);
+		g_clear_object(&file);
 
 		return;
 	}
 
 	icon = purple_buddy_get_icon(buddy);
-
 	if(icon != NULL) {
-		GtkFileChooser *chooser = GTK_FILE_CHOOSER(native);
-		GFile *file = NULL;
-		gchar *filename = NULL;
+		char *filename = NULL;
 
-		file = gtk_file_chooser_get_file(chooser);
 		filename = g_file_get_path(file);
 
 		purple_buddy_icon_save_to_filename(icon, filename, NULL);
 
 		g_free(filename);
-		g_object_unref(file);
 	}
 
-	gtk_native_dialog_destroy(native);
+	g_clear_object(&file);
 }
 
 static void
@@ -192,9 +195,9 @@ pidgin_avatar_save_cb(G_GNUC_UNUSED GSimpleAction *action,
 {
 	PidginAvatar *avatar = PIDGIN_AVATAR(data);
 	PurpleBuddy *buddy = NULL;
+	PurpleBuddyIcon *icon = NULL;
 	PurpleAccount *account = NULL;
-	GtkFileChooserNative *native = NULL;
-	GtkFileChooser *chooser = NULL;
+	GtkFileDialog *dialog = NULL;
 	GtkWindow *window = NULL;
 	const gchar *ext = NULL, *name = NULL;
 	gchar *filename = NULL;
@@ -204,53 +207,62 @@ pidgin_avatar_save_cb(G_GNUC_UNUSED GSimpleAction *action,
 		g_return_if_reached();
 	}
 
-	ext = purple_buddy_icon_get_extension(purple_buddy_get_icon(buddy));
+	icon = purple_buddy_get_icon(buddy);
+	if(icon != NULL) {
+		ext = purple_buddy_icon_get_extension(icon);
+	}
 
 	account = purple_buddy_get_account(buddy);
 	name = purple_buddy_get_name(buddy);
-	filename = g_strdup_printf("%s.%s", purple_normalize(account, name), ext);
+	if(ext != NULL) {
+		filename = g_strdup_printf("%s.%s", purple_normalize(account, name),
+		                           ext);
+	} else {
+		filename = g_strdup(purple_normalize(account, name));
+	}
 
 	window = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(avatar)));
-	native = gtk_file_chooser_native_new(_("Save Avatar"),
-	                                     window,
-	                                     GTK_FILE_CHOOSER_ACTION_SAVE,
-	                                     _("_Save"),
-	                                     _("_Cancel"));
-	g_signal_connect(G_OBJECT(native), "response",
-	                 G_CALLBACK(pidgin_avatar_save_response_cb), avatar);
 
-	chooser = GTK_FILE_CHOOSER(native);
+	dialog = gtk_file_dialog_new();
+	gtk_file_dialog_set_title(dialog, _("Save Avatar"));
+	gtk_file_dialog_set_modal(dialog, TRUE);
+	gtk_file_dialog_set_initial_name(dialog, filename);
 
-	gtk_file_chooser_set_current_name(chooser, filename);
 	g_free(filename);
 
-	gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
+	gtk_file_dialog_save(dialog, window, NULL, pidgin_avatar_save_dialog_cb,
+	                     avatar);
+	g_clear_object(&dialog);
 }
 
 static void
-pidgin_avatar_set_custom_response_cb(GtkNativeDialog *native, gint response,
-                                     gpointer data)
+pidgin_avatar_set_custom_dialog_cb(GObject *source, GAsyncResult *result,
+                                   gpointer data)
 {
-	PidginAvatar *avatar = PIDGIN_AVATAR(data);
+	PidginAvatar *avatar = data;
 	PurpleBuddy *buddy = NULL;
-	GtkFileChooser *chooser = GTK_FILE_CHOOSER(native);
+	GtkFileDialog *dialog = GTK_FILE_DIALOG(source);
+	GError *error = NULL;
 	GFile *file = NULL;
 	gchar *filename = NULL;
 
-	if(response != GTK_RESPONSE_ACCEPT) {
-		gtk_native_dialog_destroy(native);
+	file = gtk_file_dialog_open_finish(dialog, result, &error);
+	if(error != NULL) {
+		g_message("failed to select custom avatar: %s", error->message);
+
+		g_clear_error(&error);
+		g_clear_object(&file);
 
 		return;
 	}
 
 	buddy = pidgin_avatar_get_effective_buddy(avatar);
 	if(!PURPLE_IS_BUDDY(buddy)) {
-		gtk_native_dialog_destroy(native);
+		g_clear_object(&file);
 
 		return;
 	}
 
-	file = gtk_file_chooser_get_file(chooser);
 	filename = g_file_get_path(file);
 	if(filename != NULL) {
 		PurpleMetaContact *contact = purple_buddy_get_contact(buddy);
@@ -261,10 +273,8 @@ pidgin_avatar_set_custom_response_cb(GtkNativeDialog *native, gint response,
 		pidgin_avatar_update(avatar);
 	}
 
-	g_free(filename);
-	g_object_unref(file);
-
-	gtk_native_dialog_destroy(native);
+	g_clear_pointer(&filename, g_free);
+	g_clear_object(&file);
 }
 
 static void
@@ -272,20 +282,18 @@ pidgin_avatar_set_custom_cb(G_GNUC_UNUSED GSimpleAction *action,
                             G_GNUC_UNUSED GVariant *parameter, gpointer data)
 {
 	PidginAvatar *avatar = PIDGIN_AVATAR(data);
-	GtkFileChooserNative *native = NULL;
+	GtkFileDialog *dialog = NULL;
 	GtkWindow *window = NULL;
 
 	window = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(avatar)));
-	native = gtk_file_chooser_native_new(_("Set Custom Avatar"),
-	                                     window,
-	                                     GTK_FILE_CHOOSER_ACTION_OPEN,
-	                                     _("_Set Custom"),
-	                                     _("_Cancel"));
 
-	g_signal_connect(G_OBJECT(native), "response",
-	                 G_CALLBACK(pidgin_avatar_set_custom_response_cb), avatar);
+	dialog = gtk_file_dialog_new();
+	gtk_file_dialog_set_title(dialog, _("Set Custom Avatar"));
+	gtk_file_dialog_set_accept_label(dialog, _("Set Custom"));
+	gtk_file_dialog_set_modal(dialog, TRUE);
 
-	gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
+	gtk_file_dialog_open(dialog, window, NULL,
+	                     pidgin_avatar_set_custom_dialog_cb, avatar);
 }
 
 static void
