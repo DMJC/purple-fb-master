@@ -1,5 +1,6 @@
 TESTS = [
 	'parser',
+	'source',
 ]
 
 foreach prog : TESTS

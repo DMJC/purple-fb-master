@@ -8,6 +8,7 @@ IRCV3_SOURCES = [
 	'purpleircv3protocol.c',
 	'purpleircv3protocolconversation.c',
 	'purpleircv3sasl.c',
+	'purpleircv3source.c',
 ]
 
 IRCV3_HEADERS = [
@@ -20,6 +21,7 @@ IRCV3_HEADERS = [
 	'purpleircv3protocol.h',
 	'purpleircv3protocolconversation.h',
 	'purpleircv3sasl.h',
+	'purpleircv3source.h',
 ]
 
 if not DYNAMIC_IRCV3
