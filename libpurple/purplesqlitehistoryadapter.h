@@ -26,8 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <purplehistoryadapter.h>
-#include <purplemessage.h>
+#include "purplehistoryadapter.h"
+#include "purplemessage.h"
 
 G_BEGIN_DECLS
 

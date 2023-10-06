@@ -32,10 +32,10 @@
 #define PURPLE_TYPE_CONVERSATION_UI_OPS (purple_conversation_ui_ops_get_type())
 typedef struct _PurpleConversationUiOps PurpleConversationUiOps;
 
-#include <purpleconversation.h>
-#include <purplechatconversation.h>
-#include <purpleimconversation.h>
-#include <purplemessage.h>
+#include "purplechatconversation.h"
+#include "purpleconversation.h"
+#include "purpleimconversation.h"
+#include "purplemessage.h"
 
 /**
  * PurpleConversationUiOps:

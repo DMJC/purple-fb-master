@@ -26,7 +26,7 @@
 #ifndef PURPLE_CONVERSATIONS_H
 #define PURPLE_CONVERSATIONS_H
 
-#include <purpleconversation.h>
+#include "purpleconversation.h"
 
 G_BEGIN_DECLS
 

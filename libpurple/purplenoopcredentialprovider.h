@@ -26,7 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <purplecredentialprovider.h>
+#include "purplecredentialprovider.h"
 
 G_BEGIN_DECLS
 

@@ -16,11 +16,10 @@
  * along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <purpleconversationmanager.h>
-
-#include <purplechatconversation.h>
-#include <purpleimconversation.h>
-#include <purpleprivate.h>
+#include "purplechatconversation.h"
+#include "purpleconversationmanager.h"
+#include "purpleimconversation.h"
+#include "purpleprivate.h"
 
 enum {
 	SIG_REGISTERED,

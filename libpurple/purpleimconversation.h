@@ -56,7 +56,7 @@ typedef struct _PurpleIMConversation           PurpleIMConversation;
 typedef struct _PurpleIMConversationClass      PurpleIMConversationClass;
 
 #include "account.h"
-#include <purpleconversation.h>
+#include "purpleconversation.h"
 
 /**
  * PurpleIMConversation:

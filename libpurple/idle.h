@@ -29,7 +29,7 @@
 #include <time.h>
 #include <glib-object.h>
 
-#include <purpleidleui.h>
+#include "purpleidleui.h"
 
 G_BEGIN_DECLS
 

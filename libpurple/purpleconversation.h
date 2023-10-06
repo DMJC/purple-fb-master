@@ -30,9 +30,9 @@
 G_DECLARE_DERIVABLE_TYPE(PurpleConversation, purple_conversation, PURPLE,
                          CONVERSATION, GObject)
 
-#include <purplecontactinfo.h>
-#include <purpleconversationmember.h>
-#include <purplemessage.h>
+#include "purplecontactinfo.h"
+#include "purpleconversationmember.h"
+#include "purplemessage.h"
 
 /**
  * PurpleConversationUpdateType:
@@ -143,7 +143,7 @@ struct _PurpleConversationClass {
 	gpointer reserved[4];
 };
 
-#include <purpleconversationuiops.h>
+#include "purpleconversationuiops.h"
 #include "account.h"
 #include "buddyicon.h"
 

@@ -23,7 +23,7 @@
 #ifndef PURPLE_CMDS_H
 #define PURPLE_CMDS_H
 
-#include <purpleconversation.h>
+#include "purpleconversation.h"
 
 /******************************************************************************
  * Structures

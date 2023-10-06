@@ -27,7 +27,7 @@
 #include <glib-object.h>
 
 #include "account.h"
-#include <purplenotification.h>
+#include "purplenotification.h"
 
 G_BEGIN_DECLS
 

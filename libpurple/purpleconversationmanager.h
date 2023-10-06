@@ -25,7 +25,7 @@
 
 #include <glib.h>
 
-#include <purpleconversation.h>
+#include "purpleconversation.h"
 
 G_BEGIN_DECLS
 
