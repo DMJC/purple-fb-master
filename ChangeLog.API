@@ -366,7 +366,12 @@ version 3.0.0 (??/??/????):
 		* PurpleAccountPrefsUiOps
 		* PurpleAccountPrivacyType
 		* PurpleAccountRequestAuthorizationCb
+		* PurpleAccountRequestResponse
 		* PurpleAccountRequestType
+		* PURPLE_ACCOUNT_RESPONSE_ACCEPT
+		* PURPLE_ACCOUNT_RESPONSE_DENY
+		* PURPLE_ACCOUNT_RESPONSE_IGNORE
+		* PURPLE_ACCOUNT_RESPONSE_PASS
 		* PurpleAccountUiOps
 		* purple_account_add_buddies_with_invite
 		* purple_account_add_buddy_with_invite

@@ -1,4 +1,6 @@
-/* purple
+/*
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Purple is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -15,8 +17,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #if !defined(PURPLE_GLOBAL_HEADER_INSIDE) && !defined(PURPLE_COMPILATION)
@@ -29,9 +30,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#define PURPLE_TYPE_ACCOUNT             (purple_account_get_type())
+#define PURPLE_TYPE_ACCOUNT (purple_account_get_type())
 
-typedef struct _PurpleAccount       PurpleAccount;
+typedef struct _PurpleAccount PurpleAccount;
 
 #include "buddy.h"
 #include "connection.h"
@@ -41,31 +42,8 @@ typedef struct _PurpleAccount       PurpleAccount;
 #include "purpleprotocol.h"
 #include "purpleproxyinfo.h"
 #include "status.h"
-#include "xmlnode.h"
-
-/**
- * PurpleAccountRequestResponse:
- * @PURPLE_ACCOUNT_RESPONSE_IGNORE: Silently ignore the request.
- * @PURPLE_ACCOUNT_RESPONSE_DENY: Block the request potentially informing the
- *                                sender based on the protocol.
- * @PURPLE_ACCOUNT_RESPONSE_PASS: Prompt the user with the request.
- * @PURPLE_ACCOUNT_RESPONSE_ACCEPT: Grant the request.
- *
- * Account request response types
- */
-typedef enum
-{
-	PURPLE_ACCOUNT_RESPONSE_IGNORE = -2,
-	PURPLE_ACCOUNT_RESPONSE_DENY = -1,
-	PURPLE_ACCOUNT_RESPONSE_PASS = 0,
-	PURPLE_ACCOUNT_RESPONSE_ACCEPT = 1
-} PurpleAccountRequestResponse;
 
 G_BEGIN_DECLS
-
-/**************************************************************************/
-/* Account API                                                            */
-/**************************************************************************/
 
 /**
  * PurpleAccount:
@@ -75,17 +53,12 @@ G_BEGIN_DECLS
  * or wizard.
  */
 
-/**
- * purple_account_get_type:
- *
- * Returns: The #GType for the Account object.
- */
 G_DECLARE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE, ACCOUNT,
                      PurpleContactInfo)
 
 /**
  * purple_account_new:
- * @username:    The username.
+ * @username: The username.
  * @protocol_id: The protocol ID.
  *
  * Creates a new account.
@@ -124,7 +97,7 @@ gboolean purple_account_is_disconnecting(PurpleAccount *account);
 
 /**
  * purple_account_request_close_with_account:
- * @account:	   The account for which requests should be closed
+ * @account: The account for which requests should be closed
  *
  * Close account requests registered for the given PurpleAccount
  */
@@ -132,7 +105,7 @@ void purple_account_request_close_with_account(PurpleAccount *account);
 
 /**
  * purple_account_request_close:
- * @ui_handle:	   The ui specific handle for which requests should be closed
+ * @ui_handle: The ui specific handle for which requests should be closed
  *
  * Close the account request for the given ui handle
  */
@@ -140,16 +113,15 @@ void purple_account_request_close(void *ui_handle);
 
 /**
  * purple_account_request_password:
- * @account:     The account to request the password for.
- * @ok_cb:       (scope call): The callback for the OK button.
- * @cancel_cb:   (scope call): The callback for the cancel button.
- * @user_data:   User data to be passed into callbacks.
+ * @account: The account to request the password for.
+ * @ok_cb: (scope call): The callback for the OK button.
+ * @cancel_cb: (scope call): The callback for the cancel button.
+ * @user_data: User data to be passed into callbacks.
  *
  * Requests a password from the user for the account. Does not set the
  * account password on success; do that in ok_cb if desired.
  */
-void purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
-				     GCallback cancel_cb, void *user_data);
+void purple_account_request_password(PurpleAccount *account, GCallback ok_cb, GCallback cancel_cb, void *user_data);
 
 /**
  * purple_account_request_change_password:
@@ -170,7 +142,7 @@ void purple_account_request_change_user_info(PurpleAccount *account);
 
 /**
  * purple_account_set_user_info:
- * @account:   The account.
+ * @account: The account.
  * @user_info: The user information.
  *
  * Sets the account's user information
@@ -180,7 +152,7 @@ void purple_account_set_user_info(PurpleAccount *account, const char *user_info)
 /**
  * purple_account_set_buddy_icon_path:
  * @account: The account.
- * @path:	  The buddy icon non-cached path.
+ * @path: The buddy icon non-cached path.
  *
  * Sets the account's buddy icon path.
  */
@@ -188,18 +160,17 @@ void purple_account_set_buddy_icon_path(PurpleAccount *account, const char *path
 
 /**
  * purple_account_set_protocol_id:
- * @account:     The account.
+ * @account: The account.
  * @protocol_id: The protocol ID.
  *
  * Sets the account's protocol ID.
  */
-void purple_account_set_protocol_id(PurpleAccount *account,
-								  const char *protocol_id);
+void purple_account_set_protocol_id(PurpleAccount *account, const char *protocol_id);
 
 /**
  * purple_account_set_connection:
  * @account: The account.
- * @gc:      The connection.
+ * @gc: The connection.
  *
  * Sets the account's connection.
  */
@@ -208,7 +179,7 @@ void purple_account_set_connection(PurpleAccount *account, PurpleConnection *gc)
 /**
  * purple_account_set_remember_password:
  * @account: The account.
- * @value:   %TRUE if it should remember the password.
+ * @value: %TRUE if it should remember the password.
  *
  * Sets whether or not this account should save its password.
  */
@@ -217,7 +188,7 @@ void purple_account_set_remember_password(PurpleAccount *account, gboolean value
 /**
  * purple_account_set_enabled:
  * @account: The account.
- * @value:   %TRUE if it is enabled.
+ * @value: %TRUE if it is enabled.
  *
  * Sets whether or not this account is enabled.
  */
@@ -226,7 +197,7 @@ void purple_account_set_enabled(PurpleAccount *account, gboolean value);
 /**
  * purple_account_set_proxy_info:
  * @account: The account.
- * @info:    The proxy information.
+ * @info: The proxy information.
  *
  * Sets the account's proxy information.
  */
@@ -234,7 +205,7 @@ void purple_account_set_proxy_info(PurpleAccount *account, PurpleProxyInfo *info
 
 /**
  * purple_account_set_status_types:
- * @account:      The account.
+ * @account: The account.
  * @status_types: (element-type PurpleStatusType): The list of status types.
  *
  * Sets the account's status types.
@@ -263,8 +234,7 @@ void purple_account_set_status_types(PurpleAccount *account, GList *status_types
  *
  * Variadic version of [method@Purple.Account.set_status_attrs].
  */
-void purple_account_set_status(PurpleAccount *account, const char *status_id,
-	gboolean active, ...) G_GNUC_NULL_TERMINATED;
+void purple_account_set_status(PurpleAccount *account, const char *status_id, gboolean active, ...) G_GNUC_NULL_TERMINATED;
 
 
 /**
@@ -289,14 +259,13 @@ void purple_account_set_status(PurpleAccount *account, const char *status_id,
  *
  * Since: 3.0.0
  */
-void purple_account_set_status_attrs(PurpleAccount *account,
-	const char *status_id, gboolean active, GHashTable *attrs);
+void purple_account_set_status_attrs(PurpleAccount *account, const char *status_id, gboolean active, GHashTable *attrs);
 
 /**
  * purple_account_set_int:
  * @account: The account.
- * @name:    The name of the setting.
- * @value:   The setting's value.
+ * @name: The name of the setting.
+ * @value: The setting's value.
  *
  * Sets a protocol-specific integer setting for an account.
  */
@@ -305,24 +274,22 @@ void purple_account_set_int(PurpleAccount *account, const char *name, int value)
 /**
  * purple_account_set_string:
  * @account: The account.
- * @name:    The name of the setting.
- * @value:   The setting's value.
+ * @name: The name of the setting.
+ * @value: The setting's value.
  *
  * Sets a protocol-specific string setting for an account.
  */
-void purple_account_set_string(PurpleAccount *account, const char *name,
-							 const char *value);
+void purple_account_set_string(PurpleAccount *account, const char *name, const char *value);
 
 /**
  * purple_account_set_bool:
  * @account: The account.
- * @name:    The name of the setting.
- * @value:   The setting's value.
+ * @name: The name of the setting.
+ * @value: The setting's value.
  *
  * Sets a protocol-specific boolean setting for an account.
  */
-void purple_account_set_bool(PurpleAccount *account, const char *name,
-						   gboolean value);
+void purple_account_set_bool(PurpleAccount *account, const char *name, gboolean value);
 
 /**
  * purple_account_is_connected:
@@ -449,7 +416,7 @@ PurpleProxyInfo *purple_account_get_proxy_info(PurpleAccount *account);
 
 /**
  * purple_account_get_active_status:
- * @account:   The account.
+ * @account: The account.
  *
  * Returns the active status for this account.  This looks through
  * the PurplePresence associated with this account and returns the
@@ -462,31 +429,29 @@ PurpleStatus *purple_account_get_active_status(PurpleAccount *account);
 
 /**
  * purple_account_get_status:
- * @account:   The account.
+ * @account: The account.
  * @status_id: The status ID.
  *
  * Returns the account status with the specified ID.
  *
  * Returns: (transfer none): The status, or %NULL if it was never registered.
  */
-PurpleStatus *purple_account_get_status(PurpleAccount *account,
-									const char *status_id);
+PurpleStatus *purple_account_get_status(PurpleAccount *account, const char *status_id);
 
 /**
  * purple_account_get_status_type:
  * @account: The account.
- * @id:      The ID of the status type to find.
+ * @id: The ID of the status type to find.
  *
  * Returns the account status type with the specified ID.
  *
  * Returns: The status type if found, or %NULL.
  */
-PurpleStatusType *purple_account_get_status_type(PurpleAccount *account,
-											 const char *id);
+PurpleStatusType *purple_account_get_status_type(PurpleAccount *account, const char *id);
 
 /**
  * purple_account_get_status_type_with_primitive:
- * @account:   The account.
+ * @account: The account.
  * @primitive: The type of the status type to find.
  *
  * Returns the account status type with the specified primitive.
@@ -496,9 +461,7 @@ PurpleStatusType *purple_account_get_status_type(PurpleAccount *account,
  *
  * Returns: The status if found, or %NULL.
  */
-PurpleStatusType *purple_account_get_status_type_with_primitive(
-							PurpleAccount *account,
-							PurpleStatusPrimitive primitive);
+PurpleStatusType *purple_account_get_status_type_with_primitive(PurpleAccount *account, PurpleStatusPrimitive primitive);
 
 /**
  * purple_account_get_presence:
@@ -512,15 +475,14 @@ PurplePresence *purple_account_get_presence(PurpleAccount *account);
 
 /**
  * purple_account_is_status_active:
- * @account:   The account.
+ * @account: The account.
  * @status_id: The status ID.
  *
  * Returns whether or not an account status is active.
  *
  * Returns: TRUE if active, or FALSE if not.
  */
-gboolean purple_account_is_status_active(PurpleAccount *account,
-									   const char *status_id);
+gboolean purple_account_is_status_active(PurpleAccount *account, const char *status_id);
 
 /**
  * purple_account_get_status_types:
@@ -534,43 +496,39 @@ GList *purple_account_get_status_types(PurpleAccount *account);
 
 /**
  * purple_account_get_int:
- * @account:       The account.
- * @name:          The name of the setting.
+ * @account: The account.
+ * @name: The name of the setting.
  * @default_value: The default value.
  *
  * Returns a protocol-specific integer setting for an account.
  *
  * Returns: The value.
  */
-int purple_account_get_int(PurpleAccount *account, const char *name,
-						 int default_value);
+int purple_account_get_int(PurpleAccount *account, const char *name, int default_value);
 
 /**
  * purple_account_get_string:
- * @account:       The account.
- * @name:          The name of the setting.
+ * @account: The account.
+ * @name: The name of the setting.
  * @default_value: The default value.
  *
  * Returns a protocol-specific string setting for an account.
  *
  * Returns: The value.
  */
-const char *purple_account_get_string(PurpleAccount *account,
-									const char *name,
-									const char *default_value);
+const char *purple_account_get_string(PurpleAccount *account, const char *name, const char *default_value);
 
 /**
  * purple_account_get_bool:
- * @account:       The account.
- * @name:          The name of the setting.
+ * @account: The account.
+ * @name: The name of the setting.
  * @default_value: The default value.
  *
  * Returns a protocol-specific boolean setting for an account.
  *
  * Returns: The value.
  */
-gboolean purple_account_get_bool(PurpleAccount *account, const char *name,
-							   gboolean default_value);
+gboolean purple_account_get_bool(PurpleAccount *account, const char *name, gboolean default_value);
 
 /**
  * purple_account_add_buddy:
@@ -600,8 +558,7 @@ void purple_account_add_buddies(PurpleAccount *account, GList *buddies, const ch
  *
  * Removes a buddy from the server-side buddy list.
  */
-void purple_account_remove_buddy(PurpleAccount *account, PurpleBuddy *buddy,
-								PurpleGroup *group);
+void purple_account_remove_buddy(PurpleAccount *account, PurpleBuddy *buddy, PurpleGroup *group);
 
 /**
  * purple_account_remove_buddies:
@@ -615,8 +572,7 @@ void purple_account_remove_buddy(PurpleAccount *account, PurpleBuddy *buddy,
  * Note: The lists buddies and groups are parallel lists.  Be sure that node n of
  *       groups matches node n of buddies.
  */
-void purple_account_remove_buddies(PurpleAccount *account, GList *buddies,
-									GList *groups);
+void purple_account_remove_buddies(PurpleAccount *account, GList *buddies, GList *groups);
 
 /**
  * purple_account_remove_group:
@@ -635,13 +591,12 @@ void purple_account_remove_group(PurpleAccount *account, PurpleGroup *group);
  *
  * Changes the password on the specified account.
  */
-void purple_account_change_password(PurpleAccount *account, const char *orig_pw,
-									const char *new_pw);
+void purple_account_change_password(PurpleAccount *account, const char *orig_pw, const char *new_pw);
 
 /**
  * purple_account_supports_offline_message:
  * @account: The account
- * @buddy:   The buddy
+ * @buddy: The buddy
  *
  * Whether the account supports sending offline messages to buddy.
  */
@@ -736,3 +691,4 @@ void purple_account_thaw_notify_settings(PurpleAccount *account);
 G_END_DECLS
 
 #endif /* PURPLE_ACCOUNT_H */
+
