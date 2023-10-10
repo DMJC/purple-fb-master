@@ -39,7 +39,7 @@
  */
 typedef struct _PurpleRequestPage PurpleRequestPage;
 
-#include "account.h"
+#include "purpleaccount.h"
 #include "purplerequestgroup.h"
 #include "purplerequestfield.h"
 

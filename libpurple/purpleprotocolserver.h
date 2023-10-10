@@ -30,10 +30,10 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "account.h"
 #include "buddy.h"
 #include "connection.h"
 #include "group.h"
+#include "purpleaccount.h"
 #include "purplemessage.h"
 #include "purpleprotocol.h"
 

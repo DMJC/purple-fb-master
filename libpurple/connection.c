@@ -21,13 +21,13 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "account.h"
 #include "buddylist.h"
 #include "connection.h"
 #include "debug.h"
 #include "notify.h"
 #include "prefs.h"
 #include "proxy.h"
+#include "purpleaccount.h"
 #include "purpleenums.h"
 #include "purpleprivate.h"
 #include "purpleprotocolserver.h"

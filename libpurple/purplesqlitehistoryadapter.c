@@ -22,7 +22,7 @@
 
 #include "purplesqlitehistoryadapter.h"
 
-#include "account.h"
+#include "purpleaccount.h"
 #include "purpleprivate.h"
 #include "purplesqlite3.h"
 

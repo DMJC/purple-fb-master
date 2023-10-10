@@ -26,7 +26,7 @@
 #ifndef PURPLE_ACCOUNT_PRESENCE_H
 #define PURPLE_ACCOUNT_PRESENCE_H
 
-#include "account.h"
+#include "purpleaccount.h"
 #include "purplepresence.h"
 
 G_BEGIN_DECLS

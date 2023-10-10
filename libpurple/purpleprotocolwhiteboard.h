@@ -30,7 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "account.h"
+#include "purpleaccount.h"
 #include "purplewhiteboard.h"
 
 #define PURPLE_TYPE_PROTOCOL_WHITEBOARD (purple_protocol_whiteboard_get_type())

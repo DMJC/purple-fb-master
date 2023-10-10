@@ -43,10 +43,10 @@
 G_DECLARE_DERIVABLE_TYPE(PurpleProtocol, purple_protocol, PURPLE, PROTOCOL,
                          GObject)
 
-#include "account.h"
 #include "buddyicon.h"
 #include "connection.h"
 #include "image.h"
+#include "purpleaccount.h"
 #include "purpleaccountoption.h"
 #include "purpleaccountusersplit.h"
 #include "purplemessage.h"

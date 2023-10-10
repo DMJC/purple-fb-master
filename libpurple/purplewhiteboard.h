@@ -30,8 +30,7 @@
 #define PURPLE_TYPE_WHITEBOARD (purple_whiteboard_get_type())
 typedef struct _PurpleWhiteboard PurpleWhiteboard;
 
-#include "account.h"
-
+#include "purpleaccount.h"
 #include "purplewhiteboardops.h"
 
 /**

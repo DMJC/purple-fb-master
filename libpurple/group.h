@@ -38,9 +38,9 @@
 typedef struct _PurpleGroup PurpleGroup;
 typedef struct _PurpleGroupClass PurpleGroupClass;
 
-#include "account.h"
 #include "blistnode.h"
 #include "buddyicon.h"
+#include "purpleaccount.h"
 #include "status.h"
 
 /**************************************************************************/

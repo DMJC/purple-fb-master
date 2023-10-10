@@ -21,7 +21,6 @@ finch/plugins/gntgf/gntgf.c
 finch/plugins/gnttinyurl/gnttinyurl.c
 finch/plugins/grouping/grouping.c
 finch/plugins/lastlog/lastlog.c
-libpurple/account.c
 libpurple/accounts.c
 libpurple/action.c
 libpurple/blistnode.c
@@ -141,6 +140,7 @@ libpurple/protocols/jabber/usernick.c
 libpurple/protocols/jabber/xdata.c
 libpurple/protocols/jabber/xmpp.c
 libpurple/proxy.c
+libpurple/purpleaccount.c
 libpurple/purpleaccountmanager.c
 libpurple/purpleaccountoption.c
 libpurple/purpleaccountpresence.c

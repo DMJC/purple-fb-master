@@ -29,6 +29,7 @@
 /* I can't believe I let ChipX86 inspire me to write good code. -Sean */
 
 #include "buddy.h"
+#include "purpleaccount.h"
 
 #define PURPLE_TYPE_BUDDY_LIST (purple_buddy_list_get_type())
 typedef struct _PurpleBuddyList PurpleBuddyList;

@@ -22,7 +22,8 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "account.h"
+#include "purpleaccount.h"
+
 #include "accounts.h"
 #include "core.h"
 #include "debug.h"

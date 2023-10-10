@@ -36,13 +36,13 @@
 typedef struct _PurpleBuddy PurpleBuddy;
 typedef struct _PurpleBuddyClass PurpleBuddyClass;
 
-#include "account.h"
 #include "blistnode.h"
 #include "buddyicon.h"
 #include "chat.h"
 #include "contact.h"
 #include "group.h"
 #include "media.h"
+#include "purpleaccount.h"
 #include "purplepresence.h"
 #include "status.h"
 

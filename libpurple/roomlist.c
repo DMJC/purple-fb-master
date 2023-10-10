@@ -19,9 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
  */
 
-#include "account.h"
 #include "connection.h"
 #include "debug.h"
+#include "purpleaccount.h"
 #include "roomlist.h"
 #include "server.h"
 

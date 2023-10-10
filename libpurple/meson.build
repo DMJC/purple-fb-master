@@ -1,5 +1,4 @@
 purple_coresources = [
-	'account.c',
 	'accounts.c',
 	'action.c',
 	'blistnode.c',
@@ -32,6 +31,7 @@ purple_coresources = [
 	'prefs.c',
 	'proxy.c',
 	'protocols.c',
+	'purpleaccount.c',
 	'purpleaccountmanager.c',
 	'purpleaccountoption.c',
 	'purpleaccountpresence.c',
@@ -125,7 +125,6 @@ purple_coresources = [
 ]
 
 purple_coreheaders = [
-	'account.h',
 	'accounts.h',
 	'action.h',
 	'blistnode.h',
@@ -155,6 +154,7 @@ purple_coreheaders = [
 	'prefs.h',
 	'proxy.h',
 	'protocols.h',
+	'purpleaccount.h',
 	'purpleaccountmanager.h',
 	'purpleaccountoption.h',
 	'purpleaccountpresence.h',
@@ -291,13 +291,13 @@ purple_mediaheaders = [
 ]
 
 purple_enumheaders = [
-	'account.h',
 	'buddyicon.h',
 	'connection.h',
 	'debug.h',
 	'eventloop.h',
 	'notify.h',
 	'plugins.h',
+	'purpleaccount.h',
 	'purplechatuser.h',
 	'purpleconnectionerrorinfo.h',
 	'purplecontactinfo.h',

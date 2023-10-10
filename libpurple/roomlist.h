@@ -53,8 +53,9 @@ typedef enum
 
 } PurpleRoomlistFieldType;
 
-#include "account.h"
 #include <glib.h>
+
+#include "purpleaccount.h"
 #include "purpleroomlistroom.h"
 
 /**************************************************************************/

@@ -45,11 +45,11 @@ typedef struct _PurpleBuddyIcon PurpleBuddyIcon;
 
 typedef struct _PurpleBuddyIconSpec PurpleBuddyIconSpec;
 
-#include "account.h"
 #include "blistnode.h"
 #include "buddylist.h"
 #include "image.h"
 #include "protocols.h"
+#include "purpleaccount.h"
 #include "util.h"
 
 /**

@@ -36,7 +36,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT,
                      PurpleContactInfo)
 
-#include "account.h"
+#include "purpleaccount.h"
 
 /**
  * PurpleContact:

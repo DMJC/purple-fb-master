@@ -26,7 +26,7 @@
 #ifndef PURPLE_ACCOUNTS_H
 #define PURPLE_ACCOUNTS_H
 
-#include "account.h"
+#include "purpleaccount.h"
 #include "status.h"
 
 G_BEGIN_DECLS

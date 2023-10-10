@@ -38,6 +38,7 @@ typedef struct _PurpleMetaContactClass PurpleMetaContactClass;
 
 #include "countingnode.h"
 #include "group.h"
+#include "purpleaccount.h"
 
 /**
  * PurpleMetaContact:

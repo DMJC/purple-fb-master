@@ -37,7 +37,7 @@
  * gracefully.
  */
 
-#include "account.h"
+#include "purpleaccount.h"
 
 #include <gio/gio.h>
 

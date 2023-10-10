@@ -20,7 +20,7 @@
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "account.h"
+#include "purpleaccount.h"
 #include "purplecontactinfo.h"
 #include "purpleenums.h"
 #include "purplefiletransfer.h"

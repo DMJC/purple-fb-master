@@ -19,9 +19,9 @@
 #include "purpleaccountmanager.h"
 #include "purpleprivate.h"
 
-#include "account.h"
 #include "accounts.h"
 #include "core.h"
+#include "purpleaccount.h"
 
 enum {
 	SIG_ADDED,

@@ -31,8 +31,8 @@
 
 typedef struct _PurpleMediaManager PurpleMediaManager;
 
-#include "account.h"
 #include "media.h"
+#include "purpleaccount.h"
 
 #define PURPLE_TYPE_MEDIA_MANAGER purple_media_manager_get_type()
 

@@ -23,11 +23,11 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "account.h"
 #include "buddylist.h"
 #include "debug.h"
 #include "notify.h"
 #include "prefs.h"
+#include "purpleaccount.h"
 #include "purpleaccountmanager.h"
 #include "purpleprivate.h"
 #include "purpleprotocol.h"

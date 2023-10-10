@@ -38,6 +38,7 @@ typedef struct _PurpleChatClass PurpleChatClass;
 
 #include "blistnode.h"
 #include "group.h"
+#include "purpleaccount.h"
 
 /**
  * PurpleChat:

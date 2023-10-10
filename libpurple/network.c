@@ -31,9 +31,9 @@
 #endif
 
 #include "debug.h"
-#include "account.h"
 #include "network.h"
 #include "prefs.h"
+#include "purpleaccount.h"
 
 static gboolean force_online = FALSE;
 

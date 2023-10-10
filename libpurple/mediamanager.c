@@ -21,11 +21,11 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "account.h"
 #include "debug.h"
 #include "glibcompat.h"
 #include "media.h"
 #include "mediamanager.h"
+#include "purpleaccount.h"
 #include "purplepath.h"
 
 #include "media-gst.h"

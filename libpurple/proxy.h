@@ -28,9 +28,9 @@
 
 #include <glib.h>
 #include <gio/gio.h>
-#include "eventloop.h"
 
-#include "account.h"
+#include "eventloop.h"
+#include "purpleaccount.h"
 #include "purpleproxyinfo.h"
 
 G_BEGIN_DECLS

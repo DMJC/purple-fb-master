@@ -43,7 +43,7 @@ typedef struct _PurpleRequestCommonParameters PurpleRequestCommonParameters;
 
 typedef struct _PurpleRequestUiOps PurpleRequestUiOps;
 
-#include "account.h"
+#include "purpleaccount.h"
 #include "purpleconversation.h"
 #include "request/purplerequestpage.h"
 #include "request/purplerequestgroup.h"

@@ -143,9 +143,9 @@ struct _PurpleConversationClass {
 	gpointer reserved[4];
 };
 
-#include "purpleconversationuiops.h"
-#include "account.h"
 #include "buddyicon.h"
+#include "purpleaccount.h"
+#include "purpleconversationuiops.h"
 
 G_BEGIN_DECLS
 
