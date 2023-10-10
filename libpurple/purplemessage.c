@@ -46,6 +46,7 @@ struct _PurpleMessage {
 	GError *error;
 
 	GDateTime *delivered_at;
+	GDateTime *edited_at;
 
 	GHashTable *attachments;
 };
@@ -65,6 +66,8 @@ enum {
 	PROP_ERROR,
 	PROP_DELIVERED,
 	PROP_DELIVERED_AT,
+	PROP_EDITED,
+	PROP_EDITED_AT,
 	N_PROPERTIES
 };
 static GParamSpec *properties[N_PROPERTIES];
@@ -132,6 +135,12 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 		case PROP_DELIVERED_AT:
 			g_value_set_boxed(value, purple_message_get_delivered_at(message));
 			break;
+		case PROP_EDITED:
+			g_value_set_boolean(value, purple_message_get_edited(message));
+			break;
+		case PROP_EDITED_AT:
+			g_value_set_boxed(value, purple_message_get_edited_at(message));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
 			break;
@@ -185,6 +194,12 @@ purple_message_set_property(GObject *object, guint param_id,
 		case PROP_DELIVERED_AT:
 			purple_message_set_delivered_at(message, g_value_get_boxed(value));
 			break;
+		case PROP_EDITED:
+			purple_message_set_edited(message, g_value_get_boolean(value));
+			break;
+		case PROP_EDITED_AT:
+			purple_message_set_edited_at(message, g_value_get_boxed(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
 			break;
@@ -204,11 +219,9 @@ purple_message_finalize(GObject *obj) {
 
 	g_clear_error(&message->error);
 
-	if(message->timestamp != NULL) {
-		g_date_time_unref(message->timestamp);
-	}
-
+	g_clear_pointer(&message->timestamp, g_date_time_unref);
 	g_clear_pointer(&message->delivered_at, g_date_time_unref);
+	g_clear_pointer(&message->edited_at, g_date_time_unref);
 
 	g_hash_table_destroy(message->attachments);
 
@@ -405,6 +418,36 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	properties[PROP_DELIVERED_AT] = g_param_spec_boxed(
 		"delivered-at", "delivered-at",
 		"The time that the message was delivered.",
+		G_TYPE_DATE_TIME,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessaged:edited:
+	 *
+	 * Whether or not this message has been edited.
+	 *
+	 * This should typically only be set by a protocol plugin.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_EDITED] = g_param_spec_boolean(
+		"edited", "edited",
+		"Whether or not this message has been edited.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:edit-at:
+	 *
+	 * The time that the message was last edited at. This is protocol dependent
+	 * and possibly client dependent as well. So if this is %NULL that doesn't
+	 * necessarily mean the message was not edited.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_EDITED_AT] = g_param_spec_boxed(
+		"edited-at", "edited-at",
+		"The time that the message was last edited.",
 		G_TYPE_DATE_TIME,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -801,11 +844,6 @@ purple_message_set_delivered_at(PurpleMessage *message, GDateTime *datetime) {
 
 	obj = G_OBJECT(message);
 
-	/* If there are any changes here, we need to manually change both delivered
-	 * and delivered-at because we can't call purple_message_set_delivered as
-	 * it would need to call us, making an infinite loop.
-	 */
-
 	if(datetime == NULL) {
 		if(message->delivered_at == NULL) {
 			return;
@@ -828,5 +866,66 @@ purple_message_set_delivered_at(PurpleMessage *message, GDateTime *datetime) {
 	g_object_freeze_notify(obj);
 	g_object_notify_by_pspec(obj, properties[PROP_DELIVERED]);
 	g_object_notify_by_pspec(obj, properties[PROP_DELIVERED_AT]);
+	g_object_thaw_notify(obj);
+}
+
+gboolean
+purple_message_get_edited(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+
+	return (message->edited_at != NULL);
+}
+
+void
+purple_message_set_edited(PurpleMessage *message, gboolean edited) {
+	GDateTime *datetime = NULL;
+
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	if(edited) {
+		datetime = g_date_time_new_now_utc();
+	}
+
+	purple_message_set_edited_at(message, datetime);
+	g_clear_pointer(&datetime, g_date_time_unref);
+}
+
+GDateTime *
+purple_message_get_edited_at(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
+
+	return message->edited_at;
+}
+
+void
+purple_message_set_edited_at(PurpleMessage *message, GDateTime *datetime) {
+	GObject *obj = NULL;
+
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	obj = G_OBJECT(message);
+
+	if(datetime == NULL) {
+		if(message->edited_at == NULL) {
+			return;
+		}
+
+		g_clear_pointer(&message->edited_at, g_date_time_unref);
+	} else {
+		if(message->edited_at != NULL) {
+			if(g_date_time_equal(message->edited_at, datetime)) {
+				return;
+			}
+
+			g_clear_pointer(&message->edited_at, g_date_time_unref);
+			message->edited_at = g_date_time_ref(datetime);
+		} else {
+			message->edited_at = g_date_time_ref(datetime);
+		}
+	}
+
+	g_object_freeze_notify(obj);
+	g_object_notify_by_pspec(obj, properties[PROP_EDITED]);
+	g_object_notify_by_pspec(obj, properties[PROP_EDITED_AT]);
 	g_object_thaw_notify(obj);
 }

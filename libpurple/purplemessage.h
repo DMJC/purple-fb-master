@@ -561,6 +561,60 @@ GDateTime *purple_message_get_delivered_at(PurpleMessage *message);
  */
 void purple_message_set_delivered_at(PurpleMessage *message, GDateTime *datetime);
 
+/**
+ * purple_message_get_edited:
+ * @message: The instance.
+ *
+ * Gets whether or not @message has been edited.
+ *
+ * Returns: %TRUE if edited, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_message_get_edited(PurpleMessage *message);
+
+/**
+ * purple_message_set_edited:
+ * @message: The instance.
+ * @edited: The new edited state.
+ *
+ * Sets the edited state of @message to @edited.
+ *
+ * > Note: Setting this will also set [property@Message:edited-at]. If
+ * @edited is %TRUE it will be set to the current time, otherwise it will be
+ * unset.
+ *
+ * Since: 3.0.0
+ */
+void purple_message_set_edited(PurpleMessage *message, gboolean edited);
+
+/**
+ * purple_message_get_edited_at:
+ * @message: The instance.
+ *
+ * Gets the time that @message was last edited. If @message has never been
+ * edited this will be %NULL.
+ *
+ * Returns: (transfer none) (nullable): The last edit time of @message.
+ *
+ * Since: 3.0.0
+ */
+GDateTime *purple_message_get_edited_at(PurpleMessage *message);
+
+/**
+ * purple_message_set_edited_at:
+ * @message: The instance.
+ * @datetime: (nullable): The time of the last edit.
+ *
+ * Sets the last edit time of @message to @datetime.
+ *
+ * > Note: Setting this will also set [property@Message:edited]. If
+ * @datetime is %NULL it will be set to %FALSE, otherwise %TRUE.
+ *
+ * Since: 3.0.0
+ */
+void purple_message_set_edited_at(PurpleMessage *message, GDateTime *datetime);
+
 G_END_DECLS
 
 #endif /* PURPLE_MESSAGE_H */
