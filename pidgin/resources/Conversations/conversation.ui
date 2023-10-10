@@ -58,7 +58,18 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             </property>
             <property name="vexpand">1</property>
             <child>
-              <object class="TalkatuHistory" id="history"/>
+              <object class="GtkListView" id="history">
+                <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
+                <property name="factory">
+                  <object class="GtkBuilderListItemFactory">
+                    <property name="resource">/im/pidgin/Pidgin3/Conversations/message.ui</property>
+                  </object>
+                </property>
+                <property name="model">
+                  <object class="GtkNoSelection" id="history_selection"/>
+                </property>
+              </object>
             </child>
           </object>
         </child>

@@ -260,7 +260,6 @@ pidgin/pidginactiongroup.c
 pidgin/pidginaddbuddydialog.c
 pidgin/pidginaddchatdialog.c
 pidgin/pidginapplication.c
-pidgin/pidginattachment.c
 pidgin/pidginavatar.c
 pidgin/pidgin.c
 pidgin/pidgincolor.c
@@ -273,7 +272,6 @@ pidgin/pidginiconname.c
 pidgin/pidgininfopane.c
 pidgin/pidgininvitedialog.c
 pidgin/pidginkeypad.c
-pidgin/pidginmessage.c
 pidgin/pidginplugininfo.c
 pidgin/pidginpluginsdialog.c
 pidgin/pidginpluginsmenu.c

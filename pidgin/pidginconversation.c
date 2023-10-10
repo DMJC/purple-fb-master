@@ -24,9 +24,11 @@
 
 #include <purple.h>
 
-#include "pidgin/pidginconversation.h"
-#include "pidgin/pidgininfopane.h"
-#include "pidgin/pidginmessage.h"
+#include <talkatu.h>
+
+#include "pidgincolor.h"
+#include "pidginconversation.h"
+#include "pidgininfopane.h"
 
 #define PIDGIN_CONVERSATION_DATA ("pidgin-conversation")
 
@@ -45,6 +47,7 @@ struct _PidginConversation {
 	GtkWidget *info_pane;
 	GtkWidget *editor;
 	GtkWidget *history;
+	GtkNoSelection *history_selection;
 };
 
 G_DEFINE_TYPE(PidginConversation, pidgin_conversation, GTK_TYPE_BOX)
@@ -57,10 +60,15 @@ pidgin_conversation_set_conversation(PidginConversation *conversation,
                                      PurpleConversation *purple_conversation)
 {
 	if(g_set_object(&conversation->conversation, purple_conversation)) {
+		GListModel *model = NULL;
+
 		if(PURPLE_IS_CONVERSATION(purple_conversation)) {
 			g_object_set_data(G_OBJECT(purple_conversation),
 			                  PIDGIN_CONVERSATION_DATA, conversation);
+			model = purple_conversation_get_messages(purple_conversation);
 		}
+
+		gtk_no_selection_set_model(conversation->history_selection, model);
 
 		pidgin_info_pane_set_conversation(PIDGIN_INFO_PANE(conversation->info_pane),
 		                                  purple_conversation);
@@ -98,6 +106,69 @@ pidgin_conversation_detach(PidginConversation *conversation) {
 			                  PIDGIN_CONVERSATION_DATA, NULL);
 		}
 	}
+}
+
+static PangoAttrList *
+pidgin_conversation_get_author_attributes(G_GNUC_UNUSED GObject *self,
+                                          PurpleMessage *message,
+                                          G_GNUC_UNUSED gpointer data)
+{
+	const char *author = NULL;
+	const char *custom_color = NULL;
+	GdkRGBA rgba;
+	PangoAttrList *attrs = NULL;
+	gboolean color_valid = FALSE;
+
+	if(!PURPLE_IS_MESSAGE(message)) {
+		return NULL;
+	}
+
+	author = purple_message_get_author_alias(message);
+	if(purple_strempty(author)) {
+		author = purple_message_get_author(message);
+	}
+
+	custom_color = purple_message_get_author_name_color(message);
+	if(!purple_strempty(custom_color)) {
+		color_valid = gdk_rgba_parse(&rgba, custom_color);
+	}
+
+	if(!color_valid) {
+		pidgin_color_calculate_for_text(author, &rgba);
+		color_valid = TRUE;
+	}
+
+	attrs = pango_attr_list_new();
+
+	if(color_valid) {
+		PangoAttribute *attr = NULL;
+
+		attr = pango_attr_foreground_new(0xFFFF * rgba.red,
+		                                 0xFFFF * rgba.green,
+		                                 0xFFFF * rgba.blue);
+		pango_attr_list_insert(attrs, attr);
+	}
+
+	return attrs;
+}
+
+static char *
+pidgin_converation_get_timestamp_string(G_GNUC_UNUSED GObject *self,
+                                        PurpleMessage *message,
+                                        G_GNUC_UNUSED gpointer data)
+{
+	GDateTime *timestamp = NULL;
+
+	if(!PURPLE_IS_MESSAGE(message)) {
+		return NULL;
+	}
+
+	timestamp = purple_message_get_timestamp(message);
+	if(timestamp != NULL) {
+		return g_date_time_format(timestamp, "%I:%M %p");
+	}
+
+	return NULL;
 }
 
 /******************************************************************************
@@ -189,9 +260,15 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	                                     editor);
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     history);
+	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
+	                                     history_selection);
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_conversation_send_message_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_conversation_get_author_attributes);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_converation_get_timestamp_string);
 }
 
 /******************************************************************************
@@ -220,23 +297,6 @@ pidgin_conversation_get_conversation(PidginConversation *conversation) {
 	g_return_val_if_fail(PIDGIN_IS_CONVERSATION(conversation), NULL);
 
 	return conversation->conversation;
-}
-
-void
-pidgin_conversation_write_message(PidginConversation *conversation,
-                                  PurpleMessage *purple_message)
-{
-	PidginMessage *message = NULL;
-
-	g_return_if_fail(PIDGIN_IS_CONVERSATION(conversation));
-	g_return_if_fail(PURPLE_IS_MESSAGE(purple_message));
-
-	message = pidgin_message_new(purple_message);
-
-	talkatu_history_write_message(TALKATU_HISTORY(conversation->history),
-	                              TALKATU_MESSAGE(message));
-
-	g_clear_object(&message);
 }
 
 void

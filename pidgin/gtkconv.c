@@ -39,7 +39,6 @@
 #include "pidgincore.h"
 #include "pidgindisplaywindow.h"
 #include "pidgininfopane.h"
-#include "pidginmessage.h"
 
 /* Prototypes. <-- because Paco-Paco hates this comment. */
 gboolean pidgin_conv_has_focus(PurpleConversation *conv);
@@ -400,26 +399,6 @@ conversation_create(PurpleConversation *conv) {
 	pidgin_display_window_add(PIDGIN_DISPLAY_WINDOW(window), conv);
 }
 
-static void
-conversation_write(PurpleConversation *conv, PurpleMessage *pmsg) {
-	GtkWidget *conversation = NULL;
-
-	conversation = pidgin_conversation_from_purple_conversation(conv);
-	if(PIDGIN_IS_CONVERSATION(conversation)) {
-		pidgin_conversation_write_message(PIDGIN_CONVERSATION(conversation),
-		                                  pmsg);
-	}
-}
-
-static void
-pidgin_conv_new(PurpleConversation *conv)
-{
-	private_gtkconv_new(conv, FALSE);
-	if (PIDGIN_IS_PIDGIN_CONVERSATION_OLD(conv))
-		purple_signal_emit(pidgin_conversations_get_handle(),
-				"conversation-displayed", PIDGIN_CONVERSATION_OLD(conv));
-}
-
 void
 pidgin_conversation_detach(PurpleConversation *conv) {
 	if(PIDGIN_IS_PIDGIN_CONVERSATION_OLD(conv)) {
@@ -508,46 +487,6 @@ writing_msg(PurpleConversation *conv, PurpleMessage *msg,
 	return TRUE;
 }
 
-static void
-pidgin_conv_write_conv(PurpleConversation *conv, PurpleMessage *pmsg)
-{
-	PidginMessage *pidgin_msg = NULL;
-	PurpleMessageFlags flags;
-	PidginConversationOld *gtkconv;
-	PurpleConnection *gc;
-	PurpleAccount *account;
-	gboolean plugin_return;
-
-	g_return_if_fail(conv != NULL);
-	gtkconv = PIDGIN_CONVERSATION_OLD(conv);
-	g_return_if_fail(gtkconv != NULL);
-	flags = purple_message_get_flags(pmsg);
-
-	account = purple_conversation_get_account(conv);
-	g_return_if_fail(account != NULL);
-	gc = purple_account_get_connection(account);
-	g_return_if_fail(gc != NULL || !(flags & (PURPLE_MESSAGE_SEND | PURPLE_MESSAGE_RECV)));
-
-	plugin_return = GPOINTER_TO_INT(purple_signal_emit_return_1(
-		pidgin_conversations_get_handle(),
-		(PURPLE_IS_IM_CONVERSATION(conv) ? "displaying-im-msg" : "displaying-chat-msg"),
-		conv, pmsg));
-	if (plugin_return)
-	{
-		return;
-	}
-
-	pidgin_msg = pidgin_message_new(pmsg);
-	talkatu_history_write_message(
-		TALKATU_HISTORY(gtkconv->history),
-		TALKATU_MESSAGE(pidgin_msg)
-	);
-
-	purple_signal_emit(pidgin_conversations_get_handle(),
-		(PURPLE_IS_IM_CONVERSATION(conv) ? "displayed-im-msg" : "displayed-chat-msg"),
-		conv, pmsg);
-}
-
 gboolean
 pidgin_conv_has_focus(PurpleConversation *conv)
 {
@@ -569,7 +508,6 @@ pidgin_conv_has_focus(PurpleConversation *conv)
 static PurpleConversationUiOps conversation_ui_ops =
 {
 	.create_conversation = conversation_create,
-	.write_conv = conversation_write,
 
 	.destroy_conversation = pidgin_conv_destroy,
 	.has_focus = pidgin_conv_has_focus,

@@ -84,21 +84,6 @@ GtkWidget *pidgin_conversation_from_purple_conversation(PurpleConversation *conv
 PurpleConversation *pidgin_conversation_get_conversation(PidginConversation *conversation);
 
 /**
- * pidgin_conversation_write_message:
- * @conversation: The instance.
- * @message: The message to write.
- *
- * This is temporary until [class@Purple.Conversation] keeps track of its own
- * messages.
- *
- * Write @message to @conversation. This is only for display; if you need to
- * send a message you should use [method@Purple.Conversation.send].
- *
- * Since: 3.0.0
- */
-void pidgin_conversation_write_message(PidginConversation *conversation, PurpleMessage *message);
-
-/**
  * pidgin_conversation_close:
  * @conversation: The instance.
  *
