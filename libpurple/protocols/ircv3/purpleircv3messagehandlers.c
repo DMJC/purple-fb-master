@@ -22,6 +22,7 @@
 
 #include "purpleircv3connection.h"
 #include "purpleircv3core.h"
+#include "purpleircv3source.h"
 
 /******************************************************************************
  * Fallback
@@ -132,6 +133,7 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	GStrv params = NULL;
 	gpointer raw_id = NULL;
 	gpointer raw_timestamp = NULL;
+	char *nick = NULL;
 	const char *command = NULL;
 	const char *id = NULL;
 	const char *source = NULL;
@@ -150,23 +152,33 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 		return FALSE;
 	}
 
+	purple_ircv3_source_parse(source, &nick, NULL, NULL);
+
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
 
 	contact_manager = purple_contact_manager_get_default();
 	contact = purple_contact_manager_find_with_username(contact_manager,
 	                                                    account,
-	                                                    source);
+	                                                    nick);
 	if(!PURPLE_IS_CONTACT(contact)) {
 		contact = purple_contact_new(account, NULL);
-		purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), source);
+		purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), nick);
+		purple_contact_info_set_sid(PURPLE_CONTACT_INFO(contact), source);
 		purple_contact_manager_add(contact_manager, contact);
 	}
 	g_clear_object(&contact);
 
-	target = params[0];
 	conversation_manager = purple_conversation_manager_get_default();
-	conversation = purple_conversation_manager_find(conversation_manager,
-	                                                account, target);
+
+	target = params[0];
+	if(target[0] == '#') {
+		conversation = purple_conversation_manager_find(conversation_manager,
+		                                                account, target);
+	} else {
+		conversation = purple_conversation_manager_find(conversation_manager,
+		                                                account, nick);
+	}
+
 	if(!PURPLE_IS_CONVERSATION(conversation)) {
 		PurpleConversationType type = PurpleConversationTypeUnset;
 		const char *id = NULL;
@@ -176,7 +188,7 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 			id = target;
 		} else {
 			type = PurpleConversationTypeDM;
-			id = source;
+			id = nick;
 		}
 
 		conversation = g_object_new(
@@ -238,6 +250,7 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 
 	purple_conversation_write_message(conversation, message);
 
+	g_clear_pointer(&nick, g_free);
 	g_clear_object(&message);
 
 	return TRUE;
