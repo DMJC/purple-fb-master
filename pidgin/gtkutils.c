@@ -37,8 +37,6 @@
 
 #include <gdk/gdkkeysyms.h>
 
-#include <talkatu.h>
-
 #include "gtkconv.h"
 #include "gtkdialogs.h"
 #include "gtkrequest.h"

@@ -23,8 +23,6 @@
 
 #include <pidgin.h>
 
-#include <talkatu.h>
-
 #include <unity.h>
 #include <messaging-menu.h>
 
