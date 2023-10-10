@@ -26,6 +26,8 @@
 #ifndef _PIDGINREQUEST_H_
 #define _PIDGINREQUEST_H_
 
+#include <gtk/gtk.h>
+
 #include <purple.h>
 
 G_BEGIN_DECLS

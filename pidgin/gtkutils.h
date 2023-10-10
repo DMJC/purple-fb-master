@@ -26,7 +26,7 @@
 #ifndef _PIDGINUTILS_H_
 #define _PIDGINUTILS_H_
 
-#include "gtkconv.h"
+#include <gtk/gtk.h>
 
 #include <purple.h>
 

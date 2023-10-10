@@ -28,6 +28,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include <gdk/gdkkeysyms.h>
+
 #include <purple.h>
 
 #ifdef _WIN32
@@ -35,9 +37,6 @@
 #  include <shellapi.h>
 #endif /*_WIN32*/
 
-#include <gdk/gdkkeysyms.h>
-
-#include "gtkconv.h"
 #include "gtkdialogs.h"
 #include "gtkrequest.h"
 #include "gtkutils.h"
