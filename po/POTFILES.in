@@ -59,7 +59,6 @@ libpurple/plugins/keychain-access/keychain-access.c
 libpurple/plugins/kwallet/purplekwallet.cpp
 libpurple/plugins/libsecret/libsecret.c
 libpurple/plugins/notification-sound/notification-sound.c
-libpurple/plugins/psychic/psychic.c
 libpurple/plugins/purple-toast/purple-toast.c
 libpurple/plugins/statenotify/statenotify.c
 libpurple/plugins/wincred/wincred.c
