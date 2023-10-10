@@ -78,6 +78,40 @@ pidgin_conversation_set_conversation(PidginConversation *conversation,
 	}
 }
 
+/**
+ * pidgin_conversation_set_tooltip_for_timestamp: (skip)
+ * @tooltip: The tooltip to update.
+ * @timestamp: The timestamp to set.
+ *
+ * Updates @tooltip to display @timestamp. This is meant to be called from
+ * a GtkWidget::query-tooltip signal and its return value should be returned
+ * from that handler.
+ *
+ * Returns: %TRUE if a tooltip was set, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+static gboolean
+pidgin_conversation_set_tooltip_for_timestamp(GtkTooltip *tooltip,
+                                              GDateTime *timestamp)
+{
+	GDateTime *local = NULL;
+	char *text = NULL;
+
+	if(timestamp == NULL) {
+		return FALSE;
+	}
+
+	local = g_date_time_to_local(timestamp);
+	text = g_date_time_format(local, "%c");
+	g_clear_pointer(&local, g_date_time_unref);
+
+	gtk_tooltip_set_text(tooltip, text);
+	g_clear_pointer(&text, g_free);
+
+	return TRUE;
+}
+
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -169,6 +203,47 @@ pidgin_converation_get_timestamp_string(G_GNUC_UNUSED GObject *self,
 	}
 
 	return NULL;
+}
+
+static gboolean
+pidgin_conversation_query_tooltip_timestamp_cb(G_GNUC_UNUSED GtkWidget *self,
+                                               G_GNUC_UNUSED gint x,
+                                               G_GNUC_UNUSED gint y,
+                                               G_GNUC_UNUSED gboolean keyboard_mode,
+                                               GtkTooltip *tooltip,
+                                               gpointer data)
+{
+
+	PurpleMessage *message = gtk_list_item_get_item(data);
+	GDateTime *timestamp = NULL;
+
+	if(!PURPLE_IS_MESSAGE(message)) {
+		return FALSE;
+	}
+
+	timestamp = purple_message_get_timestamp(message);
+
+	return pidgin_conversation_set_tooltip_for_timestamp(tooltip, timestamp);
+}
+
+static gboolean
+pidgin_conversation_query_tooltip_edited_cb(G_GNUC_UNUSED GtkWidget *self,
+                                            G_GNUC_UNUSED gint x,
+                                            G_GNUC_UNUSED gint y,
+                                            G_GNUC_UNUSED gboolean keyboard_mode,
+                                            GtkTooltip *tooltip,
+                                            gpointer data)
+{
+	PurpleMessage *message = gtk_list_item_get_item(data);
+	GDateTime *timestamp = NULL;
+
+	if(!PURPLE_IS_MESSAGE(message)) {
+		return FALSE;
+	}
+
+	timestamp = purple_message_get_edited_at(message);
+
+	return pidgin_conversation_set_tooltip_for_timestamp(tooltip, timestamp);
 }
 
 /******************************************************************************
@@ -269,6 +344,10 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	                                        pidgin_conversation_get_author_attributes);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_converation_get_timestamp_string);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_conversation_query_tooltip_timestamp_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_conversation_query_tooltip_edited_cb);
 }
 
 /******************************************************************************

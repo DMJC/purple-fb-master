@@ -55,12 +55,20 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                         <lookup name="item">GtkListItem</lookup>
                       </closure>
                     </binding>
+                    <property name="has-tooltip">1</property>
+                    <signal name="query-tooltip" handler="pidgin_conversation_query_tooltip_timestamp_cb"/>
                   </object>
                 </child>
                 <child>
                   <object class="GtkLabel" id="edited">
-                    <property name="visible">0</property>
+                    <binding name="visible">
+                      <lookup name="edited" type="PurpleMessage">
+                        <lookup name="item">GtkListItem</lookup>
+                      </lookup>
+                    </binding>
                     <property name="label" translatable="yes">(edited)</property>
+                    <property name="has-tooltip">1</property>
+                    <signal name="query-tooltip" handler="pidgin_conversation_query_tooltip_edited_cb"/>
                   </object>
                 </child>
               </object>
