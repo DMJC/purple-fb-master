@@ -249,8 +249,9 @@ static void handle_groupchat(JabberMessage *jm)
 		return;
 
 	if(jm->subject) {
-		purple_chat_conversation_set_topic(chat->conv, jid->resource,
-				jm->subject);
+		/* TODO: use set_topic_full when we support contact info's. */
+		purple_conversation_set_topic(PURPLE_CONVERSATION(chat->conv),
+		                              jm->subject);
 		messageFlags |= PURPLE_MESSAGE_NO_LOG;
 		if(!jm->xhtml && !jm->body) {
 			char *msg, *tmp, *tmp2;
