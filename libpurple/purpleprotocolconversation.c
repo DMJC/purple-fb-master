@@ -189,3 +189,47 @@ purple_protocol_conversation_join_channel_finish(PurpleProtocolConversation *pro
 
 	return FALSE;
 }
+
+void
+purple_protocol_conversation_set_avatar_async(PurpleProtocolConversation *protocol,
+                                              PurpleConversation *conversation,
+                                              PurpleAvatar *avatar,
+                                              GCancellable *cancellable,
+                                              GAsyncReadyCallback callback,
+                                              gpointer data)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface != NULL && iface->set_avatar_async != NULL) {
+		iface->set_avatar_async(protocol, conversation, avatar, cancellable,
+		                        callback, data);
+	} else {
+		g_warning("%s does not implement set_avatar_async",
+		          G_OBJECT_TYPE_NAME(protocol));
+	}
+}
+
+gboolean
+purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *protocol,
+                                               GAsyncResult *result,
+                                               GError **error)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface != NULL && iface->set_avatar_finish != NULL) {
+		return iface->set_avatar_finish(protocol, result, error);
+	}
+
+	g_warning("%s does not implement set_avatar_finish",
+	          G_OBJECT_TYPE_NAME(protocol));
+
+	return FALSE;
+}

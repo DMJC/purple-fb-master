@@ -31,6 +31,7 @@
 #include <glib-object.h>
 
 #include "purpleaccount.h"
+#include "purpleavatar.h"
 #include "purplechanneljoindetails.h"
 #include "purpleconversation.h"
 #include "purplemessage.h"
@@ -65,6 +66,9 @@ struct _PurpleProtocolConversationInterface {
 	PurpleChannelJoinDetails *(*get_channel_join_details)(PurpleProtocolConversation *protocol, PurpleAccount *account);
 	void (*join_channel_async)(PurpleProtocolConversation *protocol, PurpleAccount *account, PurpleChannelJoinDetails *details, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*join_channel_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
+	void (*set_avatar_async)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleAvatar *avatar, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	gboolean (*set_avatar_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 	/*< private >*/
 	gpointer reserved[8];
@@ -198,6 +202,42 @@ void purple_protocol_conversation_join_channel_async(PurpleProtocolConversation 
  * Since: 3.0.0
  */
 gboolean purple_protocol_conversation_join_channel_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
+/**
+ * purple_protocol_conversation_set_avatar_async:
+ * @protocol: The instance.
+ * @conversation: The conversation instance.
+ * @avatar: (nullable): The new avatar.
+ * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
+ * @callback: (nullable) (scope async): The callback to call after the message
+ *            has been sent.
+ * @data: (nullable): Optional user data to pass to @callback.
+ *
+ * Sets the avatar for @conversation to @pixbuf. Pass %NULL to clear the
+ * current avatar.
+ *
+ * Since: 3.0.0
+ */
+void purple_protocol_conversation_set_avatar_async(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleAvatar *avatar, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_protocol_conversation_set_avatar_finish:
+ * @protocol: The instance.
+ * @result: The [iface@Gio.AsyncResult] from the previous
+ *          [method@ProtocolConversation.set_avatar_async] call.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * Finishes a previous call to
+ * [method@ProtocolConversation.set_avatar_async]. This should be called from
+ * the callback of that function to get the result of whether or not the
+ * avatar was set successfully.
+ *
+ * Returns: %TRUE if the avatar was set successfully, otherwise %FALSE with
+ *          @error possibly set.
+ *
+ * Since: 3.0.0
+ */
+gboolean purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 G_END_DECLS
 
