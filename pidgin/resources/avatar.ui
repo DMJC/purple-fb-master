@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
 Pidgin - Internet Messenger
 Copyright (C) Pidgin Developers <devel@pidgin.im>
 
@@ -15,9 +14,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
+along with this program; if not, see <https://www.gnu.org/licenses/>.
 -->
 <interface>
   <requires lib="gtk" version="4.0"/>
@@ -25,6 +22,27 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
+  <template class="PidginAvatar" parent="GtkBox">
+    <child>
+      <object class="GtkPicture" id="icon">
+        <property name="height-request">64</property>
+        <property name="width-request">64</property>
+        <property name="keep-aspect-ratio">1</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkGestureClick">
+        <property name="button">3</property>
+        <signal name="pressed" handler="pidgin_avatar_button_press_handler" object="PidginAvatar" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkEventControllerMotion">
+        <signal name="enter" handler="pidgin_avatar_enter_notify_handler" object="PidginAvatar" swapped="no"/>
+        <signal name="leave" handler="pidgin_avatar_leave_notify_handler" object="PidginAvatar" swapped="no"/>
+      </object>
+    </child>
+  </template>
   <menu id="menu">
     <section>
       <item>

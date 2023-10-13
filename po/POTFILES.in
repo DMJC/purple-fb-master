@@ -304,8 +304,7 @@ pidgin/resources/Accounts/account-row.ui
 pidgin/resources/Accounts/chooser.ui
 pidgin/resources/Accounts/editor.ui
 pidgin/resources/Accounts/manager.ui
-pidgin/resources/Avatar/avatar.ui
-pidgin/resources/Avatar/menu.ui
+pidgin/resources/avatar.ui
 pidgin/resources/BuddyList/window.ui
 pidgin/resources/Conversations/infopane.ui
 pidgin/resources/Conversations/invite_dialog.ui

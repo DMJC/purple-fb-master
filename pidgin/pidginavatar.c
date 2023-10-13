@@ -28,6 +28,7 @@ struct _PidginAvatar {
 	GtkBox parent;
 
 	GtkWidget *icon;
+	GMenuModel *menu;
 
 	GdkPixbufAnimation *animation;
 	gboolean animate;
@@ -339,19 +340,12 @@ pidgin_avatar_button_press_handler(G_GNUC_UNUSED GtkGestureClick *event,
                                    gpointer data)
 {
 	PidginAvatar *avatar = PIDGIN_AVATAR(data);
-	GtkBuilder *builder = NULL;
 	GtkWidget *menu = NULL;
-	GMenuModel *model = NULL;
 
-	builder = gtk_builder_new_from_resource("/im/pidgin/Pidgin3/Avatar/menu.ui");
-	model = (GMenuModel *)gtk_builder_get_object(builder, "menu");
-
-	menu = gtk_popover_menu_new_from_model(model);
+	menu = gtk_popover_menu_new_from_model(avatar->menu);
 	gtk_widget_set_parent(menu, GTK_WIDGET(avatar));
 	gtk_popover_set_pointing_to(GTK_POPOVER(menu),
 	                            &(const GdkRectangle){(int)x, (int)y, 0, 0});
-
-	g_clear_object(&builder);
 
 	gtk_popover_popup(GTK_POPOVER(menu));
 
@@ -535,10 +529,11 @@ pidgin_avatar_class_init(PidginAvatarClass *klass) {
 
 	gtk_widget_class_set_template_from_resource(
 	    widget_class,
-	    "/im/pidgin/Pidgin3/Avatar/avatar.ui"
+	    "/im/pidgin/Pidgin3/avatar.ui"
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAvatar, icon);
+	gtk_widget_class_bind_template_child(widget_class, PidginAvatar, menu);
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_avatar_button_press_handler);
