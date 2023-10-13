@@ -37,6 +37,7 @@ typedef struct {
 	PurpleConversationType type;
 	PurpleAccount *account;
 
+	PurpleAvatar *avatar;
 	char *name;
 	char *title;
 
@@ -66,6 +67,7 @@ enum {
 	PROP_ID,
 	PROP_TYPE,
 	PROP_ACCOUNT,
+	PROP_AVATAR,
 	PROP_NAME,
 	PROP_TITLE,
 	PROP_FEATURES,
@@ -396,6 +398,9 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 		case PROP_ACCOUNT:
 			purple_conversation_set_account(conv, g_value_get_object(value));
 			break;
+		case PROP_AVATAR:
+			purple_conversation_set_avatar(conv, g_value_get_object(value));
+			break;
 		case PROP_NAME:
 			g_free(priv->name);
 			priv->name = g_value_dup_string(value);
@@ -467,6 +472,9 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 			break;
 		case PROP_ACCOUNT:
 			g_value_set_object(value, purple_conversation_get_account(conv));
+			break;
+		case PROP_AVATAR:
+			g_value_set_object(value, purple_conversation_get_avatar(conv));
 			break;
 		case PROP_NAME:
 			g_value_set_string(value, purple_conversation_get_name(conv));
@@ -615,6 +623,7 @@ purple_conversation_finalize(GObject *object) {
 	}
 
 	g_clear_pointer(&priv->id, g_free);
+	g_clear_object(&priv->avatar);
 	g_clear_pointer(&priv->name, g_free);
 	g_clear_pointer(&priv->title, g_free);
 
@@ -678,6 +687,22 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"The account for the conversation.",
 		PURPLE_TYPE_ACCOUNT,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:avatar:
+	 *
+	 * The [class@Avatar] for the conversation.
+	 *
+	 * Not all protocols support this and most user interfaces will use the
+	 * avatar of the remote contact for direct messages.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_AVATAR] = g_param_spec_object(
+		"avatar", "avatar",
+		"The avatar for this conversation.",
+		PURPLE_TYPE_AVATAR,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "Name",
@@ -1921,4 +1946,30 @@ purple_conversation_get_messages(PurpleConversation *conversation) {
 	}
 
 	return NULL;
+}
+
+PurpleAvatar *
+purple_conversation_get_avatar(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->avatar;
+}
+
+void
+purple_conversation_set_avatar(PurpleConversation *conversation,
+                               PurpleAvatar *avatar)
+{
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	priv = purple_conversation_get_instance_private(conversation);
+	if(g_set_object(&priv->avatar, avatar)) {
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_AVATAR]);
+	}
 }

@@ -29,6 +29,8 @@ static void
 test_purple_conversation_properties(void) {
 	PurpleAccount *account = NULL;
 	PurpleAccount *account1 = NULL;
+	PurpleAvatar *avatar = NULL;
+	PurpleAvatar *avatar1 = NULL;
 	PurpleConnectionFlags features = 0;
 	PurpleContactInfo *creator = NULL;
 	PurpleContactInfo *creator1 = NULL;
@@ -53,6 +55,7 @@ test_purple_conversation_properties(void) {
 	gboolean unregistered = FALSE;
 
 	account = purple_account_new("test", "test");
+	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
 	creator = purple_contact_info_new(NULL);
 	created_on = g_date_time_new_now_utc();
 	topic_author = purple_contact_info_new(NULL);
@@ -69,6 +72,7 @@ test_purple_conversation_properties(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"age-restricted", TRUE,
+		"avatar", avatar,
 		"created-on", created_on,
 		"creator", creator,
 		"description", "to describe or not to describe...",
@@ -87,6 +91,7 @@ test_purple_conversation_properties(void) {
 	g_object_get(conversation,
 		"account", &account1,
 		"age-restricted", &age_restricted,
+		"avatar", &avatar1,
 		"created-on", &created_on1,
 		"creator", &creator1,
 		"description", &description,
@@ -108,6 +113,9 @@ test_purple_conversation_properties(void) {
 	g_clear_object(&account1);
 
 	g_assert_true(age_restricted);
+
+	g_assert_true(avatar1 == avatar);
+	g_clear_object(&avatar1);
 
 	g_assert_nonnull(created_on1);
 	g_assert_true(g_date_time_equal(created_on1, created_on));
@@ -158,6 +166,7 @@ test_purple_conversation_properties(void) {
 	                                                      conversation);
 	g_assert_true(unregistered);
 
+	g_clear_object(&avatar);
 	g_clear_object(&topic_author);
 	g_clear_pointer(&topic_updated, g_date_time_unref);
 	g_clear_pointer(&created_on, g_date_time_unref);

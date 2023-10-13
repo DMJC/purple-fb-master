@@ -30,6 +30,7 @@
 G_DECLARE_DERIVABLE_TYPE(PurpleConversation, purple_conversation, PURPLE,
                          CONVERSATION, GObject)
 
+#include "purpleavatar.h"
 #include "purplecontactinfo.h"
 #include "purpleconversationmember.h"
 #include "purplemessage.h"
@@ -799,6 +800,35 @@ gboolean purple_conversation_remove_member(PurpleConversation *conversation, Pur
  * Since: 3.0.0
  */
 GListModel *purple_conversation_get_messages(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_get_avatar:
+ * @conversation: The instance.
+ *
+ * Gets the [class@Avatar] from @conversation if set.
+ *
+ * > Note: Not all protocols support this and user interfaces generally use
+ * the avatar of a contact info for a direct message.
+ *
+ * Returns: (transfer none) (nullable): The avatar for the conversation.
+ *
+ * Since: 3.0.0
+ */
+PurpleAvatar *purple_conversation_get_avatar(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_avatar:
+ * @conversation: The instance.
+ * @avatar: (nullable): The new avatar to set.
+ *
+ * Sets the avatar of @conversation to @avatar.
+ *
+ * > Note: Not all protocols support this and user interfaces generally use
+ * the avatar of a contact info for a direct message.
+ *
+ * Since: 3.0.0
+ */
+void purple_conversation_set_avatar(PurpleConversation *conversation, PurpleAvatar *avatar);
 
 G_END_DECLS
 
