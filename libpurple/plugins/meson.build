@@ -1,5 +1,4 @@
 subdir('autoaccept')
-subdir('buddynote')
 subdir('idle')
 subdir('joinpart')
 subdir('keychain-access')
