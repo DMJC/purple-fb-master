@@ -17,7 +17,7 @@
  */
 
 #if !defined(PURPLE_GLOBAL_HEADER_INSIDE) && !defined(PURPLE_COMPILATION)
-# error "only <pidgin.h> may be included directly"
+# error "only <purple.h> may be included directly"
 #endif
 
 #ifndef PURPLE_SQLITE3_H
@@ -25,8 +25,6 @@
 
 #include <glib.h>
 #include <gio/gio.h>
-
-#include <sqlite3.h>
 
 G_BEGIN_DECLS
 
@@ -44,15 +42,18 @@ G_BEGIN_DECLS
  *
  * A sqlite3 connection.
  *
- * This type alias exists for introspection purposes, and is no different from
- * the `sqlite3` type.
+ * This type alias exists to avoid requiring the sqlite3 header, but is no
+ * different from the `sqlite3` type.
+ *
+ * If that header is included first, this will be exactly equivalent, otherwise
+ * it will be a generic `gpointer`, which you should cast to a `sqlite3`.
  *
  * Since: 3.0.0
  */
-#ifdef __GI_SCANNER__
-typedef gpointer PurpleSqlite3;
-#else
+#ifdef SQLITE_API
 typedef sqlite3 PurpleSqlite3;
+#else
+typedef gpointer PurpleSqlite3;
 #endif
 
 /**

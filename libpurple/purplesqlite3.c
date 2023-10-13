@@ -18,6 +18,8 @@
 
 #include <gio/gio.h>
 
+#include <sqlite3.h>
+
 #include "purplesqlite3.h"
 
 /******************************************************************************
