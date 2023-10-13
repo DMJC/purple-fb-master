@@ -27,11 +27,6 @@
 
 #include <gst/gst.h>
 
-#include "package_revision.h"
-#ifdef HAVE_MESON_CONFIG
-#include "meson-config.h"
-#endif
-
 #include <purple.h>
 
 #include "gtkblist.h"

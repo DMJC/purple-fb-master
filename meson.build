@@ -84,7 +84,7 @@ man_conf.set('prefix', get_option('prefix'))
 pkgconfig = import('pkgconfig')
 
 # Storing build arguments
-meson.add_postconf_script('mkmesonconf.py')
+meson.add_postconf_script('mkmesonconf.py', meson.project_build_root())
 conf.set('HAVE_MESON_CONFIG', true)
 
 # Checks for programs.

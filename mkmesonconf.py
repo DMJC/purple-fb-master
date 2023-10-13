@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 #
+# Purple - Internet Messaging Library
+# Copyright (C) Pidgin Developers <devel@pidgin.im>
+#
 # Purple is the legal property of its developers, whose names are too numerous
 # to list here.  Please refer to the COPYRIGHT file distributed with this
 # source distribution.
@@ -15,8 +18,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301 USA
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Produce meson-config.h in a build directory.
@@ -44,12 +46,17 @@ except KeyError:
 else:
     introspect = shlex.split(introspect)
 
+# This is the top-most Meson build root.
 try:
     build_root = os.environ['MESON_BUILD_ROOT']
 except KeyError:
     print('Meson is too old; '
           'it does not set MESON_BUILD_ROOT for postconf scripts.')
     sys.exit(1)
+
+# This is the build root for the Pidgin project itself, which may be different
+# if it's used as a subproject.
+project_build_root = sys.argv[1]
 
 
 def tostr(obj):
@@ -59,12 +66,28 @@ def tostr(obj):
         return repr(obj)
 
 
+def normalize_pidgin_option(option):
+    """Promote Pidgin-as-subproject options to global options."""
+    name = option['name']
+    # Option names for subprojects are determined by the wrap file name + the
+    # subproject option. Unfortunately, the wrap file name is determined by the
+    # superproject, so we can't know what it is. Just assume it is something
+    # semi-standard.
+    if ':' in name and name.startswith('pidgin'):
+        option['name'] = name.split(':')[1]
+    return option
+
+
 conf = subprocess.check_output(introspect + ['--buildoptions', build_root],
                                universal_newlines=True)
 conf = json.loads(conf)
 
+# Skip all subproject options, or else the config string explodes.
+conf = [normalize_pidgin_option(option) for option in conf]
+conf = [option for option in conf if ':' not in option['name']]
+
 settings = ' '.join('{}={}'.format(option['name'], tostr(option['value']))
                     for option in sorted(conf, key=lambda x: x['name']))
 
-with open(os.path.join(build_root, 'meson-config.h'), 'w') as f:
+with open(os.path.join(project_build_root, 'meson-config.h'), 'w') as f:
     f.write('#define MESON_ARGS "{}"'.format(settings))
