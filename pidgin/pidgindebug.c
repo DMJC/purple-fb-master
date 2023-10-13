@@ -107,89 +107,81 @@ view_near_bottom(PidginDebugWindow *win)
 }
 
 static void
-save_response_cb(GtkNativeDialog *self, gint response_id, gpointer data)
+save_response_cb(GObject *obj, GAsyncResult *result, gpointer data)
 {
 	PidginDebugWindow *win = (PidginDebugWindow *)data;
+	GFile *file = NULL;
+	GFileOutputStream *output = NULL;
+	GtkTextIter start, end;
+	GDateTime *date = NULL;
+	char *date_str = NULL;
+	char *tmp = NULL;
+	GError *error = NULL;
 
-	if(response_id == GTK_RESPONSE_ACCEPT) {
-		GFile *file = NULL;
-		GFileOutputStream *output = NULL;
-		GtkTextIter start, end;
-		GDateTime *date = NULL;
-		gchar *date_str = NULL;
-		gchar *tmp = NULL;
-		GError *error = NULL;
-
-		file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(self));
-		output = g_file_replace(file, NULL, FALSE, G_FILE_CREATE_NONE, NULL,
-		                        &error);
-		g_object_unref(file);
-
-		if(output == NULL) {
-			purple_debug_error("debug",
-			                   "Unable to open file to save debug log: %s",
-			                   error->message);
-			g_error_free(error);
-			g_object_unref(self);
-			return;
-		}
-
-		date = g_date_time_new_now_local();
-		date_str = g_date_time_format(date, "%c");
-		g_date_time_unref(date);
-
-		tmp = g_strdup_printf("Pidgin Debug Log : %s\n", date_str);
-		g_output_stream_write_all(G_OUTPUT_STREAM(output), tmp, strlen(tmp),
-		                          NULL, NULL, &error);
-		g_free(tmp);
-		g_free(date_str);
-
-		if(error != NULL) {
-			purple_debug_error("debug", "Unable to save debug log: %s",
-			                   error->message);
-			g_error_free(error);
-			g_object_unref(output);
-			g_object_unref(self);
-			return;
-		}
-
-		gtk_text_buffer_get_bounds(win->buffer, &start, &end);
-		tmp = gtk_text_buffer_get_text(win->buffer, &start, &end, TRUE);
-		g_output_stream_write_all(G_OUTPUT_STREAM(output), tmp, strlen(tmp),
-		                          NULL, NULL, &error);
-		g_free(tmp);
-
-		if(error != NULL) {
-			purple_debug_error("debug", "Unable to save debug log: %s",
-			                   error->message);
-			g_error_free(error);
-			g_object_unref(output);
-			g_object_unref(self);
-			return;
-		}
-
-		g_object_unref(output);
+	file = gtk_file_dialog_save_finish(GTK_FILE_DIALOG(obj), result, NULL);
+	if(file == NULL) {
+		return;
 	}
 
-	g_object_unref(self);
+	output = g_file_replace(file, NULL, FALSE, G_FILE_CREATE_NONE, NULL,
+	                        &error);
+	g_clear_object(&file);
+
+	if(output == NULL) {
+		purple_debug_error("debug",
+		                   "Unable to open file to save debug log: %s",
+		                   error->message);
+		g_error_free(error);
+		return;
+	}
+
+	date = g_date_time_new_now_local();
+	date_str = g_date_time_format(date, "%c");
+	g_date_time_unref(date);
+
+	tmp = g_strdup_printf("Pidgin Debug Log : %s\n", date_str);
+	g_output_stream_write_all(G_OUTPUT_STREAM(output), tmp, strlen(tmp),
+	                          NULL, NULL, &error);
+	g_free(tmp);
+	g_free(date_str);
+
+	if(error != NULL) {
+		purple_debug_error("debug", "Unable to save debug log: %s",
+		                   error->message);
+		g_error_free(error);
+		g_object_unref(output);
+		return;
+	}
+
+	gtk_text_buffer_get_bounds(win->buffer, &start, &end);
+	tmp = gtk_text_buffer_get_text(win->buffer, &start, &end, TRUE);
+	g_output_stream_write_all(G_OUTPUT_STREAM(output), tmp, strlen(tmp),
+	                          NULL, NULL, &error);
+	g_free(tmp);
+
+	if(error != NULL) {
+		purple_debug_error("debug", "Unable to save debug log: %s",
+		                   error->message);
+		g_error_free(error);
+		g_object_unref(output);
+		return;
+	}
+
+	g_object_unref(output);
 }
 
 static void
 save_cb(G_GNUC_UNUSED GtkWidget *w, PidginDebugWindow *win)
 {
-	GtkFileChooserNative *filesel;
+	GtkFileDialog *dialog;
 
-	filesel = gtk_file_chooser_native_new(_("Save Debug Log"), GTK_WINDOW(win),
-	                                      GTK_FILE_CHOOSER_ACTION_SAVE,
-	                                      _("_Save"), _("_Cancel"));
-
-	gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(filesel),
-	                                  "purple-debug.log");
-
-	g_signal_connect(filesel, "response", G_CALLBACK(save_response_cb), win);
-
-	gtk_native_dialog_set_modal(GTK_NATIVE_DIALOG(filesel), TRUE);
-	gtk_native_dialog_show(GTK_NATIVE_DIALOG(filesel));
+	dialog = gtk_file_dialog_new();
+	gtk_file_dialog_set_title(dialog, _("Save Debug Log"));
+	gtk_file_dialog_set_modal(dialog, TRUE);
+	gtk_file_dialog_set_initial_name(dialog, "purple-debug.log");
+	gtk_file_dialog_save(dialog, GTK_WINDOW(win), NULL,
+	                     save_response_cb, win);
+	g_clear_object(&dialog);
 }
 
 static void

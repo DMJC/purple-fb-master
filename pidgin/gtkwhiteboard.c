@@ -399,60 +399,56 @@ pidgin_whiteboard_button_clear_press(G_GNUC_UNUSED GtkWidget *widget,
 }
 
 static void
-pidgin_whiteboard_save_response(GtkNativeDialog *self, gint response_id,
+pidgin_whiteboard_save_response(GObject *obj, GAsyncResult *result,
                                 gpointer data)
 {
 	PidginWhiteboard *gtkwb = (PidginWhiteboard *)data;
+	GFile *file = NULL;
+	char *filename = NULL;
 	GdkPixbuf *pixbuf;
+	gboolean success;
 
-	if(response_id == GTK_RESPONSE_ACCEPT) {
-		gboolean success;
-		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(self));
-		gchar *filename = g_file_get_path(file);
-
-		pixbuf = gdk_pixbuf_get_from_surface(gtkwb->surface, 0, 0,
-		                                     gtkwb->width, gtkwb->height);
-
-		success = gdk_pixbuf_save(pixbuf, filename, "png", NULL,
-		                          "compression", "9", NULL);
-		g_object_unref(pixbuf);
-
-		if (success) {
-			purple_debug_info("gtkwhiteboard", "whiteboard saved to \"%s\"",
-			                  filename);
-		} else {
-			purple_notify_error(NULL, _("Whiteboard"),
-			                    _("Unable to save the file"), NULL, NULL);
-			purple_debug_error("gtkwhiteboard", "whiteboard "
-			                   "couldn't be saved to \"%s\"", filename);
-		}
-
-		g_free(filename);
-		g_object_unref(file);
+	file = gtk_file_dialog_save_finish(GTK_FILE_DIALOG(obj), result, NULL);
+	if(file == NULL) {
+		return;
 	}
 
-	g_object_unref(self);
-}
+	filename = g_file_get_path(file);
+	pixbuf = gdk_pixbuf_get_from_surface(gtkwb->surface, 0, 0,
+	                                     gtkwb->width, gtkwb->height);
 
+	success = gdk_pixbuf_save(pixbuf, filename, "png", NULL,
+	                          "compression", "9", NULL);
+	g_object_unref(pixbuf);
+
+	if (success) {
+		purple_debug_info("gtkwhiteboard", "whiteboard saved to \"%s\"",
+		                  filename);
+	} else {
+		purple_notify_error(NULL, _("Whiteboard"),
+		                    _("Unable to save the file"), NULL, NULL);
+		purple_debug_error("gtkwhiteboard",
+		                   "whiteboard couldn't be saved to \"%s\"", filename);
+	}
+
+	g_free(filename);
+	g_object_unref(file);
+}
 
 static void
 pidgin_whiteboard_button_save_press(G_GNUC_UNUSED GtkWidget *widget,
                                     gpointer _gtkwb)
 {
 	PidginWhiteboard *gtkwb = _gtkwb;
-	GtkFileChooserNative *chooser;
+	GtkFileDialog *dialog;
 
-	chooser = gtk_file_chooser_native_new(_("Save File"), GTK_WINDOW(gtkwb),
-	                                      GTK_FILE_CHOOSER_ACTION_SAVE,
-	                                      _("_Save"), _("_Cancel"));
-
-	gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser),
-	                                  "whiteboard.png");
-
-	g_signal_connect(chooser, "response",
-	                 G_CALLBACK(pidgin_whiteboard_save_response), gtkwb);
-
-	gtk_native_dialog_show(GTK_NATIVE_DIALOG(chooser));
+	dialog = gtk_file_dialog_new();
+	gtk_file_dialog_set_title(dialog, _("Save File"));
+	gtk_file_dialog_set_modal(dialog, TRUE);
+	gtk_file_dialog_set_initial_name(dialog, "whiteboard.png");
+	gtk_file_dialog_save(dialog, GTK_WINDOW(gtkwb), NULL,
+	                     pidgin_whiteboard_save_response, gtkwb);
+	g_object_unref(dialog);
 }
 
 static void

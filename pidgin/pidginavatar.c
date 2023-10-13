@@ -294,6 +294,7 @@ pidgin_avatar_set_custom_cb(G_GNUC_UNUSED GSimpleAction *action,
 
 	gtk_file_dialog_open(dialog, window, NULL,
 	                     pidgin_avatar_set_custom_dialog_cb, avatar);
+	g_clear_object(&dialog);
 }
 
 static void

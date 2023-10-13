@@ -48,7 +48,7 @@ struct _PidginAccountEditor {
 	/* User Options */
 	GtkWidget *alias;
 
-	GtkFileChooserNative *avatar_dialog;
+	GtkFileDialog *avatar_dialog;
 	GdkPixbuf *avatar_pixbuf;
 	GtkWidget *avatar_row;
 	GtkWidget *use_custom_avatar;
@@ -963,17 +963,17 @@ pidgin_account_editor_username_changed_cb(GtkEditable *self, gpointer data) {
 }
 
 static void
-pidgin_account_editor_avatar_response_cb(GtkNativeDialog *self,
-                                         gint response_id, gpointer data)
+pidgin_account_editor_avatar_response_cb(GObject *obj, GAsyncResult *result,
+                                         gpointer data)
 {
 	PidginAccountEditor *editor = data;
+	GFile *file = NULL;
 
-	if(response_id == GTK_RESPONSE_ACCEPT) {
+	file = gtk_file_dialog_open_finish(GTK_FILE_DIALOG(obj), result, NULL);
+	if(file != NULL) {
 		GError *error = NULL;
-		GFile *file = NULL;
-		gchar *filename = NULL;
+		char *filename = NULL;
 
-		file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(self));
 		filename = g_file_get_path(file);
 
 		g_clear_object(&editor->avatar_pixbuf);
@@ -999,20 +999,14 @@ pidgin_account_editor_avatar_set_clicked_cb(G_GNUC_UNUSED GtkButton *self,
                                             gpointer data)
 {
 	PidginAccountEditor *editor = data;
+	GtkRoot *root = NULL;
 
-	editor->avatar_dialog = gtk_file_chooser_native_new(_("Buddy Icon"),
-	                                                    GTK_WINDOW(editor),
-	                                                    GTK_FILE_CHOOSER_ACTION_OPEN,
-	                                                    _("_Open"),
-	                                                    _("_Cancel"));
-	gtk_native_dialog_set_transient_for(GTK_NATIVE_DIALOG(editor->avatar_dialog),
-	                                    GTK_WINDOW(editor));
-
-	g_signal_connect(G_OBJECT(editor->avatar_dialog), "response",
-	                 G_CALLBACK(pidgin_account_editor_avatar_response_cb),
-	                 editor);
-
-	gtk_native_dialog_show(GTK_NATIVE_DIALOG(editor->avatar_dialog));
+	root = gtk_widget_get_root(GTK_WIDGET(editor));
+	editor->avatar_dialog = gtk_file_dialog_new();
+	gtk_file_dialog_set_title(editor->avatar_dialog, _("Buddy Icon"));
+	gtk_file_dialog_set_modal(editor->avatar_dialog, TRUE);
+	gtk_file_dialog_open(editor->avatar_dialog, GTK_WINDOW(root), NULL,
+	                     pidgin_account_editor_avatar_response_cb, editor);
 }
 
 static void

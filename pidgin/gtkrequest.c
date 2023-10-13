@@ -40,8 +40,9 @@ typedef struct
 	PurpleRequestType type;
 
 	void *user_data;
-	/* May be GtkWidget or GtkNativeDialog */
+	/* May be GtkWidget or GtkFileDialog. */
 	gpointer dialog;
+	GCancellable *cancellable;
 
 	GtkWidget *ok_button;
 
@@ -2002,38 +2003,91 @@ pidgin_request_fields(const char *title, const char *primary,
 }
 
 static void
-pidgin_request_file_folder_response_cb(G_GNUC_UNUSED GtkWidget *widget,
-                                       gint response, PidginRequestData *data)
+pidgin_request_file_response_cb(GObject *obj, GAsyncResult *result,
+                                gpointer user_data)
 {
-	GFile *current_path;
+	PidginRequestData *data = user_data;
+	GFile *path = NULL;
+	GFile *parent = NULL;
+	GError *error = NULL;
 
-	if (response != GTK_RESPONSE_ACCEPT) {
-		if (data->cbs[0] != NULL)
-			((PurpleRequestFileCb)data->cbs[0])(data->user_data, NULL);
-		purple_request_close(data->type, data);
+	if(data->u.file.savedialog) {
+		path = gtk_file_dialog_save_finish(GTK_FILE_DIALOG(obj), result,
+		                                   &error);
+	} else {
+		path = gtk_file_dialog_open_finish(GTK_FILE_DIALOG(obj), result,
+		                                   &error);
+	}
+	if(path == NULL) {
+		if(!g_error_matches(error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_CANCELLED)) {
+			if(data->cbs[0] != NULL) {
+				((PurpleRequestFileCb)data->cbs[0])(data->user_data, NULL);
+			}
+			purple_request_close(data->type, data);
+		}
+		g_clear_error(&error);
 		return;
 	}
 
-	current_path = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(data->dialog));
-	if (current_path != NULL) {
-		gchar *current_folder = g_file_get_path(current_path);
+	parent = g_file_get_parent(path);
+	if(parent != NULL) {
+		char *current_folder = g_file_get_path(parent);
 		if (data->u.file.savedialog) {
-			purple_prefs_set_path(PIDGIN_PREFS_ROOT "/filelocations/last_save_folder", current_folder);
+			purple_prefs_set_path(PIDGIN_PREFS_ROOT "/filelocations/last_save_folder",
+			                      current_folder);
 		} else {
-			purple_prefs_set_path(PIDGIN_PREFS_ROOT "/filelocations/last_open_folder", current_folder);
+			purple_prefs_set_path(PIDGIN_PREFS_ROOT "/filelocations/last_open_folder",
+			                      current_folder);
 		}
 		g_free(current_folder);
 	}
-	if (data->cbs[1] != NULL) {
-		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(data->dialog));
-		char *filename = g_file_get_path(file);
+
+	if(data->cbs[1] != NULL) {
+		char *filename = g_file_get_path(path);
 		((PurpleRequestFileCb)data->cbs[1])(data->user_data, filename);
 		g_free(filename);
-		g_object_unref(file);
 	}
-	purple_request_close(data->type, data);
 
-	g_clear_object(&current_path);
+	g_clear_object(&parent);
+	g_clear_object(&path);
+	g_clear_object(&data->cancellable);
+	purple_request_close(data->type, data);
+}
+
+static void
+pidgin_request_folder_response_cb(GObject *obj, GAsyncResult *result,
+                                  gpointer user_data)
+{
+	PidginRequestData *data = user_data;
+	GFile *path = NULL;
+	char *folder = NULL;
+	GError *error = NULL;
+
+	path = gtk_file_dialog_select_folder_finish(GTK_FILE_DIALOG(obj), result,
+	                                            &error);
+	if(path == NULL) {
+		if(!g_error_matches(error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_CANCELLED)) {
+			if(data->cbs[0] != NULL) {
+				((PurpleRequestFileCb)data->cbs[0])(data->user_data, NULL);
+			}
+			purple_request_close(data->type, data);
+		}
+		g_clear_error(&error);
+		return;
+	}
+
+	folder = g_file_get_path(path);
+	purple_prefs_set_path(PIDGIN_PREFS_ROOT "/filelocations/last_open_folder",
+	                      folder);
+
+	if(data->cbs[1] != NULL) {
+		((PurpleRequestFileCb)data->cbs[1])(data->user_data, folder);
+	}
+
+	g_free(folder);
+	g_clear_object(&path);
+	g_clear_object(&data->cancellable);
+	purple_request_close(data->type, data);
 }
 
 static void *
@@ -2043,9 +2097,8 @@ pidgin_request_file(const char *title, const char *filename,
                     gpointer user_data)
 {
 	PidginRequestData *data;
-	GtkFileChooserNative *filesel;
+	GtkFileDialog *dialog = NULL;
 #ifdef _WIN32
-	GFile *file = NULL;
 	const gchar *current_folder;
 	gboolean folder_set = FALSE;
 #endif
@@ -2059,21 +2112,17 @@ pidgin_request_file(const char *title, const char *filename,
 	data->cbs[1] = ok_cb;
 	data->u.file.savedialog = savedialog;
 
-	filesel = gtk_file_chooser_native_new(
-	        title ? title
-	              : (savedialog ? _("Save File...") : _("Open File...")),
-	        NULL,
-	        savedialog ? GTK_FILE_CHOOSER_ACTION_SAVE
-	                   : GTK_FILE_CHOOSER_ACTION_OPEN,
-	        savedialog ? _("_Save") : _("_Open"), _("_Cancel"));
+	data->dialog = dialog = gtk_file_dialog_new();
+	gtk_file_dialog_set_title(dialog,
+	                          title ? title
+	                                : (savedialog ? _("Save File...")
+	                                              : _("Open File...")));
 
-	if ((filename != NULL) && (*filename != '\0')) {
+	if(!purple_strempty(filename)) {
 		GFile *path = g_file_new_for_path(filename);
 
-		if(savedialog) {
-			gtk_file_chooser_set_file(GTK_FILE_CHOOSER(filesel), path, NULL);
-		} else if (g_file_test(filename, G_FILE_TEST_EXISTS)) {
-			gtk_file_chooser_set_file(GTK_FILE_CHOOSER(filesel), path, NULL);
+		if(savedialog || g_file_test(filename, G_FILE_TEST_EXISTS)) {
+			gtk_file_dialog_set_initial_file(dialog, path);
 		}
 
 		g_object_unref(path);
@@ -2086,40 +2135,39 @@ pidgin_request_file(const char *title, const char *filename,
 		current_folder = purple_prefs_get_path(PIDGIN_PREFS_ROOT "/filelocations/last_open_folder");
 	}
 
-	if ((filename == NULL || *filename == '\0' || !g_file_test(filename, G_FILE_TEST_EXISTS)) &&
-		(current_folder != NULL) && (*current_folder != '\0'))
+	if((purple_strempty(filename) || !g_file_test(filename, G_FILE_TEST_EXISTS)) &&
+	   !purple_strempty(current_folder))
 	{
-		file = g_file_new_for_path(current_folder);
-		folder_set = gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filesel), file, NULL);
+		GFile *file = g_file_new_for_path(current_folder);
+		gtk_file_dialog_set_initial_folder(dialog, file, NULL);
+		folder_set = TRUE;
+		g_clear_object(&file);
 	}
 
-	if (!folder_set && (filename == NULL || *filename == '\0' || !g_file_test(filename, G_FILE_TEST_EXISTS))) {
+	if(!folder_set &&
+	   (purple_strempty(filename) || !g_file_test(filename, G_FILE_TEST_EXISTS)))
+	{
 		char *my_documents = wpurple_get_special_folder(CSIDL_PERSONAL);
 
-		g_clear_object(&file);
-
 		if (my_documents != NULL) {
-			file = g_file_new_for_path(my_documents);
-			gtk_file_chooser_set_current_folder(
-					GTK_FILE_CHOOSER(filesel), file, NULL);
+			GFile *file = g_file_new_for_path(my_documents);
+
+			gtk_file_dialog_set_initial_folder(dialog, file);
 
 			g_free(my_documents);
+			g_clear_object(&file);
 		}
 	}
-
-	g_clear_object(&file);
 #endif
 
-	g_signal_connect(G_OBJECT(filesel), "response",
-	                 G_CALLBACK(pidgin_request_file_folder_response_cb), data);
-
-#if 0
-	/* FIXME: Not implemented for native dialogs. */
-	pidgin_auto_parent_window(filesel);
-#endif
-
-	data->dialog = filesel;
-	gtk_native_dialog_show(GTK_NATIVE_DIALOG(filesel));
+	data->cancellable = g_cancellable_new();
+	if(savedialog) {
+		gtk_file_dialog_save(dialog, NULL, data->cancellable,
+		                     pidgin_request_file_response_cb, data);
+	} else {
+		gtk_file_dialog_open(dialog, NULL, data->cancellable,
+		                     pidgin_request_file_response_cb, data);
+	}
 
 	return (void *)data;
 }
@@ -2131,7 +2179,7 @@ pidgin_request_folder(const char *title, const char *dirname, GCallback ok_cb,
                       gpointer user_data)
 {
 	PidginRequestData *data;
-	GtkFileChooserNative *dirsel;
+	GtkFileDialog *dialog = NULL;
 
 	data = g_new0(PidginRequestData, 1);
 	data->type = PURPLE_REQUEST_FOLDER;
@@ -2142,29 +2190,18 @@ pidgin_request_folder(const char *title, const char *dirname, GCallback ok_cb,
 	data->cbs[1] = ok_cb;
 	data->u.file.savedialog = FALSE;
 
-	dirsel = gtk_file_chooser_native_new(
-	        title ? title : _("Select Folder..."), NULL,
-	        GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, _("_OK"), _("_Cancel"));
+	data->cancellable = g_cancellable_new();
+	data->dialog = dialog = gtk_file_dialog_new();
+	gtk_file_dialog_set_title(dialog, title ? title : _("Select Folder..."));
 
-	if ((dirname != NULL) && (*dirname != '\0')) {
+	if(!purple_strempty(dirname)) {
 		GFile *path = g_file_new_for_path(dirname);
-
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dirsel), path,
-		                                    NULL);
-
+		gtk_file_dialog_set_initial_folder(dialog, path);
 		g_object_unref(path);
 	}
 
-	g_signal_connect(G_OBJECT(dirsel), "response",
-	                 G_CALLBACK(pidgin_request_file_folder_response_cb), data);
-
-	data->dialog = dirsel;
-#if 0
-	/* FIXME: Not implemented for native dialogs. */
-	pidgin_auto_parent_window(dirsel);
-#endif
-
-	gtk_native_dialog_show(GTK_NATIVE_DIALOG(dirsel));
+	gtk_file_dialog_select_folder(dialog, NULL, data->cancellable,
+	                              pidgin_request_folder_response_cb, data);
 
 	return (void *)data;
 }
@@ -2202,11 +2239,13 @@ pidgin_close_request(PurpleRequestType type, void *ui_handle)
 {
 	PidginRequestData *data = (PidginRequestData *)ui_handle;
 
-	g_free(data->cbs);
+	if(data->cancellable != NULL) {
+		g_cancellable_cancel(data->cancellable);
+	}
 
 	if (type == PURPLE_REQUEST_FILE || type == PURPLE_REQUEST_FOLDER) {
-		/* Will be a GtkNativeDialog, not GtkDialog. */
-		g_object_unref(data->dialog);
+		/* Will be a GtkFileDialog, not GtkDialog. */
+		g_clear_object(&data->dialog);
 	} else {
 		pidgin_window_detach_children(GTK_WINDOW(data->dialog));
 
@@ -2217,6 +2256,8 @@ pidgin_close_request(PurpleRequestType type, void *ui_handle)
 		g_clear_object(&data->u.multifield.page);
 	}
 
+	g_clear_object(&data->cancellable);
+	g_free(data->cbs);
 	g_free(data);
 }
 
@@ -2230,7 +2271,7 @@ pidgin_request_get_dialog_window(void *ui_handle)
 
 	if (data->type == PURPLE_REQUEST_FILE ||
 	    data->type == PURPLE_REQUEST_FOLDER) {
-		/* Not a GtkWidget, but a GtkFileChooserNative. Eventually this function
+		/* Not a GtkWidget, but a GtkFileDialog. Eventually this function
 		 * should not be needed, once we don't need to auto-parent. */
 		return NULL;
 	}
