@@ -379,7 +379,7 @@ regex_changed_cb(G_GNUC_UNUSED GtkWidget *w, PidginDebugWindow *win) {
 
 	g_clear_pointer(&win->regex, g_regex_unref);
 
-	win->regex = g_regex_new(text, G_REGEX_CASELESS|G_REGEX_JAVASCRIPT_COMPAT, 0, NULL);
+	win->regex = g_regex_new(text, G_REGEX_CASELESS, 0, NULL);
 
 	if (win->regex == NULL) {
 		/* failed to compile */
