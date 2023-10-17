@@ -342,6 +342,7 @@ purple_channel_join_details_merge(PurpleChannelJoinDetails *source,
 {
 	GObject *obj = NULL;
 	const char *value = NULL;
+	gboolean supported = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(source));
 	g_return_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(destination));
@@ -352,8 +353,14 @@ purple_channel_join_details_merge(PurpleChannelJoinDetails *source,
 	value = purple_channel_join_details_get_name(source);
 	purple_channel_join_details_set_name(destination, value);
 
+	supported = purple_channel_join_details_get_nickname_supported(source);
+	purple_channel_join_details_set_nickname_supported(destination, supported);
+
 	value = purple_channel_join_details_get_nickname(source);
 	purple_channel_join_details_set_nickname(destination, value);
+
+	supported = purple_channel_join_details_get_password_supported(source);
+	purple_channel_join_details_set_password_supported(destination, supported);
 
 	value = purple_channel_join_details_get_password(source);
 	purple_channel_join_details_set_password(destination, value);

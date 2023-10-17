@@ -76,6 +76,41 @@ test_purple_channel_join_details_properties(void) {
 	g_clear_object(&details);
 }
 
+static void
+test_purple_channel_join_details_merge(void) {
+	PurpleChannelJoinDetails *destination = NULL;
+	PurpleChannelJoinDetails *source = NULL;
+	const char *str = NULL;
+	gboolean supported = FALSE;
+
+	source = purple_channel_join_details_new(TRUE, TRUE);
+	purple_channel_join_details_set_name(source, "name");
+	purple_channel_join_details_set_nickname(source, "nickname");
+	purple_channel_join_details_set_password(source, "password");
+
+	destination = purple_channel_join_details_new(FALSE, FALSE);
+
+	purple_channel_join_details_merge(source, destination);
+
+	str = purple_channel_join_details_get_name(destination);
+	g_assert_cmpstr(str, ==, purple_channel_join_details_get_name(source));
+
+	supported = purple_channel_join_details_get_nickname_supported(destination);
+	g_assert_true(supported == purple_channel_join_details_get_nickname_supported(source));
+
+	str = purple_channel_join_details_get_nickname(destination);
+	g_assert_cmpstr(str, ==, purple_channel_join_details_get_nickname(source));
+
+	supported = purple_channel_join_details_get_password_supported(destination);
+	g_assert_true(supported == purple_channel_join_details_get_password_supported(source));
+
+	str = purple_channel_join_details_get_password(destination);
+	g_assert_cmpstr(str, ==, purple_channel_join_details_get_password(source));
+
+	g_clear_object(&source);
+	g_clear_object(&destination);
+}
+
 /******************************************************************************
  * Main
  *****************************************************************************/
@@ -87,6 +122,8 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_channel_join_details_new);
 	g_test_add_func("/channel-join-details/properties",
 	                test_purple_channel_join_details_properties);
+	g_test_add_func("/channel-join-details/merge",
+	                test_purple_channel_join_details_merge);
 
 	return g_test_run();
 }
