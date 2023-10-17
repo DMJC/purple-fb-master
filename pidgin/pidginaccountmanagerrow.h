@@ -24,41 +24,41 @@
 # error "only <pidgin.h> may be included directly"
 #endif
 
-#ifndef PIDGIN_ACCOUNT_ROW_H
-#define PIDGIN_ACCOUNT_ROW_H
+#ifndef PIDGIN_ACCOUNT_MANAGER_ROW_H
+#define PIDGIN_ACCOUNT_MANAGER_ROW_H
 
 #include <gtk/gtk.h>
 
 #include <purple.h>
 
 /**
- * PidginAccountRow:
+ * PidginAccountManagerRow:
  *
  * A [class@Gtk.ListBoxRow] subclass to display a [class@Purple.Account].
  *
  * Since: 3.0.0
  */
 
-#define PIDGIN_TYPE_ACCOUNT_ROW (pidgin_account_row_get_type())
-G_DECLARE_FINAL_TYPE(PidginAccountRow, pidgin_account_row, PIDGIN, ACCOUNT_ROW,
-                     GtkListBoxRow)
+#define PIDGIN_TYPE_ACCOUNT_MANAGER_ROW (pidgin_account_manager_row_get_type())
+G_DECLARE_FINAL_TYPE(PidginAccountManagerRow, pidgin_account_manager_row,
+                     PIDGIN, ACCOUNT_MANAGER_ROW, GtkListBoxRow)
 
 G_BEGIN_DECLS
 
 /**
- * pidgin_account_row_new:
+ * pidgin_account_manager_row_new:
  * @account: (nullable): The account to represent.
  *
- * Creates a new #PidginAccountRow to display a [class@Purple.Account].
+ * Creates a new #PidginAccountManagerRow to display a [class@Purple.Account].
  *
  * Returns: (transfer full): The new account row.
  *
  * Since: 3.0.0
  */
-GtkWidget *pidgin_account_row_new(PurpleAccount *account);
+GtkWidget *pidgin_account_manager_row_new(PurpleAccount *account);
 
 /**
- * pidgin_account_row_get_account:
+ * pidgin_account_manager_row_get_account:
  * @row: The instance.
  *
  * Gets the [class@Purple.Account] that @row is displaying.
@@ -67,10 +67,10 @@ GtkWidget *pidgin_account_row_new(PurpleAccount *account);
  *
  * Since: 3.0.0
  */
-PurpleAccount *pidgin_account_row_get_account(PidginAccountRow *row);
+PurpleAccount *pidgin_account_manager_row_get_account(PidginAccountManagerRow *row);
 
 /**
- * pidgin_account_row_set_account:
+ * pidgin_account_manager_row_set_account:
  * @row: The instance.
  * @account: (nullable): The new account to set, or %NULL to unset.
  *
@@ -78,8 +78,8 @@ PurpleAccount *pidgin_account_row_get_account(PidginAccountRow *row);
  *
  * Since: 3.0.0
  */
-void pidgin_account_row_set_account(PidginAccountRow *row, PurpleAccount *account);
+void pidgin_account_manager_row_set_account(PidginAccountManagerRow *row, PurpleAccount *account);
 
 G_END_DECLS
 
-#endif /* PIDGIN_ACCOUNT_ROW_H */
+#endif /* PIDGIN_ACCOUNT_MANAGER_ROW_H */

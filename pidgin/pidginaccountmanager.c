@@ -28,7 +28,7 @@
 
 #include "pidgincore.h"
 #include "pidginaccounteditor.h"
-#include "pidginaccountrow.h"
+#include "pidginaccountmanagerrow.h"
 
 struct _PidginAccountManager {
 	GtkDialog parent;
@@ -63,7 +63,7 @@ pidgin_account_manager_create_widget(gpointer item,
 		return NULL;
 	}
 
-	return pidgin_account_row_new(PURPLE_ACCOUNT(item));
+	return pidgin_account_manager_row_new(PURPLE_ACCOUNT(item));
 }
 
 static void
@@ -134,8 +134,10 @@ pidgin_account_manager_row_activated_cb(G_GNUC_UNUSED GtkListBox *box,
 {
 	PurpleAccount *account = NULL;
 	PidginAccountManager *manager = data;
+	PidginAccountManagerRow *manager_row = NULL;
 
-	account = pidgin_account_row_get_account(PIDGIN_ACCOUNT_ROW(row));
+	manager_row = PIDGIN_ACCOUNT_MANAGER_ROW(row);
+	account = pidgin_account_manager_row_get_account(manager_row);
 
 	pidgin_account_manager_real_edit_account(manager, account, FALSE);
 }

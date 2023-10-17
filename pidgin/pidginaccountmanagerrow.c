@@ -24,9 +24,9 @@
 
 #include <adwaita.h>
 
-#include "pidgin/pidginaccountrow.h"
+#include "pidgin/pidginaccountmanagerrow.h"
 
-struct _PidginAccountRow {
+struct _PidginAccountManagerRow {
 	GtkListBoxRow parent;
 
 	PurpleAccount *account;
@@ -48,7 +48,7 @@ static GParamSpec *properties[N_PROPERTIES] = { NULL, };
  * Helpers
  *****************************************************************************/
 static void
-pidgin_account_row_refresh_buddy_icon(PidginAccountRow *row) {
+pidgin_account_manager_row_refresh_buddy_icon(PidginAccountManagerRow *row) {
 	PurpleImage *image = NULL;
 
 #warning FIX call this in the right place when buddy icons are better and can autorefresh
@@ -73,7 +73,7 @@ pidgin_account_row_refresh_buddy_icon(PidginAccountRow *row) {
 }
 
 static void
-pidgin_account_row_refresh_status(PidginAccountRow *row) {
+pidgin_account_manager_row_refresh_status(PidginAccountManagerRow *row) {
 	const char *status = NULL;
 	gboolean connected = FALSE;
 	gboolean error = FALSE;
@@ -126,38 +126,38 @@ pidgin_account_row_refresh_status(PidginAccountRow *row) {
  * Callbacks
  *****************************************************************************/
 static void
-pidgin_account_row_state_changed_cb(G_GNUC_UNUSED GObject *obj,
-                                    G_GNUC_UNUSED GParamSpec *pspec,
-                                    gpointer data)
+pidgin_account_manager_row_state_changed_cb(G_GNUC_UNUSED GObject *obj,
+                                            G_GNUC_UNUSED GParamSpec *pspec,
+                                            gpointer data)
 {
-	PidginAccountRow *row = data;
+	PidginAccountManagerRow *row = data;
 
-	pidgin_account_row_refresh_status(row);
+	pidgin_account_manager_row_refresh_status(row);
 }
 
 static void
-pidgin_account_row_connection_changed_cb(G_GNUC_UNUSED GObject *obj,
-                                         G_GNUC_UNUSED GParamSpec *pspec,
-                                         gpointer data)
+pidgin_account_manager_row_connection_changed_cb(G_GNUC_UNUSED GObject *obj,
+                                                 G_GNUC_UNUSED GParamSpec *pspec,
+                                                 gpointer data)
 {
-	PidginAccountRow *row = data;
+	PidginAccountManagerRow *row = data;
 	PurpleConnection *connection = NULL;
 
 	connection = purple_account_get_connection(row->account);
 	if(PURPLE_IS_CONNECTION(connection)) {
 		g_signal_connect_object(connection, "notify::state",
-		                        G_CALLBACK(pidgin_account_row_state_changed_cb),
+		                        G_CALLBACK(pidgin_account_manager_row_state_changed_cb),
 		                        row, 0);
 	}
 
-	pidgin_account_row_refresh_status(row);
+	pidgin_account_manager_row_refresh_status(row);
 }
 
 static void
-pidgin_account_row_enable_state_set_cb(G_GNUC_UNUSED GtkSwitch *sw,
-                                       gboolean state, gpointer data)
+pidgin_account_manager_row_enable_state_set_cb(G_GNUC_UNUSED GtkSwitch *sw,
+                                               gboolean state, gpointer data)
 {
-	PidginAccountRow *row = data;
+	PidginAccountManagerRow *row = data;
 	PurpleAccount *account = row->account;
 
 	if(purple_account_get_enabled(account) == state) {
@@ -174,9 +174,9 @@ pidgin_account_row_enable_state_set_cb(G_GNUC_UNUSED GtkSwitch *sw,
 }
 
 static char *
-pidgin_account_row_buddyicon_cb(G_GNUC_UNUSED GObject *self,
-                                PurpleAccount *account,
-                                G_GNUC_UNUSED gpointer data)
+pidgin_account_manager_row_buddyicon_cb(G_GNUC_UNUSED GObject *self,
+                                        PurpleAccount *account,
+                                        G_GNUC_UNUSED gpointer data)
 {
 	const char *buddy_icon_path = NULL;
 	char *path = NULL;
@@ -194,9 +194,9 @@ pidgin_account_row_buddyicon_cb(G_GNUC_UNUSED GObject *self,
 }
 
 static char *
-pidgin_account_row_protocol_name_cb(G_GNUC_UNUSED GObject *self,
-                                    PurpleAccount *account,
-                                    G_GNUC_UNUSED gpointer data)
+pidgin_account_manager_row_protocol_name_cb(G_GNUC_UNUSED GObject *self,
+                                            PurpleAccount *account,
+                                            G_GNUC_UNUSED gpointer data)
 {
 	const char *name = _("Unknown");
 
@@ -211,9 +211,9 @@ pidgin_account_row_protocol_name_cb(G_GNUC_UNUSED GObject *self,
 }
 
 static char *
-pidgin_account_row_protocol_icon_cb(G_GNUC_UNUSED GObject *self,
-                                    PurpleAccount *account,
-                                    G_GNUC_UNUSED gpointer data)
+pidgin_account_manager_row_protocol_icon_cb(G_GNUC_UNUSED GObject *self,
+                                            PurpleAccount *account,
+                                            G_GNUC_UNUSED gpointer data)
 {
 	const char *icon_name = NULL;
 
@@ -248,8 +248,10 @@ pidgin_account_manager_remove_account_cb(G_GNUC_UNUSED AdwMessageDialog *self,
 }
 
 static void
-pidgin_account_row_remove_cb(G_GNUC_UNUSED GtkButton *self, gpointer data) {
-	PidginAccountRow *row = data;
+pidgin_account_manager_row_remove_cb(G_GNUC_UNUSED GtkButton *self,
+                                     gpointer data)
+{
+	PidginAccountManagerRow *row = data;
 	GtkRoot *root = NULL;
 	AdwMessageDialog *dialog = NULL;
 	PurpleContactInfo *info = NULL;
@@ -258,8 +260,9 @@ pidgin_account_row_remove_cb(G_GNUC_UNUSED GtkButton *self, gpointer data) {
 
 	info = PURPLE_CONTACT_INFO(row->account);
 	name = purple_contact_info_get_name_for_display(info);
-	protocol_name = pidgin_account_row_protocol_name_cb(NULL, row->account,
-	                                                    NULL);
+	protocol_name = pidgin_account_manager_row_protocol_name_cb(NULL,
+	                                                            row->account,
+	                                                            NULL);
 
 	root = gtk_widget_get_root(GTK_WIDGET(row));
 	dialog = ADW_MESSAGE_DIALOG(adw_message_dialog_new(GTK_WINDOW(root),
@@ -288,17 +291,19 @@ pidgin_account_row_remove_cb(G_GNUC_UNUSED GtkButton *self, gpointer data) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountRow, pidgin_account_row, GTK_TYPE_LIST_BOX_ROW)
+G_DEFINE_TYPE(PidginAccountManagerRow, pidgin_account_manager_row,
+              GTK_TYPE_LIST_BOX_ROW)
 
 static void
-pidgin_account_row_get_property(GObject *obj, guint param_id, GValue *value,
-                                GParamSpec *pspec)
+pidgin_account_manager_row_get_property(GObject *obj, guint param_id,
+                                        GValue *value, GParamSpec *pspec)
 {
-	PidginAccountRow *row = PIDGIN_ACCOUNT_ROW(obj);
+	PidginAccountManagerRow *row = PIDGIN_ACCOUNT_MANAGER_ROW(obj);
 
 	switch(param_id) {
 		case PROP_ACCOUNT:
-			g_value_set_object(value, pidgin_account_row_get_account(row));
+			g_value_set_object(value,
+			                   pidgin_account_manager_row_get_account(row));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -307,14 +312,15 @@ pidgin_account_row_get_property(GObject *obj, guint param_id, GValue *value,
 }
 
 static void
-pidgin_account_row_set_property(GObject *obj, guint param_id,
+pidgin_account_manager_row_set_property(GObject *obj, guint param_id,
                                 const GValue *value, GParamSpec *pspec)
 {
-	PidginAccountRow *row = PIDGIN_ACCOUNT_ROW(obj);
+	PidginAccountManagerRow *row = PIDGIN_ACCOUNT_MANAGER_ROW(obj);
 
 	switch(param_id) {
 		case PROP_ACCOUNT:
-			pidgin_account_row_set_account(row, g_value_get_object(value));
+			pidgin_account_manager_row_set_account(row,
+			                                       g_value_get_object(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -323,35 +329,35 @@ pidgin_account_row_set_property(GObject *obj, guint param_id,
 }
 
 static void
-pidgin_account_row_finalize(GObject *obj) {
-	PidginAccountRow *row = PIDGIN_ACCOUNT_ROW(obj);
+pidgin_account_manager_row_finalize(GObject *obj) {
+	PidginAccountManagerRow *row = PIDGIN_ACCOUNT_MANAGER_ROW(obj);
 
 	g_clear_object(&row->account);
 
-	G_OBJECT_CLASS(pidgin_account_row_parent_class)->finalize(obj);
+	G_OBJECT_CLASS(pidgin_account_manager_row_parent_class)->finalize(obj);
 }
 
 static void
-pidgin_account_row_init(PidginAccountRow *row) {
+pidgin_account_manager_row_init(PidginAccountManagerRow *row) {
 	gtk_widget_init_template(GTK_WIDGET(row));
 
-	pidgin_account_row_refresh_buddy_icon(row);
-	pidgin_account_row_refresh_status(row);
+	pidgin_account_manager_row_refresh_buddy_icon(row);
+	pidgin_account_manager_row_refresh_status(row);
 }
 
 static void
-pidgin_account_row_class_init(PidginAccountRowClass *klass) {
+pidgin_account_manager_row_class_init(PidginAccountManagerRowClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
-	obj_class->finalize = pidgin_account_row_finalize;
-	obj_class->get_property = pidgin_account_row_get_property;
-	obj_class->set_property = pidgin_account_row_set_property;
+	obj_class->finalize = pidgin_account_manager_row_finalize;
+	obj_class->get_property = pidgin_account_manager_row_get_property;
+	obj_class->set_property = pidgin_account_manager_row_set_property;
 
 	/* properties */
 
 	/**
-	 * PidginAccountRow:account:
+	 * PidginAccountManagerRow:account:
 	 *
 	 * The account that this row will be representing.
 	 *
@@ -367,50 +373,53 @@ pidgin_account_row_class_init(PidginAccountRowClass *klass) {
 
 	gtk_widget_class_set_template_from_resource(
 	    widget_class,
-	    "/im/pidgin/Pidgin3/Accounts/account-row.ui"
+	    "/im/pidgin/Pidgin3/Accounts/manager-row.ui"
 	);
 
-	gtk_widget_class_bind_template_child(widget_class, PidginAccountRow,
+	gtk_widget_class_bind_template_child(widget_class, PidginAccountManagerRow,
 	                                     enabled);
-	gtk_widget_class_bind_template_child(widget_class, PidginAccountRow,
+	gtk_widget_class_bind_template_child(widget_class, PidginAccountManagerRow,
 	                                     avatar);
-	gtk_widget_class_bind_template_child(widget_class, PidginAccountRow,
+	gtk_widget_class_bind_template_child(widget_class, PidginAccountManagerRow,
 	                                     name);
-	gtk_widget_class_bind_template_child(widget_class, PidginAccountRow,
+	gtk_widget_class_bind_template_child(widget_class, PidginAccountManagerRow,
 	                                     status);
 
 	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_account_row_enable_state_set_cb);
+	                                        pidgin_account_manager_row_enable_state_set_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_account_row_buddyicon_cb);
+	                                        pidgin_account_manager_row_buddyicon_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_account_row_protocol_name_cb);
+	                                        pidgin_account_manager_row_protocol_name_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_account_row_protocol_icon_cb);
+	                                        pidgin_account_manager_row_protocol_icon_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_account_row_remove_cb);
+	                                        pidgin_account_manager_row_remove_cb);
 }
 
 /******************************************************************************
  * Public API
  *****************************************************************************/
 GtkWidget *
-pidgin_account_row_new(PurpleAccount *account) {
-	return g_object_new(PIDGIN_TYPE_ACCOUNT_ROW, "account", account, NULL);
+pidgin_account_manager_row_new(PurpleAccount *account) {
+	return g_object_new(PIDGIN_TYPE_ACCOUNT_MANAGER_ROW, "account", account,
+	                    NULL);
 }
 
 PurpleAccount *
-pidgin_account_row_get_account(PidginAccountRow *row) {
-	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_ROW(row), NULL);
+pidgin_account_manager_row_get_account(PidginAccountManagerRow *row) {
+	g_return_val_if_fail(PIDGIN_IS_ACCOUNT_MANAGER_ROW(row), NULL);
 
 	return row->account;
 }
 
 void
-pidgin_account_row_set_account(PidginAccountRow *row, PurpleAccount *account) {
+pidgin_account_manager_row_set_account(PidginAccountManagerRow *row,
+                                       PurpleAccount *account)
+{
 	PurpleAccount *old = NULL;
 
-	g_return_if_fail(PIDGIN_IS_ACCOUNT_ROW(row));
+	g_return_if_fail(PIDGIN_IS_ACCOUNT_MANAGER_ROW(row));
 
 	old = (row->account != NULL) ? g_object_ref(row->account) : NULL;
 
@@ -420,24 +429,24 @@ pidgin_account_row_set_account(PidginAccountRow *row, PurpleAccount *account) {
 
 			if(PURPLE_IS_CONNECTION(connection)) {
 				g_signal_handlers_disconnect_by_func(connection,
-				                                     pidgin_account_row_state_changed_cb,
+				                                     pidgin_account_manager_row_state_changed_cb,
 				                                     row);
 			}
 
 			g_signal_handlers_disconnect_by_func(old,
-			                                     pidgin_account_row_connection_changed_cb,
+			                                     pidgin_account_manager_row_connection_changed_cb,
 			                                     row);
 		}
 
 		if(PURPLE_IS_ACCOUNT(account)) {
 			g_signal_connect_object(account, "notify::connection",
-			                        G_CALLBACK(pidgin_account_row_connection_changed_cb),
+			                        G_CALLBACK(pidgin_account_manager_row_connection_changed_cb),
 			                        row, 0);
 			g_signal_connect_object(account, "notify::error",
-			                        G_CALLBACK(pidgin_account_row_state_changed_cb),
+			                        G_CALLBACK(pidgin_account_manager_row_state_changed_cb),
 			                        row, 0);
-			pidgin_account_row_refresh_buddy_icon(row);
-			pidgin_account_row_refresh_status(row);
+			pidgin_account_manager_row_refresh_buddy_icon(row);
+			pidgin_account_manager_row_refresh_status(row);
 		}
 
 		g_object_notify_by_pspec(G_OBJECT(row), properties[PROP_ACCOUNT]);

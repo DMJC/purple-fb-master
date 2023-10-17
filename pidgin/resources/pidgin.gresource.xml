@@ -4,11 +4,11 @@
     <file compressed="true" preprocess="xml-stripblanks">About/about.ui</file>
     <file compressed="true">About/about.md</file>
     <file compressed="true" preprocess="json-stripblanks">About/credits.json</file>
-    <file compressed="true" preprocess="xml-stripblanks">Accounts/account-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Accounts/chooser.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Accounts/display.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Accounts/editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Accounts/manager.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">Accounts/manager-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">avatar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">BuddyList/window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/conversation.ui</file>

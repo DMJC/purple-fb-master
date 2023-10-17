@@ -22,7 +22,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <template class="PidginAccountRow" parent="GtkListBoxRow">
+  <template class="PidginAccountManagerRow" parent="GtkListBoxRow">
     <property name="selectable">0</property>
     <property name="child">
       <object class="GtkBox">
@@ -32,11 +32,11 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
           <object class="GtkSwitch" id="enabled">
             <binding name="active">
               <lookup name="enabled" type="PurpleAccount">
-                <lookup name="account">PidginAccountRow</lookup>
+                <lookup name="account">PidginAccountManagerRow</lookup>
               </lookup>
             </binding>
             <property name="valign">center</property>
-            <signal name="state-set" handler="pidgin_account_row_enable_state_set_cb" swapped="no"/>
+            <signal name="state-set" handler="pidgin_account_manager_row_enable_state_set_cb" swapped="no"/>
           </object>
         </child>
         <child>
@@ -44,7 +44,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             <property name="size">48</property>
             <binding name="text">
               <lookup name="name-for-display" type="PurpleContactInfo">
-                <lookup name="account">PidginAccountRow</lookup>
+                <lookup name="account">PidginAccountManagerRow</lookup>
               </lookup>
             </binding>
           </object>
@@ -59,7 +59,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                 <property name="xalign">0</property>
                 <binding name="label">
                   <lookup name="name-for-display" type="PurpleContactInfo">
-                    <lookup name="account">PidginAccountRow</lookup>
+                    <lookup name="account">PidginAccountManagerRow</lookup>
                   </lookup>
                 </binding>
               </object>
@@ -80,8 +80,8 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             <child>
               <object class="GtkImage">
                 <binding name="icon-name">
-                  <closure type="gchararray" function="pidgin_account_row_protocol_icon_cb">
-                    <lookup name="account">PidginAccountRow</lookup>
+                  <closure type="gchararray" function="pidgin_account_manager_row_protocol_icon_cb">
+                    <lookup name="account">PidginAccountManagerRow</lookup>
                   </closure>
                 </binding>
               </object>
@@ -89,8 +89,8 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             <child>
               <object class="GtkLabel">
                 <binding name="label">
-                  <closure type="gchararray" function="pidgin_account_row_protocol_name_cb">
-                    <lookup name="account">PidginAccountRow</lookup>
+                  <closure type="gchararray" function="pidgin_account_manager_row_protocol_name_cb">
+                    <lookup name="account">PidginAccountManagerRow</lookup>
                   </closure>
                 </binding>
                 <property name="css-classes">dim-label</property>
@@ -105,7 +105,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
 error</property>
             <property name="icon-name">list-remove-symbolic</property>
             <property name="valign">center</property>
-            <signal name="clicked" handler="pidgin_account_row_remove_cb" swapped="no"/>
+            <signal name="clicked" handler="pidgin_account_manager_row_remove_cb" swapped="no"/>
           </object>
         </child>
         <child>
