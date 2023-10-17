@@ -34,15 +34,13 @@ struct _PidginInfoPane {
 	PurpleConversation *conversation;
 
 	GtkWidget *hbox;
-	GtkWidget *presence_icon;
+	GtkWidget *avatar;
 
 	GtkWidget *name;
 	GBinding *name_binding;
 
 	GtkWidget *topic;
 	GBinding *topic_binding;
-
-	GtkWidget *avatar;
 };
 
 enum {
@@ -53,6 +51,28 @@ enum {
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE(PidginInfoPane, pidgin_info_pane, GTK_TYPE_BOX)
+
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static gboolean
+pidgin_info_pane_topic_to_label(G_GNUC_UNUSED GBinding *binding,
+                                const GValue *from_value,
+                                GValue *to_value,
+                                gpointer data)
+{
+	PidginInfoPane *pane = data;
+	const char *topic = NULL;
+	gboolean visible = FALSE;
+
+	topic = g_value_get_string(from_value);
+	visible = !purple_strempty(topic);
+	g_value_set_string(to_value, topic);
+
+	gtk_widget_set_visible(pane->topic, visible);
+
+	return TRUE;
+}
 
 /******************************************************************************
  * GObject Implementation
@@ -132,7 +152,6 @@ pidgin_info_pane_class_init(PidginInfoPaneClass *klass) {
 
 	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, hbox);
 	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, avatar);
-	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, presence_icon);
 	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, name);
 	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, topic);
 }
@@ -174,41 +193,18 @@ pidgin_info_pane_set_conversation(PidginInfoPane *pane,
 	                               pane->conversation);
 
 	if(PURPLE_IS_CONVERSATION(conversation)) {
-		PidginPresenceIcon *presence_icon = NULL;
-		PurplePresence *presence = NULL;
-		const gchar *fallback = "person";
-
 		pane->name_binding =
 			g_object_bind_property(G_OBJECT(conversation), "name",
 			                       G_OBJECT(pane->name), "label",
 			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
 
 		pane->topic_binding =
-			g_object_bind_property(G_OBJECT(conversation), "topic",
-			                       G_OBJECT(pane->topic), "label",
-			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-
-		if(PURPLE_IS_CHAT_CONVERSATION(conversation)) {
-			fallback = "chat";
-		} else if(PURPLE_IS_IM_CONVERSATION(conversation)) {
-			PurpleAccount *account = NULL;
-			PurpleBuddy *buddy = NULL;
-			const gchar *name = NULL;
-
-			account = purple_conversation_get_account(conversation);
-			name = purple_conversation_get_name(conversation);
-			buddy = purple_blist_find_buddy(account, name);
-
-			if(PURPLE_IS_BUDDY(buddy)) {
-				presence = purple_buddy_get_presence(buddy);
-			}
-
-			fallback = "person";
-		}
-
-		presence_icon = PIDGIN_PRESENCE_ICON(pane->presence_icon);
-		pidgin_presence_icon_set_fallback(presence_icon, fallback);
-		pidgin_presence_icon_set_presence(presence_icon, presence);
+			g_object_bind_property_full(G_OBJECT(conversation), "topic",
+			                            G_OBJECT(pane->topic), "label",
+			                            G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
+			                            pidgin_info_pane_topic_to_label,
+			                            NULL,
+			                            pane, NULL);
 	}
 
 	/* Notify that we changed. */
