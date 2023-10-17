@@ -87,7 +87,7 @@ static GOptionEntry option_entries[] = {
 	}
 };
 
-G_DEFINE_TYPE(PidginApplication, pidgin_application, GTK_TYPE_APPLICATION)
+G_DEFINE_TYPE(PidginApplication, pidgin_application, ADW_TYPE_APPLICATION)
 
 /******************************************************************************
  * Helpers
