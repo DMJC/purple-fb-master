@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include <adwaita.h>
+
 G_BEGIN_DECLS
 
 /**
@@ -43,7 +45,7 @@ G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_APPLICATION (pidgin_application_get_type())
 G_DECLARE_FINAL_TYPE(PidginApplication, pidgin_application, PIDGIN,
-                     APPLICATION, GtkApplication)
+                     APPLICATION, AdwApplication)
 
 /**
  * pidgin_application_new:

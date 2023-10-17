@@ -56,7 +56,7 @@
 #include "pidginui.h"
 
 struct _PidginApplication {
-	GtkApplication parent;
+	AdwApplication parent;
 
 	GHashTable *action_groups;
 };
@@ -809,8 +809,6 @@ pidgin_application_startup(GApplication *application) {
 	gpointer handle = NULL;
 
 	G_APPLICATION_CLASS(pidgin_application_parent_class)->startup(application);
-
-	adw_init();
 
 	/* set a user-specified config directory */
 	if (opt_config_dir_arg != NULL) {
