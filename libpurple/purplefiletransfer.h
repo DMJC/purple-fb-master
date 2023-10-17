@@ -88,7 +88,7 @@ PurpleFileTransfer *purple_file_transfer_new_send(PurpleAccount *account, Purple
  * purple_file_transfer_new_receive:
  * @account: The account this file transfer is to.
  * @remote: The [class@ContactInfo] of the user sending the file.
- * @filename: (non-nullable): The base filename.
+ * @filename: (not nullable): The base filename.
  * @file_size: The size of the file.
  *
  * Creates a new [class@FileTransfer] which will be used to negotiate a file
