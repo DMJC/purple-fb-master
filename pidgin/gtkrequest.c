@@ -2139,7 +2139,7 @@ pidgin_request_file(const char *title, const char *filename,
 	   !purple_strempty(current_folder))
 	{
 		GFile *file = g_file_new_for_path(current_folder);
-		gtk_file_dialog_set_initial_folder(dialog, file, NULL);
+		gtk_file_dialog_set_initial_folder(dialog, file);
 		folder_set = TRUE;
 		g_clear_object(&file);
 	}
