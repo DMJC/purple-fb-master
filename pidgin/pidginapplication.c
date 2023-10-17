@@ -215,8 +215,6 @@ pidgin_application_populate_dynamic_menus(PidginApplication *application) {
  * This list keeps track of which actions should only be enabled while online.
  */
 static const gchar *pidgin_application_online_actions[] = {
-	"add-buddy",
-	"add-group",
 	"get-user-info",
 	"new-message",
 };
@@ -228,7 +226,6 @@ static const gchar *pidgin_application_online_actions[] = {
  * supporting groups chats is connected.
  */
 static const gchar *pidgin_application_chat_actions[] = {
-	"add-chat",
 	"join-chat",
 };
 
@@ -299,30 +296,6 @@ pidgin_application_accounts(G_GNUC_UNUSED GSimpleAction *simple,
 
 	pidgin_application_present_transient_window(application,
 	                                            GTK_WINDOW(manager));
-}
-
-static void
-pidgin_application_add_buddy(G_GNUC_UNUSED GSimpleAction *simple,
-                             G_GNUC_UNUSED GVariant *parameter,
-                             G_GNUC_UNUSED gpointer data)
-{
-	purple_blist_request_add_buddy(NULL, NULL, NULL, NULL);
-}
-
-static void
-pidgin_application_add_chat(G_GNUC_UNUSED GSimpleAction *simple,
-                            G_GNUC_UNUSED GVariant *parameter,
-                            G_GNUC_UNUSED gpointer data)
-{
-	purple_blist_request_add_chat(NULL, NULL, NULL, NULL);
-}
-
-static void
-pidgin_application_add_group(G_GNUC_UNUSED GSimpleAction *simple,
-                             G_GNUC_UNUSED GVariant *parameter,
-                             G_GNUC_UNUSED gpointer data)
-{
-	purple_blist_request_add_group();
 }
 
 static void
@@ -574,15 +547,6 @@ static GActionEntry app_entries[] = {
 	{
 		.name = "about",
 		.activate = pidgin_application_about,
-	}, {
-		.name = "add-buddy",
-		.activate = pidgin_application_add_buddy,
-	}, {
-		.name = "add-chat",
-		.activate = pidgin_application_add_chat,
-	}, {
-		.name = "add-group",
-		.activate = pidgin_application_add_group,
 	}, {
 		.name = "connect-account",
 		.activate = pidgin_application_connect_account,

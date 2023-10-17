@@ -24,8 +24,8 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
   <menu id="menubar">
-    <submenu>
-      <attribute name="label" translatable="yes">_Buddies</attribute>
+  	<submenu>
+      <attribute name="label" translatable="yes">_Pidgin</attribute>
 
       <section>
         <item>
@@ -37,37 +37,14 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           <attribute name="label" translatable="yes">Join a _Chat...</attribute>
           <attribute name="action">app.join-chat</attribute>
         </item>
+      </section>
+      <section>
         <item>
           <attribute name="label" translatable="yes">Get User _Info...</attribute>
           <attribute name="action">app.get-user-info</attribute>
           <attribute name="accel">&lt;Primary&gt;I</attribute>
         </item>
       </section>
-
-      <section>
-        <submenu>
-          <attribute name="label" translatable="yes">_Sort Buddies</attribute>
-
-          <section id="sort-buddies"/>
-        </submenu>
-      </section>
-
-      <section>
-        <item>
-          <attribute name="label" translatable="yes">_Add Buddy...</attribute>
-          <attribute name="action">app.add-buddy</attribute>
-          <attribute name="accel">&lt;Primary&gt;B</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">_Add Chat...</attribute>
-          <attribute name="action">app.add-chat</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">_Add Group...</attribute>
-          <attribute name="action">app.add-group</attribute>
-        </item>
-      </section>
-
       <section>
         <item>
           <attribute name="label" translatable="yes">_Quit</attribute>
@@ -76,86 +53,7 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         </item>
       </section>
     </submenu>
-    <submenu>
-      <attribute name="label" translatable="yes">_Conversation</attribute>
 
-      <section>
-        <item>
-          <attribute name="label" translatable="yes">New Instant _Message...</attribute>
-          <attribute name="action">app.new-message</attribute>
-          <attribute name="accel">&lt;Primary&gt;m</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">Join a _Chat...</attribute>
-          <attribute name="action">app.join-chat</attribute>
-        </item>
-      </section>
-
-      <section>
-        <submenu>
-          <attribute name="label" translatable="yes">M_edia</attribute>
-
-          <section>
-            <item>
-              <attribute name="label" translatable="yes">_Audio Call</attribute>
-              <attribute name="action">win.audio-call</attribute>
-            </item>
-            <item>
-              <attribute name="label" translatable="yes">_Video Call</attribute>
-              <attribute name="action">win.video-call</attribute>
-            </item>
-            <item>
-              <attribute name="label" translatable="yes">Audio/Video _Call</attribute>
-              <attribute name="action">win.audio-video-call</attribute>
-            </item>
-          </section>
-        </submenu>
-      </section>
-
-      <section>
-        <item>
-          <attribute name="label" translatable="yes">Se_nd File...</attribute>
-          <attribute name="action">win.send-file</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">_Get Info</attribute>
-          <attribute name="action">win.get-info</attribute>
-          <attribute name="accel">&lt;Primary&gt;o</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">In_vite...</attribute>
-          <attribute name="action">win.invite</attribute>
-        </item>
-        <submenu>
-          <attribute name="label" translatable="yes">M_ore</attribute>
-
-          <section id="more"></section>
-        </submenu>
-      </section>
-
-      <section>
-        <item>
-          <attribute name="label" translatable="yes">Al_ias...</attribute>
-          <attribute name="action">win.alias</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">_Blocked...</attribute>
-          <attribute name="action">win.block</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">_Save Contact</attribute>
-          <attribute name="action">win.save-contact</attribute>
-        </item>
-      </section>
-
-      <section>
-        <item>
-          <attribute name="label" translatable="yes">_Close</attribute>
-          <attribute name="action">win.close</attribute>
-          <attribute name="accel">&lt;Primary&gt;w</attribute>
-        </item>
-      </section>
-    </submenu>
     <submenu>
       <attribute name="label" translatable="yes">_Accounts</attribute>
 
