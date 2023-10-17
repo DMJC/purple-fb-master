@@ -335,6 +335,35 @@ test_purple_protocol_conversation_empty_set_avatar_finish(void) {
 	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolConversationEmpty*set_avatar_finish*");
 }
 
+static void
+test_purple_protocol_conversation_empty_send_typing(void) {
+	if(g_test_subprocess()) {
+		PurpleAccount *account = NULL;
+		PurpleConversation *conversation = NULL;
+		PurpleProtocolConversation *protocol = NULL;
+
+		protocol = g_object_new(test_purple_protocol_conversation_empty_get_type(),
+		                        NULL);
+		account = purple_account_new("test", "test");
+		conversation = g_object_new(
+			PURPLE_TYPE_CONVERSATION,
+			"account", account,
+			"name", "this is required at the moment",
+			"type", PurpleConversationTypeDM,
+			NULL);
+
+		purple_protocol_conversation_send_typing(protocol, conversation,
+		                                         PURPLE_TYPING_STATE_PAUSED);
+
+		g_clear_object(&account);
+		g_clear_object(&conversation);
+		g_clear_object(&protocol);
+	}
+
+	g_test_trap_subprocess(NULL, 0, 0);
+	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolConversationEmpty*send_typing*");
+}
+
 /******************************************************************************
  * TestProtocolConversation Implementation
  *****************************************************************************/
@@ -359,6 +388,8 @@ struct _TestPurpleProtocolConversation {
 
 	guint set_avatar_async;
 	guint set_avatar_finish;
+
+	guint send_typing;
 };
 
 static void
@@ -544,6 +575,20 @@ test_purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *
 }
 
 static void
+test_purple_protocol_conversation_send_typing(PurpleProtocolConversation *protocol,
+                                              PurpleConversation *conversation,
+                                              PurpleTypingState state)
+{
+	TestPurpleProtocolConversation *test_protocol = NULL;
+
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(protocol);
+	test_protocol->send_typing += 1;
+
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+	g_assert_true(state == PURPLE_TYPING_STATE_TYPING);
+}
+
+static void
 test_purple_protocol_conversation_iface_init(PurpleProtocolConversationInterface *iface) {
 	iface->send_message_async = test_purple_protocol_conversation_send_message_async;
 	iface->send_message_finish = test_purple_protocol_conversation_send_message_finish;
@@ -557,6 +602,8 @@ test_purple_protocol_conversation_iface_init(PurpleProtocolConversationInterface
 
 	iface->set_avatar_async = test_purple_protocol_conversation_set_avatar_async;
 	iface->set_avatar_finish = test_purple_protocol_conversation_set_avatar_finish;
+
+	iface->send_typing = test_purple_protocol_conversation_send_typing;
 }
 
 G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolConversation, test_purple_protocol_conversation,
@@ -579,6 +626,8 @@ test_purple_protocol_conversation_init(TestPurpleProtocolConversation *protocol)
 
 	protocol->set_avatar_async = 0;
 	protocol->set_avatar_finish = 0;
+
+	protocol->send_typing = 0;
 }
 
 static void
@@ -922,6 +971,39 @@ test_purple_protocol_conversation_set_avatar_normal(gconstpointer data) {
 }
 
 /******************************************************************************
+ * TestProtocolConversation Send Typing Tests
+ ****************************************************************************/
+static void
+test_purple_protocol_conversation_send_typing_normal(void) {
+	TestPurpleProtocolConversation *test_protocol = NULL;
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleProtocolConversation *protocol = NULL;
+
+	protocol = g_object_new(test_purple_protocol_conversation_get_type(),
+	                        NULL);
+	test_protocol = TEST_PURPLE_PROTOCOL_CONVERSATION(protocol);
+
+	account = purple_account_new("test", "test");
+
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"name", "this is required at the moment",
+		"type", PurpleConversationTypeDM,
+		NULL);
+
+	test_purple_protocol_conversation_send_typing(protocol, conversation,
+	                                              PURPLE_TYPING_STATE_TYPING);
+
+	g_assert_cmpuint(test_protocol->send_typing, ==, 1);
+
+	g_clear_object(&conversation);
+	g_clear_object(&account);
+	g_clear_object(&protocol);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -956,6 +1038,10 @@ main(int argc, char **argv) {
 	g_test_add_func("/protocol-conversation/empty/join_channel_finish",
 	                test_purple_protocol_conversation_empty_join_channel_finish);
 
+	/* Empty send typing tests. */
+	g_test_add_func("/protocol-conversation/empty/send-typing",
+	                test_purple_protocol_conversation_empty_send_typing);
+
 	/* Normal send message tests. */
 	g_test_add_data_func("/protocol-conversation/normal/send-message-normal",
 	                     GINT_TO_POINTER(FALSE),
@@ -989,6 +1075,10 @@ main(int argc, char **argv) {
 	g_test_add_data_func("/protocol-contacts/normal/set-avatar-error",
 	                     GINT_TO_POINTER(TRUE),
 	                     test_purple_protocol_conversation_set_avatar_normal);
+
+	/* Normal send typing tests. */
+	g_test_add_func("/protocol-conversation/normal/send-typing",
+	                test_purple_protocol_conversation_send_typing_normal);
 
 	ret = g_test_run();
 

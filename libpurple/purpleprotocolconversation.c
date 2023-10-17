@@ -233,3 +233,22 @@ purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *proto
 
 	return FALSE;
 }
+
+void
+purple_protocol_conversation_send_typing(PurpleProtocolConversation *protocol,
+                                         PurpleConversation *conversation,
+                                         PurpleTypingState state)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface != NULL && iface->send_typing != NULL) {
+		iface->send_typing(protocol, conversation, state);
+	} else {
+		g_warning("%s does not implement send_typing",
+		          G_OBJECT_TYPE_NAME(protocol));
+	}
+}

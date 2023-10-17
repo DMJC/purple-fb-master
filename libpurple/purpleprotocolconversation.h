@@ -36,6 +36,7 @@
 #include "purpleconversation.h"
 #include "purplemessage.h"
 #include "purpleprotocol.h"
+#include "purpletyping.h"
 
 G_BEGIN_DECLS
 
@@ -69,6 +70,8 @@ struct _PurpleProtocolConversationInterface {
 
 	void (*set_avatar_async)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleAvatar *avatar, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*set_avatar_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
+	void (*send_typing)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleTypingState state);
 
 	/*< private >*/
 	gpointer reserved[8];
@@ -238,6 +241,20 @@ void purple_protocol_conversation_set_avatar_async(PurpleProtocolConversation *p
  * Since: 3.0.0
  */
 gboolean purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
+/**
+ * purple_protocl_conversation_send_typing_state:
+ * @protocol: The instance.
+ * @conversation: The conversation.
+ * @state: The new typing state.
+ *
+ * Sends the libpurple user's typing state for the conversation.
+ *
+ * This should primarily be called by the user interface.
+ *
+ * Since: 3.0.0
+ */
+void purple_protocol_conversation_send_typing(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleTypingState state);
 
 G_END_DECLS
 
