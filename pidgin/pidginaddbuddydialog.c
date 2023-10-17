@@ -24,7 +24,7 @@
 
 #include "pidginaddbuddydialog.h"
 
-#include "pidginaccountchooser.h"
+#include "pidginaccountrow.h"
 #include "pidgincore.h"
 
 struct _PidginAddBuddyDialog {
@@ -67,7 +67,7 @@ pidgin_add_buddy_dialog_validate(PidginAddBuddyDialog *dialog) {
 	PurpleAccount *account = NULL;
 	gboolean valid = FALSE;
 
-	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(dialog->account));
+	account = pidgin_account_row_get_account(PIDGIN_ACCOUNT_ROW(dialog->account));
 	if(PURPLE_IS_ACCOUNT(account)) {
 		PurpleProtocol *protocol = NULL;
 
@@ -100,7 +100,7 @@ pidgin_add_buddy_dialog_response_cb(GtkDialog *dialog, gint response_id,
 		gchar *groupname = NULL;
 
 		/* Grab all of the values that the user entered. */
-		account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(abdialog->account));
+		account = pidgin_account_row_get_account(PIDGIN_ACCOUNT_ROW(abdialog->account));
 		username = gtk_editable_get_text(GTK_EDITABLE(abdialog->username));
 		alias = gtk_editable_get_text(GTK_EDITABLE(abdialog->alias));
 		message = gtk_editable_get_text(GTK_EDITABLE(abdialog->message));
@@ -180,7 +180,7 @@ pidgin_add_buddy_dialog_account_changed_cb(GObject *obj,
 	PurpleAccount *account = NULL;
 	gboolean message_sensitive = TRUE;
 
-	account = pidgin_account_chooser_get_selected(PIDGIN_ACCOUNT_CHOOSER(obj));
+	account = pidgin_account_row_get_account(PIDGIN_ACCOUNT_ROW(obj));
 
 	if(PURPLE_IS_ACCOUNT(account)) {
 		PurpleProtocol *protocol = purple_account_get_protocol(account);
@@ -273,8 +273,8 @@ pidgin_add_buddy_dialog_new(PurpleAccount *account, const gchar *username,
 	PidginAddBuddyDialog *abdialog = PIDGIN_ADD_BUDDY_DIALOG(dialog);
 
 	if(PURPLE_IS_ACCOUNT(account)) {
-		pidgin_account_chooser_set_selected(PIDGIN_ACCOUNT_CHOOSER(abdialog->account),
-		                                    account);
+		pidgin_account_row_set_account(PIDGIN_ACCOUNT_ROW(abdialog->account),
+		                               account);
 	}
 
 	if(username != NULL) {

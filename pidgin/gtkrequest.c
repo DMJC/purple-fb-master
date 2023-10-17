@@ -28,9 +28,9 @@
 #include "gtkrequest.h"
 #include "gtkblist.h"
 #include "gtkutils.h"
-#include "pidginaccountchooser.h"
 #include "pidginaccountdisplay.h"
 #include "pidginaccountfilterconnected.h"
+#include "pidginaccountrow.h"
 #include "pidgincore.h"
 
 #include <gdk/gdkkeysyms.h>
@@ -203,11 +203,11 @@ static void
 field_account_cb(GObject *obj, G_GNUC_UNUSED GParamSpec *pspec, gpointer data)
 {
 	PurpleRequestField *field = data;
-	PidginAccountChooser *chooser = PIDGIN_ACCOUNT_CHOOSER(obj);
+	PidginAccountRow *row = PIDGIN_ACCOUNT_ROW(obj);
 
 	purple_request_field_account_set_value(
 	        PURPLE_REQUEST_FIELD_ACCOUNT(field),
-	        pidgin_account_chooser_get_selected(chooser));
+	        pidgin_account_row_get_account(row));
 }
 
 static void
@@ -1214,7 +1214,7 @@ create_account_field(PurpleRequestField *field, GtkWidget **account_hint)
 	GtkFilter *filter = NULL;
 	const char *type_hint = NULL;
 
-	widget = pidgin_account_chooser_new();
+	widget = pidgin_account_row_new();
 	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
 	account = purple_request_field_account_get_default_value(afield);
 
@@ -1237,14 +1237,12 @@ create_account_field(PurpleRequestField *field, GtkWidget **account_hint)
 		filter = GTK_FILTER(every);
 	}
 
-	pidgin_account_chooser_set_selected(PIDGIN_ACCOUNT_CHOOSER(widget),
-	                                    account);
-
+	pidgin_account_row_set_account(PIDGIN_ACCOUNT_ROW(widget), account);
 	g_signal_connect(widget, "notify::account", G_CALLBACK(field_account_cb),
 	                 field);
 
 	if(GTK_IS_FILTER(filter)) {
-		pidgin_account_chooser_set_filter(PIDGIN_ACCOUNT_CHOOSER(widget), filter);
+		pidgin_account_row_set_filter(PIDGIN_ACCOUNT_ROW(widget), filter);
 		g_object_unref(filter);
 	}
 
@@ -1931,6 +1929,7 @@ pidgin_request_fields(const char *title, const char *primary,
 				widget = create_image_field(field);
 			} else if(PURPLE_IS_REQUEST_FIELD_ACCOUNT(field)) {
 				widget = create_account_field(field, &account_hint);
+				was_handled_by_create = TRUE;
 			} else if(PURPLE_IS_REQUEST_FIELD_DATASHEET(field)) {
 				widget = create_datasheet_field(field, datasheet_buttons_sg);
 			} else {

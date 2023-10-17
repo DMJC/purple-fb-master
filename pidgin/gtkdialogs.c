@@ -83,12 +83,6 @@ pidgin_dialogs_im(void)
 	group = purple_request_group_new(NULL);
 	purple_request_page_add_group(page, group);
 
-	username_field = purple_request_field_string_new("screenname", _("_Name"),
-	                                                 NULL, FALSE);
-	purple_request_field_set_type_hint(username_field, "screenname");
-	purple_request_field_set_required(username_field, TRUE);
-	purple_request_group_add_field(group, username_field);
-
 	account_field = purple_request_field_account_new("account", _("_Account"),
 	                                                 NULL);
 	purple_request_field_set_type_hint(account_field, "account");
@@ -101,6 +95,12 @@ pidgin_dialogs_im(void)
 	purple_request_field_set_validator(username_field,
 	                                   pidgin_dialogs_im_name_validator,
 	                                   account_field, NULL);
+
+	username_field = purple_request_field_string_new("screenname", _("_Name"),
+	                                                 NULL, FALSE);
+	purple_request_field_set_type_hint(username_field, "screenname");
+	purple_request_field_set_required(username_field, TRUE);
+	purple_request_group_add_field(group, username_field);
 
 	purple_request_fields(
 	        purple_blist_get_default(), _("New Instant Message"), NULL,
@@ -161,16 +161,16 @@ pidgin_dialogs_info(void)
 	group = purple_request_group_new(NULL);
 	purple_request_page_add_group(page, group);
 
-	field = purple_request_field_string_new("screenname", _("_Name"), NULL, FALSE);
-	purple_request_field_set_type_hint(field, "screenname");
-	purple_request_field_set_required(field, TRUE);
-	purple_request_group_add_field(group, field);
-
 	field = purple_request_field_account_new("account", _("_Account"), NULL);
 	purple_request_field_set_type_hint(field, "account");
 	purple_request_field_set_visible(field,
 		(purple_connections_get_all() != NULL &&
 		 purple_connections_get_all()->next != NULL));
+	purple_request_field_set_required(field, TRUE);
+	purple_request_group_add_field(group, field);
+
+	field = purple_request_field_string_new("screenname", _("_Name"), NULL, FALSE);
+	purple_request_field_set_type_hint(field, "screenname");
 	purple_request_field_set_required(field, TRUE);
 	purple_request_group_add_field(group, field);
 

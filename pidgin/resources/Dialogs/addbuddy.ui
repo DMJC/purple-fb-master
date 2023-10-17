@@ -44,18 +44,10 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           </object>
         </child>
         <child>
-          <object class="GtkBox">
-            <property name="spacing">6</property>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="1">Buddy information</property>
             <child>
-              <object class="GtkLabel" id="label1">
-                <property name="label" translatable="1">A_ccount:</property>
-                <property name="use-underline">1</property>
-                <property name="mnemonic-widget">account</property>
-                <property name="xalign">0</property>
-              </object>
-            </child>
-            <child>
-              <object class="PidginAccountChooser" id="account">
+              <object class="PidginAccountRow" id="account">
                 <property name="hexpand">1</property>
                 <property name="filter">
                   <object class="GtkEveryFilter">
@@ -68,16 +60,8 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
                   </object>
                 </property>
                 <signal name="notify::account" handler="pidgin_add_buddy_dialog_account_changed_cb" swapped="no"/>
-                <accessibility>
-                  <relation name="labelled-by">label1</relation>
-                </accessibility>
               </object>
             </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title" translatable="1">Buddy information</property>
             <child>
               <object class="AdwEntryRow" id="username">
                 <property name="title" translatable="1">Buddy&apos;s _username</property>
