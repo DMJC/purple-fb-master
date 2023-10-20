@@ -155,6 +155,9 @@ test_ui_purple_init(void) {
 		abort();
 	}
 
+	/* Make sure our configuration directory exists. */
+	g_mkdir_with_parents(purple_config_dir(), 0755);
+
 	if(!test_ui_init_history(&error)) {
 		g_critical("failed to initialize the history api: %s",
 		           error ? error->message : "unknown");
