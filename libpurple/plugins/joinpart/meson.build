@@ -1,4 +1,4 @@
-joinpart = library('joinpart', 'joinpart.c',
+library('joinpart', 'joinpart.c',
     c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="PurplePlugin-JoinPart"'],
     dependencies : [libpurple_dep],
     name_prefix : '',

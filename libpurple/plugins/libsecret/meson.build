@@ -1,4 +1,4 @@
-libsecret_plugin = library('libsecret', 'libsecret.c',
+library('libsecret', 'libsecret.c',
     c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-LibSecret"'],
     dependencies : [libsecret, libpurple_dep],
     name_prefix : '',

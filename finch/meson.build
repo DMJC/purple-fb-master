@@ -211,7 +211,7 @@ libfinch_dep = declare_dependency(
     sources: libfinch_built_headers + libfinch_generated_sources,
     dependencies : [libpurple_dep, libgnt_dep, glib])
 
-finch = executable('finch3',
+executable('finch3',
     finch_SOURCES,
     c_args : [
         '-DSTANDALONE',

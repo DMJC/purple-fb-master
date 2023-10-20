@@ -32,7 +32,7 @@ if DYNAMIC_BONJOUR
 		c_name : 'bonjour')
 	BONJOUR_SOURCES += bonjour_resources
 
-	bonjour_prpl = shared_library('bonjour', BONJOUR_SOURCES,
+	shared_library('bonjour', BONJOUR_SOURCES,
 	    c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-Bonjour"'],
 	    link_args : bonjour_link_args,
 	    dependencies : [libxml, avahi, libpurple_dep, glib, ws2_32],

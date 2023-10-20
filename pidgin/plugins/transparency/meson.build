@@ -1,4 +1,4 @@
-transparency = library('transparency', 'transparency.c',
+library('transparency', 'transparency.c',
     c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="PidginPlugin-Transparency"'],
     dependencies : [libpurple_dep, libpidgin_dep, glib],
     name_prefix : '',

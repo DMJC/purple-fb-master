@@ -92,7 +92,7 @@ if get_option('introspection')
 		c_args : ['-DPURPLE_IRCV3_COMPILATION', f'-DPLUGIN_FILENAME="@plugin_filename@"'],
 		install : false)
 
-	ircv3_gir = gnome.generate_gir(
+	gnome.generate_gir(
 		ircv3_introspection_stub,
 		sources : [IRCV3_SOURCES, IRCV3_HEADERS],
 		includes : ['GLib-2.0', 'GObject-2.0', 'GPlugin-1.0', libpurple_gir[0]],
@@ -100,7 +100,7 @@ if get_option('introspection')
 		symbol_prefix : 'purple_ircv3',
 		nsversion : '1.0',
 		install : true,
-	    dependencies: [gplugin_dep],
+		dependencies: [gplugin_dep],
 		export_packages : ['ircv3'],
 		extra_args : ['-DPURPLE_IRCV3_COMPILATION', '--verbose'])
 endif

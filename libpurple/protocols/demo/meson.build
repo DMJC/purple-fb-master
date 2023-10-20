@@ -26,7 +26,7 @@ if DYNAMIC_DEMO
 		c_name : 'purple_demo')
 	DEMO_SOURCES += demo_resources
 
-	demo_prpl = shared_library('demo', DEMO_SOURCES,
+	shared_library('demo', DEMO_SOURCES,
 		c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-Demo"'],
 		dependencies : [glib, json, libpurple_dep],
 		install : true,

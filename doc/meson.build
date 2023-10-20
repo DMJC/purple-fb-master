@@ -1,7 +1,7 @@
 subdir('reference')
 
 if ENABLE_GTK
-	pidgin_man = configure_file(
+	configure_file(
 	    input : 'pidgin3.1.in',
 	    output : 'pidgin3.1',
 	    configuration : man_conf,
@@ -10,7 +10,7 @@ if ENABLE_GTK
 endif
 
 if enable_consoleui
-	finch_man = configure_file(
+	configure_file(
 	    input : 'finch3.1.in',
 	    output : 'finch3.1',
 	    configuration : man_conf,

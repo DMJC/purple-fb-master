@@ -175,8 +175,6 @@ endif
 # libpurple/core.c.
 glib = dependency('glib-2.0', version : '>= 2.76.0')
 gio = dependency('gio-2.0')
-gobject = dependency('gobject-2.0')
-gthread = dependency('gthread-2.0')
 gnome = import('gnome')
 
 add_project_arguments(
@@ -410,8 +408,6 @@ endif
 if IS_WIN32 or not add_languages('cpp', required : get_option('kwallet'), native: false)
 	kwallet = disabler()
 else
-	# Use C++ compiler
-	cxx_compiler = meson.get_compiler('cpp')
 	add_project_arguments([
 		'-DHAVE_CONFIG_H=1',
 		'-DDISPLAY_VERSION="@0@"'.format(meson.project_version()),
@@ -453,7 +449,7 @@ if get_option('doc') and not get_option('introspection')
     error('Documentation requires GObject Introspection.')
 endif
 
-gidocgen_dep = dependency(
+dependency(
     'gi-docgen', version: '>= 2021.1',
     fallback: ['gi-docgen', 'dummy_dep'],
     required: get_option('doc')

@@ -232,7 +232,7 @@ libpidgin_dep = declare_dependency(
     sources : libpidgin_built_headers,
     dependencies : [gtk, glib, libadwaita, math, talkatu_dep, gplugin_gtk_dep])
 
-pidgin = executable('pidgin3',
+executable('pidgin3',
     pidgin_SOURCES,
     c_args : ['-DPIDGIN_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Pidgin"'],
     include_directories : toplevel_inc,
@@ -259,7 +259,7 @@ desktop_file_in = configure_file(
     input : 'data' / (PIDGIN_DESKTOP_FILE + '.in.in'),
     output : PIDGIN_DESKTOP_FILE + '.in',
     configuration : conf)
-desktop_file = i18n.merge_file(
+i18n.merge_file(
     input : desktop_file_in,
     output : PIDGIN_DESKTOP_FILE,
     po_dir : meson.project_source_root() / 'po',
@@ -267,7 +267,7 @@ desktop_file = i18n.merge_file(
     install : true,
     install_dir : get_option('datadir') / 'applications')
 
-appdata = i18n.merge_file(
+i18n.merge_file(
     input : 'data/im.pidgin.Pidgin3.appdata.xml.in',
     output : 'im.pidgin.Pidgin3.appdata.xml',
     po_dir : meson.project_source_root() / 'po',
