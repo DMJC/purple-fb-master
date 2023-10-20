@@ -180,24 +180,23 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	}
 
 	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		PurpleConversationType type = PurpleConversationTypeUnset;
-		const char *id = NULL;
-
 		if(target[0] == '#') {
-			type = PurpleConversationTypeChannel;
-			id = target;
+			conversation = g_object_new(
+				PURPLE_TYPE_CONVERSATION,
+				"account", account,
+				"name", target,
+				"type", PurpleConversationTypeChannel,
+				"id", target,
+				NULL);
 		} else {
-			type = PurpleConversationTypeDM;
-			id = nick;
+			conversation = g_object_new(
+				PURPLE_TYPE_CONVERSATION,
+				"account", account,
+				"name", nick,
+				"type", PurpleConversationTypeDM,
+				"id", nick,
+				NULL);
 		}
-
-		conversation = g_object_new(
-			PURPLE_TYPE_CONVERSATION,
-			"account", account,
-			"id", id,
-			"name", id,
-			"type", type,
-			NULL);
 
 		purple_conversation_manager_register(conversation_manager,
 		                                     conversation);

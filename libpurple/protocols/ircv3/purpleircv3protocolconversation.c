@@ -21,6 +21,7 @@
 #include "purpleircv3protocolconversation.h"
 
 #include "purpleircv3connection.h"
+#include "purpleircv3core.h"
 
 /******************************************************************************
  * PurpleProtocolConversation Implementation
@@ -72,10 +73,100 @@ purple_ircv3_protocol_conversation_send_message_finish(G_GNUC_UNUSED PurpleProto
 	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
+static PurpleChannelJoinDetails *
+purple_ircv3_protocol_conversation_get_channel_join_details(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
+                                                            G_GNUC_UNUSED PurpleAccount *account)
+{
+	return purple_channel_join_details_new(FALSE, TRUE);
+}
+
+static void
+purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation *protocol,
+                                                      PurpleAccount *account,
+                                                      PurpleChannelJoinDetails* details,
+                                                      GCancellable* cancellable,
+                                                      GAsyncReadyCallback callback,
+                                                      gpointer data)
+{
+	PurpleIRCv3Connection *v3_connection = NULL;
+	PurpleConnection *connection = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *manager = NULL;
+	GString *cmd = NULL;
+	GTask *task = NULL;
+	const char *name = NULL;
+	const char *password = NULL;
+
+	connection = purple_account_get_connection(account);
+	v3_connection = PURPLE_IRCV3_CONNECTION(connection);
+
+	task = g_task_new(protocol, cancellable, callback, data);
+
+	/* Validate that the name isn't empty. */
+	/* TODO: check that name match the ISUPPORT channel prefixes. */
+	name = purple_channel_join_details_get_name(details);
+	if(purple_strempty(name)) {
+		g_task_return_new_error(task, PURPLE_IRCV3_DOMAIN, 0,
+		                        "channel name is empty");
+
+		return;
+	}
+
+	manager = purple_conversation_manager_get_default();
+	conversation = purple_conversation_manager_find_with_id(manager, account,
+	                                                        name);
+
+	/* If the conversation already exists, just return TRUE. */
+	if(PURPLE_IS_CONVERSATION(conversation)) {
+		g_task_return_boolean(task, TRUE);
+
+		return;
+	}
+
+	/* Build our join string. */
+	cmd = g_string_new("JOIN ");
+	g_string_append_printf(cmd, "%s", name);
+
+	password = purple_channel_join_details_get_password(details);
+	if(!purple_strempty(password)) {
+		g_string_append_printf(cmd, " %s", password);
+	}
+
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PurpleConversationTypeChannel,
+		"id", name,
+		"name", name,
+		NULL);
+	purple_conversation_manager_register(manager, conversation);
+	g_clear_object(&conversation);
+
+	purple_ircv3_connection_writef(v3_connection, "%s", cmd->str);
+	g_string_free(cmd, TRUE);
+
+	g_task_return_boolean(task, TRUE);
+}
+
+static gboolean
+purple_ircv3_protocol_conversation_join_channel_finish(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
+                                                       GAsyncResult *result,
+                                                       GError **error)
+{
+	return g_task_propagate_boolean(G_TASK(result), error);
+}
+
 void
 purple_ircv3_protocol_conversation_init(PurpleProtocolConversationInterface *iface) {
 	iface->send_message_async =
 		purple_ircv3_protocol_conversation_send_message_async;
 	iface->send_message_finish =
 		purple_ircv3_protocol_conversation_send_message_finish;
+
+	iface->get_channel_join_details =
+		purple_ircv3_protocol_conversation_get_channel_join_details;
+	iface->join_channel_async =
+		purple_ircv3_protocol_conversation_join_channel_async;
+	iface->join_channel_finish =
+		purple_ircv3_protocol_conversation_join_channel_finish;
 }
