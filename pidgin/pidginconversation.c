@@ -246,6 +246,14 @@ pidgin_conversation_query_tooltip_edited_cb(G_GNUC_UNUSED GtkWidget *self,
 	return pidgin_conversation_set_tooltip_for_timestamp(tooltip, timestamp);
 }
 
+static char *
+pidgin_conversation_process_message_contents_cb(G_GNUC_UNUSED GObject *self,
+                                                const char *contents,
+                                                G_GNUC_UNUSED gpointer data)
+{
+	return g_markup_escape_text(contents, -1);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -348,6 +356,8 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	                                        pidgin_conversation_query_tooltip_timestamp_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_conversation_query_tooltip_edited_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_conversation_process_message_contents_cb);
 }
 
 /******************************************************************************
