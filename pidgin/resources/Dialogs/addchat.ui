@@ -27,7 +27,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
   <template class="PidginAddChatDialog" parent="GtkDialog">
     <property name="title" translatable="1">Add Chat</property>
-    <property name="resizable">0</property>
     <signal name="response" handler="pidgin_add_chat_dialog_response_cb" swapped="no"/>
     <child internal-child="content_area">
       <object class="GtkBox">

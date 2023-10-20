@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Pidgin - Internet Messenger
+Copyright (C) Pidgin Developers <devel@pidgin.im>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, see <https://www.gnu.org/licenses/>.
+-->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="PidginChannelJoinDialog" parent="GtkWindow">
+    <property name="resizable">1</property>
+    <property name="title" translatable="1">Join Channel</property>
+    <child>
+      <object class="GtkBox">
+        <property name="margin-bottom">24</property>
+        <property name="margin-end">24</property>
+        <property name="margin-start">24</property>
+        <property name="margin-top">24</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">24</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="css-classes">title-1</property>
+            <property name="label" translatable="1">Join a channel</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup" id="entries">
+            <child>
+              <object class="PidginAccountRow" id="account">
+                <property name="filter">
+                  <object class="GtkEveryFilter">
+                    <child>
+                      <object class="GtkCustomFilter" id="filter"/>
+                    </child>
+                    <child>
+                      <object class="PidginAccountFilterConnected"/>
+                    </child>
+                  </object>
+                </property>
+                <signal name="notify::account" handler="pidgin_channel_join_dialog_account_changed_cb"/>
+              </object>
+            </child>
+            <child>
+              <object class="AdwEntryRow" id="name">
+                <property name="title" translatable="1">Name</property>
+                <signal name="changed" handler="pidgin_channel_join_dialog_join_named_changed_cb"/>
+              </object>
+            </child>
+            <child>
+              <object class="AdwEntryRow" id="nickname">
+                <property name="title" translatable="1">Custom nickname (optional)</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwEntryRow" id="password">
+                <property name="title" translatable="1">Password (optional)</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="error">
+            <property name="wrap-mode">word-char</property>
+            <style>
+              <class name="error"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">6</property>
+            <!-- To get the behavior of pack_end we need to set halign to end
+                 and then add the children in the reverse order. -->
+            <property name="halign">end</property>
+            <child>
+              <object class="GtkButton" id="cancel">
+                <property name="label" translatable="1">_Cancel</property>
+                <property name="use-underline">1</property>
+                <signal name="clicked" handler="pidgin_channel_join_dialog_cancel_clicked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="join">
+                <property name="label" translatable="1">_Join</property>
+                <property name="sensitive">0</property>
+                <property name="use-underline">1</property>
+                <signal name="clicked" handler="pidgin_channel_join_dialog_join_clicked"/>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

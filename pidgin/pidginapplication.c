@@ -45,6 +45,7 @@
 #include "pidginaccountmanager.h"
 #include "pidginaccountsdisabledmenu.h"
 #include "pidginaccountsenabledmenu.h"
+#include "pidginchanneljoindialog.h"
 #include "pidgincore.h"
 #include "pidgindebug.h"
 #include "pidgindisplaywindow.h"
@@ -217,6 +218,16 @@ pidgin_application_populate_dynamic_menus(PidginApplication *application) {
 static const gchar *pidgin_application_online_actions[] = {
 	"get-user-info",
 	"new-message",
+};
+
+/**
+ * pidgin_application_channel_actions: (skip)
+ *
+ * This list keeps track of which actions should only be enabled if a protocol
+ * supporting channels is connected.
+ */
+static const gchar *pidgin_application_channel_actions[] = {
+	"join-channel",
 };
 
 /*< private >
@@ -434,6 +445,23 @@ pidgin_application_get_user_info(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
+pidgin_application_join_channel(G_GNUC_UNUSED GSimpleAction *simple,
+                                G_GNUC_UNUSED GVariant *parameter,
+                                gpointer data)
+{
+	PidginApplication *application = data;
+	static GtkWidget *dialog = NULL;
+
+	if(!GTK_IS_WIDGET(dialog)) {
+		dialog = pidgin_channel_join_dialog_new();
+		g_object_add_weak_pointer(G_OBJECT(dialog), (gpointer)&dialog);
+	}
+
+	pidgin_application_present_transient_window(application,
+	                                            GTK_WINDOW(dialog));
+}
+
+static void
 pidgin_application_join_chat(G_GNUC_UNUSED GSimpleAction *simple,
                              G_GNUC_UNUSED GVariant *parameter,
                              G_GNUC_UNUSED gpointer data)
@@ -576,6 +604,9 @@ static GActionEntry app_entries[] = {
 		.name = "get-user-info",
 		.activate = pidgin_application_get_user_info,
 	}, {
+		.name = "join-channel",
+		.activate = pidgin_application_join_channel,
+	}, {
 		.name = "join-chat",
 		.activate = pidgin_application_join_chat,
 	}, {
@@ -635,7 +666,9 @@ static void
 pidgin_application_signed_on_cb(PurpleAccount *account, gpointer data) {
 	PidginApplication *application = PIDGIN_APPLICATION(data);
 	PurpleProtocol *protocol = NULL;
-	gboolean should_enable_chat = FALSE, should_enable_room_list = FALSE;
+	gboolean should_enable_channel = FALSE;
+	gboolean should_enable_chat = FALSE;
+	gboolean should_enable_room_list = FALSE;
 	gint n_actions = 0;
 
 	protocol = purple_account_get_protocol(account);
@@ -649,6 +682,16 @@ pidgin_application_signed_on_cb(PurpleAccount *account, gpointer data) {
 		n_actions = G_N_ELEMENTS(pidgin_application_chat_actions);
 		pidgin_application_actions_set_enabled(application,
 		                                       pidgin_application_chat_actions,
+		                                       n_actions,
+		                                       TRUE);
+	}
+
+	should_enable_channel = PURPLE_PROTOCOL_IMPLEMENTS(protocol, CONVERSATION,
+	                                                   get_channel_join_details);
+	if(should_enable_channel) {
+		n_actions = G_N_ELEMENTS(pidgin_application_channel_actions);
+		pidgin_application_actions_set_enabled(application,
+		                                       pidgin_application_channel_actions,
 		                                       n_actions,
 		                                       TRUE);
 	}
@@ -998,6 +1041,12 @@ pidgin_application_init(PidginApplication *application) {
 	n_actions = G_N_ELEMENTS(pidgin_application_chat_actions);
 	pidgin_application_actions_set_enabled(application,
 	                                       pidgin_application_chat_actions,
+	                                       n_actions,
+	                                       online);
+
+	n_actions = G_N_ELEMENTS(pidgin_application_channel_actions);
+	pidgin_application_actions_set_enabled(application,
+	                                       pidgin_application_channel_actions,
 	                                       n_actions,
 	                                       online);
 

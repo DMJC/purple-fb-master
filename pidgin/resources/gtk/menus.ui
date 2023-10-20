@@ -34,6 +34,10 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           <attribute name="accel">&lt;Primary&gt;M</attribute>
         </item>
         <item>
+          <attribute name="label" translatable="yes">Join Channel</attribute>
+          <attribute name="action">app.join-channel</attribute>
+        </item>
+        <item>
           <attribute name="label" translatable="yes">Join a _Chat...</attribute>
           <attribute name="action">app.join-chat</attribute>
         </item>
