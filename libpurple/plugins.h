@@ -29,8 +29,6 @@
 #include <gplugin.h>
 #include <gplugin-native.h>
 
-#include "version.h"
-
 #define PURPLE_PLUGINS_DOMAIN          (g_quark_from_static_string("plugins"))
 
 #define PURPLE_TYPE_PLUGIN             GPLUGIN_TYPE_PLUGIN

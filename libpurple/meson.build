@@ -96,6 +96,7 @@ purple_coresources = [
 	'purplesqlitehistoryadapter.c',
 	'purpletags.c',
 	'purpleui.c',
+	'purpleversion.c',
 	'purplewhiteboard.c',
 	'purplewhiteboardmanager.c',
 	'purplewhiteboarduiops.c',
@@ -120,7 +121,6 @@ purple_coresources = [
 	'signals.c',
 	'status.c',
 	'util.c',
-	'version.c',
 	'xfer.c',
 	'xmlnode.c'
 ]
@@ -221,6 +221,7 @@ purple_coreheaders = [
 	'purpletags.h',
 	'purpletyping.h',
 	'purpleui.h',
+	'purpleversion.h',
 	'purplewhiteboard.h',
 	'purplewhiteboardmanager.h',
 	'purplewhiteboardops.h',
@@ -328,7 +329,7 @@ enums_c = enums[0]
 enums_h = enums[1]
 
 PURPLE_H_INCLUDES = []
-foreach header : purple_coreheaders + purple_mediaheaders + purple_request_headers + ['version.h', 'purpleenums.h']
+foreach header : purple_coreheaders + purple_mediaheaders + purple_request_headers + ['purpleversionconsts.h', 'purpleenums.h']
 	PURPLE_H_INCLUDES += f'#include <libpurple/@header@>'
 endforeach
 purple_h_conf = configuration_data()
@@ -339,8 +340,8 @@ purple_h = configure_file(input : 'purple.h.in',
                           configuration : purple_h_conf,
                           install : true,
                           install_dir : get_option('includedir') / purple_filebase)
-version_h = configure_file(input : 'version.h.in',
-                           output : 'version.h',
+version_h = configure_file(input : 'purpleversionconsts.h.in',
+                           output : 'purpleversionconsts.h',
                            configuration : version_conf,
                            install : true,
                            install_dir : get_option('includedir') / purple_include_base)

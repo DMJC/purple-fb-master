@@ -20,6 +20,7 @@
 #include "core.h"
 #include "debug.h"
 #include "purpleenums.h"
+#include "purpleversionconsts.h"
 #include "util.h"
 
 #include "purpleplugininfo.h"

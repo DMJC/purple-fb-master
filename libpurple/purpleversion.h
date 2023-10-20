@@ -30,42 +30,6 @@
 #include <glib.h>
 
 /**
- * PURPLE_MAJOR_VERSION:
- *
- * The major version of the running libpurple.
- */
-#define PURPLE_MAJOR_VERSION (@PURPLE_MAJOR_VERSION@)
-
-/**
- * PURPLE_MINOR_VERSION:
- *
- * The minor version of the running libpurple.
- */
-#define PURPLE_MINOR_VERSION (@PURPLE_MINOR_VERSION@)
-
-/**
- * PURPLE_MICRO_VERSION:
- *
- * The micro version of the running libpurple.
- */
-#define PURPLE_MICRO_VERSION (@PURPLE_MICRO_VERSION@)
-
-/**
- * PURPLE_EXTRA_VERSION:
- *
- * The "extra" part of the version number if anything.  Typical values are
- * "devel", "beta1", "rc2", etc.
- */
-#define PURPLE_EXTRA_VERSION ("@PURPLE_EXTRA_VERSION@")
-
-/**
- * PURPLE_VERSION
- *
- * The entire version as a string.
- */
-#define PURPLE_VERSION ("@PURPLE_VERSION@")
-
-/**
  * PURPLE_VERSION_CHECK:
  * @major: The major version to check for.
  * @minor: The minor version to check for.

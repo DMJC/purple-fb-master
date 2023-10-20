@@ -1,4 +1,8 @@
-/* Purple is the legal property of its developers, whose names are too numerous
+/*
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
+ *
+ * Purple is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
  * source distribution.
  *
@@ -13,8 +17,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "version.h"
