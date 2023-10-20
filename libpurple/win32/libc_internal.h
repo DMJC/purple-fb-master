@@ -26,9 +26,6 @@
 
 G_BEGIN_DECLS
 
-/* netdb.h */
-struct hostent* wpurple_gethostbyname(const char *name);
-
 /* fcntl.h */
 int wpurple_fcntl(int socket, int command, ...);
 #define F_GETFL 3

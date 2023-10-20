@@ -88,14 +88,3 @@ int wpurple_fcntl(int socket, int command, ...) {
 		return -1;
 	}/*end switch*/
 }
-
-/* netdb.h */
-struct hostent* wpurple_gethostbyname(const char *name) {
-	struct hostent *hp;
-
-	if((hp = gethostbyname(name)) == NULL) {
-		errno = WSAGetLastError();
-		return NULL;
-	}
-	return hp;
-}

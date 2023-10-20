@@ -29,7 +29,6 @@
 #include <windows.h>
 #include <shlobj.h>
 #include <process.h>
-#include "wpurpleerror.h"
 #include "libc_interface.h"
 
 G_BEGIN_DECLS

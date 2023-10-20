@@ -49,10 +49,6 @@ G_BEGIN_DECLS
 #define fcntl( fd, command, ... ) \
 wpurple_fcntl( fd, command, ##__VA_ARGS__ )
 
-/* netdb.h */
-#define gethostbyname( name ) \
-wpurple_gethostbyname( name )
-
 /* stdio.h */
 #if !defined(__MINGW64_VERSION_MAJOR) || __MINGW64_VERSION_MAJOR < 3 || \
 	!defined(IS_WIN32_CROSS_COMPILED)
