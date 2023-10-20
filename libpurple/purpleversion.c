@@ -20,7 +20,8 @@
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "version.h"
+#include "purpleversion.h"
+#include "purpleversionconsts.h"
 
 const guint purple_major_version = PURPLE_MAJOR_VERSION;
 const guint purple_minor_version = PURPLE_MINOR_VERSION;
