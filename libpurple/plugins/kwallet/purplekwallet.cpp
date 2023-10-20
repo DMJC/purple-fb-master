@@ -24,7 +24,7 @@
 
 #include <purple.h>
 
-#include <QGuiApplication>
+#include <QCoreApplication>
 
 #include <kwallet.h>
 
@@ -33,7 +33,7 @@
 /******************************************************************************
  * Globals
  *****************************************************************************/
-static QGuiApplication *guiApp = NULL;
+static QCoreApplication *coreApp = NULL;
 static PurpleCredentialProvider *instance = NULL;
 static char *argv[] = {
 	(char*)"purplekwallet",
@@ -80,6 +80,34 @@ purple_kwallet_provider_account_key(PurpleAccount *account) {
 	               purple_contact_info_get_username(info);
 }
 
+static void
+kwallet_message_handler(QtMsgType type, const QMessageLogContext &,
+                        const QString &msg)
+{
+	GLogLevelFlags log_level;
+
+	switch (type) {
+	case QtDebugMsg:
+		log_level = G_LOG_LEVEL_DEBUG;
+		break;
+	case QtInfoMsg:
+		log_level = G_LOG_LEVEL_INFO;
+		break;
+	case QtWarningMsg:
+		log_level = G_LOG_LEVEL_WARNING;
+		break;
+	case QtCriticalMsg:
+		log_level = G_LOG_LEVEL_CRITICAL;
+		break;
+	case QtFatalMsg:
+		// don't create a fatal aka G_LOG_LEVEL_ERROR message, because
+		// this is only a plugin
+		log_level = G_LOG_LEVEL_CRITICAL;
+		break;
+	}
+
+	g_log(G_LOG_DOMAIN, log_level, "%s", msg.toUtf8().constData());
+}
 /******************************************************************************
  * Request Implementation
  *****************************************************************************/
@@ -224,10 +252,10 @@ PurpleKWalletPlugin::Engine::~Engine(void) {
 
 void
 PurpleKWalletPlugin::Engine::open(void) {
-	purple_debug_misc("kwallet-provider", "attempting to open wallet");
+	g_info("attempting to open wallet");
 
 	if(this->connected) {
-		purple_debug_misc("kwallet-provider", "wallet already opened");
+		g_info("wallet already opened");
 
 		return;
 	}
@@ -247,8 +275,7 @@ PurpleKWalletPlugin::Engine::open(void) {
 	                                  SLOT(closed()));
 
 	if(this->failed) {
-		purple_debug_error("kwallet-provider",
-		                   "Failed to connect KWallet signals");
+		g_critical("Failed to connect KWallet signals");
 	}
 }
 
@@ -283,7 +310,7 @@ PurpleKWalletPlugin::Engine::opened(bool opened) {
 	QString folder_name;
 
 	if(!opened) {
-		purple_debug_error("kwallet-provider", "failed to open wallet");
+		g_critical("failed to open wallet");
 
 		delete this->wallet;
 		this->wallet = NULL;
@@ -297,9 +324,7 @@ PurpleKWalletPlugin::Engine::opened(bool opened) {
 	// Handle the case where the wallet opened signal connected, but the wallet
 	// closed signal failed to connect.
 	if(this->failed) {
-		purple_debug_error("kwallet-provider",
-		                   "wallet opened, but failed to connect the wallet "
-		                   "closed signal");
+		g_critical("wallet opened, but failed to connect the wallet closed signal");
 		return;
 	}
 
@@ -309,27 +334,26 @@ PurpleKWalletPlugin::Engine::opened(bool opened) {
 	folder_name = purple_kwallet_get_ui_name();
 	if(!this->wallet->hasFolder(folder_name)) {
 		if(!this->wallet->createFolder(folder_name)) {
-			purple_debug_error("kwallet-provider",
-			                   "failed to create folder %s in wallet.",
-			                   folder_name.toUtf8().constData());
+			g_critical("failed to create folder %s in wallet.",
+			           folder_name.toUtf8().constData());
 			this->failed = true;
 		}
 	}
 
 	if(!this->failed && !this->wallet->setFolder(folder_name)) {
-		purple_debug_error("kwallet-provider", "failed to set folder to %s",
-		                   folder_name.toUtf8().constData());
+		g_critical("failed to set folder to %s",
+		           folder_name.toUtf8().constData());
 		this->failed = true;
 	}
 
-	purple_debug_misc("kwallet-provider", "successfully opened the wallet");
+	g_info("successfully opened the wallet");
 
 	processQueue();
 }
 
 void
 PurpleKWalletPlugin::Engine::closed(void) {
-	purple_debug_misc("kwallet-provider", "the wallet was closed externally");
+	g_info("the wallet was closed externally");
 
 	this->externallyClosed = true;
 	this->close();
@@ -573,9 +597,10 @@ kwallet_load(GPluginPlugin *plugin, GError **error) {
 
 	purple_kwallet_provider_register_type(G_TYPE_MODULE(plugin));
 
-	if(guiApp == NULL) {
-		guiApp = new QGuiApplication(argc, argv);
-		guiApp->setApplicationName(purple_kwallet_get_ui_name());
+	if(coreApp == NULL) {
+		qInstallMessageHandler(kwallet_message_handler);
+		coreApp = new QCoreApplication(argc, argv);
+		coreApp->setApplicationName(purple_kwallet_get_ui_name());
 	}
 
 	if(!KWallet::Wallet::isEnabled()) {
@@ -607,9 +632,9 @@ kwallet_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
 		return ret;
 	}
 
-	if(guiApp != NULL) {
-		delete guiApp;
-		guiApp = NULL;
+	if(coreApp != NULL) {
+		delete coreApp;
+		coreApp = NULL;
 	}
 
 	g_clear_object(&instance);

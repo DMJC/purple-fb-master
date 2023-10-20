@@ -417,7 +417,7 @@ else
 
 	qt5 = import('qt5')
 
-	qt5_dep = dependency('qt5', modules: ['Core', 'Gui'], required : get_option('kwallet'))
+	qt5_dep = dependency('qt5', modules: ['Core'], required : get_option('kwallet'))
 
 	kwallet = dependency('KF5Wallet', required : get_option('kwallet'))
 endif
