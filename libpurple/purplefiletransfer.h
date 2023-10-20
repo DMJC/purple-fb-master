@@ -29,6 +29,8 @@
 
 #include <glib-object.h>
 
+#include "purpleaccount.h"
+
 G_BEGIN_DECLS
 
 /**
