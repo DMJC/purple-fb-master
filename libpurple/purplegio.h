@@ -1,6 +1,6 @@
 /*
- *
- * purple
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Purple is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -17,8 +17,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #if !defined(PURPLE_GLOBAL_HEADER_INSIDE) && !defined(PURPLE_COMPILATION)
@@ -28,18 +27,9 @@
 #ifndef PURPLE_GIO_H
 #define PURPLE_GIO_H
 
-/**
- * purple_gio:
- *
- * The Purple Gio API provides helper functions for Gio operations which
- * are commonly used within libpurple and its consumers. These contain
- * such functions as setting up connections and shutting them down
- * gracefully.
- */
+#include <gio/gio.h>
 
 #include "purpleaccount.h"
-
-#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -54,9 +44,7 @@ G_BEGIN_DECLS
  * arguments. Ensure the Gio callbacks can safely handle this being done
  * asynchronously.
  */
-void
-purple_gio_graceful_close(GIOStream *stream,
-		GInputStream *input, GOutputStream *output);
+void purple_gio_graceful_close(GIOStream *stream, GInputStream *input, GOutputStream *output);
 
 /**
  * purple_gio_socket_client_new:
@@ -70,8 +58,7 @@ purple_gio_graceful_close(GIOStream *stream,
  * GProxyResolver, based on the #PurpleAccount settings and
  * TLS Certificate handling, or NULL if an error occurred.
  */
-GSocketClient *
-purple_gio_socket_client_new(PurpleAccount *account, GError **error);
+GSocketClient *purple_gio_socket_client_new(PurpleAccount *account, GError **error);
 
 /**
  * purple_socket_listener_add_any_inet_port:
@@ -86,9 +73,7 @@ purple_gio_socket_client_new(PurpleAccount *account, GError **error);
  *
  * Returns: The port number, or 0 in case of failure.
  */
-guint16 purple_socket_listener_add_any_inet_port(GSocketListener *listener,
-                                                 GObject *source_object,
-                                                 GError **error);
+guint16 purple_socket_listener_add_any_inet_port(GSocketListener *listener, GObject *source_object, GError **error);
 
 G_END_DECLS
 
