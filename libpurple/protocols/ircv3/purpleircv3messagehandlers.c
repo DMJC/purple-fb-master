@@ -144,7 +144,13 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	source = purple_ircv3_message_get_source(v3_message);
 	tags = purple_ircv3_message_get_tags(v3_message);
 
-	if(params != NULL && g_strv_length(params) != 2) {
+	if(params == NULL) {
+		g_warning("privmsg received with no parameters");
+
+		return FALSE;
+	}
+
+	if(g_strv_length(params) != 2) {
 		char *body = g_strjoinv(" ", params);
 		g_warning("unknown privmsg message format: '%s'", body);
 		g_free(body);
