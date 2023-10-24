@@ -486,7 +486,10 @@ void purple_marshal_BOOLEAN__POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with a pointer and
  * boolean argument and returns a boolean.
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 void purple_marshal_BOOLEAN__POINTER_BOOLEAN(
 		GCallback cb, va_list args, void *data, void **return_val);
 

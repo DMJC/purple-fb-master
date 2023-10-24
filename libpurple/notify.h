@@ -567,7 +567,10 @@ void purple_notify_user_info_add_pair_html(PurpleNotifyUserInfo *user_info, cons
  *
  * Like purple_notify_user_info_add_pair_html(), but value should be plaintext
  * and will be escaped using g_markup_escape_text().
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 void purple_notify_user_info_add_pair_plaintext(PurpleNotifyUserInfo *user_info, const char *label, const char *value);
 
 /**

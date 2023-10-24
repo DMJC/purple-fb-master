@@ -308,7 +308,10 @@ GList *purple_media_get_local_candidates(PurpleMedia *media,
  *
  * Returns: (element-type PurpleMediaCandidate) (transfer full): The active
  *          candidates retrieved.
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 GList *purple_media_get_active_local_candidates(PurpleMedia *media,
 		const gchar *sess_id, const gchar *participant);
 
@@ -323,7 +326,10 @@ GList *purple_media_get_active_local_candidates(PurpleMedia *media,
  *
  * Returns: (element-type PurpleMediaCandidate) (transfer full): The remote
  *          candidates retrieved.
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 GList *purple_media_get_active_remote_candidates(PurpleMedia *media,
 		const gchar *sess_id, const gchar *participant);
 

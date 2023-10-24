@@ -193,7 +193,10 @@ PurpleMediaElementInfo *purple_media_manager_get_active_element(
  *
  * Useful to force negotiation of smaller picture resolution more suitable for
  * use with particular codec and communication protocol without rescaling.
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 void purple_media_manager_set_video_caps(PurpleMediaManager *manager,
 		GstCaps *caps);
 
@@ -204,7 +207,10 @@ void purple_media_manager_set_video_caps(PurpleMediaManager *manager,
  * Returns current set of media formats limiting the output from video source.
  *
  * Returns: GstCaps limiting the video source's formats.
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 GstCaps *purple_media_manager_get_video_caps(PurpleMediaManager *manager);
 
 gchar *purple_media_element_info_get_id(PurpleMediaElementInfo *info);
