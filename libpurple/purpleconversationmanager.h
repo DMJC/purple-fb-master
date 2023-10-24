@@ -26,6 +26,7 @@
 #include <glib.h>
 
 #include "purpleconversation.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -39,6 +40,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleConversationManager, purple_conversation_manager,
                      PURPLE, CONVERSATION_MANAGER, GObject)
 
@@ -52,6 +54,7 @@ G_DECLARE_FINAL_TYPE(PurpleConversationManager, purple_conversation_manager,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleConversationManagerForeachFunc)(PurpleConversation *conversation, gpointer data);
 
 /**
@@ -64,6 +67,7 @@ typedef void (*PurpleConversationManagerForeachFunc)(PurpleConversation *convers
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversationManager *purple_conversation_manager_get_default(void);
 
 /**
@@ -77,6 +81,7 @@ PurpleConversationManager *purple_conversation_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_manager_register(PurpleConversationManager *manager, PurpleConversation *conversation);
 
 /**
@@ -90,6 +95,7 @@ gboolean purple_conversation_manager_register(PurpleConversationManager *manager
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_manager_unregister(PurpleConversationManager *manager, PurpleConversation *conversation);
 
 /**
@@ -104,6 +110,7 @@ gboolean purple_conversation_manager_unregister(PurpleConversationManager *manag
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_manager_is_registered(PurpleConversationManager *manager, PurpleConversation *conversation);
 
 /**
@@ -116,6 +123,7 @@ gboolean purple_conversation_manager_is_registered(PurpleConversationManager *ma
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_manager_foreach(PurpleConversationManager *manager, PurpleConversationManagerForeachFunc func, gpointer data);
 
 /**
@@ -129,6 +137,7 @@ void purple_conversation_manager_foreach(PurpleConversationManager *manager, Pur
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_conversation_manager_get_all(PurpleConversationManager *manager);
 
 /**
@@ -146,6 +155,7 @@ GList *purple_conversation_manager_get_all(PurpleConversationManager *manager);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
 
 /**
@@ -161,6 +171,7 @@ PurpleConversation *purple_conversation_manager_find(PurpleConversationManager *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_im(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
 
 /**
@@ -176,6 +187,7 @@ PurpleConversation *purple_conversation_manager_find_im(PurpleConversationManage
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_chat(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
 
 /**
@@ -193,6 +205,7 @@ PurpleConversation *purple_conversation_manager_find_chat(PurpleConversationMana
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_chat_by_id(PurpleConversationManager *manager, PurpleAccount *account, gint id);
 
 /**
@@ -208,6 +221,7 @@ PurpleConversation *purple_conversation_manager_find_chat_by_id(PurpleConversati
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_with_id(PurpleConversationManager *manager, PurpleAccount *account, const char *id);
 
 G_END_DECLS

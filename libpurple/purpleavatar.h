@@ -29,10 +29,13 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "purpletags.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_AVATAR (purple_avatar_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleAvatar, purple_avatar, PURPLE, AVATAR, GObject)
 
 /**
@@ -55,6 +58,7 @@ G_DECLARE_FINAL_TYPE(PurpleAvatar, purple_avatar, PURPLE, AVATAR, GObject)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_avatar_new_from_filename(const char *filename, GError **error);
 
 /**
@@ -68,6 +72,7 @@ PurpleAvatar *purple_avatar_new_from_filename(const char *filename, GError **err
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_avatar_new_from_resource(const char *resource_path, GError **error);
 
 /**
@@ -80,6 +85,7 @@ PurpleAvatar *purple_avatar_new_from_resource(const char *resource_path, GError 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_avatar_get_filename(PurpleAvatar *avatar);
 
 /**
@@ -96,6 +102,7 @@ const char *purple_avatar_get_filename(PurpleAvatar *avatar);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GdkPixbuf *purple_avatar_get_pixbuf(PurpleAvatar *avatar);
 
 /**
@@ -108,6 +115,7 @@ GdkPixbuf *purple_avatar_get_pixbuf(PurpleAvatar *avatar);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_avatar_get_animated(PurpleAvatar *avatar);
 
 /**
@@ -121,6 +129,7 @@ gboolean purple_avatar_get_animated(PurpleAvatar *avatar);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GdkPixbufAnimation *purple_avatar_get_animation(PurpleAvatar *avatar);
 
 /**
@@ -133,6 +142,7 @@ GdkPixbufAnimation *purple_avatar_get_animation(PurpleAvatar *avatar);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_avatar_get_tags(PurpleAvatar *avatar);
 
 G_END_DECLS

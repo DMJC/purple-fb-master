@@ -31,13 +31,18 @@
 #include <glib-object.h>
 
 #include "purpleprotocol.h"
+#include "purpleversion.h"
+
+#define PURPLE_PROTOCOL_CONTACT_SEARCH_DOMAIN \
+	g_quark_from_static_string("purple-protocol-contact-search") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 #define PURPLE_TYPE_PROTOCOL_CONTACT_SEARCH (purple_protocol_contact_search_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolContactSearch,
                     purple_protocol_contact_search, PURPLE,
                     PROTOCOL_CONTACT_SEARCH, PurpleProtocol)
-
-#define PURPLE_PROTOCOL_CONTACT_SEARCH_DOMAIN (g_quark_from_static_string("purple-protocol-contact-search"))
 
 /**
  * PurpleProtocolContactSearch:
@@ -87,6 +92,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_contact_search_search_async(PurpleProtocolContactSearch *search, PurpleAccount *account, const char *text, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -104,6 +110,7 @@ void purple_protocol_contact_search_search_async(PurpleProtocolContactSearch *se
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_protocol_contact_search_search_finish(PurpleProtocolContactSearch *search, GAsyncResult *result, GError **error);
 
 G_END_DECLS

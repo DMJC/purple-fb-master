@@ -37,10 +37,13 @@
 #include "purplemessage.h"
 #include "purpleprotocol.h"
 #include "purpletyping.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_PROTOCOL_CONVERSATION (purple_protocol_conversation_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolConversation, purple_protocol_conversation,
                     PURPLE, PROTOCOL_CONVERSATION, PurpleProtocol)
 
@@ -91,6 +94,7 @@ struct _PurpleProtocolConversationInterface {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_conversation_send_message_async(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleMessage *message, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -110,6 +114,7 @@ void purple_protocol_conversation_send_message_async(PurpleProtocolConversation 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_conversation_send_message_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 /**
@@ -132,6 +137,7 @@ gboolean purple_protocol_conversation_send_message_finish(PurpleProtocolConversa
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_conversation_set_topic_async(PurpleProtocolConversation *protocol, PurpleConversation *conversation, const char *topic, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -151,6 +157,7 @@ void purple_protocol_conversation_set_topic_async(PurpleProtocolConversation *pr
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_conversation_set_topic_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 /**
@@ -165,6 +172,7 @@ gboolean purple_protocol_conversation_set_topic_finish(PurpleProtocolConversatio
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleChannelJoinDetails *purple_protocol_conversation_get_channel_join_details(PurpleProtocolConversation *protocol, PurpleAccount *account);
 
 /**
@@ -185,6 +193,7 @@ PurpleChannelJoinDetails *purple_protocol_conversation_get_channel_join_details(
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_conversation_join_channel_async(PurpleProtocolConversation *protocol, PurpleAccount *account, PurpleChannelJoinDetails *details, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -204,6 +213,7 @@ void purple_protocol_conversation_join_channel_async(PurpleProtocolConversation 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_conversation_join_channel_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 /**
@@ -221,6 +231,7 @@ gboolean purple_protocol_conversation_join_channel_finish(PurpleProtocolConversa
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_conversation_set_avatar_async(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleAvatar *avatar, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -240,6 +251,7 @@ void purple_protocol_conversation_set_avatar_async(PurpleProtocolConversation *p
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 /**
@@ -254,6 +266,7 @@ gboolean purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversati
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_conversation_send_typing(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleTypingState state);
 
 G_END_DECLS

@@ -30,6 +30,7 @@
 #include <glib-object.h>
 
 #include "purpleidleui.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -67,6 +68,7 @@ void purple_idle_set(time_t time);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_idle_set_ui(PurpleIdleUi *ui);
 
 /**
@@ -79,6 +81,7 @@ void purple_idle_set_ui(PurpleIdleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleIdleUi *purple_idle_get_ui(void);
 
 /**

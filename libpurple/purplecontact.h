@@ -29,10 +29,13 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "purplecontactinfo.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CONTACT (purple_contact_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT,
                      PurpleContactInfo)
 
@@ -59,6 +62,7 @@ G_DECLARE_FINAL_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContact *purple_contact_new(PurpleAccount *account, const gchar *id);
 
 /**
@@ -72,6 +76,7 @@ PurpleContact *purple_contact_new(PurpleAccount *account, const gchar *id);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_contact_get_account(PurpleContact *contact);
 
 G_END_DECLS

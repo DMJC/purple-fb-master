@@ -41,8 +41,11 @@ typedef struct _PurpleRequestGroup PurpleRequestGroup;
 
 #include "purplerequestfield.h"
 #include "purplerequestpage.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_REQUEST_GROUP (purple_request_group_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleRequestGroup, purple_request_group,
                      PURPLE, REQUEST_GROUP, GObject)
 
@@ -58,6 +61,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestGroup *purple_request_group_new(const char *title);
 
 /**
@@ -69,6 +73,7 @@ PurpleRequestGroup *purple_request_group_new(const char *title);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_request_group_add_field(PurpleRequestGroup *group, PurpleRequestField *field);
 
 /**
@@ -81,6 +86,7 @@ void purple_request_group_add_field(PurpleRequestGroup *group, PurpleRequestFiel
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_request_group_get_title(PurpleRequestGroup *group);
 
 /**
@@ -93,6 +99,7 @@ const char *purple_request_group_get_title(PurpleRequestGroup *group);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestPage *purple_request_group_get_page(PurpleRequestGroup *group);
 
 /**
@@ -105,6 +112,7 @@ PurpleRequestPage *purple_request_group_get_page(PurpleRequestGroup *group);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_group_is_valid(PurpleRequestGroup *group);
 
 G_END_DECLS

@@ -26,9 +26,13 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CHANNEL_JOIN_DETAILS (purple_channel_join_details_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleChannelJoinDetails, purple_channel_join_details, PURPLE, CHANNEL_JOIN_DETAILS, GObject)
 
 /**
@@ -52,6 +56,7 @@ G_DECLARE_FINAL_TYPE(PurpleChannelJoinDetails, purple_channel_join_details, PURP
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleChannelJoinDetails *purple_channel_join_details_new(gboolean nickname_supported, gboolean password_supported);
 
 /**
@@ -64,6 +69,7 @@ PurpleChannelJoinDetails *purple_channel_join_details_new(gboolean nickname_supp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_channel_join_details_get_name(PurpleChannelJoinDetails *details);
 
 /**
@@ -75,6 +81,7 @@ const char *purple_channel_join_details_get_name(PurpleChannelJoinDetails *detai
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_set_name(PurpleChannelJoinDetails *details, const char *name);
 
 /**
@@ -87,6 +94,7 @@ void purple_channel_join_details_set_name(PurpleChannelJoinDetails *details, con
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_channel_join_details_get_nickname(PurpleChannelJoinDetails *details);
 
 /**
@@ -98,6 +106,7 @@ const char *purple_channel_join_details_get_nickname(PurpleChannelJoinDetails *d
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_set_nickname(PurpleChannelJoinDetails *details, const char *nickname);
 
 /**
@@ -110,6 +119,7 @@ void purple_channel_join_details_set_nickname(PurpleChannelJoinDetails *details,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_channel_join_details_get_nickname_supported(PurpleChannelJoinDetails *details);
 
 /**
@@ -122,6 +132,7 @@ gboolean purple_channel_join_details_get_nickname_supported(PurpleChannelJoinDet
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_channel_join_details_get_password(PurpleChannelJoinDetails *details);
 
 /**
@@ -133,6 +144,7 @@ const char *purple_channel_join_details_get_password(PurpleChannelJoinDetails *d
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_set_password(PurpleChannelJoinDetails *details, const char *password);
 
 /**
@@ -145,6 +157,7 @@ void purple_channel_join_details_set_password(PurpleChannelJoinDetails *details,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_channel_join_details_get_password_supported(PurpleChannelJoinDetails *details);
 
 /**
@@ -163,6 +176,7 @@ gboolean purple_channel_join_details_get_password_supported(PurpleChannelJoinDet
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_merge(PurpleChannelJoinDetails *source, PurpleChannelJoinDetails *destination);
 
 G_END_DECLS

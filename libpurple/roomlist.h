@@ -27,6 +27,8 @@
 #ifndef PURPLE_ROOMLIST_H
 #define PURPLE_ROOMLIST_H
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_ROOMLIST (purple_roomlist_get_type())
 typedef struct _PurpleRoomlist PurpleRoomlist;
 
@@ -220,6 +222,7 @@ void purple_roomlist_cancel_get_list(PurpleRoomlist *list);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_roomlist_join_room(PurpleRoomlist *list, PurpleRoomlistRoom *room);
 
 /**************************************************************************/

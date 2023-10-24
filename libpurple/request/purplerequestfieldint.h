@@ -31,6 +31,7 @@
 #include <glib-object.h>
 
 #include "purplerequestfield.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -42,6 +43,8 @@ G_BEGIN_DECLS
  * Since: 3.0.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_INT (purple_request_field_int_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldInt, purple_request_field_int,
                      PURPLE, REQUEST_FIELD_INT, PurpleRequestField)
 

@@ -25,6 +25,8 @@
 
 #include <gio/gio.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_QUEUED_OUTPUT_STREAM  purple_queued_output_stream_get_type()
@@ -48,6 +50,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleQueuedOutputStream, purple_queued_output_stream,
                      PURPLE, QUEUED_OUTPUT_STREAM, GFilterOutputStream)
 
@@ -61,6 +64,7 @@ G_DECLARE_FINAL_TYPE(PurpleQueuedOutputStream, purple_queued_output_stream,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleQueuedOutputStream *purple_queued_output_stream_new(GOutputStream *base_stream);
 
 /**
@@ -82,6 +86,7 @@ PurpleQueuedOutputStream *purple_queued_output_stream_new(GOutputStream *base_st
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_queued_output_stream_push_bytes_async(PurpleQueuedOutputStream *stream, GBytes *bytes, int priority, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -96,6 +101,7 @@ void purple_queued_output_stream_push_bytes_async(PurpleQueuedOutputStream *stre
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_queued_output_stream_push_bytes_finish(PurpleQueuedOutputStream *stream, GAsyncResult *result, GError **error);
 
 /**
@@ -112,6 +118,7 @@ gboolean purple_queued_output_stream_push_bytes_finish(PurpleQueuedOutputStream 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_queued_output_stream_clear_queue(PurpleQueuedOutputStream *stream);
 
 G_END_DECLS

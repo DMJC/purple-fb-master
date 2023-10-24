@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -35,7 +37,9 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
-#define PURPLE_SQLITE3_DOMAIN (g_quark_from_static_string("sqlite3"))
+#define PURPLE_SQLITE3_DOMAIN \
+	g_quark_from_static_string("sqlite3") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 /**
  * PurpleSqlite3:
@@ -50,6 +54,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 #ifdef SQLITE_API
 typedef sqlite3 PurpleSqlite3;
 #else
@@ -68,6 +73,7 @@ typedef gpointer PurpleSqlite3;
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int purple_sqlite3_get_schema_version(PurpleSqlite3 *db, GError **error);
 
 /**
@@ -109,6 +115,7 @@ int purple_sqlite3_get_schema_version(PurpleSqlite3 *db, GError **error);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_sqlite3_run_migrations_from_strings(PurpleSqlite3 *db, const char *migrations[], GError **error);
 
 /**
@@ -135,6 +142,7 @@ gboolean purple_sqlite3_run_migrations_from_strings(PurpleSqlite3 *db, const cha
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_sqlite3_run_migrations_from_resources(PurpleSqlite3 *db, const char *path, const char *migrations[], GError **error);
 
 G_END_DECLS

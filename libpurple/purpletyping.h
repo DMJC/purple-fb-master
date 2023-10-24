@@ -35,6 +35,7 @@
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
     PURPLE_TYPING_STATE_NONE,
     PURPLE_TYPING_STATE_TYPING,

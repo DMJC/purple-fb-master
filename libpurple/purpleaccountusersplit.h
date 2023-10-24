@@ -29,6 +29,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_ACCOUNT_USER_SPLIT (purple_account_user_split_get_type())
 
 /**
@@ -67,6 +69,7 @@ PurpleAccountUserSplit *purple_account_user_split_new(const gchar *text, const g
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccountUserSplit *purple_account_user_split_copy(PurpleAccountUserSplit *split);
 
 /**

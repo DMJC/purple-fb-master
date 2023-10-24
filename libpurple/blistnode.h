@@ -29,6 +29,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_BLIST_NODE             (purple_blist_node_get_type())
 #define PURPLE_BLIST_NODE(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), PURPLE_TYPE_BLIST_NODE, PurpleBlistNode))
 #define PURPLE_BLIST_NODE_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST((klass), PURPLE_TYPE_BLIST_NODE, PurpleBlistNodeClass))
@@ -250,6 +252,7 @@ void purple_blist_node_remove_setting(PurpleBlistNode *node, const char *key);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_node_set_transient(PurpleBlistNode *node, gboolean transient);
 
 /**
@@ -262,6 +265,7 @@ void purple_blist_node_set_transient(PurpleBlistNode *node, gboolean transient);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_blist_node_is_transient(PurpleBlistNode *node);
 
 /**

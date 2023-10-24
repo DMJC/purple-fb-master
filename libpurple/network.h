@@ -29,6 +29,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /**************************************************************************/
@@ -69,6 +71,7 @@ const char *purple_network_get_public_ip(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_network_discover_my_ip(void);
 
 /**

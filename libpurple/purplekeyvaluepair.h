@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_KEY_VALUE_PAIR (purple_key_value_pair_get_type())
 
 /**
@@ -75,6 +77,7 @@ GType purple_key_value_pair_get_type(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleKeyValuePair *purple_key_value_pair_new(const gchar *key, gpointer value);
 
 /**
@@ -90,6 +93,7 @@ PurpleKeyValuePair *purple_key_value_pair_new(const gchar *key, gpointer value);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleKeyValuePair *purple_key_value_pair_new_full(const gchar *key, gpointer value, GDestroyNotify value_destroy_func);
 
 /**
@@ -100,6 +104,7 @@ PurpleKeyValuePair *purple_key_value_pair_new_full(const gchar *key, gpointer va
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_key_value_pair_free(PurpleKeyValuePair *kvp);
 
 /**

@@ -44,6 +44,7 @@ typedef struct _PurpleBuddyClass PurpleBuddyClass;
 #include "media.h"
 #include "purpleaccount.h"
 #include "purplepresence.h"
+#include "purpleversion.h"
 #include "status.h"
 
 /**
@@ -130,6 +131,7 @@ PurpleBuddy *purple_buddy_new(PurpleAccount *account, const char *name, const ch
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_buddy_get_id(PurpleBuddy *buddy);
 
 /**

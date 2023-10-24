@@ -29,10 +29,13 @@
 #include "purplecontactinfo.h"
 #include "purpletags.h"
 #include "purpletyping.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CONVERSATION_MEMBER (purple_conversation_member_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleConversationMember, purple_conversation_member,
                      PURPLE, CONVERSATION_MEMBER, GObject)
 
@@ -63,6 +66,7 @@ G_DECLARE_FINAL_TYPE(PurpleConversationMember, purple_conversation_member,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversationMember *purple_conversation_member_new(PurpleContactInfo *info);
 
 /**
@@ -76,6 +80,7 @@ PurpleConversationMember *purple_conversation_member_new(PurpleContactInfo *info
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_conversation_member_get_contact_info(PurpleConversationMember *conversation_member);
 
 /**
@@ -88,6 +93,7 @@ PurpleContactInfo *purple_conversation_member_get_contact_info(PurpleConversatio
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_conversation_member_get_tags(PurpleConversationMember *conversation_member);
 
 /**
@@ -100,6 +106,7 @@ PurpleTags *purple_conversation_member_get_tags(PurpleConversationMember *conver
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleTypingState purple_conversation_member_get_typing_state(PurpleConversationMember *member);
 
 /**
@@ -115,6 +122,7 @@ PurpleTypingState purple_conversation_member_get_typing_state(PurpleConversation
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_member_set_typing_state(PurpleConversationMember *member, PurpleTypingState state, guint seconds);
 
 G_END_DECLS

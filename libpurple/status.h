@@ -27,6 +27,8 @@
 #ifndef PURPLE_STATUS_H
 #define PURPLE_STATUS_H
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_STATUS (purple_status_get_type())
 typedef struct _PurpleStatus PurpleStatus;
 
@@ -260,6 +262,7 @@ PurpleStatusType *purple_status_type_new_with_attrs(PurpleStatusPrimitive primit
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleStatusType *purple_status_type_new_with_attrsv(PurpleStatusPrimitive primitive,
                                                      const gchar *id,
                                                      const gchar *name,
@@ -519,6 +522,7 @@ void purple_status_set_active(PurpleStatus *status, gboolean active);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_status_set_active_with_attributes(PurpleStatus *status, gboolean active, GHashTable *attrs);
 
 /**
@@ -731,6 +735,7 @@ void purple_statuses_uninit(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GHashTable *purple_attrs_from_vargs(va_list args);
 
 G_END_DECLS

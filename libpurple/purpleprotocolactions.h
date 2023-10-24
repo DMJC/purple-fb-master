@@ -32,8 +32,11 @@
 
 #include "connection.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_ACTIONS (purple_protocol_actions_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolActions, purple_protocol_actions, PURPLE,
                     PROTOCOL_ACTIONS, PurpleProtocol)
 
@@ -91,6 +94,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_actions_get_prefix(PurpleProtocolActions *actions);
 
 /**
@@ -104,6 +108,7 @@ const gchar *purple_protocol_actions_get_prefix(PurpleProtocolActions *actions);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GActionGroup *purple_protocol_actions_get_action_group(PurpleProtocolActions *actions, PurpleConnection *connection);
 
 /**
@@ -117,6 +122,7 @@ GActionGroup *purple_protocol_actions_get_action_group(PurpleProtocolActions *ac
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GMenu *purple_protocol_actions_get_menu(PurpleProtocolActions *actions, PurpleConnection *connection);
 
 /**
@@ -130,6 +136,7 @@ GMenu *purple_protocol_actions_get_menu(PurpleProtocolActions *actions, PurpleCo
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_actions_changed(PurpleProtocolActions *actions, PurpleAccount *account);
 
 G_END_DECLS

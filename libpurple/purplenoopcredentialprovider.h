@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include "purplecredentialprovider.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -41,6 +42,8 @@ G_BEGIN_DECLS
  */
 
 #define PURPLE_TYPE_NOOP_CREDENTIAL_PROVIDER (purple_noop_credential_provider_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleNoopCredentialProvider,
                      purple_noop_credential_provider,
                      PURPLE, NOOP_CREDENTIAL_PROVIDER, PurpleCredentialProvider)

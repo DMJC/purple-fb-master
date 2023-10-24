@@ -32,6 +32,7 @@
 
 #include "purpleaccount.h"
 #include "purplerequestfield.h"
+#include "purpleversion.h"
 
 /**
  * PurpleRequestFieldAccountFilterFunc:
@@ -47,6 +48,7 @@
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef gboolean (*PurpleRequestFieldAccountFilterFunc)(PurpleAccount *account, gpointer user_data);
 
 G_BEGIN_DECLS
@@ -59,6 +61,8 @@ G_BEGIN_DECLS
  * Since: 3.0.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_ACCOUNT (purple_request_field_account_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldAccount, purple_request_field_account,
                      PURPLE, REQUEST_FIELD_ACCOUNT, PurpleRequestField)
 
@@ -165,6 +169,7 @@ gboolean purple_request_field_account_get_show_all(PurpleRequestFieldAccount *fi
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_account_match(PurpleRequestFieldAccount *field, PurpleAccount *account);
 
 G_END_DECLS

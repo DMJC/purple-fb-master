@@ -33,6 +33,7 @@
 #include "connection.h"
 #include "purplemessage.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_CHAT (purple_protocol_chat_get_type())
 
@@ -44,6 +45,7 @@
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolChat, purple_protocol_chat, PURPLE,
                     PROTOCOL_CHAT, PurpleProtocol)
 
@@ -146,6 +148,7 @@ struct _PurpleProtocolChatInterface {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_chat_info(PurpleProtocolChat *protocol_chat, PurpleConnection *connection);
 
 /**
@@ -162,6 +165,7 @@ GList *purple_protocol_chat_info(PurpleProtocolChat *protocol_chat, PurpleConnec
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GHashTable *purple_protocol_chat_info_defaults(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, const gchar *chat_name);
 
 /**
@@ -175,6 +179,7 @@ GHashTable *purple_protocol_chat_info_defaults(PurpleProtocolChat *protocol_chat
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_join(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, GHashTable *components);
 
 /**
@@ -188,6 +193,7 @@ void purple_protocol_chat_join(PurpleProtocolChat *protocol_chat, PurpleConnecti
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_reject(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, GHashTable *components);
 
 /**
@@ -202,6 +208,7 @@ void purple_protocol_chat_reject(PurpleProtocolChat *protocol_chat, PurpleConnec
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gchar *purple_protocol_chat_get_name(PurpleProtocolChat *protocol_chat, GHashTable *components);
 
 /**
@@ -216,6 +223,7 @@ gchar *purple_protocol_chat_get_name(PurpleProtocolChat *protocol_chat, GHashTab
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_invite(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, const gchar *message, const gchar *who);
 
 /**
@@ -228,6 +236,7 @@ void purple_protocol_chat_invite(PurpleProtocolChat *protocol_chat, PurpleConnec
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id);
 
 /**
@@ -244,6 +253,7 @@ void purple_protocol_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnect
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_protocol_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, PurpleConversation *conversation, PurpleMessage *message);
 
 /**
@@ -259,6 +269,7 @@ gint purple_protocol_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnecti
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gchar *purple_protocol_chat_get_user_real_name(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, const gchar *who);
 
 /**
@@ -272,6 +283,7 @@ gchar *purple_protocol_chat_get_user_real_name(PurpleProtocolChat *protocol_chat
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_set_topic(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, const gchar *topic);
 
 G_END_DECLS

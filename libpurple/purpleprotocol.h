@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_PROTOCOL (purple_protocol_get_type())
 
 /**
@@ -40,6 +42,7 @@
  * Since: 3.0.0
  */
 
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleProtocol, purple_protocol, PURPLE, PROTOCOL,
                          GObject)
 
@@ -183,6 +186,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_id(PurpleProtocol *protocol);
 
 /**
@@ -195,6 +199,7 @@ const gchar *purple_protocol_get_id(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_name(PurpleProtocol *protocol);
 
 /**
@@ -207,6 +212,7 @@ const gchar *purple_protocol_get_name(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_description(PurpleProtocol *protocol);
 
 /**
@@ -219,6 +225,7 @@ const gchar *purple_protocol_get_description(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleProtocolOptions purple_protocol_get_options(PurpleProtocol *protocol);
 
 /**
@@ -232,6 +239,7 @@ PurpleProtocolOptions purple_protocol_get_options(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_user_splits(PurpleProtocol *protocol);
 
 /**
@@ -245,6 +253,7 @@ GList *purple_protocol_get_user_splits(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_account_options(PurpleProtocol *protocol);
 
 /**
@@ -257,6 +266,7 @@ GList *purple_protocol_get_account_options(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBuddyIconSpec *purple_protocol_get_icon_spec(PurpleProtocol *protocol);
 
 /**
@@ -269,6 +279,7 @@ PurpleBuddyIconSpec *purple_protocol_get_icon_spec(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboardOps *purple_protocol_get_whiteboard_ops(PurpleProtocol *protocol);
 
 /**
@@ -280,6 +291,7 @@ PurpleWhiteboardOps *purple_protocol_get_whiteboard_ops(PurpleProtocol *protocol
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_login(PurpleProtocol *protocol, PurpleAccount *account);
 
 /**
@@ -291,6 +303,7 @@ void purple_protocol_login(PurpleProtocol *protocol, PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *connection);
 
 /**
@@ -308,6 +321,7 @@ void purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *connectio
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_can_connect_async(PurpleProtocol *protocol, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -323,6 +337,7 @@ void purple_protocol_can_connect_async(PurpleProtocol *protocol, PurpleAccount *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_can_connect_finish(PurpleProtocol *protocol, GAsyncResult *result, GError **error);
 
 
@@ -342,6 +357,7 @@ gboolean purple_protocol_can_connect_finish(PurpleProtocol *protocol, GAsyncResu
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConnection *purple_protocol_create_connection(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
 
 /**
@@ -356,6 +372,7 @@ PurpleConnection *purple_protocol_create_connection(PurpleProtocol *protocol, Pu
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_status_types(PurpleProtocol *protocol, PurpleAccount *account);
 
 /**
@@ -370,6 +387,7 @@ GList *purple_protocol_get_status_types(PurpleProtocol *protocol, PurpleAccount 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_icon_name(PurpleProtocol *protocol);
 
 /**
@@ -388,6 +406,7 @@ const gchar *purple_protocol_get_icon_name(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_icon_search_path(PurpleProtocol *protocol);
 
 /**
@@ -406,6 +425,7 @@ const gchar *purple_protocol_get_icon_search_path(PurpleProtocol *protocol);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_icon_resource_path(PurpleProtocol *protocol);
 
 G_END_DECLS

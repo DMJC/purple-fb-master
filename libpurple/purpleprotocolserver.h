@@ -36,8 +36,11 @@
 #include "purpleaccount.h"
 #include "purplemessage.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_SERVER (purple_protocol_server_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolServer, purple_protocol_server, PURPLE,
                     PROTOCOL_SERVER, PurpleProtocol)
 
@@ -130,6 +133,7 @@ struct _PurpleProtocolServerInterface {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_set_info(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *info);
 
 /**
@@ -143,6 +147,7 @@ void purple_protocol_server_set_info(PurpleProtocolServer *protocol_server, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_get_info(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who);
 
 /**
@@ -155,6 +160,7 @@ void purple_protocol_server_get_info(PurpleProtocolServer *protocol_server, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_set_status(PurpleProtocolServer *protocol_server, PurpleAccount *account, PurpleStatus *status);
 
 /**
@@ -167,6 +173,7 @@ void purple_protocol_server_set_status(PurpleProtocolServer *protocol_server, Pu
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_set_idle(PurpleProtocolServer *protocol_server, PurpleConnection *connection, gint idletime);
 
 /**
@@ -180,6 +187,7 @@ void purple_protocol_server_set_idle(PurpleProtocolServer *protocol_server, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_pass, const gchar *new_pass);
 
 /**
@@ -198,6 +206,7 @@ void purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_add_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group, const gchar *message);
 
 /**
@@ -211,6 +220,7 @@ void purple_protocol_server_add_buddy(PurpleProtocolServer *protocol_server, Pur
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_remove_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group);
 
 /**
@@ -230,6 +240,7 @@ void purple_protocol_server_remove_buddy(PurpleProtocolServer *protocol_server, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_remove_buddies(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups);
 
 /**
@@ -241,6 +252,7 @@ void purple_protocol_server_remove_buddies(PurpleProtocolServer *protocol_server
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_keepalive(PurpleProtocolServer *protocol_server, PurpleConnection *connection);
 
 /**
@@ -255,6 +267,7 @@ void purple_protocol_server_keepalive(PurpleProtocolServer *protocol_server, Pur
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_protocol_server_get_keepalive_interval(PurpleProtocolServer *protocol_server);
 
 /**
@@ -268,6 +281,7 @@ gint purple_protocol_server_get_keepalive_interval(PurpleProtocolServer *protoco
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_alias_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *alias);
 
 /**
@@ -282,6 +296,7 @@ void purple_protocol_server_alias_buddy(PurpleProtocolServer *protocol_server, P
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_group_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *old_group, const gchar *new_group);
 
 /**
@@ -297,6 +312,7 @@ void purple_protocol_server_group_buddy(PurpleProtocolServer *protocol_server, P
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_name, PurpleGroup *group, GList *moved_buddies);
 
 /**
@@ -309,6 +325,7 @@ void purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_set_buddy_icon(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleImage *img);
 
 /**
@@ -321,6 +338,7 @@ void purple_protocol_server_set_buddy_icon(PurpleProtocolServer *protocol_server
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_remove_group(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleGroup *group);
 
 /**
@@ -337,6 +355,7 @@ void purple_protocol_server_remove_group(PurpleProtocolServer *protocol_server, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_protocol_server_send_raw(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *buf, gint len);
 
 G_END_DECLS

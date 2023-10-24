@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include "purplehistoryadapter.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -37,9 +38,13 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
-#define PURPLE_HISTORY_MANAGER_DOMAIN (g_quark_from_static_string("purple-history-manager"))
+#define PURPLE_HISTORY_MANAGER_DOMAIN \
+	g_quark_from_static_string("purple-history-manager") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 #define PURPLE_TYPE_HISTORY_MANAGER (purple_history_manager_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleHistoryManager, purple_history_manager, PURPLE,
                      HISTORY_MANAGER, GObject)
 
@@ -62,6 +67,7 @@ G_DECLARE_FINAL_TYPE(PurpleHistoryManager, purple_history_manager, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleHistoryManagerForeachFunc)(PurpleHistoryAdapter *adapter, gpointer data);
 
 /**
@@ -73,6 +79,7 @@ typedef void (*PurpleHistoryManagerForeachFunc)(PurpleHistoryAdapter *adapter, g
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryManager *purple_history_manager_get_default(void);
 
 /**
@@ -85,6 +92,7 @@ PurpleHistoryManager *purple_history_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
  PurpleHistoryAdapter *purple_history_manager_get_active(PurpleHistoryManager *manager);
 
  /**
@@ -100,6 +108,7 @@ PurpleHistoryManager *purple_history_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_set_active(PurpleHistoryManager *manager, const gchar *id, GError **error);
 
 /**
@@ -115,6 +124,7 @@ gboolean purple_history_manager_set_active(PurpleHistoryManager *manager, const 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_register(PurpleHistoryManager *manager, PurpleHistoryAdapter *adapter, GError **error);
 
 /**
@@ -130,6 +140,7 @@ gboolean purple_history_manager_register(PurpleHistoryManager *manager, PurpleHi
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_unregister(PurpleHistoryManager *manager, PurpleHistoryAdapter *adapter, GError **error);
 
 /**
@@ -143,6 +154,7 @@ gboolean purple_history_manager_unregister(PurpleHistoryManager *manager, Purple
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryAdapter *purple_history_manager_find(PurpleHistoryManager *manager, const gchar *id);
 
 /**
@@ -157,6 +169,7 @@ PurpleHistoryAdapter *purple_history_manager_find(PurpleHistoryManager *manager,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_history_manager_get_all(PurpleHistoryManager *manager);
 
 /**
@@ -173,6 +186,7 @@ GList *purple_history_manager_get_all(PurpleHistoryManager *manager);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_history_manager_query(PurpleHistoryManager *manager, const gchar *query, GError **error);
 
 /**
@@ -188,6 +202,7 @@ GList *purple_history_manager_query(PurpleHistoryManager *manager, const gchar *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_remove(PurpleHistoryManager *manager, const gchar *query, GError **error);
 
 /**
@@ -203,6 +218,7 @@ gboolean purple_history_manager_remove(PurpleHistoryManager *manager, const gcha
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_write(PurpleHistoryManager *manager, PurpleConversation *conversation, PurpleMessage *message, GError **error);
 
 /**
@@ -215,6 +231,7 @@ gboolean purple_history_manager_write(PurpleHistoryManager *manager, PurpleConve
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_history_manager_foreach(PurpleHistoryManager *manager, PurpleHistoryManagerForeachFunc func, gpointer data);
 
 G_END_DECLS

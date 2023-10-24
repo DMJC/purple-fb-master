@@ -30,6 +30,7 @@
 #include <glib-object.h>
 
 #include "purpleaccount.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -64,6 +65,8 @@ typedef enum {
  */
 
 #define PURPLE_TYPE_FILE_TRANSFER purple_file_transfer_get_type()
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleFileTransfer, purple_file_transfer, PURPLE,
                      FILE_TRANSFER, GObject)
 
@@ -84,6 +87,7 @@ G_DECLARE_FINAL_TYPE(PurpleFileTransfer, purple_file_transfer, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleFileTransfer *purple_file_transfer_new_send(PurpleAccount *account, PurpleContactInfo *remote, GFile *local_file);
 
 /**
@@ -103,6 +107,7 @@ PurpleFileTransfer *purple_file_transfer_new_send(PurpleAccount *account, Purple
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleFileTransfer *purple_file_transfer_new_receive(PurpleAccount *account, PurpleContactInfo *remote, const char *filename, guint64 file_size);
 
 /**
@@ -115,6 +120,7 @@ PurpleFileTransfer *purple_file_transfer_new_receive(PurpleAccount *account, Pur
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_file_transfer_get_account(PurpleFileTransfer *transfer);
 
 /**
@@ -128,6 +134,7 @@ PurpleAccount *purple_file_transfer_get_account(PurpleFileTransfer *transfer);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_file_transfer_get_remote(PurpleFileTransfer *transfer);
 
 /**
@@ -140,6 +147,7 @@ PurpleContactInfo *purple_file_transfer_get_remote(PurpleFileTransfer *transfer)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_file_transfer_get_initiator(PurpleFileTransfer *transfer);
 
 /**
@@ -153,6 +161,7 @@ PurpleContactInfo *purple_file_transfer_get_initiator(PurpleFileTransfer *transf
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GCancellable *purple_file_transfer_get_cancellable(PurpleFileTransfer *transfer);
 
 /**
@@ -165,6 +174,7 @@ GCancellable *purple_file_transfer_get_cancellable(PurpleFileTransfer *transfer)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleFileTransferState purple_file_transfer_get_state(PurpleFileTransfer *transfer);
 
 /**
@@ -179,6 +189,7 @@ PurpleFileTransferState purple_file_transfer_get_state(PurpleFileTransfer *trans
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_state(PurpleFileTransfer *transfer, PurpleFileTransferState state);
 
 /**
@@ -191,6 +202,7 @@ void purple_file_transfer_set_state(PurpleFileTransfer *transfer, PurpleFileTran
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GError *purple_file_transfer_get_error(PurpleFileTransfer *transfer);
 
 /**
@@ -202,6 +214,7 @@ GError *purple_file_transfer_get_error(PurpleFileTransfer *transfer);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_error(PurpleFileTransfer *transfer, GError *error);
 
 /**
@@ -214,6 +227,7 @@ void purple_file_transfer_set_error(PurpleFileTransfer *transfer, GError *error)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GFile *purple_file_transfer_get_local_file(PurpleFileTransfer *transfer);
 
 /**
@@ -225,6 +239,7 @@ GFile *purple_file_transfer_get_local_file(PurpleFileTransfer *transfer);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_local_file(PurpleFileTransfer *transfer, GFile *local_file);
 
 /**
@@ -237,6 +252,7 @@ void purple_file_transfer_set_local_file(PurpleFileTransfer *transfer, GFile *lo
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_file_transfer_get_filename(PurpleFileTransfer *transfer);
 
 /**
@@ -249,6 +265,7 @@ const char *purple_file_transfer_get_filename(PurpleFileTransfer *transfer);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint64 purple_file_transfer_get_file_size(PurpleFileTransfer *transfer);
 
 /**
@@ -261,6 +278,7 @@ guint64 purple_file_transfer_get_file_size(PurpleFileTransfer *transfer);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_file_transfer_get_content_type(PurpleFileTransfer *transfer);
 
 /**
@@ -272,6 +290,7 @@ const char *purple_file_transfer_get_content_type(PurpleFileTransfer *transfer);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_content_type(PurpleFileTransfer *transfer, const char *content_type);
 
 /**
@@ -285,6 +304,7 @@ void purple_file_transfer_set_content_type(PurpleFileTransfer *transfer, const c
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_file_transfer_get_message(PurpleFileTransfer *transfer);
 
 /**
@@ -296,6 +316,7 @@ const char *purple_file_transfer_get_message(PurpleFileTransfer *transfer);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_message(PurpleFileTransfer *transfer, const char *message);
 
 G_END_DECLS

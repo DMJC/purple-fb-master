@@ -32,6 +32,7 @@
 #include "connection.h"
 #include "roomlist.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -44,6 +45,7 @@ G_BEGIN_DECLS
  * lists at the protocol level.
  */
 
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolRoomlist, purple_protocol_roomlist, PURPLE,
                     PROTOCOL_ROOMLIST, PurpleProtocol)
 
@@ -84,6 +86,7 @@ struct _PurpleProtocolRoomlistInterface {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRoomlist *purple_protocol_roomlist_get_list(PurpleProtocolRoomlist *protocol_roomlist, PurpleConnection *gc);
 
 /**
@@ -96,6 +99,7 @@ PurpleRoomlist *purple_protocol_roomlist_get_list(PurpleProtocolRoomlist *protoc
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roomlist_cancel(PurpleProtocolRoomlist *protocol_roomlist, PurpleRoomlist *list);
 
 /**
@@ -108,6 +112,7 @@ void purple_protocol_roomlist_cancel(PurpleProtocolRoomlist *protocol_roomlist, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roomlist_expand_category(PurpleProtocolRoomlist *protocol_roomlist, PurpleRoomlist *list, PurpleRoomlistRoom *category);
 
 /**
@@ -121,6 +126,7 @@ void purple_protocol_roomlist_expand_category(PurpleProtocolRoomlist *protocol_r
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 char *purple_protocol_roomlist_room_serialize(PurpleProtocolRoomlist *protocol_roomlist, PurpleRoomlistRoom *room);
 
 G_END_DECLS

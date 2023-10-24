@@ -41,6 +41,7 @@ typedef struct _PurpleAccount PurpleAccount;
 #include "purplecontactinfo.h"
 #include "purpleprotocol.h"
 #include "purpleproxyinfo.h"
+#include "purpleversion.h"
 #include "status.h"
 
 G_BEGIN_DECLS
@@ -93,6 +94,7 @@ void purple_account_disconnect(PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_account_is_disconnecting(PurpleAccount *account);
 
 /**
@@ -259,6 +261,7 @@ void purple_account_set_status(PurpleAccount *account, const char *status_id, gb
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_set_status_attrs(PurpleAccount *account, const char *status_id, gboolean active, GHashTable *attrs);
 
 /**
@@ -362,6 +365,7 @@ const char *purple_account_get_protocol_id(PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleProtocol *purple_account_get_protocol(PurpleAccount *account);
 
 /**
@@ -629,6 +633,7 @@ const PurpleConnectionErrorInfo *purple_account_get_error(PurpleAccount *account
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_set_error(PurpleAccount *account, PurpleConnectionErrorInfo *info);
 
 /**
@@ -642,6 +647,7 @@ void purple_account_set_error(PurpleAccount *account, PurpleConnectionErrorInfo 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_set_require_password(PurpleAccount *account, gboolean require_password);
 
 /**
@@ -654,6 +660,7 @@ void purple_account_set_require_password(PurpleAccount *account, gboolean requir
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_account_get_require_password(PurpleAccount *account);
 
 /**
@@ -674,6 +681,7 @@ gboolean purple_account_get_require_password(PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_freeze_notify_settings(PurpleAccount *account);
 
 /**
@@ -686,6 +694,7 @@ void purple_account_freeze_notify_settings(PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_thaw_notify_settings(PurpleAccount *account);
 
 G_END_DECLS

@@ -28,6 +28,7 @@
 
 #include "purpleaccount.h"
 #include "purplepresence.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -52,6 +53,7 @@ G_DECLARE_FINAL_TYPE(PurpleAccountPresence, purple_account_presence, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccountPresence *purple_account_presence_new(PurpleAccount *account);
 
 /**

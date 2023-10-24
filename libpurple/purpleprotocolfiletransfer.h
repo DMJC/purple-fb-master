@@ -32,8 +32,11 @@
 
 #include "purplefiletransfer.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_FILE_TRANSFER (purple_protocol_file_transfer_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolFileTransfer,
                     purple_protocol_file_transfer, PURPLE,
                     PROTOCOL_FILE_TRANSFER, PurpleProtocol)
@@ -86,6 +89,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_file_transfer_send_async(PurpleProtocolFileTransfer *protocol, PurpleFileTransfer *transfer, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -103,6 +107,7 @@ void purple_protocol_file_transfer_send_async(PurpleProtocolFileTransfer *protoc
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_file_transfer_send_finish(PurpleProtocolFileTransfer *protocol, GAsyncResult *result, GError **error);
 
 /**
@@ -120,6 +125,7 @@ gboolean purple_protocol_file_transfer_send_finish(PurpleProtocolFileTransfer *p
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_file_transfer_receive_async(PurpleProtocolFileTransfer *protocol, PurpleFileTransfer *transfer, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -137,6 +143,7 @@ void purple_protocol_file_transfer_receive_async(PurpleProtocolFileTransfer *pro
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_file_transfer_receive_finish(PurpleProtocolFileTransfer *protocol, GAsyncResult *result, GError **error);
 
 G_END_DECLS

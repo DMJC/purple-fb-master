@@ -31,8 +31,11 @@
 #include <glib-object.h>
 
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_CONTACTS (purple_protocol_contacts_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolContacts,
                     purple_protocol_contacts, PURPLE,
                     PROTOCOL_CONTACTS, PurpleProtocol)
@@ -87,6 +90,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_contacts_get_profile_async(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -104,6 +108,7 @@ void purple_protocol_contacts_get_profile_async(PurpleProtocolContacts *protocol
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 char *purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
 
 /**
@@ -118,6 +123,7 @@ char *purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *protoc
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GActionGroup *purple_protocol_contacts_get_actions(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);
 
 /**
@@ -134,6 +140,7 @@ GActionGroup *purple_protocol_contacts_get_actions(PurpleProtocolContacts *proto
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GMenuModel *purple_protocol_contacts_get_menu(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);
 
 G_END_DECLS

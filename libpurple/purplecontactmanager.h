@@ -28,10 +28,13 @@
 
 #include "purpleaccount.h"
 #include "purplecontact.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CONTACT_MANAGER (purple_contact_manager_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleContactManager, purple_contact_manager, PURPLE,
                      CONTACT_MANAGER, GObject)
 
@@ -55,6 +58,7 @@ G_DECLARE_FINAL_TYPE(PurpleContactManager, purple_contact_manager, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactManager *purple_contact_manager_get_default(void);
 
 /**
@@ -67,6 +71,7 @@ PurpleContactManager *purple_contact_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_manager_add(PurpleContactManager *manager, PurpleContact *contact);
 
 /**
@@ -81,6 +86,7 @@ void purple_contact_manager_add(PurpleContactManager *manager, PurpleContact *co
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_contact_manager_remove(PurpleContactManager *manager, PurpleContact *contact);
 
 /**
@@ -94,6 +100,7 @@ gboolean purple_contact_manager_remove(PurpleContactManager *manager, PurpleCont
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_contact_manager_remove_all(PurpleContactManager *manager, PurpleAccount *account);
 
 /**
@@ -108,6 +115,7 @@ gboolean purple_contact_manager_remove_all(PurpleContactManager *manager, Purple
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_contact_manager_get_all(PurpleContactManager *manager, PurpleAccount *account);
 
 /**
@@ -124,6 +132,7 @@ GListModel *purple_contact_manager_get_all(PurpleContactManager *manager, Purple
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContact *purple_contact_manager_find_with_username(PurpleContactManager *manager, PurpleAccount *account, const gchar *username);
 
 /**
@@ -139,6 +148,7 @@ PurpleContact *purple_contact_manager_find_with_username(PurpleContactManager *m
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContact *purple_contact_manager_find_with_id(PurpleContactManager *manager, PurpleAccount *account, const gchar *id);
 
 /**
@@ -155,7 +165,7 @@ PurpleContact *purple_contact_manager_find_with_id(PurpleContactManager *manager
  *
  * Since: 3.0.0
  */
-G_DEPRECATED
+PURPLE_DEPRECATED
 void purple_contact_manager_add_buddy(PurpleContactManager *manager, PurpleBuddy *buddy);
 
 /**
@@ -172,6 +182,7 @@ void purple_contact_manager_add_buddy(PurpleContactManager *manager, PurpleBuddy
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_manager_add_person(PurpleContactManager *manager, PurplePerson *person);
 
 /**
@@ -186,6 +197,7 @@ void purple_contact_manager_add_person(PurpleContactManager *manager, PurplePers
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_manager_remove_person(PurpleContactManager *manager, PurplePerson *person, gboolean remove_contacts);
 
 G_END_DECLS

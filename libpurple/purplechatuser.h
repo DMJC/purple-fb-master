@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 /**
  * PurpleChatUser:
  *
@@ -92,6 +94,7 @@ PurpleChatUser *purple_chat_user_new(PurpleChatConversation *chat,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_user_set_chat(PurpleChatUser *chat_user,
                                PurpleChatConversation *chat);
 
@@ -105,6 +108,7 @@ void purple_chat_user_set_chat(PurpleChatUser *chat_user,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleChatConversation *purple_chat_user_get_chat(PurpleChatUser *chat_user);
 
 /**
@@ -117,6 +121,7 @@ PurpleChatConversation *purple_chat_user_get_chat(PurpleChatUser *chat_user);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_chat_user_get_alias(PurpleChatUser *chat_user);
 
 /**
@@ -149,6 +154,7 @@ void purple_chat_user_set_flags(PurpleChatUser *chat_user,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleChatUserFlags purple_chat_user_get_flags(PurpleChatUser *chat_user);
 
 /**
@@ -161,6 +167,7 @@ PurpleChatUserFlags purple_chat_user_get_flags(PurpleChatUser *chat_user);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_chat_user_is_buddy(PurpleChatUser *chat_user);
 
 /**

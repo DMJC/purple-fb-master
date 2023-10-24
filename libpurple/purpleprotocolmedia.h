@@ -33,6 +33,7 @@
 #include "media.h"
 #include "purpleaccount.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_MEDIA (purple_protocol_media_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolMedia, purple_protocol_media, PURPLE,
@@ -98,6 +99,7 @@ struct _PurpleProtocolMediaInterface {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_media_initiate_session(PurpleProtocolMedia *media, PurpleAccount *account, const gchar *who, PurpleMediaSessionType type);
 
 /**
@@ -113,6 +115,7 @@ gboolean purple_protocol_media_initiate_session(PurpleProtocolMedia *media, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleMediaCaps purple_protocol_media_get_caps(PurpleProtocolMedia *media, PurpleAccount *account, const gchar *who);
 
 /**
@@ -132,6 +135,7 @@ PurpleMediaCaps purple_protocol_media_get_caps(PurpleProtocolMedia *media, Purpl
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_media_send_dtmf(PurpleProtocolMedia *protocol_media, PurpleMedia *media, gchar dtmf, guint8 volume, guint8 duration);
 
 G_END_DECLS

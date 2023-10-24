@@ -28,6 +28,7 @@
 
 #include "buddylist.h"
 #include "purplepresence.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -52,6 +53,7 @@ G_DECLARE_FINAL_TYPE(PurpleBuddyPresence, purple_buddy_presence, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBuddyPresence *purple_buddy_presence_new(PurpleBuddy *buddy);
 
 /**

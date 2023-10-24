@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include "purpleaccount.h"
+#include "purpleversion.h"
 #include "request.h"
 
 G_BEGIN_DECLS
@@ -38,7 +39,9 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
-#define PURPLE_CREDENTIAL_PROVIDER_DOMAIN (g_quark_from_static_string("purple-credential-provider"))
+#define PURPLE_CREDENTIAL_PROVIDER_DOMAIN \
+	g_quark_from_static_string("purple-credential-provider") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 /**
  * PurpleCredentialProvider:
@@ -52,6 +55,8 @@ G_BEGIN_DECLS
  */
 
 #define PURPLE_TYPE_CREDENTIAL_PROVIDER (purple_credential_provider_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleCredentialProvider, purple_credential_provider,
                          PURPLE, CREDENTIAL_PROVIDER, GObject)
 
@@ -104,6 +109,7 @@ struct _PurpleCredentialProviderClass {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_credential_provider_get_id(PurpleCredentialProvider *provider);
 
 /**
@@ -116,6 +122,7 @@ const gchar *purple_credential_provider_get_id(PurpleCredentialProvider *provide
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_credential_provider_get_name(PurpleCredentialProvider *provider);
 
 /**
@@ -129,6 +136,7 @@ const gchar *purple_credential_provider_get_name(PurpleCredentialProvider *provi
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_credential_provider_get_description(PurpleCredentialProvider *provider);
 
 /**
@@ -144,6 +152,7 @@ const gchar *purple_credential_provider_get_description(PurpleCredentialProvider
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_provider_is_valid(PurpleCredentialProvider *provider, GError **error);
 
 /**
@@ -159,6 +168,7 @@ gboolean purple_credential_provider_is_valid(PurpleCredentialProvider *provider,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_credential_provider_read_password_async(PurpleCredentialProvider *provider, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -175,6 +185,7 @@ void purple_credential_provider_read_password_async(PurpleCredentialProvider *pr
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gchar *purple_credential_provider_read_password_finish(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
 
 /**
@@ -191,6 +202,7 @@ gchar *purple_credential_provider_read_password_finish(PurpleCredentialProvider 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_credential_provider_write_password_async(PurpleCredentialProvider *provider, PurpleAccount *account, const gchar *password, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -208,6 +220,7 @@ void purple_credential_provider_write_password_async(PurpleCredentialProvider *p
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_provider_write_password_finish(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
 
 /**
@@ -223,6 +236,7 @@ gboolean purple_credential_provider_write_password_finish(PurpleCredentialProvid
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_credential_provider_clear_password_async(PurpleCredentialProvider *provider, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -240,6 +254,7 @@ void purple_credential_provider_clear_password_async(PurpleCredentialProvider *p
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_provider_clear_password_finish(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
 
 /**
@@ -253,6 +268,7 @@ gboolean purple_credential_provider_clear_password_finish(PurpleCredentialProvid
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GSettings *purple_credential_provider_get_settings(PurpleCredentialProvider *provider);
 
 G_END_DECLS

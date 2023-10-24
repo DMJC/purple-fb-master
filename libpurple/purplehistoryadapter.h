@@ -28,6 +28,7 @@
 
 #include "purplemessage.h"
 #include "purpleconversation.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -38,7 +39,9 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
-#define PURPLE_HISTORY_ADAPTER_DOMAIN (g_quark_from_static_string("purple-history-adapter"))
+#define PURPLE_HISTORY_ADAPTER_DOMAIN \
+	g_quark_from_static_string("purple-history-adapter") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 /**
  * PurpleHistoryAdapter:
@@ -51,6 +54,8 @@ G_BEGIN_DECLS
  */
 
 #define PURPLE_TYPE_HISTORY_ADAPTER (purple_history_adapter_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleHistoryAdapter, purple_history_adapter,
                          PURPLE, HISTORY_ADAPTER, GObject)
 
@@ -89,6 +94,7 @@ struct _PurpleHistoryAdapterClass {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_history_adapter_get_id(PurpleHistoryAdapter *adapter);
 
 /**
@@ -101,6 +107,7 @@ const gchar *purple_history_adapter_get_id(PurpleHistoryAdapter *adapter);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_history_adapter_get_name(PurpleHistoryAdapter *adapter);
 
 /**
@@ -116,6 +123,7 @@ const gchar *purple_history_adapter_get_name(PurpleHistoryAdapter *adapter);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_write(PurpleHistoryAdapter *adapter,
                                       PurpleConversation *conversation,
                                       PurpleMessage *message,
@@ -133,6 +141,7 @@ gboolean purple_history_adapter_write(PurpleHistoryAdapter *adapter,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_history_adapter_query(PurpleHistoryAdapter *adapter,
                                     const gchar *query,
                                     GError **error);
@@ -149,6 +158,7 @@ GList *purple_history_adapter_query(PurpleHistoryAdapter *adapter,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_remove(PurpleHistoryAdapter *adapter,
                                        const gchar *query,
                                        GError **error);

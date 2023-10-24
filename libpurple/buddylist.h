@@ -30,6 +30,7 @@
 
 #include "buddy.h"
 #include "purpleaccount.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_BUDDY_LIST (purple_buddy_list_get_type())
 typedef struct _PurpleBuddyList PurpleBuddyList;
@@ -67,6 +68,7 @@ _purple_blist_get_localized_default_group_name(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleBlistWalkFunc)(PurpleBlistNode *node, gpointer data);
 
 /**************************************************************************/
@@ -180,6 +182,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleBuddyList, purple_buddy_list, PURPLE, BUDDY_LIST,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBuddyList *purple_blist_get_default(void);
 
 /**
@@ -191,6 +194,7 @@ PurpleBuddyList *purple_blist_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBlistNode *purple_blist_get_default_root(void);
 
 /**
@@ -447,6 +451,7 @@ void purple_blist_remove_account(PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_walk(PurpleBlistWalkFunc group_func, PurpleBlistWalkFunc chat_func, PurpleBlistWalkFunc meta_contact_func, PurpleBlistWalkFunc contact_func, gpointer data);
 
 /**
@@ -458,6 +463,7 @@ void purple_blist_walk(PurpleBlistWalkFunc group_func, PurpleBlistWalkFunc chat_
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_blist_get_default_group_name(void);
 
 /****************************************************************************************/
@@ -521,6 +527,7 @@ void purple_blist_request_add_group(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_new_node(PurpleBuddyList *list, PurpleBlistNode *node);
 
 /**
@@ -532,6 +539,7 @@ void purple_blist_new_node(PurpleBuddyList *list, PurpleBlistNode *node);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_update_node(PurpleBuddyList *list, PurpleBlistNode *node);
 
 /**
@@ -546,6 +554,7 @@ void purple_blist_update_node(PurpleBuddyList *list, PurpleBlistNode *node);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_save_node(PurpleBuddyList *list, PurpleBlistNode *node);
 
 /**
@@ -561,6 +570,7 @@ void purple_blist_save_node(PurpleBuddyList *list, PurpleBlistNode *node);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_save_account(PurpleBuddyList *list, PurpleAccount *account);
 
 /**************************************************************************/
@@ -578,6 +588,7 @@ void purple_blist_save_account(PurpleBuddyList *list, PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_set_ui(GType type);
 
 /**

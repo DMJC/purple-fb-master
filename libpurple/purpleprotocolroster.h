@@ -33,8 +33,11 @@
 #include "purpleaccount.h"
 #include "purplecontact.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_ROSTER (purple_protocol_roster_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolRoster, purple_protocol_roster, PURPLE,
                     PROTOCOL_ROSTER, PurpleProtocol)
 
@@ -103,6 +106,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roster_add_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -121,6 +125,7 @@ void purple_protocol_roster_add_async(PurpleProtocolRoster *roster, PurpleAccoun
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_roster_add_finish(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);
 
 /**
@@ -144,6 +149,7 @@ gboolean purple_protocol_roster_add_finish(PurpleProtocolRoster *roster, GAsyncR
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roster_update_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -162,6 +168,7 @@ void purple_protocol_roster_update_async(PurpleProtocolRoster *roster, PurpleAcc
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_roster_update_finish(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);
 
 /**
@@ -180,6 +187,7 @@ gboolean purple_protocol_roster_update_finish(PurpleProtocolRoster *roster, GAsy
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roster_remove_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -198,6 +206,7 @@ void purple_protocol_roster_remove_async(PurpleProtocolRoster *roster, PurpleAcc
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_roster_remove_finish(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);
 
 G_END_DECLS

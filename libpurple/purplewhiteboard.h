@@ -31,6 +31,7 @@
 typedef struct _PurpleWhiteboard PurpleWhiteboard;
 
 #include "purpleaccount.h"
+#include "purpleversion.h"
 #include "purplewhiteboardops.h"
 
 /**
@@ -107,6 +108,7 @@ PurpleAccount *purple_whiteboard_get_account(PurpleWhiteboard *whiteboard);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_whiteboard_get_id(PurpleWhiteboard *whiteboard);
 
 /**
@@ -299,6 +301,7 @@ gpointer purple_whiteboard_get_protocol_data(PurpleWhiteboard *whiteboard);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_whiteboard_equal(PurpleWhiteboard *whiteboard1, PurpleWhiteboard *whiteboard2);
 
 G_END_DECLS

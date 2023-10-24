@@ -30,6 +30,8 @@
 #include <gplugin.h>
 #include <gplugin-native.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_PLUGIN_INFO (purple_plugin_info_get_type())
 
 /**
@@ -41,6 +43,7 @@
  * Since: 3.0.0
  */
 
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurplePluginInfo, purple_plugin_info, PURPLE,
                          PLUGIN_INFO, GPluginPluginInfo)
 
@@ -200,6 +203,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GPluginPluginInfo *purple_plugin_info_new(const char *first_property, ...) G_GNUC_NULL_TERMINATED;
 
 /**
@@ -212,6 +216,7 @@ GPluginPluginInfo *purple_plugin_info_new(const char *first_property, ...) G_GNU
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePluginInfoFlags purple_plugin_info_get_flags(PurplePluginInfo *info);
 
 /**
@@ -225,6 +230,7 @@ PurplePluginInfoFlags purple_plugin_info_get_flags(PurplePluginInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_plugin_info_get_error(PurplePluginInfo *info);
 
 /**
@@ -237,6 +243,7 @@ const gchar *purple_plugin_info_get_error(PurplePluginInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_plugin_info_get_unloaded(PurplePluginInfo *info);
 
 /**
@@ -248,6 +255,7 @@ gboolean purple_plugin_info_get_unloaded(PurplePluginInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_plugin_info_set_unloaded(PurplePluginInfo *info, gboolean unloaded);
 
 /**
@@ -260,6 +268,7 @@ void purple_plugin_info_set_unloaded(PurplePluginInfo *info, gboolean unloaded);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GActionGroup *purple_plugin_info_get_action_group(PurplePluginInfo *info);
 
 /**
@@ -272,6 +281,7 @@ GActionGroup *purple_plugin_info_get_action_group(PurplePluginInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GMenuModel *purple_plugin_info_get_action_menu(PurplePluginInfo *info);
 
 G_END_DECLS

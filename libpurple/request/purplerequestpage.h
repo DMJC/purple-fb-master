@@ -42,10 +42,13 @@ typedef struct _PurpleRequestPage PurpleRequestPage;
 #include "purpleaccount.h"
 #include "purplerequestgroup.h"
 #include "purplerequestfield.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_REQUEST_PAGE (purple_request_page_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleRequestPage, purple_request_page,
                      PURPLE, REQUEST_PAGE, GObject)
 
@@ -58,6 +61,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestPage, purple_request_page,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestPage *purple_request_page_new(void);
 
 /**
@@ -69,6 +73,7 @@ PurpleRequestPage *purple_request_page_new(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_request_page_add_group(PurpleRequestPage *page, PurpleRequestGroup *group);
 
 /**
@@ -82,6 +87,7 @@ void purple_request_page_add_group(PurpleRequestPage *page, PurpleRequestGroup *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
 
 /**
@@ -95,6 +101,7 @@ gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const char *id);
 
 /**
@@ -107,6 +114,7 @@ gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const ch
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_page_is_valid(PurpleRequestPage *page);
 
 /**
@@ -120,6 +128,7 @@ gboolean purple_request_page_is_valid(PurpleRequestPage *page);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestField *purple_request_page_get_field(PurpleRequestPage *page, const char *id);
 
 /**
@@ -133,6 +142,7 @@ PurpleRequestField *purple_request_page_get_field(PurpleRequestPage *page, const
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_request_page_get_string(PurpleRequestPage *page, const char *id);
 
 /**
@@ -146,6 +156,7 @@ const char *purple_request_page_get_string(PurpleRequestPage *page, const char *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int purple_request_page_get_integer(PurpleRequestPage *page, const char *id);
 
 /**
@@ -159,6 +170,7 @@ int purple_request_page_get_integer(PurpleRequestPage *page, const char *id);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_page_get_bool(PurpleRequestPage *page, const char *id);
 
 /**
@@ -172,6 +184,7 @@ gboolean purple_request_page_get_bool(PurpleRequestPage *page, const char *id);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gpointer purple_request_page_get_choice(PurpleRequestPage *page, const char *id);
 
 /**
@@ -185,6 +198,7 @@ gpointer purple_request_page_get_choice(PurpleRequestPage *page, const char *id)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_request_page_get_account(PurpleRequestPage *page, const char *id);
 
 G_END_DECLS

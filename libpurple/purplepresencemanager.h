@@ -31,10 +31,13 @@
 #include <glib-object.h>
 
 #include "purplesavedpresence.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_PRESENCE_MANAGER purple_presence_manager_get_type()
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurplePresenceManager, purple_presence_manager, PURPLE,
                      PRESENCE_MANAGER, GObject)
 
@@ -58,6 +61,7 @@ G_DECLARE_FINAL_TYPE(PurplePresenceManager, purple_presence_manager, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePresenceManager *purple_presence_manager_new(const char *filename);
 
 /**
@@ -71,6 +75,7 @@ PurplePresenceManager *purple_presence_manager_new(const char *filename);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_presence_manager_get_filename(PurplePresenceManager *manager);
 
 /**
@@ -84,6 +89,7 @@ const char *purple_presence_manager_get_filename(PurplePresenceManager *manager)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleSavedPresence *purple_presence_manager_get_active(PurplePresenceManager *manager);
 
 /**
@@ -102,6 +108,7 @@ PurpleSavedPresence *purple_presence_manager_get_active(PurplePresenceManager *m
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_presence_manager_set_active(PurplePresenceManager *manager, const char *id);
 
 /**
@@ -118,6 +125,7 @@ gboolean purple_presence_manager_set_active(PurplePresenceManager *manager, cons
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleSavedPresence *purple_presence_manager_create(PurplePresenceManager *manager);
 
 /**
@@ -133,6 +141,7 @@ PurpleSavedPresence *purple_presence_manager_create(PurplePresenceManager *manag
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_presence_manager_remove(PurplePresenceManager *manager, const char *id);
 
 G_END_DECLS

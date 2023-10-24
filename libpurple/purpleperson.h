@@ -28,10 +28,13 @@
 
 #include "purpleavatar.h"
 #include "purpletags.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_PERSON (purple_person_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurplePerson, purple_person, PURPLE, PERSON, GObject)
 
 #include "purplecontactinfo.h"
@@ -54,6 +57,7 @@ G_DECLARE_FINAL_TYPE(PurplePerson, purple_person, PURPLE, PERSON, GObject)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePerson *purple_person_new(void);
 
 /**
@@ -66,6 +70,7 @@ PurplePerson *purple_person_new(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_id(PurplePerson *person);
 
 /**
@@ -80,6 +85,7 @@ const char *purple_person_get_id(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_alias(PurplePerson *person);
 
 /**
@@ -97,6 +103,7 @@ const char *purple_person_get_alias(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_person_set_alias(PurplePerson *person, const char *alias);
 
 /**
@@ -112,6 +119,7 @@ void purple_person_set_alias(PurplePerson *person, const char *alias);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_person_get_avatar_for_display(PurplePerson *person);
 
 /**
@@ -124,6 +132,7 @@ PurpleAvatar *purple_person_get_avatar_for_display(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_person_get_avatar(PurplePerson *person);
 
 /**
@@ -140,6 +149,7 @@ PurpleAvatar *purple_person_get_avatar(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_person_set_avatar(PurplePerson *person, PurpleAvatar *avatar);
 
 /**
@@ -152,6 +162,7 @@ void purple_person_set_avatar(PurplePerson *person, PurpleAvatar *avatar);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_color(PurplePerson *person);
 
 /**
@@ -164,6 +175,7 @@ const char *purple_person_get_color(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_person_set_color(PurplePerson *person, const char *color);
 
 /**
@@ -178,6 +190,7 @@ void purple_person_set_color(PurplePerson *person, const char *color);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_color_for_display(PurplePerson *person);
 
 /**
@@ -190,6 +203,7 @@ const char *purple_person_get_color_for_display(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_person_get_tags(PurplePerson *person);
 
 /**
@@ -203,6 +217,7 @@ PurpleTags *purple_person_get_tags(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_name_for_display(PurplePerson *person);
 
 /**
@@ -217,6 +232,7 @@ const char *purple_person_get_name_for_display(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_person_add_contact_info(PurplePerson *person, PurpleContactInfo *info);
 
 /**
@@ -230,6 +246,7 @@ void purple_person_add_contact_info(PurplePerson *person, PurpleContactInfo *inf
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_person_remove_contact_info(PurplePerson *person, PurpleContactInfo *info);
 
 /**
@@ -243,6 +260,7 @@ gboolean purple_person_remove_contact_info(PurplePerson *person, PurpleContactIn
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_person_get_priority_contact_info(PurplePerson *person);
 
 /*
@@ -255,6 +273,7 @@ PurpleContactInfo *purple_person_get_priority_contact_info(PurplePerson *person)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_person_has_contacts(PurplePerson *person);
 
 /**
@@ -272,6 +291,7 @@ gboolean purple_person_has_contacts(PurplePerson *person);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_person_matches(PurplePerson *person, const char *needle);
 
 G_END_DECLS

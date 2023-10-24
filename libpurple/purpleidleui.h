@@ -28,9 +28,13 @@
 
 #include <time.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_IDLE_UI (purple_idle_ui_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleIdleUi, purple_idle_ui, PURPLE, IDLE_UI, GObject)
 
 /**
@@ -63,6 +67,7 @@ struct _PurpleIdleUiInterface {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 time_t purple_idle_ui_get_idle_time(PurpleIdleUi *ui);
 
 G_END_DECLS

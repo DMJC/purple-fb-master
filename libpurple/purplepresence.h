@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 /**
  * PurplePresence:
  *
@@ -73,6 +75,7 @@ typedef struct _PurplePresence PurplePresence;
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
 	PURPLE_PRESENCE_PRIMITIVE_OFFLINE,
 	PURPLE_PRESENCE_PRIMITIVE_AVAILABLE,
@@ -117,6 +120,7 @@ G_DECLARE_DERIVABLE_TYPE(PurplePresence, purple_presence, PURPLE, PRESENCE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePresence *purple_presence_new(void);
 
 /**
@@ -292,6 +296,7 @@ GDateTime *purple_presence_get_login_time(PurplePresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2);
 
 /**
@@ -304,6 +309,7 @@ gint purple_presence_compare(PurplePresence *presence1, PurplePresence *presence
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePresencePrimitive purple_presence_get_primitive(PurplePresence *presence);
 
 /**
@@ -315,6 +321,7 @@ PurplePresencePrimitive purple_presence_get_primitive(PurplePresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_primitive(PurplePresence *presence, PurplePresencePrimitive primitive);
 
 /**
@@ -327,6 +334,7 @@ void purple_presence_set_primitive(PurplePresence *presence, PurplePresencePrimi
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_presence_get_message(PurplePresence *presence);
 
 /**
@@ -338,6 +346,7 @@ const char *purple_presence_get_message(PurplePresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_message(PurplePresence *presence, const char *message);
 
 /**
@@ -350,6 +359,7 @@ void purple_presence_set_message(PurplePresence *presence, const char *message);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_presence_get_emoji(PurplePresence *presence);
 
 /**
@@ -362,6 +372,7 @@ const char *purple_presence_get_emoji(PurplePresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_emoji(PurplePresence *presence, const char *emoji);
 
 /**
@@ -374,6 +385,7 @@ void purple_presence_set_emoji(PurplePresence *presence, const char *emoji);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_presence_get_mobile(PurplePresence *presence);
 
 /**
@@ -385,6 +397,7 @@ gboolean purple_presence_get_mobile(PurplePresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_mobile(PurplePresence *presence, gboolean mobile);
 
 /**
@@ -397,6 +410,7 @@ void purple_presence_set_mobile(PurplePresence *presence, gboolean mobile);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_presence_get_notifications_disabled(PurplePresence *presence);
 
 /**
@@ -408,6 +422,7 @@ gboolean purple_presence_get_notifications_disabled(PurplePresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_notifications_disabled(PurplePresence *presence, gboolean notifications_disabled);
 
 /**
@@ -421,6 +436,7 @@ void purple_presence_set_notifications_disabled(PurplePresence *presence, gboole
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_presence_primitive_to_string(PurplePresencePrimitive primitive);
 
 G_END_DECLS

@@ -28,10 +28,13 @@
 
 #include "purpleaccount.h"
 #include "purplenotification.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_NOTIFICATION_MANAGER (purple_notification_manager_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleNotificationManager, purple_notification_manager,
                      PURPLE, NOTIFICATION_MANAGER, GObject)
 
@@ -53,6 +56,7 @@ G_DECLARE_FINAL_TYPE(PurpleNotificationManager, purple_notification_manager,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleNotificationManager *purple_notification_manager_get_default(void);
 
 /**
@@ -64,6 +68,7 @@ PurpleNotificationManager *purple_notification_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_notification_manager_get_default_as_model(void);
 
 /**
@@ -75,6 +80,7 @@ GListModel *purple_notification_manager_get_default_as_model(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_manager_add(PurpleNotificationManager *manager, PurpleNotification *notification);
 
 /**
@@ -86,6 +92,7 @@ void purple_notification_manager_add(PurpleNotificationManager *manager, PurpleN
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_manager_remove(PurpleNotificationManager *manager, PurpleNotification *notification);
 
 /**
@@ -103,6 +110,7 @@ void purple_notification_manager_remove(PurpleNotificationManager *manager, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_manager_remove_with_account(PurpleNotificationManager *manager, PurpleAccount *account, gboolean all);
 
 /**
@@ -115,6 +123,7 @@ void purple_notification_manager_remove_with_account(PurpleNotificationManager *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint purple_notification_manager_get_unread_count(PurpleNotificationManager *manager);
 
 /**
@@ -125,6 +134,7 @@ guint purple_notification_manager_get_unread_count(PurpleNotificationManager *ma
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_manager_clear(PurpleNotificationManager *manager);
 
 G_END_DECLS

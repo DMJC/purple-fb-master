@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 /**
  * PurpleRequestFieldImage:
  *
@@ -44,6 +46,8 @@ typedef struct _PurpleRequestFieldImage PurpleRequestFieldImage;
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_REQUEST_FIELD_IMAGE (purple_request_field_image_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldImage, purple_request_field_image,
                      PURPLE, REQUEST_FIELD_IMAGE, PurpleRequestField)
 

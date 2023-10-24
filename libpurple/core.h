@@ -30,6 +30,7 @@
 #include <glib-object.h>
 
 #include "purpleui.h"
+#include "purpleversion.h"
 
 typedef struct PurpleCore PurpleCore;
 
@@ -87,6 +88,7 @@ PurpleCore *purple_get_core(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gpointer purple_core_get_settings_backend(void);
 
 /**

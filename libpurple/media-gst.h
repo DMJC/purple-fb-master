@@ -28,6 +28,7 @@
 
 #include "media.h"
 #include "mediamanager.h"
+#include "purpleversion.h"
 
 #include <gst/gst.h>
 
@@ -153,8 +154,8 @@ GstElement *purple_media_manager_get_element(PurpleMediaManager *manager,
  *
  * Since: 3.0.0
  */
-GList *purple_media_manager_enumerate_elements(PurpleMediaManager *manager,
-		PurpleMediaElementType type);
+PURPLE_AVAILABLE_IN_3_0
+GList *purple_media_manager_enumerate_elements(PurpleMediaManager *manager, PurpleMediaElementType type);
 
 /**
  * purple_media_manager_get_element_info:

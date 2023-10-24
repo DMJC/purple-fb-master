@@ -32,6 +32,7 @@
 
 #include "media.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 #include "status.h"
 
 G_BEGIN_DECLS
@@ -86,6 +87,7 @@ void purple_protocol_got_user_status(PurpleAccount *account, const char *name,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_user_status_with_attributes(PurpleAccount *account, const gchar *name, const gchar *status_id, GHashTable *attributes);
 
 /**

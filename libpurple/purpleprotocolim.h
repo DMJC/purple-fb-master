@@ -33,6 +33,7 @@
 #include "connection.h"
 #include "purpleconversation.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_IM (purple_protocol_im_get_type())
 
@@ -44,6 +45,7 @@
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolIM, purple_protocol_im, PURPLE, PROTOCOL_IM,
                     PurpleProtocol)
 

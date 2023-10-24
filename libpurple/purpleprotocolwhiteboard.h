@@ -31,9 +31,12 @@
 #include <glib-object.h>
 
 #include "purpleaccount.h"
+#include "purpleversion.h"
 #include "purplewhiteboard.h"
 
 #define PURPLE_TYPE_PROTOCOL_WHITEBOARD (purple_protocol_whiteboard_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolWhiteboard, purple_protocol_whiteboard, PURPLE,
                     PROTOCOL_WHITEBOARD, PurpleProtocol)
 
@@ -82,6 +85,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboard *purple_protocol_whiteboard_create(PurpleProtocolWhiteboard *whiteboard, PurpleAccount *account, const gchar *who, gint state);
 
 G_END_DECLS

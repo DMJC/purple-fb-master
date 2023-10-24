@@ -27,10 +27,13 @@
 #include <glib-object.h>
 
 #include "purpleaccount.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_ACCOUNT_MANAGER (purple_account_manager_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleAccountManager, purple_account_manager, PURPLE, ACCOUNT_MANAGER, GObject)
 
 /**
@@ -42,6 +45,7 @@ G_DECLARE_FINAL_TYPE(PurpleAccountManager, purple_account_manager, PURPLE, ACCOU
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleAccountManagerForeachFunc)(PurpleAccount *account, gpointer data);
 
 /**
@@ -61,6 +65,7 @@ typedef void (*PurpleAccountManagerForeachFunc)(PurpleAccount *account, gpointer
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccountManager *purple_account_manager_get_default(void);
 
 /**
@@ -72,6 +77,7 @@ PurpleAccountManager *purple_account_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_account_manager_get_default_as_model(void);
 
 /**
@@ -83,6 +89,7 @@ GListModel *purple_account_manager_get_default_as_model(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_manager_add(PurpleAccountManager *manager, PurpleAccount *account);
 
 /**
@@ -94,6 +101,7 @@ void purple_account_manager_add(PurpleAccountManager *manager, PurpleAccount *ac
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_manager_remove(PurpleAccountManager *manager, PurpleAccount *account);
 
 /**
@@ -106,6 +114,7 @@ void purple_account_manager_remove(PurpleAccountManager *manager, PurpleAccount 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_manager_reorder(PurpleAccountManager *manager, PurpleAccount *account, guint new_index);
 
 /**
@@ -119,6 +128,7 @@ void purple_account_manager_reorder(PurpleAccountManager *manager, PurpleAccount
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_account_manager_get_enabled(PurpleAccountManager *manager);
 
 /**
@@ -132,6 +142,7 @@ GList *purple_account_manager_get_enabled(PurpleAccountManager *manager);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_account_manager_get_disabled(PurpleAccountManager *manager);
 
 /**
@@ -145,6 +156,7 @@ GList *purple_account_manager_get_disabled(PurpleAccountManager *manager);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_account_manager_get_connected(PurpleAccountManager *manager);
 
 /**
@@ -158,6 +170,7 @@ GList *purple_account_manager_get_connected(PurpleAccountManager *manager);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_account_manager_find_by_id(PurpleAccountManager *manager, const gchar *id);
 
 /**
@@ -173,6 +186,7 @@ PurpleAccount *purple_account_manager_find_by_id(PurpleAccountManager *manager, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_account_manager_find(PurpleAccountManager *manager, const gchar *username, const gchar *protocol_id);
 
 /**
@@ -188,6 +202,7 @@ PurpleAccount *purple_account_manager_find(PurpleAccountManager *manager, const 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount * purple_account_manager_find_custom(PurpleAccountManager *manager, GEqualFunc func, gconstpointer data);
 
 /**
@@ -200,6 +215,7 @@ PurpleAccount * purple_account_manager_find_custom(PurpleAccountManager *manager
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_manager_foreach(PurpleAccountManager *manager, PurpleAccountManagerForeachFunc callback, gpointer data);
 
 G_END_DECLS

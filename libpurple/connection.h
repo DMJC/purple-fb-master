@@ -29,6 +29,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CONNECTION  purple_connection_get_type()
@@ -99,7 +101,9 @@ typedef enum {
  *
  * Since: 3.0.0
  */
-#define PURPLE_CONNECTION_ERROR (g_quark_from_static_string("purple-connection-error"))
+#define PURPLE_CONNECTION_ERROR \
+	g_quark_from_static_string("purple-connection-error") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 #include "purpleaccount.h"
 #include "purpleconnectionerrorinfo.h"
@@ -195,6 +199,7 @@ _purple_assert_connection_is_valid(PurpleConnection *gc,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_connection_connect(PurpleConnection *connection, GError **error);
 
 /**
@@ -214,6 +219,7 @@ gboolean purple_connection_connect(PurpleConnection *connection, GError **error)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_connection_disconnect(PurpleConnection *connection, GError **error);
 
 /**
@@ -238,6 +244,7 @@ void purple_connection_set_state(PurpleConnection *gc, PurpleConnectionState sta
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_connection_set_flags(PurpleConnection *gc, PurpleConnectionFlags flags);
 
 /**
@@ -278,6 +285,7 @@ PurpleConnectionState purple_connection_get_state(PurpleConnection *gc);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConnectionFlags purple_connection_get_flags(PurpleConnection *gc);
 
 /**
@@ -300,6 +308,7 @@ PurpleConnectionFlags purple_connection_get_flags(PurpleConnection *gc);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_connection_get_id(PurpleConnection *connection);
 
 /**
@@ -347,6 +356,7 @@ const char *purple_connection_get_password(PurpleConnection *gc);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_connection_set_password(PurpleConnection *connection, const char *password);
 
 /**
@@ -360,6 +370,7 @@ void purple_connection_set_password(PurpleConnection *connection, const char *pa
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GSList *purple_connection_get_active_chats(PurpleConnection *gc);
 
 /**
@@ -408,6 +419,7 @@ purple_connection_error(PurpleConnection *gc,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConnectionErrorInfo *
 purple_connection_get_error_info(PurpleConnection *gc);
 
@@ -427,6 +439,7 @@ purple_connection_get_error_info(PurpleConnection *gc);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_connection_g_error(PurpleConnection *pc, const GError *error);
 
 /**
@@ -442,6 +455,7 @@ void purple_connection_g_error(PurpleConnection *pc, const GError *error);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_connection_take_error(PurpleConnection *pc, GError *error);
 
 /**
@@ -478,6 +492,7 @@ purple_connection_error_is_fatal (PurpleConnectionError reason);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_connection_update_last_received(PurpleConnection *gc);
 
 /**************************************************************************/

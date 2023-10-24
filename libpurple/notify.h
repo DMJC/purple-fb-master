@@ -30,6 +30,8 @@
 #include <glib-object.h>
 #include <glib.h>
 
+#include "purpleversion.h"
+
 typedef struct _PurpleNotifyUserInfoEntry	PurpleNotifyUserInfoEntry;
 
 #define  PURPLE_TYPE_NOTIFY_USER_INFO  (purple_notify_user_info_get_type())
@@ -343,6 +345,7 @@ PurpleNotifySearchColumn *purple_notify_searchresults_column_new(const char *tit
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_notify_searchresult_column_get_title(const PurpleNotifySearchColumn *column);
 
 /**
@@ -354,6 +357,7 @@ const char *purple_notify_searchresult_column_get_title(const PurpleNotifySearch
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notify_searchresult_column_set_visible(PurpleNotifySearchColumn *column, gboolean visible);
 
 /**
@@ -366,6 +370,7 @@ void purple_notify_searchresult_column_set_visible(PurpleNotifySearchColumn *col
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_notify_searchresult_column_is_visible(const PurpleNotifySearchColumn *column);
 
 /**
@@ -590,6 +595,7 @@ void purple_notify_user_info_prepend_pair_html(PurpleNotifyUserInfo *user_info, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notify_user_info_prepend_pair_plaintext(PurpleNotifyUserInfo *user_info, const char *label, const char *value);
 
 /**
@@ -634,6 +640,7 @@ PurpleNotifyUserInfoEntry *purple_notify_user_info_entry_new(const char *label, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notify_user_info_entry_destroy(PurpleNotifyUserInfoEntry *user_info_entry);
 
 /**

@@ -30,7 +30,11 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_IDLE_MANAGER (purple_idle_manager_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleIdleManager, purple_idle_manager, PURPLE,
                      IDLE_MANAGER, GObject)
 
@@ -86,6 +90,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleIdleManager *purple_idle_manager_get_default(void);
 
 /**
@@ -102,6 +107,7 @@ PurpleIdleManager *purple_idle_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_idle_manager_set_source(PurpleIdleManager *manager, const char *source, GDateTime *timestamp);
 
 /**
@@ -115,6 +121,7 @@ gboolean purple_idle_manager_set_source(PurpleIdleManager *manager, const char *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_idle_manager_get_timestamp(PurpleIdleManager *manager);
 
 G_END_DECLS

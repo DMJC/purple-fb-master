@@ -40,6 +40,7 @@ typedef struct _PurpleXferUiOps PurpleXferUiOps;
 #include "connection.h"
 #include "purpleaccount.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 /**
  * PurpleXferType:
@@ -274,6 +275,7 @@ PurpleXferStatus purple_xfer_get_status(PurpleXfer *xfer);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_xfer_get_visible(PurpleXfer *xfer);
 
 /**
@@ -455,6 +457,7 @@ void purple_xfer_set_status(PurpleXfer *xfer, PurpleXferStatus status);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_xfer_set_visible(PurpleXfer *xfer, gboolean visible);
 
 /**

@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 /**
  * PurpleProxyType:
  * @PURPLE_PROXY_TYPE_USE_GLOBAL: Use the global proxy information.
@@ -91,6 +93,7 @@ PurpleProxyType purple_proxy_info_get_proxy_type(PurpleProxyInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_proxy_info_set_hostname(PurpleProxyInfo *info, const gchar *hostname);
 
 /**
@@ -103,6 +106,7 @@ void purple_proxy_info_set_hostname(PurpleProxyInfo *info, const gchar *hostname
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_proxy_info_get_hostname(PurpleProxyInfo *info);
 
 /**

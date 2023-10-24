@@ -30,7 +30,11 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_TAGS (purple_tags_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleTags, purple_tags, PURPLE, TAGS, GObject)
 
 /**
@@ -56,6 +60,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_tags_new(void);
 
 /**
@@ -74,6 +79,7 @@ PurpleTags *purple_tags_new(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_tags_lookup(PurpleTags *tags, const gchar *name, gboolean *found);
 
 /**
@@ -88,6 +94,7 @@ const gchar *purple_tags_lookup(PurpleTags *tags, const gchar *name, gboolean *f
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_tags_get(PurpleTags *tags, const gchar *name);
 
 /**
@@ -100,6 +107,7 @@ const gchar *purple_tags_get(PurpleTags *tags, const gchar *name);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_tags_add(PurpleTags *tags, const gchar *tag);
 
 /**
@@ -113,6 +121,7 @@ void purple_tags_add(PurpleTags *tags, const gchar *tag);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_tags_add_with_value(PurpleTags *tags, const char *name, const char *value);
 
 /**
@@ -127,6 +136,7 @@ void purple_tags_add_with_value(PurpleTags *tags, const char *name, const char *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_tags_remove(PurpleTags *tags, const gchar *tag);
 
 /**
@@ -142,6 +152,7 @@ gboolean purple_tags_remove(PurpleTags *tags, const gchar *tag);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_tags_remove_with_value(PurpleTags *tags, const char *name, const char *value);
 
 /**
@@ -154,6 +165,7 @@ gboolean purple_tags_remove_with_value(PurpleTags *tags, const char *name, const
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint purple_tags_get_count(PurpleTags *tags);
 
 /**
@@ -166,6 +178,7 @@ guint purple_tags_get_count(PurpleTags *tags);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_tags_get_all(PurpleTags *tags);
 
 /**
@@ -180,6 +193,7 @@ GList *purple_tags_get_all(PurpleTags *tags);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_tags_get_all_with_name(PurpleTags *tags, const char *name);
 
 /**
@@ -193,6 +207,7 @@ GList *purple_tags_get_all_with_name(PurpleTags *tags, const char *name);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gchar *purple_tags_to_string(PurpleTags *tags, const gchar *separator);
 
 /**
@@ -207,6 +222,7 @@ gchar *purple_tags_to_string(PurpleTags *tags, const gchar *separator);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_tag_parse(const char *tag, char **name, char **value);
 
 G_END_DECLS

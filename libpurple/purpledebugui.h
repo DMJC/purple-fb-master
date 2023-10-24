@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_DEBUG_UI (purple_debug_ui_get_type())
@@ -42,6 +44,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleDebugUi, purple_debug_ui, PURPLE, DEBUG_UI, GObject)
 
 #include "debug.h"
@@ -82,6 +85,7 @@ struct _PurpleDebugUiInterface {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_debug_ui_is_enabled(PurpleDebugUi *ui, PurpleDebugLevel level, const gchar *category);
 
 /**
@@ -95,6 +99,7 @@ gboolean purple_debug_ui_is_enabled(PurpleDebugUi *ui, PurpleDebugLevel level, c
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_debug_ui_print(PurpleDebugUi *ui, PurpleDebugLevel level, const gchar *category, const gchar *arg_s);
 
 G_END_DECLS

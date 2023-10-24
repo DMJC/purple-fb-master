@@ -29,6 +29,7 @@
 #include "purpleaccount.h"
 #include "purpleauthorizationrequest.h"
 #include "purpleaddcontactrequest.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -37,6 +38,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0.
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
     PURPLE_NOTIFICATION_TYPE_UNKNOWN,
     PURPLE_NOTIFICATION_TYPE_GENERIC,
@@ -58,6 +60,8 @@ typedef enum {
  */
 
 #define PURPLE_TYPE_NOTIFICATION (purple_notification_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleNotification, purple_notification, PURPLE,
                      NOTIFICATION, GObject)
 
@@ -78,6 +82,7 @@ G_DECLARE_FINAL_TYPE(PurpleNotification, purple_notification, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new(PurpleNotificationType type, PurpleAccount *account, gpointer data, GDestroyNotify data_destroy_func);
 
 /**
@@ -92,6 +97,7 @@ PurpleNotification *purple_notification_new(PurpleNotificationType type, PurpleA
  *
  * Since: 3.0.0.
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new_from_add_contact_request(PurpleAddContactRequest *request);
 
 /**
@@ -107,6 +113,7 @@ PurpleNotification *purple_notification_new_from_add_contact_request(PurpleAddCo
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new_from_authorization_request(PurpleAuthorizationRequest *authorization_request);
 
 /**
@@ -122,6 +129,7 @@ PurpleNotification *purple_notification_new_from_authorization_request(PurpleAut
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new_from_connection_error(PurpleAccount *account, PurpleConnectionErrorInfo *info);
 
 /**
@@ -134,6 +142,7 @@ PurpleNotification *purple_notification_new_from_connection_error(PurpleAccount 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_notification_get_id(PurpleNotification *notification);
 
 /**
@@ -146,6 +155,7 @@ const gchar *purple_notification_get_id(PurpleNotification *notification);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleNotificationType purple_notification_get_notification_type(PurpleNotification *notification);
 
 /**
@@ -158,6 +168,7 @@ PurpleNotificationType purple_notification_get_notification_type(PurpleNotificat
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_notification_get_account(PurpleNotification *notification);
 
 /**
@@ -170,6 +181,7 @@ PurpleAccount *purple_notification_get_account(PurpleNotification *notification)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_notification_get_created_timestamp(PurpleNotification *notification);
 
 /**
@@ -186,6 +198,7 @@ GDateTime *purple_notification_get_created_timestamp(PurpleNotification *notific
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_created_timestamp(PurpleNotification *notification, GDateTime *timestamp);
 
 /**
@@ -198,6 +211,7 @@ void purple_notification_set_created_timestamp(PurpleNotification *notification,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_notification_get_title(PurpleNotification *notification);
 
 /**
@@ -209,6 +223,7 @@ const gchar *purple_notification_get_title(PurpleNotification *notification);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_title(PurpleNotification *notification, const gchar *title);
 
 /**
@@ -221,6 +236,7 @@ void purple_notification_set_title(PurpleNotification *notification, const gchar
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_notification_get_icon_name(PurpleNotification *notification);
 
 /**
@@ -232,6 +248,7 @@ const gchar *purple_notification_get_icon_name(PurpleNotification *notification)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_icon_name(PurpleNotification *notification, const gchar *icon_name);
 
 /**
@@ -244,6 +261,7 @@ void purple_notification_set_icon_name(PurpleNotification *notification, const g
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_notification_get_read(PurpleNotification *notification);
 
 /**
@@ -255,6 +273,7 @@ gboolean purple_notification_get_read(PurpleNotification *notification);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_read(PurpleNotification *notification, gboolean read);
 
 /**
@@ -267,6 +286,7 @@ void purple_notification_set_read(PurpleNotification *notification, gboolean rea
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_notification_get_interactive(PurpleNotification *notification);
 
 /**
@@ -278,6 +298,7 @@ gboolean purple_notification_get_interactive(PurpleNotification *notification);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_interactive(PurpleNotification *notification, gboolean interactive);
 
 /**
@@ -290,6 +311,7 @@ void purple_notification_set_interactive(PurpleNotification *notification, gbool
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gpointer purple_notification_get_data(PurpleNotification *notification);
 
 /**
@@ -305,6 +327,7 @@ gpointer purple_notification_get_data(PurpleNotification *notification);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_notification_compare(gconstpointer a, gconstpointer b);
 
 /**
@@ -319,6 +342,7 @@ gint purple_notification_compare(gconstpointer a, gconstpointer b);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notification_delete(PurpleNotification *notification);
 
 G_END_DECLS

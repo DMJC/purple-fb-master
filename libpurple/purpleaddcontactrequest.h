@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include "purpleaccount.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -41,6 +42,8 @@ G_BEGIN_DECLS
  */
 
 #define PURPLE_TYPE_ADD_CONTACT_REQUEST (purple_add_contact_request_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleAddContactRequest, purple_add_contact_request,
                      PURPLE, ADD_CONTACT_REQUEST, GObject)
 
@@ -57,6 +60,7 @@ G_DECLARE_FINAL_TYPE(PurpleAddContactRequest, purple_add_contact_request,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAddContactRequest *purple_add_contact_request_new(PurpleAccount *account, const gchar *username);
 
 /**
@@ -69,6 +73,7 @@ PurpleAddContactRequest *purple_add_contact_request_new(PurpleAccount *account, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_add_contact_request_get_account(PurpleAddContactRequest *request);
 
 /**
@@ -81,6 +86,7 @@ PurpleAccount *purple_add_contact_request_get_account(PurpleAddContactRequest *r
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_add_contact_request_get_username(PurpleAddContactRequest *request);
 
 /**
@@ -93,6 +99,7 @@ const gchar *purple_add_contact_request_get_username(PurpleAddContactRequest *re
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_add_contact_request_set_alias(PurpleAddContactRequest *request, const gchar *alias);
 
 /**
@@ -105,6 +112,7 @@ void purple_add_contact_request_set_alias(PurpleAddContactRequest *request, cons
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_add_contact_request_get_alias(PurpleAddContactRequest *request);
 
 /**
@@ -117,6 +125,7 @@ const gchar *purple_add_contact_request_get_alias(PurpleAddContactRequest *reque
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_add_contact_request_set_message(PurpleAddContactRequest *request, const gchar *message);
 
 /**
@@ -129,6 +138,7 @@ void purple_add_contact_request_set_message(PurpleAddContactRequest *request, co
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_add_contact_request_get_message(PurpleAddContactRequest *request);
 
 /**
@@ -142,6 +152,7 @@ const gchar *purple_add_contact_request_get_message(PurpleAddContactRequest *req
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_add_contact_request_add(PurpleAddContactRequest *request);
 
 G_END_DECLS

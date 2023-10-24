@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -37,9 +38,13 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
-#define PURPLE_PROTOCOL_MANAGER_DOMAIN (g_quark_from_static_string("purple-protocol-manager"))
+#define PURPLE_PROTOCOL_MANAGER_DOMAIN \
+	g_quark_from_static_string("purple-protocol-manager") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 #define PURPLE_TYPE_PROTOCOL_MANAGER (purple_protocol_manager_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleProtocolManager, purple_protocol_manager, PURPLE,
                      PROTOCOL_MANAGER, GObject)
 
@@ -61,6 +66,7 @@ G_DECLARE_FINAL_TYPE(PurpleProtocolManager, purple_protocol_manager, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleProtocolManagerForeachFunc)(PurpleProtocol *protocol, gpointer data);
 
 /**
@@ -72,6 +78,7 @@ typedef void (*PurpleProtocolManagerForeachFunc)(PurpleProtocol *protocol, gpoin
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleProtocolManager *purple_protocol_manager_get_default(void);
 
 /**
@@ -87,6 +94,7 @@ PurpleProtocolManager *purple_protocol_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_manager_register(PurpleProtocolManager *manager, PurpleProtocol *protocol, GError **error);
 
 /**
@@ -102,6 +110,7 @@ gboolean purple_protocol_manager_register(PurpleProtocolManager *manager, Purple
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_manager_unregister(PurpleProtocolManager *manager, PurpleProtocol *protocol, GError **error);
 
 /**
@@ -115,6 +124,7 @@ gboolean purple_protocol_manager_unregister(PurpleProtocolManager *manager, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleProtocol *purple_protocol_manager_find(PurpleProtocolManager *manager, const gchar *id);
 
 /**
@@ -127,6 +137,7 @@ PurpleProtocol *purple_protocol_manager_find(PurpleProtocolManager *manager, con
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_manager_foreach(PurpleProtocolManager *manager, PurpleProtocolManagerForeachFunc func, gpointer data);
 
 /**
@@ -141,6 +152,7 @@ void purple_protocol_manager_foreach(PurpleProtocolManager *manager, PurpleProto
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_manager_get_all(PurpleProtocolManager *manager);
 
 G_END_DECLS

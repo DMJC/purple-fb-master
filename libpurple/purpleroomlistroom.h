@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_ROOMLIST_ROOM (purple_roomlist_room_get_type())
@@ -48,6 +50,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleRoomlistRoom, purple_roomlist_room, PURPLE,
 						 ROOMLIST_ROOM, GObject)
 
@@ -67,6 +70,7 @@ struct _PurpleRoomlistRoomClass {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRoomlistRoom *purple_roomlist_room_new(const gchar *name, const gchar *description);
 
 /**
@@ -79,6 +83,7 @@ PurpleRoomlistRoom *purple_roomlist_room_new(const gchar *name, const gchar *des
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_roomlist_room_get_name(PurpleRoomlistRoom *room);
 
 /**
@@ -91,6 +96,7 @@ const gchar *purple_roomlist_room_get_name(PurpleRoomlistRoom *room);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_roomlist_room_get_description(PurpleRoomlistRoom *room);
 
 /**
@@ -104,6 +110,7 @@ const gchar *purple_roomlist_room_get_description(PurpleRoomlistRoom *room);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_roomlist_room_get_category(PurpleRoomlistRoom *room);
 
 /**
@@ -115,6 +122,7 @@ const gchar *purple_roomlist_room_get_category(PurpleRoomlistRoom *room);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_roomlist_room_set_category(PurpleRoomlistRoom *room, const gchar *category);
 
 /**
@@ -127,6 +135,7 @@ void purple_roomlist_room_set_category(PurpleRoomlistRoom *room, const gchar *ca
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint purple_roomlist_room_get_user_count(PurpleRoomlistRoom *room);
 
 /**
@@ -138,6 +147,7 @@ guint purple_roomlist_room_get_user_count(PurpleRoomlistRoom *room);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_roomlist_room_set_user_count(PurpleRoomlistRoom *room, guint user_count);
 
 /**
@@ -150,6 +160,7 @@ void purple_roomlist_room_set_user_count(PurpleRoomlistRoom *room, guint user_co
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_roomlist_room_add_field(PurpleRoomlistRoom *room, const gchar *field, const gchar *value);
 
 /**
@@ -163,6 +174,7 @@ void purple_roomlist_room_add_field(PurpleRoomlistRoom *room, const gchar *field
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_roomlist_room_get_field(PurpleRoomlistRoom *room, const gchar *field);
 
 /**
@@ -176,6 +188,7 @@ const gchar *purple_roomlist_room_get_field(PurpleRoomlistRoom *room, const gcha
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GHashTable *purple_roomlist_room_get_components(PurpleRoomlistRoom *room);
 
 G_END_DECLS

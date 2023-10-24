@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET "dynamic-target"
@@ -47,6 +49,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleMenuWalkFunc)(GMenuModel *model, gint index, gpointer data);
 
 /**
@@ -59,6 +62,7 @@ typedef void (*PurpleMenuWalkFunc)(GMenuModel *model, gint index, gpointer data)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_menu_walk(GMenuModel *model, PurpleMenuWalkFunc func, gpointer data);
 
 /**
@@ -82,6 +86,7 @@ void purple_menu_walk(GMenuModel *model, PurpleMenuWalkFunc func, gpointer data)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_menu_populate_dynamic_targets(GMenu *menu, const gchar *first_property, ...) G_GNUC_NULL_TERMINATED;
 
 /**
@@ -103,6 +108,7 @@ void purple_menu_populate_dynamic_targets(GMenu *menu, const gchar *first_proper
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_menu_populate_dynamic_targetsv(GMenu *menu, GHashTable *properties);
 
 /**
@@ -116,6 +122,7 @@ void purple_menu_populate_dynamic_targetsv(GMenu *menu, GHashTable *properties);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GMenu *purple_menu_copy(GMenuModel *model);
 
 G_END_DECLS

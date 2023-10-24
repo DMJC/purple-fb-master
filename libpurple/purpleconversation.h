@@ -34,6 +34,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleConversation, purple_conversation, PURPLE,
 #include "purplecontactinfo.h"
 #include "purpleconversationmember.h"
 #include "purplemessage.h"
+#include "purpleversion.h"
 
 /**
  * PurpleConversationUpdateType:
@@ -105,6 +106,7 @@ typedef enum
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
 	PurpleConversationTypeUnset,
 	PurpleConversationTypeDM,
@@ -188,6 +190,7 @@ PurpleConversationUiOps *purple_conversation_get_ui_ops(PurpleConversation *conv
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_id(PurpleConversation *conversation);
 
 /**
@@ -200,6 +203,7 @@ const char *purple_conversation_get_id(PurpleConversation *conversation);
  *
  * Since: 3.0.0.
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversationType purple_conversation_get_conversation_type(PurpleConversation *conversation);
 
 /**
@@ -214,6 +218,7 @@ PurpleConversationType purple_conversation_get_conversation_type(PurpleConversat
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_conversation_type(PurpleConversation *conversation, PurpleConversationType type);
 
 /**
@@ -420,6 +425,7 @@ gboolean purple_conversation_present_error(const gchar *who, PurpleAccount *acco
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_get_age_restricted(PurpleConversation *conversation);
 
 /**
@@ -432,6 +438,7 @@ gboolean purple_conversation_get_age_restricted(PurpleConversation *conversation
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_age_restricted(PurpleConversation *conversation, gboolean age_restricted);
 
 /**
@@ -444,6 +451,7 @@ void purple_conversation_set_age_restricted(PurpleConversation *conversation, gb
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_description(PurpleConversation *conversation);
 
 /**
@@ -455,6 +463,7 @@ const char *purple_conversation_get_description(PurpleConversation *conversation
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_description(PurpleConversation *conversation, const char *description);
 
 /**
@@ -467,6 +476,7 @@ void purple_conversation_set_description(PurpleConversation *conversation, const
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_topic(PurpleConversation *conversation);
 
 /**
@@ -478,6 +488,7 @@ const char *purple_conversation_get_topic(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_topic(PurpleConversation *conversation, const char *topic);
 
 /**
@@ -495,6 +506,7 @@ void purple_conversation_set_topic(PurpleConversation *conversation, const char 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_topic_full(PurpleConversation *conversation, const char *topic, PurpleContactInfo *author, GDateTime *updated);
 
 /**
@@ -507,6 +519,7 @@ void purple_conversation_set_topic_full(PurpleConversation *conversation, const 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_conversation_get_topic_author(PurpleConversation *conversation);
 
 /**
@@ -518,6 +531,7 @@ PurpleContactInfo *purple_conversation_get_topic_author(PurpleConversation *conv
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_topic_author(PurpleConversation *conversation, PurpleContactInfo *author);
 
 /**
@@ -531,6 +545,7 @@ void purple_conversation_set_topic_author(PurpleConversation *conversation, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_conversation_get_topic_updated(PurpleConversation *conversation);
 
 /**
@@ -542,6 +557,7 @@ GDateTime *purple_conversation_get_topic_updated(PurpleConversation *conversatio
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_topic_updated(PurpleConversation *conversation, GDateTime *updated);
 
 /**
@@ -554,6 +570,7 @@ void purple_conversation_set_topic_updated(PurpleConversation *conversation, GDa
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_user_nickname(PurpleConversation *conversation);
 
 /**
@@ -565,6 +582,7 @@ const char *purple_conversation_get_user_nickname(PurpleConversation *conversati
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_user_nickname(PurpleConversation *conversation, const char *nickname);
 
 /**
@@ -578,6 +596,7 @@ void purple_conversation_set_user_nickname(PurpleConversation *conversation, con
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_get_favorite(PurpleConversation *conversation);
 
 /**
@@ -589,6 +608,7 @@ gboolean purple_conversation_get_favorite(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_favorite(PurpleConversation *conversation, gboolean favorite);
 
 /**
@@ -601,6 +621,7 @@ void purple_conversation_set_favorite(PurpleConversation *conversation, gboolean
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_conversation_get_created_on(PurpleConversation *conversation);
 
 /**
@@ -612,6 +633,7 @@ GDateTime *purple_conversation_get_created_on(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_created_on(PurpleConversation *conversation, GDateTime *created_on);
 
 /**
@@ -624,6 +646,7 @@ void purple_conversation_set_created_on(PurpleConversation *conversation, GDateT
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_conversation_get_creator(PurpleConversation *conversation);
 
 /**
@@ -635,6 +658,7 @@ PurpleContactInfo *purple_conversation_get_creator(PurpleConversation *conversat
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_creator(PurpleConversation *conversation, PurpleContactInfo *creator);
 
 /**
@@ -650,6 +674,7 @@ void purple_conversation_set_creator(PurpleConversation *conversation, PurpleCon
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_get_online(PurpleConversation *conversation);
 
 /**
@@ -662,6 +687,7 @@ gboolean purple_conversation_get_online(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_online(PurpleConversation *conversation, gboolean online);
 
 /**
@@ -679,6 +705,7 @@ void purple_conversation_set_online(PurpleConversation *conversation, gboolean o
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_get_federated(PurpleConversation *conversation);
 
 /**
@@ -691,6 +718,7 @@ gboolean purple_conversation_get_federated(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_conversation_get_tags(PurpleConversation *conversation);
 
 /**
@@ -703,6 +731,7 @@ PurpleTags *purple_conversation_get_tags(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_conversation_get_members(PurpleConversation *conversation);
 
 /**
@@ -720,6 +749,7 @@ GListModel *purple_conversation_get_members(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_has_member(PurpleConversation *conversation, PurpleContactInfo *info, guint *position);
 
 /**
@@ -735,6 +765,7 @@ gboolean purple_conversation_has_member(PurpleConversation *conversation, Purple
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversationMember *purple_conversation_find_member(PurpleConversation *conversation, PurpleContactInfo *info);
 
 /**
@@ -765,6 +796,7 @@ PurpleConversationMember *purple_conversation_find_member(PurpleConversation *co
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversationMember *purple_conversation_add_member(PurpleConversation *conversation, PurpleContactInfo *info, gboolean announce, const char *message);
 
 /**
@@ -787,6 +819,7 @@ PurpleConversationMember *purple_conversation_add_member(PurpleConversation *con
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_remove_member(PurpleConversation *conversation, PurpleConversationMember *member, gboolean announce, const char *message);
 
 /**
@@ -799,6 +832,7 @@ gboolean purple_conversation_remove_member(PurpleConversation *conversation, Pur
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_conversation_get_messages(PurpleConversation *conversation);
 
 /**
@@ -814,6 +848,7 @@ GListModel *purple_conversation_get_messages(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_conversation_get_avatar(PurpleConversation *conversation);
 
 /**
@@ -828,6 +863,7 @@ PurpleAvatar *purple_conversation_get_avatar(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_avatar(PurpleConversation *conversation, PurpleAvatar *avatar);
 
 G_END_DECLS

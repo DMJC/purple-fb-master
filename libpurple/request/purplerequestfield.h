@@ -40,6 +40,7 @@
 typedef struct _PurpleRequestField PurpleRequestField;
 
 #include "purplerequestgroup.h"
+#include "purpleversion.h"
 
 /**
  * PurpleRequestFieldClass:
@@ -75,6 +76,8 @@ typedef gboolean (*PurpleRequestFieldValidator)(PurpleRequestField *field, char 
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_REQUEST_FIELD (purple_request_field_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleRequestField, purple_request_field,
                          PURPLE, REQUEST_FIELD, GObject)
 

@@ -35,6 +35,7 @@
 #include "protocols.h"
 #include "purpleaccount.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -219,6 +220,7 @@ purple_strequal(const gchar *left, const gchar *right)
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_STATIC_INLINE_IN_3_0
 static inline gboolean
 purple_strempty(const char *str) {
 	return (str == NULL || str[0] == '\0');
@@ -347,6 +349,7 @@ void purple_str_wipe(gchar *str);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_strmatches(const char *pattern, const char *str);
 
 /**************************************************************************/

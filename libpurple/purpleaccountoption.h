@@ -30,6 +30,7 @@
 #include <glib-object.h>
 
 #include "prefs.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_ACCOUNT_OPTION (purple_account_option_get_type())
 
@@ -72,6 +73,7 @@ PurpleAccountOption *purple_account_option_new(PurplePrefType type, const gchar 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccountOption *purple_account_option_copy(PurpleAccountOption *option);
 
 /**

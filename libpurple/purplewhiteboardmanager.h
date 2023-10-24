@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
 #include "purplewhiteboard.h"
 
 G_BEGIN_DECLS
@@ -37,7 +38,9 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
-#define PURPLE_WHITEBOARD_MANAGER_DOMAIN (g_quark_from_static_string("purple-whiteboard-manager"))
+#define PURPLE_WHITEBOARD_MANAGER_DOMAIN \
+	g_quark_from_static_string("purple-whiteboard-manager") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 #define PURPLE_TYPE_WHITEBOARD_MANAGER (purple_whiteboard_manager_get_type())
 
@@ -49,6 +52,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleWhiteboardManager, purple_whiteboard_manager,
                      PURPLE, WHITEBOARD_MANAGER, GObject)
 
@@ -61,6 +65,7 @@ G_DECLARE_FINAL_TYPE(PurpleWhiteboardManager, purple_whiteboard_manager,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboardManager *purple_whiteboard_manager_get_default(void);
 
 /**
@@ -73,6 +78,7 @@ PurpleWhiteboardManager *purple_whiteboard_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_whiteboard_manager_get_default_as_model(void);
 
 /**
@@ -88,6 +94,7 @@ GListModel *purple_whiteboard_manager_get_default_as_model(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_whiteboard_manager_register(PurpleWhiteboardManager *manager, PurpleWhiteboard *whiteboard, GError **error);
 
 /**
@@ -103,6 +110,7 @@ gboolean purple_whiteboard_manager_register(PurpleWhiteboardManager *manager, Pu
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_whiteboard_manager_unregister(PurpleWhiteboardManager *manager, PurpleWhiteboard *whiteboard, GError **error);
 
 /**
@@ -116,6 +124,7 @@ gboolean purple_whiteboard_manager_unregister(PurpleWhiteboardManager *manager, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboard *purple_whiteboard_manager_find(PurpleWhiteboardManager *manager, const gchar *id);
 
 G_END_DECLS

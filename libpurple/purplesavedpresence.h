@@ -31,6 +31,7 @@
 #include <glib-object.h>
 
 #include "purplepresence.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -49,6 +50,7 @@ G_DECLARE_FINAL_TYPE(PurpleSavedPresence, purple_saved_presence, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_saved_presence_get_last_used(PurpleSavedPresence *presence);
 
 /**
@@ -61,6 +63,7 @@ GDateTime *purple_saved_presence_get_last_used(PurpleSavedPresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_last_used(PurpleSavedPresence *presence, GDateTime *last_used);
 
 /**
@@ -73,6 +76,7 @@ void purple_saved_presence_set_last_used(PurpleSavedPresence *presence, GDateTim
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint64 purple_saved_presence_get_use_count(PurpleSavedPresence *presence);
 
 /**
@@ -84,6 +88,7 @@ guint64 purple_saved_presence_get_use_count(PurpleSavedPresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_use_count(PurpleSavedPresence *presence, guint64 use_count);
 
 /**
@@ -97,6 +102,7 @@ void purple_saved_presence_set_use_count(PurpleSavedPresence *presence, guint64 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_id(PurpleSavedPresence *presence);
 
 /**
@@ -109,6 +115,7 @@ const char *purple_saved_presence_get_id(PurpleSavedPresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_name(PurpleSavedPresence *presence);
 
 /**
@@ -121,6 +128,7 @@ const char *purple_saved_presence_get_name(PurpleSavedPresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_name(PurpleSavedPresence *presence, const char *name);
 
 /**
@@ -134,6 +142,7 @@ void purple_saved_presence_set_name(PurpleSavedPresence *presence, const char *n
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_escaped_name(PurpleSavedPresence *presence);
 
 /**
@@ -146,6 +155,7 @@ const char *purple_saved_presence_get_escaped_name(PurpleSavedPresence *presence
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePresencePrimitive purple_saved_presence_get_primitive(PurpleSavedPresence *presence);
 
 /**
@@ -157,6 +167,7 @@ PurplePresencePrimitive purple_saved_presence_get_primitive(PurpleSavedPresence 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_primitive(PurpleSavedPresence *presence, PurplePresencePrimitive primitive);
 
 /**
@@ -169,6 +180,7 @@ void purple_saved_presence_set_primitive(PurpleSavedPresence *presence, PurplePr
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_message(PurpleSavedPresence *presence);
 
 /**
@@ -181,6 +193,7 @@ const char *purple_saved_presence_get_message(PurpleSavedPresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_message(PurpleSavedPresence *presence, const char *message);
 
 /**
@@ -193,6 +206,7 @@ void purple_saved_presence_set_message(PurpleSavedPresence *presence, const char
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_emoji(PurpleSavedPresence *presence);
 
 /**
@@ -205,6 +219,7 @@ const char *purple_saved_presence_get_emoji(PurpleSavedPresence *presence);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_emoji(PurpleSavedPresence *presence, const char *emoji);
 
 /**
@@ -219,6 +234,7 @@ void purple_saved_presence_set_emoji(PurpleSavedPresence *presence, const char *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_saved_presence_equal(PurpleSavedPresence *a, PurpleSavedPresence *b);
 
 G_END_DECLS

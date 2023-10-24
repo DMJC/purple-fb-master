@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -136,6 +138,7 @@ GType purple_connection_error_info_get_type(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConnectionErrorInfo *purple_connection_error_info_new(PurpleConnectionError type, const gchar *description);
 
 /**
@@ -148,6 +151,7 @@ PurpleConnectionErrorInfo *purple_connection_error_info_new(PurpleConnectionErro
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConnectionErrorInfo *purple_connection_error_info_copy(PurpleConnectionErrorInfo *info);
 
 /**
@@ -158,6 +162,7 @@ PurpleConnectionErrorInfo *purple_connection_error_info_copy(PurpleConnectionErr
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_connection_error_info_free(PurpleConnectionErrorInfo *info);
 
 G_END_DECLS

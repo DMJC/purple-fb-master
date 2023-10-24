@@ -50,6 +50,7 @@ typedef struct _PurpleBuddyIconSpec PurpleBuddyIconSpec;
 #include "image.h"
 #include "protocols.h"
 #include "purpleaccount.h"
+#include "purpleversion.h"
 #include "util.h"
 
 /**
@@ -177,6 +178,7 @@ purple_buddy_icon_set_data(PurpleBuddyIcon *icon, guchar *data,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_buddy_icon_save_to_filename(PurpleBuddyIcon *icon, const gchar *filename, GError **error);
 
 /**
@@ -233,6 +235,7 @@ gconstpointer purple_buddy_icon_get_data(const PurpleBuddyIcon *icon, size_t *le
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GInputStream *purple_buddy_icon_get_stream(PurpleBuddyIcon *icon);
 
 /**
@@ -520,6 +523,7 @@ PurpleBuddyIconSpec *purple_buddy_icon_spec_new(char *format, int min_width,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_icon_spec_free(PurpleBuddyIconSpec *spec);
 
 /**

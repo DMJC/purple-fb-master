@@ -28,6 +28,7 @@
 
 #include "purplehistoryadapter.h"
 #include "purplemessage.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -41,6 +42,8 @@ G_BEGIN_DECLS
  */
 
 #define PURPLE_TYPE_SQLITE_HISTORY_ADAPTER (purple_sqlite_history_adapter_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleSqliteHistoryAdapter, purple_sqlite_history_adapter,
                      PURPLE, SQLITE_HISTORY_ADAPTER, PurpleHistoryAdapter)
 
@@ -54,6 +57,7 @@ G_DECLARE_FINAL_TYPE(PurpleSqliteHistoryAdapter, purple_sqlite_history_adapter,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryAdapter *purple_sqlite_history_adapter_new(const gchar *filename);
 
 /**
@@ -66,6 +70,7 @@ PurpleHistoryAdapter *purple_sqlite_history_adapter_new(const gchar *filename);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_sqlite_history_adapter_get_filename(PurpleSqliteHistoryAdapter *adapter);
 
 G_END_DECLS

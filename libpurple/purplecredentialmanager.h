@@ -28,6 +28,7 @@
 
 #include "purpleaccount.h"
 #include "purplecredentialprovider.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -38,9 +39,13 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
-#define PURPLE_CREDENTIAL_MANAGER_DOMAIN (g_quark_from_static_string("purple-credential-manager"))
+#define PURPLE_CREDENTIAL_MANAGER_DOMAIN \
+	g_quark_from_static_string("purple-credential-manager") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 #define PURPLE_TYPE_CREDENTIAL_MANAGER (purple_credential_manager_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleCredentialManager, purple_credential_manager,
                      PURPLE, CREDENTIAL_MANAGER, GObject)
 
@@ -66,6 +71,7 @@ G_DECLARE_FINAL_TYPE(PurpleCredentialManager, purple_credential_manager,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleCredentialManagerForeachFunc)(PurpleCredentialProvider *provider, gpointer data);
 
 /**
@@ -77,6 +83,7 @@ typedef void (*PurpleCredentialManagerForeachFunc)(PurpleCredentialProvider *pro
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleCredentialManager *purple_credential_manager_get_default(void);
 
 /**
@@ -92,6 +99,7 @@ PurpleCredentialManager *purple_credential_manager_get_default(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_register(PurpleCredentialManager *manager, PurpleCredentialProvider *provider, GError **error);
 
 /**
@@ -107,6 +115,7 @@ gboolean purple_credential_manager_register(PurpleCredentialManager *manager, Pu
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_unregister(PurpleCredentialManager *manager, PurpleCredentialProvider *provider, GError **error);
 
 /**
@@ -128,6 +137,7 @@ gboolean purple_credential_manager_unregister(PurpleCredentialManager *manager, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_set_active(PurpleCredentialManager *manager, const gchar *id, GError **error);
 
 /**
@@ -141,6 +151,7 @@ gboolean purple_credential_manager_set_active(PurpleCredentialManager *manager, 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleCredentialProvider *purple_credential_manager_get_active(PurpleCredentialManager *manager);
 
 /**
@@ -157,6 +168,7 @@ PurpleCredentialProvider *purple_credential_manager_get_active(PurpleCredentialM
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_credential_manager_read_password_async(PurpleCredentialManager *manager, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -173,6 +185,7 @@ void purple_credential_manager_read_password_async(PurpleCredentialManager *mana
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gchar *purple_credential_manager_read_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
 
 /**
@@ -190,6 +203,7 @@ gchar *purple_credential_manager_read_password_finish(PurpleCredentialManager *m
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_credential_manager_write_password_async(PurpleCredentialManager *manager, PurpleAccount *account, const gchar *password, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -206,6 +220,7 @@ void purple_credential_manager_write_password_async(PurpleCredentialManager *man
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_write_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
 
 /**
@@ -222,6 +237,7 @@ gboolean purple_credential_manager_write_password_finish(PurpleCredentialManager
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_credential_manager_clear_password_async(PurpleCredentialManager *manager, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -239,6 +255,7 @@ void purple_credential_manager_clear_password_async(PurpleCredentialManager *man
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_clear_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
 
 /**
@@ -251,6 +268,7 @@ gboolean purple_credential_manager_clear_password_finish(PurpleCredentialManager
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_credential_manager_foreach(PurpleCredentialManager *manager, PurpleCredentialManagerForeachFunc func, gpointer data);
 
 G_END_DECLS

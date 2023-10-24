@@ -28,6 +28,8 @@
 
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_ATTACHMENT purple_attachment_get_type()
@@ -60,6 +62,7 @@ typedef void (*PurpleAttachmentForeachFunc)(PurpleAttachment *attachment, gpoint
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAttachment *purple_attachment_new(guint64 id, const gchar *content_type);
 
 /**
@@ -72,6 +75,7 @@ PurpleAttachment *purple_attachment_new(guint64 id, const gchar *content_type);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint64 purple_attachment_get_id(PurpleAttachment *attachment);
 
 /**
@@ -86,6 +90,7 @@ guint64 purple_attachment_get_id(PurpleAttachment *attachment);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint64 *purple_attachment_get_hash_key(PurpleAttachment *attachment);
 
 /**
@@ -97,6 +102,7 @@ guint64 *purple_attachment_get_hash_key(PurpleAttachment *attachment);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_attachment_set_id(PurpleAttachment *attachment, guint64 id);
 
 /**
@@ -109,6 +115,7 @@ void purple_attachment_set_id(PurpleAttachment *attachment, guint64 id);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_attachment_get_content_type(PurpleAttachment *attachment);
 
 /**
@@ -121,6 +128,7 @@ const gchar *purple_attachment_get_content_type(PurpleAttachment *attachment);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_attachment_get_local_uri(PurpleAttachment *attachment);
 
 /**
@@ -132,6 +140,7 @@ const gchar *purple_attachment_get_local_uri(PurpleAttachment *attachment);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_attachment_set_local_uri(PurpleAttachment *attachment, const gchar *local_uri);
 
 /**
@@ -144,6 +153,7 @@ void purple_attachment_set_local_uri(PurpleAttachment *attachment, const gchar *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_attachment_get_remote_uri(PurpleAttachment *attachment);
 
 /**
@@ -155,6 +165,7 @@ const gchar *purple_attachment_get_remote_uri(PurpleAttachment *attachment);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_attachment_set_remote_uri(PurpleAttachment *attachment, const gchar *remote_uri);
 
 /**
@@ -167,6 +178,7 @@ void purple_attachment_set_remote_uri(PurpleAttachment *attachment, const gchar 
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint64 purple_attachment_get_size(PurpleAttachment *attachment);
 
 /**
@@ -178,6 +190,7 @@ guint64 purple_attachment_get_size(PurpleAttachment *attachment);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_attachment_set_size(PurpleAttachment *attachment, guint64 size);
 
 /**
@@ -191,6 +204,7 @@ void purple_attachment_set_size(PurpleAttachment *attachment, guint64 size);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gchar *purple_attachment_get_filename(PurpleAttachment *attachment);
 
 G_END_DECLS

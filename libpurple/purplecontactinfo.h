@@ -29,6 +29,7 @@
 #include "purpleavatar.h"
 #include "purplepresence.h"
 #include "purpletags.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -49,6 +50,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleContactInfo, purple_contact_info, PURPLE,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
 	PURPLE_CONTACT_INFO_PERMISSION_UNSET = 0,
 	PURPLE_CONTACT_INFO_PERMISSION_ALLOW,
@@ -92,6 +94,7 @@ struct _PurpleContactInfoClass {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_contact_info_new(const gchar *id);
 
 /**
@@ -107,6 +110,7 @@ PurpleContactInfo *purple_contact_info_new(const gchar *id);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_contact_info_get_id(PurpleContactInfo *info);
 
 /**
@@ -120,6 +124,7 @@ const gchar *purple_contact_info_get_id(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_id(PurpleContactInfo *info, const char *id);
 
 /**
@@ -132,6 +137,7 @@ void purple_contact_info_set_id(PurpleContactInfo *info, const char *id);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_contact_info_get_username(PurpleContactInfo *info);
 
 /**
@@ -146,6 +152,7 @@ const gchar *purple_contact_info_get_username(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_username(PurpleContactInfo *info, const gchar *username);
 
 /**
@@ -160,6 +167,7 @@ void purple_contact_info_set_username(PurpleContactInfo *info, const gchar *user
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_contact_info_get_display_name(PurpleContactInfo *info);
 
 /**
@@ -174,6 +182,7 @@ const gchar *purple_contact_info_get_display_name(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_display_name(PurpleContactInfo *info, const gchar *display_name);
 
 /**
@@ -186,6 +195,7 @@ void purple_contact_info_set_display_name(PurpleContactInfo *info, const gchar *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_contact_info_get_alias(PurpleContactInfo *info);
 
 /**
@@ -199,6 +209,7 @@ const gchar *purple_contact_info_get_alias(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_alias(PurpleContactInfo *info, const gchar *alias);
 
 /**
@@ -212,6 +223,7 @@ void purple_contact_info_set_alias(PurpleContactInfo *info, const gchar *alias);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_color(PurpleContactInfo *info);
 
 /**
@@ -227,6 +239,7 @@ const char *purple_contact_info_get_color(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_color(PurpleContactInfo *info, const char *color);
 
 /**
@@ -239,6 +252,7 @@ void purple_contact_info_set_color(PurpleContactInfo *info, const char *color);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_email(PurpleContactInfo *info);
 
 /**
@@ -250,6 +264,7 @@ const char *purple_contact_info_get_email(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_email(PurpleContactInfo *info, const char *email);
 
 /**
@@ -262,6 +277,7 @@ void purple_contact_info_set_email(PurpleContactInfo *info, const char *email);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_phone_number(PurpleContactInfo *info);
 
 /**
@@ -273,6 +289,7 @@ const char *purple_contact_info_get_phone_number(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_phone_number(PurpleContactInfo *info, const char *phone_number);
 
 /**
@@ -285,6 +302,7 @@ void purple_contact_info_set_phone_number(PurpleContactInfo *info, const char *p
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GTimeZone *purple_contact_info_get_time_zone(PurpleContactInfo *info);
 
 /**
@@ -296,6 +314,7 @@ GTimeZone *purple_contact_info_get_time_zone(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_time_zone(PurpleContactInfo *info, GTimeZone *timezone);
 
 /**
@@ -308,6 +327,7 @@ void purple_contact_info_set_time_zone(PurpleContactInfo *info, GTimeZone *timez
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_note(PurpleContactInfo *info);
 
 /**
@@ -319,6 +339,7 @@ const char *purple_contact_info_get_note(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_note(PurpleContactInfo *info, const char *note);
 
 /**
@@ -331,6 +352,7 @@ void purple_contact_info_set_note(PurpleContactInfo *info, const char *note);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_contact_info_get_avatar(PurpleContactInfo *info);
 
 /**
@@ -345,6 +367,7 @@ PurpleAvatar *purple_contact_info_get_avatar(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_avatar(PurpleContactInfo *info, PurpleAvatar *avatar);
 
 /**
@@ -358,6 +381,7 @@ void purple_contact_info_set_avatar(PurpleContactInfo *info, PurpleAvatar *avata
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePresence *purple_contact_info_get_presence(PurpleContactInfo *info);
 
 /**
@@ -370,6 +394,7 @@ PurplePresence *purple_contact_info_get_presence(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_contact_info_get_tags(PurpleContactInfo *info);
 
 /**
@@ -381,6 +406,7 @@ PurpleTags *purple_contact_info_get_tags(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_person(PurpleContactInfo *info, PurplePerson *person);
 
 /**
@@ -394,6 +420,7 @@ void purple_contact_info_set_person(PurpleContactInfo *info, PurplePerson *perso
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePerson *purple_contact_info_get_person(PurpleContactInfo *info);
 
 /**
@@ -406,6 +433,7 @@ PurplePerson *purple_contact_info_get_person(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfoPermission purple_contact_info_get_permission(PurpleContactInfo *info);
 
 /**
@@ -417,6 +445,7 @@ PurpleContactInfoPermission purple_contact_info_get_permission(PurpleContactInfo
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_permission(PurpleContactInfo *info, PurpleContactInfoPermission permission);
 
 /**
@@ -429,6 +458,7 @@ void purple_contact_info_set_permission(PurpleContactInfo *info, PurpleContactIn
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_sid(PurpleContactInfo *info);
 
 /**
@@ -440,6 +470,7 @@ const char *purple_contact_info_get_sid(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid);
 
 /**
@@ -453,6 +484,7 @@ void purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_name_for_display(PurpleContactInfo *info);
 
 /**
@@ -467,6 +499,7 @@ const char *purple_contact_info_get_name_for_display(PurpleContactInfo *info);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b);
 
 /**
@@ -485,6 +518,7 @@ int purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_contact_info_matches(PurpleContactInfo *info, const char *needle);
 
 G_END_DECLS

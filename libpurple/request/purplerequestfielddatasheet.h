@@ -32,6 +32,7 @@
 
 #include "request.h"
 #include "request-datasheet.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -43,6 +44,8 @@ G_BEGIN_DECLS
  * Since: 3.0.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_DATASHEET (purple_request_field_datasheet_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleRequestFieldDatasheet, purple_request_field_datasheet,
                      PURPLE, REQUEST_FIELD_DATASHEET, PurpleRequestField)
 

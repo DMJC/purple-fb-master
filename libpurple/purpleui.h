@@ -26,9 +26,13 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_UI (purple_ui_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleUi, purple_ui, PURPLE, UI, GObject)
 
 /**
@@ -82,6 +86,7 @@ struct _PurpleUiClass {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_id(PurpleUi *ui);
 
 /**
@@ -94,6 +99,7 @@ const char *purple_ui_get_id(PurpleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_name(PurpleUi *ui);
 
 /**
@@ -106,6 +112,7 @@ const char *purple_ui_get_name(PurpleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_version(PurpleUi *ui);
 
 /**
@@ -118,6 +125,7 @@ const char *purple_ui_get_version(PurpleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_website(PurpleUi *ui);
 
 /**
@@ -130,6 +138,7 @@ const char *purple_ui_get_website(PurpleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_support_website(PurpleUi *ui);
 
 /**
@@ -142,6 +151,7 @@ const char *purple_ui_get_support_website(PurpleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_client_type(PurpleUi *ui);
 
 /**
@@ -154,6 +164,7 @@ const char *purple_ui_get_client_type(PurpleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_ui_prefs_init(PurpleUi *ui);
 
 /**
@@ -173,6 +184,7 @@ void purple_ui_prefs_init(PurpleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_ui_start(PurpleUi *ui, GError **error);
 
 /**
@@ -185,6 +197,7 @@ gboolean purple_ui_start(PurpleUi *ui, GError **error);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_ui_stop(PurpleUi *ui);
 
 /**
@@ -199,6 +212,7 @@ void purple_ui_stop(PurpleUi *ui);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gpointer purple_ui_get_settings_backend(PurpleUi *ui);
 
 

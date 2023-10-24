@@ -30,6 +30,7 @@
 #include <glib-object.h>
 
 #include "blistnode.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_COUNTING_NODE             (purple_counting_node_get_type())
 #define PURPLE_COUNTING_NODE(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), PURPLE_TYPE_COUNTING_NODE, PurpleCountingNode))
@@ -82,6 +83,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_counting_node_get_type(void);
 
 /**
@@ -94,6 +96,7 @@ GType purple_counting_node_get_type(void);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int purple_counting_node_get_total_size(PurpleCountingNode *counter);
 
 /**
@@ -107,6 +110,7 @@ int purple_counting_node_get_total_size(PurpleCountingNode *counter);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int purple_counting_node_get_current_size(PurpleCountingNode *counter);
 
 /**
@@ -119,6 +123,7 @@ int purple_counting_node_get_current_size(PurpleCountingNode *counter);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int purple_counting_node_get_online_count(PurpleCountingNode *counter);
 
 /**
@@ -132,6 +137,7 @@ int purple_counting_node_get_online_count(PurpleCountingNode *counter);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_change_total_size(PurpleCountingNode *counter, int delta);
 
 /**
@@ -145,6 +151,7 @@ void purple_counting_node_change_total_size(PurpleCountingNode *counter, int del
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_change_current_size(PurpleCountingNode *counter, int delta);
 
 /**
@@ -158,6 +165,7 @@ void purple_counting_node_change_current_size(PurpleCountingNode *counter, int d
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_change_online_count(PurpleCountingNode *counter, int delta);
 
 /**
@@ -169,6 +177,7 @@ void purple_counting_node_change_online_count(PurpleCountingNode *counter, int d
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_set_total_size(PurpleCountingNode *counter, int totalsize);
 
 /**
@@ -181,6 +190,7 @@ void purple_counting_node_set_total_size(PurpleCountingNode *counter, int totals
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_set_current_size(PurpleCountingNode *counter, int currentsize);
 
 /**
@@ -192,6 +202,7 @@ void purple_counting_node_set_current_size(PurpleCountingNode *counter, int curr
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_set_online_count(PurpleCountingNode *counter, int onlinecount);
 
 G_END_DECLS

@@ -33,6 +33,7 @@
 #include "purpleaccount.h"
 #include "connection.h"
 #include "purpleprotocol.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_CLIENT (purple_protocol_client_get_type())
 G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
@@ -148,6 +149,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_client_list_emblem(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 /**
@@ -163,6 +165,7 @@ const gchar *purple_protocol_client_list_emblem(PurpleProtocolClient *client, Pu
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_client_blist_node_menu(PurpleProtocolClient *client, PurpleBlistNode *node);
 
 /**
@@ -174,6 +177,7 @@ GList *purple_protocol_client_blist_node_menu(PurpleProtocolClient *client, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_client_buddy_free(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 /**
@@ -186,6 +190,7 @@ void purple_protocol_client_buddy_free(PurpleProtocolClient *client, PurpleBuddy
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_client_convo_closed(PurpleProtocolClient *client, PurpleConnection *connection, const gchar *who);
 
 /**
@@ -202,9 +207,10 @@ void purple_protocol_client_convo_closed(PurpleProtocolClient *client, PurpleCon
  *
  * Since: 3.0.0
  *
- * Deprecated: 3.0.0: This should use purple_protcol_client_normalize_name when
+ * Deprecated: 3.0.0: This should use purple_protocol_client_normalize_name when
  *             it is created which will return an allocated value.
  */
+PURPLE_DEPRECATED
 const gchar *purple_protocol_client_normalize(PurpleProtocolClient *client, PurpleAccount *account, const gchar *who);
 
 /**
@@ -220,6 +226,7 @@ const gchar *purple_protocol_client_normalize(PurpleProtocolClient *client, Purp
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleChat *purple_protocol_client_find_blist_chat(PurpleProtocolClient *client, PurpleAccount *account, const gchar *name);
 
 /**
@@ -233,6 +240,7 @@ PurpleChat *purple_protocol_client_find_blist_chat(PurpleProtocolClient *client,
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_client_offline_message(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 /**
@@ -252,6 +260,7 @@ gboolean purple_protocol_client_offline_message(PurpleProtocolClient *client, Pu
  * Deprecated: 3.0.0: This is a premature optimization. Right now this is only
  *             used by GaduGadu for a single item and should be replaced.
  */
+PURPLE_DEPRECATED
 GHashTable *purple_protocol_client_get_account_text_table(PurpleProtocolClient *client, PurpleAccount *account);
 
 /**
@@ -266,6 +275,7 @@ GHashTable *purple_protocol_client_get_account_text_table(PurpleProtocolClient *
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gssize purple_protocol_client_get_max_message_size(PurpleProtocolClient *client, PurpleConversation *conv);
 
 G_END_DECLS
