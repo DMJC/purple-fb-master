@@ -52,7 +52,7 @@ option('unity-integration', type : 'feature',
 ##############################################################################
 # Finch Options
 
-option('consoleui', type : 'boolean', value : true,
+option('consoleui', type : 'boolean', value : false,
        description : 'compile with console user interface')
 
-option('x', type : 'boolean', value : true)
+option('x', type : 'boolean', value : false)
