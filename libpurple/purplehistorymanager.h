@@ -71,6 +71,26 @@ PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleHistoryManagerForeachFunc)(PurpleHistoryAdapter *adapter, gpointer data);
 
 /**
+ * purple_history_manager_startup:
+ *
+ * Starts up the history manager by creating the default instance.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_history_manager_startup(void);
+
+/**
+ * purple_history_manager_shutdown:
+ *
+ * Shuts down the history manager by destroying the default instance.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_history_manager_shutdown(void);
+
+/**
  * purple_history_manager_get_default:
  *
  * Gets the default #PurpleHistoryManager instance.
@@ -93,7 +113,7 @@ PurpleHistoryManager *purple_history_manager_get_default(void);
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
- PurpleHistoryAdapter *purple_history_manager_get_active(PurpleHistoryManager *manager);
+PurpleHistoryAdapter *purple_history_manager_get_active(PurpleHistoryManager *manager);
 
  /**
  * purple_history_manager_set_active:

@@ -270,24 +270,6 @@ gboolean purple_history_adapter_activate(PurpleHistoryAdapter *adapter, GError *
 gboolean purple_history_adapter_deactivate(PurpleHistoryAdapter *adapter, GError **error);
 
 /**
- * purple_history_manager_startup:
- *
- * Starts up the history manager by creating the default instance.
- *
- * Since: 3.0.0
- */
-void purple_history_manager_startup(void);
-
-/**
- * purple_history_manager_shutdown:
- *
- * Shuts down the history manager by destroying the default instance.
- *
- * Since: 3.0.0
- */
-void purple_history_manager_shutdown(void);
-
-/**
  * purple_notification_manager_startup:
  *
  * Starts up the notification manager by creating the default instance.
