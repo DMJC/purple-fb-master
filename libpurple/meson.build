@@ -60,6 +60,7 @@ purple_coresources = [
 	'purplegio.c',
 	'purplehistoryadapter.c',
 	'purplehistorymanager.c',
+	'purpleidlemanager.c',
 	'purpleidleui.c',
 	'purpleimconversation.c',
 	'purplekeyvaluepair.c',
@@ -183,6 +184,7 @@ purple_coreheaders = [
 	'purplegio.h',
 	'purplehistoryadapter.h',
 	'purplehistorymanager.h',
+	'purpleidlemanager.h',
 	'purpleidleui.h',
 	'purpleimconversation.h',
 	'purpleattachment.h',
@@ -320,6 +322,10 @@ purple_enumheaders = [
 	'xmlnode.h'
 ]
 
+purple_private_headers = [
+	'purpleidlemanagerprivate.h',
+	'purpleprivate.h',
+]
 
 enums = gnome.mkenums_simple('purpleenums',
     sources : purple_enumheaders,
@@ -361,8 +367,8 @@ subdir('data')
 libpurple_inc = include_directories('.')
 libpurple = library('purple3',
                     purple_coresources + purple_builtsources +
-                    purple_builtheaders + purple_schemas,
-                    'purpleprivate.h',
+                    purple_builtheaders + purple_schemas +
+                    purple_private_headers,
                     c_args : ['-DPURPLE_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple"'],
                     include_directories : [toplevel_inc, libpurple_inc],
                     install : true,

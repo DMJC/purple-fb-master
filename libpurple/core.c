@@ -43,6 +43,7 @@
 #include "purpleconversation.h"
 #include "purplecredentialmanager.h"
 #include "purplehistorymanager.h"
+#include "purpleidlemanagerprivate.h"
 #include "purplemessage.h"
 #include "purplepath.h"
 #include "purpleprivate.h"
@@ -174,6 +175,7 @@ purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	purple_proxy_init();
 	purple_xfers_init();
 	purple_idle_init();
+	purple_idle_manager_startup();
 
 	/*
 	 * Call this early on to try to auto-detect our IP address and
@@ -231,6 +233,7 @@ purple_core_quit(void)
 
 	/* Save .xml files, remove signals, etc. */
 	purple_idle_uninit();
+	purple_idle_manager_shutdown();
 	purple_whiteboard_manager_shutdown();
 	purple_conversation_manager_shutdown();
 	purple_conversations_uninit();

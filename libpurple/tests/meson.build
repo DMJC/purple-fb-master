@@ -15,6 +15,7 @@ PROGS = [
     'file_transfer',
     'history_adapter',
     'history_manager',
+    'idle_manager',
     'image',
     'keyvaluepair',
     'markup',
