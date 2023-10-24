@@ -42,6 +42,7 @@ typedef struct _PurpleMedia PurpleMedia;
 #define PURPLE_IS_MEDIA_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), PURPLE_TYPE_MEDIA))
 #define PURPLE_MEDIA_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), PURPLE_TYPE_MEDIA, PurpleMediaClass))
 
+#include "purpleversion.h"
 #include "signals.h"
 #include "util.h"
 
@@ -374,6 +375,7 @@ gboolean purple_media_set_send_codec(PurpleMedia *media, const gchar *sess_id, P
  *
  * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_set_encryption_parameters(PurpleMedia *media,
 		const gchar *sess_id, const gchar *cipher,
 		const gchar *auth, const gchar *key, gsize key_len);
@@ -394,6 +396,7 @@ gboolean purple_media_set_encryption_parameters(PurpleMedia *media,
  *
  * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_set_decryption_parameters(PurpleMedia *media,
 		const gchar *sess_id, const gchar *participant,
 		const gchar *cipher, const gchar *auth,
@@ -410,6 +413,7 @@ gboolean purple_media_set_decryption_parameters(PurpleMedia *media,
  *
  * Since: 2.14.0
  */
+PURPLE_AVAILABLE_IN_2_14
 gboolean purple_media_set_require_encryption(PurpleMedia *media,
 		const gchar *sess_id, const gchar *participant,
 		gboolean require_encryption);
@@ -438,6 +442,7 @@ gboolean purple_media_codecs_ready(PurpleMedia *media, const gchar *sess_id);
  *
  * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_set_send_rtcp_mux(PurpleMedia *media,
 		const gchar *sess_id, const gchar *participant, gboolean send_rtcp_mux);
 /**

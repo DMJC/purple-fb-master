@@ -576,6 +576,7 @@ gssize purple_xfer_write(PurpleXfer *xfer, const guchar *buffer, gsize size);
  *
  * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gboolean
 purple_xfer_write_file(PurpleXfer *xfer, const guchar *buffer, gsize size);
 
@@ -592,6 +593,7 @@ purple_xfer_write_file(PurpleXfer *xfer, const guchar *buffer, gsize size);
  *
  * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gssize
 purple_xfer_read_file(PurpleXfer *xfer, guchar *buffer, gsize size);
 

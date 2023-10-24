@@ -29,6 +29,8 @@
 
 #include <glib.h>
 
+#include "purpleversion.h"
+
 /**
  * PurplePrefType:
  * @PURPLE_PREF_NONE:        No type.
@@ -413,6 +415,7 @@ void purple_prefs_trigger_callback(const char *name);
  *
  * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 void purple_prefs_trigger_callback_object(PurplePrefCallbackData *data);
 
 /**

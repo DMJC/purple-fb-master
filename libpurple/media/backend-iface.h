@@ -29,6 +29,7 @@
 #include "codec.h"
 #include "enum-types.h"
 #include "media.h"
+#include "purpleversion.h"
 
 #include <glib-object.h>
 
@@ -293,6 +294,7 @@ const gchar **purple_media_backend_get_available_params(PurpleMediaBackend *self
  *
  * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_backend_set_send_rtcp_mux(PurpleMediaBackend *self,
 		const gchar *sess_id, const gchar *participant, gboolean send_rtcp_mux);
 
