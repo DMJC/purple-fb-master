@@ -77,7 +77,10 @@ void purple_request_field_int_set_default_value(PurpleRequestFieldInt *field, in
  * @lower_bound: The lower bound.
  *
  * Sets the lower bound in an integer field.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_int_set_lower_bound(PurpleRequestFieldInt *field, int lower_bound);
 
 /**
@@ -86,7 +89,10 @@ void purple_request_field_int_set_lower_bound(PurpleRequestFieldInt *field, int 
  * @upper_bound: The upper bound.
  *
  * Sets the upper bound in an integer field.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_int_set_upper_bound(PurpleRequestFieldInt *field, int upper_bound);
 
 /**
@@ -115,7 +121,10 @@ int purple_request_field_int_get_default_value(PurpleRequestFieldInt *field);
  * Returns the lower bound in an integer field.
  *
  * Returns: The lower bound.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int purple_request_field_int_get_lower_bound(PurpleRequestFieldInt *field);
 
 /**
@@ -125,7 +134,10 @@ int purple_request_field_int_get_lower_bound(PurpleRequestFieldInt *field);
  * Returns the upper bound in an integer field.
  *
  * Returns: The upper bound.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int purple_request_field_int_get_upper_bound(PurpleRequestFieldInt *field);
 
 /**

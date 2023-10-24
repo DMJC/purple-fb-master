@@ -155,7 +155,10 @@ PurpleBlistNode *purple_blist_node_get_sibling_prev(PurpleBlistNode *node);
  * Returns a node's settings
  *
  * Returns: (transfer none): The hash table with the node's settings.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GHashTable *purple_blist_node_get_settings(PurpleBlistNode *node);
 
 /**
@@ -166,7 +169,10 @@ GHashTable *purple_blist_node_get_settings(PurpleBlistNode *node);
  * Checks whether a named setting exists for a node in the buddy list
  *
  * Returns: TRUE if a value exists, or FALSE if there is no setting
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_blist_node_has_setting(PurpleBlistNode *node, const char *key);
 
 /**

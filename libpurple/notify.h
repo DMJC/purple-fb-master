@@ -466,14 +466,20 @@ void *purple_notify_userinfo(PurpleConnection *gc, const char *who,
  * purple_notify_search_button_get_type:
  *
  * Returns: The #GType for #PurpleNotifiySearchButton boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_notify_search_button_get_type(void);
 
 /**
  * purple_notify_user_info_get_type:
  *
  * Returns: The #GType for the #PurpleNotifyUserInfo boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_notify_user_info_get_type(void);
 
 /**
@@ -538,7 +544,10 @@ char *purple_notify_user_info_get_text_with_newline(PurpleNotifyUserInfo *user_i
  *
  * Add a label/value pair to a #PurpleNotifyUserInfo object.
  * #PurpleNotifyUserInfo keeps track of the order in which pairs are added.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notify_user_info_add_pair_html(PurpleNotifyUserInfo *user_info, const char *label, const char *value);
 
 /**
@@ -575,7 +584,10 @@ void purple_notify_user_info_add_pair_plaintext(PurpleNotifyUserInfo *user_info,
  *
  * Like purple_notify_user_info_add_pair_html(), but the pair is inserted
  * at the beginning of the list.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notify_user_info_prepend_pair_html(PurpleNotifyUserInfo *user_info, const char *label, const char *value);
 
 /**
@@ -734,7 +746,10 @@ void purple_notify_user_info_entry_set_value(PurpleNotifyUserInfoEntry *user_inf
  * Get the type of a PurpleNotifyUserInfoEntry
  *
  * Returns:  The PurpleNotifyUserInfoEntryType
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleNotifyUserInfoEntryType purple_notify_user_info_entry_get_entry_type(
 		PurpleNotifyUserInfoEntry *user_info_entry);
 
@@ -744,7 +759,10 @@ PurpleNotifyUserInfoEntryType purple_notify_user_info_entry_get_entry_type(
  * @type:             The PurpleNotifyUserInfoEntryType
  *
  * Set the type of a PurpleNotifyUserInfoEntry
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_notify_user_info_entry_set_entry_type(
 		PurpleNotifyUserInfoEntry *user_info_entry, PurpleNotifyUserInfoEntryType type);
 
@@ -770,7 +788,10 @@ void *purple_notify_uri(void *handle, const char *uri);
  * Checks, if passed UI handle is valid.
  *
  * Returns: TRUE, if handle is valid, FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean
 purple_notify_is_valid_ui_handle(void *ui_handle, PurpleNotifyType *type);
 
@@ -847,7 +868,10 @@ void purple_notify_close_with_handle(void *handle);
  * purple_notify_ui_ops_get_type:
  *
  * Returns: The #GType for the #PurpleNotifyUiOps boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_notify_ui_ops_get_type(void);
 
 /**

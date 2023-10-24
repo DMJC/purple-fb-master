@@ -62,7 +62,10 @@ struct _PurpleKeyValuePair {
  * The standard %_GET_TYPE function for #PurpleKeyValuePair.
  *
  * Returns: The #GType for #PurpleKeyValuePair.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_key_value_pair_get_type(void);
 
 /**
@@ -117,7 +120,10 @@ void purple_key_value_pair_free(PurpleKeyValuePair *kvp);
  * has no way to know how to allocate a new copy of the value.
  *
  * Returns: (transfer full): A new copy of @kvp.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleKeyValuePair *purple_key_value_pair_copy(PurpleKeyValuePair *kvp);
 
 G_END_DECLS

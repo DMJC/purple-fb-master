@@ -241,7 +241,10 @@ PurpleAccount *purple_conversation_get_account(PurpleConversation *conv);
  * Returns the specified conversation's purple_connection.
  *
  * Returns: (transfer none): The conversation's purple_connection.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConnection *purple_conversation_get_connection(PurpleConversation *conv);
 
 /**
@@ -300,7 +303,10 @@ const char *purple_conversation_get_name(PurpleConversation *conv);
  * @msg:  The message to write.
  *
  * Writes to a chat or an IM.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_write_message(PurpleConversation *conv, PurpleMessage *msg);
 
 /**
@@ -309,8 +315,11 @@ void purple_conversation_write_message(PurpleConversation *conv, PurpleMessage *
  * @message: The message to write.
  * @flags:   The message flags (you don't need to set %PURPLE_MESSAGE_SYSTEM.
  *
- * Wites a system message to a chat or an IM.
+ * Writes a system message to a chat or an IM.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_write_system_message(PurpleConversation *conv, const gchar *message, PurpleMessageFlags flags);
 
 /**
@@ -320,7 +329,10 @@ void purple_conversation_write_system_message(PurpleConversation *conv, const gc
  *
  * Sends a message to this conversation. This function calls
  * purple_conversation_send_with_flags() with no additional flags.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_send(PurpleConversation *conv, const gchar *message);
 
 /**
@@ -331,7 +343,10 @@ void purple_conversation_send(PurpleConversation *conv, const gchar *message);
  *           PURPLE_MESSAGE_SEND.
  *
  * Sends a message to this conversation with specified flags.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_send_with_flags(PurpleConversation *conv, const gchar *message, PurpleMessageFlags flags);
 
 /**
@@ -383,7 +398,10 @@ void purple_conversation_update(PurpleConversation *conv, PurpleConversationUpda
  * hasn't explicitly and knowingly caused a message to be sent.
  * The confirmation ensures that the user isn't sending a
  * message by mistake.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_send_confirm(PurpleConversation *conv, const gchar *message);
 
 /**
@@ -412,7 +430,10 @@ GList * purple_conversation_get_extended_menu(PurpleConversation *conv);
  * the error another way (purple_notify_error, most likely)
  *
  * Returns:        TRUE if the error was presented, else FALSE
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_present_error(const gchar *who, PurpleAccount *account, const gchar *what);
 
 /**

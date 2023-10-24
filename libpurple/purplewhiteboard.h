@@ -38,6 +38,8 @@ typedef struct _PurpleWhiteboard PurpleWhiteboard;
  * PurpleWhiteboard:
  *
  * A abstract whiteboard object.
+ *
+ * Since: 3.0.0
  */
 
 G_BEGIN_DECLS
@@ -49,6 +51,8 @@ G_BEGIN_DECLS
  *
  * Right now this is empty but it will be filled out with the function from
  * PurpleWhiteboardOps in a future review request.
+ *
+ * Since: 3.0.0
  */
 struct _PurpleWhiteboardClass {
 	/*< private >*/
@@ -63,7 +67,10 @@ struct _PurpleWhiteboardClass {
  * The standard _get_type function for #PurpleWhiteboard.
  *
  * Returns: The #GType for the #PurpleWhiteboard object.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleWhiteboard, purple_whiteboard, PURPLE,
                          WHITEBOARD, GObject)
 
@@ -73,7 +80,10 @@ G_DECLARE_DERIVABLE_TYPE(PurpleWhiteboard, purple_whiteboard, PURPLE,
  * @ops: The #PurpleWhiteboardOps to set.
  *
  * Sets the protocol operations for @whiteboard.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_set_protocol_ops(PurpleWhiteboard *whiteboard, PurpleWhiteboardOps *ops);
 
 /**
@@ -85,7 +95,10 @@ void purple_whiteboard_set_protocol_ops(PurpleWhiteboard *whiteboard, PurpleWhit
  * Creates a new whiteboard.
  *
  * Returns: (transfer full): The new #PurpleWhiteboard instance.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboard *purple_whiteboard_new(PurpleAccount *account, const gchar *id, gint state);
 
 /**
@@ -95,7 +108,10 @@ PurpleWhiteboard *purple_whiteboard_new(PurpleAccount *account, const gchar *id,
  * Gets the #PurpleAccount that @whiteboard is tied to.
  *
  * Returns: (transfer none): The #PurpleAccount for @whiteboard.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_whiteboard_get_account(PurpleWhiteboard *whiteboard);
 
 /**
@@ -117,7 +133,10 @@ const gchar *purple_whiteboard_get_id(PurpleWhiteboard *whiteboard);
  * @state: The state
  *
  * Set the state of @whiteboard to @state.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_set_state(PurpleWhiteboard *whiteboard, gint state);
 
 /**
@@ -127,7 +146,10 @@ void purple_whiteboard_set_state(PurpleWhiteboard *whiteboard, gint state);
  * Gets the state of @whiteboard.
  *
  * Returns: The state of the @whiteboard.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_whiteboard_get_state(PurpleWhiteboard *whiteboard);
 
 /**
@@ -258,7 +280,10 @@ void purple_whiteboard_set_brush(PurpleWhiteboard *whiteboard, gint size, gint c
  * Gets the drawing list.
  *
  * Returns: (transfer none) (element-type gint): The drawing list.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_whiteboard_get_draw_list(PurpleWhiteboard *whiteboard);
 
 /**
@@ -267,7 +292,10 @@ GList *purple_whiteboard_get_draw_list(PurpleWhiteboard *whiteboard);
  * @draw_list: (element-type gint): The drawing list.
  *
  * Sets the drawing list.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_set_draw_list(PurpleWhiteboard *whiteboard, GList* draw_list);
 
 /**
@@ -276,7 +304,10 @@ void purple_whiteboard_set_draw_list(PurpleWhiteboard *whiteboard, GList* draw_l
  * @proto_data: The protocol data to set for the whiteboard.
  *
  * Sets the protocol data for @whiteboard.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_set_protocol_data(PurpleWhiteboard *whiteboard, gpointer proto_data);
 
 /**
@@ -286,7 +317,10 @@ void purple_whiteboard_set_protocol_data(PurpleWhiteboard *whiteboard, gpointer 
  * Gets the protocol data for a whiteboard.
  *
  * Returns: The protocol data for the whiteboard.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gpointer purple_whiteboard_get_protocol_data(PurpleWhiteboard *whiteboard);
 
 /**

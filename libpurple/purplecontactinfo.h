@@ -34,6 +34,8 @@
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CONTACT_INFO (purple_contact_info_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleContactInfo, purple_contact_info, PURPLE,
                          CONTACT_INFO, GObject)
 
@@ -80,6 +82,8 @@ struct _PurpleContactInfoClass {
  * The information about a contact. This information is used everywhere you
  * need to refer to a user. Be it a chat, an direct message, a file transfer,
  * etc.
+ *
+ * Since: 3.0.0
  */
 
 /**

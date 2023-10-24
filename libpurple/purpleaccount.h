@@ -53,7 +53,7 @@ G_BEGIN_DECLS
  * account. User interfaces typically allow users to create these in a dialog
  * or wizard.
  */
-
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE, ACCOUNT,
                      PurpleContactInfo)
 
@@ -617,7 +617,10 @@ gboolean purple_account_supports_offline_message(PurpleAccount *account, PurpleB
  *          of the current error, or %NULL if there is no current error.  This
  *          pointer is guaranteed to remain valid until the @ref
  *          account-error-changed signal is emitted for @account.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const PurpleConnectionErrorInfo *purple_account_get_error(PurpleAccount *account);
 
 /**

@@ -116,7 +116,10 @@ PurpleAccount *purple_media_get_account(PurpleMedia *media);
  * Gets the protocol data from the media session.
  *
  * Returns: The protocol data retrieved.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gpointer purple_media_get_protocol_data(PurpleMedia *media);
 
 /**
@@ -125,7 +128,10 @@ gpointer purple_media_get_protocol_data(PurpleMedia *media);
  * @protocol_data: The data to set on the media session.
  *
  * Sets the protocol data on the media session.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_media_set_protocol_data(PurpleMedia *media, gpointer protocol_data);
 
 /**

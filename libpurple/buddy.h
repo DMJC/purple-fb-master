@@ -100,7 +100,10 @@ G_BEGIN_DECLS
  * purple_buddy_get_type:
  *
  * Returns: The #GType for the #PurpleBuddy object.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_buddy_get_type(void);
 
 /**
@@ -174,7 +177,10 @@ PurpleAccount *purple_buddy_get_account(PurpleBuddy *buddy);
  * @name:  The name.
  *
  * Sets a buddy's name
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_set_name(PurpleBuddy *buddy, const char *name);
 
 /**
@@ -242,7 +248,10 @@ PurplePresence *purple_buddy_get_presence(PurpleBuddy *buddy);
  * Updates a buddy's status.
  *
  * This should only be called from within Purple.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_update_status(PurpleBuddy *buddy, PurpleStatus *old_status);
 
 /**
@@ -281,7 +290,10 @@ const char *purple_buddy_get_alias_only(PurpleBuddy *buddy);
  * @alias:  The server alias to be set.
  *
  * Sets the server alias for a buddy.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_set_server_alias(PurpleBuddy *buddy, const char *alias);
 
 /**
@@ -325,7 +337,10 @@ const char *purple_buddy_get_alias(PurpleBuddy *buddy);
  * @alias:  The local alias for the buddy
  *
  * Sets the local alias for the buddy.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_set_local_alias(PurpleBuddy *buddy, const char *alias);
 
 /**

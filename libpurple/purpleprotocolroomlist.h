@@ -43,6 +43,8 @@ G_BEGIN_DECLS
  *
  * #PurpleProtocolRoomlist is an interface to abstract how to handle rooms
  * lists at the protocol level.
+ *
+ * Since: 3.0.0
  */
 
 PURPLE_AVAILABLE_IN_3_0

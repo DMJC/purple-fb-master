@@ -74,7 +74,10 @@ void purple_util_uninit(void);
  *  See purple_util_write_data_to_file()
  *
  * Returns: TRUE if the file was written successfully.  FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean
 purple_util_write_data_to_cache_file(const char *filename, const char *data, gssize size);
 
@@ -91,7 +94,10 @@ purple_util_write_data_to_cache_file(const char *filename, const char *data, gss
  *  See purple_util_write_data_to_file()
  *
  * Returns: TRUE if the file was written successfully.  FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean
 purple_util_write_data_to_config_file(const char *filename, const char *data, gssize size);
 
@@ -108,7 +114,10 @@ purple_util_write_data_to_config_file(const char *filename, const char *data, gs
  *  See purple_util_write_data_to_file()
  *
  * Returns: TRUE if the file was written successfully.  FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean
 purple_util_write_data_to_data_file(const char *filename, const char *data, gssize size);
 
@@ -126,7 +135,10 @@ purple_util_write_data_to_data_file(const char *filename, const char *data, gssi
  *
  * Returns: An PurpleXmlNode tree of the contents of the given file.  Or NULL, if
  *         the file does not exist or there was an error reading the file.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleXmlNode *
 purple_util_read_xml_from_cache_file(const char *filename, const char *description);
 
@@ -144,7 +156,10 @@ purple_util_read_xml_from_cache_file(const char *filename, const char *descripti
  *
  * Returns: An PurpleXmlNode tree of the contents of the given file.  Or NULL, if
  *         the file does not exist or there was an error reading the file.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleXmlNode *
 purple_util_read_xml_from_config_file(const char *filename, const char *description);
 
@@ -162,7 +177,10 @@ purple_util_read_xml_from_config_file(const char *filename, const char *descript
  *
  * Returns: An PurpleXmlNode tree of the contents of the given file.  Or NULL, if
  *         the file does not exist or there was an error reading the file.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleXmlNode *
 purple_util_read_xml_from_data_file(const char *filename, const char *description);
 
@@ -254,7 +272,10 @@ const char *purple_normalize(PurpleAccount *account, const char *str);
  * Checks, if a string is valid.
  *
  * Returns: TRUE, if string is valid, otherwise FALSE.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_validate(PurpleProtocol *protocol, const char *str);
 
 /**
@@ -330,7 +351,10 @@ char *purple_str_seconds_to_string(guint sec);
  * Fills a NUL-terminated string with zeros and frees it.
  *
  * It should be used to free sensitive data, like passwords.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_str_wipe(gchar *str);
 
 /**
@@ -485,7 +509,10 @@ GValue *purple_value_dup(GValue *value);
  * @value:  The GValue to free.
  *
  * Frees a GValue.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_value_free(GValue *value);
 
 G_END_DECLS

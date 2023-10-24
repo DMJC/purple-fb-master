@@ -37,9 +37,13 @@ G_BEGIN_DECLS
  *
  * A #PurpleBuddyPresence represent the #PurplePresence for a specific
  * #PurpleBuddy.
+ *
+ * Since: 3.0.0
  */
 
 #define PURPLE_TYPE_BUDDY_PRESENCE (purple_buddy_presence_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleBuddyPresence, purple_buddy_presence, PURPLE,
                      BUDDY_PRESENCE, PurplePresence)
 
@@ -63,7 +67,10 @@ PurpleBuddyPresence *purple_buddy_presence_new(PurpleBuddy *buddy);
  * Returns the buddy presence's buddy.
  *
  * Returns: (transfer none): The presence's buddy.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBuddy *purple_buddy_presence_get_buddy(PurpleBuddyPresence *presence);
 
 /**
@@ -76,7 +83,10 @@ PurpleBuddy *purple_buddy_presence_get_buddy(PurpleBuddyPresence *presence);
  * Returns: -1 if @buddy_presence1 is more available than @buddy_presence2.
  *           0 if @buddy_presence1 is equal to @buddy_presence2.
  *           1 if @buddy_presence1 is less available than @buddy_presence2.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_buddy_presence_compare(PurpleBuddyPresence *buddy_presence1,
                                    PurpleBuddyPresence *buddy_presence2);
 

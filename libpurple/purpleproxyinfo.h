@@ -71,7 +71,10 @@ PurpleProxyInfo *purple_proxy_info_new(void);
  * @proxy_type: The new type.
  *
  * Sets the type of @info.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_proxy_info_set_proxy_type(PurpleProxyInfo *info, PurpleProxyType proxy_type);
 
 /**
@@ -81,7 +84,10 @@ void purple_proxy_info_set_proxy_type(PurpleProxyInfo *info, PurpleProxyType pro
  * Gets the type of the proxy.
  *
  * Returns: The type of the proxy.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleProxyType purple_proxy_info_get_proxy_type(PurpleProxyInfo *info);
 
 /**

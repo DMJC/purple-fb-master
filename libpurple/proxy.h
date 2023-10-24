@@ -32,6 +32,7 @@
 #include "eventloop.h"
 #include "purpleaccount.h"
 #include "purpleproxyinfo.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -97,7 +98,10 @@ PurpleProxyInfo *purple_proxy_get_setup(PurpleAccount *account);
  * Returns: (transfer full): NULL if there was an error with the
  *         account's (or system) proxy settings, or a reference to
  *         a #GProxyResolver on success.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GProxyResolver *purple_proxy_get_proxy_resolver(PurpleAccount *account,
 		GError **error);
 

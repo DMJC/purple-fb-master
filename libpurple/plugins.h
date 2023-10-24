@@ -47,6 +47,7 @@ typedef GPluginPlugin PurplePlugin;
 typedef GPluginPluginInterface PurplePluginInterface;
 
 #include "purpleplugininfo.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -103,7 +104,10 @@ gboolean purple_plugin_is_loaded(PurplePlugin *plugin);
  * is to avoid managing the reference counts everywhere in our codebase
  * where we use the plugin info. The plugin info instance is guaranteed to
  * exist as long as the plugin exists.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePluginInfo *purple_plugin_get_info(PurplePlugin *plugin);
 
 /**
@@ -128,7 +132,10 @@ void purple_plugin_disable(PurplePlugin *plugin);
  * plugins, loaders etc.
  *
  * Returns: %TRUE if the plugin is an internal plugin, %FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_plugin_is_internal(PurplePlugin *plugin);
 
 /**
@@ -139,7 +146,10 @@ gboolean purple_plugin_is_internal(PurplePlugin *plugin);
  *
  * Returns: (element-type PurplePlugin) (transfer none): The list of a plugins that depend on the specified
  *                           plugin.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GSList *purple_plugin_get_dependent_plugins(PurplePlugin *plugin);
 
 /**************************************************************************/
@@ -154,7 +164,10 @@ GSList *purple_plugin_get_dependent_plugins(PurplePlugin *plugin);
  * Returns: (element-type PurplePlugin) (transfer full): A list of all plugins.
  * 	       The list is owned by the caller, and must be
  *         g_list_free()d to avoid leaking the nodes.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_plugins_find_all(void);
 
 /**
@@ -181,7 +194,10 @@ void purple_plugins_add_search_path(const gchar *path);
  * that are to be auto-loaded.
  *
  * See purple_plugins_add_search_path().
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_plugins_refresh(void);
 
 /**
@@ -191,7 +207,10 @@ void purple_plugins_refresh(void);
  * Finds a plugin with the specified plugin ID.
  *
  * Returns: (transfer none): The plugin if found, or %NULL if not found.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePlugin *purple_plugins_find_plugin(const gchar *id);
 
 /**
@@ -201,7 +220,10 @@ PurplePlugin *purple_plugins_find_plugin(const gchar *id);
  * Finds a plugin with the specified filename (filename with a path).
  *
  * Returns: (transfer none): The plugin if found, or %NULL if not found.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePlugin *purple_plugins_find_by_filename(const char *filename);
 
 /**

@@ -39,6 +39,7 @@ typedef struct _PurpleMetaContactClass PurpleMetaContactClass;
 #include "countingnode.h"
 #include "group.h"
 #include "purpleaccount.h"
+#include "purpleversion.h"
 
 /**
  * PurpleMetaContact:
@@ -72,7 +73,10 @@ G_BEGIN_DECLS
  * purple_meta_contact_get_type:
  *
  * Returns: The #GType for the #PurpleMetaContact object.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_meta_contact_get_type(void);
 
 /**
@@ -81,7 +85,10 @@ GType purple_meta_contact_get_type(void);
  * Creates a new contact
  *
  * Returns:       A new contact struct
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleMetaContact *purple_meta_contact_new(void);
 
 /**
@@ -91,7 +98,10 @@ PurpleMetaContact *purple_meta_contact_new(void);
  * Gets the PurpleGroup from a PurpleMetaContact
  *
  * Returns: (transfer none): The group.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleGroup *purple_meta_contact_get_group(const PurpleMetaContact *contact);
 
 /**
@@ -101,7 +111,10 @@ PurpleGroup *purple_meta_contact_get_group(const PurpleMetaContact *contact);
  * Returns the highest priority buddy for a given contact.
  *
  * Returns: (transfer none): The highest priority buddy.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBuddy *purple_meta_contact_get_priority_buddy(PurpleMetaContact *contact);
 
 /**
@@ -110,7 +123,10 @@ PurpleBuddy *purple_meta_contact_get_priority_buddy(PurpleMetaContact *contact);
  * @alias:    The alias
  *
  * Sets the alias for a contact.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_meta_contact_set_alias(PurpleMetaContact *contact, const char *alias);
 
 /**
@@ -120,7 +136,10 @@ void purple_meta_contact_set_alias(PurpleMetaContact *contact, const char *alias
  * Gets the alias for a contact.
  *
  * Returns:  The alias, or NULL if it is not set.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_meta_contact_get_alias(PurpleMetaContact *contact);
 
 /**
@@ -131,7 +150,10 @@ const char *purple_meta_contact_get_alias(PurpleMetaContact *contact);
  * Determines whether an account owns any buddies in a given contact
  *
  * Returns: TRUE if there are any buddies from account in the contact, or FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_meta_contact_on_account(PurpleMetaContact *contact, PurpleAccount *account);
 
 /**
@@ -140,7 +162,10 @@ gboolean purple_meta_contact_on_account(PurpleMetaContact *contact, PurpleAccoun
  *
  * Invalidates the priority buddy so that the next call to
  * purple_meta_contact_get_priority_buddy recomputes it.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_meta_contact_invalidate_priority_buddy(PurpleMetaContact *contact);
 
 /**
@@ -151,7 +176,10 @@ void purple_meta_contact_invalidate_priority_buddy(PurpleMetaContact *contact);
  * Merges two contacts
  *
  * All of the buddies from source will be moved to target
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_meta_contact_merge(PurpleMetaContact *source, PurpleBlistNode *node);
 
 

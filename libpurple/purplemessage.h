@@ -106,8 +106,10 @@ typedef enum /*< prefix=PURPLE_MESSAGE_CONTENT_TYPE,underscore_name=PURPLE_MESSA
  * PurpleMessage:
  *
  * #PurpleMessage represents any message passed between users in libpurple.
+ *
+ * Since: 3.0.0
  */
-
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleMessage, purple_message, PURPLE, MESSAGE, GObject)
 
 /**
@@ -380,7 +382,10 @@ GDateTime *purple_message_get_timestamp(PurpleMessage *message);
  * Formats the timestamp of @message and returns it.
  *
  * Returns: The formatted timestamp.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gchar *purple_message_format_timestamp(PurpleMessage *message, const gchar *format);
 
 /**

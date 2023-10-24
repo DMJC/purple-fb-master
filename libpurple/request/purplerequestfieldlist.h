@@ -171,6 +171,7 @@ GList *purple_request_field_list_get_items(PurpleRequestFieldList *field);
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_list_has_icons(PurpleRequestFieldList *field);
 
 G_END_DECLS

@@ -27,6 +27,7 @@
 #define PURPLE_CONVERSATIONS_H
 
 #include "purpleconversation.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -48,7 +49,10 @@ void purple_conversations_set_ui_ops(PurpleConversationUiOps *ops);
  * Gets the default conversation UI operations structure.
  *
  * Returns:  The UI conversation operations structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversationUiOps *purple_conversations_get_ui_ops(void);
 
 /**

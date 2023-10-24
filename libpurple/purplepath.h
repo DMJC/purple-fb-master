@@ -25,6 +25,8 @@
 
 #include <glib.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -45,7 +47,10 @@ const gchar *purple_home_dir(void);
  * sub-directory of DIR argument passed to -c option.
  *
  * Returns: The purple cache directory.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_cache_dir(void);
 
 /**
@@ -57,7 +62,10 @@ const gchar *purple_cache_dir(void);
  * sub-directory of DIR argument passed to -c option.
  *
  * Returns: The purple configuration directory.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_config_dir(void);
 
 /**
@@ -69,7 +77,10 @@ const gchar *purple_config_dir(void);
  * sub-directory of DIR argument passed to -c option.
  *
  * Returns: The purple data directory.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_data_dir(void);
 
 /**

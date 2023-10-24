@@ -86,6 +86,8 @@ G_BEGIN_DECLS
  * The protocol server interface.
  *
  * This interface provides a gateway between purple and the protocol's server.
+ *
+ * Since: 3.0.0
  */
 struct _PurpleProtocolServerInterface {
 	/*< private >*/

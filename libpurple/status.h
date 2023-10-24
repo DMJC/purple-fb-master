@@ -167,7 +167,10 @@ PurpleStatusPrimitive purple_primitive_get_type_from_id(const char *id);
  * The standard _get_type function for #PurpleStatusType.
  *
  * Returns: The #GType for #PurpleStatusType.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_status_type_get_type(void);
 
 /**
@@ -417,7 +420,10 @@ const PurpleStatusType *purple_status_type_find_with_id(GList *status_types,
  * The standard _get_type function for #PurpleStatusAttribute.
  *
  * Returns: The #GType for the #PurpleStatusAttribute boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_status_attribute_get_type(void);
 
 /**
@@ -429,7 +435,10 @@ GType purple_status_attribute_get_type(void);
  * Creates a new status attribute.
  *
  * Returns: A new status attribute.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleStatusAttribute *purple_status_attribute_new(const char *id, const char *name,
 									 GValue *value_type);
 
@@ -438,7 +447,10 @@ PurpleStatusAttribute *purple_status_attribute_new(const char *id, const char *n
  * @attr: The status attribute to destroy.
  *
  * Destroys a status attribute.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_status_attribute_destroy(PurpleStatusAttribute *attr);
 
 /**
@@ -448,7 +460,10 @@ void purple_status_attribute_destroy(PurpleStatusAttribute *attr);
  * Returns the ID of a status attribute.
  *
  * Returns: The status attribute's ID.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_status_attribute_get_id(const PurpleStatusAttribute *attr);
 
 /**
@@ -458,7 +473,10 @@ const char *purple_status_attribute_get_id(const PurpleStatusAttribute *attr);
  * Returns the name of a status attribute.
  *
  * Returns: The status attribute's name.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_status_attribute_get_name(const PurpleStatusAttribute *attr);
 
 /**
@@ -468,7 +486,10 @@ const char *purple_status_attribute_get_name(const PurpleStatusAttribute *attr);
  * Returns the value of a status attribute.
  *
  * Returns: The status attribute's value.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GValue *purple_status_attribute_get_value(const PurpleStatusAttribute *attr);
 
 /**************************************************************************/
@@ -532,7 +553,10 @@ void purple_status_set_active_with_attributes(PurpleStatus *status, gboolean act
  * Returns the status's type.
  *
  * Returns: The status's type.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleStatusType *purple_status_get_status_type(PurpleStatus *status);
 
 /**
@@ -701,7 +725,10 @@ gint purple_status_compare(PurpleStatus *status1, PurpleStatus *status2);
  * Get the handle for the status subsystem.
  *
  * Returns: the handle to the status subsystem
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void *purple_statuses_get_handle(void);
 
 /**

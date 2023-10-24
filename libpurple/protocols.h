@@ -54,7 +54,10 @@ G_BEGIN_DECLS
  * Notifies Purple that a buddy's idle state and time have changed.
  *
  * This is meant to be called from protocols.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_user_idle(PurpleAccount *account, const char *name,
                                    gboolean idle, time_t idle_time);
 
@@ -68,7 +71,10 @@ void purple_protocol_got_user_idle(PurpleAccount *account, const char *name,
  * Notifies Purple that a buddy's status has been activated.
  *
  * This is meant to be called from protocols.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_user_status(PurpleAccount *account, const char *name,
                                      const char *status_id, ...)
                                      G_GNUC_NULL_TERMINATED;
@@ -99,7 +105,10 @@ void purple_protocol_got_user_status_with_attributes(PurpleAccount *account, con
  * Notifies libpurple that a buddy's status has been deactivated
  *
  * This is meant to be called from protocols.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_user_status_deactive(PurpleAccount *account,
                                               const char *name,
                                               const char *status_id);
@@ -112,7 +121,10 @@ void purple_protocol_got_user_status_deactive(PurpleAccount *account,
  *                   (in the case of independent statuses).
  *
  * Informs the server that our account's status changed.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_change_account_status(PurpleAccount *account,
                                            PurpleStatus *old_status,
                                            PurpleStatus *new_status);
@@ -125,7 +137,10 @@ void purple_protocol_change_account_status(PurpleAccount *account,
  * Retrieves the list of stock status types from a protocol.
  *
  * Returns: (transfer full) (element-type PurpleStatus): List of statuses
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_statuses(PurpleAccount *account,
                                     PurplePresence *presence);
 
@@ -137,7 +152,10 @@ GList *purple_protocol_get_statuses(PurpleAccount *account,
  * Determines if the contact supports the given media session type.
  *
  * Returns: The media caps the contact supports.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleMediaCaps purple_protocol_get_media_caps(PurpleAccount *account,
                                                const char *who);
 
@@ -151,7 +169,10 @@ PurpleMediaCaps purple_protocol_get_media_caps(PurpleAccount *account,
  *
  * Returns: TRUE if the call succeeded else FALSE. (Doesn't imply the media
  *          session or stream will be successfully created)
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_initiate_media(PurpleAccount *account,
                                         const char *who,
                                         PurpleMediaSessionType type);
@@ -164,7 +185,10 @@ gboolean purple_protocol_initiate_media(PurpleAccount *account,
  * Signals that the protocol received capabilities for the given contact.
  *
  * This function is intended to be used only by protocols.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_media_caps(PurpleAccount *account, const char *who);
 
 G_END_DECLS

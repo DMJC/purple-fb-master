@@ -39,6 +39,7 @@ typedef struct _PurpleChatClass PurpleChatClass;
 #include "blistnode.h"
 #include "group.h"
 #include "purpleaccount.h"
+#include "purpleversion.h"
 
 /**
  * PurpleChat:
@@ -65,7 +66,10 @@ G_BEGIN_DECLS
  * purple_chat_get_type:
  *
  * Returns: The #GType for the #PurpleChat object.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_chat_get_type(void);
 
 /**
@@ -99,7 +103,10 @@ const char *purple_chat_get_name(PurpleChat *chat);
  * Returns the name of the chat
  *
  * Returns:       The first component value.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_chat_get_name_only(PurpleChat *chat);
 
 /**
@@ -108,7 +115,10 @@ const char *purple_chat_get_name_only(PurpleChat *chat);
  * @alias:  The alias
  *
  * Sets the alias for a blist chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_set_alias(PurpleChat *chat, const char *alias);
 
 /**

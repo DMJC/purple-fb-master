@@ -103,7 +103,10 @@ G_BEGIN_DECLS
  * purple_buddy_icon_get_type:
  *
  * Returns: The #GType for the #PurpleBuddyIcon boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_buddy_icon_get_type(void);
 
 /**
@@ -493,7 +496,10 @@ void purple_buddy_icons_uninit(void);
  * purple_buddy_icon_spec_get_type:
  *
  * Returns: The #GType for the #PurpleBuddyIconSpec boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_buddy_icon_spec_get_type(void);
 
 /**
@@ -510,7 +516,10 @@ GType purple_buddy_icon_spec_get_type(void);
  * Creates a new #PurpleBuddyIconSpec instance.
  *
  * Returns:  A new buddy icon spec.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBuddyIconSpec *purple_buddy_icon_spec_new(char *format, int min_width,
 		int min_height, int max_width, int max_height, size_t max_filesize,
 		PurpleBuddyIconScaleFlags scale_rules);
@@ -535,7 +544,10 @@ void purple_buddy_icon_spec_free(PurpleBuddyIconSpec *spec);
  *                   constrained by the spec.
  *
  * Gets display size for a buddy icon
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_icon_spec_get_scaled_size(PurpleBuddyIconSpec *spec,
 		int *width, int *height);
 

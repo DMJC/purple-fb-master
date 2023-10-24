@@ -38,8 +38,11 @@ G_BEGIN_DECLS
  * PurpleAttachment:
  *
  * #PurpleAttachment represents a file attached to a #PurpleMessage.
+ *
+ * Since: 3.0.0
  */
 
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleAttachment, purple_attachment, PURPLE, ATTACHMENT, GObject)
 
 /**

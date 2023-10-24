@@ -40,6 +40,7 @@ typedef struct _PurpleChatConversationClass      PurpleChatConversationClass;
 #include "purplechatuser.h"
 #include "purpleconversation.h"
 #include "purpleimconversation.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -68,7 +69,10 @@ struct _PurpleChatConversationClass {
  * purple_chat_conversation_get_type:
  *
  * Returns: The #GType for the ChatConversation object.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_chat_conversation_get_type(void);
 
 /**
@@ -80,7 +84,10 @@ GType purple_chat_conversation_get_type(void);
  * Creates a new chat conversation.
  *
  * Returns: The new conversation.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_chat_conversation_new(PurpleAccount *account, const gchar *name);
 
 /**
@@ -93,7 +100,10 @@ PurpleConversation *purple_chat_conversation_new(PurpleAccount *account, const g
  * Returns: (element-type PurpleChatUser) (transfer container):
  *          The list of users. Use g_list_free() when done
  *          using the list.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_chat_conversation_get_users(PurpleChatConversation *chat);
 
 /**
@@ -103,7 +113,10 @@ GList *purple_chat_conversation_get_users(PurpleChatConversation *chat);
  * Returns count of users in the chat room.
  *
  * Returns: The count of users in the chat room.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint purple_chat_conversation_get_users_count(PurpleChatConversation *chat);
 
 /**
@@ -113,7 +126,10 @@ guint purple_chat_conversation_get_users_count(PurpleChatConversation *chat);
  * @topic: The topic.
  *
  * Sets the chat room's topic.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_set_topic(PurpleChatConversation *chat, const gchar *who, const gchar *topic);
 
 /**
@@ -123,7 +139,10 @@ void purple_chat_conversation_set_topic(PurpleChatConversation *chat, const gcha
  * Returns the chat room's topic.
  *
  * Returns: The chat's topic.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_chat_conversation_get_topic(PurpleChatConversation *chat);
 
 /**
@@ -133,7 +152,10 @@ const gchar *purple_chat_conversation_get_topic(PurpleChatConversation *chat);
  * Returns who set the chat room's topic.
  *
  * Returns: Who set the topic.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_chat_conversation_get_topic_who(PurpleChatConversation *chat);
 
 /**
@@ -142,7 +164,10 @@ const gchar *purple_chat_conversation_get_topic_who(PurpleChatConversation *chat
  * @id: The ID.
  *
  * Sets the chat room's ID.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_set_id(PurpleChatConversation *chat, gint id);
 
 /**
@@ -152,7 +177,10 @@ void purple_chat_conversation_set_id(PurpleChatConversation *chat, gint id);
  * Gets the chat room's ID.
  *
  * Returns: The ID.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_chat_conversation_get_id(PurpleChatConversation *chat);
 
 /**
@@ -164,7 +192,10 @@ gint purple_chat_conversation_get_id(PurpleChatConversation *chat);
  * @new_arrival: Decides whether or not to show a join notice.
  *
  * Adds a user to a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_add_user(PurpleChatConversation *chat, const gchar *user, const gchar *extra_msg, PurpleChatUserFlags flags, gboolean new_arrival);
 
 /**
@@ -186,7 +217,10 @@ void purple_chat_conversation_add_user(PurpleChatConversation *chat, const gchar
  *
  * The data is copied from @users, @extra_msgs, and @flags, so it is up to
  * the caller to free this list after calling this function.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_add_users(PurpleChatConversation *chat, GList *users, GList *extra_msgs, GList *flags, gboolean new_arrivals);
 
 /**
@@ -196,7 +230,10 @@ void purple_chat_conversation_add_users(PurpleChatConversation *chat, GList *use
  * @new_user: The new username.
  *
  * Renames a user in a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_rename_user(PurpleChatConversation *chat, const gchar *old_user, const gchar *new_user);
 
 /**
@@ -208,7 +245,10 @@ void purple_chat_conversation_rename_user(PurpleChatConversation *chat, const gc
  * Removes a user from a chat, optionally with a reason.
  *
  * It is up to the developer to free this list after calling this function.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_remove_user(PurpleChatConversation *chat, const gchar *user, const gchar *reason);
 
 /**
@@ -218,7 +258,10 @@ void purple_chat_conversation_remove_user(PurpleChatConversation *chat, const gc
  * @reason: The optional reason given for the removal. Can be %NULL.
  *
  * Removes a list of users from a chat, optionally with a single reason.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_remove_users(PurpleChatConversation *chat, GList *users, const gchar *reason);
 
 /**
@@ -229,7 +272,10 @@ void purple_chat_conversation_remove_users(PurpleChatConversation *chat, GList *
  * Checks if a user is in a chat
  *
  * Returns: %TRUE if the user is in the chat, %FALSE if not
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_chat_conversation_has_user(PurpleChatConversation *chat, const gchar *user);
 
 /**
@@ -237,7 +283,10 @@ gboolean purple_chat_conversation_has_user(PurpleChatConversation *chat, const g
  * @chat: The chat.
  *
  * Clears all users from a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_clear_users(PurpleChatConversation *chat);
 
 /**
@@ -246,7 +295,10 @@ void purple_chat_conversation_clear_users(PurpleChatConversation *chat);
  * @nick: The nick.
  *
  * Sets your nickname (used for highlighting) for a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_set_nick(PurpleChatConversation *chat, const gchar *nick);
 
 /**
@@ -256,7 +308,10 @@ void purple_chat_conversation_set_nick(PurpleChatConversation *chat, const gchar
  * Gets your nickname (used for highlighting) for a chat.
  *
  * Returns: The nick.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_chat_conversation_get_nick(PurpleChatConversation *chat);
 
 /**
@@ -265,7 +320,10 @@ const gchar *purple_chat_conversation_get_nick(PurpleChatConversation *chat);
  *
  * Lets the core know we left a chat, without destroying it.
  * Called from purple_serv_got_chat_left().
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_leave(PurpleChatConversation *chat);
 
 /**
@@ -277,7 +335,10 @@ void purple_chat_conversation_leave(PurpleChatConversation *chat);
  *
  * Returns: (transfer none): The #PurpleChatUser with the name referred by
  *          @name.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleChatUser *purple_chat_conversation_find_user(PurpleChatConversation *chat, const gchar *name);
 
 /**
@@ -291,7 +352,10 @@ PurpleChatUser *purple_chat_conversation_find_user(PurpleChatConversation *chat,
  * Invite a user to a chat.
  * The user will be prompted to enter the user's name or a message if one is
  * not given.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_conversation_invite_user(PurpleChatConversation *chat, const gchar *user, const gchar *message, gboolean confirm);
 
 /**
@@ -301,7 +365,10 @@ void purple_chat_conversation_invite_user(PurpleChatConversation *chat, const gc
  * Gets whether we're no longer in this chat, and just left the window open.
  *
  * Returns: %TRUE if we left the chat already, %FALSE if we're still there.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_chat_conversation_has_left(PurpleChatConversation *chat);
 
 G_END_DECLS

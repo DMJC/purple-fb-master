@@ -121,7 +121,10 @@ void purple_request_field_set_type_hint(PurpleRequestField *field,
  *
  * This is optionally used by the UIs to provide a tooltip for
  * the field.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_set_tooltip(PurpleRequestField *field, const char *tooltip);
 
 /**
@@ -190,7 +193,10 @@ const char *purple_request_field_get_type_hint(PurpleRequestField *field);
  * Returns the field's tooltip.
  *
  * Returns: The field's tooltip.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const char *purple_request_field_get_tooltip(PurpleRequestField *field);
 
 /**
@@ -214,7 +220,10 @@ gboolean purple_request_field_is_required(PurpleRequestField *field);
  * notify on [property@RequestField:filled].
  *
  * Returns: TRUE if the field has value, or FALSE.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_is_filled(PurpleRequestField *field);
 
 /**
@@ -226,7 +235,10 @@ gboolean purple_request_field_is_filled(PurpleRequestField *field);
  * @destroy_data: A cleanup function for @user_data.
  *
  * Set an additional validator for a field.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_set_validator(PurpleRequestField *field, PurpleRequestFieldValidator validator, gpointer user_data, GDestroyNotify destroy_data);
 
 /**
@@ -244,7 +256,10 @@ void purple_request_field_set_validator(PurpleRequestField *field, PurpleRequest
  * Note: Required, but unfilled, fields are invalid.
  *
  * Returns: TRUE, if the field is valid, FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg);
 
 /**
@@ -253,7 +268,10 @@ gboolean purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg
  * @sensitive: TRUE if the field should be sensitive for user input.
  *
  * Sets field editable.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_set_sensitive(PurpleRequestField *field, gboolean sensitive);
 
 /**
@@ -263,7 +281,10 @@ void purple_request_field_set_sensitive(PurpleRequestField *field, gboolean sens
  * Checks, if field is editable.
  *
  * Returns: TRUE, if the field is sensitive for user input.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);
 
 G_END_DECLS

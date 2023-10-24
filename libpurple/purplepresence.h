@@ -108,6 +108,8 @@ struct _PurplePresenceClass {
 };
 
 #define PURPLE_TYPE_PRESENCE purple_presence_get_type()
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurplePresence, purple_presence, PURPLE, PRESENCE,
                          GObject)
 
@@ -293,10 +295,7 @@ GDateTime *purple_presence_get_login_time(PurplePresence *presence);
  * Returns: -1 if @presence1 is more available than @presence2.
  *           0 if @presence1 is equal to @presence2.
  *           1 if @presence1 is less available than @presence2.
- *
- * Since: 3.0.0
  */
-PURPLE_AVAILABLE_IN_3_0
 gint purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2);
 
 /**

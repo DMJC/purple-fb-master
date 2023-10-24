@@ -33,6 +33,7 @@
 #include "protocols.h"
 #include "purpleimconversation.h"
 #include "purplemessage.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -51,8 +52,11 @@ G_BEGIN_DECLS
  *         example, then Purple will wait five seconds, and if the Purple
  *         user is still typing then Purple will send another PURPLE_IM_TYPING
  *         message.
+ *
+ * Since: 3.0.0
  */
 /* TODO Could probably move this into the conversation API. */
+PURPLE_AVAILABLE_IN_3_0
 unsigned int purple_serv_send_typing(PurpleConnection *gc, const char *name, PurpleIMTypingState state);
 
 /**
@@ -62,7 +66,10 @@ unsigned int purple_serv_send_typing(PurpleConnection *gc, const char *name, Pur
  * @dest:   Destiny group.
  *
  * Move a buddy from one group to another on server.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_move_buddy(PurpleBuddy *buddy, PurpleGroup *orig, PurpleGroup *dest);
 
 /**
@@ -73,7 +80,10 @@ void purple_serv_move_buddy(PurpleBuddy *buddy, PurpleGroup *orig, PurpleGroup *
  * Sends the message to the user through the required protocol.
  *
  * Returns: The error value returned from the protocol interface function.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int  purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg);
 
 /******************************************************************************
@@ -88,7 +98,10 @@ int  purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg);
  * @name:   The name of the remote user to send the invitation to.
  *
  * Invite a user to join a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_chat_invite(PurpleConnection *gc, int id, const char *message, const char *name);
 
 /**
@@ -97,7 +110,10 @@ void purple_serv_chat_invite(PurpleConnection *gc, int id, const char *message, 
  * @id:     The id of the chat to leave.
  *
  * Called when the user requests leaving a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_chat_leave(PurpleConnection *gc, int id);
 
 /**
@@ -118,7 +134,10 @@ void purple_serv_chat_leave(PurpleConnection *gc, int id);
  *
  * Returns:  A positive number or 0 in case of success, a
  *           negative error number in case of failure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int  purple_serv_chat_send(PurpleConnection *gc, int id, PurpleMessage *msg);
 
 /******************************************************************************
@@ -130,7 +149,10 @@ int  purple_serv_chat_send(PurpleConnection *gc, int id, PurpleMessage *msg);
  * @buddy:  The Buddy.
  *
  * Save/store buddy's alias on server list/roster
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_alias_buddy(PurpleBuddy *buddy);
 
 /**
@@ -141,7 +163,9 @@ void purple_serv_alias_buddy(PurpleBuddy *buddy);
  *
  * Protocol should call this function when it retrieves an alias form the server.
  *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_alias(PurpleConnection *gc, const char *who, const char *alias);
 
 /**
@@ -173,7 +197,10 @@ void purple_serv_got_private_alias(PurpleConnection *gc, const char *who, const 
  * purple_serv_got_typing_stopped instead.
  *
  * @todo Could probably move this into the conversation API.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_typing(PurpleConnection *gc, const char *name, int timeout,
 					 PurpleIMTypingState state);
 
@@ -185,7 +212,10 @@ void purple_serv_got_typing(PurpleConnection *gc, const char *name, int timeout,
  * Called from a protocol when it has received a type stopped.
  *
  * @todo Could probably move this into the conversation API.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_typing_stopped(PurpleConnection *gc, const char *name);
 
 /**
@@ -197,7 +227,10 @@ void purple_serv_got_typing_stopped(PurpleConnection *gc, const char *name);
  * @mtime:  The timestamp of the message.
  *
  * This function is called by the protocol when it receives an IM message.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
 				 PurpleMessageFlags flags, time_t mtime);
 
@@ -206,7 +239,10 @@ void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
  * @gc:   The #PurpleConnection
  * @data: The hash function should be g_str_hash() and the equal
  *             function should be g_str_equal().
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data);
 
 /**
@@ -214,7 +250,10 @@ void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data);
  * @gc: The #PurpleConnection 
  * @data: The hash function should be g_str_hash() and the equal
  *             function should be g_str_equal().
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_reject_chat(PurpleConnection *gc, GHashTable *data);
 
 /**
@@ -228,7 +267,10 @@ void purple_serv_reject_chat(PurpleConnection *gc, GHashTable *data);
  *                function should be g_str_equal().
  *
  * Called by a protocol when an account is invited into a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_chat_invite(PurpleConnection *gc, const char *name,
 						  const char *who, const char *message,
 						  GHashTable *data);
@@ -242,9 +284,13 @@ void purple_serv_got_chat_invite(PurpleConnection *gc, const char *name,
  * Called by a protocol when an account has joined a chat.
  *
  * Returns: (transfer none): The resulting conversation.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_serv_got_joined_chat(PurpleConnection *gc,
 									   int id, const char *name);
+
 /**
  * purple_serv_got_join_chat_failed:
  * @gc:      The connection on which chat joining failed
@@ -263,7 +309,10 @@ void purple_serv_got_join_chat_failed(PurpleConnection *gc, GHashTable *data);
  * @id: The id of the chat, as assigned by the protocol.
  *
  * Called by a protocol when an account has left a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_chat_left(PurpleConnection *g, int id);
 
 /**
@@ -276,7 +325,10 @@ void purple_serv_got_chat_left(PurpleConnection *g, int id);
  * @mtime:   The time when the message was received.
  *
  * Called by a protocol when a message has been received in a chat.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_chat_in(PurpleConnection *g, int id, const char *who,
 					  PurpleMessageFlags flags, const char *message, time_t mtime);
 
@@ -287,7 +339,10 @@ void purple_serv_got_chat_in(PurpleConnection *g, int id, const char *who,
  * @file:   The filename to send.
  *
  * Send a filename to a given contact.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_serv_send_file(PurpleConnection *gc, const char *who, const char *file);
 
 G_END_DECLS

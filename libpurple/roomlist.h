@@ -107,7 +107,10 @@ G_BEGIN_DECLS
  * The standard _get_type function for #PurpleRoomlist.
  *
  * Returns: The #GType for the Room List object.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleRoomlist, purple_roomlist, PURPLE, ROOMLIST, GObject)
 
 /**
@@ -140,7 +143,10 @@ PurpleRoomlist *purple_roomlist_new(PurpleAccount *account);
  * created.
  *
  * Returns: (transfer none): The PurpleAccount tied to this room list.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_roomlist_get_account(PurpleRoomlist *list);
 
 /**
@@ -235,7 +241,10 @@ void purple_roomlist_join_room(PurpleRoomlist *list, PurpleRoomlistRoom *room);
  * The standard _get_type function for #PurpleRoomlistUiOps.
  *
  * Returns: The #GType for the #PurpleRoomlistUiOps boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_roomlist_ui_ops_get_type(void);
 
 /**

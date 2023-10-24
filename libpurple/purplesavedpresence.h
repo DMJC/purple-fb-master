@@ -36,6 +36,8 @@
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_SAVED_PRESENCE purple_saved_presence_get_type()
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleSavedPresence, purple_saved_presence, PURPLE,
                      SAVED_PRESENCE, GObject)
 

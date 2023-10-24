@@ -36,6 +36,8 @@
 #include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_CLIENT (purple_protocol_client_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
                     PROTOCOL_CLIENT, PurpleProtocol)
 
@@ -44,6 +46,8 @@ G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
  *
  * #PurpleProtocolClient interface defines the behavior of a typical chat
  * service's client interface.
+ *
+ * Since: 3.0.0
  */
 
 /**
@@ -108,6 +112,8 @@ G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
  * The protocol client interface.
  *
  * This interface provides a gateway between purple and the protocol.
+ *
+ * Since: 3.0.0
  */
 struct _PurpleProtocolClientInterface {
 	/*< private >*/

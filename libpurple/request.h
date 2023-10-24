@@ -45,6 +45,7 @@ typedef struct _PurpleRequestUiOps PurpleRequestUiOps;
 
 #include "purpleaccount.h"
 #include "purpleconversation.h"
+#include "purpleversion.h"
 #include "request/purplerequestpage.h"
 #include "request/purplerequestgroup.h"
 #include "request/purplerequestfield.h"
@@ -227,7 +228,10 @@ G_BEGIN_DECLS
  * the UI to display the request.
  *
  * Returns: (transfer full): The new parameters set.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestCommonParameters *
 purple_request_cpar_new(void);
 
@@ -238,7 +242,10 @@ purple_request_cpar_new(void);
  * Creates new parameters set initially bound with the #PurpleConnection.
  *
  * Returns: (transfer full): The new parameters set.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestCommonParameters *
 purple_request_cpar_from_connection(PurpleConnection *gc);
 
@@ -249,7 +256,10 @@ purple_request_cpar_from_connection(PurpleConnection *gc);
  * Creates new parameters set initially bound with the #PurpleAccount.
  *
  * Returns: (transfer full): The new parameters set.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestCommonParameters *
 purple_request_cpar_from_account(PurpleAccount *account);
 
@@ -260,7 +270,10 @@ purple_request_cpar_from_account(PurpleAccount *account);
  * Creates new parameters set initially bound with the #PurpleConversation.
  *
  * Returns: (transfer full): The new parameters set.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestCommonParameters *
 purple_request_cpar_from_conversation(PurpleConversation *conv);
 
@@ -269,7 +282,10 @@ purple_request_cpar_from_conversation(PurpleConversation *conv);
  * @cpar: The object to ref.
  *
  * Increases the reference count on the parameters set.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_ref(PurpleRequestCommonParameters *cpar);
 
@@ -280,7 +296,10 @@ purple_request_cpar_ref(PurpleRequestCommonParameters *cpar);
  * Decreases the reference count on the parameters set.
  *
  * The object will be destroyed when this reaches 0.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_unref(PurpleRequestCommonParameters *cpar);
 
@@ -290,7 +309,10 @@ purple_request_cpar_unref(PurpleRequestCommonParameters *cpar);
  * @account: The #PurpleAccount to associate.
  *
  * Sets the #PurpleAccount associated with the request, or %NULL, if none is.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_account(PurpleRequestCommonParameters *cpar,
 	PurpleAccount *account);
@@ -303,7 +325,10 @@ purple_request_cpar_set_account(PurpleRequestCommonParameters *cpar,
  *
  * Returns: (transfer none): The associated #PurpleAccount, or %NULL if none is
  *          set.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *
 purple_request_cpar_get_account(PurpleRequestCommonParameters *cpar);
 
@@ -314,7 +339,10 @@ purple_request_cpar_get_account(PurpleRequestCommonParameters *cpar);
  *
  * Sets the #PurpleConversation associated with the request, or %NULL, if
  * none is.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_conversation(PurpleRequestCommonParameters *cpar,
 	PurpleConversation *conv);
@@ -327,7 +355,10 @@ purple_request_cpar_set_conversation(PurpleRequestCommonParameters *cpar,
  *
  * Returns: (transfer none): The associated #PurpleConversation, or %NULL if
  *          none is set.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *
 purple_request_cpar_get_conversation(PurpleRequestCommonParameters *cpar);
 
@@ -337,7 +368,10 @@ purple_request_cpar_get_conversation(PurpleRequestCommonParameters *cpar);
  * @icon_type: The icon type.
  *
  * Sets the icon associated with the request.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_icon(PurpleRequestCommonParameters *cpar,
 	PurpleRequestIconType icon_type);
@@ -349,7 +383,10 @@ purple_request_cpar_set_icon(PurpleRequestCommonParameters *cpar,
  * Gets the icon associated with the request.
  *
  * Returns: icon_type The icon type.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestIconType
 purple_request_cpar_get_icon(PurpleRequestCommonParameters *cpar);
 
@@ -360,7 +397,10 @@ purple_request_cpar_get_icon(PurpleRequestCommonParameters *cpar);
  * @icon_size: The icon image size.
  *
  * Sets the custom icon associated with the request.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_custom_icon(PurpleRequestCommonParameters *cpar,
 	gconstpointer icon_data, gsize icon_size);
@@ -374,7 +414,10 @@ purple_request_cpar_set_custom_icon(PurpleRequestCommonParameters *cpar,
  * Gets the custom icon associated with the request.
  *
  * Returns: The icon image contents.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gconstpointer
 purple_request_cpar_get_custom_icon(PurpleRequestCommonParameters *cpar,
 	gsize *icon_size);
@@ -387,7 +430,10 @@ purple_request_cpar_get_custom_icon(PurpleRequestCommonParameters *cpar,
  *                redefined in the future.
  *
  * Switches the request text to be HTML or not.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_html(PurpleRequestCommonParameters *cpar,
 	gboolean enabled);
@@ -399,7 +445,10 @@ purple_request_cpar_set_html(PurpleRequestCommonParameters *cpar,
  * Checks, if the text passed to the request is HTML.
  *
  * Returns: %TRUE, if the text is HTML, %FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean
 purple_request_cpar_is_html(PurpleRequestCommonParameters *cpar);
 
@@ -409,7 +458,10 @@ purple_request_cpar_is_html(PurpleRequestCommonParameters *cpar);
  * @compact: TRUE for compact, FALSE otherwise.
  *
  * Sets dialog display mode to compact or default.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_compact(PurpleRequestCommonParameters *cpar,
 	gboolean compact);
@@ -421,7 +473,10 @@ purple_request_cpar_set_compact(PurpleRequestCommonParameters *cpar,
  * Gets dialog display mode.
  *
  * Returns: TRUE for compact, FALSE for default.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean
 purple_request_cpar_is_compact(PurpleRequestCommonParameters *cpar);
 
@@ -432,7 +487,10 @@ purple_request_cpar_is_compact(PurpleRequestCommonParameters *cpar);
  * @user_data: The data to be passed to the callback.
  *
  * Sets the callback for the Help button.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_help_cb(PurpleRequestCommonParameters *cpar,
 	PurpleRequestHelpCb cb, gpointer user_data);
@@ -446,7 +504,10 @@ purple_request_cpar_set_help_cb(PurpleRequestCommonParameters *cpar,
  * Gets the callback for the Help button.
  *
  * Returns: (transfer none): The callback.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleRequestHelpCb
 purple_request_cpar_get_help_cb(PurpleRequestCommonParameters *cpar,
 	gpointer *user_data);
@@ -462,7 +523,10 @@ purple_request_cpar_get_help_cb(PurpleRequestCommonParameters *cpar,
  *        Should be terminated with the NULL label.
  *
  * Sets extra actions for the PurpleRequestPage dialog.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_extra_actions(PurpleRequestCommonParameters *cpar, ...);
 
@@ -474,7 +538,10 @@ purple_request_cpar_set_extra_actions(PurpleRequestCommonParameters *cpar, ...);
  *
  * Returns: (element-type PurpleKeyValuePair) (transfer none): A list of actions (pairs of arguments, as in
  *          setter).
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GSList *
 purple_request_cpar_get_extra_actions(PurpleRequestCommonParameters *cpar);
 
@@ -485,7 +552,10 @@ purple_request_cpar_get_extra_actions(PurpleRequestCommonParameters *cpar);
  *
  * Sets the same parent window for this dialog, as the parent of specified
  * Notify API or Request API dialog UI handle.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_cpar_set_parent_from(PurpleRequestCommonParameters *cpar,
 	gpointer ui_handle);
@@ -497,7 +567,10 @@ purple_request_cpar_set_parent_from(PurpleRequestCommonParameters *cpar,
  * Gets the parent "donor" for this dialog.
  *
  * Returns: The donors UI handle.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gpointer
 purple_request_cpar_get_parent_from(PurpleRequestCommonParameters *cpar);
 
@@ -725,7 +798,10 @@ purple_request_action_varg(void *handle, const char *title, const char *primary,
  * Displays a "please wait" dialog.
  *
  * Returns: A UI-specific handle.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void *
 purple_request_wait(void *handle, const char *title, const char *primary,
 	const char *secondary, gboolean with_progress,
@@ -738,7 +814,10 @@ purple_request_wait(void *handle, const char *title, const char *primary,
  *
  * Notifies the "please wait" dialog that some progress has been made, but you
  * don't know how much.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_wait_pulse(void *ui_handle);
 
@@ -749,7 +828,10 @@ purple_request_wait_pulse(void *ui_handle);
  *                  inclusive).
  *
  * Notifies the "please wait" dialog about progress has been made.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_wait_progress(void *ui_handle, gfloat fraction);
 
@@ -798,7 +880,10 @@ purple_request_fields(void *handle, const char *title, const char *primary,
  * Checks, if passed UI handle is valid.
  *
  * Returns: TRUE, if handle is valid, FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean
 purple_request_is_valid_ui_handle(void *ui_handle, PurpleRequestType *type);
 
@@ -809,7 +894,10 @@ purple_request_is_valid_ui_handle(void *ui_handle, PurpleRequestType *type);
  * @notify_data: The data to be passed to the callback function.
  *
  * Adds a function called when notification dialog is closed.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void
 purple_request_add_close_notify(void *ui_handle, GDestroyNotify notify,
 	gpointer notify_data);
@@ -974,7 +1062,10 @@ purple_request_folder(void *handle, const char *title, const char *dirname,
  * The standard _get_type function for #PurpleRequestUiOps.
  *
  * Returns: The #GType for the #PurpleRequestUiOps boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_request_ui_ops_get_type(void);
 
 /**

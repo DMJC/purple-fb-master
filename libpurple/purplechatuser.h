@@ -79,7 +79,10 @@ G_BEGIN_DECLS
  * Creates a new chat user
  *
  * Returns: The new chat user
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleChatUser *purple_chat_user_new(PurpleChatConversation *chat,
                                      const gchar *name,
                                      const gchar *alias,
@@ -131,7 +134,10 @@ const gchar *purple_chat_user_get_alias(PurpleChatUser *chat_user);
  * Get the name of a chat user.
  *
  * Returns: The name of the chat user.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_chat_user_get_name(PurpleChatUser *chat_user);
 
 /**
@@ -140,7 +146,10 @@ const gchar *purple_chat_user_get_name(PurpleChatUser *chat_user);
  * @flags: The new flags.
  *
  * Set the flags of a chat user.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_chat_user_set_flags(PurpleChatUser *chat_user,
                                 PurpleChatUserFlags flags);
 
@@ -179,7 +188,10 @@ gboolean purple_chat_user_is_buddy(PurpleChatUser *chat_user);
  * first, 0 if sorted equally, and 1 if @a should be sorted after @b.
  *
  * Returns: The sorting order of @a and @b.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_chat_user_compare(PurpleChatUser *a, PurpleChatUser *b);
 
 G_END_DECLS

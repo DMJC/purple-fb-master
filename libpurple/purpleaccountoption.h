@@ -175,7 +175,10 @@ void purple_account_option_set_default_string(PurpleAccountOption *option, const
  * Sets the masking for an account option. Setting this to %TRUE acts
  * as a hint to the UI that the option's value should be obscured from
  * view, like a password.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_option_string_set_masked(PurpleAccountOption *option, gboolean masked);
 
 /**
@@ -187,7 +190,10 @@ void purple_account_option_string_set_masked(PurpleAccountOption *option, gboole
  *
  * The list passed will be owned by the account option, and the
  * strings inside will be freed automatically.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_option_string_set_hints(PurpleAccountOption *option, GSList *hints);
 
 /**
@@ -223,7 +229,10 @@ void purple_account_option_add_list_item(PurpleAccountOption *option, const gcha
  * Returns the specified account option's type.
  *
  * Returns: The account option's type.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePrefType purple_account_option_get_pref_type(const PurpleAccountOption *option);
 
 /**
@@ -297,7 +306,10 @@ const gchar *purple_account_option_get_default_list_value(const PurpleAccountOpt
  * as a '*' (for example).
  *
  * Returns: %TRUE if the option's value should be obscured.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_account_option_string_get_masked(const PurpleAccountOption *option);
 
 /**
@@ -307,7 +319,10 @@ gboolean purple_account_option_string_get_masked(const PurpleAccountOption *opti
  * Returns the list of hints for an account option.
  *
  * Returns: (element-type utf8) (transfer none): A list of hints.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const GSList *purple_account_option_string_get_hints(const PurpleAccountOption *option);
 
 /**

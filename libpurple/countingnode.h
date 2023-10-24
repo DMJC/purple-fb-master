@@ -39,6 +39,7 @@
 #define PURPLE_IS_COUNTING_NODE_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE((klass), PURPLE_TYPE_COUNTING_NODE))
 #define PURPLE_COUNTING_NODE_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), PURPLE_TYPE_COUNTING_NODE, PurpleCountingNodeClass))
 
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef struct _PurpleCountingNode PurpleCountingNode;
 typedef struct _PurpleCountingNodeClass PurpleCountingNodeClass;
 

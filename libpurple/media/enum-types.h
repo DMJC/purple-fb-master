@@ -28,6 +28,8 @@
 
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -279,7 +281,10 @@ GType purple_media_session_type_get_type(void);
  * Gets the type of the state enum
  *
  * Returns: The state enum's GType
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_media_state_get_type(void);
 
 G_END_DECLS

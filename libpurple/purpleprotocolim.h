@@ -67,6 +67,8 @@ G_DECLARE_INTERFACE(PurpleProtocolIM, purple_protocol_im, PURPLE, PROTOCOL_IM,
  *
  * The protocol IM interface that needs to be implemented to send one to one
  * messages.
+ *
+ * Since: 3.0.0
  */
 struct _PurpleProtocolIMInterface {
 	/*< private >*/
@@ -96,7 +98,10 @@ G_BEGIN_DECLS
  *
  * Returns: >= 0 on success, or < 0 on error.  If 0 is returned the message
  *          should not be output locally.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gint purple_protocol_im_send(PurpleProtocolIM *im,
                              PurpleConnection *connection,
                              PurpleConversation *conversation,
@@ -120,7 +125,10 @@ gint purple_protocol_im_send(PurpleProtocolIM *im,
  *          need to be sent.  If this is 5, for example, then Purple will wait
  *          five seconds, and if the Purple user is still typing then Purple
  *          will send another #PURPLE_IM_TYPING message.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 guint purple_protocol_im_send_typing(PurpleProtocolIM *im,
                                      PurpleConnection *connection,
                                      const gchar *name,

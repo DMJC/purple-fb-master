@@ -41,6 +41,7 @@ typedef struct _PurpleGroupClass PurpleGroupClass;
 #include "blistnode.h"
 #include "buddyicon.h"
 #include "purpleaccount.h"
+#include "purpleversion.h"
 #include "status.h"
 
 /**************************************************************************/
@@ -79,7 +80,10 @@ G_BEGIN_DECLS
  * purple_group_get_type:
  *
  * Returns: The #GType for the #PurpleGroup object.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_group_get_type(void);
 
 /**
@@ -123,7 +127,10 @@ gboolean purple_group_on_account(PurpleGroup *g, PurpleAccount *account);
  * @name:  The name of the group.
  *
  * Sets the name of a group.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_group_set_name(PurpleGroup *group, const char *name);
 
 /**

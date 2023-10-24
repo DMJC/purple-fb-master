@@ -55,7 +55,10 @@ typedef struct _PurpleBuddyList PurpleBuddyList;
  * Please note, prpls shouldn't save default group name depending on current
  * locale. So, this function is mostly for libpurple2 compatibility. And for
  * improperly written prpls.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *
 _purple_blist_get_localized_default_group_name(void);
 
@@ -169,7 +172,10 @@ G_BEGIN_DECLS
  * purple_buddy_list_get_type:
  *
  * Returns: The #GType for the #PurpleBuddyList object.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleBuddyList, purple_buddy_list, PURPLE, BUDDY_LIST,
                          GObject)
 
@@ -244,7 +250,10 @@ void purple_blist_set_visible(gboolean show);
  * Updates the buddies hash table when a buddy has been renamed. This only
  * updates the cache, the caller is responsible for the actual renaming of
  * the buddy after updating the cache.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_update_buddies_cache(PurpleBuddy *buddy, const char *new_name);
 
 /**
@@ -255,7 +264,10 @@ void purple_blist_update_buddies_cache(PurpleBuddy *buddy, const char *new_name)
  * Updates the groups hash table when a group has been renamed. This only
  * updates the cache, the caller is responsible for the actual renaming of
  * the group after updating the cache.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_update_groups_cache(PurpleGroup *group, const char *new_name);
 
 /**
@@ -361,7 +373,10 @@ void purple_blist_remove_group(PurpleGroup *group);
  * Finds the buddy struct given a name and an account
  *
  * Returns: (transfer none): The buddy or %NULL if the buddy does not exist.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBuddy *purple_blist_find_buddy(PurpleAccount *account, const char *name);
 
 /**
@@ -374,7 +389,10 @@ PurpleBuddy *purple_blist_find_buddy(PurpleAccount *account, const char *name);
  *
  * Returns: (transfer none): The buddy or %NULL if the buddy does not exist in
  *          the group.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleBuddy *purple_blist_find_buddy_in_group(PurpleAccount *account, const char *name,
 		PurpleGroup *group);
 
@@ -387,7 +405,10 @@ PurpleBuddy *purple_blist_find_buddy_in_group(PurpleAccount *account, const char
  *
  * Returns: (element-type PurpleBuddy) (transfer container): %NULL if the buddy
  *          doesn't exist, or a GSList of PurpleBuddy structs.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GSList *purple_blist_find_buddies(PurpleAccount *account, const char *name);
 
 /**
@@ -397,7 +418,10 @@ GSList *purple_blist_find_buddies(PurpleAccount *account, const char *name);
  * Finds a group by name
  *
  * Returns: (transfer none): The group or %NULL if the group does not exist.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleGroup *purple_blist_find_group(const char *name);
 
 /**
@@ -406,7 +430,10 @@ PurpleGroup *purple_blist_find_group(const char *name);
  * Finds or creates default group.
  *
  * Returns: (transfer none): The default group.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleGroup *purple_blist_get_default_group(void);
 
 /**
@@ -613,7 +640,10 @@ void purple_blist_init(void);
  * Loads the buddy list.
  *
  * You shouldn't call this. purple_core_init() will do it for you.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_blist_boot(void);
 
 /**

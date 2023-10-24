@@ -56,7 +56,10 @@ G_DECLARE_FINAL_TYPE(PurpleNoopCredentialProvider,
  * for itself.
  *
  * Returns: (transfer full): The new #PurpleNoopCredentialProvider instance.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleCredentialProvider *purple_noop_credential_provider_new(void);
 
 G_END_DECLS

@@ -290,7 +290,10 @@ gboolean purple_prefs_exists(const char *name);
  * Get pref type
  *
  * Returns: The type of the pref
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurplePrefType purple_prefs_get_pref_type(const char *name);
 
 /**

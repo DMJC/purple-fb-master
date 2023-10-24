@@ -29,9 +29,14 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_PROTOCOL_ACTION (purple_protocol_action_get_type())
+
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef struct _PurpleProtocolAction PurpleProtocolAction;
 
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleProtocolActionCallback)(PurpleProtocolAction *action);
 
 /**
@@ -41,6 +46,7 @@ typedef void (*PurpleProtocolActionCallback)(PurpleProtocolAction *action);
  * place this is used is by protocols to tell the core the list of available
  * right-click actions for a buddy list row.
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef struct _PurpleActionMenu PurpleActionMenu;
 
 #include "connection.h"
@@ -80,7 +86,10 @@ G_BEGIN_DECLS
  * Creates a new PurpleActionMenu.
  *
  * Returns: (transfer full): The PurpleActionMenu.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleActionMenu *purple_action_menu_new(const gchar *label, GCallback callback, gpointer data, GList *children);
 
 /**
@@ -88,7 +97,10 @@ PurpleActionMenu *purple_action_menu_new(const gchar *label, GCallback callback,
  * @act: The PurpleActionMenu to free.
  *
  * Frees a PurpleActionMenu
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_action_menu_free(PurpleActionMenu *act);
 
 /**
@@ -98,7 +110,10 @@ void purple_action_menu_free(PurpleActionMenu *act);
  * Returns the label of the PurpleActionMenu.
  *
  * Returns: The label string.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_action_menu_get_label(const PurpleActionMenu *act);
 
 /**
@@ -108,7 +123,10 @@ const gchar *purple_action_menu_get_label(const PurpleActionMenu *act);
  * Returns the callback of the PurpleActionMenu.
  *
  * Returns: (transfer none): The callback function.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GCallback purple_action_menu_get_callback(const PurpleActionMenu *act);
 
 /**
@@ -118,7 +136,10 @@ GCallback purple_action_menu_get_callback(const PurpleActionMenu *act);
  * Returns the data stored in the PurpleActionMenu.
  *
  * Returns: The data.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gpointer purple_action_menu_get_data(const PurpleActionMenu *act);
 
 /**
@@ -128,7 +149,10 @@ gpointer purple_action_menu_get_data(const PurpleActionMenu *act);
  * Returns the children of the PurpleActionMenu.
  *
  * Returns: (element-type PurpleActionMenu) (transfer none): The menu children.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList* purple_action_menu_get_children(const PurpleActionMenu *act);
 
 /**
@@ -137,7 +161,10 @@ GList* purple_action_menu_get_children(const PurpleActionMenu *act);
  * @label: The label for the menu action.
  *
  * Set the label to the PurpleActionMenu.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_action_menu_set_label(PurpleActionMenu *act, const gchar *label);
 
 /**
@@ -146,7 +173,10 @@ void purple_action_menu_set_label(PurpleActionMenu *act, const gchar *label);
  * @callback: (scope notified):  The callback.
  *
  * Set the callback that will be used by the PurpleActionMenu.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_action_menu_set_callback(PurpleActionMenu *act, GCallback callback);
 
 /**
@@ -155,7 +185,10 @@ void purple_action_menu_set_callback(PurpleActionMenu *act, GCallback callback);
  * @data:  The data used by this PurpleActionMenu
  *
  * Set the label to the PurpleActionMenu.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_action_menu_set_data(PurpleActionMenu *act, gpointer data);
 
 /**
@@ -164,7 +197,10 @@ void purple_action_menu_set_data(PurpleActionMenu *act, gpointer data);
  * @children: (element-type PurpleActionMenu) (transfer full): The menu children
  *
  * Set the children of the PurpleActionMenu.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_action_menu_set_children(PurpleActionMenu *act, GList *children);
 
 /******************************************************************************
@@ -175,7 +211,10 @@ void purple_action_menu_set_children(PurpleActionMenu *act, GList *children);
  * purple_protocol_action_get_type:
  *
  * Returns: The #GType for the #PurpleProtocolAction boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_protocol_action_get_type(void);
 
 /**
@@ -188,7 +227,10 @@ GType purple_protocol_action_get_type(void);
  * a list in the get_actions function of the protocol.
  *
  * Returns: (transfer full): The new #PurpleProtocolAction.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleProtocolAction *purple_protocol_action_new(const gchar *label, PurpleProtocolActionCallback callback);
 
 /**
@@ -198,7 +240,10 @@ PurpleProtocolAction *purple_protocol_action_new(const gchar *label, PurpleProto
  * Creates a newly allocated copy of @action.
  *
  * Returns: (transfer full): A copy of @action.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleProtocolAction *purple_protocol_action_copy(PurpleProtocolAction *action);
 
 /**
@@ -206,7 +251,10 @@ PurpleProtocolAction *purple_protocol_action_copy(PurpleProtocolAction *action);
  * @action: The PurpleProtocolAction to free.
  *
  * Frees a PurpleProtocolAction
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_action_free(PurpleProtocolAction *action);
 
 

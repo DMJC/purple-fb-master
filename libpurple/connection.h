@@ -34,6 +34,8 @@
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CONNECTION  purple_connection_get_type()
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleConnection, purple_connection, PURPLE,
                          CONNECTION, GObject)
 
@@ -328,7 +330,10 @@ PurpleAccount *purple_connection_get_account(PurpleConnection *gc);
  * Returns the protocol managing a connection.
  *
  * Returns: (transfer none): The protocol.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleProtocol *purple_connection_get_protocol(PurpleConnection *gc);
 
 /**
@@ -523,7 +528,10 @@ GList *purple_connections_get_all(void);
  * Checks if at least one account is online.
  *
  * Returns: %TRUE if at least one account is online.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_connections_is_online(void);
 
 /**************************************************************************/
@@ -534,7 +542,10 @@ gboolean purple_connections_is_online(void);
  * purple_connection_ui_ops_get_type:
  *
  * Returns: The #GType for the #PurpleConnectionUiOps boxed structure.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GType purple_connection_ui_ops_get_type(void);
 
 /**

@@ -83,6 +83,7 @@ void purple_request_field_choice_add(PurpleRequestFieldChoice *field, const char
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_choice_add_full(PurpleRequestFieldChoice *field, const char *label, gpointer data, GDestroyNotify destroy);
 
 /**
@@ -130,7 +131,10 @@ gpointer purple_request_field_choice_get_value(PurpleRequestFieldChoice *field);
  * Returns a list of elements in a choice field.
  *
  * Returns: (element-type PurpleKeyValuePair) (transfer none): The list of pairs of {label, value}.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 GList *purple_request_field_choice_get_elements(PurpleRequestFieldChoice *field);
 
 G_END_DECLS

@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 /**
  * PurpleSignalMarshalFunc:
  * @cb: The #GCallback to call.
@@ -338,7 +340,10 @@ void purple_marshal_VOID__POINTER_POINTER_UINT_UINT(
  *
  * A purple marshaller function for use with signals with a pointer and
  * two unsigned integer arguments.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_marshal_VOID__POINTER_UINT_UINT(
 		GCallback cb, va_list args, void *data, void **return_val);
 

@@ -29,6 +29,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 /**
  * PurpleInputCondition:
  * @PURPLE_INPUT_READ:  A read condition.
@@ -93,7 +95,10 @@ guint purple_input_add(int fd, PurpleInputCondition cond,
  * systems pipe() is used.
  *
  * Returns: 0 on success, -1 on error.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 int
 purple_input_pipe(int pipefd[2]);
 

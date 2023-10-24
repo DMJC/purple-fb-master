@@ -27,6 +27,7 @@
 #define PURPLE_ACCOUNTS_H
 
 #include "purpleaccount.h"
+#include "purpleversion.h"
 #include "status.h"
 
 G_BEGIN_DECLS
@@ -91,7 +92,10 @@ void purple_accounts_uninit(void);
  * purple_accounts_schedule_save:
  *
  * Schedules saving of accounts
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_accounts_schedule_save(void);
 
 G_END_DECLS

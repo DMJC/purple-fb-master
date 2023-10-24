@@ -62,6 +62,7 @@ typedef struct _PurpleSavedStatus     PurpleSavedStatus;
 typedef struct _PurpleSavedStatusSub  PurpleSavedStatusSub;
 
 #include "status.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -113,7 +114,10 @@ void purple_savedstatus_set_title(PurpleSavedStatus *status,
  * @type:    The type of saved status.
  *
  * Set the type for the given saved status.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_savedstatus_set_primitive_type(PurpleSavedStatus *status,
 							   PurpleStatusPrimitive type);
 
@@ -342,7 +346,10 @@ const char *purple_savedstatus_get_title(const PurpleSavedStatus *saved_status);
  * Return the type of a given saved status.
  *
  * Returns: The primitive type.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleStatusPrimitive purple_savedstatus_get_primitive_type(const PurpleSavedStatus *saved_status);
 
 /**
@@ -411,7 +418,10 @@ PurpleSavedStatusSub *purple_savedstatus_get_substatus(
  * Get the status type of a given substatus.
  *
  * Returns: The status type.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 const PurpleStatusType *purple_savedstatus_substatus_get_status_type(
 		const PurpleSavedStatusSub *substatus);
 

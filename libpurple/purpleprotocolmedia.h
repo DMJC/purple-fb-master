@@ -36,6 +36,8 @@
 #include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL_MEDIA (purple_protocol_media_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolMedia, purple_protocol_media, PURPLE,
                     PROTOCOL_MEDIA, PurpleProtocol)
 
@@ -46,6 +48,8 @@ G_BEGIN_DECLS
  *
  * #PurpleProtocolMedia describes the multimedia api that is available for
  * protocols.
+ *
+ * Since: 3.0.0
  */
 
 /**
@@ -70,6 +74,8 @@ G_BEGIN_DECLS
  * The protocol media interface.
  *
  * This interface provides callbacks for media sessions on the protocol.
+ *
+ * Since: 3.0.0
  */
 struct _PurpleProtocolMediaInterface {
 	/*< private >*/

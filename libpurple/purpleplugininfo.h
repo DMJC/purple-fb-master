@@ -72,6 +72,7 @@ struct _PurplePluginInfoClass {
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum /*< flags >*/
 {
 	PURPLE_PLUGIN_INFO_FLAGS_INTERNAL  = 1 << 1,

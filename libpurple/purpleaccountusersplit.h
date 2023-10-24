@@ -45,6 +45,7 @@ typedef struct _PurpleAccountUserSplit	PurpleAccountUserSplit;
 
 G_BEGIN_DECLS
 
+PURPLE_AVAILABLE_IN_3_0
 GType purple_account_user_split_get_type(void);
 
 /**
@@ -139,7 +140,10 @@ void purple_account_user_split_set_reverse(PurpleAccountUserSplit *split, gboole
  * in configuration dialog.
  *
  * Returns: %TRUE, if the split is constant.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_account_user_split_is_constant(PurpleAccountUserSplit *split);
 
 /**
@@ -148,7 +152,10 @@ gboolean purple_account_user_split_is_constant(PurpleAccountUserSplit *split);
  * @constant: %TRUE, if the split is a constant part.
  *
  * Sets the constant parameter of account split.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_account_user_split_set_constant(PurpleAccountUserSplit *split, gboolean constant);
 
 G_END_DECLS

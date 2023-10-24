@@ -125,6 +125,8 @@ typedef struct
 
 
 #define PURPLE_TYPE_CONNECTION_ERROR_INFO (purple_connection_error_info_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 GType purple_connection_error_info_get_type(void);
 
 /**

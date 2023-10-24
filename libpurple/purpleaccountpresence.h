@@ -37,9 +37,13 @@ G_BEGIN_DECLS
  *
  * A #PurpleAccountPresence represent the #PurplePresence for a specific
  * #PurpleAccount.
+ *
+ * Since: 3.0.0
  */
 
 #define PURPLE_TYPE_ACCOUNT_PRESENCE (purple_account_presence_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleAccountPresence, purple_account_presence, PURPLE,
                      ACCOUNT_PRESENCE, PurplePresence)
 
@@ -63,7 +67,10 @@ PurpleAccountPresence *purple_account_presence_new(PurpleAccount *account);
  * Returns an account presence's account.
  *
  * Returns: (transfer none): The presence's account.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_account_presence_get_account(PurpleAccountPresence *presence);
 
 G_END_DECLS
