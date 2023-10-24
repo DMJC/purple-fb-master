@@ -33,6 +33,7 @@ typedef struct _PurpleMediaManager PurpleMediaManager;
 
 #include "media.h"
 #include "purpleaccount.h"
+#include "purpleversion.h"
 
 #define PURPLE_TYPE_MEDIA_MANAGER purple_media_manager_get_type()
 
@@ -273,7 +274,10 @@ PurpleMediaCaps purple_media_manager_get_ui_caps(PurpleMediaManager *manager);
  * @backend_type: The media backend type to use.
  *
  * Sets which media backend type media objects will use.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 void purple_media_manager_set_backend_type(PurpleMediaManager *manager,
 		GType backend_type);
 
@@ -284,7 +288,10 @@ void purple_media_manager_set_backend_type(PurpleMediaManager *manager,
  * Gets which media backend type media objects will use.
  *
  * Returns: The type of media backend type media objects will use.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 GType purple_media_manager_get_backend_type(PurpleMediaManager *manager);
 
 /**

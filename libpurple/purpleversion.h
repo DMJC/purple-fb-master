@@ -106,6 +106,22 @@
 #define PURPLE_AVAILABLE_IN_ALL _PURPLE_EXTERN
 
 /**
+ * PURPLE_VERSION_2_7:
+ *
+ * A macro that evaluates to the 2.7 version of libpurple, in a format that
+ * can be used by the C pre-processor.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_VERSION_2_7 (G_ENCODE_VERSION(2, 7))
+
+#if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_7
+#define PURPLE_AVAILABLE_IN_2_7 PURPLE_UNAVAILABLE(2, 7)
+#else
+#define PURPLE_AVAILABLE_IN_2_7 _PURPLE_EXTERN
+#endif
+
+/**
  * PURPLE_VERSION_2_8:
  *
  * A macro that evaluates to the 2.8 version of libpurple, in a format that

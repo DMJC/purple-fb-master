@@ -728,7 +728,10 @@ void purple_xfer_protocol_ready(PurpleXfer *xfer);
  * Gets the thumbnail data for a transfer
  *
  * Returns: The thumbnail data, or NULL if there is no thumbnail
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 gconstpointer purple_xfer_get_thumbnail(PurpleXfer *xfer, gsize *len);
 
 /**
@@ -738,7 +741,10 @@ gconstpointer purple_xfer_get_thumbnail(PurpleXfer *xfer, gsize *len);
  * Gets the mimetype of the thumbnail preview for a transfer
  *
  * Returns: The mimetype of the thumbnail, or %NULL if not thumbnail is set
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 const gchar *purple_xfer_get_thumbnail_mimetype(PurpleXfer *xfer);
 
 
@@ -750,7 +756,10 @@ const gchar *purple_xfer_get_thumbnail_mimetype(PurpleXfer *xfer);
  * @mimetype: The mimetype of the generated thumbnail
  *
  * Sets the thumbnail data for a transfer
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 void purple_xfer_set_thumbnail(PurpleXfer *xfer, gconstpointer thumbnail,
 	gsize size, const gchar *mimetype);
 
@@ -762,7 +771,10 @@ void purple_xfer_set_thumbnail(PurpleXfer *xfer, gconstpointer thumbnail,
  *
  * Prepare a thumbnail for a transfer (if the UI supports it)
  * will be no-op in case the UI doesn't implement thumbnail creation
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 void purple_xfer_prepare_thumbnail(PurpleXfer *xfer, const gchar *formats);
 
 /**************************************************************************/

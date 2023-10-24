@@ -36,6 +36,7 @@
 typedef struct _PurpleMediaCodec PurpleMediaCodec;
 
 #include "purplekeyvaluepair.h"
+#include "purpleversion.h"
 
 #include <glib-object.h>
 
@@ -165,7 +166,10 @@ PurpleKeyValuePair *purple_media_codec_get_optional_parameter(
  * Copies a PurpleMediaCodec object.
  *
  * Returns: (transfer full): The copy of the codec.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 PurpleMediaCodec *purple_media_codec_copy(PurpleMediaCodec *codec);
 
 /**

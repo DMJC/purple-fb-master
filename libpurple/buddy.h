@@ -261,7 +261,10 @@ void purple_buddy_update_status(PurpleBuddy *buddy, PurpleStatus *old_status);
  * Gets the media caps from a buddy.
  *
  * Returns:      The media caps.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 PurpleMediaCaps purple_buddy_get_media_caps(PurpleBuddy *buddy);
 
 /**
@@ -270,7 +273,10 @@ PurpleMediaCaps purple_buddy_get_media_caps(PurpleBuddy *buddy);
  * @media_caps: The PurpleMediaCaps.
  *
  * Sets the media caps for a buddy.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 void purple_buddy_set_media_caps(PurpleBuddy *buddy, PurpleMediaCaps media_caps);
 
 /**

@@ -29,6 +29,8 @@
 
 #include <glib.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -83,7 +85,10 @@ char *purple_markup_linkify(const char *str);
  *
  * Returns: The text with HTML entities literalized.  You must g_free
  *         this string when finished with it.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 char *purple_unescape_text(const char *text);
 
 /**

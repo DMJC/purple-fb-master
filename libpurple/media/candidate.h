@@ -30,6 +30,8 @@
 
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -75,7 +77,10 @@ PurpleMediaCandidate *purple_media_candidate_new(
  * Copies a PurpleMediaCandidate.
  *
  * Returns: (transfer full): The copy of the PurpleMediaCandidate.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 PurpleMediaCandidate *purple_media_candidate_copy(
 		PurpleMediaCandidate *candidate);
 
