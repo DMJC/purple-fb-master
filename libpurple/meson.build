@@ -75,6 +75,7 @@ purple_coresources = [
 	'purpleperson.c',
 	'purpleplugininfo.c',
 	'purplepresence.c',
+	'purplepresencemanager.c',
 	'purpleprotocol.c',
 	'purpleprotocolactions.c',
 	'purpleprotocolchat.c',
@@ -200,6 +201,7 @@ purple_coreheaders = [
 	'purpleperson.h',
 	'purpleplugininfo.h',
 	'purplepresence.h',
+	'purplepresencemanager.h',
 	'purpleprotocol.h',
 	'purpleprotocolactions.h',
 	'purpleprotocolchat.h',
@@ -240,6 +242,11 @@ purple_coreheaders = [
 	'util.h',
 	'xfer.h',
 	'xmlnode.h',
+]
+
+purple_private_headers = [
+	'purpleprivate.h',
+	'purplesavedpresenceprivate.h',
 ]
 
 purple_request_headers = [

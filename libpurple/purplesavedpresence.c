@@ -24,6 +24,7 @@
 
 #include "purpleenums.h"
 #include "purplesavedpresence.h"
+#include "purplesavedpresenceprivate.h"
 #include "util.h"
 
 struct _PurpleSavedPresence {
@@ -198,6 +199,15 @@ purple_saved_presence_constructed(GObject *obj) {
 }
 
 static void
+purple_saved_presence_dispose(GObject *obj) {
+	PurpleSavedPresence *presence = PURPLE_SAVED_PRESENCE(obj);
+
+	g_clear_object(&presence->settings);
+
+	G_OBJECT_CLASS(purple_saved_presence_parent_class)->dispose(obj);
+}
+
+static void
 purple_saved_presence_set_property(GObject *obj, guint param_id,
                                    const GValue *value, GParamSpec *pspec)
 {
@@ -307,6 +317,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
 	obj_class->constructed = purple_saved_presence_constructed;
+	obj_class->dispose = purple_saved_presence_dispose;
 	obj_class->finalize = purple_saved_presence_finalize;
 	obj_class->get_property = purple_saved_presence_get_property;
 	obj_class->set_property = purple_saved_presence_set_property;
@@ -423,6 +434,27 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
+}
+
+/******************************************************************************
+ * Private API
+ *****************************************************************************/
+void
+purple_saved_presence_reset(PurpleSavedPresence *presence) {
+	GSettingsSchema *schema = NULL;
+	GStrv keys = NULL;
+
+	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
+
+	g_object_get(presence->settings, "settings-schema", &schema, NULL);
+
+	keys = g_settings_schema_list_keys(schema);
+	for(int i = 0; keys[i] != NULL; i++) {
+		g_settings_reset(presence->settings, keys[i]);
+	}
+	g_strfreev(keys);
+
+	g_clear_pointer(&schema, g_settings_schema_unref);
 }
 
 /******************************************************************************

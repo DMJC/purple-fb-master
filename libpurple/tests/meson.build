@@ -25,6 +25,7 @@ PROGS = [
     'notification_manager',
     'person',
     'presence',
+    'presence_manager',
     'protocol',
     'protocol_action',
     'protocol_contacts',
@@ -63,7 +64,8 @@ testenv.set('XDG_CONFIG_HOME', meson.current_build_dir() / 'config')
 foreach prog : PROGS
     e = executable(f'test_@prog@', f'test_@prog@.c',
                    c_args : [
-                       '-DTEST_DATA_DIR="@0@/data"'.format(meson.current_source_dir())
+                       '-DTEST_DATA_DIR="@0@/data"'.format(meson.current_source_dir()),
+                       '-DTEST_CACHE_DIR="@0@/cache"'.format(meson.current_build_dir()),
                    ],
                    dependencies : [libpurple_dep, glib],
                    link_with: test_ui,
