@@ -321,6 +321,57 @@ test_purple_tags_remove_non_existent_with_value(void) {
 }
 
 static void
+test_purple_tags_remove_all_empty(void) {
+	PurpleTags *tags = NULL;
+
+	tags = purple_tags_new();
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+
+	purple_tags_remove_all(tags);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+
+	g_clear_object(&tags);
+}
+
+static void
+test_purple_tags_remove_all_single(void) {
+	PurpleTags *tags = NULL;
+
+	tags = purple_tags_new();
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+
+	purple_tags_add(tags, "foo");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
+
+	purple_tags_remove_all(tags);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+
+	g_clear_object(&tags);
+}
+
+static void
+test_purple_tags_remove_all_multiple(void) {
+	PurpleTags *tags = NULL;
+
+	tags = purple_tags_new();
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+
+	purple_tags_add(tags, "foo");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 1);
+
+	purple_tags_add(tags, "bar");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 2);
+
+	purple_tags_add(tags, "baz");
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 3);
+
+	purple_tags_remove_all(tags);
+	g_assert_cmpuint(purple_tags_get_count(tags), ==, 0);
+
+	g_clear_object(&tags);
+}
+
+static void
 test_purple_tags_get_single(void) {
 	PurpleTags *tags = purple_tags_new();
 	const gchar *value = NULL;
@@ -542,6 +593,12 @@ main(gint argc, gchar **argv) {
 	                test_purple_tags_add_duplicate_with_value);
 	g_test_add_func("/tags/remove-non-existent-with-value",
 	                test_purple_tags_remove_non_existent_with_value);
+	g_test_add_func("/tags/remove-all-empty",
+	                test_purple_tags_remove_all_empty);
+	g_test_add_func("/tags/remove-all-single",
+	                test_purple_tags_remove_all_single);
+	g_test_add_func("/tags/remove-all-multiple",
+	                test_purple_tags_remove_all_multiple);
 
 	g_test_add_func("/tags/get-single", test_purple_tags_get_single);
 	g_test_add_func("/tags/get-multiple", test_purple_tags_get_multiple);

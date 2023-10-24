@@ -289,6 +289,13 @@ purple_tags_remove_with_value(PurpleTags *tags, const char *name, const char *va
 	return ret;
 }
 
+void
+purple_tags_remove_all(PurpleTags *tags) {
+	g_return_if_fail(PURPLE_IS_TAGS(tags));
+
+	g_clear_list(&tags->tags, g_free);
+}
+
 guint
 purple_tags_get_count(PurpleTags *tags) {
 	g_return_val_if_fail(PURPLE_IS_TAGS(tags), 0);

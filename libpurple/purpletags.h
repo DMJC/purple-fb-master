@@ -156,6 +156,17 @@ PURPLE_AVAILABLE_IN_3_0
 gboolean purple_tags_remove_with_value(PurpleTags *tags, const char *name, const char *value);
 
 /**
+ * purple_tags_remove_all:
+ * @tags: The instance.
+ *
+ * Removes all tags from @tags.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_tags_remove_all(PurpleTags *tags);
+
+/**
  * purple_tags_get_count:
  * @tags: The instance.
  *
