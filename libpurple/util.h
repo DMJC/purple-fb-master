@@ -200,7 +200,10 @@ purple_util_read_xml_from_data_file(const char *filename, const char *descriptio
  * Check if running GNOME.
  *
  * Returns: TRUE if running GNOME, FALSE otherwise.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_running_gnome(void);
 
 /**
@@ -209,7 +212,10 @@ gboolean purple_running_gnome(void);
  * Check if running KDE.
  *
  * Returns: TRUE if running KDE, FALSE otherwise.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_running_kde(void);
 
 /**************************************************************************/
@@ -270,7 +276,10 @@ purple_strempty(const char *str) {
  * will lead to problems.
  *
  * Returns: A pointer to the normalized version stored in a static buffer.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_normalize(PurpleAccount *account, const char *str);
 
 /**
@@ -295,7 +304,10 @@ gboolean purple_validate(PurpleProtocol *protocol, const char *str);
  * source string with HTML linebreaks.
  *
  * Returns: The new string.  Must be g_free'd by the caller.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gchar *purple_strdup_withhtml(const gchar *src);
 
 /**
@@ -309,7 +321,10 @@ gchar *purple_strdup_withhtml(const gchar *src);
  *
  * Example usage:
  * purple_str_strip_char(my_dumb_string, '\n');
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_str_strip_char(char *str, char thechar);
 
 /**
@@ -322,7 +337,10 @@ void purple_str_strip_char(char *str, char thechar);
  * Given a string, this replaces all instances of one character
  * with another.  This happens inline (the original string IS
  * modified).
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_util_chrreplace(char *string, char delimiter,
 						  char replacement);
 
@@ -338,7 +356,10 @@ void purple_util_chrreplace(char *string, char delimiter,
  *
  * Returns: A new string, after performing the substitution.
  *         free this with g_free().
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gchar *purple_strreplace(const char *string, const char *delimiter,
 					   const char *replacement);
 
@@ -350,7 +371,10 @@ gchar *purple_strreplace(const char *string, const char *delimiter,
  *
  * Returns: A human-readable form, containing days, hours, minutes, and
  *         seconds.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 char *purple_str_seconds_to_string(guint sec);
 
 /**
@@ -389,6 +413,7 @@ gboolean purple_strmatches(const char *pattern, const char *str);
 /* URI/URL Functions                                                      */
 /**************************************************************************/
 
+PURPLE_AVAILABLE_IN_ALL
 void purple_got_protocol_handler_uri(const char *uri);
 
 /**
@@ -400,7 +425,10 @@ void purple_got_protocol_handler_uri(const char *uri);
  * This will change non-alphanumeric characters to hex codes.
  *
  * Returns: The resulting string.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_url_encode(const char *str);
 
 /**
@@ -410,7 +438,10 @@ const char *purple_url_encode(const char *str);
  * Checks if the given email address is syntactically valid.
  *
  * Returns: True if the email address is syntactically correct.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_email_is_valid(const char *address);
 
 /**************************************************************************
@@ -426,7 +457,10 @@ gboolean purple_email_is_valid(const char *address);
  * This function checks the locale and tries sane defaults.
  *
  * Returns: The UTF-8 string, or %NULL if it could not be converted.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gchar *purple_utf8_try_convert(const char *str);
 
 /**
@@ -459,7 +493,10 @@ gchar *purple_utf8_strip_unprintables(const gchar *str);
  * Returns: -1 if @a is less than @b.
  *           0 if @a is equal to @b.
  *           1 if @a is greater than @b.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 int purple_utf8_strcasecmp(const char *a, const char *b);
 
 /**
@@ -472,7 +509,10 @@ int purple_utf8_strcasecmp(const char *a, const char *b);
  * preceded or immediately followed by another alphanumeric character.
  *
  * Returns: TRUE if haystack has the word, otherwise FALSE
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_utf8_has_word(const char *haystack, const char *needle);
 
 /**
@@ -483,7 +523,10 @@ gboolean purple_utf8_has_word(const char *haystack, const char *needle);
  * character.
  *
  * Returns: The stripped string
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 char *purple_text_strip_mnemonic(const char *in);
 
 /**
@@ -493,7 +536,10 @@ char *purple_text_strip_mnemonic(const char *in);
  * Escapes filesystem-unfriendly characters from a filename
  *
  * Returns: The resulting string.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_escape_filename(const char *str);
 
 /**
@@ -503,7 +549,10 @@ const char *purple_escape_filename(const char *str);
  * Creates a new GValue of the specified type.
  *
  * Returns:  The created GValue
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GValue *purple_value_new(GType type);
 
 /**
@@ -513,7 +562,10 @@ GValue *purple_value_new(GType type);
  * Duplicates a GValue.
  *
  * Returns:  The duplicated GValue
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GValue *purple_value_dup(GValue *value);
 
 /**

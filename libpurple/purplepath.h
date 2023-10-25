@@ -35,7 +35,10 @@ G_BEGIN_DECLS
  * Gets the user's home directory.
  *
  * Returns: The user's home directory.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_home_dir(void);
 
 /**
@@ -88,7 +91,10 @@ const gchar *purple_data_dir(void);
  * @dir: The custom settings directory
  *
  * Define a custom purple settings directory, overriding the default (user's home directory/.purple)
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_util_set_user_dir(const gchar *dir);
 
 G_END_DECLS

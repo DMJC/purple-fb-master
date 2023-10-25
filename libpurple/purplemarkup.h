@@ -40,7 +40,10 @@ G_BEGIN_DECLS
  * @dest_plain: The destination plain-text output.
  *
  * Converts HTML markup to XHTML.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_markup_html_to_xhtml(const char *html, char **dest_xhtml,
 							   char **dest_plain);
 
@@ -52,7 +55,10 @@ void purple_markup_html_to_xhtml(const char *html, char **dest_xhtml,
  *
  * Returns: The new string without HTML.  You must g_free this string
  *         when finished with it.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 char *purple_markup_strip_html(const char *str);
 
 /**
@@ -64,7 +70,10 @@ char *purple_markup_strip_html(const char *str);
  * Returns: The new string with all URIs surrounded in standard
  *          HTML &lt;a href="whatever"&gt;&lt;/a&gt; tags. You must g_free()
  *          this string when finished with it.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 char *purple_markup_linkify(const char *str);
 
 /**
@@ -102,7 +111,10 @@ char *purple_unescape_text(const char *text);
  *
  * Returns: The text with HTML entities literalized.  You must g_free
  *         this string when finished with it.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 char *purple_unescape_html(const char *html);
 
 /**
@@ -125,7 +137,10 @@ char *purple_unescape_html(const char *html);
  * work out any problems encountered.
  *
  * Returns: The HTML slice of string, with all formatting retained.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 char *purple_markup_slice(const char *str, guint x, guint y);
 
 /**
@@ -138,7 +153,10 @@ char *purple_markup_slice(const char *str, guint x, guint y);
  * not NUL terminated, this function can be expected to segfault.
  *
  * Returns: A string containing the name of the tag.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 char *purple_markup_get_tag_name(const char *tag);
 
 /**
@@ -157,7 +175,10 @@ char *purple_markup_get_tag_name(const char *tag);
  * return a newly allocated string.
  *
  * Returns: A constant string containing the character representation of the given entity.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char * purple_markup_unescape_entity(const char *text, int *length);
 
 G_END_DECLS
