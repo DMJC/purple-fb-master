@@ -145,36 +145,73 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	obj_class->set_property = purple_attachment_set_property;
 	obj_class->finalize = purple_attachment_finalize;
 
-	/* add our properties */
+	/**
+	 * PurpleAttachment:id:
+	 *
+	 * The identifier of this attachment.
+	 *
+	 * Since: 3.0.0
+	 */
 	properties[PROP_ID] = g_param_spec_uint64(
-		"id", "id", "The identifier of the attachment",
+		"id", "id",
+		"The identifier of the attachment.",
 		0, G_MAXUINT64, 0,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS
-	);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleAttachment:content-type:
+	 *
+	 * The content type of this attachment. This should be a commonly used
+	 * mime type.
+	 *
+	 * Since: 3.0.0
+	 */
 	properties[PROP_CONTENT_TYPE] = g_param_spec_string(
-		"content-type", "content-type", "The content type of the attachment",
+		"content-type", "content-type",
+		"The content type of the attachment.",
 		"application/octet-stream",
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS
-	);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleAttachment:local-uri:
+	 *
+	 * The local URI of the attachment. That is where the file can be found on
+	 * disk.
+	 *
+	 * Since: 3.0.0
+	 */
 	properties[PROP_LOCAL_URI] = g_param_spec_string(
-		"local-uri", "local-uri", "The local URI of the attachment",
+		"local-uri", "local-uri",
+		"The local URI of the attachment.",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS
-	);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleAttachment:remote-uri:
+	 *
+	 * The remote URI of the attachment. In most cases this is just a base
+	 * filename.
+	 *
+	 * Since: 3.0.0
+	 */
 	properties[PROP_REMOTE_URI] = g_param_spec_string(
-		"remote-uri", "remote-uri", "The remote URI of the attachment",
+		"remote-uri", "remote-uri",
+		"The remote URI of the attachment.",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS
-	);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleAttachment:size:
+	 *
+	 * The size of the attachment in bytes.
+	 *
+	 * Since: 3.0.0
+	 */
 	properties[PROP_SIZE] = g_param_spec_uint64(
-		"size", "size", "The file size of the attachment in bytes",
+		"size", "size",
+		"The file size of the attachment in bytes.",
 		0, G_MAXUINT64, 0,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS
-	);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
