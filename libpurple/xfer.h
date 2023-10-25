@@ -86,6 +86,7 @@ G_BEGIN_DECLS
 
 #define PURPLE_TYPE_XFER             (purple_xfer_get_type())
 
+PURPLE_AVAILABLE_IN_ALL
 G_DECLARE_DERIVABLE_TYPE(PurpleXfer, purple_xfer, PURPLE, XFER, GObject)
 
 /**
@@ -860,6 +861,8 @@ PurpleXferUiOps *purple_xfers_get_ui_ops(void);
  *****************************************************************************/
 
 #define PURPLE_TYPE_PROTOCOL_XFER (purple_protocol_xfer_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolXfer, purple_protocol_xfer, PURPLE,
                     PROTOCOL_XFER, PurpleProtocol)
 
@@ -872,6 +875,8 @@ G_DECLARE_INTERFACE(PurpleProtocolXfer, purple_protocol_xfer, PURPLE,
  * The protocol file transfer interface.
  *
  * This interface provides file transfer callbacks for the protocol.
+ *
+ * Since: 3.0.0
  */
 struct _PurpleProtocolXferInterface {
 	/*< private >*/

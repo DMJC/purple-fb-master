@@ -32,6 +32,8 @@
 G_BEGIN_DECLS
 
 #define PURPLE_TYPE_CIRCULAR_BUFFER (purple_circular_buffer_get_type())
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleCircularBuffer, purple_circular_buffer, PURPLE,
                          CIRCULAR_BUFFER, GObject)
 

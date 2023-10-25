@@ -239,8 +239,10 @@
 
 #if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_8
 #define PURPLE_AVAILABLE_IN_2_8 PURPLE_UNAVAILABLE(2, 8)
+#define PURPLE_AVAILABLE_ENUMERATOR_IN_2_8 PURPLE_UNAVAILABLE_ENUMERATOR(2, 8)
 #else
 #define PURPLE_AVAILABLE_IN_2_8 _PURPLE_EXTERN
+#define PURPLE_AVAILABLE_ENUMERATOR_IN_2_8
 #endif
 
 /**
@@ -257,6 +259,24 @@
 #define PURPLE_AVAILABLE_IN_2_11 PURPLE_UNAVAILABLE(2, 11)
 #else
 #define PURPLE_AVAILABLE_IN_2_11 _PURPLE_EXTERN
+#endif
+
+/**
+ * PURPLE_VERSION_2_12:
+ *
+ * A macro that evaluates to the 2.12 version of libpurple, in a format that
+ * can be used by the C pre-processor.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_VERSION_2_12 (G_ENCODE_VERSION(2, 12))
+
+#if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_12
+#define PURPLE_AVAILABLE_IN_2_12 PURPLE_UNAVAILABLE(2, 12)
+#define PURPLE_AVAILABLE_ENUMERATOR_IN_2_12 PURPLE_UNAVAILABLE_ENUMERATOR(2, 12)
+#else
+#define PURPLE_AVAILABLE_IN_2_12 _PURPLE_EXTERN
+#define PURPLE_AVAILABLE_ENUMERATOR_IN_2_12
 #endif
 
 /**
@@ -338,7 +358,7 @@ const char *purple_version_check(guint required_major, guint required_minor, gui
  * #PURPLE_MAJOR_VERSION, which expands at compile time to the major version of
  * libpurple being compiled against.
  */
-extern const guint purple_major_version;
+PURPLE_VAR const guint purple_major_version;
 
 /**
  * purple_minor_version:
@@ -347,7 +367,7 @@ extern const guint purple_major_version;
  * #PURPLE_MINOR_VERSION, which expands at compile time to the minor version of
  * libpurple being compiled against.
  */
-extern const guint purple_minor_version;
+PURPLE_VAR const guint purple_minor_version;
 
 /**
  * purple_micro_version:
@@ -356,7 +376,7 @@ extern const guint purple_minor_version;
  * #PURPLE_MICRO_VERSION, which expands at compile time to the micro version of
  * libpurple being compiled against.
  */
-extern const guint purple_micro_version;
+PURPLE_VAR const guint purple_micro_version;
 
 G_END_DECLS
 

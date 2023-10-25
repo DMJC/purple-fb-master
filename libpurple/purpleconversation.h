@@ -26,7 +26,11 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleversion.h"
+
 #define PURPLE_TYPE_CONVERSATION (purple_conversation_get_type())
+
+PURPLE_AVAILABLE_IN_ALL
 G_DECLARE_DERIVABLE_TYPE(PurpleConversation, purple_conversation, PURPLE,
                          CONVERSATION, GObject)
 
@@ -34,7 +38,6 @@ G_DECLARE_DERIVABLE_TYPE(PurpleConversation, purple_conversation, PURPLE,
 #include "purplecontactinfo.h"
 #include "purpleconversationmember.h"
 #include "purplemessage.h"
-#include "purpleversion.h"
 
 /**
  * PurpleConversationUpdateType:

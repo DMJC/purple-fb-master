@@ -84,14 +84,18 @@ G_DECLARE_DERIVABLE_TYPE(PurpleProtocol, purple_protocol, PURPLE, PROTOCOL,
  *           to this protocol.<sbr/>
  *           Used as a hint that unknown commands should not be sent as
  *           messages.
+ *           Since: 2.1.0
  * @OPT_PROTO_INVITE_MESSAGE: Indicates that this protocol supports sending a
  *           user-supplied message along with an invitation.
+ *           Since: 2.8.0
  * @OPT_PROTO_AUTHORIZATION_GRANTED_MESSAGE: Indicates that this protocol
  *           supports sending a user-supplied message along with an
  *           authorization acceptance.
+ *           Since: 3.0.0
  * @OPT_PROTO_AUTHORIZATION_DENIED_MESSAGE: Indicates that this protocol
  *           supports sending a user-supplied message along with an
  *           authorization denial.
+ *           Since: 3.0.0
  *
  * Protocol options
  *
@@ -107,9 +111,9 @@ typedef enum  /*< flags >*/
 	OPT_PROTO_USE_POINTSIZE = 0x00000100,
 	OPT_PROTO_REGISTER_NOSCREENNAME = 0x00000200,
 	OPT_PROTO_SLASH_COMMANDS_NATIVE PURPLE_AVAILABLE_ENUMERATOR_IN_2_1 = 0x00000400,
-	OPT_PROTO_INVITE_MESSAGE = 0x00000800,
-	OPT_PROTO_AUTHORIZATION_GRANTED_MESSAGE = 0x00001000,
-	OPT_PROTO_AUTHORIZATION_DENIED_MESSAGE = 0x00002000,
+	OPT_PROTO_INVITE_MESSAGE PURPLE_AVAILABLE_ENUMERATOR_IN_2_8 = 0x00000800,
+	OPT_PROTO_AUTHORIZATION_GRANTED_MESSAGE PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x00001000,
+	OPT_PROTO_AUTHORIZATION_DENIED_MESSAGE PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x00002000,
 } PurpleProtocolOptions;
 
 /**

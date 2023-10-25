@@ -46,6 +46,7 @@ typedef struct _PurpleAccountOption		PurpleAccountOption;
 
 G_BEGIN_DECLS
 
+PURPLE_AVAILABLE_IN_ALL
 GType purple_account_option_get_type(void);
 
 /**

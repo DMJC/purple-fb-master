@@ -503,6 +503,7 @@ GValue *purple_status_attribute_get_value(const PurpleStatusAttribute *attr);
  *
  * Returns: The #GType for #PurpleStatus.
  */
+PURPLE_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE(PurpleStatus, purple_status, PURPLE, STATUS, GObject)
 
 /**

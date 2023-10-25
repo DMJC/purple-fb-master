@@ -54,11 +54,14 @@ G_BEGIN_DECLS
  * @PURPLE_MESSAGE_IMAGES: Message contains images.
  * @PURPLE_MESSAGE_NOTIFY: Message is a notification.
  * @PURPLE_MESSAGE_NO_LINKIFY: Message should not be auto-linkified.
+ *                             Since: 2.1.0
  * @PURPLE_MESSAGE_INVISIBLE: Message should not be displayed.
+ *                            Since: 2.2.0
  * @PURPLE_MESSAGE_REMOTE_SEND: Message sent from another location, not an echo
  *                              of a local one.
  *                              Since: 2.12.0
  * @PURPLE_MESSAGE_FORWARDED: The message has been forward to the recipient.
+ *                            Since: 3.0.0
  *
  * Flags applicable to a message. Most will have send, recv or system.
  */
@@ -78,8 +81,8 @@ typedef enum /*< flags >*/
 	PURPLE_MESSAGE_NOTIFY       = 1 << 11,
 	PURPLE_MESSAGE_NO_LINKIFY PURPLE_AVAILABLE_ENUMERATOR_IN_2_1 = 1 << 12,
 	PURPLE_MESSAGE_INVISIBLE PURPLE_AVAILABLE_ENUMERATOR_IN_2_2 = 1 << 13,
-	PURPLE_MESSAGE_REMOTE_SEND  = 1 << 14,
-	PURPLE_MESSAGE_FORWARDED    = 1 << 15,
+	PURPLE_MESSAGE_REMOTE_SEND PURPLE_AVAILABLE_ENUMERATOR_IN_2_12 = 1 << 14,
+	PURPLE_MESSAGE_FORWARDED PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 1 << 15,
 } PurpleMessageFlags;
 
 /**

@@ -80,6 +80,7 @@ G_BEGIN_DECLS
 /* TODO Boxing of PurpleSavedStatus is a temporary solution to having a GType
  *      for saved statuses. This should rather be a GObject instead of a GBoxed.
  */
+PURPLE_AVAILABLE_IN_ALL
 GType purple_savedstatus_get_type(void);
 
 /**

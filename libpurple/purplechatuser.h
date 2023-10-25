@@ -36,6 +36,8 @@
  * PurpleChatUser:
  *
  * Structure representing a chat user instance.
+ *
+ * Since: 3.0.0
  */
 
 /**
@@ -49,6 +51,8 @@
  * @PURPLE_CHAT_USER_AWAY:    Currently away.
  *
  * Flags applicable to users in Chats.
+ *
+ * Since: 3.0.0
  */
 typedef enum /*< flags >*/
 {
@@ -62,6 +66,8 @@ typedef enum /*< flags >*/
 } PurpleChatUserFlags;
 
 #define PURPLE_TYPE_CHAT_USER purple_chat_user_get_type()
+
+PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleChatUser, purple_chat_user, PURPLE, CHAT_USER,
                      GObject)
 
