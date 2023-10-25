@@ -38,6 +38,8 @@ G_BEGIN_DECLS
  * PURPLE_MEDIA_TYPE_CANDIDATE:
  *
  * The standard _get_type macro for #PurpleMediaCandidate.
+ *
+ * Since: 3.0.0
  */
 #define PURPLE_MEDIA_TYPE_CANDIDATE  purple_media_candidate_get_type()
 
@@ -47,7 +49,10 @@ G_BEGIN_DECLS
  * Gets the type of the media candidate structure.
  *
  * Returns: The media canditate's GType
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 G_DECLARE_FINAL_TYPE(PurpleMediaCandidate, purple_media_candidate,
                      PURPLE_MEDIA, CANDIDATE, GObject)
 
@@ -63,7 +68,10 @@ G_DECLARE_FINAL_TYPE(PurpleMediaCandidate, purple_media_candidate,
  * Creates a PurpleMediaCandidate instance.
  *
  * Returns: The newly created PurpleMediaCandidate instance.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 PurpleMediaCandidate *purple_media_candidate_new(
 		const gchar *foundation, guint component_id,
 		PurpleMediaCandidateType type,
@@ -93,7 +101,10 @@ PurpleMediaCandidate *purple_media_candidate_copy(
  *
  * Returns: (element-type PurpleMediaCandidate) (transfer full): The copy of
  *          the candidate list.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GList *purple_media_candidate_list_copy(GList *candidates);
 
 /**
@@ -102,7 +113,10 @@ GList *purple_media_candidate_list_copy(GList *candidates);
  *              of candidates to be freed.
  *
  * Frees a GList of PurpleMediaCandidate and its contents.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_media_candidate_list_free(GList *candidates);
 
 /**
@@ -112,7 +126,10 @@ void purple_media_candidate_list_free(GList *candidates);
  * Gets the foundation (identifier) from the candidate.
  *
  * Returns: The foundation.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_candidate_get_foundation(PurpleMediaCandidate *candidate);
 
 /**
@@ -122,7 +139,10 @@ gchar *purple_media_candidate_get_foundation(PurpleMediaCandidate *candidate);
  * Gets the component id (rtp or rtcp)
  *
  * Returns: The component id.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 guint purple_media_candidate_get_component_id(PurpleMediaCandidate *candidate);
 
 /**
@@ -132,7 +152,10 @@ guint purple_media_candidate_get_component_id(PurpleMediaCandidate *candidate);
  * Gets the IP address.
  *
  * Returns: The IP address.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_candidate_get_ip(PurpleMediaCandidate *candidate);
 
 /**
@@ -142,7 +165,10 @@ gchar *purple_media_candidate_get_ip(PurpleMediaCandidate *candidate);
  * Gets the port.
  *
  * Returns: The port.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 guint16 purple_media_candidate_get_port(PurpleMediaCandidate *candidate);
 
 /**
@@ -153,7 +179,10 @@ guint16 purple_media_candidate_get_port(PurpleMediaCandidate *candidate);
  * This can be NULL.
  *
  * Returns: The base IP address.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_candidate_get_base_ip(PurpleMediaCandidate *candidate);
 
 /**
@@ -164,7 +193,10 @@ gchar *purple_media_candidate_get_base_ip(PurpleMediaCandidate *candidate);
  * Invalid if the base IP is NULL.
  *
  * Returns: The base port.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 guint16 purple_media_candidate_get_base_port(PurpleMediaCandidate *candidate);
 
 /**
@@ -174,7 +206,10 @@ guint16 purple_media_candidate_get_base_port(PurpleMediaCandidate *candidate);
  * Gets the protocol (TCP or UDP).
  *
  * Returns: The protocol.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 PurpleMediaNetworkProtocol purple_media_candidate_get_protocol(
 		PurpleMediaCandidate *candidate);
 
@@ -185,7 +220,10 @@ PurpleMediaNetworkProtocol purple_media_candidate_get_protocol(
  * Gets the priority.
  *
  * Returns: The priority.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 guint32 purple_media_candidate_get_priority(PurpleMediaCandidate *candidate);
 
 /**
@@ -195,7 +233,10 @@ guint32 purple_media_candidate_get_priority(PurpleMediaCandidate *candidate);
  * Gets the candidate type.
  *
  * Returns: The candidate type.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 PurpleMediaCandidateType purple_media_candidate_get_candidate_type(
 		PurpleMediaCandidate *candidate);
 
@@ -207,7 +248,10 @@ PurpleMediaCandidateType purple_media_candidate_get_candidate_type(
  * This can be NULL. It depends on the transmission type.
  *
  * Returns: The username.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_candidate_get_username(PurpleMediaCandidate *candidate);
 
 /**
@@ -219,7 +263,10 @@ gchar *purple_media_candidate_get_username(PurpleMediaCandidate *candidate);
  * This can be NULL. It depends on the transmission type.
  *
  * Returns: The password.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_candidate_get_password(PurpleMediaCandidate *candidate);
 
 /**
@@ -229,7 +276,10 @@ gchar *purple_media_candidate_get_password(PurpleMediaCandidate *candidate);
  * Gets the TTL.
  *
  * Returns: The TTL.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 guint purple_media_candidate_get_ttl(PurpleMediaCandidate *candidate);
 
 G_END_DECLS

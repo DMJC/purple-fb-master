@@ -46,6 +46,8 @@ G_BEGIN_DECLS
  * PURPLE_MEDIA_TYPE_CODEC:
  *
  * The standard _get_type macro for #PurpleMediaCodec.
+ *
+ * Since: 3.0.0
  */
 #define PURPLE_MEDIA_TYPE_CODEC purple_media_codec_get_type()
 
@@ -55,7 +57,10 @@ G_BEGIN_DECLS
  * Gets the type of the media codec structure.
  *
  * Returns: The media codec's GType
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 G_DECLARE_FINAL_TYPE(PurpleMediaCodec, purple_media_codec, PURPLE_MEDIA,
                      CODEC, GObject)
 
@@ -69,7 +74,10 @@ G_DECLARE_FINAL_TYPE(PurpleMediaCodec, purple_media_codec, PURPLE_MEDIA,
  * Creates a new PurpleMediaCodec instance.
  *
  * Returns: The newly created PurpleMediaCodec.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 PurpleMediaCodec *purple_media_codec_new(int id, const char *encoding_name,
 		PurpleMediaSessionType media_type, guint clock_rate);
 
@@ -80,7 +88,10 @@ PurpleMediaCodec *purple_media_codec_new(int id, const char *encoding_name,
  * Gets the codec id.
  *
  * Returns: The codec id.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 guint purple_media_codec_get_id(PurpleMediaCodec *codec);
 
 /**
@@ -90,7 +101,10 @@ guint purple_media_codec_get_id(PurpleMediaCodec *codec);
  * Gets the encoding name.
  *
  * Returns: The encoding name.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_codec_get_encoding_name(PurpleMediaCodec *codec);
 
 /**
@@ -100,7 +114,10 @@ gchar *purple_media_codec_get_encoding_name(PurpleMediaCodec *codec);
  * Gets the clock rate.
  *
  * Returns: The clock rate.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 guint purple_media_codec_get_clock_rate(PurpleMediaCodec *codec);
 
 /**
@@ -110,7 +127,10 @@ guint purple_media_codec_get_clock_rate(PurpleMediaCodec *codec);
  * Gets the number of channels.
  *
  * Returns: The number of channels.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 guint purple_media_codec_get_channels(PurpleMediaCodec *codec);
 
 /**
@@ -121,7 +141,10 @@ guint purple_media_codec_get_channels(PurpleMediaCodec *codec);
  *
  * Returns: (element-type PurpleKeyValuePair) (transfer none): The list of
  *          optional parameters.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GList *purple_media_codec_get_optional_parameters(PurpleMediaCodec *codec);
 
 /**
@@ -131,7 +154,10 @@ GList *purple_media_codec_get_optional_parameters(PurpleMediaCodec *codec);
  * @value: The value of the parameter to add.
  *
  * Adds an optional parameter to the codec.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_media_codec_add_optional_parameter(PurpleMediaCodec *codec,
 		const gchar *name, const gchar *value);
 
@@ -141,7 +167,10 @@ void purple_media_codec_add_optional_parameter(PurpleMediaCodec *codec,
  * @param: A pointer to the parameter to remove.
  *
  * Removes an optional parameter from the codec.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_media_codec_remove_optional_parameter(PurpleMediaCodec *codec,
 		PurpleKeyValuePair *param);
 
@@ -154,7 +183,10 @@ void purple_media_codec_remove_optional_parameter(PurpleMediaCodec *codec,
  * Gets an optional parameter based on the values given.
  *
  * Returns: (transfer none): The value found or NULL.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 PurpleKeyValuePair *purple_media_codec_get_optional_parameter(
 		PurpleMediaCodec *codec, const gchar *name,
 		const gchar *value);
@@ -181,7 +213,10 @@ PurpleMediaCodec *purple_media_codec_copy(PurpleMediaCodec *codec);
  *
  * Returns: (element-type PurpleMediaCodec) (transfer full): The copy of the
  *          codec list.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GList *purple_media_codec_list_copy(GList *codecs);
 
 /**
@@ -190,7 +225,10 @@ GList *purple_media_codec_list_copy(GList *codecs);
  *          to be freed.
  *
  * Frees a GList of PurpleMediaCodec and its contents.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_media_codec_list_free(GList *codecs);
 
 /**
@@ -200,7 +238,10 @@ void purple_media_codec_list_free(GList *codecs);
  * Creates a string representation of the codec.
  *
  * Returns: The new string representation.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_codec_to_string(PurpleMediaCodec *codec);
 
 G_END_DECLS

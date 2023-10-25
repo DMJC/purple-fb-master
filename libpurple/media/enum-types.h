@@ -36,6 +36,8 @@ G_BEGIN_DECLS
  * PURPLE_MEDIA_TYPE_CANDIDATE_TYPE:
  *
  * The standard _get_type macro for #PurpleMediaCandidateType.
+ *
+ * Since: 3.0.0
  */
 #define PURPLE_MEDIA_TYPE_CANDIDATE_TYPE (purple_media_candidate_type_get_type())
 
@@ -43,6 +45,8 @@ G_BEGIN_DECLS
  * PURPLE_MEDIA_TYPE_CAPS:
  *
  * The standard _get_type macro for #PurpleMediaCaps.
+ *
+ * Since: 2.7.0
  */
 #define PURPLE_MEDIA_TYPE_CAPS (purple_media_caps_get_type())
 
@@ -50,6 +54,8 @@ G_BEGIN_DECLS
  * PURPLE_MEDIA_TYPE_INFO_TYPE:
  *
  * The standard _get_type macro for #PurpleMediaInfoType.
+ *
+ * Since: 2.6.0
  */
 #define PURPLE_MEDIA_TYPE_INFO_TYPE (purple_media_info_type_get_type())
 
@@ -57,6 +63,8 @@ G_BEGIN_DECLS
  * PURPLE_MEDIA_TYPE_NETWORK_PROTOCOL:
  *
  * The standard _get_type macro for #PurpleMediaNetworkProtocol.
+ *
+ * Since: 3.0.0
  */
 #define PURPLE_MEDIA_TYPE_NETWORK_PROTOCOL (purple_media_network_protocol_get_type())
 
@@ -64,6 +72,8 @@ G_BEGIN_DECLS
  * PURPLE_MEDIA_TYPE_SESSION_TYPE:
  *
  * The standard _get_type macro for #PurpleMediaSessionType.
+ *
+ * Since: 3.0.0
  */
 #define PURPLE_MEDIA_TYPE_SESSION_TYPE (purple_media_session_type_get_type())
 
@@ -71,6 +81,8 @@ G_BEGIN_DECLS
  * PURPLE_MEDIA_TYPE_STATE:
  *
  * The standard _get_type macro for #PurpleMediaState.
+ *
+ * Since: 3.0.0
  */
 #define PURPLE_MEDIA_TYPE_STATE (purple_media_state_get_type())
 
@@ -83,7 +95,10 @@ G_BEGIN_DECLS
  * @PURPLE_MEDIA_CANDIDATE_TYPE_MULTICAST: A multicast address.
  *
  * Media candidate types
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
 	PURPLE_MEDIA_CANDIDATE_TYPE_HOST,
 	PURPLE_MEDIA_CANDIDATE_TYPE_SRFLX,
@@ -105,7 +120,10 @@ typedef enum {
  *                                      switched.
  *
  * Media caps
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
 	PURPLE_MEDIA_CAPS_NONE = 0,
 	PURPLE_MEDIA_CAPS_AUDIO = 1,
@@ -125,7 +143,10 @@ typedef enum {
  * @PURPLE_MEDIA_COMPONENT_RTCP: This component is for RTCP control.
  *
  * Media component types
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
 	PURPLE_MEDIA_COMPONENT_NONE = 0,
 	PURPLE_MEDIA_COMPONENT_RTP = 1,
@@ -146,7 +167,10 @@ typedef enum {
  * @PURPLE_MEDIA_INFO_UNHOLD: Remove the media from hold.
  *
  * Media info types
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
 	PURPLE_MEDIA_INFO_HANGUP = 0,
 	PURPLE_MEDIA_INFO_ACCEPT,
@@ -173,7 +197,10 @@ typedef enum {
  *                                        as the peer (Simultanuous-Open).
  *
  * Media network protocols
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
 	PURPLE_MEDIA_NETWORK_PROTOCOL_UDP,
 	PURPLE_MEDIA_NETWORK_PROTOCOL_TCP_PASSIVE,
@@ -200,7 +227,10 @@ typedef enum {
  *                            and #PURPLE_MEDIA_SEND_APPLICATION.
  *
  * Media session types
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
 	PURPLE_MEDIA_NONE	= 0,
 	PURPLE_MEDIA_RECV_AUDIO = 1 << 0,
@@ -223,7 +253,10 @@ typedef enum {
  *                          disconnected.
  *
  * Media state-changed types
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
 	PURPLE_MEDIA_STATE_NEW = 0,
 	PURPLE_MEDIA_STATE_CONNECTED,
@@ -236,7 +269,10 @@ typedef enum {
  * Gets the media candidate type's GType
  *
  * Returns: The media candidate type's GType.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GType purple_media_candidate_type_get_type(void);
 
 /**
@@ -245,7 +281,10 @@ GType purple_media_candidate_type_get_type(void);
  * Gets the type of the media caps flags
  *
  * Returns: The media caps flags' GType
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 GType purple_media_caps_get_type(void);
 
 /**
@@ -254,7 +293,10 @@ GType purple_media_caps_get_type(void);
  * Gets the type of the info type enum
  *
  * Returns: The info type enum's GType
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GType purple_media_info_type_get_type(void);
 
 /**
@@ -263,7 +305,10 @@ GType purple_media_info_type_get_type(void);
  * Gets the media network protocol's GType
  *
  * Returns: The media network protocol's GType.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GType purple_media_network_protocol_get_type(void);
 
 /**
@@ -272,7 +317,10 @@ GType purple_media_network_protocol_get_type(void);
  * Gets the media session type's GType
  *
  * Returns: The media session type's GType.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GType purple_media_session_type_get_type(void);
 
 /**

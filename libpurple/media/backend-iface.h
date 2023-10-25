@@ -44,6 +44,8 @@ G_BEGIN_DECLS
  * PurpleMediaBackend:
  *
  * A placeholder to represent any media backend
+ *
+ * Since: 2.6.0
  */
 typedef struct _PurpleMediaBackend PurpleMediaBackend;
 
@@ -51,6 +53,8 @@ typedef struct _PurpleMediaBackend PurpleMediaBackend;
  * PurpleMediaBackendInterface:
  *
  * A structure to derive media backends from.
+ *
+ * Since: 3.0.0
  */
 typedef struct _PurpleMediaBackendInterface PurpleMediaBackendInterface;
 
@@ -105,7 +109,10 @@ struct _PurpleMediaBackendInterface
  * Gets the media backend's GType.
  *
  * Returns: The media backend's GType.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 GType purple_media_backend_get_type(void);
 
 /**
@@ -122,7 +129,10 @@ GType purple_media_backend_get_type(void);
  * Creates and adds a stream to the media backend.
  *
  * Returns: True if the stream was successfully created, otherwise False.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 gboolean purple_media_backend_add_stream(PurpleMediaBackend *self,
 		const gchar *sess_id, const gchar *who, PurpleMediaSessionType type,
 		gboolean initiator, const gchar *transmitter, GHashTable *params);
@@ -135,7 +145,10 @@ gboolean purple_media_backend_add_stream(PurpleMediaBackend *self,
  * @remote_candidates: (element-type PurpleMediaCandidate): The list of remote candidates to add.
  *
  * Add remote candidates to a stream.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 void purple_media_backend_add_remote_candidates(PurpleMediaBackend *self,
 		const gchar *sess_id, const gchar *participant,
 		GList *remote_candidates);
@@ -151,7 +164,10 @@ void purple_media_backend_add_remote_candidates(PurpleMediaBackend *self,
  * parameters have been collected.
  *
  * Returns: True if the codecs are ready, otherwise False.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 gboolean purple_media_backend_codecs_ready(PurpleMediaBackend *self,
 		const gchar *sess_id);
 
@@ -166,7 +182,10 @@ gboolean purple_media_backend_codecs_ready(PurpleMediaBackend *self,
  * between the local and remote software.
  *
  * Returns: (transfer full) (element-type PurpleMediaCodec): The codec intersection list.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 GList *purple_media_backend_get_codecs(PurpleMediaBackend *self,
 		const gchar *sess_id);
 
@@ -179,7 +198,10 @@ GList *purple_media_backend_get_codecs(PurpleMediaBackend *self,
  * Gets the list of local candidates for a stream.
  *
  * Return Value: (transfer full) (element-type PurpleMediaCandidate): The list of local candidates.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 GList *purple_media_backend_get_local_candidates(PurpleMediaBackend *self,
 		const gchar *sess_id, const gchar *participant);
 
@@ -193,7 +215,10 @@ GList *purple_media_backend_get_local_candidates(PurpleMediaBackend *self,
  * Sets the remote codecs on a stream.
  *
  * Returns: True if the remote codecs were set successfully, otherwise False.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 gboolean purple_media_backend_set_remote_codecs(PurpleMediaBackend *self,
 		const gchar *sess_id, const gchar *participant,
 		GList *codecs);
@@ -207,7 +232,10 @@ gboolean purple_media_backend_set_remote_codecs(PurpleMediaBackend *self,
  * Sets which codec format to send media content in for a session.
  *
  * Returns: True if set successfully, otherwise False.
+ *
+ * Since: 2.7.0
  */
+PURPLE_AVAILABLE_IN_2_7
 gboolean purple_media_backend_set_send_codec(PurpleMediaBackend *self,
 		const gchar *sess_id, PurpleMediaCodec *codec);
 
@@ -222,7 +250,10 @@ gboolean purple_media_backend_set_send_codec(PurpleMediaBackend *self,
  * @key_len: Byte length of the encryption key.
  *
  * Sets the encryption parameters of our media in the session.
+ *
+ * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_backend_set_encryption_parameters(PurpleMediaBackend *self,
 		const gchar *sess_id, const gchar *cipher,
 		const gchar *auth, const gchar *key, gsize key_len);
@@ -240,7 +271,10 @@ gboolean purple_media_backend_set_encryption_parameters(PurpleMediaBackend *self
  * @key_len: Byte length of the decryption key.
  *
  * Sets the decryption parameters for a session participant's media.
+ *
+ * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_backend_set_decryption_parameters(PurpleMediaBackend *self,
 		const gchar *sess_id, const gchar *participant,
 		const gchar *cipher, const gchar *auth,
@@ -254,7 +288,10 @@ gboolean purple_media_backend_set_decryption_parameters(PurpleMediaBackend *self
  * @require_encryption: TRUE if the media requires encryption.
  *
  * Sets whether a session participant's media requires encryption.
+ *
+ * Since: 2.14.0
  */
+PURPLE_AVAILABLE_IN_2_14
 gboolean purple_media_backend_set_require_encryption(PurpleMediaBackend *self,
 		const gchar *sess_id, const gchar *participant,
 		gboolean require_encryption);
@@ -266,7 +303,10 @@ gboolean purple_media_backend_set_require_encryption(PurpleMediaBackend *self,
  *          parameters to pass to the backend.
  *
  * Sets various optional parameters of the media backend.
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 void purple_media_backend_set_params(PurpleMediaBackend *self,
 		GHashTable *params);
 
@@ -278,7 +318,10 @@ void purple_media_backend_set_params(PurpleMediaBackend *self,
  * The list should NOT be freed.
  *
  * Return Value: (transfer none): NULL-terminated array of names of supported parameters.
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 const gchar **purple_media_backend_get_available_params(PurpleMediaBackend *self);
 
 /**

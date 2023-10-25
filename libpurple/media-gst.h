@@ -40,9 +40,13 @@
  * PurpleMediaElementInfo:
  *
  * An opaque structure representing an audio/video source/sink.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef struct _PurpleMediaElementInfo PurpleMediaElementInfo;
 
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef GstElement *(*PurpleMediaElementCreateCallback)(
 		PurpleMediaElementInfo *info, PurpleMedia *media,
 		const gchar *session_id, const gchar *participant);
@@ -67,7 +71,10 @@ typedef GstElement *(*PurpleMediaElementCreateCallback)(
  * @PURPLE_MEDIA_ELEMENT_SRC:          can be set as an active src
  * @PURPLE_MEDIA_ELEMENT_SINK:         can be set as an active sink
  * @PURPLE_MEDIA_ELEMENT_APPLICATION:  supports application data
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
 	PURPLE_MEDIA_ELEMENT_NONE = 0,
 	PURPLE_MEDIA_ELEMENT_AUDIO = 1,
@@ -90,8 +97,10 @@ typedef enum {
 
 G_BEGIN_DECLS
 
+PURPLE_AVAILABLE_IN_2_6
 GType purple_media_element_type_get_type(void);
 
+PURPLE_AVAILABLE_IN_2_6
 G_DECLARE_FINAL_TYPE(PurpleMediaElementInfo, purple_media_element_info, PURPLE,
 		MEDIA_ELEMENT_INFO, GObject)
 
@@ -103,7 +112,10 @@ G_DECLARE_FINAL_TYPE(PurpleMediaElementInfo, purple_media_element_info, PURPLE,
  * Gets the source from a session
  *
  * Returns: (transfer none): The source retrieved.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_get_src(PurpleMedia *media, const gchar *sess_id);
 
 /**
@@ -115,7 +127,10 @@ GstElement *purple_media_get_src(PurpleMedia *media, const gchar *sess_id);
  * Gets the tee from a given session/stream.
  *
  * Returns: (transfer none): The GstTee element from the chosen session/stream.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_get_tee(PurpleMedia *media,
 		const gchar *session_id, const gchar *participant);
 
@@ -127,7 +142,10 @@ GstElement *purple_media_get_tee(PurpleMedia *media,
  * Gets the pipeline from the media manager.
  *
  * Returns: (transfer none): The pipeline.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_manager_get_pipeline(PurpleMediaManager *manager);
 
 /**
@@ -139,7 +157,10 @@ GstElement *purple_media_manager_get_pipeline(PurpleMediaManager *manager);
  * @participant: The remote user this element is requested for or NULL.
  *
  * Returns: (transfer full): A GStreamer source or sink for audio or video.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_manager_get_element(PurpleMediaManager *manager,
 		PurpleMediaSessionType type, PurpleMedia *media,
 		const gchar *session_id, const gchar *participant);
@@ -163,14 +184,22 @@ GList *purple_media_manager_enumerate_elements(PurpleMediaManager *manager, Purp
  * @name: The name of the element to get.
  *
  * Returns: (transfer full): The #PurpleMediaElementInfo for @name or NULL.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 PurpleMediaElementInfo *purple_media_manager_get_element_info(
 		PurpleMediaManager *manager, const gchar *name);
 
+PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_manager_register_element(PurpleMediaManager *manager,
 		PurpleMediaElementInfo *info);
+
+PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_manager_unregister_element(PurpleMediaManager *manager,
 		const gchar *name);
+
+PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_manager_set_active_element(PurpleMediaManager *manager,
 		PurpleMediaElementInfo *info);
 
@@ -180,7 +209,10 @@ gboolean purple_media_manager_set_active_element(PurpleMediaManager *manager,
  * @type: The #PurpleMediaElementType who's info to get
  *
  * Returns: (transfer none): The #PurpleMediaElementInfo for @type.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 PurpleMediaElementInfo *purple_media_manager_get_active_element(
 		PurpleMediaManager *manager, PurpleMediaElementType type);
 
@@ -213,8 +245,13 @@ void purple_media_manager_set_video_caps(PurpleMediaManager *manager,
 PURPLE_AVAILABLE_IN_2_8
 GstCaps *purple_media_manager_get_video_caps(PurpleMediaManager *manager);
 
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_element_info_get_id(PurpleMediaElementInfo *info);
+
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_media_element_info_get_name(PurpleMediaElementInfo *info);
+
+PURPLE_AVAILABLE_IN_2_6
 PurpleMediaElementType purple_media_element_info_get_element_type(
 		PurpleMediaElementInfo *info);
 
@@ -226,7 +263,10 @@ PurpleMediaElementType purple_media_element_info_get_element_type(
  * @participant:
  *
  * Returns: (transfer full): The new GstElement.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_element_info_call_create(
 		PurpleMediaElementInfo *info, PurpleMedia *media,
 		const gchar *session_id, const gchar *participant);
