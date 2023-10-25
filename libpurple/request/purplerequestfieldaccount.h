@@ -78,6 +78,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldAccount, purple_request_field_account,
  *
  * Returns: (transfer full): The new field.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestField *purple_request_field_account_new(const char *id, const char *text, PurpleAccount *account);
 
 /**
@@ -87,6 +88,7 @@ PurpleRequestField *purple_request_field_account_new(const char *id, const char 
  *
  * Sets the default account on an account field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_account_set_default_value(PurpleRequestFieldAccount *field, PurpleAccount *default_value);
 
 /**
@@ -96,6 +98,7 @@ void purple_request_field_account_set_default_value(PurpleRequestFieldAccount *f
  *
  * Sets the account in an account field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_account_set_value(PurpleRequestFieldAccount *field, PurpleAccount *value);
 
 /**
@@ -108,6 +111,7 @@ void purple_request_field_account_set_value(PurpleRequestFieldAccount *field, Pu
  * If TRUE, all accounts, online or offline, will be shown. If FALSE,
  * only online accounts will be shown.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_account_set_show_all(PurpleRequestFieldAccount *field, gboolean show_all);
 
 /**
@@ -123,6 +127,7 @@ void purple_request_field_account_set_show_all(PurpleRequestFieldAccount *field,
  * This function will determine which accounts get displayed and which
  * don't.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_account_set_filter(PurpleRequestFieldAccount *field, PurpleRequestFieldAccountFilterFunc filter_func, gpointer user_data, GDestroyNotify destroy_data);
 
 /**
@@ -133,6 +138,7 @@ void purple_request_field_account_set_filter(PurpleRequestFieldAccount *field, P
  *
  * Returns: (transfer none): The default account.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_request_field_account_get_default_value(PurpleRequestFieldAccount *field);
 
 /**
@@ -143,6 +149,7 @@ PurpleAccount *purple_request_field_account_get_default_value(PurpleRequestField
  *
  * Returns: (transfer none): The user-entered account.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_request_field_account_get_value(PurpleRequestFieldAccount *field);
 
 /**
@@ -156,6 +163,7 @@ PurpleAccount *purple_request_field_account_get_value(PurpleRequestFieldAccount 
  *
  * Returns: Whether or not to show all accounts.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_account_get_show_all(PurpleRequestFieldAccount *field);
 
 /**

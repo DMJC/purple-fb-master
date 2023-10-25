@@ -621,6 +621,7 @@ purple_request_cpar_get_parent_from(PurpleRequestCommonParameters *cpar);
  *
  * Returns: A UI-specific handle.
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_request_input(void *handle, const char *title, const char *primary,
 	const char *secondary, const char *default_value, gboolean multiline,
 	gboolean masked, gchar *hint,
@@ -660,6 +661,7 @@ void *purple_request_input(void *handle, const char *title, const char *primary,
  *
  * Returns: A UI-specific handle.
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_request_choice(void *handle, const char *title, const char *primary,
 	const char *secondary, gpointer default_value,
 	const char *ok_text, GCallback ok_cb,
@@ -697,6 +699,7 @@ void *purple_request_choice(void *handle, const char *title, const char *primary
  * <literal>va_list</literal> version of purple_request_choice(); see its
  * documentation.
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_request_choice_varg(void *handle, const char *title,
 	const char *primary, const char *secondary, gpointer default_value,
 	const char *ok_text, GCallback ok_cb,
@@ -736,6 +739,7 @@ void *purple_request_choice_varg(void *handle, const char *title,
  *
  * Returns: A UI-specific handle.
  */
+PURPLE_AVAILABLE_IN_ALL
 void *
 purple_request_action(void *handle, const char *title, const char *primary,
 	const char *secondary, int default_action,
@@ -771,6 +775,7 @@ purple_request_action(void *handle, const char *title, const char *primary,
  * <literal>va_list</literal> version of purple_request_action(); see its
  * documentation.
  */
+PURPLE_AVAILABLE_IN_ALL
 void *
 purple_request_action_varg(void *handle, const char *title, const char *primary,
 	const char *secondary, int default_action,
@@ -863,6 +868,7 @@ purple_request_wait_progress(void *ui_handle, gfloat fraction);
  *
  * Returns: A UI-specific handle.
  */
+PURPLE_AVAILABLE_IN_ALL
 void *
 purple_request_fields(void *handle, const char *title, const char *primary,
 	const char *secondary, PurpleRequestPage *page,
@@ -909,6 +915,7 @@ purple_request_add_close_notify(void *ui_handle, GDestroyNotify notify,
  *
  * Closes a request.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_close(PurpleRequestType type, void *uihandle);
 
 /**
@@ -920,6 +927,7 @@ void purple_request_close(PurpleRequestType type, void *uihandle);
  *
  * See purple_request_input().
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_close_with_handle(void *handle);
 
 /**
@@ -1023,6 +1031,7 @@ void purple_request_close_with_handle(void *handle);
  *
  * Returns: A UI-specific handle.
  */
+PURPLE_AVAILABLE_IN_ALL
 void *
 purple_request_file(void *handle, const char *title, const char *filename,
 	gboolean savedialog, GCallback ok_cb, GCallback cancel_cb,
@@ -1047,6 +1056,7 @@ purple_request_file(void *handle, const char *title, const char *filename,
  *
  * Returns: A UI-specific handle.
  */
+PURPLE_AVAILABLE_IN_ALL
 void *
 purple_request_folder(void *handle, const char *title, const char *dirname,
 	GCallback ok_cb, GCallback cancel_cb,
@@ -1075,6 +1085,7 @@ GType purple_request_ui_ops_get_type(void);
  * Sets the UI operations structure to be used when displaying a
  * request.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_set_ui_ops(PurpleRequestUiOps *ops);
 
 /**
@@ -1085,6 +1096,7 @@ void purple_request_set_ui_ops(PurpleRequestUiOps *ops);
  *
  * Returns: The UI operations structure.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestUiOps *purple_request_get_ui_ops(void);
 
 G_END_DECLS

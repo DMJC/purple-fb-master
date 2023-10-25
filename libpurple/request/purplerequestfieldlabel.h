@@ -57,6 +57,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldLabel, purple_request_field_label,
  *
  * Returns: (transfer full): The new field.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestField *purple_request_field_label_new(const char *id, const char *text);
 
 G_END_DECLS

@@ -60,6 +60,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldBool, purple_request_field_bool,
  *
  * Returns: (transfer full): The new field.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestField *purple_request_field_bool_new(const char *id, const char *text, gboolean default_value);
 
 /**
@@ -69,6 +70,7 @@ PurpleRequestField *purple_request_field_bool_new(const char *id, const char *te
  *
  * Sets the default value in an boolean field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_bool_set_default_value(PurpleRequestFieldBool *field, gboolean default_value);
 
 /**
@@ -78,6 +80,7 @@ void purple_request_field_bool_set_default_value(PurpleRequestFieldBool *field, 
  *
  * Sets the value in an boolean field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_bool_set_value(PurpleRequestFieldBool *field, gboolean value);
 
 /**
@@ -88,6 +91,7 @@ void purple_request_field_bool_set_value(PurpleRequestFieldBool *field, gboolean
  *
  * Returns: The default value.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_bool_get_default_value(PurpleRequestFieldBool *field);
 
 /**
@@ -98,6 +102,7 @@ gboolean purple_request_field_bool_get_default_value(PurpleRequestFieldBool *fie
  *
  * Returns: The value.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_bool_get_value(PurpleRequestFieldBool *field);
 
 G_END_DECLS

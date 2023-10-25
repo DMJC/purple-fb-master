@@ -62,6 +62,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldImage, purple_request_field_image,
  *
  * Returns: (transfer full): The new field.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestField *purple_request_field_image_new(const char *id, const char *text, const char *buf, gsize size);
 
 /**
@@ -72,6 +73,7 @@ PurpleRequestField *purple_request_field_image_new(const char *id, const char *t
  *
  * Sets the scale factors of an image field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_image_set_scale(PurpleRequestFieldImage *field, unsigned int x, unsigned int y);
 
 /**
@@ -82,6 +84,7 @@ void purple_request_field_image_set_scale(PurpleRequestFieldImage *field, unsign
  *
  * Returns: Pointer to the image.
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_request_field_image_get_buffer(PurpleRequestFieldImage *field);
 
 /**
@@ -92,6 +95,7 @@ const char *purple_request_field_image_get_buffer(PurpleRequestFieldImage *field
  *
  * Returns: Size of the image.
  */
+PURPLE_AVAILABLE_IN_ALL
 gsize purple_request_field_image_get_size(PurpleRequestFieldImage *field);
 
 /**
@@ -102,6 +106,7 @@ gsize purple_request_field_image_get_size(PurpleRequestFieldImage *field);
  *
  * Returns: X scale coefficient of the image.
  */
+PURPLE_AVAILABLE_IN_ALL
 unsigned int purple_request_field_image_get_scale_x(PurpleRequestFieldImage *field);
 
 /**
@@ -112,6 +117,7 @@ unsigned int purple_request_field_image_get_scale_x(PurpleRequestFieldImage *fie
  *
  * Returns: Y scale coefficient of the image.
  */
+PURPLE_AVAILABLE_IN_ALL
 unsigned int purple_request_field_image_get_scale_y(PurpleRequestFieldImage *field);
 
 G_END_DECLS

@@ -60,6 +60,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldChoice, purple_request_field_choice,
  *
  * Returns: (transfer full): The new field.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestField *purple_request_field_choice_new(const char *id, const char *text, gpointer default_value);
 
 /**
@@ -70,6 +71,7 @@ PurpleRequestField *purple_request_field_choice_new(const char *id, const char *
  *
  * Adds a choice to a multiple choice field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_choice_add(PurpleRequestFieldChoice *field, const char *label, gpointer data);
 
 /**
@@ -93,6 +95,7 @@ void purple_request_field_choice_add_full(PurpleRequestFieldChoice *field, const
  *
  * Sets the default value in a choice field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_choice_set_default_value(PurpleRequestFieldChoice *field, gpointer default_value);
 
 /**
@@ -102,6 +105,7 @@ void purple_request_field_choice_set_default_value(PurpleRequestFieldChoice *fie
  *
  * Sets the value in a choice field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_choice_set_value(PurpleRequestFieldChoice *field, gpointer value);
 
 /**
@@ -112,6 +116,7 @@ void purple_request_field_choice_set_value(PurpleRequestFieldChoice *field, gpoi
  *
  * Returns: The default value.
  */
+PURPLE_AVAILABLE_IN_ALL
 gpointer purple_request_field_choice_get_default_value(PurpleRequestFieldChoice *field);
 
 /**
@@ -122,6 +127,7 @@ gpointer purple_request_field_choice_get_default_value(PurpleRequestFieldChoice 
  *
  * Returns: The value.
  */
+PURPLE_AVAILABLE_IN_ALL
 gpointer purple_request_field_choice_get_value(PurpleRequestFieldChoice *field);
 
 /**

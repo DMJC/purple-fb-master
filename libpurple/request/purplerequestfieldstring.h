@@ -59,6 +59,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldString, purple_request_field_string,
  *
  * Returns: (transfer full): The new field.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestField *purple_request_field_string_new(const char *id, const char *text, const char *default_value, gboolean multiline);
 
 /**
@@ -68,6 +69,7 @@ PurpleRequestField *purple_request_field_string_new(const char *id, const char *
  *
  * Sets the default value in a string field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_string_set_default_value(PurpleRequestFieldString *field, const char *default_value);
 
 /**
@@ -77,6 +79,7 @@ void purple_request_field_string_set_default_value(PurpleRequestFieldString *fie
  *
  * Sets the value in a string field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_string_set_value(PurpleRequestFieldString *field, const char *value);
 
 /**
@@ -87,6 +90,7 @@ void purple_request_field_string_set_value(PurpleRequestFieldString *field, cons
  * Sets whether or not a string field is masked
  * (commonly used for password fields).
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_string_set_masked(PurpleRequestFieldString *field, gboolean masked);
 
 /**
@@ -97,6 +101,7 @@ void purple_request_field_string_set_masked(PurpleRequestFieldString *field, gbo
  *
  * Returns: The default value.
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_request_field_string_get_default_value(PurpleRequestFieldString *field);
 
 /**
@@ -107,6 +112,7 @@ const char *purple_request_field_string_get_default_value(PurpleRequestFieldStri
  *
  * Returns: The value.
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_request_field_string_get_value(PurpleRequestFieldString *field);
 
 /**
@@ -117,6 +123,7 @@ const char *purple_request_field_string_get_value(PurpleRequestFieldString *fiel
  *
  * Returns: %TRUE if the field is mulit-line, or %FALSE otherwise.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_string_is_multiline(PurpleRequestFieldString *field);
 
 /**
@@ -127,6 +134,7 @@ gboolean purple_request_field_string_is_multiline(PurpleRequestFieldString *fiel
  *
  * Returns: %TRUE if the field is masked, or %FALSE otherwise.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_string_is_masked(PurpleRequestFieldString *field);
 
 /**

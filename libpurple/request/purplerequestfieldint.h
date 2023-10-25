@@ -60,6 +60,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldInt, purple_request_field_int,
  *
  * Returns: (transfer full): The new field.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestField *purple_request_field_int_new(const char *id, const char *text, int default_value, int lower_bound, int upper_bound);
 
 /**
@@ -69,6 +70,7 @@ PurpleRequestField *purple_request_field_int_new(const char *id, const char *tex
  *
  * Sets the default value in an integer field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_int_set_default_value(PurpleRequestFieldInt *field, int default_value);
 
 /**
@@ -102,6 +104,7 @@ void purple_request_field_int_set_upper_bound(PurpleRequestFieldInt *field, int 
  *
  * Sets the value in an integer field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_int_set_value(PurpleRequestFieldInt *field, int value);
 
 /**
@@ -112,6 +115,7 @@ void purple_request_field_int_set_value(PurpleRequestFieldInt *field, int value)
  *
  * Returns: The default value.
  */
+PURPLE_AVAILABLE_IN_ALL
 int purple_request_field_int_get_default_value(PurpleRequestFieldInt *field);
 
 /**
@@ -148,6 +152,7 @@ int purple_request_field_int_get_upper_bound(PurpleRequestFieldInt *field);
  *
  * Returns: The value.
  */
+PURPLE_AVAILABLE_IN_ALL
 int purple_request_field_int_get_value(PurpleRequestFieldInt *field);
 
 G_END_DECLS

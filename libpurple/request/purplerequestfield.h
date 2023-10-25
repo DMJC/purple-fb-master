@@ -88,6 +88,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleRequestField, purple_request_field,
  *
  * Sets the label text of a field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_set_label(PurpleRequestField *field, const char *label);
 
 /**
@@ -97,6 +98,7 @@ void purple_request_field_set_label(PurpleRequestField *field, const char *label
  *
  * Sets whether or not a field is visible.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_set_visible(PurpleRequestField *field, gboolean visible);
 
 /**
@@ -109,6 +111,7 @@ void purple_request_field_set_visible(PurpleRequestField *field, gboolean visibl
  * This is optionally used by the UIs to provide such features as
  * auto-completion for type hints like "account" and "screenname".
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_set_type_hint(PurpleRequestField *field,
 									  const char *type_hint);
 
@@ -134,6 +137,7 @@ void purple_request_field_set_tooltip(PurpleRequestField *field, const char *too
  *
  * Sets whether or not a field is required.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_set_required(PurpleRequestField *field, gboolean required);
 
 /**
@@ -157,6 +161,7 @@ PurpleRequestGroup *purple_request_field_get_group(PurpleRequestField *field);
  *
  * Returns: The ID
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_request_field_get_id(PurpleRequestField *field);
 
 /**
@@ -167,6 +172,7 @@ const char *purple_request_field_get_id(PurpleRequestField *field);
  *
  * Returns: The label text.
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_request_field_get_label(PurpleRequestField *field);
 
 /**
@@ -177,6 +183,7 @@ const char *purple_request_field_get_label(PurpleRequestField *field);
  *
  * Returns: TRUE if the field is visible. FALSE otherwise.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_is_visible(PurpleRequestField *field);
 
 /**
@@ -187,6 +194,7 @@ gboolean purple_request_field_is_visible(PurpleRequestField *field);
  *
  * Returns: The field's type hint.
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_request_field_get_type_hint(PurpleRequestField *field);
 
 /**
@@ -210,6 +218,7 @@ const char *purple_request_field_get_tooltip(PurpleRequestField *field);
  *
  * Returns: TRUE if the field is required, or FALSE.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_is_required(PurpleRequestField *field);
 
 /**

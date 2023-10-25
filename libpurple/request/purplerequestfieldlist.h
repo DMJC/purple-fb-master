@@ -57,6 +57,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldList, purple_request_field_list,
  *
  * Returns: (transfer full): The new field.
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleRequestField *purple_request_field_list_new(const char *id, const char *text);
 
 /**
@@ -67,6 +68,7 @@ PurpleRequestField *purple_request_field_list_new(const char *id, const char *te
  *
  * Sets whether or not a list field allows multiple selection.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_list_set_multi_select(PurpleRequestFieldList *field, gboolean multi_select);
 
 /**
@@ -77,6 +79,7 @@ void purple_request_field_list_set_multi_select(PurpleRequestFieldList *field, g
  *
  * Returns: TRUE if multiple selection is enabled, or FALSE otherwise.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_list_get_multi_select(PurpleRequestFieldList *field);
 
 /**
@@ -88,6 +91,7 @@ gboolean purple_request_field_list_get_multi_select(PurpleRequestFieldList *fiel
  *
  * Returns: The data associated with the item.
  */
+PURPLE_AVAILABLE_IN_ALL
 gpointer purple_request_field_list_get_data(PurpleRequestFieldList *field, const char *text);
 
 /**
@@ -99,6 +103,7 @@ gpointer purple_request_field_list_get_data(PurpleRequestFieldList *field, const
  *
  * Adds an item to a list field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_list_add_icon(PurpleRequestFieldList *field, const char *item, const char *icon_path, gpointer data);
 
 /**
@@ -108,6 +113,7 @@ void purple_request_field_list_add_icon(PurpleRequestFieldList *field, const cha
  *
  * Adds a selected item to the list field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_list_add_selected(PurpleRequestFieldList *field, const char *item);
 
 /**
@@ -116,6 +122,7 @@ void purple_request_field_list_add_selected(PurpleRequestFieldList *field, const
  *
  * Clears the list of selected items in a list field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_list_clear_selected(PurpleRequestFieldList *field);
 
 /**
@@ -125,6 +132,7 @@ void purple_request_field_list_clear_selected(PurpleRequestFieldList *field);
  *
  * Sets a list of selected items in a list field.
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_request_field_list_set_selected(PurpleRequestFieldList *field, GList *items);
 
 /**
@@ -136,6 +144,7 @@ void purple_request_field_list_set_selected(PurpleRequestFieldList *field, GList
  *
  * Returns: TRUE if the item is selected. FALSE otherwise.
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_request_field_list_is_selected(PurpleRequestFieldList *field, const char *item);
 
 /**
@@ -149,6 +158,7 @@ gboolean purple_request_field_list_is_selected(PurpleRequestFieldList *field, co
  *
  * Returns: (element-type utf8) (transfer none): The list of selected items.
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_request_field_list_get_selected(PurpleRequestFieldList *field);
 
 /**
@@ -159,6 +169,7 @@ GList *purple_request_field_list_get_selected(PurpleRequestFieldList *field);
  *
  * Returns: (element-type PurpleKeyValuePair) (transfer none): The list of items.
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_request_field_list_get_items(PurpleRequestFieldList *field);
 
 /**
