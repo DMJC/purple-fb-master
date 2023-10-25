@@ -119,7 +119,10 @@ PurplePluginInfo *purple_plugin_get_info(PurplePlugin *plugin);
  * startup" by excluding said plugins from the list of plugins to save.  The
  * UI needs to call purple_plugins_save_loaded() after calling this for it
  * to have any effect.
+ *
+ * Since: 2.3.0
  */
+PURPLE_AVAILABLE_IN_2_3
 void purple_plugin_disable(PurplePlugin *plugin);
 
 /**

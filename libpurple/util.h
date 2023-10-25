@@ -47,14 +47,20 @@ G_BEGIN_DECLS
  * purple_util_init:
  *
  * Initializes the utility subsystem.
+ *
+ * Since: 2.3.0
  */
+PURPLE_AVAILABLE_IN_2_3
 void purple_util_init(void);
 
 /**
  * purple_util_uninit:
  *
  * Uninitializes the util subsystem.
+ *
+ * Since: 2.3.0
  */
+PURPLE_AVAILABLE_IN_2_3
 void purple_util_uninit(void);
 
 /**************************************************************************/

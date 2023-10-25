@@ -116,7 +116,10 @@ typedef enum
  * @description: A localised, human-readable description of the error.
  *
  * Holds the type of an error along with its description.
+ *
+ * Since: 2.3.0
  */
+PURPLE_AVAILABLE_TYPE_IN_2_3
 typedef struct
 {
 	PurpleConnectionError type;
