@@ -24,6 +24,7 @@
 #define PURPLE_CMDS_H
 
 #include "purpleconversation.h"
+#include "purpleversion.h"
 
 /******************************************************************************
  * Structures
@@ -293,21 +294,30 @@ GList *purple_cmd_help(PurpleConversation *conv, const gchar *cmd);
  * Get the handle for the commands API
  *
  * Returns: The handle
+ *
+ * Since: 2.5.0
  */
+PURPLE_AVAILABLE_IN_2_5
 gpointer purple_cmds_get_handle(void);
 
 /**
  * purple_cmds_init:
  *
  * Initialize the commands subsystem.
+ *
+ * Since: 2.5.0
  */
+PURPLE_AVAILABLE_IN_2_5
 void purple_cmds_init(void);
 
 /**
  * purple_cmds_uninit:
  *
  * Uninitialize the commands subsystem.
+ *
+ * Since: 2.5.0
  */
+PURPLE_AVAILABLE_IN_2_5
 void purple_cmds_uninit(void);
 
 G_END_DECLS

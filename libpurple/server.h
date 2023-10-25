@@ -300,7 +300,10 @@ PurpleConversation *purple_serv_got_joined_chat(PurpleConnection *gc,
  *
  * Called by a protocol when an attempt to join a chat via purple_serv_join_chat()
  * fails.
+ *
+ * Since: 2.5.0
  */
+PURPLE_AVAILABLE_IN_2_5
 void purple_serv_got_join_chat_failed(PurpleConnection *gc, GHashTable *data);
 
 /**

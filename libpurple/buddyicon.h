@@ -370,7 +370,10 @@ purple_buddy_icons_get_account_icon_timestamp(PurpleAccount *account);
  * Returns a boolean indicating if a given blist node has a custom buddy icon.
  *
  * Returns: A boolean indicating if @node has a custom buddy icon.
+ *
+ * Since: 2.5.0
  */
+PURPLE_AVAILABLE_IN_2_5
 gboolean
 purple_buddy_icons_node_has_custom_icon(PurpleBlistNode *node);
 
@@ -385,7 +388,10 @@ purple_buddy_icons_node_has_custom_icon(PurpleBlistNode *node);
  * appropriate icon.
  *
  * Returns: (transfer full): The custom buddy icon.
+ *
+ * Since: 2.5.0
  */
+PURPLE_AVAILABLE_IN_2_5
 PurpleImage *
 purple_buddy_icons_node_find_custom_icon(PurpleBlistNode *node);
 
@@ -402,7 +408,10 @@ purple_buddy_icons_node_find_custom_icon(PurpleBlistNode *node);
  * etc.
  *
  * Returns: (transfer none): The icon that was set.
+ *
+ * Since: 2.5.0
  */
+PURPLE_AVAILABLE_IN_2_5
 PurpleImage *
 purple_buddy_icons_node_set_custom_icon(PurpleBlistNode *node,
                                         guchar *icon_data, size_t icon_len);
@@ -419,7 +428,10 @@ purple_buddy_icons_node_set_custom_icon(PurpleBlistNode *node,
  * See purple_buddy_icons_node_set_custom_icon().
  *
  * Returns: (transfer none): The icon that was set.
+ *
+ * Since: 2.5.0
  */
+PURPLE_AVAILABLE_IN_2_5
 PurpleImage *
 purple_buddy_icons_node_set_custom_icon_from_file(PurpleBlistNode *node,
                                                   const gchar *filename);
