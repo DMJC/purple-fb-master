@@ -40,7 +40,10 @@ G_BEGIN_DECLS
  * @ops:  The UI conversation operations structure.
  *
  * Sets the default conversation UI operations structure.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversations_set_ui_ops(PurpleConversationUiOps *ops);
 
 /**
@@ -61,21 +64,30 @@ PurpleConversationUiOps *purple_conversations_get_ui_ops(void);
  * Returns the conversation subsystem handle.
  *
  * Returns: The conversation subsystem handle.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_conversations_get_handle(void);
 
 /**
  * purple_conversations_init:
  *
  * Initializes the conversation subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversations_init(void);
 
 /**
  * purple_conversations_uninit:
  *
  * Uninitializes the conversation subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversations_uninit(void);
 
 G_END_DECLS

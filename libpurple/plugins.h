@@ -41,6 +41,8 @@
  *
  * Represents a plugin handle.
  * This type is an alias for GPluginPlugin.
+ *
+ * Since: 2.0.0
  */
 typedef GPluginPlugin PurplePlugin;
 
@@ -66,7 +68,10 @@ G_BEGIN_DECLS
  * Also see purple_plugin_unload().
  *
  * Returns: %TRUE if successful or already loaded, %FALSE otherwise.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_plugin_load(PurplePlugin *plugin, GError **error);
 
 /**
@@ -80,7 +85,10 @@ gboolean purple_plugin_load(PurplePlugin *plugin, GError **error);
  * Also see purple_plugin_load().
  *
  * Returns: %TRUE if successful or not loaded, %FALSE otherwise.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_plugin_unload(PurplePlugin *plugin, GError **error);
 
 /**
@@ -90,7 +98,10 @@ gboolean purple_plugin_unload(PurplePlugin *plugin, GError **error);
  * Returns whether or not a plugin is currently loaded.
  *
  * Returns: %TRUE if loaded, or %FALSE otherwise.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_plugin_is_loaded(PurplePlugin *plugin);
 
 /**
@@ -179,7 +190,10 @@ GList *purple_plugins_find_all(void);
  * Returns a list of all loaded plugins.
  *
  * Returns: (element-type PurplePlugin) (transfer none): A list of all loaded plugins.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_plugins_get_loaded(void);
 
 /**
@@ -187,7 +201,10 @@ GList *purple_plugins_get_loaded(void);
  * @path: The new search path.
  *
  * Add a new directory to search for plugins
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_plugins_add_search_path(const gchar *path);
 
 /**
@@ -235,7 +252,10 @@ PurplePlugin *purple_plugins_find_by_filename(const char *filename);
  *
  * Saves the list of loaded plugins to the specified preference key.
  * Plugins that are set to auto-load are not saved.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_plugins_save_loaded(const char *key);
 
 /**
@@ -244,7 +264,10 @@ void purple_plugins_save_loaded(const char *key);
  *
  * Attempts to load all the plugins in the specified preference key
  * that were loaded when purple last quit.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_plugins_load_saved(const char *key);
 
 /**************************************************************************/
@@ -255,14 +278,20 @@ void purple_plugins_load_saved(const char *key);
  * purple_plugins_init:
  *
  * Initializes the plugin subsystem
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_plugins_init(void);
 
 /**
  * purple_plugins_uninit:
  *
  * Uninitializes the plugin subsystem
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_plugins_uninit(void);
 
 G_END_DECLS

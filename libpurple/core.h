@@ -44,7 +44,10 @@ G_BEGIN_DECLS
  * Initializes the core of purple.
  *
  * Returns: %TRUE if successful, otherwise %FALSE with @error potentially set.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_core_init(PurpleUi *ui, GError **error);
 
 /**
@@ -52,7 +55,10 @@ gboolean purple_core_init(PurpleUi *ui, GError **error);
  *
  * Quits the core of purple, which, depending on the UI, may quit the
  * application using the purple core.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_core_quit(void);
 
 /**
@@ -61,7 +67,10 @@ void purple_core_quit(void);
  * Returns the version of the core library.
  *
  * Returns: The version of the core library.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_core_get_version(void);
 
 /**
@@ -71,7 +80,10 @@ const char *purple_core_get_version(void);
  * <link linkend="chapter-signals-core">core signals</link>.
  *
  * Returns: (transfer none): A handle to the purple core.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleCore *purple_get_core(void);
 
 /**
@@ -97,7 +109,10 @@ gpointer purple_core_get_settings_backend(void);
  * Gets the [class@Purple.Ui] that is running.
  *
  * Returns: (transfer none): The ui.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleUi *purple_core_get_ui(void);
 
 G_END_DECLS

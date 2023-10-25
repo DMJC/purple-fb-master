@@ -129,6 +129,8 @@ typedef enum {
  *       specified conversation is removed from the parent window. If this
  *       conversation is the only one contained in the parent window, that
  *       window is also destroyed.
+ *
+ * Since: 2.0.0
  */
 
 /**
@@ -161,7 +163,10 @@ G_BEGIN_DECLS
  *
  * Present a conversation to the user. This allows core code to initiate a
  * conversation by displaying the IM dialog.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_present(PurpleConversation *conv);
 
 /**
@@ -170,7 +175,10 @@ void purple_conversation_present(PurpleConversation *conv);
  * @ops:  The UI conversation operations structure.
  *
  * Sets the specified conversation's UI operations structure.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_set_ui_ops(PurpleConversation *conv, PurpleConversationUiOps *ops);
 
 /**
@@ -180,7 +188,10 @@ void purple_conversation_set_ui_ops(PurpleConversation *conv, PurpleConversation
  * Returns the specified conversation's UI operations structure.
  *
  * Returns: The operations structure.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleConversationUiOps *purple_conversation_get_ui_ops(PurpleConversation *conv);
 
 /**
@@ -234,7 +245,10 @@ void purple_conversation_set_conversation_type(PurpleConversation *conversation,
  * is having a conversation/chat/flame with.
  *
  * Returns: (transfer none): The conversation's purple_account.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_conversation_get_account(PurpleConversation *conv);
 
 /**
@@ -256,7 +270,10 @@ PurpleConnection *purple_conversation_get_connection(PurpleConversation *conv);
  * @title: The title.
  *
  * Sets the specified conversation's title.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_set_title(PurpleConversation *conv, const gchar *title);
 
 /**
@@ -266,7 +283,10 @@ void purple_conversation_set_title(PurpleConversation *conv, const gchar *title)
  * Returns the specified conversation's title.
  *
  * Returns: The title.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_conversation_get_title(PurpleConversation *conv);
 
 /**
@@ -277,7 +297,10 @@ const char *purple_conversation_get_title(PurpleConversation *conv);
  *
  * This function takes OPT_IM_ALIAS_TAB into account, as well as the
  * user's alias.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_autoset_title(PurpleConversation *conv);
 
 /**
@@ -286,7 +309,10 @@ void purple_conversation_autoset_title(PurpleConversation *conv);
  * @name: The conversation's name.
  *
  * Sets the specified conversation's name.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_set_name(PurpleConversation *conv, const gchar *name);
 
 /**
@@ -297,7 +323,10 @@ void purple_conversation_set_name(PurpleConversation *conv, const gchar *name);
  *
  * Returns: The conversation's name. If the conversation is an IM with a
  *          PurpleBuddy, then it's the name of the PurpleBuddy.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_conversation_get_name(PurpleConversation *conv);
 
 /**
@@ -358,7 +387,10 @@ void purple_conversation_send_with_flags(PurpleConversation *conv, const gchar *
  * @features:  Bitset defining supported features
  *
  * Set the features as supported for the given conversation.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_set_features(PurpleConversation *conv, PurpleConnectionFlags features);
 
 /**
@@ -366,7 +398,10 @@ void purple_conversation_set_features(PurpleConversation *conv, PurpleConnection
  * @conv:  The conversation
  *
  * Get the features supported by the given conversation.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conv);
 
 /**
@@ -377,7 +412,10 @@ PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conv)
  *
  * Returns: %TRUE if the conversation has focus, %FALSE if
  * it does not or the UI does not have a concept of conversation focus
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_conversation_has_focus(PurpleConversation *conv);
 
 /**
@@ -386,7 +424,10 @@ gboolean purple_conversation_has_focus(PurpleConversation *conv);
  * @type: The update type.
  *
  * Updates the visual status and UI of a conversation.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_update(PurpleConversation *conv, PurpleConversationUpdateType type);
 
 /**
@@ -416,7 +457,10 @@ void purple_conversation_send_confirm(PurpleConversation *conv, const gchar *mes
  * Returns: (element-type PurpleActionMenu) (transfer full): The extended menu
  *          items for a conversation, as harvested by the chat-extended-menu
  *          signal.
+ *
+ * Since: 2.1.0
  */
+PURPLE_AVAILABLE_IN_2_1
 GList * purple_conversation_get_extended_menu(PurpleConversation *conv);
 
 /**
