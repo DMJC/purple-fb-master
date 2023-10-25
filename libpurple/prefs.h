@@ -366,7 +366,10 @@ GList *purple_prefs_get_path_list(const char *name);
  *          strings denoting the names of the children. Returns %NULL if there
  *          are no children or if pref doesn't exist. The caller must free all
  *          the strings and the list.
+ *
+ * Since: 2.1.0
  */
+PURPLE_AVAILABLE_IN_2_1
 GList *purple_prefs_get_children_names(const char *name);
 
 /**

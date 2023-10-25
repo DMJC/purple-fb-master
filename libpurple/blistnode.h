@@ -78,7 +78,10 @@ G_BEGIN_DECLS
  * purple_blist_node_get_type:
  *
  * Returns: The #GType for the #PurpleBlistNode object.
+ *
+ * Since: 2.1.0
  */
+PURPLE_AVAILABLE_IN_2_1
 GType purple_blist_node_get_type(void);
 
 /**

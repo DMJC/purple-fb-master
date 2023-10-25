@@ -262,7 +262,10 @@ void purple_xfer_set_remote_user(PurpleXfer *xfer, const char *who);
  * Returns the name of the remote user.
  *
  * Returns: The name of the remote user.
+ *
+ * Since: 2.1.0
  */
+PURPLE_AVAILABLE_IN_2_1
 const char *purple_xfer_get_remote_user(PurpleXfer *xfer);
 
 /**

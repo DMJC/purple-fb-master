@@ -106,6 +106,42 @@
 #define PURPLE_AVAILABLE_IN_ALL _PURPLE_EXTERN
 
 /**
+ * PURPLE_VERSION_2_1:
+ *
+ * A macro that evaluates to the 2.1 version of libpurple, in a format that
+ * can be used by the C pre-processor.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_VERSION_2_1 (G_ENCODE_VERSION(2, 1))
+
+#if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_1
+#define PURPLE_AVAILABLE_IN_2_1 PURPLE_UNAVAILABLE(2, 1)
+#define PURPLE_AVAILABLE_ENUMERATOR_IN_2_1 PURPLE_UNAVAILABLE_ENUMERATOR(2, 1)
+#else
+#define PURPLE_AVAILABLE_IN_2_1 _PURPLE_EXTERN
+#define PURPLE_AVAILABLE_ENUMERATOR_IN_2_1
+#endif
+
+/**
+ * PURPLE_VERSION_2_2:
+ *
+ * A macro that evaluates to the 2.2 version of libpurple, in a format that
+ * can be used by the C pre-processor.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_VERSION_2_2 (G_ENCODE_VERSION(2, 2))
+
+#if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_2
+#define PURPLE_AVAILABLE_IN_2_2 PURPLE_UNAVAILABLE(2, 2)
+#define PURPLE_AVAILABLE_ENUMERATOR_IN_2_2 PURPLE_UNAVAILABLE_ENUMERATOR(2, 2)
+#else
+#define PURPLE_AVAILABLE_IN_2_2 _PURPLE_EXTERN
+#define PURPLE_AVAILABLE_ENUMERATOR_IN_2_2
+#endif
+
+/**
  * PURPLE_VERSION_2_3:
  *
  * A macro that evaluates to the 2.3 version of libpurple, in a format that
