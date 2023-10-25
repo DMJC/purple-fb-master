@@ -204,7 +204,10 @@ const char *purple_buddy_get_name(PurpleBuddy *buddy);
  * See purple_buddy_set_protocol_data().
  *
  * Returns:      The protocol data.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gpointer purple_buddy_get_protocol_data(PurpleBuddy *buddy);
 
 /**
@@ -217,7 +220,10 @@ gpointer purple_buddy_get_protocol_data(PurpleBuddy *buddy);
  * This should only be called from the associated protocol.
  *
  * See purple_buddy_get_protocol_data().
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_buddy_set_protocol_data(PurpleBuddy *buddy, gpointer data);
 
 /**

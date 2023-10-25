@@ -224,7 +224,10 @@ PurpleBlistNode *purple_blist_get_root(PurpleBuddyList *list);
  *
  * Returns: (element-type PurpleBlistNode) (transfer container): A list of every
  *          buddy in the list.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 GSList *purple_blist_get_buddies(void);
 
 /**

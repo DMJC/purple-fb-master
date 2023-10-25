@@ -106,7 +106,10 @@ gboolean purple_network_is_available(void);
  * This is what backs the --force-online command line argument in Pidgin,
  * for example.  This is useful for offline testing, especially when
  * combined with nullprotocol.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_network_force_online(void);
 
 /**
@@ -115,7 +118,10 @@ void purple_network_force_online(void);
  *
  * Update the STUN server IP given the host name
  * Will result in a DNS query being executed asynchronous
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_network_set_stun_server(const gchar *stun_server);
 
 /**
@@ -124,7 +130,10 @@ void purple_network_set_stun_server(const gchar *stun_server);
  * Get the IP address of the STUN server as a string representation
  *
  * Returns: the IP address
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 const gchar *purple_network_get_stun_ip(void);
 
 /**

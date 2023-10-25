@@ -32,6 +32,8 @@
 
 #include <stdarg.h>
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -150,7 +152,10 @@ void purple_debug_fatal(const gchar *category, const gchar *format, ...) G_GNUC_
  * Enable or disable verbose debugging.  This ordinarily should only be called
  * by purple_debug_init(), but there are cases where this can be useful for
  * plugins.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_debug_set_verbose(gboolean verbose);
 
 /**
@@ -159,7 +164,10 @@ void purple_debug_set_verbose(gboolean verbose);
  * Check if verbose logging is enabled.
  *
  * Returns: %TRUE if verbose debugging is enabled, %FALSE if it is not.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gboolean purple_debug_is_verbose(void);
 
 /**
@@ -171,7 +179,10 @@ gboolean purple_debug_is_verbose(void);
  * Enable or disable unsafe debugging. This ordinarily should only be called by
  * purple_debug_init(), but there are cases where this can be useful for
  * plugins.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_debug_set_unsafe(gboolean unsafe);
 
 /**
@@ -182,7 +193,10 @@ void purple_debug_set_unsafe(gboolean unsafe);
  * Returns: %TRUE if the debug logging of all messages is enabled, %FALSE if
  *          messages that could potentially contain passwords and other
  *          sensitive information are not logged.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gboolean purple_debug_is_unsafe(void);
 
 /******************************************************************************

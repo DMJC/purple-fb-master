@@ -221,7 +221,10 @@ gboolean purple_running_kde(void);
  * strings are %NULL.
  *
  * Returns: %TRUE if the strings are the same, else %FALSE.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_STATIC_INLINE_IN_2_6
 static inline gboolean
 purple_strequal(const gchar *left, const gchar *right)
 {
@@ -431,7 +434,10 @@ gchar *purple_utf8_try_convert(const char *str);
  * The returned string must be freed by the caller.
  *
  * Returns: A newly allocated UTF-8 string without the unprintable characters.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 gchar *purple_utf8_strip_unprintables(const gchar *str);
 
 /**

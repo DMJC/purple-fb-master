@@ -703,7 +703,10 @@ void purple_xfer_conversation_write(PurpleXfer *xfer, const gchar *message, gboo
  * Allows the UI to signal it's ready to send/receive data (depending on
  * the direction of the file transfer. Used when the UI is providing
  * read/write/data_not_sent UI ops.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_xfer_ui_ready(PurpleXfer *xfer);
 
 /**

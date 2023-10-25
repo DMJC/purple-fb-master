@@ -264,7 +264,10 @@ void purple_connection_set_display_name(PurpleConnection *gc, const char *name);
  * @proto_data: The protocol data to set for the connection.
  *
  * Sets the protocol data for a connection.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_connection_set_protocol_data(PurpleConnection *connection, void *proto_data);
 
 /**
@@ -395,7 +398,10 @@ const char *purple_connection_get_display_name(PurpleConnection *gc);
  * Gets the protocol data from a connection.
  *
  * Returns: The protocol data for the connection.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void *purple_connection_get_protocol_data(PurpleConnection *gc);
 
 /**

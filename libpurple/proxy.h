@@ -54,7 +54,10 @@ PurpleProxyInfo *purple_global_proxy_get_info(void);
  * @info:     The proxy information.
  *
  * Set purple's global proxy information.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_global_proxy_set_info(PurpleProxyInfo *info);
 
 /**************************************************************************/

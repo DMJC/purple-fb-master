@@ -143,7 +143,10 @@ void purple_request_field_set_required(PurpleRequestField *field, gboolean requi
  * Returns the group for the field.
  *
  * Returns: (transfer none): The UI data.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 PurpleRequestGroup *purple_request_field_get_group(PurpleRequestField *field);
 
 /**
