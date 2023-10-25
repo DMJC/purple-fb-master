@@ -41,6 +41,8 @@
  *
  * This is set by protocols, and appears in the account settings
  * dialogs.
+ *
+ * Since: 2.0.0
  */
 typedef struct _PurpleAccountOption		PurpleAccountOption;
 
@@ -61,7 +63,10 @@ GType purple_account_option_get_type(void);
  * or [ctor@Purple.AccountOption.list_new] (as appropriate) instead.
  *
  * Returns: The account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccountOption *purple_account_option_new(PurplePrefType type, const gchar *text, const gchar *pref_name);
 
 /**
@@ -86,7 +91,10 @@ PurpleAccountOption *purple_account_option_copy(PurpleAccountOption *option);
  * Creates a new boolean account option.
  *
  * Returns: The account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccountOption *purple_account_option_bool_new(const gchar *text, const gchar *pref_name, gboolean default_value);
 
 /**
@@ -98,7 +106,10 @@ PurpleAccountOption *purple_account_option_bool_new(const gchar *text, const gch
  * Creates a new integer account option.
  *
  * Returns: The account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccountOption *purple_account_option_int_new(const gchar *text, const gchar *pref_name, gint default_value);
 
 /**
@@ -110,7 +121,10 @@ PurpleAccountOption *purple_account_option_int_new(const gchar *text, const gcha
  * Creates a new string account option.
  *
  * Returns: The account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccountOption *purple_account_option_string_new(const gchar *text, const gchar *pref_name, const gchar *default_value);
 
 /**
@@ -130,7 +144,10 @@ PurpleAccountOption *purple_account_option_string_new(const gchar *text, const g
  * choose that value.
  *
  * Returns: The account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccountOption *purple_account_option_list_new(const gchar *text, const gchar *pref_name, GList *list);
 
 /**
@@ -138,7 +155,10 @@ PurpleAccountOption *purple_account_option_list_new(const gchar *text, const gch
  * @option: The option to destroy.
  *
  * Destroys an account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_account_option_destroy(PurpleAccountOption *option);
 
 /**
@@ -147,7 +167,10 @@ void purple_account_option_destroy(PurpleAccountOption *option);
  * @value:  The default boolean value.
  *
  * Sets the default boolean value for an account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_account_option_set_default_bool(PurpleAccountOption *option, gboolean value);
 
 /**
@@ -156,7 +179,10 @@ void purple_account_option_set_default_bool(PurpleAccountOption *option, gboolea
  * @value:  The default integer value.
  *
  * Sets the default integer value for an account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_account_option_set_default_int(PurpleAccountOption *option, gint value);
 
 /**
@@ -165,7 +191,10 @@ void purple_account_option_set_default_int(PurpleAccountOption *option, gint val
  * @value:  The default string value.
  *
  * Sets the default string value for an account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_account_option_set_default_string(PurpleAccountOption *option, const gchar *value);
 
 /**
@@ -210,7 +239,10 @@ void purple_account_option_string_set_hints(PurpleAccountOption *option, GSList 
  *
  * The list is in key, value pairs. The key is the ID stored and used
  * internally, and the value is the label displayed.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_account_option_set_list(PurpleAccountOption *option, GList *values);
 
 /**
@@ -220,7 +252,10 @@ void purple_account_option_set_list(PurpleAccountOption *option, GList *values);
  * @value:  The value.
  *
  * Adds an item to a list account option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_account_option_add_list_item(PurpleAccountOption *option, const gchar *key, const gchar *value);
 
 /**
@@ -243,7 +278,10 @@ PurplePrefType purple_account_option_get_pref_type(const PurpleAccountOption *op
  * Returns the text for an account option.
  *
  * Returns: The account option's text.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_account_option_get_text(const PurpleAccountOption *option);
 
 /**
@@ -255,7 +293,10 @@ const gchar *purple_account_option_get_text(const PurpleAccountOption *option);
  * type-specific constructors.
  *
  * Returns: The option's name.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_account_option_get_setting(const PurpleAccountOption *option);
 
 /**
@@ -265,7 +306,10 @@ const gchar *purple_account_option_get_setting(const PurpleAccountOption *option
  * Returns the default boolean value for an account option.
  *
  * Returns: The default boolean value.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_option_get_default_bool(const PurpleAccountOption *option);
 
 /**
@@ -275,7 +319,10 @@ gboolean purple_account_option_get_default_bool(const PurpleAccountOption *optio
  * Returns the default integer value for an account option.
  *
  * Returns: The default integer value.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gint purple_account_option_get_default_int(const PurpleAccountOption *option);
 
 /**
@@ -285,7 +332,10 @@ gint purple_account_option_get_default_int(const PurpleAccountOption *option);
  * Returns the default string value for an account option.
  *
  * Returns: The default string value.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_account_option_get_default_string(const PurpleAccountOption *option);
 
 /**
@@ -295,7 +345,10 @@ const gchar *purple_account_option_get_default_string(const PurpleAccountOption 
  * Returns the default string value for a list account option.
  *
  * Returns: The default list string value.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_account_option_get_default_list_value(const PurpleAccountOption *option);
 
 /**
@@ -336,7 +389,10 @@ const GSList *purple_account_option_string_get_hints(const PurpleAccountOption *
  *          #PurpleKeyValuePair, mapping the human-readable description of the
  *          value to the <type>(const char *)</type> that should be passed to
  *          purple_account_set_string() to set the option.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_account_option_get_list(const PurpleAccountOption *option);
 
 G_END_DECLS
