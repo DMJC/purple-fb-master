@@ -100,9 +100,6 @@ if host_machine.system() == 'windows'
 	IS_WIN32 = true
 	ws2_32 = compiler.find_library('ws2_32')
 	dnsapi = compiler.find_library('dnsapi')
-	if build_machine.system() != 'windows'
-		conf.set('IS_WIN32_CROSS_COMPILED', true)
-	endif
 	conf.set('WIN32_LEAN_AND_MEAN', true)
 
 	conf.set('LIBPIDGIN_DLL_NAMEW',

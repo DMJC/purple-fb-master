@@ -23,8 +23,6 @@
 #ifndef PURPLE_WIN32_LIBC_INTERFACE_H
 #define PURPLE_WIN32_LIBC_INTERFACE_H
 
-#include <config.h>
-
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <io.h>
@@ -50,8 +48,8 @@ G_BEGIN_DECLS
 wpurple_fcntl( fd, command, ##__VA_ARGS__ )
 
 /* stdio.h */
-#if !defined(__MINGW64_VERSION_MAJOR) || __MINGW64_VERSION_MAJOR < 3 || \
-	!defined(IS_WIN32_CROSS_COMPILED)
+#if (defined(__MINGW64_VERSION_MAJOR) && __MINGW64_VERSION_MAJOR < 3) || \
+	(defined(_MSC_VER) && _MSC_VER < 1900)
 #  undef vsnprintf
 #  define vsnprintf _vsnprintf
 #endif
