@@ -412,7 +412,10 @@ guint16 purple_xfer_get_remote_port(PurpleXfer *xfer);
  * Returns the time the transfer of a file started.
  *
  * Returns: The monotonic time when the transfer started.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 gint64 purple_xfer_get_start_time(PurpleXfer *xfer);
 
 /**
@@ -422,7 +425,10 @@ gint64 purple_xfer_get_start_time(PurpleXfer *xfer);
  * Returns the time the transfer of a file ended.
  *
  * Returns: The monotonic time when the transfer ended.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 gint64 purple_xfer_get_end_time(PurpleXfer *xfer);
 
 /**

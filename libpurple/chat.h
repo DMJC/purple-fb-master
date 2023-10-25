@@ -139,7 +139,10 @@ PurpleGroup *purple_chat_get_group(PurpleChat *chat);
  * Returns the account the chat belongs to.
  *
  * Returns: (transfer none): The account the chat belongs to.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 PurpleAccount *purple_chat_get_account(PurpleChat *chat);
 
 /**
@@ -149,7 +152,10 @@ PurpleAccount *purple_chat_get_account(PurpleChat *chat);
  * Get a hashtable containing information about a chat.
  *
  * Returns: (transfer none):  The hashtable.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 GHashTable *purple_chat_get_components(PurpleChat *chat);
 
 G_END_DECLS

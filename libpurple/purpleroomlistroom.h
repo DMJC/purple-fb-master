@@ -81,9 +81,9 @@ PurpleRoomlistRoom *purple_roomlist_room_new(const gchar *name, const gchar *des
  *
  * Returns: The name of @room.
  *
- * Since: 3.0.0
+ * Since: 2.4.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_AVAILABLE_IN_2_4
 const gchar *purple_roomlist_room_get_name(PurpleRoomlistRoom *room);
 
 /**

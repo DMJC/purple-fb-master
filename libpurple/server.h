@@ -177,7 +177,10 @@ void purple_serv_got_alias(PurpleConnection *gc, const char *who, const char *al
  * A protocol should call this when it retrieves a private alias from
  * the server.  Private aliases are the aliases the user sets, while public
  * aliases are the aliases or display names that buddies set for themselves.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 void purple_serv_got_private_alias(PurpleConnection *gc, const char *who, const char *alias);
 
 

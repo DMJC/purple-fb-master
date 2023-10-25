@@ -106,7 +106,10 @@ PurpleBlistNode *purple_blist_node_next(PurpleBlistNode *node, gboolean offline)
  *     purple_blist_node_get_sibling_prev(), purple_blist_node_next().
  *
  * Returns: (transfer none): The parent node.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 PurpleBlistNode *purple_blist_node_get_parent(PurpleBlistNode *node);
 
 /**
@@ -119,7 +122,10 @@ PurpleBlistNode *purple_blist_node_get_parent(PurpleBlistNode *node);
  *     purple_blist_node_get_sibling_prev(), purple_blist_node_next().
  *
  * Returns: (transfer none): The child node.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 PurpleBlistNode *purple_blist_node_get_first_child(PurpleBlistNode *node);
 
 /**
@@ -132,7 +138,10 @@ PurpleBlistNode *purple_blist_node_get_first_child(PurpleBlistNode *node);
  *     purple_blist_node_get_sibling_prev(), purple_blist_node_next().
  *
  * Returns: (transfer none): The sibling node.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 PurpleBlistNode *purple_blist_node_get_sibling_next(PurpleBlistNode *node);
 
 /**
@@ -145,7 +154,10 @@ PurpleBlistNode *purple_blist_node_get_sibling_next(PurpleBlistNode *node);
  *     purple_blist_node_get_sibling_next(), purple_blist_node_next().
  *
  * Returns: (transfer none): The sibling node.
+ *
+ * Since: 2.4.0
  */
+PURPLE_AVAILABLE_IN_2_4
 PurpleBlistNode *purple_blist_node_get_sibling_prev(PurpleBlistNode *node);
 
 /**
