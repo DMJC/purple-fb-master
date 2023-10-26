@@ -45,7 +45,10 @@ G_BEGIN_DECLS
  * is the IP address that should be used for incoming connections
  * (file transfer, direct IM, etc.) and should therefore be
  * publicly accessible.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_network_set_public_ip(const char *ip);
 
 /**
@@ -56,7 +59,10 @@ void purple_network_set_public_ip(const char *ip);
  * This returns the value set via purple_network_set_public_ip().
  *
  * Returns: The local IP address set in preferences.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_network_get_public_ip(void);
 
 /**
@@ -86,7 +92,10 @@ void purple_network_discover_my_ip(void);
  * attempted to discover the local IP address depending on what's available.
  *
  * Returns: The local IP address to be used.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gchar *purple_network_get_my_ip_from_gio(GSocketConnection *sockconn);
 
 /**
@@ -95,7 +104,10 @@ gchar *purple_network_get_my_ip_from_gio(GSocketConnection *sockconn);
  * Detects if there is an available network connection.
  *
  * Returns: TRUE if the network is available
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_network_is_available(void);
 
 /**
@@ -143,21 +155,30 @@ const gchar *purple_network_get_stun_ip(void);
  * Sets most commonly used socket flags: O_NONBLOCK and FD_CLOEXEC.
  *
  * Returns: %TRUE if succeeded, %FALSE otherwise.
+ *
+ * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean _purple_network_set_common_socket_flags(int fd);
 
 /**
  * purple_network_init:
  *
  * Initializes the network subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_network_init(void);
 
 /**
  * purple_network_uninit:
  *
  * Shuts down the network subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_network_uninit(void);
 
 G_END_DECLS
