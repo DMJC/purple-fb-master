@@ -260,18 +260,21 @@ G_BEGIN_DECLS
  * option of adding buddies to your buddy list.
  *
  * Returns: A UI-specific handle.
+ *
+ * Since: 2.0.0
  */
-void *purple_notify_searchresults(PurpleConnection *gc, const char *title,
-								const char *primary, const char *secondary,
-								PurpleNotifySearchResults *results, PurpleNotifyCloseCallback cb,
-								gpointer user_data);
+PURPLE_AVAILABLE_IN_ALL
+void *purple_notify_searchresults(PurpleConnection *gc, const char *title, const char *primary, const char *secondary, PurpleNotifySearchResults *results, PurpleNotifyCloseCallback cb, gpointer user_data);
 
 /**
  * purple_notify_searchresults_free:
  * @results: The PurpleNotifySearchResults to free.
  *
  * Frees a PurpleNotifySearchResults object.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_searchresults_free(PurpleNotifySearchResults *results);
 
 /**
@@ -281,10 +284,11 @@ void purple_notify_searchresults_free(PurpleNotifySearchResults *results);
  * @data:      Data returned by the purple_notify_searchresults().
  *
  * Replace old rows with the new. Reuse an existing window.
+ *
+ * Since: 2.0.0
  */
-void purple_notify_searchresults_new_rows(PurpleConnection *gc,
-										PurpleNotifySearchResults *results,
-										void *data);
+PURPLE_AVAILABLE_IN_ALL
+void purple_notify_searchresults_new_rows(PurpleConnection *gc, PurpleNotifySearchResults *results, void *data);
 
 
 /**
@@ -295,10 +299,11 @@ void purple_notify_searchresults_new_rows(PurpleConnection *gc,
  * @cb:      (scope call): Function that will be called on the click event.
  *
  * Adds a stock button that will be displayed in the search results dialog.
+ *
+ * Since: 2.0.0
  */
-void purple_notify_searchresults_button_add(PurpleNotifySearchResults *results,
-										  PurpleNotifySearchButtonType type,
-										  PurpleNotifySearchResultsCallback cb);
+PURPLE_AVAILABLE_IN_ALL
+void purple_notify_searchresults_button_add(PurpleNotifySearchResults *results, PurpleNotifySearchButtonType type, PurpleNotifySearchResultsCallback cb);
 
 
 /**
@@ -309,10 +314,11 @@ void purple_notify_searchresults_button_add(PurpleNotifySearchResults *results,
  *
  * Adds a plain labelled button that will be displayed in the search results
  * dialog.
+ *
+ * Since: 2.0.0
  */
-void purple_notify_searchresults_button_add_labeled(PurpleNotifySearchResults *results,
-                                                  const char *label,
-                                                  PurpleNotifySearchResultsCallback cb);
+PURPLE_AVAILABLE_IN_ALL
+void purple_notify_searchresults_button_add_labeled(PurpleNotifySearchResults *results, const char *label, PurpleNotifySearchResultsCallback cb);
 
 
 /**
@@ -321,7 +327,10 @@ void purple_notify_searchresults_button_add_labeled(PurpleNotifySearchResults *r
  * Returns a newly created search results object.
  *
  * Returns: (transfer full): The new search results object.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleNotifySearchResults *purple_notify_searchresults_new(void);
 
 /**
@@ -332,7 +341,10 @@ PurpleNotifySearchResults *purple_notify_searchresults_new(void);
  * to being visible.
  *
  * Returns: (transfer full): The new search column object.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleNotifySearchColumn *purple_notify_searchresults_column_new(const char *title);
 
 /**
@@ -379,9 +391,11 @@ gboolean purple_notify_searchresult_column_is_visible(const PurpleNotifySearchCo
  * @column: The column that will be added to the result object.
  *
  * Adds a new column to the search result object.
+ *
+ * Since: 2.0.0
  */
-void purple_notify_searchresults_column_add(PurpleNotifySearchResults *results,
-										  PurpleNotifySearchColumn *column);
+PURPLE_AVAILABLE_IN_ALL
+void purple_notify_searchresults_column_add(PurpleNotifySearchResults *results, PurpleNotifySearchColumn *column);
 
 /**
  * purple_notify_searchresults_row_add:
@@ -389,9 +403,11 @@ void purple_notify_searchresults_column_add(PurpleNotifySearchResults *results,
  * @row: (element-type utf8) (transfer full): The row of the results.
  *
  * Adds a new row of the results to the search results object.
+ *
+ * Since: 2.0.0
  */
-void purple_notify_searchresults_row_add(PurpleNotifySearchResults *results,
-									   GList *row);
+PURPLE_AVAILABLE_IN_ALL
+void purple_notify_searchresults_row_add(PurpleNotifySearchResults *results, GList *row);
 
 /**************************************************************************/
 /* Notification API                                                       */
@@ -413,11 +429,11 @@ void purple_notify_searchresults_row_add(PurpleNotifySearchResults *results,
  * Displays a notification message to the user.
  *
  * Returns: A UI-specific handle.
+ *
+ * Since: 2.0.0
  */
-void *purple_notify_message(void *handle, PurpleNotifyMessageType type,
-	const char *title, const char *primary, const char *secondary,
-	PurpleRequestCommonParameters *cpar, PurpleNotifyCloseCallback cb,
-	gpointer user_data);
+PURPLE_AVAILABLE_IN_ALL
+void *purple_notify_message(void *handle, PurpleNotifyMessageType type, const char *title, const char *primary, const char *secondary, PurpleRequestCommonParameters *cpar, PurpleNotifyCloseCallback cb, gpointer user_data);
 
 /**
  * purple_notify_formatted:
@@ -436,10 +452,11 @@ void *purple_notify_message(void *handle, PurpleNotifyMessageType type,
  * IMs may send.
  *
  * Returns: A UI-specific handle.
+ *
+ * Since: 2.0.0
  */
-void *purple_notify_formatted(void *handle, const char *title,
-							const char *primary, const char *secondary,
-							const char *text, PurpleNotifyCloseCallback cb, gpointer user_data);
+PURPLE_AVAILABLE_IN_ALL
+void *purple_notify_formatted(void *handle, const char *title, const char *primary, const char *secondary, const char *text, PurpleNotifyCloseCallback cb, gpointer user_data);
 
 /**
  * purple_notify_userinfo:
@@ -457,10 +474,11 @@ void *purple_notify_formatted(void *handle, const char *title,
  * IMs may send.
  *
  * Returns:  A UI-specific handle.
+ *
+ * Since: 2.0.0
  */
-void *purple_notify_userinfo(PurpleConnection *gc, const char *who,
-						   PurpleNotifyUserInfo *user_info, PurpleNotifyCloseCallback cb,
-						   gpointer user_data);
+PURPLE_AVAILABLE_IN_ALL
+void *purple_notify_userinfo(PurpleConnection *gc, const char *who, PurpleNotifyUserInfo *user_info, PurpleNotifyCloseCallback cb, gpointer user_data);
 
 /**
  * purple_notify_search_button_get_type:
@@ -489,7 +507,10 @@ GType purple_notify_user_info_get_type(void);
  * purple_notify_userinfo()
  *
  * Returns:  A new PurpleNotifyUserInfo, which the caller must destroy when done
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleNotifyUserInfo *purple_notify_user_info_new(void);
 
 /**
@@ -497,7 +518,10 @@ PurpleNotifyUserInfo *purple_notify_user_info_new(void);
  * @user_info:  The PurpleNotifyUserInfo
  *
  * Destroy a PurpleNotifyUserInfo
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_user_info_destroy(PurpleNotifyUserInfo *user_info);
 
 /**
@@ -517,7 +541,10 @@ void purple_notify_user_info_destroy(PurpleNotifyUserInfo *user_info);
  * purple_notify_user_info_remove_entry(). Do not use the GQueue directly.
  *
  * Returns: (transfer none): A GQueue of PurpleNotifyUserInfoEntry objects.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GQueue *purple_notify_user_info_get_entries(PurpleNotifyUserInfo *user_info);
 
 /**
@@ -527,7 +554,10 @@ GQueue *purple_notify_user_info_get_entries(PurpleNotifyUserInfo *user_info);
  *
  * Create a textual representation of a PurpleNotifyUserInfo, separating
  * entries with newline
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 char *purple_notify_user_info_get_text_with_newline(PurpleNotifyUserInfo *user_info, const char *newline);
 
 /**
@@ -620,7 +650,10 @@ void purple_notify_user_info_prepend_pair_plaintext(PurpleNotifyUserInfo *user_i
  *
  * Remove a PurpleNotifyUserInfoEntry from a PurpleNotifyUserInfo object
  * without freeing the entry.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_user_info_remove_entry(PurpleNotifyUserInfo *user_info, PurpleNotifyUserInfoEntry *user_info_entry);
 
 /**
@@ -644,7 +677,10 @@ void purple_notify_user_info_remove_entry(PurpleNotifyUserInfo *user_info, Purpl
  * methods for creating entries and adding them to a PurpleNotifyUserInfo.
  *
  * Returns: (transfer full): A new PurpleNotifyUserInfoEntry
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleNotifyUserInfoEntry *purple_notify_user_info_entry_new(const char *label, const char *value);
 
 /**
@@ -663,7 +699,10 @@ void purple_notify_user_info_entry_destroy(PurpleNotifyUserInfoEntry *user_info_
  * @user_info:  The PurpleNotifyUserInfo
  *
  * Add a section break.  A UI might display this as a horizontal line.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_user_info_add_section_break(PurpleNotifyUserInfo *user_info);
 
 /**
@@ -684,7 +723,10 @@ void purple_notify_user_info_prepend_section_break(PurpleNotifyUserInfo *user_in
  *
  * Add a section header.  A UI might display this in a different font
  * from other text.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_user_info_add_section_header(PurpleNotifyUserInfo *user_info, const char *label);
 
 /**
@@ -706,7 +748,10 @@ void purple_notify_user_info_prepend_section_header(PurpleNotifyUserInfo *user_i
  *
  * Remove the last item which was added to a PurpleNotifyUserInfo. This
  * could be used to remove a section header which is not needed.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_user_info_remove_last_item(PurpleNotifyUserInfo *user_info);
 
 /**
@@ -716,7 +761,10 @@ void purple_notify_user_info_remove_last_item(PurpleNotifyUserInfo *user_info);
  * Get the label for a PurpleNotifyUserInfoEntry
  *
  * Returns:  The label
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_notify_user_info_entry_get_label(PurpleNotifyUserInfoEntry *user_info_entry);
 
 /**
@@ -725,7 +773,10 @@ const gchar *purple_notify_user_info_entry_get_label(PurpleNotifyUserInfoEntry *
  * @label:            The label
  *
  * Set the label for a PurpleNotifyUserInfoEntry
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_user_info_entry_set_label(PurpleNotifyUserInfoEntry *user_info_entry, const char *label);
 
 /**
@@ -735,7 +786,10 @@ void purple_notify_user_info_entry_set_label(PurpleNotifyUserInfoEntry *user_inf
  * Get the value for a PurpleNotifyUserInfoEntry
  *
  * Returns:  The value
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_notify_user_info_entry_get_value(PurpleNotifyUserInfoEntry *user_info_entry);
 
 /**
@@ -744,9 +798,11 @@ const gchar *purple_notify_user_info_entry_get_value(PurpleNotifyUserInfoEntry *
  * @value:            The value
  *
  * Set the value for a PurpleNotifyUserInfoEntry
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_user_info_entry_set_value(PurpleNotifyUserInfoEntry *user_info_entry, const char *value);
-
 
 /**
  * purple_notify_user_info_entry_get_entry_type:
@@ -785,7 +841,10 @@ void purple_notify_user_info_entry_set_entry_type(
  * Returns: A UI-specific handle, if any. This may only be presented if
  *         the UI code displays a dialog instead of a webpage, or something
  *         similar.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_notify_uri(void *handle, const char *uri);
 
 /**
@@ -813,7 +872,10 @@ purple_notify_is_valid_ui_handle(void *ui_handle, PurpleNotifyType *type);
  *
  * This should be used only by the UI operation functions and part of the
  * core.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_close(PurpleNotifyType type, void *ui_handle);
 
 /**
@@ -821,7 +883,10 @@ void purple_notify_close(PurpleNotifyType type, void *ui_handle);
  * @handle: The handle.
  *
  * Closes all notifications registered with the specified handle.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_close_with_handle(void *handle);
 
 /**
@@ -889,7 +954,10 @@ GType purple_notify_ui_ops_get_type(void);
  *
  * Sets the UI operations structure to be used when displaying a
  * notification.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_set_ui_ops(PurpleNotifyUiOps *ops);
 
 /**
@@ -899,7 +967,10 @@ void purple_notify_set_ui_ops(PurpleNotifyUiOps *ops);
  * notification.
  *
  * Returns: The UI operations structure.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleNotifyUiOps *purple_notify_get_ui_ops(void);
 
 /**************************************************************************/
@@ -910,14 +981,20 @@ PurpleNotifyUiOps *purple_notify_get_ui_ops(void);
  * purple_notify_init:
  *
  * Initializes the notify subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_init(void);
 
 /**
  * purple_notify_uninit:
  *
  * Uninitializes the notify subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_notify_uninit(void);
 
 
