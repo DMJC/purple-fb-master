@@ -46,7 +46,10 @@ G_BEGIN_DECLS
  * Returns purple's global proxy information.
  *
  * Returns: (transfer none): The global proxy information.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleProxyInfo *purple_global_proxy_get_info(void);
 
 /**
@@ -68,14 +71,20 @@ void purple_global_proxy_set_info(PurpleProxyInfo *info);
  * purple_proxy_init:
  *
  * Initializes the proxy subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_init(void);
 
 /**
  * purple_proxy_uninit:
  *
  * Uninitializes the proxy subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_uninit(void);
 
 /**
@@ -85,7 +94,10 @@ void purple_proxy_uninit(void);
  * Returns configuration of a proxy.
  *
  * Returns: (transfer none): The configuration of a proxy.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleProxyInfo *purple_proxy_get_setup(PurpleAccount *account);
 
 /**
