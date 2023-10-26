@@ -66,17 +66,19 @@ typedef struct _PurpleConnectionUiOps PurpleConnectionUiOps;
  *                                    images
  *
  * Flags to change behavior of the client for a given connection.
+ *
+ * Since: 2.0.0
  */
 typedef enum /*< flags >*/
 {
-	PURPLE_CONNECTION_FLAG_HTML       = 0x0001,
-	PURPLE_CONNECTION_FLAG_NO_BGCOLOR = 0x0002,
-	PURPLE_CONNECTION_FLAG_AUTO_RESP  = 0x0004,
-	PURPLE_CONNECTION_FLAG_FORMATTING_WBFO = 0x0008,
-	PURPLE_CONNECTION_FLAG_NO_NEWLINES = 0x0010,
-	PURPLE_CONNECTION_FLAG_NO_FONTSIZE = 0x0020,
-	PURPLE_CONNECTION_FLAG_NO_URLDESC = 0x0040,
-	PURPLE_CONNECTION_FLAG_NO_IMAGES = 0x0080,
+	PURPLE_CONNECTION_FLAG_HTML PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0001,
+	PURPLE_CONNECTION_FLAG_NO_BGCOLOR PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0002,
+	PURPLE_CONNECTION_FLAG_AUTO_RESP PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0004,
+	PURPLE_CONNECTION_FLAG_FORMATTING_WBFO PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0008,
+	PURPLE_CONNECTION_FLAG_NO_NEWLINES PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0010,
+	PURPLE_CONNECTION_FLAG_NO_FONTSIZE PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0020,
+	PURPLE_CONNECTION_FLAG_NO_URLDESC PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0040,
+	PURPLE_CONNECTION_FLAG_NO_IMAGES PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0080,
 } PurpleConnectionFlags;
 
 /**
@@ -87,12 +89,14 @@ typedef enum /*< flags >*/
  * @PURPLE_CONNECTION_STATE_CONNECTING: Connecting
  *
  * A representation of the state of a [class@Purple.Connection].
+ *
+ * Since: 2.0.0
  */
 typedef enum {
-	PURPLE_CONNECTION_STATE_DISCONNECTED = 0,
-	PURPLE_CONNECTION_STATE_DISCONNECTING,
-	PURPLE_CONNECTION_STATE_CONNECTED,
-	PURPLE_CONNECTION_STATE_CONNECTING
+	PURPLE_CONNECTION_STATE_DISCONNECTED PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0,
+	PURPLE_CONNECTION_STATE_DISCONNECTING PURPLE_AVAILABLE_ENUMERATOR_IN_3_0,
+	PURPLE_CONNECTION_STATE_CONNECTED PURPLE_AVAILABLE_ENUMERATOR_IN_3_0,
+	PURPLE_CONNECTION_STATE_CONNECTING PURPLE_AVAILABLE_ENUMERATOR_IN_3_0
 } PurpleConnectionState;
 
 /**
@@ -152,6 +156,8 @@ struct _PurpleConnectionClass {
  * call #purple_connections_set_ui_ops() with an instance of this struct.
  *
  * See <link linkend="chapter-ui-ops">List of <literal>UiOps</literal> Structures</link>
+ *
+ * Since: 2.0.0
  */
 struct _PurpleConnectionUiOps
 {
@@ -172,9 +178,8 @@ struct _PurpleConnectionUiOps
 /******************************************************************************
  * To be deleted in the future
  *****************************************************************************/
-void
-_purple_assert_connection_is_valid(PurpleConnection *gc,
-	const gchar *file, int line);
+PURPLE_AVAILABLE_IN_3_0
+void _purple_assert_connection_is_valid(PurpleConnection *gc, const gchar *file, int line);
 
 /**************************************************************************/
 /* Connection API                                                         */
@@ -234,7 +239,10 @@ gboolean purple_connection_disconnect(PurpleConnection *connection, GError **err
  * signed on.  What does it mean to be completely signed on?  If
  * the core can call protocol's set_status, and it successfully changes
  * your status, then the account is online.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_connection_set_state(PurpleConnection *gc, PurpleConnectionState state);
 
 /**
@@ -255,7 +263,10 @@ void purple_connection_set_flags(PurpleConnection *gc, PurpleConnectionFlags fla
  * @name: The displayed name.
  *
  * Sets the connection's displayed name.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_connection_set_display_name(PurpleConnection *gc, const char *name);
 
 /**
@@ -277,7 +288,10 @@ void purple_connection_set_protocol_data(PurpleConnection *connection, void *pro
  * Returns the connection state.
  *
  * Returns: The connection state.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleConnectionState purple_connection_get_state(PurpleConnection *gc);
 
 /**
@@ -299,6 +313,8 @@ PurpleConnectionFlags purple_connection_get_flags(PurpleConnection *gc);
  * Returns TRUE if the account is connected, otherwise returns FALSE.
  *
  * Returns: TRUE if the account is connected, otherwise returns FALSE.
+ *
+ * Since: 2.0.0
  */
 #define PURPLE_CONNECTION_IS_CONNECTED(gc) \
 	(purple_connection_get_state(gc) == PURPLE_CONNECTION_STATE_CONNECTED)
@@ -323,7 +339,10 @@ const gchar *purple_connection_get_id(PurpleConnection *connection);
  * Returns the connection's account.
  *
  * Returns: (transfer none): The connection's account.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_connection_get_account(PurpleConnection *gc);
 
 /**
@@ -346,7 +365,10 @@ PurpleProtocol *purple_connection_get_protocol(PurpleConnection *gc);
  * Returns the connection's password.
  *
  * Returns: The connection's password.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_connection_get_password(PurpleConnection *gc);
 
 /**
@@ -388,7 +410,10 @@ GSList *purple_connection_get_active_chats(PurpleConnection *gc);
  * Returns the connection's displayed name.
  *
  * Returns: The connection's displayed name.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_connection_get_display_name(PurpleConnection *gc);
 
 /**
@@ -412,11 +437,11 @@ void *purple_connection_get_protocol_data(PurpleConnection *gc);
  *
  * Closes a connection with an error and a human-readable description of the
  * error.
+ *
+ * Since: 2.0.0
  */
-void
-purple_connection_error(PurpleConnection *gc,
-                        PurpleConnectionError reason,
-                        const char *description);
+PURPLE_AVAILABLE_IN_ALL
+void purple_connection_error(PurpleConnection *gc, PurpleConnectionError reason, const char *description);
 
 /**
  * purple_connection_get_error_info:
@@ -431,8 +456,7 @@ purple_connection_error(PurpleConnection *gc,
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleConnectionErrorInfo *
-purple_connection_get_error_info(PurpleConnection *gc);
+PurpleConnectionErrorInfo *purple_connection_get_error_info(PurpleConnection *gc);
 
 /**
  * purple_connection_g_error:
@@ -490,9 +514,11 @@ void purple_connection_take_error(PurpleConnection *pc, GError *error);
  *
  * Returns: %TRUE if the account should not be automatically reconnected, and
  *         %FALSE otherwise.
+ *
+ * Since: 2.0.0
  */
-gboolean
-purple_connection_error_is_fatal (PurpleConnectionError reason);
+PURPLE_AVAILABLE_IN_ALL
+gboolean purple_connection_error_is_fatal(PurpleConnectionError reason);
 
 /**
  * purple_connection_update_last_received:
@@ -514,7 +540,10 @@ void purple_connection_update_last_received(PurpleConnection *gc);
  * purple_connections_disconnect_all:
  *
  * Disconnects from all connections.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_connections_disconnect_all(void);
 
 /**
@@ -525,7 +554,10 @@ void purple_connections_disconnect_all(void);
  *
  * Returns: (element-type PurpleConnection) (transfer none): A list of all
  *          active connections.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_connections_get_all(void);
 
 /**
@@ -559,7 +591,10 @@ GType purple_connection_ui_ops_get_type(void);
  * @ops: The UI operations structure.
  *
  * Sets the UI operations structure to be used for connections.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_connections_set_ui_ops(PurpleConnectionUiOps *ops);
 
 /**
@@ -568,7 +603,10 @@ void purple_connections_set_ui_ops(PurpleConnectionUiOps *ops);
  * Returns the UI operations structure used for connections.
  *
  * Returns: The UI operations structure in use.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleConnectionUiOps *purple_connections_get_ui_ops(void);
 
 /**************************************************************************/
@@ -579,14 +617,20 @@ PurpleConnectionUiOps *purple_connections_get_ui_ops(void);
  * purple_connections_init:
  *
  * Initializes the connections subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_connections_init(void);
 
 /**
  * purple_connections_uninit:
  *
  * Uninitializes the connections subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_connections_uninit(void);
 
 /**
@@ -595,7 +639,10 @@ void purple_connections_uninit(void);
  * Returns the handle to the connections subsystem.
  *
  * Returns: The connections subsystem handle.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_connections_get_handle(void);
 
 G_END_DECLS
