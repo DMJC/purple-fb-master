@@ -45,6 +45,8 @@ typedef struct _PurpleChatClass PurpleChatClass;
  * PurpleChat:
  *
  * A chat on the buddy list.
+ *
+ * Since: 2.0.0
  */
 struct _PurpleChat {
 	PurpleBlistNode node;
@@ -83,7 +85,10 @@ GType purple_chat_get_type(void);
  * Creates a new chat for the buddy list
  *
  * Returns:           A newly allocated chat
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleChat *purple_chat_new(PurpleAccount *account, const char *alias, GHashTable *components);
 
 /**
@@ -93,7 +98,10 @@ PurpleChat *purple_chat_new(PurpleAccount *account, const char *alias, GHashTabl
  * Returns the correct name to display for a blist chat.
  *
  * Returns:       The alias (if set), or first component value.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_chat_get_name(PurpleChat *chat);
 
 /**
@@ -129,7 +137,10 @@ void purple_chat_set_alias(PurpleChat *chat, const char *alias);
  *
  * Returns: (transfer none): The parent group, or %NULL if the chat is not in a
  *          group.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleGroup *purple_chat_get_group(PurpleChat *chat);
 
 /**
