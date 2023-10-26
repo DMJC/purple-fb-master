@@ -20,9 +20,7 @@
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <purpleconfig.h>
 
 #ifdef HAVE_MESON_CONFIG
 #include "meson-config.h"

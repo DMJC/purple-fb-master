@@ -21,7 +21,7 @@
  *
  */
 
-#include <config.h>
+#include <purpleconfig.h>
 
 #include <errno.h>
 

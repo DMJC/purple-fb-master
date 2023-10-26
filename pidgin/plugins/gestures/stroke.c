@@ -7,7 +7,7 @@
    This file contains the stroke recognition algorithm.
 */
 
-#include "config.h"
+#include "purpleconfig.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

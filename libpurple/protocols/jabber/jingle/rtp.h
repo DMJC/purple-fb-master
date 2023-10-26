@@ -25,8 +25,6 @@
 #ifndef PURPLE_JABBER_JINGLE_RTP_H
 #define PURPLE_JABBER_JINGLE_RTP_H
 
-#include "config.h"
-
 #include <glib.h>
 #include <glib-object.h>
 

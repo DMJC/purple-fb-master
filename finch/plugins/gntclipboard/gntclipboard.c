@@ -18,9 +18,7 @@
 
 #define _POSIX_C_SOURCE 200809L /* Needed to get kill(2). */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif /* HAVE_CONFIG_H */
+#include <purpleconfig.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>

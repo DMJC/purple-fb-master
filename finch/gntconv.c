@@ -20,6 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
  */
 
+#include "purpleconfig.h"
+
 #include NCURSES_HEADER
 
 #include <errno.h>
@@ -45,8 +47,6 @@
 #define PREF_ROOT	"/finch/conversations"
 #define PREF_CHAT   PREF_ROOT "/chats"
 #define PREF_USERLIST PREF_CHAT "/userlist"
-
-#include "config.h"
 
 static void generate_send_to_menu(FinchConv *ggc);
 

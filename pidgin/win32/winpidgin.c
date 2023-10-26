@@ -30,7 +30,7 @@
  * at runtime if needed and dynamically loads libpidgin via LoadLibrary().
  */
 
-#include "config.h"
+#include "purpleconfig.h"
 
 #include <windows.h>
 #include <shellapi.h>

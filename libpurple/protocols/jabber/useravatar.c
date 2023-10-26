@@ -21,7 +21,7 @@
  *
  */
 
-#include <config.h>
+#include <purpleconfig.h>
 
 #include <glib/gi18n-lib.h>
 

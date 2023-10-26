@@ -20,6 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
  */
 
+#include "purpleconfig.h"
+
 #include <errno.h>
 
 #include <glib.h>
@@ -36,7 +38,6 @@
 #include "gntprefs.h"
 #include "libfinch.h"
 
-#include "config.h"
 #include "package_revision.h"
 
 static gboolean

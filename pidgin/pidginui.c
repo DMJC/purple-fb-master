@@ -26,9 +26,7 @@
 #define G_SETTINGS_ENABLE_BACKEND
 #include <gio/gsettingsbackend.h>
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <purpleconfig.h>
 
 #include "pidginui.h"
 

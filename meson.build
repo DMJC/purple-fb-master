@@ -43,7 +43,6 @@ find_program('gettext')
 find_program('xgettext')
 
 add_project_arguments([
-	'-DHAVE_CONFIG_H=1',
 	'-DVERSION="@0@"'.format(meson.project_version()),
 	'-DDISPLAY_VERSION="@0@"'.format(meson.project_version()),
 	'-DPURPLE_WEBSITE="https://pidgin.im/"',
@@ -192,7 +191,6 @@ if get_option('introspection')
 else
 	enable_introspection = false
 endif
-conf.set('ENABLE_INTROSPECTION', enable_introspection)
 
 #######################################################################
 # Check Pidgin dependencies
@@ -406,7 +404,6 @@ if IS_WIN32 or not add_languages('cpp', required : get_option('kwallet'), native
 	kwallet = disabler()
 else
 	add_project_arguments([
-		'-DHAVE_CONFIG_H=1',
 		'-DDISPLAY_VERSION="@0@"'.format(meson.project_version()),
 		'-DPURPLE_WEBSITE="https://pidgin.im/"',
 		f'-DGETTEXT_PACKAGE="@GETTEXT_PACKAGE@"'],
@@ -465,7 +462,7 @@ else
 endif
 conf.set('DEBUG', enable_debug)
 
-# So that config.h may be found.
+# So that purpleconfig.h may be found.
 toplevel_inc = include_directories('.')
 
 subdir('libpurple')
@@ -475,8 +472,7 @@ subdir('pidgin')
 subdir('doc')
 subdir('po')
 
-configure_file(output : 'config.h',
-    configuration : conf)
+configure_file(output: 'purpleconfig.h', configuration: conf)
 
 config_home = get_option('devenv-config-dir')
 if config_home == ''

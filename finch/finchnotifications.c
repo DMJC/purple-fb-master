@@ -20,7 +20,7 @@
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include <purpleconfig.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>

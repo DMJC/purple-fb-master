@@ -4,7 +4,7 @@
   See the file COPYING for distribution information.
 */
 
-#include "config.h"
+#include "purpleconfig.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

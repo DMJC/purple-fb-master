@@ -23,8 +23,6 @@
 #ifndef PURPLE_WIN32_WIN32DEP_H
 #define PURPLE_WIN32_WIN32DEP_H
 
-#include <config.h>
-
 #include <winsock2.h>
 #include <windows.h>
 #include <shlobj.h>
