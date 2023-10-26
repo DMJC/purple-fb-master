@@ -46,6 +46,8 @@ G_BEGIN_DECLS
  * @PURPLE_DEBUG_FATAL: Fatal errors.
  *
  * Available debug levels.
+ *
+ * Since: 2.0.0
  */
 typedef enum {
 	PURPLE_DEBUG_ALL = 0,
@@ -67,7 +69,10 @@ typedef enum {
  * @...:  The parameters to insert into the format string.
  *
  * Outputs debug information.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_debug(PurpleDebugLevel level, const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(3, 4);
 
 /**
@@ -82,7 +87,10 @@ void purple_debug(PurpleDebugLevel level, const gchar *category, const gchar *fo
  * level.
  *
  * See purple_debug().
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_debug_misc(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
 
 /**
@@ -97,7 +105,10 @@ void purple_debug_misc(const gchar *category, const gchar *format, ...) G_GNUC_P
  * the level.
  *
  * See purple_debug().
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_debug_info(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
 
 /**
@@ -112,7 +123,10 @@ void purple_debug_info(const gchar *category, const gchar *format, ...) G_GNUC_P
  * level.
  *
  * See purple_debug().
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_debug_warning(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
 
 /**
@@ -127,7 +141,10 @@ void purple_debug_warning(const gchar *category, const gchar *format, ...) G_GNU
  * level.
  *
  * See purple_debug().
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_debug_error(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
 
 /**
@@ -142,7 +159,10 @@ void purple_debug_error(const gchar *category, const gchar *format, ...) G_GNUC_
  * level.
  *
  * See purple_debug().
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_debug_fatal(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
 
 /**
@@ -207,7 +227,10 @@ gboolean purple_debug_is_unsafe(void);
  * purple_debug_init:
  *
  * Initializes the debug subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_debug_init(void);
 
 G_END_DECLS
