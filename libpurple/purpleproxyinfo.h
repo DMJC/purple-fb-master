@@ -39,6 +39,8 @@
  * @PURPLE_PROXY_TYPE_TOR: Use a Tor proxy (SOCKS 5 really).
  *
  * A type of proxy connection.
+ *
+ * Since: 2.0.0
  */
 typedef enum {
     PURPLE_PROXY_TYPE_USE_GLOBAL = -1,
@@ -64,7 +66,10 @@ G_DECLARE_FINAL_TYPE(PurpleProxyInfo, purple_proxy_info, PURPLE, PROXY_INFO,
  * Creates a new proxy info instance.
  *
  * Returns: (transfer full): The new instance.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleProxyInfo *purple_proxy_info_new(void);
 
 /**
@@ -123,7 +128,10 @@ const gchar *purple_proxy_info_get_hostname(PurpleProxyInfo *info);
  * @port: The new port.
  *
  * Sets the port for the proxy.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_info_set_port(PurpleProxyInfo *info, gint port);
 
 /**
@@ -133,7 +141,10 @@ void purple_proxy_info_set_port(PurpleProxyInfo *info, gint port);
  * Gets the port of the proxy.
  *
  * Returns: The port of the proxy.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gint purple_proxy_info_get_port(PurpleProxyInfo *info);
 
 /**
@@ -142,7 +153,10 @@ gint purple_proxy_info_get_port(PurpleProxyInfo *info);
  * @username: The new username.
  *
  * Sets the username of the proxy.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_info_set_username(PurpleProxyInfo *info, const gchar *username);
 
 /**
@@ -152,7 +166,10 @@ void purple_proxy_info_set_username(PurpleProxyInfo *info, const gchar *username
  * Gets the username of the proxy.
  *
  * Returns: The username of the proxy.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_proxy_info_get_username(PurpleProxyInfo *info);
 
 /**
@@ -161,7 +178,10 @@ const gchar *purple_proxy_info_get_username(PurpleProxyInfo *info);
  * @password: The new password.
  *
  * Sets the password for the proxy.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_info_set_password(PurpleProxyInfo *info, const gchar *password);
 
 /**
@@ -171,7 +191,10 @@ void purple_proxy_info_set_password(PurpleProxyInfo *info, const gchar *password
  * Gets the password of the proxy.
  *
  * Returns: The password of the proxy.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_proxy_info_get_password(PurpleProxyInfo *info);
 
 G_END_DECLS
