@@ -157,7 +157,10 @@ gint purple_whiteboard_get_state(PurpleWhiteboard *whiteboard);
  * @whiteboard: The #PurpleWhiteboard instance.
  *
  * Puts @whiteboard into the started state if it wasn't already.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_start(PurpleWhiteboard *whiteboard);
 
 /**
@@ -165,7 +168,10 @@ void purple_whiteboard_start(PurpleWhiteboard *whiteboard);
  * @draw_list: (element-type gint): The drawing list.
  *
  * Destroys a drawing list for a whiteboard
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_draw_list_destroy(GList *draw_list);
 
 /**
@@ -177,7 +183,10 @@ void purple_whiteboard_draw_list_destroy(GList *draw_list);
  * Gets the dimension of a whiteboard.
  *
  * Returns: %TRUE if the values of @width and @height were set.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_whiteboard_get_dimensions(PurpleWhiteboard *whiteboard, gint *width, gint *height);
 
 /**
@@ -187,7 +196,10 @@ gboolean purple_whiteboard_get_dimensions(PurpleWhiteboard *whiteboard, gint *wi
  * @height: The new height.
  *
  * Sets the dimensions for @whiteboard.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_set_dimensions(PurpleWhiteboard *whiteboard, gint width, gint height);
 
 /**
@@ -199,7 +211,10 @@ void purple_whiteboard_set_dimensions(PurpleWhiteboard *whiteboard, gint width, 
  * @size: The brush size.
  *
  * Draws a point on @whiteboard with the given parameters.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_draw_point(PurpleWhiteboard *whiteboard, gint x, gint y, gint color, gint size);
 
 /**
@@ -208,7 +223,10 @@ void purple_whiteboard_draw_point(PurpleWhiteboard *whiteboard, gint x, gint y, 
  * @list: (element-type gint): A GList of points.
  *
  * Send a list of points to draw.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_send_draw_list(PurpleWhiteboard *whiteboard, GList *list);
 
 /**
@@ -222,7 +240,10 @@ void purple_whiteboard_send_draw_list(PurpleWhiteboard *whiteboard, GList *list)
  * @size: The brush size.
  *
  * Draws a line on @whiteboard with the given parameters.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_draw_line(PurpleWhiteboard *whiteboard, gint x1, gint y1, gint x2, gint y2, gint color, gint size);
 
 /**
@@ -230,7 +251,10 @@ void purple_whiteboard_draw_line(PurpleWhiteboard *whiteboard, gint x1, gint y1,
  * @whiteboard: The #PurpleWhiteboard instance.
  *
  * Clears the contents of @whiteboard.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_clear(PurpleWhiteboard *whiteboard);
 
 /**
@@ -238,7 +262,10 @@ void purple_whiteboard_clear(PurpleWhiteboard *whiteboard);
  * @whiteboard: The #PurpleWhiteboard instance.
  *
  * Sends a request to the buddy to clear @whiteboard.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_send_clear(PurpleWhiteboard *whiteboard);
 
 /**
@@ -248,7 +275,10 @@ void purple_whiteboard_send_clear(PurpleWhiteboard *whiteboard);
  * @color: The color of the brush.
  *
  * Sends a request to change the size and color of the brush.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_send_brush(PurpleWhiteboard *whiteboard, gint size, gint color);
 
 /**
@@ -260,7 +290,10 @@ void purple_whiteboard_send_brush(PurpleWhiteboard *whiteboard, gint size, gint 
  * Gets the size and color of the brush.
  *
  * Returns:	%TRUE if the size and color were set.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_whiteboard_get_brush(PurpleWhiteboard *whiteboard, gint *size, gint *color);
 
 /**
@@ -270,7 +303,10 @@ gboolean purple_whiteboard_get_brush(PurpleWhiteboard *whiteboard, gint *size, g
  * @color: The color of the brush.
  *
  * Sets the size and color of the brush.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_set_brush(PurpleWhiteboard *whiteboard, gint size, gint color);
 
 /**
