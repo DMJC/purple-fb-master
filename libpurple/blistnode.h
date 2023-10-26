@@ -51,6 +51,8 @@ typedef struct _PurpleBlistNodeClass PurpleBlistNodeClass;
  * A Buddy list node.  This can represent a group, a buddy, or anything else.
  * This is a base class for PurpleBuddy, PurpleContact, PurpleGroup, and for
  * anything else that wants to put itself in the buddy list.
+ *
+ * Since: 2.0.0
  */
 struct _PurpleBlistNode {
 	GObject gparent;
@@ -96,7 +98,10 @@ GType purple_blist_node_get_type(void);
  *   purple_blist_node_get_sibling_next(), purple_blist_node_get_sibling_prev().
  *
  * Returns: (transfer none): The next node
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleBlistNode *purple_blist_node_next(PurpleBlistNode *node, gboolean offline);
 
 /**
@@ -197,7 +202,10 @@ gboolean purple_blist_node_has_setting(PurpleBlistNode *node, const char *key);
  * @value: The value to set
  *
  * Associates a boolean with a node in the buddy list
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_blist_node_set_bool(PurpleBlistNode *node, const char *key, gboolean value);
 
 /**
@@ -208,7 +216,10 @@ void purple_blist_node_set_bool(PurpleBlistNode *node, const char *key, gboolean
  * Retrieves a named boolean setting from a node in the buddy list
  *
  * Returns: The value, or FALSE if there is no setting
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_blist_node_get_bool(PurpleBlistNode *node, const char *key);
 
 /**
@@ -218,7 +229,10 @@ gboolean purple_blist_node_get_bool(PurpleBlistNode *node, const char *key);
  * @value: The value to set
  *
  * Associates an integer with a node in the buddy list
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_blist_node_set_int(PurpleBlistNode *node, const char *key, int value);
 
 /**
@@ -229,7 +243,10 @@ void purple_blist_node_set_int(PurpleBlistNode *node, const char *key, int value
  * Retrieves a named integer setting from a node in the buddy list
  *
  * Returns: The value, or 0 if there is no setting
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 int purple_blist_node_get_int(PurpleBlistNode *node, const char *key);
 
 /**
@@ -239,9 +256,11 @@ int purple_blist_node_get_int(PurpleBlistNode *node, const char *key);
  * @value: The value to set
  *
  * Associates a string with a node in the buddy list
+ *
+ * Since: 2.0.0
  */
-void purple_blist_node_set_string(PurpleBlistNode *node, const char *key,
-		const char *value);
+PURPLE_AVAILABLE_IN_ALL
+void purple_blist_node_set_string(PurpleBlistNode *node, const char *key, const char *value);
 
 /**
  * purple_blist_node_get_string:
@@ -251,7 +270,10 @@ void purple_blist_node_set_string(PurpleBlistNode *node, const char *key,
  * Retrieves a named string setting from a node in the buddy list
  *
  * Returns: The value, or NULL if there is no setting
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_blist_node_get_string(PurpleBlistNode *node, const char *key);
 
 /**
@@ -260,7 +282,10 @@ const char *purple_blist_node_get_string(PurpleBlistNode *node, const char *key)
  * @key:   The name of the setting
  *
  * Removes a named setting from a blist node
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_blist_node_remove_setting(PurpleBlistNode *node, const char *key);
 
 /**
@@ -296,7 +321,10 @@ gboolean purple_blist_node_is_transient(PurpleBlistNode *node);
  * Returns: (element-type PurpleActionMenu) (transfer full): The extended menu
  *          items for a buddy list node, as harvested by the
  *          blist-node-extended-menu signal.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_blist_node_get_extended_menu(PurpleBlistNode *n);
 
 G_END_DECLS

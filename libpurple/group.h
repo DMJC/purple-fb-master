@@ -48,13 +48,15 @@ typedef struct _PurpleGroupClass PurpleGroupClass;
 /* Data Structures                                                        */
 /**************************************************************************/
 
-/*
+/**
  * PurpleGroup:
  *
  * A group on the buddy list.
  *
  * A group is a counting node, which means it keeps track of the counts of the
  * chats and contacts under this group.
+ *
+ * Since: 2.0.0
  */
 struct _PurpleGroup {
 	PurpleCountingNode counting;
@@ -88,15 +90,18 @@ GType purple_group_get_type(void);
 
 /**
  * purple_group_new:
- * @name:   The name of the new group
+ * @name: The name of the new group
  *
  * Creates a new group
  *
  * You can't have more than one group with the same name.  Sorry.  If you pass
  * this the name of a group that already exists, it will return that group.
  *
- * Returns:       A new group struct
-*/
+ * Returns: A new group struct
+ *
+ * Since: 2.0.0
+ */
+PURPLE_AVAILABLE_IN_ALL
 PurpleGroup *purple_group_new(const char *name);
 
 /**
@@ -107,7 +112,10 @@ PurpleGroup *purple_group_new(const char *name);
  *
  * Returns: (element-type PurpleAccount) (transfer container): A list of
  *          accounts, or %NULL if the group has no accounts.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GSList *purple_group_get_accounts(PurpleGroup *g);
 
 /**
@@ -118,7 +126,10 @@ GSList *purple_group_get_accounts(PurpleGroup *g);
  * Determines whether an account owns any buddies in a given group
  *
  * Returns: TRUE if there are any buddies in the group, or FALSE otherwise.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_group_on_account(PurpleGroup *g, PurpleAccount *account);
 
 /**
@@ -140,7 +151,10 @@ void purple_group_set_name(PurpleGroup *group, const char *name);
  * Returns the name of a group.
  *
  * Returns: The name of the group.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_group_get_name(PurpleGroup *group);
 
 G_END_DECLS

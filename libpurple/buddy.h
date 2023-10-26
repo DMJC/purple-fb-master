@@ -75,6 +75,8 @@ typedef struct _PurpleBuddyClass PurpleBuddyClass;
  * PurpleBuddy:
  *
  * A buddy on the buddy list.
+ *
+ * Since: 2.0.0
  */
 struct _PurpleBuddy {
 	PurpleBlistNode node;
@@ -121,7 +123,10 @@ GType purple_buddy_get_type(void);
  * See purple_account_add_buddy(), purple_blist_add_buddy().
  *
  * Returns: A newly allocated buddy
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleBuddy *purple_buddy_new(PurpleAccount *account, const char *name, const char *alias);
 
 /**
@@ -148,7 +153,10 @@ const gchar *purple_buddy_get_id(PurpleBuddy *buddy);
  * call purple_buddy_icon_set_data().
  *
  * See purple_buddy_icon_set_data().
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_buddy_set_icon(PurpleBuddy *buddy, PurpleBuddyIcon *icon);
 
 /**
@@ -158,7 +166,10 @@ void purple_buddy_set_icon(PurpleBuddy *buddy, PurpleBuddyIcon *icon);
  * Returns a buddy's icon.
  *
  * Returns: The buddy icon.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleBuddyIcon *purple_buddy_get_icon(PurpleBuddy *buddy);
 
 /**
@@ -168,7 +179,10 @@ PurpleBuddyIcon *purple_buddy_get_icon(PurpleBuddy *buddy);
  * Returns a buddy's account.
  *
  * Returns: (transfer none): The account.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_buddy_get_account(PurpleBuddy *buddy);
 
 /**
@@ -190,7 +204,10 @@ void purple_buddy_set_name(PurpleBuddy *buddy, const char *name);
  * Returns a buddy's name
  *
  * Returns: The name.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_name(PurpleBuddy *buddy);
 
 /**
@@ -233,7 +250,10 @@ void purple_buddy_set_protocol_data(PurpleBuddy *buddy, gpointer data);
  * Returns a buddy's contact.
  *
  * Returns: (transfer none): The buddy's contact.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleMetaContact *purple_buddy_get_contact(PurpleBuddy *buddy);
 
 /**
@@ -243,7 +263,10 @@ PurpleMetaContact *purple_buddy_get_contact(PurpleBuddy *buddy);
  * Returns a buddy's presence.
  *
  * Returns: (transfer none): The buddy's presence.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurplePresence *purple_buddy_get_presence(PurpleBuddy *buddy);
 
 /**
@@ -293,7 +316,10 @@ void purple_buddy_set_media_caps(PurpleBuddy *buddy, PurpleMediaCaps media_caps)
  *
  * Returns:        The alias (if set), server alias (if set),
  *                or NULL.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_alias_only(PurpleBuddy *buddy);
 
 /**
@@ -315,7 +341,10 @@ void purple_buddy_set_server_alias(PurpleBuddy *buddy, const char *alias);
  * Gets the server alias for a buddy.
  *
  * Returns:  The server alias, or NULL if it is not set.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_server_alias(PurpleBuddy *buddy);
 
 /**
@@ -328,7 +357,9 @@ const char *purple_buddy_get_server_alias(PurpleBuddy *buddy);
  *
  * Returns:       The appropriate name or alias, or NULL.
  *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_contact_alias(PurpleBuddy *buddy);
 
 /**
@@ -340,7 +371,10 @@ const char *purple_buddy_get_contact_alias(PurpleBuddy *buddy);
  * the buddy's user name.
  *
  * Returns:        The appropriate name or alias, or NULL
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_alias(PurpleBuddy *buddy);
 
 /**
@@ -362,7 +396,10 @@ void purple_buddy_set_local_alias(PurpleBuddy *buddy, const char *alias);
  * Returns the local alias for the buddy, or %NULL if none exists.
  *
  * Returns:       The local alias for the buddy
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_local_alias(PurpleBuddy *buddy);
 
 /**
@@ -372,7 +409,10 @@ const char *purple_buddy_get_local_alias(PurpleBuddy *buddy);
  * Returns the group of which the buddy is a member.
  *
  * Returns: (transfer none): The group or %NULL if the buddy is not in a group.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleGroup *purple_buddy_get_group(PurpleBuddy *buddy);
 
 G_END_DECLS
