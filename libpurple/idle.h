@@ -44,7 +44,10 @@ G_BEGIN_DECLS
  * Touch our idle tracker.  This signifies that the user is
  * 'active'.  The conversation code calls this when the
  * user sends an IM, for example.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_idle_touch(void);
 
 /**
@@ -53,7 +56,10 @@ void purple_idle_touch(void);
  * Fake our idle time by setting the time at which our
  * accounts purportedly became idle.  This is used by
  * the I'dle Mak'er plugin.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_idle_set(time_t time);
 
 /**************************************************************************/
@@ -88,14 +94,20 @@ PurpleIdleUi *purple_idle_get_ui(void);
  * purple_idle_init:
  *
  * Initializes the idle system.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_idle_init(void);
 
 /**
  * purple_idle_uninit:
  *
  * Uninitializes the idle system.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_idle_uninit(void);
 
 G_END_DECLS
