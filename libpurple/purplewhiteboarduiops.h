@@ -49,6 +49,8 @@ G_BEGIN_DECLS
  * @clear:          clear whiteboard
  *
  * The PurpleWhiteboard UI Operations
+ *
+ * Since: 2.0.0
  */
 struct _PurpleWhiteboardUiOps
 {
@@ -75,7 +77,10 @@ GType purple_whiteboard_ui_ops_get_type(void);
  * @ops: The UI operations to set
  *
  * Sets the UI operations
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_set_ui_ops(PurpleWhiteboardUiOps *ops);
 
 /**
