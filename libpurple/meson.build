@@ -336,6 +336,8 @@ purple_private_headers = [
 
 enums = gnome.mkenums_simple('purpleenums',
     sources : purple_enumheaders,
+    decorator : '_PURPLE_EXTERN',
+    header_prefix : '#include "purpleversion.h"',
     install_header : true,
     install_dir : get_option('includedir') / purple_include_base)
 enums_c = enums[0]
