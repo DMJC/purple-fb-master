@@ -45,7 +45,10 @@ G_BEGIN_DECLS
  * This will remove any buddies from the buddy list that belong to this
  * account, buddy pounces that belong to this account, and will also
  * destroy @account.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_delete(PurpleAccount *account);
 
 /**
@@ -58,7 +61,10 @@ void purple_accounts_delete(PurpleAccount *account);
  *
  * You probably shouldn't call this unless you really know
  * what you're doing.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_restore_current_statuses(void);
 
 /**************************************************************************/
@@ -71,21 +77,30 @@ void purple_accounts_restore_current_statuses(void);
  * Returns the accounts subsystem handle.
  *
  * Returns: The accounts subsystem handle.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_accounts_get_handle(void);
 
 /**
  * purple_accounts_init:
  *
  * Initializes the accounts subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_init(void);
 
 /**
  * purple_accounts_uninit:
  *
  * Uninitializes the accounts subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_uninit(void);
 
 /**
