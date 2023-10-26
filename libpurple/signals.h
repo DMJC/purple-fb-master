@@ -40,6 +40,8 @@
  * @return_val: (optional) (out): A return address for a return value.
  *
  * A generic function pointer type used to register signals.
+ *
+ * Since: 2.0.0
  */
 typedef void (*PurpleSignalMarshalFunc)(GCallback cb, va_list args,
 									  void *data, void **return_val);
@@ -94,10 +96,11 @@ G_BEGIN_DECLS
  *
  * Returns: The signal ID local to that instance, or 0 if the signal
  *          couldn't be registered.
+ *
+ * Since: 2.0.0
  */
-gulong purple_signal_register(void *instance, const char *signal,
-							PurpleSignalMarshalFunc marshal,
-							GType ret_type, int num_values, ...);
+PURPLE_AVAILABLE_IN_ALL
+gulong purple_signal_register(void *instance, const char *signal, PurpleSignalMarshalFunc marshal, GType ret_type, int num_values, ...);
 
 /**
  * purple_signal_unregister:
@@ -105,7 +108,10 @@ gulong purple_signal_register(void *instance, const char *signal,
  * @signal:   The signal name.
  *
  * Unregisters a signal in an instance.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_signal_unregister(void *instance, const char *signal);
 
 /**
@@ -113,7 +119,10 @@ void purple_signal_unregister(void *instance, const char *signal);
  * @instance: The instance to unregister the signal for.
  *
  * Unregisters all signals in an instance.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_signals_unregister_by_instance(void *instance);
 
 /**
@@ -136,9 +145,11 @@ void purple_signals_unregister_by_instance(void *instance);
  * See purple_signal_disconnect()
  *
  * Returns: The signal handler ID.
+ *
+ * Since: 2.0.0
  */
-gulong purple_signal_connect_priority(void *instance, const char *signal,
-	void *handle, GCallback func, void *data, int priority);
+PURPLE_AVAILABLE_IN_ALL
+gulong purple_signal_connect_priority(void *instance, const char *signal, void *handle, GCallback func, void *data, int priority);
 
 /**
  * purple_signal_connect:
@@ -157,9 +168,11 @@ gulong purple_signal_connect_priority(void *instance, const char *signal,
  * See purple_signal_disconnect()
  *
  * Returns: The signal handler ID.
+ *
+ * Since: 2.0.0
  */
-gulong purple_signal_connect(void *instance, const char *signal,
-	void *handle, GCallback func, void *data);
+PURPLE_AVAILABLE_IN_ALL
+gulong purple_signal_connect(void *instance, const char *signal, void *handle, GCallback func, void *data);
 
 /**
  * purple_signal_disconnect:
@@ -171,16 +184,21 @@ gulong purple_signal_connect(void *instance, const char *signal,
  * Disconnects a signal handler from a signal on an object.
  *
  * See purple_signal_connect()
+ *
+ * Since: 2.0.0
  */
-void purple_signal_disconnect(void *instance, const char *signal,
-							void *handle, GCallback func);
+PURPLE_AVAILABLE_IN_ALL
+void purple_signal_disconnect(void *instance, const char *signal, void *handle, GCallback func);
 
 /**
  * purple_signals_disconnect_by_handle:
  * @handle: The receiver handle.
  *
  * Removes all callbacks associated with a receiver handle.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_signals_disconnect_by_handle(void *handle);
 
 /**
@@ -192,7 +210,10 @@ void purple_signals_disconnect_by_handle(void *handle);
  * Emits a signal.
  *
  * See purple_signal_connect(), purple_signal_disconnect()
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_signal_emit(void *instance, const char *signal, ...);
 
 /**
@@ -207,21 +228,30 @@ void purple_signal_emit(void *instance, const char *signal, ...);
  * something other than NULL.
  *
  * Returns: The first non-NULL return value
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_signal_emit_return_1(void *instance, const char *signal, ...);
 
 /**
  * purple_signals_init:
  *
  * Initializes the signals subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_signals_init(void);
 
 /**
  * purple_signals_uninit:
  *
  * Uninitializes the signals subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_signals_uninit(void);
 
 /**************************************************************************/
@@ -236,9 +266,11 @@ void purple_signals_uninit(void);
  * @return_val: (nullable): Value to store the callback's return value
  *
  * A purple marshaller function for use with signals with no arguments.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER:
@@ -249,9 +281,11 @@ void purple_marshal_VOID(
  *
  * A purple marshaller function for use with signals with a single pointer
  * argument.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_UINT:
@@ -262,9 +296,11 @@ void purple_marshal_VOID__POINTER(
  *
  * A purple marshaller function for use with signals with a pointer and
  * an unsigned integer argument.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER_UINT(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER_UINT(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_INT_INT:
@@ -275,9 +311,11 @@ void purple_marshal_VOID__POINTER_UINT(
  *
  * A purple marshaller function for use with signals with a pointer and
  * two integer arguments.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER_INT_INT(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER_INT_INT(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_INT_POINTER:
@@ -288,9 +326,11 @@ void purple_marshal_VOID__POINTER_INT_INT(
  *
  * A purple marshaller function for use with signals with a pointer, an
  * integer, and then another pointer argument.
+ *
+ * Since: 2.3.0
  */
-void purple_marshal_VOID__POINTER_INT_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_2_3
+void purple_marshal_VOID__POINTER_INT_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_POINTER:
@@ -301,7 +341,10 @@ void purple_marshal_VOID__POINTER_INT_POINTER(
  *
  * A purple marshaller function for use with signals with two pointer
  * arguments.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_marshal_VOID__POINTER_POINTER(
 		GCallback cb, va_list args, void *data, void **return_val);
 
@@ -314,7 +357,10 @@ void purple_marshal_VOID__POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with two pointers
  * and an unsigned integer argument.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_marshal_VOID__POINTER_POINTER_UINT(
 		GCallback cb, va_list args, void *data, void **return_val);
 
@@ -327,7 +373,10 @@ void purple_marshal_VOID__POINTER_POINTER_UINT(
  *
  * A purple marshaller function for use with signals with two pointers
  * and two unsigned integer arguments.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_marshal_VOID__POINTER_POINTER_UINT_UINT(
 		GCallback cb, va_list args, void *data, void **return_val);
 
@@ -356,9 +405,11 @@ void purple_marshal_VOID__POINTER_UINT_UINT(
  *
  * A purple marshaller function for use with signals with three pointer
  * arguments.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER_POINTER_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER_POINTER_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER:
@@ -369,9 +420,11 @@ void purple_marshal_VOID__POINTER_POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with four pointer
  * arguments.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_POINTER:
@@ -382,9 +435,11 @@ void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with five pointer
  * arguments.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_POINTER_POINTER_UINT:
@@ -395,9 +450,11 @@ void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with three pointer
  * and one unsigned integer arguments.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER_POINTER_POINTER_UINT(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER_POINTER_POINTER_UINT(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_UINT:
@@ -408,9 +465,11 @@ void purple_marshal_VOID__POINTER_POINTER_POINTER_UINT(
  *
  * A purple marshaller function for use with signals with four pointer and
  * one unsigned integer arguments.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_UINT(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_UINT(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_VOID__POINTER_POINTER_POINTER_UINT_UINT:
@@ -421,9 +480,11 @@ void purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_UINT(
  *
  * A purple marshaller function for use with signals with three pointer
  * and two unsigned integer arguments.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_VOID__POINTER_POINTER_POINTER_UINT_UINT(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_VOID__POINTER_POINTER_POINTER_UINT_UINT(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_INT__POINTER_POINTER_POINTER:
@@ -434,7 +495,10 @@ void purple_marshal_VOID__POINTER_POINTER_POINTER_UINT_UINT(
  *
  * A purple marshaller function for use with signals with three pointer
  * arguments and returns an integer.
+ *
+ * Since: 2.8.0
  */
+PURPLE_AVAILABLE_IN_2_8
 void purple_marshal_INT__POINTER_POINTER_POINTER(
 		GCallback cb, va_list args, void *data, void **return_val);
 
@@ -447,9 +511,11 @@ void purple_marshal_INT__POINTER_POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with five pointer
  * arguments and returns an integer.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_INT__POINTER_POINTER_POINTER_POINTER_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_INT__POINTER_POINTER_POINTER_POINTER_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_BOOLEAN__POINTER:
@@ -460,9 +526,11 @@ void purple_marshal_INT__POINTER_POINTER_POINTER_POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with a single pointer
  * argument and returns a boolean.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_BOOLEAN__POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_BOOLEAN__POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_BOOLEAN__POINTER_POINTER:
@@ -473,9 +541,11 @@ void purple_marshal_BOOLEAN__POINTER(
  *
  * A purple marshaller function for use with signals with two pointer
  * arguments and returns a boolean.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_BOOLEAN__POINTER_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_BOOLEAN__POINTER_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_BOOLEAN__POINTER_BOOLEAN:
@@ -490,8 +560,7 @@ void purple_marshal_BOOLEAN__POINTER_POINTER(
  * Since: 2.8.0
  */
 PURPLE_AVAILABLE_IN_2_8
-void purple_marshal_BOOLEAN__POINTER_BOOLEAN(
-		GCallback cb, va_list args, void *data, void **return_val);
+void purple_marshal_BOOLEAN__POINTER_BOOLEAN(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_BOOLEAN__POINTER_POINTER_POINTER:
@@ -502,9 +571,11 @@ void purple_marshal_BOOLEAN__POINTER_BOOLEAN(
  *
  * A purple marshaller function for use with signals with three pointer
  * arguments and returns a boolean.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_BOOLEAN__POINTER_POINTER_UINT:
@@ -515,9 +586,11 @@ void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with two pointer and
  * one unsigned integer arguments and returns a boolean.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_BOOLEAN__POINTER_POINTER_UINT(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_BOOLEAN__POINTER_POINTER_UINT(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER:
@@ -528,9 +601,11 @@ void purple_marshal_BOOLEAN__POINTER_POINTER_UINT(
  *
  * A purple marshaller function for use with signals with four pointer
  * arguments and returns a boolean.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER:
@@ -541,9 +616,11 @@ void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with five pointer
  * arguments and returns a boolean.
+ *
+ * Since: 2.0.0
  */
-void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER(
-		GCallback cb, va_list args, void *data, void **return_val);
+PURPLE_AVAILABLE_IN_ALL
+void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER(GCallback cb, va_list args, void *data, void **return_val);
 
 /**
  * purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER:
@@ -554,7 +631,10 @@ void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER(
  *
  * A purple marshaller function for use with signals with six pointer
  * arguments and returns a boolean.
+ *
+ * Since: 2.6.0
  */
+PURPLE_AVAILABLE_IN_2_6
 void purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER(
 		GCallback cb, va_list args, void *data, void **return_val);
 
