@@ -51,6 +51,8 @@
  * example.  Basically if they just set a message on the fly,
  * we'll cache it for them in case they want to use it again.  If
  * they don't use it again, we'll just delete it.
+ *
+ * Since: 2.0.0
  */
 /*
  * TODO: Hmm.  We should probably just be saving PurplePresences.  That's
@@ -80,7 +82,7 @@ G_BEGIN_DECLS
 /* TODO Boxing of PurpleSavedStatus is a temporary solution to having a GType
  *      for saved statuses. This should rather be a GObject instead of a GBoxed.
  */
-PURPLE_AVAILABLE_IN_ALL
+PURPLE_AVAILABLE_IN_3_0
 GType purple_savedstatus_get_type(void);
 
 /**
@@ -95,9 +97,11 @@ GType purple_savedstatus_get_type(void);
  *
  * Returns: The newly created saved status, or NULL if the title you
  *         used was already taken.
+ *
+ * Since: 2.0.0
  */
-PurpleSavedStatus *purple_savedstatus_new(const char *title,
-									  PurpleStatusPrimitive type);
+PURPLE_AVAILABLE_IN_ALL
+PurpleSavedStatus *purple_savedstatus_new(const char *title, PurpleStatusPrimitive type);
 
 /**
  * purple_savedstatus_set_title:
@@ -105,9 +109,11 @@ PurpleSavedStatus *purple_savedstatus_new(const char *title,
  * @title:   The title of the saved status.
  *
  * Set the title for the given saved status.
+ *
+ * Since: 2.0.0
  */
-void purple_savedstatus_set_title(PurpleSavedStatus *status,
-								const char *title);
+PURPLE_AVAILABLE_IN_ALL
+void purple_savedstatus_set_title(PurpleSavedStatus *status, const char *title);
 
 /**
  * purple_savedstatus_set_primitive_type:
@@ -119,8 +125,7 @@ void purple_savedstatus_set_title(PurpleSavedStatus *status,
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_savedstatus_set_primitive_type(PurpleSavedStatus *status,
-							   PurpleStatusPrimitive type);
+void purple_savedstatus_set_primitive_type(PurpleSavedStatus *status, PurpleStatusPrimitive type);
 
 /**
  * purple_savedstatus_set_message:
@@ -129,9 +134,11 @@ void purple_savedstatus_set_primitive_type(PurpleSavedStatus *status,
  *                message for this status.
  *
  * Set the message for the given saved status.
+ *
+ * Since: 2.0.0
  */
-void purple_savedstatus_set_message(PurpleSavedStatus *status,
-								  const char *message);
+PURPLE_AVAILABLE_IN_ALL
+void purple_savedstatus_set_message(PurpleSavedStatus *status, const char *message);
 
 /**
  * purple_savedstatus_set_substatus:
@@ -142,24 +149,26 @@ void purple_savedstatus_set_message(PurpleSavedStatus *status,
  * @message:	The message for the account in the substatus.
  *
  * Set a substatus for an account in a saved status.
+ *
+ * Since: 2.0.0
  */
-void purple_savedstatus_set_substatus(PurpleSavedStatus *status,
-									const PurpleAccount *account,
-									const PurpleStatusType *type,
-									const char *message);
+PURPLE_AVAILABLE_IN_ALL
+void purple_savedstatus_set_substatus(PurpleSavedStatus *status, const PurpleAccount *account, const PurpleStatusType *type, const char *message);
 
 /**
  * purple_savedstatus_unset_substatus:
  * @saved_status: The saved status.
- * @account:      The account.
+ * @account: The account.
  *
  * Unset a substatus for an account in a saved status.  This clears
  * the previously set substatus for the PurpleSavedStatus.  If this
  * saved status is activated then this account will use the default
  * status type and message.
+ *
+ * Since: 2.0.0
  */
-void purple_savedstatus_unset_substatus(PurpleSavedStatus *saved_status,
-												  const PurpleAccount *account);
+PURPLE_AVAILABLE_IN_ALL
+void purple_savedstatus_unset_substatus(PurpleSavedStatus *saved_status, const PurpleAccount *account);
 
 /**
  * purple_savedstatus_delete:
@@ -169,9 +178,12 @@ void purple_savedstatus_unset_substatus(PurpleSavedStatus *saved_status,
  * of saved statuses, and writes the revised list to status.xml.
  *
  * Returns: TRUE if the status was successfully deleted.  FALSE if the
- *         status could not be deleted because no saved status exists
- *         with the given title.
+ *          status could not be deleted because no saved status exists
+ *          with the given title.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_savedstatus_delete(const char *title);
 
 /**
@@ -181,7 +193,10 @@ gboolean purple_savedstatus_delete(const char *title);
  *
  * Delete a saved status.  This removes the saved status from the list
  * of saved statuses, and writes the revised list to status.xml.
+ *
+ * Since: 2.1.0
  */
+PURPLE_AVAILABLE_IN_2_1
 void purple_savedstatus_delete_by_status(PurpleSavedStatus *saved_status);
 
 /**
@@ -189,8 +204,12 @@ void purple_savedstatus_delete_by_status(PurpleSavedStatus *saved_status);
  *
  * Returns all saved statuses.
  *
- * Returns: (element-type PurpleSavedStatus) (transfer none): A list of saved statuses.
+ * Returns: (element-type PurpleSavedStatus) (transfer none): A list of saved
+ *          statuses.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_savedstatuses_get_all(void);
 
 /**
@@ -206,7 +225,10 @@ GList *purple_savedstatuses_get_all(void);
  *
  * Returns: (element-type PurpleSavedStatus) (transfer container): A list containing
  *         at most how_many saved statuses.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_savedstatuses_get_popular(unsigned int how_many);
 
 /**
@@ -218,7 +240,10 @@ GList *purple_savedstatuses_get_popular(unsigned int how_many);
  *
  * Returns: A pointer to the in-use PurpleSavedStatus.
  *         This function never returns NULL.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleSavedStatus *purple_savedstatus_get_current(void);
 
 /**
@@ -229,7 +254,10 @@ PurpleSavedStatus *purple_savedstatus_get_current(void);
  *
  * Returns: A pointer to the in-use PurpleSavedStatus.
  *         This function never returns NULL.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleSavedStatus *purple_savedstatus_get_default(void);
 
 /**
@@ -240,7 +268,10 @@ PurpleSavedStatus *purple_savedstatus_get_default(void);
  *
  * Returns: A pointer to the idle-away PurpleSavedStatus.
  *         This function never returns NULL.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleSavedStatus *purple_savedstatus_get_idleaway(void);
 
 /**
@@ -250,7 +281,10 @@ PurpleSavedStatus *purple_savedstatus_get_idleaway(void);
  * returns FALSE.
  *
  * Returns: TRUE if our accounts have been set to idle-away.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_savedstatus_is_idleaway(void);
 
 /**
@@ -260,7 +294,10 @@ gboolean purple_savedstatus_is_idleaway(void);
  *                 be switched to use the default status.
  *
  * Set whether accounts in Purple are idle-away or not.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_savedstatus_set_idleaway(gboolean idleaway);
 
 /**
@@ -270,7 +307,10 @@ void purple_savedstatus_set_idleaway(gboolean idleaway);
  *
  * Returns: A pointer to the startup PurpleSavedStatus.
  *         This function never returns NULL.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleSavedStatus *purple_savedstatus_get_startup(void);
 
 /**
@@ -280,7 +320,10 @@ PurpleSavedStatus *purple_savedstatus_get_startup(void);
  * Finds a saved status with the specified title.
  *
  * Returns: The saved status if found, or NULL.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleSavedStatus *purple_savedstatus_find(const char *title);
 
 /**
@@ -291,7 +334,10 @@ PurpleSavedStatus *purple_savedstatus_find(const char *title);
  * Finds a saved status with the specified creation time.
  *
  * Returns: The saved status if found, or NULL.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleSavedStatus *purple_savedstatus_find_by_creation_time(time_t creation_time);
 
 /**
@@ -304,7 +350,10 @@ PurpleSavedStatus *purple_savedstatus_find_by_creation_time(time_t creation_time
  * Finds a saved status with the specified primitive and message.
  *
  * Returns: The saved status if found, or NULL.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 PurpleSavedStatus *purple_savedstatus_find_transient_by_type_and_message(PurpleStatusPrimitive type, const char *message);
 
 /**
@@ -324,7 +373,10 @@ PurpleSavedStatus *purple_savedstatus_find_transient_by_type_and_message(PurpleS
  * restore it when Purple restarts.
  *
  * Returns: TRUE if the saved status is transient.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_savedstatus_is_transient(const PurpleSavedStatus *saved_status);
 
 /**
@@ -337,7 +389,10 @@ gboolean purple_savedstatus_is_transient(const PurpleSavedStatus *saved_status);
  *         be overwritten on subsequent calls to this function.  If
  *         you need a reference to the title for prolonged use then
  *         you should make a copy of it.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_savedstatus_get_title(const PurpleSavedStatus *saved_status);
 
 /**
@@ -363,7 +418,10 @@ PurpleStatusPrimitive purple_savedstatus_get_primitive_type(const PurpleSavedSta
  *         status does not have a message.  This will
  *         contain the normal markup that is created by
  *         Purple's IMHTML (basically HTML markup).
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_savedstatus_get_message(const PurpleSavedStatus *saved_status);
 
 /**
@@ -381,7 +439,10 @@ const char *purple_savedstatus_get_message(const PurpleSavedStatus *saved_status
  * identifier for the given saved status.
  *
  * Returns: The timestamp when this saved status was created.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 time_t purple_savedstatus_get_creation_time(const PurpleSavedStatus *saved_status);
 
 /**
@@ -394,7 +455,10 @@ time_t purple_savedstatus_get_creation_time(const PurpleSavedStatus *saved_statu
  *
  * Returns: TRUE if the saved_status has substatuses.
  *         FALSE otherwise.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 gboolean purple_savedstatus_has_substatuses(const PurpleSavedStatus *saved_status);
 
 /**
@@ -407,10 +471,11 @@ gboolean purple_savedstatus_has_substatuses(const PurpleSavedStatus *saved_statu
  * Returns: (transfer none): The PurpleSavedStatusSub for the account, or NULL if
  *         the given account does not have a substatus that
  *         differs from the default status of this PurpleSavedStatus.
+ *
+ * Since: 2.0.0
  */
-PurpleSavedStatusSub *purple_savedstatus_get_substatus(
-									const PurpleSavedStatus *saved_status,
-									const PurpleAccount *account);
+PURPLE_AVAILABLE_IN_ALL
+PurpleSavedStatusSub *purple_savedstatus_get_substatus(const PurpleSavedStatus *saved_status, const PurpleAccount *account);
 
 /**
  * purple_savedstatus_substatus_get_status_type:
@@ -420,11 +485,10 @@ PurpleSavedStatusSub *purple_savedstatus_get_substatus(
  *
  * Returns: The status type.
  *
- * Since: 3.0.0
+ * Since: 2.0.0
  */
-PURPLE_AVAILABLE_IN_3_0
-const PurpleStatusType *purple_savedstatus_substatus_get_status_type(
-		const PurpleSavedStatusSub *substatus);
+PURPLE_AVAILABLE_IN_ALL
+const PurpleStatusType *purple_savedstatus_substatus_get_status_type(const PurpleSavedStatusSub *substatus);
 
 /**
  * purple_savedstatus_substatus_get_message:
@@ -434,7 +498,10 @@ const PurpleStatusType *purple_savedstatus_substatus_get_status_type(
  *
  * Returns: The message of the substatus, or NULL if this substatus does
  *         not have a message.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 const char *purple_savedstatus_substatus_get_message(const PurpleSavedStatusSub *substatus);
 
 /**
@@ -444,7 +511,10 @@ const char *purple_savedstatus_substatus_get_message(const PurpleSavedStatusSub 
  * Sets the statuses for all your accounts to those specified
  * by the given saved_status.  This function calls
  * purple_savedstatus_activate_for_account() for all your accounts.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_savedstatus_activate(PurpleSavedStatus *saved_status);
 
 /**
@@ -454,7 +524,10 @@ void purple_savedstatus_activate(PurpleSavedStatus *saved_status);
  *
  * Sets the statuses for a given account to those specified
  * by the given saved_status.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_savedstatus_activate_for_account(const PurpleSavedStatus *saved_status, PurpleAccount *account);
 
 /**
@@ -463,21 +536,30 @@ void purple_savedstatus_activate_for_account(const PurpleSavedStatus *saved_stat
  * Get the handle for the status subsystem.
  *
  * Returns: the handle to the status subsystem
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void *purple_savedstatuses_get_handle(void);
 
 /**
  * purple_savedstatuses_init:
  *
  * Initializes the status subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_savedstatuses_init(void);
 
 /**
  * purple_savedstatuses_uninit:
  *
  * Uninitializes the status subsystem.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_savedstatuses_uninit(void);
 
 G_END_DECLS
