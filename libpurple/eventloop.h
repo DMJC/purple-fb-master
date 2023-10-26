@@ -37,6 +37,8 @@
  * @PURPLE_INPUT_WRITE: A write condition.
  *
  * An input condition.
+ *
+ * Since: 2.0.0
  */
 typedef enum
 {
@@ -55,6 +57,8 @@ typedef enum
  * purple_input_add().  The callback will receive the @user_data passed to
  * purple_input_add(), the file descriptor on which the event occurred, and the
  * condition that was satisfied to cause the callback to be invoked.
+ *
+ * Since: 2.0.0
  */
 typedef void (*PurpleInputFunction)(gpointer data, gint fd, PurpleInputCondition cond);
 
@@ -76,9 +80,11 @@ G_BEGIN_DECLS
  * See g_io_add_watch_full().
  *
  * Returns: The resulting handle (will be greater than 0).
+ *
+ * Since: 2.0.0
  */
-guint purple_input_add(int fd, PurpleInputCondition cond,
-                       PurpleInputFunction func, gpointer user_data);
+PURPLE_AVAILABLE_IN_ALL
+guint purple_input_add(int fd, PurpleInputCondition cond, PurpleInputFunction func, gpointer user_data);
 
 /**
  * purple_input_pipe:
