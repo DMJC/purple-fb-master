@@ -42,6 +42,8 @@
  *                                conversation.
  *
  * The possible results of running a command with purple_cmd_do_command().
+ *
+ * Since: 2.0.0
  */
 typedef enum {
 	PURPLE_CMD_STATUS_OK,
@@ -66,6 +68,8 @@ typedef enum {
  * particular command; in this case, they should return
  * #PURPLE_CMD_RET_CONTINUE to cause the core to fall through to other
  * commands with the same name.
+ *
+ * Since: 2.0.0
  */
 typedef enum {
 	PURPLE_CMD_RET_OK,
@@ -82,6 +86,8 @@ typedef enum {
  * @data: User data to pass to the function.
  *
  * A function implementing a command, as passed to purple_cmd_register().
+ *
+ * Since: 2.0.0
  */
 typedef PurpleCmdRet (*PurpleCmdFunc)(PurpleConversation *conversation, const gchar *cmd,
                                   gchar **args, gchar **error, void *data);
@@ -108,6 +114,8 @@ typedef guint PurpleCmdId;
  * Commands are registered from multiple locations which leads to name
  * collisions.  PurpleCmdPriority is used to determine which command will be
  * run.
+ *
+ * Since: 2.0.0
  */
 typedef enum {
 	PURPLE_CMD_P_VERY_LOW  = -1000,
@@ -134,6 +142,8 @@ typedef enum {
  * order to be even slightly useful.
  *
  * See purple_cmd_register().
+ *
+ * Since: 2.0.0
  */
 typedef enum {
 	PURPLE_CMD_FLAG_IM               = 0x01,
@@ -203,9 +213,11 @@ G_BEGIN_DECLS
  *
  * Returns: A #PurpleCmdId, which is only used for calling
  *         #purple_cmd_unregister, or 0 on failure.
+ *
+ * Since: 2.0.0
  */
-PurpleCmdId purple_cmd_register(const gchar *cmd, const gchar *args, PurpleCmdPriority p, PurpleCmdFlag f,
-                             const gchar *protocol_id, PurpleCmdFunc func, const gchar *helpstr, void *data);
+PURPLE_AVAILABLE_IN_ALL
+PurpleCmdId purple_cmd_register(const gchar *cmd, const gchar *args, PurpleCmdPriority p, PurpleCmdFlag f, const gchar *protocol_id, PurpleCmdFunc func, const gchar *helpstr, void *data);
 
 /**
  * purple_cmd_unregister:
@@ -216,7 +228,10 @@ PurpleCmdId purple_cmd_register(const gchar *cmd, const gchar *args, PurpleCmdPr
  * All registered commands must be unregistered, if they're registered by a plugin
  * or something else that might go away. Normally this is called when the plugin
  * unloads itself.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 void purple_cmd_unregister(PurpleCmdId id);
 
 /**
@@ -238,9 +253,11 @@ void purple_cmd_unregister(PurpleCmdId id);
  * if aliases are ever implemented.
  *
  * Returns: A #PurpleCmdStatus indicating if the command succeeded or failed.
+ *
+ * Since: 2.0.0
  */
-PurpleCmdStatus purple_cmd_do_command(PurpleConversation *conv, const gchar *cmdline,
-                                  const gchar *markup, gchar **errormsg);
+PURPLE_AVAILABLE_IN_ALL
+PurpleCmdStatus purple_cmd_do_command(PurpleConversation *conv, const gchar *cmdline, const gchar *markup, gchar **errormsg);
 
 /**
  * purple_cmd_execute:
@@ -257,7 +274,10 @@ PurpleCmdStatus purple_cmd_do_command(PurpleConversation *conv, const gchar *cmd
  * command name.
  *
  * Returns: %TRUE if the command handled the @cmdline, %FALSE otherwise.
+ *
+ * Since: 2.11.0
  */
+PURPLE_AVAILABLE_IN_2_11
 gboolean purple_cmd_execute(PurpleCmdId id, PurpleConversation *conv,
 			    const gchar *cmdline);
 
@@ -272,7 +292,10 @@ gboolean purple_cmd_execute(PurpleCmdId id, PurpleConversation *conv,
  * %NULL.  Don't keep this list around past the main loop, or anything else that
  * might unregister a command, as the <type>const char *</type>'s used get freed
  * then.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_cmd_list(PurpleConversation *conv);
 
 /**
@@ -285,7 +308,10 @@ GList *purple_cmd_list(PurpleConversation *conv);
  *
  * Returns: (element-type utf8) (transfer container): the help strings for a
  *          given command, one node for each matching command.
+ *
+ * Since: 2.0.0
  */
+PURPLE_AVAILABLE_IN_ALL
 GList *purple_cmd_help(PurpleConversation *conv, const gchar *cmd);
 
 /**
