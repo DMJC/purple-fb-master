@@ -51,7 +51,7 @@ static void
 pidgin_account_manager_row_refresh_buddy_icon(PidginAccountManagerRow *row) {
 	PurpleImage *image = NULL;
 
-#warning FIX call this in the right place when buddy icons are better and can autorefresh
+#pragma message("FIX call this in the right place when buddy icons are better and can autorefresh")
 	if(!PURPLE_IS_ACCOUNT(row->account)) {
 		return;
 	}

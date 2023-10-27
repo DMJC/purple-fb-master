@@ -818,12 +818,12 @@ pidgin_account_editor_save_user_options(PidginAccountEditor *editor) {
 
 	if(bvalue) {
 		if(GDK_IS_PIXBUF(editor->avatar_pixbuf)) {
-			# warning implement this when buddy icons do not suck so bad.
+			#pragma message("implement this when buddy icons do not suck so bad.")
 		} else {
 			purple_buddy_icons_set_account_icon(editor->account, NULL, 0);
 		}
 	} else {
-		# warning set the global buddy icon when buddy icons do not suck so bad.
+		#pragma message("set the global buddy icon when buddy icons do not suck so bad.")
 	}
 
 	purple_account_thaw_notify_settings(editor->account);

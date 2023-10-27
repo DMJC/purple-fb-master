@@ -256,7 +256,7 @@ purple_plugin_is_internal(PurplePlugin *plugin)
 GSList *
 purple_plugin_get_dependent_plugins(G_GNUC_UNUSED PurplePlugin *plugin)
 {
-#warning TODO: Implement this when GPlugin can return dependent plugins.
+#pragma message("TODO: Implement this when GPlugin can return dependent plugins.")
 	return NULL;
 }
 

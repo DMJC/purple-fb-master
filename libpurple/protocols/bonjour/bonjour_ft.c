@@ -954,7 +954,7 @@ bonjour_bytestreams_init(PurpleXfer *xfer)
 
 	purple_xfer_set_local_port(xfer, port);
 
-	# warning Need to figure out how to get the local ip addresses
+	#pragma message("Need to figure out how to get the local ip addresses")
 	local_ips = NULL;
 
 	port_str = g_strdup_printf("%hu", port);
