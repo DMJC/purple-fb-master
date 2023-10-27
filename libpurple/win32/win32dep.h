@@ -31,14 +31,6 @@
 
 G_BEGIN_DECLS
 
-/* the winapi headers don't yet have winhttp.h, so we use the struct from msdn directly */
-typedef struct {
-  BOOL fAutoDetect;
-  LPWSTR lpszAutoConfigUrl;
-  LPWSTR lpszProxy;
-  LPWSTR lpszProxyBypass;
-} WINHTTP_CURRENT_USER_IE_PROXY_CONFIG;
-
 /* rpcndr.h defines small as char, causing problems, so we need to undefine it */
 #undef small
 
@@ -51,11 +43,6 @@ typedef struct {
  **/
 /* Windows helper functions */
 FARPROC wpurple_find_and_loadproc(const char *dllname, const char *procedure);
-gboolean wpurple_reg_val_exists(HKEY rootkey, const char *subkey, const char *valname);
-gboolean wpurple_read_reg_dword(HKEY rootkey, const char *subkey, const char *valname, LPDWORD result);
-char *wpurple_read_reg_string(HKEY rootkey, const char *subkey, const char *valname); /* needs to be g_free'd */
-gboolean wpurple_write_reg_string(HKEY rootkey, const char *subkey, const char *valname, const char *value);
-char *wpurple_escape_dirsep(const char *filename); /* needs to be g_free'd */
 
 /* Simulate unix pipes by creating a pair of connected sockets */
 int wpurple_input_pipe(int pipefd[2]);
