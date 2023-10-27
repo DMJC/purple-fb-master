@@ -43,7 +43,7 @@ enum {
 	SIG_REMOVED,
 	N_SIGNALS,
 };
-static guint signals[N_SIGNALS] = {};
+static guint signals[N_SIGNALS] = {0, };
 
 struct _PurplePresenceManager {
 	GObject parent;

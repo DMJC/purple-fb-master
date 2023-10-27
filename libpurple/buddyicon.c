@@ -29,6 +29,10 @@
 #include "purpleprivate.h"
 #include "purpleprotocolserver.h"
 
+#ifdef _WIN32
+# include "win32/libc_interface.h"
+#endif
+
 /* NOTE: Instances of this struct are allocated without zeroing the memory, so
  * NOTE: be sure to update purple_buddy_icon_new() if you add members. */
 struct _PurpleBuddyIcon

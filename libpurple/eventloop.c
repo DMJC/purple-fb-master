@@ -19,7 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
  */
 
+#include "purpleconfig.h"
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 
 #include "eventloop.h"
 #ifdef _WIN32

@@ -36,6 +36,10 @@
 #include "purpleprotocolclient.h"
 #include "util.h"
 
+#ifdef _WIN32
+# include "win32/libc_interface.h"
+#endif
+
 #include <json-glib/json-glib.h>
 
 #define BUF_LEN 2048

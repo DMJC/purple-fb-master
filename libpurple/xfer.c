@@ -41,6 +41,10 @@
 #include "util.h"
 #include "xfer.h"
 
+#ifdef _WIN32
+# include "win32/libc_interface.h"
+#endif
+
 #define FT_INITIAL_BUFFER_SIZE 4096
 #define FT_MAX_BUFFER_SIZE     65535
 
