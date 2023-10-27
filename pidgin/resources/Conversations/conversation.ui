@@ -54,7 +54,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
           <object class="GtkScrolledWindow">
             <property name="hexpand">1</property>
             <property name="vadjustment">
-              <object class="TalkatuAutoScroller"/>
+              <object class="PidginAutoAdjustment"/>
             </property>
             <property name="vexpand">1</property>
             <child>
