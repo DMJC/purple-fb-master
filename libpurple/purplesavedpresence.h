@@ -42,6 +42,14 @@ G_DECLARE_FINAL_TYPE(PurpleSavedPresence, purple_saved_presence, PURPLE,
                      SAVED_PRESENCE, GObject)
 
 /**
+ * PurpleSavedPresence:
+ *
+ * A data structure used to save a presence.
+ *
+ * Since: 3.0.0
+ */
+
+/**
  * purple_saved_presence_get_last_used:
  * @presence: The instance.
  *

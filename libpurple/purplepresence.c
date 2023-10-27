@@ -210,6 +210,8 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * PurplePresence:idle:
 	 *
 	 * Whether or not the presence is in an idle state.
+	 *
+	 * Since: 3.0.0
 	 */
 	properties[PROP_IDLE] = g_param_spec_boolean("idle", "Idle",
 				"Whether the presence is in idle state.", FALSE,
@@ -219,6 +221,8 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * PurplePresence:idle-time:
 	 *
 	 * The time when the presence went idle.
+	 *
+	 * Since: 3.0.0
 	 */
 	properties[PROP_IDLE_TIME] = g_param_spec_boxed(
 				"idle-time", "Idle time",
@@ -230,6 +234,8 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * PurplePresence:login-time:
 	 *
 	 * The login-time of the presence.
+	 *
+	 * Since: 3.0.0
 	 */
 	properties[PROP_LOGIN_TIME] = g_param_spec_boxed(
 		"login-time", "Login time",
@@ -241,6 +247,8 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * PurplePresence:active-status:
 	 *
 	 * The currently active status of the presence.
+	 *
+	 * Since: 3.0.0
 	 */
 	properties[PROP_ACTIVE_STATUS] = g_param_spec_object("active-status",
 				"Active status",
