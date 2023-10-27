@@ -33,6 +33,7 @@
 #include "connection.h"
 #include "purplecredentialprovider.h"
 #include "purplehistoryadapter.h"
+#include "purpleversion.h"
 
 G_BEGIN_DECLS
 
@@ -44,6 +45,7 @@ G_BEGIN_DECLS
  *
  * Returns:  The XML description of the account.
  */
+G_GNUC_INTERNAL
 PurpleXmlNode *_purple_account_to_xmlnode(PurpleAccount *account);
 
 /**
@@ -54,17 +56,18 @@ PurpleXmlNode *_purple_account_to_xmlnode(PurpleAccount *account);
  *
  * Returns: The last child of the node.
  */
+G_GNUC_INTERNAL
 PurpleBlistNode *_purple_blist_get_last_child(PurpleBlistNode *node);
 
 /* This is for the accounts code to notify the buddy icon code that
  * it's done loading.  We may want to replace this with a signal. */
-void
-_purple_buddy_icons_account_loaded_cb(void);
+G_GNUC_INTERNAL
+void _purple_buddy_icons_account_loaded_cb(void);
 
 /* This is for the buddy list to notify the buddy icon code that
  * it's done loading.  We may want to replace this with a signal. */
-void
-_purple_buddy_icons_blist_loaded_cb(void);
+G_GNUC_INTERNAL
+void _purple_buddy_icons_blist_loaded_cb(void);
 
 /**
  * _purple_connection_wants_to_die:
@@ -75,6 +78,7 @@ _purple_buddy_icons_blist_loaded_cb(void);
  * Note: This function should only be called by purple_account_set_enabled()
  *       in account.c.
  */
+G_GNUC_INTERNAL
 gboolean _purple_connection_wants_to_die(PurpleConnection *gc);
 
 /**
@@ -87,8 +91,9 @@ gboolean _purple_connection_wants_to_die(PurpleConnection *gc);
  * Note: This function should only be called by purple_serv_got_joined_chat()
  *       in server.c.
  */
-void _purple_connection_add_active_chat(PurpleConnection *gc,
-                                        PurpleChatConversation *chat);
+G_GNUC_INTERNAL
+void _purple_connection_add_active_chat(PurpleConnection *gc, PurpleChatConversation *chat);
+
 /**
  * _purple_connection_remove_active_chat:
  * @gc:    The connection
@@ -99,8 +104,8 @@ void _purple_connection_add_active_chat(PurpleConnection *gc,
  * Note: This function should only be called by purple_serv_got_chat_left()
  *       in server.c.
  */
-void _purple_connection_remove_active_chat(PurpleConnection *gc,
-                                           PurpleChatConversation *chat);
+G_GNUC_INTERNAL
+void _purple_connection_remove_active_chat(PurpleConnection *gc, PurpleChatConversation *chat);
 
 /**
  * _purple_statuses_get_primitive_scores:
@@ -110,6 +115,7 @@ void _purple_connection_remove_active_chat(PurpleConnection *gc,
  *
  * Returns: The primitive scores array from status.c.
  */
+G_GNUC_INTERNAL
 int *_purple_statuses_get_primitive_scores(void);
 
 /**
@@ -127,8 +133,8 @@ int *_purple_statuses_get_primitive_scores(void);
  *
  * See purple_conversation_write_message().
  */
-void
-_purple_conversation_write_common(PurpleConversation *conv, PurpleMessage *msg);
+G_GNUC_INTERNAL
+void _purple_conversation_write_common(PurpleConversation *conv, PurpleMessage *msg);
 
 /**
  * purple_account_manager_startup:
@@ -137,6 +143,7 @@ _purple_conversation_write_common(PurpleConversation *conv, PurpleMessage *msg);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_account_manager_startup(void);
 
 /**
@@ -146,6 +153,7 @@ void purple_account_manager_startup(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_account_manager_shutdown(void);
 
 /**
@@ -155,6 +163,7 @@ void purple_account_manager_shutdown(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_contact_manager_startup(void);
 
 /**
@@ -164,6 +173,7 @@ void purple_contact_manager_startup(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_contact_manager_shutdown(void);
 
 /**
@@ -173,6 +183,7 @@ void purple_contact_manager_shutdown(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_conversation_manager_startup(void);
 
 /**
@@ -182,6 +193,7 @@ void purple_conversation_manager_startup(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_conversation_manager_shutdown(void);
 
 /**
@@ -191,6 +203,7 @@ void purple_conversation_manager_shutdown(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_credential_manager_startup(void);
 
 /**
@@ -200,6 +213,7 @@ void purple_credential_manager_startup(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_credential_manager_shutdown(void);
 
 /**
@@ -209,6 +223,7 @@ void purple_credential_manager_shutdown(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_protocol_manager_startup(void);
 
 /**
@@ -218,6 +233,7 @@ void purple_protocol_manager_startup(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_protocol_manager_shutdown(void);
 
 /**
@@ -228,6 +244,7 @@ void purple_protocol_manager_shutdown(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_credential_provider_activate(PurpleCredentialProvider *provider);
 
 /**
@@ -239,6 +256,7 @@ void purple_credential_provider_activate(PurpleCredentialProvider *provider);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_credential_provider_deactivate(PurpleCredentialProvider *provider);
 
 /**
@@ -249,10 +267,13 @@ void purple_credential_provider_deactivate(PurpleCredentialProvider *provider);
  * Asks @adapter to become the active adapter. If @adapter can not become active
  * it should return %FALSE and set @error.
  *
+ * NOTE: This is public only for tests. Do not use outside of libpurple.
+ *
  * Returns: %TRUE on success otherwise %FALSE with @error set.
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_activate(PurpleHistoryAdapter *adapter, GError **error);
 
 /**
@@ -263,10 +284,13 @@ gboolean purple_history_adapter_activate(PurpleHistoryAdapter *adapter, GError *
  * Asks @adapter to stop being the active adapter. If @adapter can not
  * deactivate it should return %FALSE and set @error.
  *
+ * NOTE: This is public only for tests. Do not use outside of libpurple.
+ *
  * Returns: %TRUE on success otherwise %FALSE with @error set.
  *
  * Since: 3.0.0
  */
+PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_deactivate(PurpleHistoryAdapter *adapter, GError **error);
 
 /**
@@ -276,6 +300,7 @@ gboolean purple_history_adapter_deactivate(PurpleHistoryAdapter *adapter, GError
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_notification_manager_startup(void);
 
 /**
@@ -285,6 +310,7 @@ void purple_notification_manager_startup(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_notification_manager_shutdown(void);
 
 /**
@@ -294,6 +320,7 @@ void purple_notification_manager_shutdown(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_whiteboard_manager_startup(void);
 
 /**
@@ -303,6 +330,7 @@ void purple_whiteboard_manager_startup(void);
  *
  * Since: 3.0.0
  */
+G_GNUC_INTERNAL
 void purple_whiteboard_manager_shutdown(void);
 
 /**
@@ -318,7 +346,8 @@ void purple_whiteboard_manager_shutdown(void);
  *
  * Since: 3.0.0
  */
-G_GNUC_INTERNAL void purple_account_set_enabled_plain(PurpleAccount *account, gboolean enabled);
+G_GNUC_INTERNAL
+void purple_account_set_enabled_plain(PurpleAccount *account, gboolean enabled);
 
 G_END_DECLS
 
