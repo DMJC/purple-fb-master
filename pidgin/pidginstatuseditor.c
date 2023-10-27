@@ -20,8 +20,6 @@
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <talkatu/talkatu.h>
-
 #include "pidginstatuseditor.h"
 
 #include "pidginstatusprimitivechooser.h"
@@ -83,7 +81,7 @@ pidgin_status_editor_set_status(PidginStatusEditor *editor,
 	gtk_editable_set_text(GTK_EDITABLE(editor->title), title);
 	chooser = PIDGIN_STATUS_PRIMITIVE_CHOOSER(editor->primitive);
 	pidgin_status_primitive_chooser_set_selected(chooser, primitive);
-	talkatu_markup_set_html(TALKATU_BUFFER(editor->buffer), message, -1);
+	gtk_text_buffer_set_text(editor->buffer, message, -1);
 
 	g_object_notify_by_pspec(G_OBJECT(editor), properties[PROP_STATUS]);
 }
@@ -92,6 +90,8 @@ static void
 pidgin_status_editor_save_status(PidginStatusEditor *editor) {
 	PidginStatusPrimitiveChooser *chooser = NULL;
 	PurpleStatusPrimitive primitive;
+	GtkTextIter start;
+	GtkTextIter end;
 	gchar *message = NULL;
 	const gchar *title = NULL;
 
@@ -100,7 +100,9 @@ pidgin_status_editor_save_status(PidginStatusEditor *editor) {
 	chooser = PIDGIN_STATUS_PRIMITIVE_CHOOSER(editor->primitive);
 	primitive = pidgin_status_primitive_chooser_get_selected(chooser);
 
-	message = talkatu_markup_get_html(editor->buffer, NULL);
+	gtk_text_buffer_get_start_iter(editor->buffer, &start);
+	gtk_text_buffer_get_end_iter(editor->buffer, &end);
+	message = gtk_text_buffer_get_text(editor->buffer, &start, &end, FALSE);
 
 	if(editor->status == NULL) {
 		editor->status = purple_savedstatus_new(title, primitive);
