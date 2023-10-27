@@ -54,7 +54,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
           <object class="GtkScrolledWindow">
             <property name="hexpand">1</property>
             <property name="vadjustment">
-              <object class="PidginAutoAdjustment"/>
+              <object class="PidginAutoAdjustment" id="history_adjustment"/>
             </property>
             <property name="vexpand">1</property>
             <child>
@@ -83,13 +83,18 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
       </object>
     </child>
     <child>
-      <object class="TalkatuEditor" id="editor">
+      <object class="GtkSeparator"/>
+    </child>
+    <child>
+      <object class="GtkScrolledWindow">
         <property name="vexpand">0</property>
-        <property name="orientation">vertical</property>
-        <child internal-child="input">
-          <object class="TalkatuInput" id="input">
-            <property name="send-binding">return|kp-enter</property>
-            <signal name="send-message" handler="pidgin_conversation_send_message_cb"/>
+        <child>
+          <object class="GtkTextView" id="input">
+            <child>
+              <object class="GtkEventControllerKey">
+                <signal name="key-pressed" handler="pidgin_conversation_input_key_pressed_cb"/>
+              </object>
+            </child>
           </object>
         </child>
       </object>

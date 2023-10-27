@@ -24,8 +24,7 @@
 
 #include <purple.h>
 
-#include <talkatu.h>
-
+#include "pidginautoadjustment.h"
 #include "pidgincolor.h"
 #include "pidginconversation.h"
 #include "pidgininfopane.h"
@@ -45,9 +44,11 @@ struct _PidginConversation {
 	PurpleConversation *conversation;
 
 	GtkWidget *info_pane;
-	GtkWidget *editor;
 	GtkWidget *history;
+	GtkAdjustment *history_adjustment;
 	GtkNoSelection *history_selection;
+
+	GtkWidget *input;
 };
 
 G_DEFINE_TYPE(PidginConversation, pidgin_conversation, GTK_TYPE_BOX)
@@ -115,16 +116,46 @@ pidgin_conversation_set_tooltip_for_timestamp(GtkTooltip *tooltip,
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
-static void
-pidgin_conversation_send_message_cb(TalkatuInput *input, gpointer data) {
+static gboolean
+pidgin_conversation_input_key_pressed_cb(G_GNUC_UNUSED GtkEventControllerKey *self,
+                                         guint keyval,
+                                         G_GNUC_UNUSED guint keycode,
+                                         GdkModifierType state,
+                                         gpointer data)
+{
 	PidginConversation *conversation = data;
-	const char *contents = NULL;
+	gboolean handled = TRUE;
 
-	contents = talkatu_message_get_contents(TALKATU_MESSAGE(input));
+	if(keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter) {
+		GtkTextBuffer *buffer = NULL;
+		GtkTextIter start;
+		GtkTextIter end;
+		char *contents = NULL;
 
-	purple_conversation_send(conversation->conversation, contents);
+		if(state == GDK_SHIFT_MASK || state == GDK_CONTROL_MASK) {
+			return FALSE;
+		}
 
-	talkatu_message_set_contents(TALKATU_MESSAGE(input), "");
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(conversation->input));
+		gtk_text_buffer_get_start_iter(buffer, &start);
+		gtk_text_buffer_get_end_iter(buffer, &end);
+
+		contents = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
+
+		purple_conversation_send(conversation->conversation, contents);
+
+		g_clear_pointer(&contents, g_free);
+
+		gtk_text_buffer_set_text(buffer, "", -1);
+	} else if(keyval == GDK_KEY_Page_Up) {
+		pidgin_auto_adjustment_decrement(PIDGIN_AUTO_ADJUSTMENT(conversation->history_adjustment));
+	} else if(keyval == GDK_KEY_Page_Down) {
+		pidgin_auto_adjustment_increment(PIDGIN_AUTO_ADJUSTMENT(conversation->history_adjustment));
+	} else {
+		handled = FALSE;
+	}
+
+	return handled;
 }
 
 static void
@@ -340,14 +371,16 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     info_pane);
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
-	                                     editor);
-	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     history);
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     history_selection);
+	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
+	                                     history_adjustment);
+	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
+	                                     input);
 
 	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_conversation_send_message_cb);
+	                                        pidgin_conversation_input_key_pressed_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_conversation_get_author_attributes);
 	gtk_widget_class_bind_template_callback(widget_class,
