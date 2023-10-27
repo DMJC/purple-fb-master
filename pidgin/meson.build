@@ -253,26 +253,28 @@ pkgconfig.generate(
     requires : [gtk, libadwaita, libpurple, 'talkatu', 'gplugin-gtk4'],
     variables : [f'plugindir=${libdir}/pidgin-@purple_major_version@'])
 
-PIDGIN_DESKTOP_FILE = 'im.pidgin.Pidgin3.desktop'
-i18n = import('i18n')
-desktop_file_in = configure_file(
-    input : 'data' / (PIDGIN_DESKTOP_FILE + '.in.in'),
-    output : PIDGIN_DESKTOP_FILE + '.in',
-    configuration : conf)
-i18n.merge_file(
-    input : desktop_file_in,
-    output : PIDGIN_DESKTOP_FILE,
-    po_dir : meson.project_source_root() / 'po',
-    type : 'desktop',
-    install : true,
-    install_dir : get_option('datadir') / 'applications')
+if host_machine.system() != 'windows'
+	PIDGIN_DESKTOP_FILE = 'im.pidgin.Pidgin3.desktop'
+	i18n = import('i18n')
+	desktop_file_in = configure_file(
+	    input : 'data' / f'@PIDGIN_DESKTOP_FILE@.in.in',
+	    output : f'@PIDGIN_DESKTOP_FILE@.in',
+	    configuration : conf)
+	i18n.merge_file(
+	    input : desktop_file_in,
+	    output : PIDGIN_DESKTOP_FILE,
+	    po_dir : meson.project_source_root() / 'po',
+	    type : 'desktop',
+	    install : true,
+	    install_dir : get_option('datadir') / 'applications')
 
-i18n.merge_file(
-    input : 'data/im.pidgin.Pidgin3.appdata.xml.in',
-    output : 'im.pidgin.Pidgin3.appdata.xml',
-    po_dir : meson.project_source_root() / 'po',
-    install : true,
-    install_dir : get_option('datadir') / 'metainfo')
+	i18n.merge_file(
+	    input : 'data/im.pidgin.Pidgin3.appdata.xml.in',
+	    output : 'im.pidgin.Pidgin3.appdata.xml',
+	    po_dir : meson.project_source_root() / 'po',
+	    install : true,
+	    install_dir : get_option('datadir') / 'metainfo')
+endif
 
 if enable_introspection
 	introspection_sources = libpidgin_SOURCES + libpidgin_headers + libpidgin_prefs_headers

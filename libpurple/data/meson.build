@@ -1,16 +1,18 @@
-PURPLE3_URL_HANDLER_DESKTOP = 'purple3-url-handler.desktop'
-i18n = import('i18n')
-desktop_file_in = configure_file(
-    input : PURPLE3_URL_HANDLER_DESKTOP + '.in.in',
-    output : PURPLE3_URL_HANDLER_DESKTOP + '.in',
-    configuration : conf)
-i18n.merge_file(
-    input : desktop_file_in,
-    output : PURPLE3_URL_HANDLER_DESKTOP,
-    po_dir : meson.project_source_root() / 'po',
-    type : 'desktop',
-    install : true,
-    install_dir : get_option('datadir') / 'applications')
+if host_machine.system() != 'windows'
+	PURPLE3_URL_HANDLER_DESKTOP = 'purple3-url-handler.desktop'
+	i18n = import('i18n')
+	desktop_file_in = configure_file(
+	    input : f'@PURPLE3_URL_HANDLER_DESKTOP@.in.in',
+	    output : f'@PURPLE3_URL_HANDLER_DESKTOP@.in',
+	    configuration : conf)
+	i18n.merge_file(
+	    input : desktop_file_in,
+	    output : PURPLE3_URL_HANDLER_DESKTOP,
+	    po_dir : meson.project_source_root() / 'po',
+	    type : 'desktop',
+	    install : true,
+	    install_dir : get_option('datadir') / 'applications')
+endif
 
 schemas_dir = get_option('prefix') / get_option('datadir') / 'glib-2.0' / 'schemas'
 settings_schemas = [
