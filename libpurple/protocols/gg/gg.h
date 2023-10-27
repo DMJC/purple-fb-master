@@ -43,6 +43,8 @@
 #include "edisc.h"
 
 #define GGP_TYPE_PROTOCOL (ggp_protocol_get_type())
+
+G_MODULE_EXPORT
 G_DECLARE_FINAL_TYPE(GGPProtocol, ggp_protocol, GGP, PROTOCOL, PurpleProtocol)
 
 typedef struct {
@@ -68,8 +70,6 @@ typedef struct
 	gboolean blocked;
 	gboolean not_a_friend;
 } ggp_buddy_data;
-
-G_MODULE_EXPORT GType ggp_protocol_get_type(void);
 
 ggp_buddy_data * ggp_buddy_get_data(PurpleBuddy *buddy);
 

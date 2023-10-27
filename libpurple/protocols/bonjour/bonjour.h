@@ -45,6 +45,8 @@
 #define BONJOUR_DOMAIN (g_quark_from_static_string("bonjour"))
 
 #define BONJOUR_TYPE_PROTOCOL (bonjour_protocol_get_type())
+
+G_MODULE_EXPORT
 G_DECLARE_FINAL_TYPE(BonjourProtocol, bonjour_protocol, BONJOUR, PROTOCOL,
                      PurpleProtocol)
 
@@ -55,11 +57,6 @@ typedef struct
 	GSList *xfer_lists;
 	gchar *jid;
 } BonjourData;
-
-/**
- * Returns the GType for the BonjourProtocol object.
- */
-G_MODULE_EXPORT GType bonjour_protocol_get_type(void);
 
 /**
  *  This will always be username@machinename
