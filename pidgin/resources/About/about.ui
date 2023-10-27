@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 
-
+<!--
 Pidgin - Internet Messenger
 Copyright (C) Pidgin Developers <devel@pidgin.im>
 
@@ -15,25 +14,14 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
+along with this library; if not, see <https://www.gnu.org/licenses/>.
 -->
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <requires lib="Talkatu" version="0.2.0"/>
   <!-- interface-license-type gplv2 -->
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
-  <object class="TalkatuBuffer" id="main_buffer">
-    <property name="action-group">
-      <object class="TalkatuActionGroup">
-        <property name="format">markdown</property>
-        <property name="buffer">main_buffer</property>
-      </object>
-    </property>
-  </object>
   <template class="PidginAboutDialog" parent="GtkDialog">
     <property name="default-height">600</property>
     <signal name="response" handler="pidgin_about_dialog_response_cb" swapped="no"/>
@@ -83,16 +71,38 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                                 <property name="css-classes">view</property>
                                 <property name="margin-bottom">24</property>
                                 <child>
-                                  <object class="TalkatuView" id="main_page">
-                                    <property name="focusable">1</property>
-                                    <property name="editable">0</property>
+                                  <object class="GtkLabel">
+                                    <property name="use-markup">1</property>
                                     <property name="margin-top">12</property>
                                     <property name="margin-bottom">12</property>
                                     <property name="margin-start">12</property>
                                     <property name="margin-end">12</property>
                                     <property name="wrap-mode">word</property>
-                                    <property name="buffer">main_buffer</property>
-                                    <signal name="open-url" handler="pidgin_about_dialog_open_url_cb" swapped="no"/>
+                                    <property name="wrap">1</property>
+                                    <property name="label">
+<![CDATA[<span font-size="x-large"><b>Pidgin</b></span>
+
+Pidgin is a messaging client based on libpurple which is capable of connecting to multiple messaging services at once.  Pidgin is written in C using GTK.  Pidgin is released, and may be modified and redistributed,  under the terms of the GPL version 2 (or later).  A copy of the GPL is distributed with Pidgin.  Pidgin is copyrighted by its contributors, a list of whom is also distributed with Pidgin.  There is no warranty for Pidgin.
+
+<span font-size="large"><b>Helpful Resources</b></span>
+
+ • <a href="https://pidgin.im">Website</a>
+ • <a href="https://pidgin.im/help/">Frequently Asked Questions</a>
+ • IRC Channel: #pidgin on irc.libera.chat
+ • XMPP MUC: devel@conference.pidgin.im
+
+<span font-size="medium"><b>Help for Oracle Employees</b></span>
+
+Help is available from your normal internal helpdesk or IT department. The Pidgin developer and user communities cannot assist you in the configuration or use of Pidgin within Oracle, as we know nothing of Oracle's infrastructure.
+
+<span font-size="medium"><b>Help from other Pidgin users</b></span>
+
+Help is available on <a href="https://discourse.imfreedom.org/c/pidgin/5">our Discourse</a>.
+
+We can't help with third-party protocols or plugins, but you may be able to find support via the <a href="https://pidgin.im/plugins/">Third Party Plugins Page</a>.
+
+The Discourse's primary language is English.  You are welcome to post in another language, but the responses may be less helpful.]]>
+                                    </property>
                                   </object>
                                 </child>
                               </object>

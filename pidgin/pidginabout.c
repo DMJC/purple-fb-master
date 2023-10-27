@@ -33,7 +33,6 @@
 #include <json-glib/json-glib.h>
 
 #include <adwaita.h>
-#include <talkatu.h>
 
 #include "pidginabout.h"
 
@@ -46,8 +45,6 @@ struct _PidginAboutDialog {
 	GtkDialog parent;
 
 	GtkWidget *application_name;
-
-	GtkTextBuffer *main_buffer;
 
 	AdwPreferencesPage *developers_page;
 
@@ -71,36 +68,6 @@ pidgin_about_dialog_load_application_name(PidginAboutDialog *about) {
 	gtk_label_set_text(GTK_LABEL(about->application_name), label);
 
 	g_free(label);
-}
-
-static void
-pidgin_about_dialog_load_main_page(PidginAboutDialog *about) {
-	GtkTextIter start;
-	GInputStream *istream = NULL;
-	GString *str = NULL;
-	gchar buffer[8192];
-	gssize read = 0, size = 0;
-
-	/* now load the html */
-	istream = g_resource_open_stream(pidgin_get_resource(),
-	                                 "/im/pidgin/Pidgin3/About/about.md",
-	                                 G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
-
-	str = g_string_new("");
-
-	while((read = g_input_stream_read(istream, buffer, sizeof(buffer), NULL, NULL)) > 0) {
-		g_string_append_len(str, (gchar *)buffer, read);
-		size += read;
-	}
-
-	gtk_text_buffer_get_start_iter(about->main_buffer, &start);
-
-	talkatu_markdown_insert(TALKATU_BUFFER(about->main_buffer), &start,
-	                        str->str, size);
-
-	g_string_free(str, TRUE);
-
-	g_input_stream_close(istream, NULL, NULL);
 }
 
 static void
@@ -584,16 +551,6 @@ pidgin_about_dialog_response_cb(GtkDialog *dialog, gint response_id,
 }
 
 static void
-pidgin_about_dialog_open_url_cb(G_GNUC_UNUSED TalkatuView *view,
-                                const char *url, gpointer data)
-{
-	GtkUriLauncher *launcher = NULL;
-	launcher = gtk_uri_launcher_new(url);
-	gtk_uri_launcher_launch(launcher, GTK_WINDOW(data), NULL, NULL, NULL);
-	g_object_unref(launcher);
-}
-
-static void
 pidgin_about_dialog_copy_button_cb(GtkButton *button,
                                    gpointer data)
 {
@@ -678,9 +635,6 @@ pidgin_about_dialog_class_init(PidginAboutDialogClass *klass) {
 	                                     application_name);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
-	                                     main_buffer);
-
-	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
 	                                     developers_page);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginAboutDialog,
@@ -702,8 +656,6 @@ pidgin_about_dialog_class_init(PidginAboutDialogClass *klass) {
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_about_dialog_response_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_about_dialog_open_url_cb);
-	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_about_dialog_copy_button_cb);
 }
 
@@ -713,9 +665,6 @@ pidgin_about_dialog_init(PidginAboutDialog *about) {
 
 	/* setup the application name label */
 	pidgin_about_dialog_load_application_name(about);
-
-	/* setup the main page */
-	pidgin_about_dialog_load_main_page(about);
 
 	/* setup the developers stuff */
 	pidgin_about_dialog_load_developers(about);
