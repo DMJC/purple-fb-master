@@ -425,3 +425,17 @@ purple_ui_get_settings_backend(PurpleUi *ui) {
 
 	return NULL;
 }
+
+PurpleHistoryAdapter *
+purple_ui_get_history_adapter(PurpleUi *ui) {
+	PurpleUiClass *klass = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_UI(ui), NULL);
+
+	klass = PURPLE_UI_GET_CLASS(ui);
+	if(klass != NULL && klass->get_history_adapter != NULL) {
+		return klass->get_history_adapter(ui);
+	}
+
+	return NULL;
+}

@@ -138,38 +138,6 @@ purple_history_manager_class_init(PurpleHistoryManagerClass *klass) {
 }
 
 /******************************************************************************
- * Private API
- *****************************************************************************/
-void
-purple_history_manager_startup(void) {
-	if(default_manager == NULL) {
-		default_manager = g_object_new(PURPLE_TYPE_HISTORY_MANAGER, NULL);
-	}
-}
-
-void
-purple_history_manager_shutdown(void) {
-	GError **error = NULL;
-
-	if(default_manager == NULL) {
-		return;
-	}
-
-	if(PURPLE_IS_HISTORY_ADAPTER(default_manager->active_adapter)) {
-		PurpleHistoryAdapter *adapter = NULL;
-
-		adapter = g_object_ref(default_manager->active_adapter);
-		purple_history_manager_set_active(default_manager, NULL, NULL);
-		purple_history_manager_unregister(default_manager,
-		                                  adapter, error);
-
-		g_clear_object(&adapter);
-	}
-
-	g_clear_object(&default_manager);
-}
-
-/******************************************************************************
  * Public API
  *****************************************************************************/
 PurpleHistoryManager *
@@ -396,4 +364,58 @@ purple_history_manager_foreach(PurpleHistoryManager *manager,
 	while (g_hash_table_iter_next(&iter, NULL, &value)) {
 		func(PURPLE_HISTORY_ADAPTER(value), data);
 	}
+}
+
+gboolean
+purple_history_manager_startup(PurpleHistoryAdapter *adapter, GError **error) {
+	const char *id = NULL;
+
+	if(default_manager == NULL) {
+		default_manager = g_object_new(PURPLE_TYPE_HISTORY_MANAGER, NULL);
+		g_object_add_weak_pointer(G_OBJECT(default_manager),
+		                          (gpointer)&default_manager);
+	}
+
+	if(!PURPLE_IS_HISTORY_ADAPTER(adapter)) {
+		adapter = purple_sqlite_history_adapter_new(":memory:");
+	}
+
+	if(!purple_history_manager_register(default_manager, adapter, error)) {
+		g_clear_object(&adapter);
+
+		return FALSE;
+	}
+
+	id = purple_history_adapter_get_id(adapter);
+	if(!purple_history_manager_set_active(default_manager, id, error)) {
+		g_clear_object(&adapter);
+
+		return FALSE;
+	}
+
+	g_clear_object(&adapter);
+
+	return TRUE;
+}
+
+void
+purple_history_manager_shutdown(void) {
+	GError **error = NULL;
+
+	if(default_manager == NULL) {
+		return;
+	}
+
+	if(PURPLE_IS_HISTORY_ADAPTER(default_manager->active_adapter)) {
+		PurpleHistoryAdapter *adapter = NULL;
+
+		adapter = g_object_ref(default_manager->active_adapter);
+		purple_history_manager_set_active(default_manager, NULL, NULL);
+		purple_history_manager_unregister(default_manager,
+		                                  adapter, error);
+
+		g_clear_object(&adapter);
+	}
+
+	g_clear_object(&default_manager);
 }

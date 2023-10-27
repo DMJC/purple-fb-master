@@ -72,13 +72,19 @@ typedef void (*PurpleHistoryManagerForeachFunc)(PurpleHistoryAdapter *adapter, g
 
 /**
  * purple_history_manager_startup:
+ * @adapter: (transfer full) (nullable): The history adapter to use by default.
+ * @error: A return address for a #GError.
  *
- * Starts up the history manager by creating the default instance.
+ * Starts up the history manager by creating the default instance and setting
+ * @adapter as active if @adapter is non %NULL.
+ *
+ * Returns: %TRUE if startup was successful, otherwise %FALSE with @error
+ *          potentially set.
  *
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_history_manager_startup(void);
+gboolean purple_history_manager_startup(PurpleHistoryAdapter *adapter, GError **error);
 
 /**
  * purple_history_manager_shutdown:

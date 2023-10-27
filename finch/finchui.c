@@ -51,40 +51,6 @@ struct _FinchUi {
 G_DEFINE_TYPE(FinchUi, finch_ui, PURPLE_TYPE_UI)
 
 /******************************************************************************
- * Helpers
- *****************************************************************************/
-static gboolean
-finch_history_init(GError **error) {
-	PurpleHistoryManager *manager = NULL;
-	PurpleHistoryAdapter *adapter = NULL;
-	gchar *filename = NULL;
-	const gchar *id = NULL;
-
-	manager = purple_history_manager_get_default();
-
-	/* Attempt to create the config directory. */
-	g_mkdir_with_parents(purple_config_dir(), 0700);
-
-	filename = g_build_filename(purple_config_dir(), "history.db", NULL);
-	adapter = purple_sqlite_history_adapter_new(filename);
-	g_free(filename);
-
-	id = purple_history_adapter_get_id(adapter);
-	if(!purple_history_manager_register(manager, adapter, error)) {
-		g_clear_object(&adapter);
-
-		return FALSE;
-	}
-
-	/* The manager adds a ref to the adapter on registration, so we can remove
-	 * our reference.
-	 */
-	g_clear_object(&adapter);
-
-	return purple_history_manager_set_active(manager, id, error);
-}
-
-/******************************************************************************
  * PurpleUi Implementation
  *****************************************************************************/
 static void
@@ -93,7 +59,7 @@ finch_ui_prefs_init(G_GNUC_UNUSED PurpleUi *ui) {
 }
 
 static gboolean
-finch_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
+finch_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	finch_debug_init();
 
 #ifdef STANDALONE
@@ -103,18 +69,6 @@ finch_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
 
 	gnt_init();
 #endif /* STANDALONE */
-
-	if(!finch_history_init(error)) {
-		const char *error_message = "unknown";
-
-		if(error != NULL && *error != NULL) {
-			error_message = (*error)->message;
-		}
-
-		g_critical("failed to initialize the history api: %s", error_message);
-
-		return FALSE;
-	}
 
 	purple_prefs_add_none("/purple/gnt");
 
@@ -217,6 +171,20 @@ finch_ui_get_settings_backend(G_GNUC_UNUSED PurpleUi *ui) {
 	return backend;
 }
 
+static PurpleHistoryAdapter *
+finch_ui_get_history_adapter(G_GNUC_UNUSED PurpleUi *ui) {
+	PurpleHistoryAdapter *adapter = NULL;
+	char *filename = NULL;
+
+	g_mkdir_with_parents(purple_config_dir(), 0700);
+
+	filename = g_build_filename(purple_config_dir(), "history.db", NULL);
+	adapter = purple_sqlite_history_adapter_new(filename);
+	g_free(filename);
+
+	return adapter;
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -232,6 +200,7 @@ finch_ui_class_init(FinchUiClass *klass) {
 	ui_class->start = finch_ui_start;
 	ui_class->stop = finch_ui_stop;
 	ui_class->get_settings_backend = finch_ui_get_settings_backend;
+	ui_class->get_history_adapter = finch_ui_get_history_adapter;
 }
 
 /******************************************************************************

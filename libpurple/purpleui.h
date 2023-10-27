@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purplehistoryadapter.h"
 #include "purpleversion.h"
 
 G_BEGIN_DECLS
@@ -71,6 +72,7 @@ struct _PurpleUiClass {
 	void (*stop)(PurpleUi *ui);
 
 	gpointer (*get_settings_backend)(PurpleUi *ui);
+	PurpleHistoryAdapter *(*get_history_adapter)(PurpleUi *ui);
 
 	/*< private >*/
 	gpointer reserved[4];
@@ -215,6 +217,22 @@ void purple_ui_stop(PurpleUi *ui);
 PURPLE_AVAILABLE_IN_3_0
 gpointer purple_ui_get_settings_backend(PurpleUi *ui);
 
+/**
+ * purple_ui_get_history_adapter:
+ * @ui: The instance:
+ *
+ * Gets the history adapter that the user interface wants to use.
+ *
+ * > Note: This should typically only be called by libpurple. If this returns
+ * %NULL, then libpurple will use an in-memory history adapter instead.
+ *
+ * Returns: (transfer full) (nullable): The [class@HistoryAdapter] to use or
+ *          %NULL.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleHistoryAdapter *purple_ui_get_history_adapter(PurpleUi *ui);
 
 G_END_DECLS
 

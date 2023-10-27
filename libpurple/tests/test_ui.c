@@ -107,31 +107,6 @@ test_purple_ui_new(void) {
 		NULL);
 }
 
-static gboolean
-test_ui_init_history(GError **error) {
-	PurpleHistoryManager *manager = NULL;
-	PurpleHistoryAdapter *adapter = NULL;
-	const gchar *id = NULL;
-
-	manager = purple_history_manager_get_default();
-
-	adapter = purple_sqlite_history_adapter_new(":memory:");
-	id = purple_history_adapter_get_id(adapter);
-
-	if(!purple_history_manager_register(manager, adapter, error)) {
-		g_clear_object(&adapter);
-
-		return FALSE;
-	}
-
-	/* The manager adds a ref to the adapter on registration, so we can remove
-	 * our reference.
-	 */
-	g_clear_object(&adapter);
-
-	return purple_history_manager_set_active(manager, id, error);
-}
-
 void
 test_ui_purple_init(void) {
 	PurpleUi *ui = NULL;
@@ -157,12 +132,6 @@ test_ui_purple_init(void) {
 
 	/* Make sure our configuration directory exists. */
 	g_mkdir_with_parents(purple_config_dir(), 0755);
-
-	if(!test_ui_init_history(&error)) {
-		g_critical("failed to initialize the history api: %s",
-		           error ? error->message : "unknown");
-		g_clear_error(&error);
-	}
 
 	/* Load the preferences. */
 	purple_prefs_load();

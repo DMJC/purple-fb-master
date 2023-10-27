@@ -53,40 +53,6 @@ G_DEFINE_TYPE(PidginUi, pidgin_ui, PURPLE_TYPE_UI)
 /******************************************************************************
  * Helpers
  *****************************************************************************/
-static gboolean
-pidgin_history_init(GError **error) {
-	PurpleHistoryManager *manager = NULL;
-	PurpleHistoryAdapter *adapter = NULL;
-	gchar *filename = NULL;
-	const gchar *id = NULL;
-
-	manager = purple_history_manager_get_default();
-
-	/* Attempt to create the config_dir. We don't care about the result as the
-	 * logging adapter will fail with a better error than us failing to create
-	 * the directory.
-	 */
-	g_mkdir_with_parents(purple_config_dir(), 0700);
-
-	filename = g_build_filename(purple_config_dir(), "history.db", NULL);
-	adapter = purple_sqlite_history_adapter_new(filename);
-	g_free(filename);
-
-	id = purple_history_adapter_get_id(adapter);
-	if(!purple_history_manager_register(manager, adapter, error)) {
-		g_clear_object(&adapter);
-
-		return FALSE;
-	}
-
-	/* The manager adds a ref to the adapter on registration, so we can remove
-	 * our reference.
-	 */
-	g_clear_object(&adapter);
-
-	return purple_history_manager_set_active(manager, id, error);
-}
-
 static void
 pidgin_ui_add_protocol_theme_paths(PurpleProtocol *protocol) {
 	GdkDisplay *display = NULL;
@@ -134,7 +100,7 @@ pidgin_ui_prefs_init(G_GNUC_UNUSED PurpleUi *ui) {
 }
 
 static gboolean
-pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
+pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	PurpleProtocolManager *protocol_manager = NULL;
 	GdkDisplay *display = NULL;
 	GtkIconTheme *theme = NULL;
@@ -161,18 +127,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, GError **error) {
 	 */
 	purple_protocol_manager_foreach(protocol_manager,
 	                                pidgin_ui_protocol_foreach_theme_cb, NULL);
-
-	if(!pidgin_history_init(error)) {
-		const char *error_message = "unknown";
-
-		if(error != NULL && *error != NULL) {
-			error_message = (*error)->message;
-		}
-
-		g_critical("failed to initialize the history api: %s", error_message);
-
-		return FALSE;
-	}
 
 	/* Set the UI operation structures. */
 	purple_xfers_set_ui_ops(pidgin_xfers_get_ui_ops());
@@ -223,6 +177,20 @@ pidgin_ui_get_settings_backend(G_GNUC_UNUSED PurpleUi *ui) {
 	return backend;
 }
 
+static PurpleHistoryAdapter *
+pidgin_ui_get_history_adapter(G_GNUC_UNUSED PurpleUi *ui) {
+	PurpleHistoryAdapter *adapter = NULL;
+	char *filename = NULL;
+
+	g_mkdir_with_parents(purple_config_dir(), 0700);
+
+	filename = g_build_filename(purple_config_dir(), "history.db", NULL);
+	adapter = purple_sqlite_history_adapter_new(filename);
+	g_free(filename);
+
+	return adapter;
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -238,6 +206,7 @@ pidgin_ui_class_init(PidginUiClass *klass) {
 	ui_class->start = pidgin_ui_start;
 	ui_class->stop = pidgin_ui_stop;
 	ui_class->get_settings_backend = pidgin_ui_get_settings_backend;
+	ui_class->get_history_adapter = pidgin_ui_get_history_adapter;
 }
 
 /******************************************************************************

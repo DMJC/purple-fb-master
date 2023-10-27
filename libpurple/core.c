@@ -93,8 +93,9 @@ purple_core_print_version(void)
 }
 
 gboolean
-purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
-	PurpleCore *core;
+purple_core_init(PurpleUi *ui, GError **error) {
+	PurpleCore *core = NULL;
+	PurpleHistoryAdapter *adapter = NULL;
 	const char *force_error_message = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_UI(ui), FALSE);
@@ -168,7 +169,13 @@ purple_core_init(PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	purple_conversation_manager_startup();
 	purple_whiteboard_manager_startup();
 	purple_blist_init();
-	purple_history_manager_startup();
+
+	/* Setup the history adapter. */
+	adapter = purple_ui_get_history_adapter(ui);
+	if(!purple_history_manager_startup(adapter, error)) {
+		return FALSE;
+	}
+
 	purple_network_init();
 	purple_proxy_init();
 	purple_xfers_init();

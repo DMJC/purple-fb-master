@@ -103,7 +103,7 @@ main(gint argc, gchar *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	purple_history_manager_startup();
+	purple_history_manager_startup(NULL, NULL);
 
 	for(gint i = 1; i < argc; i++) {
 		if(argv[i] == NULL || *argv[i] == '\0') {
