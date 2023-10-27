@@ -98,12 +98,28 @@
 #if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_MIN_REQUIRED
 #error "PURPLE_VERSION_MAX_ALLOWED must be >= PURPLE_VERSION_MIN_REQUIRED"
 #endif
-#if PURPLE_VERSION_MIN_REQUIRED < G_ENCODE_VERSION(0, 1)
-#error "PURPLE_VERSION_MIN_REQUIRED must be >= PURPLE_VERSION_0_1"
+#if PURPLE_VERSION_MIN_REQUIRED < G_ENCODE_VERSION(2, 0)
+#error "PURPLE_VERSION_MIN_REQUIRED must be >= PURPLE_VERSION_2_0"
 #endif
 
 #define PURPLE_VAR _PURPLE_EXTERN
 #define PURPLE_AVAILABLE_IN_ALL _PURPLE_EXTERN
+
+/**
+ * PURPLE_VERSION_2_0:
+ *
+ * A macro that evaluates to the 2.0 version of libpurple, in a format that
+ * can be used by the C pre-processor.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_VERSION_2_0 (G_ENCODE_VERSION(2, 0))
+
+#if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_0
+#define PURPLE_AVAILABLE_IN_2_0 PURPLE_UNAVAILABLE(2, 0)
+#else
+#define PURPLE_AVAILABLE_IN_2_0 _PURPLE_EXTERN
+#endif
 
 /**
  * PURPLE_VERSION_2_1:
@@ -246,6 +262,38 @@
 #endif
 
 /**
+ * PURPLE_VERSION_2_9:
+ *
+ * A macro that evaluates to the 2.9 version of libpurple, in a format that
+ * can be used by the C pre-processor.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_VERSION_2_9 (G_ENCODE_VERSION(2, 9))
+
+#if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_9
+#define PURPLE_AVAILABLE_IN_2_9 PURPLE_UNAVAILABLE(2, 9)
+#else
+#define PURPLE_AVAILABLE_IN_2_9 _PURPLE_EXTERN
+#endif
+
+/**
+ * PURPLE_VERSION_2_10:
+ *
+ * A macro that evaluates to the 2.10 version of libpurple, in a format that
+ * can be used by the C pre-processor.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_VERSION_2_10 (G_ENCODE_VERSION(2, 10))
+
+#if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_10
+#define PURPLE_AVAILABLE_IN_2_10 PURPLE_UNAVAILABLE(2, 10)
+#else
+#define PURPLE_AVAILABLE_IN_2_10 _PURPLE_EXTERN
+#endif
+
+/**
  * PURPLE_VERSION_2_11:
  *
  * A macro that evaluates to the 2.11 version of libpurple, in a format that
@@ -277,6 +325,22 @@
 #else
 #define PURPLE_AVAILABLE_IN_2_12 _PURPLE_EXTERN
 #define PURPLE_AVAILABLE_ENUMERATOR_IN_2_12
+#endif
+
+/**
+ * PURPLE_VERSION_2_13:
+ *
+ * A macro that evaluates to the 2.13 version of libpurple, in a format that
+ * can be used by the C pre-processor.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_VERSION_2_13 (G_ENCODE_VERSION(2, 13))
+
+#if PURPLE_VERSION_MAX_ALLOWED < PURPLE_VERSION_2_13
+#define PURPLE_AVAILABLE_IN_2_13 PURPLE_UNAVAILABLE(2, 13)
+#else
+#define PURPLE_AVAILABLE_IN_2_13 _PURPLE_EXTERN
 #endif
 
 /**
