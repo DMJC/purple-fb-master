@@ -44,6 +44,7 @@ typedef enum {
 
 #include "jabber.h"
 
+PURPLE_XMPP_EXTERN_FOR_TESTS
 JabberID* jabber_id_new(const char *str);
 
 /**
@@ -52,20 +53,25 @@ JabberID* jabber_id_new(const char *str);
  */
 gboolean jabber_id_equal(const JabberID *jid1, const JabberID *jid2);
 
+PURPLE_XMPP_EXTERN_FOR_TESTS
 void jabber_id_free(JabberID *jid);
 
+PURPLE_XMPP_EXTERN_FOR_TESTS
 char *jabber_get_resource(const char *jid);
+PURPLE_XMPP_EXTERN_FOR_TESTS
 char *jabber_get_bare_jid(const char *jid);
 char *jabber_id_get_bare_jid(const JabberID *jid);
 char *jabber_id_get_full_jid(const JabberID *jid);
 
 gboolean jabber_jid_is_domain(const char *jid);
 
+PURPLE_XMPP_EXTERN_FOR_TESTS
 const char *jabber_normalize(const PurpleAccount *account, const char *in);
 
 /* Returns true if JID is the bare JID of our account. */
 gboolean jabber_is_own_account(JabberStream *js, const char *jid);
 
+PURPLE_XMPP_EXTERN_FOR_TESTS
 gboolean jabber_nodeprep_validate(const char *);
 gboolean jabber_domain_validate(const char *);
 gboolean jabber_resourceprep_validate(const char *);
@@ -77,6 +83,7 @@ gboolean jabber_resourceprep_validate(const char *);
  *          of the input, or NULL if an error occurred (the string could
  *          not be normalized)
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 char *jabber_saslprep(const char *);
 
 /* state -> readable name */

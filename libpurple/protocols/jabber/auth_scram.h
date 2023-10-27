@@ -65,6 +65,7 @@ typedef struct {
  *          NOT null-terminated and its length is the length of the binary
  *          output of the hash function in-use.
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 guchar *jabber_scram_hi(const JabberScramHash *hash, const GString *str,
                         GString *salt, guint iterations);
 
@@ -79,17 +80,20 @@ guchar *jabber_scram_hi(const JabberScramHash *hash, const GString *str,
  *
  * @returns TRUE if the proofs were successfully calculated. FALSE otherwise.
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 gboolean jabber_scram_calc_proofs(JabberScramData *data, GString *salt,
                                   guint iterations);
 
 /**
  * Feed the algorithm with the data from the server.
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 gboolean jabber_scram_feed_parser(JabberScramData *data, gchar *in, gchar **out);
 
 /**
  * Clean up and destroy the data struct
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 void jabber_scram_data_destroy(JabberScramData *data);
 
 #endif /* PURPLE_JABBER_AUTH_SCRAM_H */

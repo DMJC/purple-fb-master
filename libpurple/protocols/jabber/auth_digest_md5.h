@@ -25,6 +25,8 @@
 #ifndef PURPLE_JABBER_AUTH_DIGEST_MD5_H
 #define PURPLE_JABBER_AUTH_DIGEST_MD5_H
 
+#include "jabber.h"
+
 /*
  * Every function in this file is ONLY exposed for tests.
  * DO NOT USE ANYTHING HERE OR YOU WILL BE SENT TO THE PIT OF DESPAIR.
@@ -33,6 +35,7 @@
 /*
  * Parse a DIGEST-MD5 challenge.
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 GHashTable *jabber_auth_digest_md5_parse(const char *challenge);
 
 #endif /* PURPLE_JABBER_AUTH_DIGEST_MD5_H */

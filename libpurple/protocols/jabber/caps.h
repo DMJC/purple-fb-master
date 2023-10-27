@@ -68,6 +68,7 @@ void jabber_caps_get_info(JabberStream *js, const char *who, const char *node,
  *	@param hash_type GChecksumType to be used. Either sha-1 or md5.
  *	@return		The base64 encoded SHA-1 hash; must be freed by caller
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 gchar *jabber_caps_calculate_hash(JabberCapsClientInfo *info,
                                   GChecksumType hash_type);
 
@@ -95,6 +96,7 @@ void jabber_caps_broadcast_change(void);
  * @param query The 'query' element from an IQ reply stanza.
  * @returns A JabberCapsClientInfo struct, or NULL on error
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 JabberCapsClientInfo *jabber_caps_parse_client_info(PurpleXmlNode *query);
 
 /**
@@ -105,6 +107,7 @@ JabberCapsClientInfo *jabber_caps_parse_client_info(PurpleXmlNode *query);
  *
  * @param info The info object to free.
  */
+PURPLE_XMPP_EXTERN_FOR_TESTS
 void jabber_caps_client_info_destroy(JabberCapsClientInfo *info);
 
 #endif /* PURPLE_JABBER_CAPS_H */

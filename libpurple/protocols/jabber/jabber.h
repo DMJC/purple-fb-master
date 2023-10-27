@@ -59,6 +59,12 @@ typedef struct _JabberStream JabberStream;
 
 #include <purple.h>
 
+#ifdef PURPLE_XMPP_COMPILATION
+#define PURPLE_XMPP_EXTERN_FOR_TESTS _PURPLE_EXPORT extern
+#else
+#define PURPLE_XMPP_EXTERN_FOR_TESTS _PURPLE_IMPORT extern
+#endif
+
 #include "namespaces.h"
 
 #include "auth.h"
