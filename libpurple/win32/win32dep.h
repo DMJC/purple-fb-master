@@ -29,6 +29,8 @@
 #include <process.h>
 #include "libc_interface.h"
 
+#include "purpleversion.h"
+
 G_BEGIN_DECLS
 
 /* rpcndr.h defines small as char, causing problems, so we need to undefine it */
@@ -42,19 +44,31 @@ G_BEGIN_DECLS
  ** win32dep.c
  **/
 /* Windows helper functions */
+PURPLE_AVAILABLE_IN_ALL
 FARPROC wpurple_find_and_loadproc(const char *dllname, const char *procedure);
+
+/* Determine Purple paths */
+PURPLE_AVAILABLE_IN_ALL
+gchar *wpurple_get_special_folder(int folder_type); /* needs to be g_free'd */
+PURPLE_AVAILABLE_IN_3_0
+const char *wpurple_bin_dir(void);
+PURPLE_AVAILABLE_IN_ALL
+const char *wpurple_data_dir(void);
+PURPLE_AVAILABLE_IN_ALL
+const char *wpurple_lib_dir(const char *subdir);
+PURPLE_AVAILABLE_IN_ALL
+const char *wpurple_locale_dir(void);
+PURPLE_AVAILABLE_IN_3_0
+const char *wpurple_home_dir(void);
+PURPLE_AVAILABLE_IN_3_0
+const char *wpurple_sysconf_dir(void);
+
+/*
+ * The following API is private.
+ */
 
 /* Simulate unix pipes by creating a pair of connected sockets */
 int wpurple_input_pipe(int pipefd[2]);
-
-/* Determine Purple paths */
-gchar *wpurple_get_special_folder(int folder_type); /* needs to be g_free'd */
-const char *wpurple_bin_dir(void);
-const char *wpurple_data_dir(void);
-const char *wpurple_lib_dir(const char *subdir);
-const char *wpurple_locale_dir(void);
-const char *wpurple_home_dir(void);
-const char *wpurple_sysconf_dir(void);
 
 /* init / cleanup */
 void wpurple_init(void);
