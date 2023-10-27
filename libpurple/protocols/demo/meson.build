@@ -28,6 +28,7 @@ if DYNAMIC_DEMO
 
 	shared_library('demo', DEMO_SOURCES,
 		c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-Demo"'],
+		gnu_symbol_visibility : 'hidden',
 		dependencies : [glib, json, libpurple_dep],
 		install : true,
 		install_dir : PURPLE_PLUGINDIR)

@@ -34,6 +34,7 @@ if DYNAMIC_BONJOUR
 
 	shared_library('bonjour', BONJOUR_SOURCES,
 	    c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-Bonjour"'],
+	    gnu_symbol_visibility : 'hidden',
 	    link_args : bonjour_link_args,
 	    dependencies : [libxml, avahi, libpurple_dep, glib, ws2_32],
 	    install : true,

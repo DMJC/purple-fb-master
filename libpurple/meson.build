@@ -379,6 +379,7 @@ libpurple = library('purple3',
                     purple_builtheaders + purple_schemas +
                     purple_private_headers,
                     c_args : ['-DPURPLE_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple"'],
+                    gnu_symbol_visibility : 'hidden',
                     include_directories : [toplevel_inc, libpurple_inc],
                     install : true,
                     version : PURPLE_LIB_VERSION,

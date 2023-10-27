@@ -58,6 +58,7 @@ if DYNAMIC_GG
 
 	shared_library('gg', GG_SOURCES,
 	    c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-GaduGadu"'],
+	    gnu_symbol_visibility : 'hidden',
 	    dependencies : [libgadu, json, libpurple_dep, libsoup, glib],
 	    install : true, install_dir : PURPLE_PLUGINDIR)
 

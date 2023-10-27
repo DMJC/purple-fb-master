@@ -4,6 +4,7 @@ if host_machine.system() == 'darwin'
 
 	library('keychain-access', 'keychain-access.c',
 		c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-KeychainAccess"'],
+		gnu_symbol_visibility : 'hidden',
 		dependencies : [KEYCHAIN_ACCESS, libpurple_dep],
 		name_prefix : '',
 		install : true,
