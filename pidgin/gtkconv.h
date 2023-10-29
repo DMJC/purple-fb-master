@@ -79,16 +79,6 @@ G_BEGIN_DECLS
  */
 PurpleConversationUiOps *pidgin_conversations_get_conv_ui_ops(void);
 
-/**
- * pidgin_conv_attach_to_conversation:
- * @conv:  The conversation.
- *
- * Reattach Pidgin UI to a conversation.
- *
- * Returns: Whether Pidgin UI was successfully attached.
- */
-gboolean pidgin_conv_attach_to_conversation(PurpleConversation *conv);
-
 /**************************************************************************/
 /* GTK Conversations Subsystem                                            */
 /**************************************************************************/
@@ -115,8 +105,6 @@ void pidgin_conversations_init(void);
  * Uninitialized the GTK conversation subsystem.
  */
 void pidgin_conversations_uninit(void);
-
-void pidgin_conversation_detach(PurpleConversation *conv);
 
 G_END_DECLS
 

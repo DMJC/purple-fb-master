@@ -59,39 +59,13 @@ G_DEFINE_TYPE(PidginBuddyList, pidgin_buddy_list, PURPLE_TYPE_BUDDY_LIST)
 static void gtk_blist_join_chat(PurpleChat *chat)
 {
 	PurpleAccount *account;
-	PurpleConversation *conv;
-	PurpleConversationManager *manager;
-	PurpleProtocol *protocol;
 	GHashTable *components;
-	const char *name;
-	char *chat_name = NULL;
 
 	account = purple_chat_get_account(chat);
-	protocol = purple_account_get_protocol(account);
 
 	components = purple_chat_get_components(chat);
 
-	if(PURPLE_IS_PROTOCOL_CHAT(protocol)) {
-		chat_name = purple_protocol_chat_get_name(PURPLE_PROTOCOL_CHAT(protocol),
-		                                          components);
-	}
-
-	if(chat_name != NULL) {
-		name = chat_name;
-	} else {
-		name = purple_chat_get_name(chat);
-	}
-
-	manager = purple_conversation_manager_get_default();
-	conv = purple_conversation_manager_find(manager, account, name);
-
-	if(PURPLE_IS_CONVERSATION(conv)) {
-		pidgin_conv_attach_to_conversation(conv);
-		purple_conversation_present(conv);
-	}
-
 	purple_serv_join_chat(purple_account_get_connection(account), components);
-	g_free(chat_name);
 }
 
 /******************************************************************************

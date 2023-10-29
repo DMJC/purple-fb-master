@@ -1095,6 +1095,7 @@ version 3.0.0 (??/??/????):
 		* PidginConversation signals: chat-nick-autocomplete,
 		  chat-nick-clicked, conversation-window-created.
 		* PidginConvPlacementFunc
+		* pidgin_conv_attach_to_conversation
 		* pidgin_conv_get_tab_at_xy
 		* pidgin_conv_get_tab_icon, use PidginPresenceIcon instead.
 		* pidgin_conv_get_window

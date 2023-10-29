@@ -121,11 +121,11 @@ pidgin_dialogs_im_with_user(PurpleAccount *account, const char *username)
 	im = purple_conversation_manager_find_im(manager, account, username);
 
 	if(!PURPLE_IS_IM_CONVERSATION(im)) {
-		im = purple_im_conversation_new(account, username);
+		/* This constructor automagically registers the conversation with the
+		 * manager.
+		 */
+		purple_im_conversation_new(account, username);
 	}
-
-	pidgin_conv_attach_to_conversation(im);
-	purple_conversation_present(im);
 }
 
 static void
