@@ -91,6 +91,7 @@ pidgin_channel_join_dialog_update(PidginChannelJoinDialog *dialog) {
 	                                                                account);
 	if(PURPLE_IS_CHANNEL_JOIN_DETAILS(details)) {
 		purple_channel_join_details_merge(details, dialog->details);
+		g_object_unref(details);
 	}
 }
 

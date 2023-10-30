@@ -108,6 +108,7 @@ purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation
 	if(purple_strempty(name)) {
 		g_task_return_new_error(task, PURPLE_IRCV3_DOMAIN, 0,
 		                        "channel name is empty");
+		g_clear_object(&task);
 
 		return;
 	}
@@ -119,6 +120,7 @@ purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation
 	/* If the conversation already exists, just return TRUE. */
 	if(PURPLE_IS_CONVERSATION(conversation)) {
 		g_task_return_boolean(task, TRUE);
+		g_clear_object(&task);
 
 		return;
 	}
@@ -146,6 +148,7 @@ purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation
 	g_string_free(cmd, TRUE);
 
 	g_task_return_boolean(task, TRUE);
+	g_clear_object(&task);
 }
 
 static gboolean

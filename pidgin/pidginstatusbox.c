@@ -154,6 +154,8 @@ pidgin_status_box_populate_saved_statuses(PidginStatusBox *status_box)
 		item = g_menu_item_new(NULL, NULL);
 		g_menu_item_set_attribute(item, "custom", "s", id);
 		g_menu_append_item(menu, item);
+		g_object_unref(item);
+
 		gtk_popover_menu_add_child(popover_menu, widget, id);
 		status_box->custom_widgets = g_list_prepend(status_box->custom_widgets,
 		                                            widget);
