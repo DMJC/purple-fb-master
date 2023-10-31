@@ -28,6 +28,7 @@
 #include "gstroke.h"
 
 #define GESTURES_PLUGIN_ID "gtk-x11-gestures"
+#define SETTINGS_SCHEMA_ID "im.pidgin.Pidgin.plugin.Gestures"
 
 static void
 stroke_close(GtkWidget *widget, void *data)
@@ -122,72 +123,16 @@ new_conv_cb(PurpleConversation *conv)
 		attach_signals(conv);
 }
 
-#if 0
 static void
-mouse_button_menu_cb(GtkComboBox *opt, gpointer data)
+settings_change_cb(GSettings *settings, char *key, G_GNUC_UNUSED gpointer data)
 {
-	int button = gtk_combo_box_get_active(opt);
-
-	gstroke_set_mouse_button(button + 2);
-}
-#endif
-
-static void
-toggle_draw_cb(GtkToggleButton *toggle, gpointer data)
-{
-	purple_prefs_set_bool("/plugins/gtk/X11/gestures/visual",
-		gtk_toggle_button_get_active(toggle));
-}
-
-static void
-visual_pref_cb(const char *name, PurplePrefType type, gconstpointer value,
-			   gpointer data)
-{
-	gstroke_set_draw_strokes((gboolean) GPOINTER_TO_INT(value) );
-}
-
-static GtkWidget *
-get_config_frame(PurplePlugin *plugin)
-{
-	GtkWidget *ret;
-	GtkWidget *vbox;
-	GtkWidget *toggle;
-#if 0
-	GtkWidget *opt;
-#endif
-
-	/* Outside container */
-	ret = gtk_box_new(GTK_ORIENTATION_VERTICAL, 18);
-	gtk_container_set_border_width(GTK_CONTAINER(ret), 12);
-
-	/* Configuration frame */
-	vbox = pidgin_make_frame(ret, _("Mouse Gestures Configuration"));
-
-#if 0
-	/* Mouse button drop-down menu */
-	opt = gtk_combo_box_new_text();
-
-	gtk_combo_box_append_text(_("Middle mouse button"));
-	gtk_combo_box_append_text(_("Right mouse button"));
-	g_signal_connect(G_OBJECT(opt), "changed",
-	                 G_CALLBACK(mouse_button_menu_cb), NULL);
-
-	gtk_box_pack_start(GTK_BOX(vbox), opt, FALSE, FALSE, 0);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(opt),
-							gstroke_get_mouse_button() - 2);
-#endif
-
-	/* "Visual gesture display" checkbox */
-	toggle = gtk_check_button_new_with_mnemonic(_("_Visual gesture display"));
-	gtk_box_pack_start(GTK_BOX(vbox), toggle, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),
-			purple_prefs_get_bool("/plugins/gtk/X11/gestures/visual"));
-	g_signal_connect(G_OBJECT(toggle), "toggled",
-					 G_CALLBACK(toggle_draw_cb), NULL);
-
-	gtk_widget_set_visible(ret, TRUE);
-
-	return ret;
+	if(purple_strequal(key, "button")) {
+		gstroke_set_mouse_button(g_settings_get_enum(settings, key));
+	} else if(purple_strequal(key, "visual")) {
+		gstroke_set_draw_strokes(g_settings_get_boolean(settings, key));
+	} else {
+		g_warning("Got gestures settings change for unknown key: %s", key);
+	}
 }
 
 static GPluginPluginInfo *
@@ -217,7 +162,7 @@ gestures_query(GError **error)
 		"authors",              authors,
 		"website",              PURPLE_WEBSITE,
 		"abi-version",          PURPLE_ABI_VERSION,
-		"gtk-config-frame-cb",  get_config_frame,
+		"settings-schema",      SETTINGS_SCHEMA_ID,
 		NULL
 	);
 }
@@ -225,19 +170,19 @@ gestures_query(GError **error)
 static gboolean
 gestures_load(GPluginPlugin *plugin, GError **error)
 {
+	GSettings *settings = NULL;
 	PurpleConversation *conv;
 	PurpleConversationManager *manager;
 	GList *list;
 
-	purple_prefs_add_none("/plugins/gtk");
-	purple_prefs_add_none("/plugins/gtk/X11");
-	purple_prefs_add_none("/plugins/gtk/X11/gestures");
-	purple_prefs_add_bool("/plugins/gtk/X11/gestures/visual", FALSE);
+	settings = g_settings_new_with_backend(SETTINGS_SCHEMA_ID,
+	                                       purple_core_get_settings_backend());
 
-	purple_prefs_connect_callback(plugin,
-		"/plugins/gtk/X11/gestures/visual", visual_pref_cb, NULL);
-	gstroke_set_draw_strokes(purple_prefs_get_bool(
-		"/plugins/gtk/X11/gestures/visual"));
+	g_signal_connect(settings, "changed",
+	                 G_CALLBACK(settings_change_cb), NULL);
+	gstroke_set_mouse_button(g_settings_get_enum(settings, "button"));
+	gstroke_set_draw_strokes(g_settings_get_boolean(settings, "visual"));
+	g_object_unref(settings);
 
 	manager = purple_conversation_manager_get_default();
 	list = purple_conversation_manager_get_all(manager);
@@ -263,7 +208,8 @@ gestures_load(GPluginPlugin *plugin, GError **error)
 }
 
 static gboolean
-gestures_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
+gestures_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
+                G_GNUC_UNUSED gboolean shutdown, G_GNUC_UNUSED GError **error)
 {
 	PurpleConversation *conv;
 	PurpleConversationManager *manager;

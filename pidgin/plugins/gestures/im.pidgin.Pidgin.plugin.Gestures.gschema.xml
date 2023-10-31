@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schemalist>
+  <enum id="im.pidgin.Pidgin.plugin.Gestures.Button">
+    <value nick="Middle" value="2"/>
+    <value nick="Right" value="3"/>
+  </enum>
+
+  <schema path="/pidgin/plugins/gestures/" id="im.pidgin.Pidgin.plugin.Gestures">
+    <key name="button" enum="im.pidgin.Pidgin.plugin.Gestures.Button">
+      <default>"Middle"</default>
+      <summary>Mouse button</summary>
+      <description>
+        The mouse button to use for initiating gestures.
+      </description>
+    </key>
+
+    <key name="visual" type="b">
+      <default>false</default>
+      <summary>Visual gesture display</summary>
+      <description>
+        Whether to display gestures visually as they are drawn.
+      </description>
+    </key>
+  </schema>
+</schemalist>
