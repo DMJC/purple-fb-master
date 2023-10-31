@@ -12,93 +12,9 @@ add it.
 
 version 3.0.0 (??/??/????):
 	libpurple:
-		Added:
-		* displaying-emails-clear signal (notification signal)
-		* purple_gdk_pixbuf_make_round
-		* purple_gdk_pixbuf_is_opaque
-		* purple_gdk_pixbuf_from_data
-		* purple_gdk_pixbuf_from_image
-		* purple_gdk_pixbuf_new_from_file
-		* purple_gdk_pixbuf_new_from_file_at_size
-		* PurplePluginInfoFlags (PURPLE_PLUGIN_INFO_FLAGS_INTERNAL and
-		  PURPLE_PLUGIN_INFO_FLAGS_AUTO_LOAD)
-		* purple_plugin_get_dependent_plugins
-		* purple_plugin_is_internal
-		* purple_plugin_info_new
-		* purple_plugin_get_info
-		* purple_plugin_info_get_error
-		* purple_plugin_info_get_extra_cb
-		* purple_plugin_info_get_pref_frame_cb
-		* purple_plugin_info_get_pref_request_cb
-		* purple_plugin_info_get_ui_data
-		* purple_plugin_info_set_ui_data
-		* PurpleProtocol, inherits GObject. Please see the documentation for
-		  details.
-		* PurpleProtocolAction
-		* PurpleProtocolOverrideFlags
-		* PurpleProtocolClientIface
-		* PurpleProtocolServerIface
-		* PurpleProtocolChatIface
-		* PurpleProtocolXferIface
-		* PurpleProtocolRoomlistIface
-		* PurpleProtocolMediaIface
-		* PurpleProtocolFactoryIface
-		* purple_protocol_get_* for PurpleProtocol members
-		* purple_protocol_class_* for class methods
-		* purple_protocol_server_iface_* for server interface methods
-		* purple_protocol_factory_iface_* for factory interface methods
-		* purple_protocol_action_new
-		* purple_protocol_action_free
-		* purple_request_field_choice_add_full
-		* purple_request_field_get_tooltip
-		* purple_request_field_list_has_icons
-		* purple_request_field_set_tooltip
-		* purple_roomlist_get_account
-		* purple_roomlist_get_proto_data
-		* purple_roomlist_room_get_expanded_once
-		* purple_roomlist_room_set_expanded_once
-		* purple_roomlist_set_proto_data
-		* purple_whiteboard_get_account
-		* purple_whiteboard_get_draw_list
-		* purple_whiteboard_set_draw_list
-		* purple_whiteboard_get_protocol_data
-		* purple_whiteboard_set_protocol_data
-		* purple_whiteboard_get_state
-		* purple_whiteboard_set_state
-		* purple_whiteboard_get_ui_data
-		* purple_whiteboard_set_ui_data
-		* purple_whiteboard_get_who
-		* purple_xfer_get_fd
-		* purple_xfer_get_message
-		* purple_xfer_get_protocol_data
-		* purple_xfer_get_ui_data
-		* purple_xfer_get_watcher
-		* purple_xfer_set_fd
-		* purple_xfer_set_local_port
-		* purple_xfer_set_protocol_data
-		* purple_xfer_set_remote_user
-		* purple_xfer_set_status
-		* purple_xfer_set_ui_data
-		* purple_xfer_set_watcher
-		* purple_xmlnode_get_default_namespace
-		* purple_xmlnode_strip_prefixes
-
 		Changed:
-		* account.h has been split into account.h (PurpleAccount GObject) and
-		  accounts.h (Accounts subsystem)
-		* blist.h has been split into buddylist.h (PurpleBuddyList and
-		  subsystem), blistnode.h (PurpleBlistNode and PurpleCountingNode
-		  GObjects), blistnodetypes (Buddy, Chat, Contact, Group GObjects)
-		* circbuffer.h renamed to circularbuffer.h
-		* conversation.h has been split into conversation.h
-		  (PurpleConversation), conversationtypes.h (PurpleIMConversation and
-		  PurpleChatConversation) and conversations.h (Conversations subsystem)
-		* Renamed ft.h file to xfer.h
-		* Renamed plugin.h file to plugins.h
-		* prpl.h has been split into protocol.h (PurpleProtocol GObject and
-		  protocol interfaces) and protocols.h (protocols subsystem)
-		* status.h has been split into status.h (Status API) and presence.h
-		  (Presence API)
+		* All headers except purple.h are now considered internal.
+		  Including any of the other files will now error.
 		* purple_account_add_buddy now takes an invite message as the last
 		  parameter
 		* purple_account_add_buddies now takes an invite message as the last
@@ -319,8 +235,6 @@ version 3.0.0 (??/??/????):
 
 		Removed:
 		* buddy-added and buddy-removed blist signals
-		* privacy.h file
-		* value.h file
 		* _PurpleCmdFlag
 		* _PurpleCmdPriority
 		* _PurpleCmdRet
@@ -949,14 +863,9 @@ version 3.0.0 (??/??/????):
 		* xmlnode_set_attrib_with_prefix
 
 	Pidgin:
-		Added:
-		* pidgin_create_webview
-		* PidginDockletFlag
-		* PidginPluginInfo, inherits PurplePluginInfo
-		* Various WebKit-related functions in gtkwebview.h
-
 		Changed:
-		* gtkft.h file renamed to gtkxfer.h
+		* All headers except pidgin.h are now considered internal.
+		  Including any of the other files will now error.
 		* pidgin_blist_sort_method renamed to _PidginBlistSortMethod
 		* BRUSH_STATE_DOWN renamed to PIDGIN_BRUSH_STATE_DOWN
 		* BRUSH_STATE_MOTION renamed to PIDGIN_BRUSH_STATE_MOTION
