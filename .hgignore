@@ -9,5 +9,5 @@ syntax: glob
 syntax: regexp
 ^build(.+)?\/
 win32-install-dir(\.release)?
-po\/pidgin\.pot$
+po\/pidgin3\.pot$
 ^subprojects\/.+\/
