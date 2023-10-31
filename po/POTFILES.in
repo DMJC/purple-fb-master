@@ -271,7 +271,6 @@ pidgin/pidginiconname.c
 pidgin/pidgininfopane.c
 pidgin/pidgininvitedialog.c
 pidgin/pidginkeypad.c
-pidgin/pidginplugininfo.c
 pidgin/pidginpluginsdialog.c
 pidgin/pidginpluginsmenu.c
 pidgin/pidginpresenceicon.c

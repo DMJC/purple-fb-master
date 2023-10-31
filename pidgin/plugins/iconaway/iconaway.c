@@ -60,7 +60,7 @@ icon_away_query(G_GNUC_UNUSED GError **error)
 		NULL
 	};
 
-	return pidgin_plugin_info_new(
+	return purple_plugin_info_new(
 		"id",           ICONAWAY_PLUGIN_ID,
 		"name",         N_("Minimize on Away"),
 		"version",      DISPLAY_VERSION,

@@ -638,7 +638,7 @@ xmpp_console_query(G_GNUC_UNUSED GError **error)
 	menu = g_menu_new();
 	g_menu_append(menu, _("XMPP Console"), "console");
 
-	return pidgin_plugin_info_new(
+	return purple_plugin_info_new(
 		"id",           PLUGIN_ID,
 		"name",         N_("XMPP Console"),
 		"version",      DISPLAY_VERSION,

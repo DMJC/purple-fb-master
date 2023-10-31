@@ -143,7 +143,7 @@ gestures_query(GError **error)
 		NULL
 	};
 
-	return pidgin_plugin_info_new(
+	return purple_plugin_info_new(
 		"id",                   GESTURES_PLUGIN_ID,
 		"name",                 N_("Mouse Gestures"),
 		"version",              DISPLAY_VERSION,

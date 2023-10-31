@@ -318,7 +318,7 @@ transparency_query(G_GNUC_UNUSED GError **error) {
 		NULL
 	};
 
-	return pidgin_plugin_info_new(
+	return purple_plugin_info_new(
 		"id", WINTRANS_PLUGIN_ID,
 		"name", N_("Transparency"),
 		"version", DISPLAY_VERSION,

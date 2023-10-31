@@ -663,7 +663,7 @@ xmpp_disco_query(G_GNUC_UNUSED GError **error)
 	menu = g_menu_new();
 	g_menu_append(menu, _("XMPP Service Discovery"), "dialog");
 
-	return pidgin_plugin_info_new(
+	return purple_plugin_info_new(
 		"id",           PLUGIN_ID,
 		"name",         N_("XMPP Service Discovery"),
 		"version",      DISPLAY_VERSION,

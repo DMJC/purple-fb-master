@@ -486,7 +486,7 @@ unity_query(G_GNUC_UNUSED GError **error)
 		NULL
 	};
 
-	return pidgin_plugin_info_new(
+	return purple_plugin_info_new(
 		"id",                   UNITY_PLUGIN_ID,
 		"name",                 N_("Unity Integration"),
 		"version",              DISPLAY_VERSION,
