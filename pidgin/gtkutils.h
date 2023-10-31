@@ -30,6 +30,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 typedef struct {
 	gboolean is_buddy;
 	PurpleBuddy *buddy;
@@ -86,7 +88,10 @@ gboolean pidgin_screenname_autocomplete_default_filter(const PidginBuddyCompleti
  * @name:   The user to get information about.
  *
  * Get information about a user. Show immediate feedback.
+ *
+ * Since: 2.1.0
  */
+PIDGIN_AVAILABLE_IN_2_1
 void pidgin_retrieve_user_info(PurpleConnection *conn, const char *name);
 
 /**
@@ -96,7 +101,10 @@ void pidgin_retrieve_user_info(PurpleConnection *conn, const char *name);
  * @chatid: The chat id.
  *
  * Get information about a user in a chat. Show immediate feedback.
+ *
+ * Since: 2.1.0
  */
+PIDGIN_AVAILABLE_IN_2_1
 void pidgin_retrieve_user_info_in_chat(PurpleConnection *conn, const char *name, int chatid);
 
 /**
@@ -129,7 +137,10 @@ gboolean pidgin_tree_view_search_equal_func(GtkTreeModel *model, gint column,
  * Automatically make a window transient to a suitable parent window.
  *
  * Returns: Whether the window was made transient or not.
+ *
+ * Since: 2.4.0
  */
+PIDGIN_AVAILABLE_IN_2_4
 gboolean pidgin_auto_parent_window(GtkWidget *window);
 
 /**
@@ -144,7 +155,10 @@ gboolean pidgin_auto_parent_window(GtkWidget *window);
  * Add a labelled widget to a GtkBox
  *
  * Returns:  (transfer full): A GtkBox already added to the GtkBox containing the GtkLabel and the GtkWidget.
+ *
+ * Since: 2.4.0
  */
+PIDGIN_AVAILABLE_IN_2_4
 GtkWidget *pidgin_add_widget_to_vbox(GtkBox *vbox, const char *widget_label, GtkSizeGroup *sg, GtkWidget *widget, gboolean expand, GtkWidget **p_label);
 
 G_END_DECLS
