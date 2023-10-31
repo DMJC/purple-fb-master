@@ -60,6 +60,7 @@ libpidgin_SOURCES = [
 	'pidginstatuseditor.c',
 	'pidginstatusmanager.c',
 	'pidginstatusprimitivechooser.c',
+	'pidgintextbuffer.c',
 	'pidginui.c',
 	'prefs/pidginprefs.c',
 	'prefs/pidginawayprefs.c',
@@ -128,6 +129,7 @@ libpidgin_headers = [
 	'pidginstatuseditor.h',
 	'pidginstatusmanager.h',
 	'pidginstatusprimitivechooser.h',
+	'pidgintextbuffer.h',
 	'pidginui.h',
 ]
 
@@ -296,3 +298,4 @@ endif
 subdir('data')
 subdir('pixmaps')
 subdir('plugins')
+subdir('tests')
