@@ -38,7 +38,7 @@ purple_major_version = parts[0]
 purple_minor_version = parts[1]
 purple_micro_version = parts[2]
 
-GETTEXT_PACKAGE=meson.project_name()
+GETTEXT_PACKAGE='pidgin3'
 find_program('gettext')
 find_program('xgettext')
 
@@ -484,7 +484,7 @@ meson.add_devenv(devenv)
 
 if meson.backend() == 'ninja'
 	run_target('turtles',
-		command : ['ninja', '-C', '@BUILD_ROOT@', 'pidgin-pot', 'all', 'test'])
+		command : ['ninja', '-C', '@BUILD_ROOT@', 'pidgin3-pot', 'all', 'test'])
 endif
 
 summary({
