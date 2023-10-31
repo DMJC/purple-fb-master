@@ -22,10 +22,6 @@
 
 #include <purpleconfig.h>
 
-#ifdef HAVE_MESON_CONFIG
-#include "meson-config.h"
-#endif
-
 #include <glib/gi18n-lib.h>
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -35,6 +31,10 @@
 #include <adwaita.h>
 
 #include "pidginabout.h"
+
+#ifdef HAVE_MESON_CONFIG
+#include "meson-config.h"
+#endif
 
 #include "package_revision.h"
 #include "gtkutils.h"
@@ -79,9 +79,7 @@ pidgin_about_dialog_group_add_row(AdwPreferencesGroup *group,
 	adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), title);
 
 	if(value != NULL) {
-		GtkWidget *label = gtk_label_new(NULL);
-		gtk_label_set_markup(GTK_LABEL(label), value);
-		adw_action_row_add_suffix(ADW_ACTION_ROW(row), label);
+		adw_action_row_set_subtitle(ADW_ACTION_ROW(row), value);
 	}
 
 	adw_preferences_group_add(group, row);
@@ -463,31 +461,18 @@ pidgin_about_dialog_copy_conf_path_info(void) {
 
 static void
 pidgin_about_dialog_add_build_args(PidginAboutDialog *about,
-                                   const char *build_args)
+                                   const PurpleKeyValuePair build_args[])
 {
-	gchar **splits = NULL;
-
 	/* Walk through the arguments and add them */
-	splits = g_strsplit(build_args, " ", -1);
-	for(gint idx = 0; splits[idx]; idx++) {
-		gchar **value_split = g_strsplit(splits[idx], "=", 2);
-
-		if(value_split[0] == NULL || value_split[0][0] == '\0') {
-			continue;
-		}
-
+	for(gint idx = 0; build_args[idx].key != NULL; idx++) {
 		pidgin_about_dialog_group_add_row(about->build_args_group,
-		                                  value_split[0], value_split[1]);
-
-		g_strfreev(value_split);
+		                                  build_args[idx].key,
+		                                  build_args[idx].value);
 	}
-
-	g_strfreev(splits);
 }
 
 static char *
-pidgin_about_dialog_copy_build_args(const char *build_args) {
-	char **splits = NULL;
+pidgin_about_dialog_copy_build_args(const PurpleKeyValuePair build_args[]) {
 	GString *info = NULL;
 
 	info = g_string_new(
@@ -495,28 +480,19 @@ pidgin_about_dialog_copy_build_args(const char *build_args) {
 		"===============\n");
 
 	/* Walk through the arguments and add them */
-	splits = g_strsplit(build_args, " ", -1);
-	for(gint idx = 0; splits[idx]; idx++) {
-		char **value_split = g_strsplit(splits[idx], "=", 2);
+	for(gint idx = 0; build_args[idx].key != NULL; idx++) {
 		char *value = NULL;
 
-		if(value_split[0] == NULL || value_split[0][0] == '\0') {
-			continue;
-		}
-
-		if(value_split[1] != NULL) {
-			value = purple_unescape_text(value_split[1]);
+		if(build_args[idx].value != NULL) {
+			value = purple_unescape_text(build_args[idx].value);
 		} else {
 			value = NULL;
 		}
 
-		g_string_append_printf(info, "%s: %s\n", value_split[0], value);
+		g_string_append_printf(info, "%s: %s\n", build_args[idx].key, value);
 
 		g_free(value);
-		g_strfreev(value_split);
 	}
-
-	g_strfreev(splits);
 
 	return g_string_free(info, FALSE);
 }
@@ -529,10 +505,10 @@ pidgin_about_dialog_load_build_configuration(PidginAboutDialog *about) {
 	pidgin_about_dialog_load_plugin_search_paths(about);
 	pidgin_about_dialog_load_conf_path_info(about);
 
-#ifdef MESON_ARGS
+#ifdef HAVE_MESON_CONFIG
 	pidgin_about_dialog_add_build_args(about, MESON_ARGS);
 	gtk_widget_set_visible(GTK_WIDGET(about->build_args_group), TRUE);
-#endif /* MESON_ARGS */
+#endif /* HAVE_MESON_CONFIG */
 }
 
 /******************************************************************************
@@ -570,7 +546,7 @@ pidgin_about_dialog_copy_button_cb(GtkButton *button,
 		info = pidgin_about_dialog_copy_plugin_search_paths();
 	} else if(data == about->conf_path_info_group) {
 		info = pidgin_about_dialog_copy_conf_path_info();
-#ifdef MESON_ARGS
+#ifdef HAVE_MESON_CONFIG
 	} else if(data == about->build_args_group) {
 		info = pidgin_about_dialog_copy_build_args(MESON_ARGS);
 #endif
@@ -601,7 +577,7 @@ pidgin_about_dialog_copy_button_cb(GtkButton *button,
 		g_string_append(everything, info);
 		g_free(info);
 
-#ifdef MESON_ARGS
+#ifdef HAVE_MESON_CONFIG
 		g_string_append_c(everything, '\n');
 		info = pidgin_about_dialog_copy_build_args(MESON_ARGS);
 		g_string_append(everything, info);

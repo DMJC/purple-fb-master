@@ -86,8 +86,11 @@ conf = json.loads(conf)
 conf = [normalize_pidgin_option(option) for option in conf]
 conf = [option for option in conf if ':' not in option['name']]
 
-settings = ' '.join('{}={}'.format(option['name'], tostr(option['value']))
-                    for option in sorted(conf, key=lambda x: x['name']))
-
 with open(os.path.join(project_build_root, 'meson-config.h'), 'w') as f:
-    f.write('#define MESON_ARGS "{}"'.format(settings))
+    f.write('#include <purple.h>\n')
+    f.write('const PurpleKeyValuePair MESON_ARGS[] = {\n')
+    for option in sorted(conf, key=lambda x: x['name']):
+        f.write('{ .key= "' + option['name'] + '",' +
+                ' .value="' + tostr(option['value']) + '" },\n')
+    f.write('{ .key=NULL, .value=NULL },\n')
+    f.write('};\n')
