@@ -131,6 +131,7 @@ libpidgin_headers = [
 	'pidginstatusprimitivechooser.h',
 	'pidgintextbuffer.h',
 	'pidginui.h',
+	'pidginversion.h',
 ]
 
 libpidgin_prefs_headers = [
@@ -186,7 +187,7 @@ if IS_WIN32
 endif
 
 PIDGIN_H_INCLUDES = []
-foreach header : libpidgin_headers + libpidgin_prefs_headers
+foreach header : libpidgin_headers + libpidgin_prefs_headers + ['pidginversionconsts.h']
 	PIDGIN_H_INCLUDES += f'#include <pidgin/@header@>'
 endforeach
 pidgin_h_conf = configuration_data()
@@ -196,6 +197,11 @@ pidgin_h = configure_file(input : 'pidgin.h.in',
                           configuration : pidgin_h_conf,
                           install : true,
                           install_dir : get_option('includedir') / pidgin_filebase)
+pidgin_version_h = configure_file(input : 'pidginversionconsts.h.in',
+                                  output : 'pidginversionconsts.h',
+                                  configuration : version_conf,
+                                  install : true,
+                                  install_dir : get_option('includedir') / pidgin_filebase)
 
 install_headers(libpidgin_headers, subdir : pidgin_include_base)
 install_headers(libpidgin_prefs_headers, subdir : pidgin_include_base / 'prefs')
@@ -217,6 +223,7 @@ libpidgin_built_sources = [
 
 libpidgin_built_headers = [
 	pidgin_h,
+	pidgin_version_h,
 ]
 
 libpidgin_inc = include_directories('.')
