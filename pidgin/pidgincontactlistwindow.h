@@ -70,18 +70,6 @@ GtkWidget *pidgin_contact_list_window_new(void);
  */
 GtkWidget *pidgin_contact_list_window_get_vbox(PidginContactListWindow *window);
 
-/**
- * pidgin_contact_list_window_get_menu_tray:
- * @window: The #PidginContactListWindow instance.
- *
- * Gets the #PidginMenuTray instance from the menu of @window.
- *
- * Returns: (transfer none): The #PidginMenuTray from the menu of @window.
- *
- * Since: 3.0.0
- */
-GtkWidget *pidgin_contact_list_window_get_menu_tray(PidginContactListWindow *window);
-
 G_END_DECLS
 
 #endif /* PIDGIN_CONTACT_LIST_WINDOW_H */
