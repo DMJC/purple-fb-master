@@ -27,6 +27,7 @@
 #include <messaging-menu.h>
 
 #define UNITY_PLUGIN_ID "gtk-unity-integration"
+#define SETTINGS_SCHEMA_ID "im.pidgin.Pidgin.plugin.Unity"
 
 static MessagingMenuApp *mmapp = NULL;
 static UnityLauncherEntry *launcher = NULL;
@@ -417,38 +418,24 @@ messaging_menu_status_changed(G_GNUC_UNUSED MessagingMenuApp *mmapp,
 }
 
 static void
-alert_config_cb(GtkWidget *widget, G_GNUC_UNUSED gpointer data)
+settings_change_cb(GSettings *settings, char *key, G_GNUC_UNUSED gpointer data)
 {
-	gboolean on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
-	purple_prefs_set_bool("/plugins/gtk/unity/alert_chat_nick", on);
-	alert_chat_nick = on;
-}
-
-static void
-launcher_config_cb(GtkWidget *widget, gpointer data)
-{
-	gint option = GPOINTER_TO_INT(data);
-	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-		return;
-
-	purple_prefs_set_int("/plugins/gtk/unity/launcher_count", option);
-	launcher_count = option;
-	if (option == LAUNCHER_COUNT_DISABLE)
-		unity_launcher_entry_set_count_visible(launcher, FALSE);
-	else
-		update_launcher();
-}
-
-static void
-messaging_menu_config_cb(GtkWidget *widget, gpointer data)
-{
-	gint option = GPOINTER_TO_INT(data);
-	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-		return;
-
-	purple_prefs_set_int("/plugins/gtk/unity/messaging_menu_text", option);
-	messaging_menu_text = option;
-	refill_messaging_menu();
+	if(purple_strequal(key, "alert-chat-nick")) {
+		alert_chat_nick = g_settings_get_boolean(settings, key);
+	} else if(purple_strequal(key, "launcher-count")) {
+		launcher_count = g_settings_get_enum(settings, key);
+		if(launcher_count == LAUNCHER_COUNT_DISABLE) {
+			unity_launcher_entry_set_count_visible(launcher, FALSE);
+		} else {
+			update_launcher();
+		}
+	} else if(purple_strequal(key, "messaging-menu-text")) {
+		messaging_menu_text = g_settings_get_enum(settings, key);
+		refill_messaging_menu();
+	} else {
+		g_warning("Got unity-integration settings change for unknown key: %s",
+		          key);
+	}
 }
 
 static int
@@ -491,89 +478,6 @@ detach_signals(PurpleConversation *conv)
 			GINT_TO_POINTER(0));
 }
 
-static GtkWidget *
-get_config_frame(G_GNUC_UNUSED PurplePlugin *plugin)
-{
-	GtkWidget *ret = NULL, *frame = NULL;
-	GtkWidget *vbox = NULL, *toggle = NULL, *group = NULL;
-
-	ret = gtk_box_new(GTK_ORIENTATION_VERTICAL, 18);
-
-	/* Alerts */
-
-	frame = pidgin_make_frame(ret, _("Chatroom alerts"));
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_append(GTK_BOX(frame), vbox);
-
-	toggle = gtk_check_button_new_with_mnemonic(_("Chatroom message alerts _only where someone says your username"));
-	gtk_box_append(GTK_BOX(vbox), toggle);
-	gtk_check_button_set_active(GTK_CHECK_BUTTON(toggle),
-			purple_prefs_get_bool("/plugins/gtk/unity/alert_chat_nick"));
-	g_signal_connect(G_OBJECT(toggle), "toggled",
-			G_CALLBACK(alert_config_cb), NULL);
-
-	/* Launcher integration */
-
-	frame = pidgin_make_frame(ret, _("Launcher Icon"));
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_append(GTK_BOX(frame), vbox);
-
-	toggle = gtk_check_button_new_with_mnemonic(_("_Disable launcher integration"));
-	group = toggle;
-	gtk_box_append(GTK_BOX(vbox), toggle);
-	gtk_check_button_set_active(GTK_CHECK_BUTTON(toggle),
-		purple_prefs_get_int("/plugins/gtk/unity/launcher_count") == LAUNCHER_COUNT_DISABLE);
-	g_signal_connect(G_OBJECT(toggle), "toggled",
-			G_CALLBACK(launcher_config_cb), GUINT_TO_POINTER(LAUNCHER_COUNT_DISABLE));
-
-	toggle = gtk_check_button_new_with_mnemonic(
-			_("Show number of unread _messages on launcher icon"));
-	gtk_check_button_set_group(GTK_CHECK_BUTTON(toggle),
-	                           GTK_CHECK_BUTTON(group));
-	gtk_box_append(GTK_BOX(vbox), toggle);
-	gtk_check_button_set_active(GTK_CHECK_BUTTON(toggle),
-		purple_prefs_get_int("/plugins/gtk/unity/launcher_count") == LAUNCHER_COUNT_MESSAGES);
-	g_signal_connect(G_OBJECT(toggle), "toggled",
-			G_CALLBACK(launcher_config_cb), GUINT_TO_POINTER(LAUNCHER_COUNT_MESSAGES));
-
-	toggle = gtk_check_button_new_with_mnemonic(
-			_("Show number of unread co_nversations on launcher icon"));
-	gtk_check_button_set_group(GTK_CHECK_BUTTON(toggle),
-	                           GTK_CHECK_BUTTON(group));
-	gtk_box_append(GTK_BOX(vbox), toggle);
-	gtk_check_button_set_active(GTK_CHECK_BUTTON(toggle),
-		purple_prefs_get_int("/plugins/gtk/unity/launcher_count") == LAUNCHER_COUNT_SOURCES);
-	g_signal_connect(G_OBJECT(toggle), "toggled",
-			G_CALLBACK(launcher_config_cb), GUINT_TO_POINTER(LAUNCHER_COUNT_SOURCES));
-
-	/* Messaging menu integration */
-
-	frame = pidgin_make_frame(ret, _("Messaging Menu"));
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_append(GTK_BOX(frame), vbox);
-
-	toggle = gtk_check_button_new_with_mnemonic(
-			_("Show number of _unread messages for conversations in messaging menu"));
-	group = toggle;
-	gtk_box_append(GTK_BOX(vbox), toggle);
-	gtk_check_button_set_active(GTK_CHECK_BUTTON(toggle),
-		purple_prefs_get_int("/plugins/gtk/unity/messaging_menu_text") == MESSAGING_MENU_COUNT);
-	g_signal_connect(G_OBJECT(toggle), "toggled",
-			G_CALLBACK(messaging_menu_config_cb), GUINT_TO_POINTER(MESSAGING_MENU_COUNT));
-
-	toggle = gtk_check_button_new_with_mnemonic(
-			_("Show _elapsed time for unread conversations in messaging menu"));
-	gtk_check_button_set_group(GTK_CHECK_BUTTON(toggle),
-	                           GTK_CHECK_BUTTON(group));
-	gtk_box_append(GTK_BOX(vbox), toggle);
-	gtk_check_button_set_active(GTK_CHECK_BUTTON(toggle),
-		purple_prefs_get_int("/plugins/gtk/unity/messaging_menu_text") == MESSAGING_MENU_TIME);
-	g_signal_connect(G_OBJECT(toggle), "toggled",
-			G_CALLBACK(messaging_menu_config_cb), GUINT_TO_POINTER(MESSAGING_MENU_TIME));
-
-	return ret;
-}
-
 static GPluginPluginInfo *
 unity_query(G_GNUC_UNUSED GError **error)
 {
@@ -593,13 +497,14 @@ unity_query(G_GNUC_UNUSED GError **error)
 		"authors",              authors,
 		"website",              PURPLE_WEBSITE,
 		"abi-version",          PURPLE_ABI_VERSION,
-		"gtk-config-frame-cb",  get_config_frame,
+		"settings-schema",      SETTINGS_SCHEMA_ID,
 		NULL
 	);
 }
 
 static gboolean
 unity_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
+	GSettings *settings = NULL;
 	GList *convs = NULL;
 	PurpleConversationManager *manager = NULL;
 	PurpleSavedStatus *saved_status;
@@ -607,18 +512,17 @@ unity_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 	void *gtk_conv_handle = pidgin_conversations_get_handle();
 	void *savedstat_handle = purple_savedstatuses_get_handle();
 
-	purple_prefs_add_none("/plugins/gtk");
-	purple_prefs_add_none("/plugins/gtk/unity");
-	purple_prefs_add_int("/plugins/gtk/unity/launcher_count", LAUNCHER_COUNT_SOURCES);
-	purple_prefs_add_int("/plugins/gtk/unity/messaging_menu_text", MESSAGING_MENU_COUNT);
-	purple_prefs_add_bool("/plugins/gtk/unity/alert_chat_nick", TRUE);
+	settings = g_settings_new_with_backend(SETTINGS_SCHEMA_ID,
+	                                       purple_core_get_settings_backend());
+	g_signal_connect(settings, "changed",
+	                 G_CALLBACK(settings_change_cb), NULL);
 
-	alert_chat_nick = purple_prefs_get_bool("/plugins/gtk/unity/alert_chat_nick");
+	alert_chat_nick = g_settings_get_boolean(settings, "alert-chat-nick");
 
 	mmapp = messaging_menu_app_new("pidgin.desktop");
 	g_object_ref(mmapp);
 	messaging_menu_app_register(mmapp);
-	messaging_menu_text = purple_prefs_get_int("/plugins/gtk/unity/messaging_menu_text");
+	messaging_menu_text = g_settings_get_enum(settings, "messaging-menu-text");
 
 	g_signal_connect(mmapp, "activate-source",
 			G_CALLBACK(message_source_activated), NULL);
@@ -633,7 +537,7 @@ unity_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 
 	launcher = unity_launcher_entry_get_for_desktop_id("pidgin.desktop");
 	g_object_ref(launcher);
-	launcher_count = purple_prefs_get_int("/plugins/gtk/unity/launcher_count");
+	launcher_count = g_settings_get_enum(settings, "launcher-count");
 
 	purple_signal_connect(gtk_conv_handle, "displayed-im-msg", plugin,
 			G_CALLBACK(message_displayed_cb), NULL);
@@ -655,6 +559,8 @@ unity_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 		attach_signals(conv);
 		convs = g_list_delete_link(convs, convs);
 	}
+
+	g_object_unref(settings);
 
 	return TRUE;
 }

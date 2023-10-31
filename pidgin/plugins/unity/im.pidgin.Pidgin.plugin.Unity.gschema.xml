@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schemalist>
+  <enum id="im.pidgin.Pidgin.plugin.Unity.LauncherCount">
+    <value nick="Disable launcher integration" value="0"/>
+    <value nick="Show number of unread messages" value="1"/>
+    <value nick="Show number of unread conversations" value="2"/>
+  </enum>
+
+  <enum id="im.pidgin.Pidgin.plugin.Unity.MessagingMenu">
+    <value nick="Show number of unread messages for conversations" value="0"/>
+    <value nick="Show elapsed time for unread conversations" value="1"/>
+  </enum>
+
+  <schema path="/pidgin/plugins/unity/" id="im.pidgin.Pidgin.plugin.Unity">
+    <key name="alert-chat-nick" type="b">
+      <default>true</default>
+      <summary>Chatroom alerts</summary>
+      <description>
+        Chatroom message alerts only where someone says your username.
+      </description>
+    </key>
+
+    <key name="launcher-count" enum="im.pidgin.Pidgin.plugin.Unity.LauncherCount">
+      <default>"Show number of unread conversations"</default>
+      <summary>Launcher integration</summary>
+      <description>
+        What to show in the launcher icon.
+      </description>
+    </key>
+
+    <key name="messaging-menu-text" enum="im.pidgin.Pidgin.plugin.Unity.MessagingMenu">
+      <default>"Show number of unread messages for conversations"</default>
+      <summary>Messaging menu integration</summary>
+      <description>
+        What to show in the messaging menu.
+      </description>
+    </key>
+  </schema>
+</schemalist>
