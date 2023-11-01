@@ -54,7 +54,10 @@ G_DECLARE_FINAL_TYPE(PidginPluginsMenu, pidgin_plugins_menu, PIDGIN,
  * Creates a new #PidginPluginsMenu instance that keeps itself up to date.
  *
  * Returns: (transfer full): The new #PidginPluginsMenu instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GMenuModel *pidgin_plugins_menu_new(void);
 
 G_END_DECLS

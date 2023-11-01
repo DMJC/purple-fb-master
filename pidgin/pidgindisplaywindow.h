@@ -57,7 +57,10 @@ G_DECLARE_FINAL_TYPE(PidginDisplayWindow, pidgin_display_window,
  * Creates a new #PidginDisplayWindow instance.
  *
  * Returns: (transfer full): The new #PidginDisplayWindow instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_display_window_new(void);
 
 /**

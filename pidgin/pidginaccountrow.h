@@ -60,7 +60,10 @@ G_DECLARE_FINAL_TYPE(PidginAccountRow, pidgin_account_row, PIDGIN, ACCOUNT_ROW,
  * Creates a new instance.
  *
  * Returns: (transfer full): The new instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_row_new(void);
 
 /**

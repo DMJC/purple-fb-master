@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-PURPLE_AVAILABLE_IN_2_6
+PIDGIN_AVAILABLE_IN_2_6
 void pidgin_medias_init(void);
 
 G_END_DECLS

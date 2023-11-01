@@ -60,7 +60,10 @@ G_DECLARE_FINAL_TYPE(PidginContactList, pidgin_contact_list, PIDGIN,
  * [class@Purple.ContactManager].
  *
  * Returns: (transfer full): The new #PidginContactList instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_contact_list_new(void);
 
 G_END_DECLS

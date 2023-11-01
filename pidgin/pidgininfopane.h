@@ -60,7 +60,10 @@ G_DECLARE_FINAL_TYPE(PidginInfoPane, pidgin_info_pane, PIDGIN, INFO_PANE,
  * @conversation.
  *
  * Returns: (transfer full): The new #PidginInfoPane instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_info_pane_new(PurpleConversation *conversation);
 
 /**
@@ -70,7 +73,10 @@ GtkWidget *pidgin_info_pane_new(PurpleConversation *conversation);
  * Gets the #PurpleConversation that @pane is displaying information for.
  *
  * Returns: (transfer none): The #PurpleConversation displayed by @pane.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleConversation *pidgin_info_pane_get_conversation(PidginInfoPane *pane);
 
 /**

@@ -60,7 +60,10 @@
  * @argv: The argv from main(), or %NULL.
  *
  * Start pidgin with the given command line arguments.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 int pidgin_start(int argc, char *argv[]);
 
 #endif /* PIDGIN_CORE_H */

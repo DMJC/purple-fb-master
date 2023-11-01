@@ -63,6 +63,8 @@ G_BEGIN_DECLS
  *
  * }
  * ]|
+ *
+ * Since: 3.0.0
  */
 
 #define PIDGIN_TYPE_INVITE_DIALOG  pidgin_invite_dialog_get_type()

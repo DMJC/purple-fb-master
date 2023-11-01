@@ -63,7 +63,10 @@ G_DECLARE_FINAL_TYPE(PidginNotificationConnectionError, pidgin_notification_conn
  *
  * Returns: (transfer full): The new #PidginNotificationConnectionError
  *          instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_connection_error_new(PurpleNotification *notification);
 
 /**

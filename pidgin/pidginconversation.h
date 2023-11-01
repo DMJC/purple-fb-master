@@ -41,6 +41,8 @@ G_BEGIN_DECLS
  * PidginConversation:
  *
  * A [class@Gtk.Widget] for displaying a [class@Purple.Conversation].
+ *
+ * Since: 2.0.0
  */
 
 #define PIDGIN_TYPE_CONVERSATION (pidgin_conversation_get_type())

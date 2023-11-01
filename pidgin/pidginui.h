@@ -56,7 +56,10 @@ G_DECLARE_FINAL_TYPE(PidginUi, pidgin_ui, PIDGIN, UI, PurpleUi)
  * Note: there's not much use for this outside of Pidgin's internal code.
  *
  * Returns: (transfer full): The new instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleUi *pidgin_ui_new(void);
 
 G_END_DECLS

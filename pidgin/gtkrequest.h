@@ -53,7 +53,10 @@ PurpleRequestUiOps *pidgin_request_get_ui_ops(void);
  * Gets dialog window for specified libpurple request.
  *
  * Returns: (transfer none): The dialog window.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWindow *
 pidgin_request_get_dialog_window(void *ui_handle);
 
@@ -67,21 +70,30 @@ pidgin_request_get_dialog_window(void *ui_handle);
  * Returns the gtk requests subsystem handle.
  *
  * Returns: The requests subsystem handle.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void *pidgin_request_get_handle(void);
 
 /**
  * pidgin_request_init:
  *
  * Initializes the GTK requests subsystem.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_request_init(void);
 
 /**
  * pidgin_request_uninit:
  *
  * Uninitializes the GTK requests subsystem.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_request_uninit(void);
 
 G_END_DECLS

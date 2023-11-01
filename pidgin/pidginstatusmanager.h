@@ -55,7 +55,10 @@ G_DECLARE_FINAL_TYPE(PidginStatusManager, pidgin_status_manager, PIDGIN,
  * Creates a new instance of the dialog.
  *
  * Returns: (transfer full): The new #PidginStatusManager instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_status_manager_new(void);
 
 G_END_DECLS

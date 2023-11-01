@@ -64,7 +64,10 @@ G_DECLARE_FINAL_TYPE(PidginNotificationAddContact, pidgin_notification_add_conta
  *
  * Returns: (transfer full): The new #PidginNotificationAddContact
  *          instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_add_contact_new(PurpleNotification *notification);
 
 /**

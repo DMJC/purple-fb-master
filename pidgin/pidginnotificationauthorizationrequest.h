@@ -64,7 +64,10 @@ G_DECLARE_FINAL_TYPE(PidginNotificationAuthorizationRequest, pidgin_notification
  *
  * Returns: (transfer full): The new #PidginNotificationAuthorizationRequest
  *          instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_authorization_request_new(PurpleNotification *notification);
 
 /**

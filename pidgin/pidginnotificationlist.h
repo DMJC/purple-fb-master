@@ -57,7 +57,10 @@ G_DECLARE_FINAL_TYPE(PidginNotificationList, pidgin_notification_list, PIDGIN,
  * notifications from the default [class@Purple.NotificationManager].
  *
  * Returns: (transfer full): The new #PidginNotificationList instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_list_new(void);
 
 G_END_DECLS

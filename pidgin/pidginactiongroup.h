@@ -48,8 +48,10 @@
  *
  * A constant that represents the sort-method action to change the sorting
  * method of the buddy list.
+ *
+ * Since: 3.0.0
  */
-#define PIDGIN_ACTION_SORT_METHOD ("sort-method")
+#define PIDGIN_ACTION_SORT_METHOD ("sort-method" PIDGIN_AVAILABLE_MACRO_IN_3_0)
 
 G_BEGIN_DECLS
 
@@ -66,7 +68,10 @@ G_DECLARE_FINAL_TYPE(PidginActionGroup, pidgin_action_group, PIDGIN,
  * #GAction's in Pidgin.
  *
  * Returns: (transfer full): The new #PidginActionGroup instance.
+ *
+ * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GSimpleActionGroup *pidgin_action_group_new(void);
 
 G_END_DECLS
