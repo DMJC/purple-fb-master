@@ -32,6 +32,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -44,6 +46,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_ACCOUNTS_ENABLED_MENU (pidgin_accounts_enabled_menu_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
                      PIDGIN, ACCOUNTS_ENABLED_MENU, GMenuModel)
 

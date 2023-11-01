@@ -33,6 +33,8 @@
 
 #include <gtk/gtk.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -45,6 +47,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_CONTACT_LIST (pidgin_contact_list_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginContactList, pidgin_contact_list, PIDGIN,
                      CONTACT_LIST, GtkBox)
 

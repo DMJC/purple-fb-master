@@ -52,6 +52,7 @@ G_BEGIN_DECLS
  * GTK Buddy List API
  **************************************************************************/
 
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginBuddyList, pidgin_buddy_list, PIDGIN, BUDDY_LIST,
                      PurpleBuddyList)
 

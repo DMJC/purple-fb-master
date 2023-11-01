@@ -33,6 +33,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -45,6 +47,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_STATUS_PRIMITIVE_CHOOSER (pidgin_status_primitive_chooser_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginStatusPrimitiveChooser,
                      pidgin_status_primitive_chooser, PIDGIN,
                      STATUS_PRIMITIVE_CHOOSER, AdwComboRow)

@@ -35,6 +35,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -48,6 +50,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_NOTIFICATION_AUTHORIZATION_REQUEST (pidgin_notification_authorization_request_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginNotificationAuthorizationRequest, pidgin_notification_authorization_request,
                      PIDGIN, NOTIFICATION_AUTHORIZATION_REQUEST, AdwActionRow)
 

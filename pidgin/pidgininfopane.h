@@ -33,6 +33,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -45,6 +47,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_INFO_PANE (pidgin_info_pane_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginInfoPane, pidgin_info_pane, PIDGIN, INFO_PANE,
                      GtkBox)
 

@@ -25,6 +25,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -36,6 +38,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_IDLE (pidgin_idle_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginIdle, pidgin_idle, PIDGIN, IDLE, GObject)
 
 /**

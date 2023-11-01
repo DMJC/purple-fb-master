@@ -33,6 +33,8 @@
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_DEBUG_WINDOW (pidgin_debug_window_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginDebugWindow, pidgin_debug_window, PIDGIN, DEBUG_WINDOW, GtkWindow)
 
 /**

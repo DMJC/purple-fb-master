@@ -41,6 +41,8 @@ G_BEGIN_DECLS
  * it.
  */
 #define PIDGIN_TYPE_XFER_DIALOG (pidgin_xfer_dialog_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginXferDialog, pidgin_xfer_dialog, PIDGIN, XFER_DIALOG,
                      GtkDialog)
 

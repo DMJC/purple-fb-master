@@ -32,9 +32,13 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_ACCOUNTS_DISABLED_MENU (pidgin_accounts_disabled_menu_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginAccountsDisabledMenu, pidgin_accounts_disabled_menu,
                      PIDGIN, ACCOUNTS_DISABLED_MENU, GMenuModel)
 

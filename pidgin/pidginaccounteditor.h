@@ -33,6 +33,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 /**
  * PidginAccountEditor:
  *
@@ -44,6 +46,8 @@
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_ACCOUNT_EDITOR pidgin_account_editor_get_type()
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginAccountEditor, pidgin_account_editor, PIDGIN,
                      ACCOUNT_EDITOR, AdwPreferencesPage)
 

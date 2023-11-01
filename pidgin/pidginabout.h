@@ -29,9 +29,13 @@
 
 #include <gtk/gtk.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_ABOUT_DIALOG (pidgin_about_dialog_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginAboutDialog, pidgin_about_dialog, PIDGIN,
                      ABOUT_DIALOG, GtkDialog)
 
@@ -44,6 +48,7 @@ G_DECLARE_FINAL_TYPE(PidginAboutDialog, pidgin_about_dialog, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_about_dialog_new(void);
 
 G_END_DECLS

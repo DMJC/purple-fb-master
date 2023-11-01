@@ -31,6 +31,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 /**
  * PidginAccountManagerRow:
  *
@@ -40,6 +42,8 @@
  */
 
 #define PIDGIN_TYPE_ACCOUNT_MANAGER_ROW (pidgin_account_manager_row_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginAccountManagerRow, pidgin_account_manager_row,
                      PIDGIN, ACCOUNT_MANAGER_ROW, GtkListBoxRow)
 

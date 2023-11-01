@@ -33,10 +33,13 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_PROTOCOL_CHOOSER (pidgin_protocol_chooser_get_type())
 
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginProtocolChooser, pidgin_protocol_chooser, PIDGIN,
                      PROTOCOL_CHOOSER, AdwComboRow)
 

@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -43,6 +45,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_ACCOUNT_FILTER_PROTOCOL pidgin_account_filter_protocol_get_type()
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginAccountFilterProtocol,
                      pidgin_account_filter_protocol, PIDGIN,
                      ACCOUNT_FILTER_PROTOCOL, GtkFilter)

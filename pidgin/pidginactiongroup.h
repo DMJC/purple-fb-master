@@ -31,6 +31,8 @@
 
 #include <gio/gio.h>
 
+#include "pidginversion.h"
+
 /**
  * PidginActionGroup:
  *
@@ -52,6 +54,8 @@
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_ACTION_GROUP (pidgin_action_group_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginActionGroup, pidgin_action_group, PIDGIN,
                      ACTION_GROUP, GSimpleActionGroup)
 

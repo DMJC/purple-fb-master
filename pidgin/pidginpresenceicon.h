@@ -31,6 +31,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 /**
  * PidginPresenceIcon:
  *
@@ -41,6 +43,8 @@
  */
 
 #define PIDGIN_TYPE_PRESENCE_ICON (pidgin_presence_icon_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginPresenceIcon, pidgin_presence_icon,
                      PIDGIN, PRESENCE_ICON, GtkBox)
 

@@ -29,15 +29,21 @@
 
 #include <gtk/gtk.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
  * PidginPluginsDialog:
  *
  * A dialog that allows the user to configure their plugins.
+ *
+ * Since: 3.0.0
  */
 
 #define PIDGIN_TYPE_PLUGINS_DIALOG (pidgin_plugins_dialog_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginPluginsDialog, pidgin_plugins_dialog, PIDGIN,
 		PLUGINS_DIALOG, GtkDialog)
 

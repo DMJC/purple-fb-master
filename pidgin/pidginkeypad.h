@@ -31,6 +31,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 /**
  * PidginKeypad:
  *
@@ -43,6 +45,8 @@
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_KEYPAD pidgin_keypad_get_type()
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginKeypad, pidgin_keypad, PIDGIN, KEYPAD, GtkGrid)
 
 /**

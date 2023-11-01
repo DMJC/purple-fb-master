@@ -36,6 +36,8 @@
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_PREFS_WINDOW (pidgin_prefs_window_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginPrefsWindow, pidgin_prefs_window, PIDGIN,
                      PREFS_WINDOW, GtkDialog)
 

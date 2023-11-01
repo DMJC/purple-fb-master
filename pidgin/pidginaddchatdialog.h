@@ -31,6 +31,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -42,6 +44,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_ADD_CHAT_DIALOG (pidgin_add_chat_dialog_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginAddChatDialog, pidgin_add_chat_dialog, PIDGIN,
                      ADD_CHAT_DIALOG, GtkDialog)
 

@@ -31,10 +31,13 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_ACCOUNT_CHOOSER (pidgin_account_chooser_get_type())
 
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginAccountChooser, pidgin_account_chooser, PIDGIN,
                      ACCOUNT_CHOOSER, AdwBin)
 

@@ -35,6 +35,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -48,6 +50,8 @@ G_BEGIN_DECLS
  */
 
 #define PIDGIN_TYPE_NOTIFICATION_ADD_CONTACT (pidgin_notification_add_contact_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginNotificationAddContact, pidgin_notification_add_contact,
                      PIDGIN, NOTIFICATION_ADD_CONTACT, AdwActionRow)
 

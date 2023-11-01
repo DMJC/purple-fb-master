@@ -32,6 +32,8 @@
 #include <gtk/gtk.h>
 #include <adwaita.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -42,6 +44,8 @@ G_BEGIN_DECLS
  * Since: 3.0.0
  */
 #define PIDGIN_TYPE_CREDENTIAL_PREFS (pidgin_credential_prefs_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginCredentialPrefs, pidgin_credential_prefs,
                      PIDGIN, CREDENTIAL_PREFS, AdwPreferencesPage)
 

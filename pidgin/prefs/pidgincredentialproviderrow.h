@@ -33,6 +33,8 @@
 
 #include <adwaita.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -43,6 +45,8 @@ G_BEGIN_DECLS
  * Since: 3.0.0
  */
 #define PIDGIN_TYPE_CREDENTIAL_PROVIDER_ROW (pidgin_credential_provider_row_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginCredentialProviderRow,
                      pidgin_credential_provider_row,
                      PIDGIN, CREDENTIAL_PROVIDER_ROW, AdwActionRow)

@@ -31,15 +31,21 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
  * PidginStatusManager:
  *
  * A dialog for managing statuses.
+ *
+ * Since: 3.0.0
  */
 
 #define PIDGIN_TYPE_STATUS_MANAGER (pidgin_status_manager_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginStatusManager, pidgin_status_manager, PIDGIN,
                      STATUS_MANAGER, GtkDialog)
 
