@@ -28,6 +28,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_DEBUG_WINDOW (pidgin_debug_window_get_type())
@@ -61,8 +63,9 @@ void pidgin_debug_set_print_enabled(gboolean enable);
  *
  * Perform necessary initializations.
  *
- * Since: 3.0.0
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_debug_init(void);
 
 /**
@@ -70,8 +73,9 @@ void pidgin_debug_init(void);
  *
  * Perform necessary uninitializations.
  *
- * Since: 3.0.0
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_debug_uninit(void);
 
 /**
@@ -80,21 +84,30 @@ void pidgin_debug_uninit(void);
  * Get the handle for the GTK debug system.
  *
  * Returns: the handle to the debug system
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void *pidgin_debug_get_handle(void);
 
 /**
  * pidgin_debug_window_show:
  *
  * Shows the debug window.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_debug_window_show(void);
 
 /**
  * pidgin_debug_window_hide:
  *
  * Hides the debug window.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_debug_window_hide(void);
 
 G_END_DECLS

@@ -28,6 +28,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -39,7 +41,10 @@ G_BEGIN_DECLS
  * when one is selected
  *
  * Returns: (transfer full): The menu widget
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 GtkWidget *pidgin_status_menu(PurpleSavedStatus *status, GCallback callback);
 
 G_END_DECLS

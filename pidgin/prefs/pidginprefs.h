@@ -31,6 +31,8 @@
 #include <purple.h>
 #include <gtk/gtk.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_PREFS_WINDOW (pidgin_prefs_window_get_type())
@@ -41,14 +43,20 @@ G_DECLARE_FINAL_TYPE(PidginPrefsWindow, pidgin_prefs_window, PIDGIN,
  * pidgin_prefs_init:
  *
  * Initializes all UI-specific preferences.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_prefs_init(void);
 
 /**
  * pidgin_prefs_update_old:
  *
  * Rename legacy prefs and delete some that no longer exist.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_prefs_update_old(void);
 
 G_END_DECLS

@@ -30,6 +30,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -38,7 +40,10 @@ G_BEGIN_DECLS
  * Returns the UI operations structure for GTK request functions.
  *
  * Returns: The GTK UI request operations structure.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 PurpleRequestUiOps *pidgin_request_get_ui_ops(void);
 
 /**

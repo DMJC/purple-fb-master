@@ -28,6 +28,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 #define PIDGIN_TYPE_BUDDY_LIST (pidgin_buddy_list_get_type())
 
 typedef struct _PidginBuddyList PidginBuddyList;
@@ -60,14 +62,20 @@ G_DECLARE_FINAL_TYPE(PidginBuddyList, pidgin_buddy_list, PIDGIN, BUDDY_LIST,
  *
  * Returns: Returns TRUE if there are accounts online capable of
  *         joining chat rooms.  Otherwise returns FALSE.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 gboolean pidgin_blist_joinchat_is_showable(void);
 
 /**
  * pidgin_blist_joinchat_show:
  *
  * Shows the join chat dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_blist_joinchat_show(void);
 
 G_END_DECLS

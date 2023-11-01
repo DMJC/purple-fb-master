@@ -28,13 +28,23 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_dialogs_im(void);
+
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_dialogs_im_with_user(PurpleAccount *account, const char *username);
+
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_dialogs_info(void);
 
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_dialogs_alias_buddy(PurpleBuddy *buddy);
+
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_dialogs_alias_chat(PurpleChat *chat);
 
 G_END_DECLS

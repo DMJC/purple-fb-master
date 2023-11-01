@@ -26,6 +26,8 @@
 #ifndef _PIDGINWHITEBOARD_H_
 #define _PIDGINWHITEBOARD_H_
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /*****************************************************************************/
@@ -38,7 +40,10 @@ G_BEGIN_DECLS
  * Gets the GtkWhiteboard UI Operations.
  *
  * Returns: The GtkWhiteboard UI Operations.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 PurpleWhiteboardUiOps *pidgin_whiteboard_get_ui_ops(void);
 
 G_END_DECLS

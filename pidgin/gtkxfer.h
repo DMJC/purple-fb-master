@@ -28,6 +28,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -52,7 +54,10 @@ G_DECLARE_FINAL_TYPE(PidginXferDialog, pidgin_xfer_dialog, PIDGIN, XFER_DIALOG,
  * Creates a new file transfer dialog.
  *
  * Returns: The new dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 PidginXferDialog *pidgin_xfer_dialog_new(void);
 
 /**
@@ -60,7 +65,10 @@ PidginXferDialog *pidgin_xfer_dialog_new(void);
  * @dialog: The file transfer dialog.
  *
  * Destroys a file transfer dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfer_dialog_destroy(PidginXferDialog *dialog);
 
 /**
@@ -69,7 +77,10 @@ void pidgin_xfer_dialog_destroy(PidginXferDialog *dialog);
  *
  * Displays the file transfer dialog given.
  * If dialog is %NULL, displays the default dialog, creating one if necessary
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfer_dialog_show(PidginXferDialog *dialog);
 
 /**
@@ -77,7 +88,10 @@ void pidgin_xfer_dialog_show(PidginXferDialog *dialog);
  * @dialog: The file transfer dialog to hide.
  *
  * Hides the file transfer dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfer_dialog_hide(PidginXferDialog *dialog);
 
 /**
@@ -86,7 +100,10 @@ void pidgin_xfer_dialog_hide(PidginXferDialog *dialog);
  * @xfer:   The file transfer.
  *
  * Adds a file transfer to the dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfer_dialog_add_xfer(PidginXferDialog *dialog, PurpleXfer *xfer);
 
 /**
@@ -95,7 +112,10 @@ void pidgin_xfer_dialog_add_xfer(PidginXferDialog *dialog, PurpleXfer *xfer);
  * @xfer:   The file transfer.
  *
  * Removes a file transfer from the dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfer_dialog_remove_xfer(PidginXferDialog *dialog,
 									 PurpleXfer *xfer);
 
@@ -105,7 +125,10 @@ void pidgin_xfer_dialog_remove_xfer(PidginXferDialog *dialog,
  * @xfer:   The file transfer that was cancelled.
  *
  * Indicate in a file transfer dialog that a transfer was cancelled.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfer_dialog_cancel_xfer(PidginXferDialog *dialog,
 									 PurpleXfer *xfer);
 
@@ -115,7 +138,10 @@ void pidgin_xfer_dialog_cancel_xfer(PidginXferDialog *dialog,
  * @xfer:   The file transfer.
  *
  * Updates the information for a transfer in the dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfer_dialog_update_xfer(PidginXferDialog *dialog,
 									 PurpleXfer *xfer);
 
@@ -127,14 +153,20 @@ void pidgin_xfer_dialog_update_xfer(PidginXferDialog *dialog,
  * pidgin_xfers_init:
  *
  * Initializes the GTK file transfer system.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfers_init(void);
 
 /**
  * pidgin_xfers_uninit:
  *
  * Uninitializes the GTK file transfer system.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_xfers_uninit(void);
 
 /**
@@ -142,7 +174,10 @@ void pidgin_xfers_uninit(void);
  * @dialog: The main dialog.
  *
  * Sets pidgin's main file transfer dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_set_xfer_dialog(PidginXferDialog *dialog);
 
 /**
@@ -151,7 +186,10 @@ void pidgin_set_xfer_dialog(PidginXferDialog *dialog);
  * Returns pirgin's main file transfer dialog.
  *
  * Returns: (transfer none): The main dialog.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 PidginXferDialog *pidgin_get_xfer_dialog(void);
 
 /**
@@ -160,7 +198,10 @@ PidginXferDialog *pidgin_get_xfer_dialog(void);
  * Returns the UI operations structure for the GTK file transfer UI.
  *
  * Returns: The GTK file transfer UI operations structure.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 PurpleXferUiOps *pidgin_xfers_get_ui_ops(void);
 
 G_END_DECLS

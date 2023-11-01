@@ -28,6 +28,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -36,21 +38,30 @@ G_BEGIN_DECLS
  * Returns the UI operations structure for GTK notification functions.
  *
  * Returns: The GTK UI notify operations structure.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 PurpleNotifyUiOps *pidgin_notify_get_ui_ops(void);
 
 /**
  * pidgin_notify_init:
  *
  * Initializes the GTK notifications subsystem.
+ *
+ * Since: 2.6.0
  */
+PIDGIN_AVAILABLE_IN_2_6
 void pidgin_notify_init(void);
 
 /**
  * pidgin_notify_uninit:
  *
  * Uninitialized the GTK notifications subsystem.
+ *
+ * Since: 2.6.0
  */
+PIDGIN_AVAILABLE_IN_2_6
 void pidgin_notify_uninit(void);
 
 G_END_DECLS

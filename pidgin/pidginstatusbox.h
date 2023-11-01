@@ -29,12 +29,18 @@
 
 #include <gtk/gtk.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 #define PIDGIN_TYPE_STATUS_BOX (pidgin_status_box_get_type ())
+
+PIDGIN_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE(PidginStatusBox, pidgin_status_box, PIDGIN, STATUS_BOX,
                      GtkBox)
 
+
+PIDGIN_AVAILABLE_IN_ALL
 GtkWidget *pidgin_status_box_new(void);
 
 G_END_DECLS

@@ -32,11 +32,13 @@
 
 #include "pidginversion.h"
 
+PIDGIN_AVAILABLE_TYPE_IN_2_1
 typedef struct {
 	gboolean is_buddy;
 	PurpleBuddy *buddy;
 } PidginBuddyCompletionEntry;
 
+PIDGIN_AVAILABLE_TYPE_IN_2_1
 typedef gboolean (*PidginFilterBuddyCompletionEntryFunc) (const PidginBuddyCompletionEntry *completion_entry, gpointer user_data);
 
 
@@ -50,7 +52,10 @@ G_BEGIN_DECLS
  * Creates a HIG preferences frame.
  *
  * Returns: (transfer full): The vbox to put things into.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 GtkWidget *pidgin_make_frame(GtkWidget *parent, const char *title);
 
 /**
@@ -65,7 +70,10 @@ GtkWidget *pidgin_make_frame(GtkWidget *parent, const char *title);
  *
  * Add autocompletion of screenames to an entry, supporting a filtering
  * function.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_setup_screenname_autocomplete(
         GtkWidget *entry, GtkWidget *chooser,
         PidginFilterBuddyCompletionEntryFunc filter_func, gpointer user_data);
@@ -79,7 +87,10 @@ void pidgin_setup_screenname_autocomplete(
  * The default filter function for username autocomplete.
  *
  * Returns: Returns %TRUE if the autocompletion entry is filtered.
+ *
+ * Since: 2.1.0
  */
+PIDGIN_AVAILABLE_IN_2_1
 gboolean pidgin_screenname_autocomplete_default_filter(const PidginBuddyCompletionEntry *completion_entry, gpointer all_accounts);
 
 /**
@@ -114,7 +125,10 @@ void pidgin_retrieve_user_info_in_chat(PurpleConnection *conn, const char *name,
  *
  * Sets an ATK name for a given widget.  Also sets the labelled-by
  * and label-for ATK relationships.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l);
 
 /**
@@ -126,7 +140,9 @@ void pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l);
  * 				pidgin_tree_view_search_equal_func,
  * 				search_data, search_data_destroy_cb);
  *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 gboolean pidgin_tree_view_search_equal_func(GtkTreeModel *model, gint column,
 			const gchar *key, GtkTreeIter *iter, gpointer data);
 

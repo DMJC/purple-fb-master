@@ -39,6 +39,8 @@ typedef struct _PidginConversationOld PidginConversationOld;
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 /**************************************************************************
  * Structures
  **************************************************************************/
@@ -76,7 +78,10 @@ G_BEGIN_DECLS
  * Returns the UI operations structure for GTK conversations.
  *
  * Returns: The GTK conversation operations structure.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 PurpleConversationUiOps *pidgin_conversations_get_conv_ui_ops(void);
 
 /**************************************************************************/
@@ -89,21 +94,30 @@ PurpleConversationUiOps *pidgin_conversations_get_conv_ui_ops(void);
  * Returns the gtk conversations subsystem handle.
  *
  * Returns: The conversations subsystem handle.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void *pidgin_conversations_get_handle(void);
 
 /**
  * pidgin_conversations_init:
  *
  * Initializes the GTK conversations subsystem.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_conversations_init(void);
 
 /**
  * pidgin_conversations_uninit:
  *
  * Uninitialized the GTK conversation subsystem.
+ *
+ * Since: 2.0.0
  */
+PIDGIN_AVAILABLE_IN_ALL
 void pidgin_conversations_uninit(void);
 
 G_END_DECLS

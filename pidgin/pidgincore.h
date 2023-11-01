@@ -30,6 +30,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 #ifdef _WIN32
 #  include "win32/gtkwin32dep.h"
 #endif
@@ -39,7 +41,7 @@
 
 /* Translators may want to transliterate the name.
  It is not to be translated. */
-#define PIDGIN_NAME _("Pidgin")
+#define PIDGIN_NAME _("Pidgin") PIDGIN_AVAILABLE_MACRO_IN_2_1
 
 /**
  * PIDGIN_ALERT_TITLE:

@@ -26,8 +26,11 @@
 #ifndef PIDGIN_MEDIA_H
 #define PIDGIN_MEDIA_H
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
+PURPLE_AVAILABLE_IN_2_6
 void pidgin_medias_init(void);
 
 G_END_DECLS
