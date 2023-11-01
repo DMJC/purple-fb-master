@@ -76,6 +76,7 @@ GtkWidget *pidgin_notification_connection_error_new(PurpleNotification *notifica
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleNotification *pidgin_notification_connection_error_get_notification(PidginNotificationConnectionError *error);
 
 G_END_DECLS

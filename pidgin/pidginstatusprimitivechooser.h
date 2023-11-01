@@ -63,6 +63,7 @@ G_DECLARE_FINAL_TYPE(PidginStatusPrimitiveChooser,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_status_primitive_chooser_new(void);
 
 /**
@@ -75,6 +76,7 @@ GtkWidget *pidgin_status_primitive_chooser_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleStatusPrimitive pidgin_status_primitive_chooser_get_selected(PidginStatusPrimitiveChooser *chooser);
 
 /**
@@ -86,6 +88,7 @@ PurpleStatusPrimitive pidgin_status_primitive_chooser_get_selected(PidginStatusP
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_status_primitive_chooser_set_selected(PidginStatusPrimitiveChooser *chooser, PurpleStatusPrimitive primitive);
 
 G_END_DECLS

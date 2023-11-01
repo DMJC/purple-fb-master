@@ -84,6 +84,7 @@ PurpleConversation *pidgin_info_pane_get_conversation(PidginInfoPane *pane);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_info_pane_set_conversation(PidginInfoPane *pane, PurpleConversation *conversation);
 
 G_END_DECLS

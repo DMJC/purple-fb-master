@@ -60,6 +60,7 @@ G_DECLARE_FINAL_TYPE(PidginAvatar, pidgin_avatar, PIDGIN, AVATAR, GtkBox)
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_avatar_new(void);
 
 /**
@@ -73,6 +74,7 @@ GtkWidget *pidgin_avatar_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_avatar_set_animate(PidginAvatar *avatar, gboolean animate);
 
 /**
@@ -85,6 +87,7 @@ void pidgin_avatar_set_animate(PidginAvatar *avatar, gboolean animate);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_avatar_get_animate(PidginAvatar *avatar);
 
 /**
@@ -96,6 +99,7 @@ gboolean pidgin_avatar_get_animate(PidginAvatar *avatar);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_avatar_set_buddy(PidginAvatar *avatar, PurpleBuddy *buddy);
 
 /**
@@ -108,6 +112,7 @@ void pidgin_avatar_set_buddy(PidginAvatar *avatar, PurpleBuddy *buddy);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleBuddy *pidgin_avatar_get_buddy(PidginAvatar *avatar);
 
 /**
@@ -120,6 +125,7 @@ PurpleBuddy *pidgin_avatar_get_buddy(PidginAvatar *avatar);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_avatar_set_conversation(PidginAvatar *avatar, PurpleConversation *conversation);
 
 /**
@@ -133,6 +139,7 @@ void pidgin_avatar_set_conversation(PidginAvatar *avatar, PurpleConversation *co
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleConversation *pidgin_avatar_get_conversation(PidginAvatar *avatar);
 
 G_END_DECLS

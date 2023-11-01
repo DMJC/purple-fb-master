@@ -59,6 +59,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_manager_row_new(PurpleAccount *account);
 
 /**
@@ -71,6 +72,7 @@ GtkWidget *pidgin_account_manager_row_new(PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_manager_row_get_account(PidginAccountManagerRow *row);
 
 /**
@@ -82,6 +84,7 @@ PurpleAccount *pidgin_account_manager_row_get_account(PidginAccountManagerRow *r
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_manager_row_set_account(PidginAccountManagerRow *row, PurpleAccount *account);
 
 G_END_DECLS

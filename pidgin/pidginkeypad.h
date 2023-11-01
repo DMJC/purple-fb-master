@@ -58,6 +58,7 @@ G_DECLARE_FINAL_TYPE(PidginKeypad, pidgin_keypad, PIDGIN, KEYPAD, GtkGrid)
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_keypad_new(void);
 
 /**
@@ -72,6 +73,7 @@ GtkWidget *pidgin_keypad_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_keypad_set_key_capture_widget(PidginKeypad *keypad, GtkWidget *widget);
 
 G_END_DECLS

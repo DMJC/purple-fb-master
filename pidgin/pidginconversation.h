@@ -59,6 +59,7 @@ G_DECLARE_FINAL_TYPE(PidginConversation, pidgin_conversation, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_conversation_new(PurpleConversation *conversation);
 
 /**
@@ -72,6 +73,7 @@ GtkWidget *pidgin_conversation_new(PurpleConversation *conversation);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_conversation_from_purple_conversation(PurpleConversation *conversation);
 
 /**
@@ -85,6 +87,7 @@ GtkWidget *pidgin_conversation_from_purple_conversation(PurpleConversation *conv
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleConversation *pidgin_conversation_get_conversation(PidginConversation *conversation);
 
 /**
@@ -97,6 +100,7 @@ PurpleConversation *pidgin_conversation_get_conversation(PidginConversation *con
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_conversation_close(PidginConversation *conversation);
 
 G_END_DECLS

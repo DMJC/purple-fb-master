@@ -71,6 +71,7 @@ PidginDisplayItem *pidgin_display_item_new(GtkWidget *child, const char *id);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_display_item_get_widget(PidginDisplayItem *item);
 
 /**
@@ -83,6 +84,7 @@ GtkWidget *pidgin_display_item_get_widget(PidginDisplayItem *item);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const char *pidgin_display_item_get_id(PidginDisplayItem *item);
 
 /**
@@ -95,6 +97,7 @@ const char *pidgin_display_item_get_id(PidginDisplayItem *item);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const char *pidgin_display_item_get_title(PidginDisplayItem *item);
 
 /**
@@ -106,6 +109,7 @@ const char *pidgin_display_item_get_title(PidginDisplayItem *item);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_title(PidginDisplayItem *item, const char *title);
 
 /**
@@ -118,6 +122,7 @@ void pidgin_display_item_set_title(PidginDisplayItem *item, const char *title);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const char *pidgin_display_item_get_icon_name(PidginDisplayItem *item);
 
 /**
@@ -129,6 +134,7 @@ const char *pidgin_display_item_get_icon_name(PidginDisplayItem *item);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_icon_name(PidginDisplayItem *item, const char *icon_name);
 
 /**
@@ -141,6 +147,7 @@ void pidgin_display_item_set_icon_name(PidginDisplayItem *item, const char *icon
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_display_item_get_needs_attention(PidginDisplayItem *item);
 
 /**
@@ -152,6 +159,7 @@ gboolean pidgin_display_item_get_needs_attention(PidginDisplayItem *item);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_needs_attention(PidginDisplayItem *item, gboolean needs_attention);
 
 /**
@@ -164,6 +172,7 @@ void pidgin_display_item_set_needs_attention(PidginDisplayItem *item, gboolean n
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 guint pidgin_display_item_get_badge_number(PidginDisplayItem *item);
 
 /**
@@ -176,6 +185,7 @@ guint pidgin_display_item_get_badge_number(PidginDisplayItem *item);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_badge_number(PidginDisplayItem *item, guint badge_number);
 
 /**
@@ -188,6 +198,7 @@ void pidgin_display_item_set_badge_number(PidginDisplayItem *item, guint badge_n
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GListModel *pidgin_display_item_get_children(PidginDisplayItem *item);
 
 /**
@@ -200,6 +211,7 @@ GListModel *pidgin_display_item_get_children(PidginDisplayItem *item);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_children(PidginDisplayItem *item, GListModel *children);
 
 G_END_DECLS

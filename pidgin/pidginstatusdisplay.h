@@ -50,6 +50,7 @@ G_DECLARE_FINAL_TYPE(PidginStatusDisplay, pidgin_status_display,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_status_display_new(void);
 
 /**
@@ -62,6 +63,7 @@ GtkWidget *pidgin_status_display_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_status_display_new_for_primitive(PurpleStatusPrimitive primitive);
 
 /**
@@ -74,6 +76,7 @@ GtkWidget *pidgin_status_display_new_for_primitive(PurpleStatusPrimitive primiti
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_status_display_new_for_saved_status(PurpleSavedStatus *status);
 
 /**
@@ -87,6 +90,7 @@ GtkWidget *pidgin_status_display_new_for_saved_status(PurpleSavedStatus *status)
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleStatusPrimitive pidgin_status_display_get_primitive(PidginStatusDisplay *display);
 
 /**
@@ -100,6 +104,7 @@ PurpleStatusPrimitive pidgin_status_display_get_primitive(PidginStatusDisplay *d
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_status_display_set_primitive(PidginStatusDisplay *display, PurpleStatusPrimitive primitive);
 
 /**
@@ -113,6 +118,7 @@ void pidgin_status_display_set_primitive(PidginStatusDisplay *display, PurpleSta
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleSavedStatus *pidgin_status_display_get_saved_status(PidginStatusDisplay *display);
 
 /**
@@ -126,6 +132,7 @@ PurpleSavedStatus *pidgin_status_display_get_saved_status(PidginStatusDisplay *d
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_status_display_set_saved_status(PidginStatusDisplay *display, PurpleSavedStatus *status);
 
 G_END_DECLS

@@ -47,6 +47,7 @@ G_DECLARE_FINAL_TYPE(PidginDebugWindow, pidgin_debug_window, PIDGIN, DEBUG_WINDO
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_debug_init_handler(void);
 
 /**
@@ -58,6 +59,7 @@ void pidgin_debug_init_handler(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_debug_set_print_enabled(gboolean enable);
 
 /**

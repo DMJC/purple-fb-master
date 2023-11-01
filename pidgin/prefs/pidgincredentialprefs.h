@@ -67,6 +67,7 @@ G_DECLARE_FINAL_TYPE(PidginCredentialPrefs, pidgin_credential_prefs,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_credential_prefs_new(void);
 
 G_END_DECLS

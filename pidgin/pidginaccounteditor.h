@@ -62,6 +62,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountEditor, pidgin_account_editor, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_editor_new(PurpleAccount *account);
 
 /**
@@ -74,6 +75,7 @@ GtkWidget *pidgin_account_editor_new(PurpleAccount *account);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_editor_get_account(PidginAccountEditor *editor);
 
 /**
@@ -86,6 +88,7 @@ PurpleAccount *pidgin_account_editor_get_account(PidginAccountEditor *editor);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_editor_set_account(PidginAccountEditor *editor, PurpleAccount *account);
 
 /**
@@ -99,6 +102,7 @@ void pidgin_account_editor_set_account(PidginAccountEditor *editor, PurpleAccoun
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_account_editor_get_is_valid(PidginAccountEditor *editor);
 
 /**
@@ -110,6 +114,7 @@ gboolean pidgin_account_editor_get_is_valid(PidginAccountEditor *editor);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_editor_save(PidginAccountEditor *editor);
 
 G_END_DECLS

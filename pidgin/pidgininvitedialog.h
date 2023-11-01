@@ -81,6 +81,7 @@ G_DECLARE_FINAL_TYPE(PidginInviteDialog, pidgin_invite_dialog, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_invite_dialog_new(PurpleChatConversation *conversation);
 
 /**
@@ -94,6 +95,7 @@ GtkWidget *pidgin_invite_dialog_new(PurpleChatConversation *conversation);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_invite_dialog_set_contact(PidginInviteDialog *dialog, const gchar *contact);
 
 /**
@@ -107,6 +109,7 @@ void pidgin_invite_dialog_set_contact(PidginInviteDialog *dialog, const gchar *c
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_invite_dialog_get_contact(PidginInviteDialog *dialog);
 
 /**
@@ -119,6 +122,7 @@ const gchar *pidgin_invite_dialog_get_contact(PidginInviteDialog *dialog);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_invite_dialog_set_message(PidginInviteDialog *dialog, const gchar *message);
 
 /**
@@ -132,6 +136,7 @@ void pidgin_invite_dialog_set_message(PidginInviteDialog *dialog, const gchar *m
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_invite_dialog_get_message(PidginInviteDialog *dialog);
 
 /**
@@ -145,6 +150,7 @@ const gchar *pidgin_invite_dialog_get_message(PidginInviteDialog *dialog);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleChatConversation *pidgin_invite_dialog_get_conversation(PidginInviteDialog *dialog);
 
 G_END_DECLS

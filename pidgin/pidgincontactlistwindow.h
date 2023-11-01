@@ -60,6 +60,7 @@ G_DECLARE_FINAL_TYPE(PidginContactListWindow, pidgin_contact_list_window,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_contact_list_window_new(void);
 
 /**
@@ -72,6 +73,7 @@ GtkWidget *pidgin_contact_list_window_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_contact_list_window_get_vbox(PidginContactListWindow *window);
 
 G_END_DECLS

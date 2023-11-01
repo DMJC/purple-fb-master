@@ -62,6 +62,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_presence_icon_new(PurplePresence *presence, const gchar *fallback, GtkIconSize icon_size);
 
 /**
@@ -74,6 +75,7 @@ GtkWidget *pidgin_presence_icon_new(PurplePresence *presence, const gchar *fallb
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurplePresence *pidgin_presence_icon_get_presence(PidginPresenceIcon *icon);
 
 /**
@@ -85,6 +87,7 @@ PurplePresence *pidgin_presence_icon_get_presence(PidginPresenceIcon *icon);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_presence_icon_set_presence(PidginPresenceIcon *icon, PurplePresence *presence);
 
 /**
@@ -97,6 +100,7 @@ void pidgin_presence_icon_set_presence(PidginPresenceIcon *icon, PurplePresence 
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_presence_icon_get_fallback(PidginPresenceIcon *icon);
 
 /**
@@ -108,6 +112,7 @@ const gchar *pidgin_presence_icon_get_fallback(PidginPresenceIcon *icon);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_presence_icon_set_fallback(PidginPresenceIcon *icon, const gchar *fallback);
 
 /**
@@ -120,6 +125,7 @@ void pidgin_presence_icon_set_fallback(PidginPresenceIcon *icon, const gchar *fa
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkIconSize pidgin_presence_icon_get_icon_size(PidginPresenceIcon *icon);
 
 /**
@@ -131,6 +137,7 @@ GtkIconSize pidgin_presence_icon_get_icon_size(PidginPresenceIcon *icon);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_presence_icon_set_icon_size(PidginPresenceIcon *icon, GtkIconSize icon_size);
 
 G_END_DECLS

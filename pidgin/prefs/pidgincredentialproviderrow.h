@@ -70,6 +70,7 @@ G_DECLARE_FINAL_TYPE(PidginCredentialProviderRow,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_credential_provider_row_new(PurpleCredentialProvider *provider);
 
 /**
@@ -82,6 +83,7 @@ GtkWidget *pidgin_credential_provider_row_new(PurpleCredentialProvider *provider
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleCredentialProvider *pidgin_credential_provider_row_get_provider(PidginCredentialProviderRow *row);
 
 /**
@@ -94,6 +96,7 @@ PurpleCredentialProvider *pidgin_credential_provider_row_get_provider(PidginCred
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_credential_provider_row_get_active(PidginCredentialProviderRow *row);
 
 /**
@@ -105,6 +108,7 @@ gboolean pidgin_credential_provider_row_get_active(PidginCredentialProviderRow *
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_credential_provider_row_set_active(PidginCredentialProviderRow *row, gboolean active);
 
 G_END_DECLS

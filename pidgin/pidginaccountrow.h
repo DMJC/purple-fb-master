@@ -74,6 +74,7 @@ GtkWidget *pidgin_account_row_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_row_get_account(PidginAccountRow *row);
 
 /**
@@ -86,6 +87,7 @@ PurpleAccount *pidgin_account_row_get_account(PidginAccountRow *row);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_row_set_account(PidginAccountRow *row, PurpleAccount *account);
 
 /**
@@ -99,6 +101,7 @@ void pidgin_account_row_set_account(PidginAccountRow *row, PurpleAccount *accoun
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkFilter *pidgin_account_row_get_filter(PidginAccountRow *row);
 
 /**
@@ -111,6 +114,7 @@ GtkFilter *pidgin_account_row_get_filter(PidginAccountRow *row);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_row_set_filter(PidginAccountRow *row, GtkFilter *filter);
 
 G_END_DECLS

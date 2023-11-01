@@ -61,6 +61,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountFilterConnected,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkFilter *pidgin_account_filter_connected_new(void);
 
 G_END_DECLS

@@ -62,6 +62,7 @@ G_DECLARE_FINAL_TYPE(PidginAddChatDialog, pidgin_add_chat_dialog, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_add_chat_dialog_new(PurpleAccount *account, PurpleGroup *group, const gchar *alias, const gchar *name);
 
 G_END_DECLS

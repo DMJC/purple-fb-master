@@ -31,6 +31,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /*
@@ -42,6 +44,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_commands_init(void);
 
 /*
@@ -53,6 +56,7 @@ void pidgin_commands_init(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_commands_uninit(void);
 
 G_END_DECLS

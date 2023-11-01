@@ -31,6 +31,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -45,6 +47,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primitive, const gchar *fallback);
 
 /**
@@ -58,6 +61,7 @@ const gchar *pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primit
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_icon_name_from_status_type(PurpleStatusType *type, const gchar *fallback);
 
 /**
@@ -71,6 +75,7 @@ const gchar *pidgin_icon_name_from_status_type(PurpleStatusType *type, const gch
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_icon_name_from_status(PurpleStatus *status, const gchar *fallback);
 
 /**
@@ -85,6 +90,7 @@ const gchar *pidgin_icon_name_from_status(PurpleStatus *status, const gchar *fal
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_icon_name_from_presence(PurplePresence *presence, const gchar *fallback);
 
 G_END_DECLS

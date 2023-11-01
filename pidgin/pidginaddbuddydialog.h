@@ -63,6 +63,7 @@ G_DECLARE_FINAL_TYPE(PidginAddBuddyDialog, pidgin_add_buddy_dialog, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_add_buddy_dialog_new(PurpleAccount *account, const gchar *username, const gchar *alias, const gchar *message, const gchar *group);
 
 G_END_DECLS

@@ -50,6 +50,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountChooser, pidgin_account_chooser, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_chooser_new(void);
 
 /**
@@ -63,6 +64,7 @@ GtkWidget *pidgin_account_chooser_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkFilter *pidgin_account_chooser_get_filter(PidginAccountChooser *chooser);
 
 /**
@@ -74,6 +76,7 @@ GtkFilter *pidgin_account_chooser_get_filter(PidginAccountChooser *chooser);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_chooser_set_filter(PidginAccountChooser *chooser, GtkFilter *filter);
 
 /**
@@ -87,6 +90,7 @@ void pidgin_account_chooser_set_filter(PidginAccountChooser *chooser, GtkFilter 
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_chooser_get_selected(PidginAccountChooser *chooser);
 
 /**
@@ -98,6 +102,7 @@ PurpleAccount *pidgin_account_chooser_get_selected(PidginAccountChooser *chooser
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_chooser_set_selected(PidginAccountChooser *chooser,
                                          PurpleAccount *account);
 

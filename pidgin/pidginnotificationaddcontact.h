@@ -77,6 +77,7 @@ GtkWidget *pidgin_notification_add_contact_new(PurpleNotification *notification)
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleNotification *pidgin_notification_add_contact_get_notification(PidginNotificationAddContact *request);
 
 G_END_DECLS

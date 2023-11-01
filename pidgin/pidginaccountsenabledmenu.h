@@ -61,6 +61,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GMenuModel *pidgin_accounts_enabled_menu_new(void);
 
 G_END_DECLS

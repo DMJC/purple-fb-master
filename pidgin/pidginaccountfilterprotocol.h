@@ -62,6 +62,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountFilterProtocol,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkFilter *pidgin_account_filter_protocol_new(const gchar *protocol_id);
 
 /**
@@ -74,6 +75,7 @@ GtkFilter *pidgin_account_filter_protocol_new(const gchar *protocol_id);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_account_filter_protocol_get_protocol_id(PidginAccountFilterProtocol *filter);
 
 G_END_DECLS

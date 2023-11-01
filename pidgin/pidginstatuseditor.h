@@ -58,6 +58,7 @@ G_DECLARE_FINAL_TYPE(PidginStatusEditor, pidgin_status_editor, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_status_editor_new(PurpleSavedStatus *status);
 
 /**
@@ -71,6 +72,7 @@ GtkWidget *pidgin_status_editor_new(PurpleSavedStatus *status);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleSavedStatus *pidgin_status_editor_get_status(PidginStatusEditor *editor);
 
 G_END_DECLS

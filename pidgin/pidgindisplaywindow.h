@@ -69,6 +69,7 @@ GtkWidget *pidgin_display_window_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_display_window_get_default(void);
 
 /**
@@ -81,6 +82,7 @@ GtkWidget *pidgin_display_window_get_default(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_add(PidginDisplayWindow *window, PurpleConversation *conversation);
 
 /**
@@ -93,6 +95,7 @@ void pidgin_display_window_add(PidginDisplayWindow *window, PurpleConversation *
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_remove(PidginDisplayWindow *window, PurpleConversation *conversation);
 
 /**
@@ -105,6 +108,7 @@ void pidgin_display_window_remove(PidginDisplayWindow *window, PurpleConversatio
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 guint pidgin_display_window_get_count(PidginDisplayWindow *window);
 
 /**
@@ -118,6 +122,7 @@ guint pidgin_display_window_get_count(PidginDisplayWindow *window);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleConversation *pidgin_display_window_get_selected(PidginDisplayWindow *window);
 
 /**
@@ -129,6 +134,7 @@ PurpleConversation *pidgin_display_window_get_selected(PidginDisplayWindow *wind
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select(PidginDisplayWindow *window, PurpleConversation *conversation);
 
 /**
@@ -142,6 +148,7 @@ void pidgin_display_window_select(PidginDisplayWindow *window, PurpleConversatio
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_previous(PidginDisplayWindow *window);
 
 /**
@@ -154,6 +161,7 @@ void pidgin_display_window_select_previous(PidginDisplayWindow *window);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_next(PidginDisplayWindow *window);
 
 /**
@@ -165,6 +173,7 @@ void pidgin_display_window_select_next(PidginDisplayWindow *window);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_first(PidginDisplayWindow *window);
 
 /**
@@ -176,6 +185,7 @@ void pidgin_display_window_select_first(PidginDisplayWindow *window);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_last(PidginDisplayWindow *window);
 
 /**
@@ -188,6 +198,7 @@ void pidgin_display_window_select_last(PidginDisplayWindow *window);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_nth(PidginDisplayWindow *window, guint nth);
 
 /**
@@ -201,6 +212,7 @@ void pidgin_display_window_select_nth(PidginDisplayWindow *window, guint nth);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_display_window_conversation_is_selected(PidginDisplayWindow *window, PurpleConversation *conversation);
 
 G_END_DECLS

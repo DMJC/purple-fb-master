@@ -51,6 +51,7 @@ G_DECLARE_FINAL_TYPE(PidginIdle, pidgin_idle, PIDGIN, IDLE, GObject)
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleIdleUi *pidgin_idle_new(void);
 
 G_END_DECLS

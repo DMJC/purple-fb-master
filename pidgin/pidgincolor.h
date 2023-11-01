@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -48,6 +50,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_color_calculate_for_text(const gchar *text,  GdkRGBA *color);
 
 G_END_DECLS

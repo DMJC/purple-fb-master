@@ -77,6 +77,7 @@ GtkWidget *pidgin_notification_authorization_request_new(PurpleNotification *not
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleNotification *pidgin_notification_authorization_request_get_notification(PidginNotificationAuthorizationRequest *request);
 
 G_END_DECLS

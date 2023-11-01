@@ -33,6 +33,8 @@
 
 #include <purple.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -48,6 +50,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_contact_info_menu_popup(PurpleContactInfo *info, PurpleAccount *account, GtkWidget *parent, gdouble x, gdouble y);
 
 G_END_DECLS

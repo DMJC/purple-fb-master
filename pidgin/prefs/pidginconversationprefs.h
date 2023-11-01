@@ -59,6 +59,7 @@ G_DECLARE_FINAL_TYPE(PidginConversationPrefs, pidgin_conversation_prefs,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_conversation_prefs_new(void);
 
 G_END_DECLS

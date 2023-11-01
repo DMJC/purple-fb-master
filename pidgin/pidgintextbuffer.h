@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include "pidginversion.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -49,6 +51,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 char *pidgin_text_buffer_get_html(GtkTextBuffer *buffer);
 
 /**
@@ -67,6 +70,7 @@ char *pidgin_text_buffer_get_html(GtkTextBuffer *buffer);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 char *pidgin_text_buffer_get_html_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end);
 
 G_END_DECLS

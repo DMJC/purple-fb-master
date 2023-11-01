@@ -56,6 +56,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountManager, pidgin_account_manager, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_manager_new(void);
 
 /**
@@ -67,6 +68,7 @@ GtkWidget *pidgin_account_manager_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_manager_show_overview(PidginAccountManager *manager);
 
 /**
@@ -78,6 +80,7 @@ void pidgin_account_manager_show_overview(PidginAccountManager *manager);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_manager_edit_account(PidginAccountManager *manager, PurpleAccount *account);
 
 G_END_DECLS

@@ -52,6 +52,7 @@ G_DECLARE_FINAL_TYPE(PidginProtocolChooser, pidgin_protocol_chooser, PIDGIN,
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_protocol_chooser_new(void);
 
 /**
@@ -65,6 +66,7 @@ GtkWidget *pidgin_protocol_chooser_new(void);
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 PurpleProtocol *pidgin_protocol_chooser_get_protocol(PidginProtocolChooser *chooser);
 
 /**
@@ -77,6 +79,7 @@ PurpleProtocol *pidgin_protocol_chooser_get_protocol(PidginProtocolChooser *choo
  *
  * Since: 3.0.0
  */
+PIDGIN_AVAILABLE_IN_3_0
 void pidgin_protocol_chooser_set_protocol(PidginProtocolChooser *chooser, PurpleProtocol *protocol);
 
 G_END_DECLS
