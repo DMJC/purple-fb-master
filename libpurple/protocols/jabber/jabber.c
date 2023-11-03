@@ -2900,7 +2900,7 @@ jabber_do_init(void)
 	if (ui)
 		ui_name = purple_ui_get_name(ui);
 	if (ui_name == NULL)
-		ui_name = PACKAGE;
+		ui_name = GETTEXT_PACKAGE;
 
 	jabber_add_identity("client", type, NULL, ui_name);
 

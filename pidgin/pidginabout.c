@@ -440,6 +440,10 @@ pidgin_about_dialog_load_conf_path_info(PidginAboutDialog *about) {
 	/* add the data directory path */
 	pidgin_about_dialog_group_add_row(about->conf_path_info_group, _("Data"),
 	                                  purple_data_dir());
+
+	/* add the locale directory path */
+	pidgin_about_dialog_group_add_row(about->conf_path_info_group, _("Locale"),
+	                                  purple_get_locale_dir());
 }
 
 static char *
@@ -451,10 +455,12 @@ pidgin_about_dialog_copy_conf_path_info(void) {
 		"===================\n"
 		"Cache: %s\n"
 		"Configuration: %s\n"
-		"Data: %s\n",
+		"Data: %s\n"
+		"Locale: %s\n",
 		purple_cache_dir(),
 		purple_config_dir(),
-		purple_data_dir());
+		purple_data_dir(),
+		purple_get_locale_dir());
 
 	return info;
 }

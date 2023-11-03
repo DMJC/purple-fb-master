@@ -322,9 +322,12 @@ purple_str_seconds_to_string(guint secs)
 	char *ret = NULL;
 	guint days, hrs, mins;
 
-	if (secs < 60)
-	{
-		return g_strdup_printf(dngettext(PACKAGE, "%d second", "%d seconds", secs), secs);
+	if(secs < 60) {
+		const char *format;
+
+		format = dngettext(GETTEXT_PACKAGE, "%d second", "%d seconds", secs);
+
+		return g_strdup_printf(format, secs);
 	}
 
 	days = secs / (60 * 60 * 24);
@@ -334,37 +337,52 @@ purple_str_seconds_to_string(guint secs)
 	mins = secs / 60;
 	/* secs = secs % 60; */
 
-	if (days > 0)
-	{
-		ret = g_strdup_printf(dngettext(PACKAGE, "%d day", "%d days", days), days);
+	if(days > 0) {
+		const char *format;
+
+		format = dngettext(GETTEXT_PACKAGE, "%d day", "%d days", days);
+
+		ret = g_strdup_printf(format, days);
 	}
 
-	if (hrs > 0)
-	{
-		if (ret != NULL)
-		{
-			char *tmp = g_strdup_printf(
-					dngettext(PACKAGE, "%s, %d hour", "%s, %d hours", hrs),
-							ret, hrs);
+	if(hrs > 0) {
+		if(ret != NULL) {
+			char *tmp = NULL;
+			const char *format;
+
+			format = dngettext(GETTEXT_PACKAGE, "%s, %d hour", "%s, %d hours",
+			                   hrs);
+
+			tmp = g_strdup_printf(format, ret, hrs);
 			g_free(ret);
 			ret = tmp;
+		} else {
+			const char *format;
+
+			format = dngettext(GETTEXT_PACKAGE, "%d hour", "%d hours", hrs);
+
+			ret = g_strdup_printf(format, hrs);
 		}
-		else
-			ret = g_strdup_printf(dngettext(PACKAGE, "%d hour", "%d hours", hrs), hrs);
 	}
 
-	if (mins > 0)
-	{
-		if (ret != NULL)
-		{
-			char *tmp = g_strdup_printf(
-					dngettext(PACKAGE, "%s, %d minute", "%s, %d minutes", mins),
-							ret, mins);
+	if(mins > 0) {
+		if (ret != NULL) {
+			char *tmp;
+			const char *format;
+
+			format = dngettext(GETTEXT_PACKAGE, "%s, %d minute",
+			                   "%s, %d minutes", mins);
+			tmp = g_strdup_printf(format, ret, mins);
 			g_free(ret);
 			ret = tmp;
+		} else {
+			const char *format;
+
+			format = dngettext(GETTEXT_PACKAGE, "%d minute", "%d minutes",
+			                   mins);
+
+			ret = g_strdup_printf(format, mins);
 		}
-		else
-			ret = g_strdup_printf(dngettext(PACKAGE, "%d minute", "%d minutes", mins), mins);
 	}
 
 	return ret;

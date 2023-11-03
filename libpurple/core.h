@@ -115,6 +115,20 @@ gpointer purple_core_get_settings_backend(void);
 PURPLE_AVAILABLE_IN_ALL
 PurpleUi *purple_core_get_ui(void);
 
+/**
+ * purple_get_local_dir:
+ *
+ * Gets the search directory for translations.
+ *
+ * This can be overridden by the `PURPLE_LOCALE_DIR` environment variable.
+ *
+ * Returns: The directory where translations should be searched for.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_ALL
+const char *purple_get_locale_dir(void);
+
 G_END_DECLS
 
 #endif /* PURPLE_CORE_H */

@@ -96,15 +96,16 @@ init_libpurple(G_GNUC_UNUSED int argc, char **argv)
 		{NULL}
 	};
 
-	bindtextdomain(PACKAGE, PURPLE_LOCALEDIR);
-	bind_textdomain_codeset(PACKAGE, "UTF-8");
-	textdomain(PACKAGE);
+	bindtextdomain(GETTEXT_PACKAGE, purple_get_locale_dir());
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	textdomain(GETTEXT_PACKAGE);
 
 	setlocale(LC_ALL, "");
 
 	context = g_option_context_new(NULL);
 	g_option_context_set_summary(context, DISPLAY_VERSION);
-	g_option_context_add_main_entries(context, option_entries, PACKAGE);
+	g_option_context_add_main_entries(context, option_entries,
+	                                  GETTEXT_PACKAGE);
 
 	g_option_context_add_group(context, purple_get_option_group());
 	g_option_context_add_group(context, gplugin_get_option_group());

@@ -101,7 +101,7 @@ purple_core_init(PurpleUi *ui, GError **error) {
 	g_return_val_if_fail(PURPLE_IS_UI(ui), FALSE);
 	g_return_val_if_fail(purple_get_core() == NULL, FALSE);
 
-	bindtextdomain(PACKAGE, PURPLE_LOCALEDIR);
+	bindtextdomain(GETTEXT_PACKAGE, purple_get_locale_dir());
 
 #ifdef _WIN32
 	wpurple_init();
@@ -308,4 +308,20 @@ purple_core_get_settings_backend(void) {
 PurpleUi *
 purple_core_get_ui(void) {
 	return _core->ui;
+}
+
+const char *
+purple_get_locale_dir(void) {
+	const char *locale_dir = NULL;
+
+	locale_dir = g_getenv("PURPLE_LOCALE_DIR");
+	if(!purple_strempty(locale_dir)) {
+		return locale_dir;
+	}
+
+#ifdef _WIN32
+	return wpurple_locale_dir();
+#else
+	return PURPLE_LOCALEDIR;
+#endif
 }

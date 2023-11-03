@@ -53,8 +53,6 @@ man_conf = configuration_data()
 version_conf = configuration_data()
 
 conf.set_quoted('GETTEXT_PACKAGE', GETTEXT_PACKAGE)
-conf.set_quoted('PACKAGE', meson.project_name())
-conf.set_quoted('PACKAGE_NAME', meson.project_name())
 conf.set_quoted('VERSION', meson.project_version())
 conf.set_quoted('DISPLAY_VERSION', meson.project_version())
 

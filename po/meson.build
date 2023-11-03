@@ -4,3 +4,5 @@ i18n = import('i18n')
 # https://github.com/mesonbuild/meson/blob/master/mesonbuild/modules/i18n.py#L93
 # at the time of this comment.
 i18n.gettext(GETTEXT_PACKAGE, preset : 'glib')
+
+devenv.append('PURPLE_LOCALE_DIR', meson.current_build_dir())

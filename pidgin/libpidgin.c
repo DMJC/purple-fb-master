@@ -36,9 +36,9 @@ pidgin_start(int argc, char *argv[]) {
 	GApplication *app;
 	int ret;
 
-	bindtextdomain(PACKAGE, PURPLE_LOCALEDIR);
-	bind_textdomain_codeset(PACKAGE, "UTF-8");
-	textdomain(PACKAGE);
+	bindtextdomain(GETTEXT_PACKAGE, purple_get_locale_dir());
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	textdomain(GETTEXT_PACKAGE);
 
 	/* Locale initialization is not complete here.  See gtk_init_check() */
 	setlocale(LC_ALL, "");
