@@ -31,6 +31,8 @@
 
 #include <purple.h>
 
+#include "purpleircv3version.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_IRCV3_TYPE_CONNECTION (purple_ircv3_connection_get_type())
@@ -103,6 +105,7 @@ PurpleIRCv3Capabilities *purple_ircv3_connection_get_capabilities(PurpleIRCv3Con
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection);
 
 /**
@@ -114,6 +117,7 @@ gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connectio
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, PurpleIRCv3Message *message);
 
 G_END_DECLS

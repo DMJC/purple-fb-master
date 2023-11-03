@@ -31,6 +31,8 @@
 
 #include <purple.h>
 
+#include "purpleircv3version.h"
+
 G_BEGIN_DECLS
 
 /* https://ircv3.net/specs/extensions/capability-negotiation */
@@ -75,6 +77,7 @@ G_GNUC_INTERNAL gboolean purple_ircv3_capabilities_message_handler(PurpleIRCv3Me
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleIRCv3Connection *purple_ircv3_capabilities_get_connection(PurpleIRCv3Capabilities *capabilities);
 
 /**
@@ -88,6 +91,7 @@ PurpleIRCv3Connection *purple_ircv3_capabilities_get_connection(PurpleIRCv3Capab
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_capabilities_request(PurpleIRCv3Capabilities *capabilities, const char *capability);
 
 /**
@@ -104,6 +108,7 @@ void purple_ircv3_capabilities_request(PurpleIRCv3Capabilities *capabilities, co
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 const char *purple_ircv3_capabilities_lookup(PurpleIRCv3Capabilities *capabilities, const char *name, gboolean *found);
 
 /**
@@ -124,6 +129,7 @@ const char *purple_ircv3_capabilities_lookup(PurpleIRCv3Capabilities *capabiliti
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 gboolean purple_ircv3_capabilities_lookup_and_request(PurpleIRCv3Capabilities *capabilities, const char *name);
 
 /**
@@ -136,6 +142,7 @@ gboolean purple_ircv3_capabilities_lookup_and_request(PurpleIRCv3Capabilities *c
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_capabilities_add_wait(PurpleIRCv3Capabilities *capabilities);
 
 /**
@@ -150,6 +157,7 @@ void purple_ircv3_capabilities_add_wait(PurpleIRCv3Capabilities *capabilities);
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_capabilities_remove_wait(PurpleIRCv3Capabilities *capabilities);
 
 G_END_DECLS

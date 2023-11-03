@@ -58,6 +58,7 @@ install_headers(IRCV3_HEADERS,
 
 ircv3_prpl = shared_library('ircv3', IRCV3_SOURCES + IRCV3_HEADERS + [ircv3_h],
 	c_args : ['-DPURPLE_IRCV3_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-IRCv3"'],
+	gnu_symbol_visibility : 'hidden',
 	dependencies : [libpurple_dep, glib, gio, hasl, ws2_32],
 	install : true,
 	install_dir : PURPLE_PLUGINDIR)

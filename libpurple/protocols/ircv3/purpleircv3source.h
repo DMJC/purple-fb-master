@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleircv3version.h"
+
 G_BEGIN_DECLS
 
 /**
@@ -43,6 +45,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_source_parse(const char *source, char **nick, char **user, char **host);
 
 G_END_DECLS

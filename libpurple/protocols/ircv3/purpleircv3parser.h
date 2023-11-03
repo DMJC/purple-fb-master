@@ -29,10 +29,13 @@
 #include <purple.h>
 
 #include "purpleircv3messagehandlers.h"
+#include "purpleircv3version.h"
 
 G_BEGIN_DECLS
 
 #define PURPLE_IRCV3_TYPE_PARSER (purple_ircv3_parser_get_type())
+
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE(PurpleIRCv3Parser, purple_ircv3_parser, PURPLE_IRCV3,
                      PARSER, GObject)
 
@@ -43,6 +46,7 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Parser, purple_ircv3_parser, PURPLE_IRCV3,
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleIRCv3Parser *purple_ircv3_parser_new(void);
 
 /**
@@ -55,6 +59,7 @@ PurpleIRCv3Parser *purple_ircv3_parser_new(void);
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_parser_set_fallback_handler(PurpleIRCv3Parser *parser, PurpleIRCv3MessageHandler handler);
 
 /**
@@ -70,6 +75,7 @@ void purple_ircv3_parser_set_fallback_handler(PurpleIRCv3Parser *parser, PurpleI
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 gboolean purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer, GError **error, gpointer data);
 
 /**
@@ -82,6 +88,7 @@ gboolean purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffe
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_parser_add_handler(PurpleIRCv3Parser *parser, const char *command, PurpleIRCv3MessageHandler handler);
 
 /**
@@ -95,6 +102,7 @@ void purple_ircv3_parser_add_handler(PurpleIRCv3Parser *parser, const char *comm
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_parser_add_handlers(PurpleIRCv3Parser *parser, PurpleIRCv3MessageHandler handler, ...) G_GNUC_NULL_TERMINATED;
 
 /**
@@ -105,6 +113,7 @@ void purple_ircv3_parser_add_handlers(PurpleIRCv3Parser *parser, PurpleIRCv3Mess
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser);
 
 G_END_DECLS

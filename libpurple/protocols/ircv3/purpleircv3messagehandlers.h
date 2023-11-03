@@ -28,6 +28,7 @@
 #include <purple.h>
 
 #include "purpleircv3message.h"
+#include "purpleircv3version.h"
 
 G_BEGIN_DECLS
 
@@ -44,6 +45,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_TYPE_IN_3_0
 typedef gboolean (*PurpleIRCv3MessageHandler)(PurpleIRCv3Message *message,
                                               GError **error,
                                               gpointer data);

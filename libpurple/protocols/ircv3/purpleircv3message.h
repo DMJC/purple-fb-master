@@ -30,9 +30,13 @@
 
 #include <purple.h>
 
+#include "purpleircv3version.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_IRCV3_TYPE_MESSAGE (purple_ircv3_message_get_type())
+
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE(PurpleIRCv3Message, purple_ircv3_message, PURPLE_IRCV3,
                      MESSAGE, GObject)
 
@@ -46,6 +50,7 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Message, purple_ircv3_message, PURPLE_IRCV3,
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleIRCv3Message *purple_ircv3_message_new(const char *command);
 
 /**
@@ -58,6 +63,7 @@ PurpleIRCv3Message *purple_ircv3_message_new(const char *command);
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 const char *purple_ircv3_message_get_command(PurpleIRCv3Message *message);
 
 /**
@@ -69,6 +75,7 @@ const char *purple_ircv3_message_get_command(PurpleIRCv3Message *message);
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_message_set_command(PurpleIRCv3Message *message, const char *command);
 
 /**
@@ -81,6 +88,7 @@ void purple_ircv3_message_set_command(PurpleIRCv3Message *message, const char *c
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 GStrv purple_ircv3_message_get_params(PurpleIRCv3Message *message);
 
 /**
@@ -92,6 +100,7 @@ GStrv purple_ircv3_message_get_params(PurpleIRCv3Message *message);
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_message_set_params(PurpleIRCv3Message *message, GStrv params);
 
 /**
@@ -104,6 +113,7 @@ void purple_ircv3_message_set_params(PurpleIRCv3Message *message, GStrv params);
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 const char *purple_ircv3_message_get_source(PurpleIRCv3Message *message);
 
 /**
@@ -115,6 +125,7 @@ const char *purple_ircv3_message_get_source(PurpleIRCv3Message *message);
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_message_set_source(PurpleIRCv3Message *message, const char *source);
 
 /**
@@ -128,6 +139,7 @@ void purple_ircv3_message_set_source(PurpleIRCv3Message *message, const char *so
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 GHashTable *purple_ircv3_message_get_tags(PurpleIRCv3Message *message);
 
 /**
@@ -139,6 +151,7 @@ GHashTable *purple_ircv3_message_get_tags(PurpleIRCv3Message *message);
  *
  * Since: 3.0.0
  */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_message_set_tags(PurpleIRCv3Message *message, GHashTable *tags);
 
 G_END_DECLS
