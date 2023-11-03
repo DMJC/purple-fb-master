@@ -8,6 +8,7 @@ gestures_SOURCES = [
 
 library('gestures', gestures_SOURCES,
     c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="PidginPlugin-Gestures"'],
+    gnu_symbol_visibility : 'hidden',
     dependencies : [libpurple_dep, libpidgin_dep, glib],
     name_prefix : '',
     build_by_default : false,  # FIXME: Port to GTK4

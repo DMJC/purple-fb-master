@@ -1,5 +1,6 @@
 library('unity', 'unity.c',
     c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="PidginPlugin-Unity"'],
+    gnu_symbol_visibility : 'hidden',
     dependencies : [UNITY, libpurple_dep, libpidgin_dep, glib],
     name_prefix : '',
     install : true, install_dir : PIDGIN_PLUGINDIR)

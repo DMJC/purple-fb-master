@@ -1,5 +1,6 @@
 library('iconaway', 'iconaway.c',
     c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="PidginPlugin-IconAway"'],
+    gnu_symbol_visibility : 'hidden',
     dependencies : [libpurple_dep, libpidgin_dep, glib],
     name_prefix : '',
     install : true, install_dir : PIDGIN_PLUGINDIR)
