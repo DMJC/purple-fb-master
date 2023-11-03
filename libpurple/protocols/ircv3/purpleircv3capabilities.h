@@ -45,6 +45,8 @@ G_BEGIN_DECLS
 #define PURPLE_IRCV3_CAPABILITY_SERVER_TIME "server-time"
 
 #define PURPLE_IRCV3_TYPE_CAPABILITIES (purple_ircv3_capabilities_get_type())
+
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE(PurpleIRCv3Capabilities, purple_ircv3_capabilities,
                      PURPLE_IRCV3, CAPABILITIES, GObject)
 

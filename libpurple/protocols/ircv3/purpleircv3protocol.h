@@ -31,9 +31,13 @@
 
 #include <purple.h>
 
+#include "purpleircv3version.h"
+
 G_BEGIN_DECLS
 
 #define PURPLE_IRCV3_TYPE_PROTOCOL (purple_ircv3_protocol_get_type())
+
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 G_DECLARE_DERIVABLE_TYPE(PurpleIRCv3Protocol, purple_ircv3_protocol,
                          PURPLE_IRCV3, PROTOCOL, PurpleProtocol)
 

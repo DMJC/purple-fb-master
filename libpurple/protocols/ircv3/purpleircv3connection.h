@@ -36,6 +36,8 @@
 G_BEGIN_DECLS
 
 #define PURPLE_IRCV3_TYPE_CONNECTION (purple_ircv3_connection_get_type())
+
+PURPLE_IRCV3_AVAILABLE_IN_ALL
 G_DECLARE_DERIVABLE_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
                          PURPLE_IRCV3, CONNECTION, PurpleConnection)
 
