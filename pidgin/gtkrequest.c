@@ -21,8 +21,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <talkatu.h>
-
 #include <purple.h>
 
 #include "gtkrequest.h"
@@ -32,6 +30,7 @@
 #include "pidginaccountfilterconnected.h"
 #include "pidginaccountrow.h"
 #include "pidgincore.h"
+#include "pidgintextbuffer.h"
 
 #include <gdk/gdkkeysyms.h>
 
@@ -120,25 +119,25 @@ input_response_cb(G_GNUC_UNUSED GtkDialog *dialog, gint id,
 
 	generic_response_start(data);
 
-	if (data->u.input.multiline || purple_strequal(data->u.input.hint, "html")) {
-		GtkTextBuffer *buffer =
-			gtk_text_view_get_buffer(GTK_TEXT_VIEW(data->u.input.entry));
+	if(data->u.input.multiline || purple_strequal(data->u.input.hint, "html")) {
+		GtkTextBuffer *buffer = NULL;
+
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data->u.input.entry));
 
 		if (purple_strequal(data->u.input.hint, "html")) {
-			multiline_value = talkatu_markup_get_html(buffer, NULL);
+			multiline_value = pidgin_text_buffer_get_html(buffer);
 		} else {
 			GtkTextIter start_iter, end_iter;
 
 			gtk_text_buffer_get_start_iter(buffer, &start_iter);
 			gtk_text_buffer_get_end_iter(buffer, &end_iter);
 
-			multiline_value = gtk_text_buffer_get_text(buffer, &start_iter, &end_iter,
-										 FALSE);
+			multiline_value = gtk_text_buffer_get_text(buffer, &start_iter,
+			                                           &end_iter, FALSE);
 		}
 
 		value = multiline_value;
-	}
-	else {
+	} else {
 		value = gtk_editable_get_text(GTK_EDITABLE(data->u.input.entry));
 	}
 
@@ -494,37 +493,34 @@ pidgin_request_input(const char *title, const char *primary,
 	data->u.input.hint = g_strdup(hint);
 
 	if(multiline || purple_strequal(data->u.input.hint, "html")) {
-		GtkWidget *editor = talkatu_editor_new();
-		GtkWidget *input = talkatu_editor_get_input(TALKATU_EDITOR(editor));
+		GtkWidget *sw = NULL;
+		GtkWidget *view = NULL;
 		GtkTextBuffer *buffer = NULL;
 
-		gtk_widget_set_size_request(input, 320, 130);
-		gtk_widget_set_name(input, "pidgin_request_input");
-		gtk_widget_set_vexpand(editor, TRUE);
-		gtk_box_append(GTK_BOX(vbox), editor);
+		sw = gtk_scrolled_window_new();
+		gtk_widget_set_vexpand(sw, TRUE);
+		gtk_box_append(GTK_BOX(vbox), sw);
 
-		if (purple_strequal(data->u.input.hint, "html")) {
-			GSimpleActionGroup *ag = NULL;
+		view = gtk_text_view_new();
+		gtk_widget_set_size_request(view, 320, 130);
+		gtk_widget_set_name(view, "pidgin_request_input");
+		gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), view);
 
-			ag = talkatu_action_group_new(TALKATU_FORMAT_HTML);
-			buffer = talkatu_buffer_new(ag);
-			talkatu_action_group_set_buffer(TALKATU_ACTION_GROUP(ag), buffer);
-			g_clear_object(&ag);
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
 
-			if(default_value != NULL) {
-				talkatu_markup_set_html(TALKATU_BUFFER(buffer), default_value, -1);
-			}
-		} else {
-			buffer = gtk_text_buffer_new(NULL);
+		if(!purple_strempty(default_value)) {
+			if(purple_strequal(data->u.input.hint, "html")) {
+				GtkTextIter start;
 
-			if(default_value != NULL) {
+				gtk_text_buffer_get_start_iter(buffer, &start);
+				gtk_text_buffer_insert_markup(buffer, &start, default_value,
+				                              -1);
+			} else {
 				gtk_text_buffer_set_text(buffer, default_value, -1);
 			}
 		}
 
-		gtk_text_view_set_buffer(GTK_TEXT_VIEW(input), buffer);
-
-		data->u.input.entry = input;
+		data->u.input.entry = view;
 	} else {
 		GtkWidget *entry = NULL;
 
