@@ -439,3 +439,17 @@ purple_ui_get_history_adapter(PurpleUi *ui) {
 
 	return NULL;
 }
+
+PurplePresenceManager *
+purple_ui_get_presence_manager(PurpleUi *ui) {
+	PurpleUiClass *klass = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_UI(ui), NULL);
+
+	klass = PURPLE_UI_GET_CLASS(ui);
+	if(klass != NULL && klass->get_presence_manager != NULL) {
+		return klass->get_presence_manager(ui);
+	}
+
+	return NULL;
+}

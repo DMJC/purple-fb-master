@@ -23,7 +23,11 @@
 #include <gio/gsettingsbackend.h>
 
 #include "purplepresencemanager.h"
+#include "purplepresencemanagerprivate.h"
+
+#include "core.h"
 #include "purplesavedpresenceprivate.h"
+#include "purpleui.h"
 #include "util.h"
 
 #define MANAGER_SCHEMA_ID "im.pidgin.Purple.PresenceManager"
@@ -55,6 +59,8 @@ struct _PurplePresenceManager {
 	PurpleSavedPresence *active;
 	GPtrArray *presences;
 };
+
+static PurplePresenceManager *default_manager = NULL;
 
 /******************************************************************************
  * Helpers
@@ -407,8 +413,43 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 }
 
 /******************************************************************************
+ * Private API
+ *****************************************************************************/
+void
+purple_presence_manager_startup(void) {
+	if(default_manager == NULL) {
+		PurpleUi *ui = purple_core_get_ui();
+
+		default_manager = purple_ui_get_presence_manager(ui);
+		if(PURPLE_IS_PRESENCE_MANAGER(default_manager)) {
+			g_object_add_weak_pointer(G_OBJECT(default_manager),
+			                          (gpointer *)&default_manager);
+		}
+	}
+}
+
+void
+purple_presence_manager_shutdown(void) {
+	g_clear_object(&default_manager);
+}
+
+/******************************************************************************
  * Public API
  *****************************************************************************/
+PurplePresenceManager *
+purple_presence_manager_get_default(void) {
+	return default_manager;
+}
+
+GListModel *
+purple_presence_manager_get_default_as_model(void) {
+	if(PURPLE_IS_PRESENCE_MANAGER(default_manager)) {
+		return G_LIST_MODEL(default_manager);
+	}
+
+	return NULL;
+}
+
 PurplePresenceManager *
 purple_presence_manager_new(const char *filename) {
 	return g_object_new(PURPLE_TYPE_PRESENCE_MANAGER,

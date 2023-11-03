@@ -245,6 +245,7 @@ purple_coreheaders = [
 ]
 
 purple_private_headers = [
+	'purplepresencemanagerprivate.h',
 	'purpleprivate.h',
 	'purplesavedpresenceprivate.h',
 ]

@@ -191,6 +191,20 @@ pidgin_ui_get_history_adapter(G_GNUC_UNUSED PurpleUi *ui) {
 	return adapter;
 }
 
+static PurplePresenceManager *
+pidgin_ui_get_presence_manager(G_GNUC_UNUSED PurpleUi *ui) {
+	PurplePresenceManager *manager = NULL;
+	char *filename = NULL;
+
+	g_mkdir_with_parents(purple_config_dir(), 0700);
+
+	filename = g_build_filename(purple_config_dir(), "presences.ini", NULL);
+	manager = purple_presence_manager_new(filename);
+	g_free(filename);
+
+	return manager;
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -207,6 +221,7 @@ pidgin_ui_class_init(PidginUiClass *klass) {
 	ui_class->stop = pidgin_ui_stop;
 	ui_class->get_settings_backend = pidgin_ui_get_settings_backend;
 	ui_class->get_history_adapter = pidgin_ui_get_history_adapter;
+	ui_class->get_presence_manager = pidgin_ui_get_presence_manager;
 }
 
 /******************************************************************************

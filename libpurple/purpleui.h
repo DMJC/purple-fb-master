@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include "purplehistoryadapter.h"
+#include "purplepresencemanager.h"
 #include "purpleversion.h"
 
 G_BEGIN_DECLS
@@ -73,6 +74,7 @@ struct _PurpleUiClass {
 
 	gpointer (*get_settings_backend)(PurpleUi *ui);
 	PurpleHistoryAdapter *(*get_history_adapter)(PurpleUi *ui);
+	PurplePresenceManager *(*get_presence_manager)(PurpleUi *ui);
 
 	/*< private >*/
 	gpointer reserved[4];
@@ -233,6 +235,22 @@ gpointer purple_ui_get_settings_backend(PurpleUi *ui);
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryAdapter *purple_ui_get_history_adapter(PurpleUi *ui);
+
+/**
+ * purple_ui_get_presence_manager:
+ * @ui: The instance:
+ *
+ * Gets the [class@PresenceManager] that the user interface wants to use.
+ *
+ * > Note: This should typically only be called by libpurple. If this returns
+ * %NULL, then libpurple will not be able to manage saved presences.
+ *
+ * Returns: (transfer full) (nullable): The new presence manager or %NULL.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurplePresenceManager *purple_ui_get_presence_manager(PurpleUi *ui);
 
 G_END_DECLS
 

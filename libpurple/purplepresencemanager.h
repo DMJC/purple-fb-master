@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gio/gio.h>
+
 #include "purplesavedpresence.h"
 #include "purpleversion.h"
 
@@ -48,6 +50,44 @@ G_DECLARE_FINAL_TYPE(PurplePresenceManager, purple_presence_manager, PURPLE,
  *
  * Since: 3.0.0
  */
+
+/**
+ * purple_presence_manager_get_default:
+ *
+ * Gets the default [class@PresenceManager] that should be used.
+ *
+ * This may be %NULL if libpurple hasn't been initialized or if someone
+ * incorrectly unref'd it.
+ *
+ * Returns: (transfer none) (nullable): The default presence manager.
+ *
+ * Since: 3.0.0
+ *
+ * See Also: [func@PresenceManager.get_default_as_model]
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurplePresenceManager *purple_presence_manager_get_default(void);
+
+/**
+ * purple_presence_manager_get_default_as_model:
+ *
+ * Gets the default [class@PresenceManager] as a [iface@Gio.ListModel].
+ *
+ * This is the equivalent to calling [func@PresenceManager.get_default] and
+ * type casting it to [iface@gio.ListModel].
+ *
+ * This may be %NULL if libpurple hasn't been initialized or if someone
+ * incorrectly unref'd it.
+ *
+ * Returns: (transfer none) (nullable): The default presence manager type cast
+ *          to a list model.
+ *
+ * Since: 3.0.0
+ *
+ * See Also: [func@PresenceManager.get_default]
+ */
+PURPLE_AVAILABLE_IN_3_0
+GListModel *purple_presence_manager_get_default_as_model(void);
 
 /**
  * purple_presence_manager_new:

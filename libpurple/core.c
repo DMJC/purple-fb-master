@@ -44,6 +44,7 @@
 #include "purpleidlemanagerprivate.h"
 #include "purplemessage.h"
 #include "purplepath.h"
+#include "purplepresencemanagerprivate.h"
 #include "purpleprivate.h"
 #include "savedstatuses.h"
 #include "signals.h"
@@ -164,6 +165,7 @@ purple_core_init(PurpleUi *ui, GError **error) {
 	purple_accounts_init();
 	purple_contact_manager_startup();
 	purple_savedstatuses_init();
+	purple_presence_manager_startup();
 	purple_notify_init();
 	purple_conversations_init();
 	purple_conversation_manager_startup();
@@ -246,6 +248,7 @@ purple_core_quit(void)
 	purple_notify_uninit();
 	purple_connections_uninit();
 	purple_buddy_icons_uninit();
+	purple_presence_manager_shutdown();
 	purple_savedstatuses_uninit();
 	purple_statuses_uninit();
 	purple_accounts_uninit();
