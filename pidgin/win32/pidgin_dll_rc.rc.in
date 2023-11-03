@@ -17,9 +17,9 @@ VS_VERSION_INFO VERSIONINFO
         VALUE "CompanyName", "The Pidgin developer community"
         VALUE "FileDescription", "Pidgin UI library"
         VALUE "FileVersion", "@PURPLE_VERSION@"
-        VALUE "InternalName", "libpidgin"
+        VALUE "InternalName", "pidgin3"
         VALUE "LegalCopyright", "Copyright (C) 1998-2014 The Pidgin developer community (See the COPYRIGHT file in the source distribution)."
-        VALUE "OriginalFilename", "libpidgin-@PURPLE_API_VERSION@.dll"
+        VALUE "OriginalFilename", "pidgin3-@PURPLE_API_VERSION@.dll"
         VALUE "ProductName", "Pidgin"
         VALUE "ProductVersion", "@PURPLE_VERSION@"
       END

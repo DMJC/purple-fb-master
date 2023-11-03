@@ -101,8 +101,7 @@ if host_machine.system() == 'windows'
 	dnsapi = compiler.find_library('dnsapi')
 	conf.set('WIN32_LEAN_AND_MEAN', true)
 
-	conf.set('LIBPIDGIN_DLL_NAMEW',
-	    f'L"libpidgin3-@purple_soversion@.dll"')
+	conf.set('LIBPIDGIN_DLL_NAMEW', f'L"pidgin3-@purple_soversion@.dll"')
 else
 	IS_WIN32 = false
 	ws2_32 = []
