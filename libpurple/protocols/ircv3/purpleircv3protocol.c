@@ -55,6 +55,7 @@ purple_ircv3_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol
 
 	option = purple_account_option_string_new(_("Server password"),
 	                                          "server-password", "");
+	purple_account_option_string_set_masked(option, TRUE);
 	options = g_list_append(options, option);
 
 	option = purple_account_option_string_new(_("Ident name"), "ident", "");
