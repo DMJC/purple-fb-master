@@ -87,16 +87,44 @@ pidgin_icon_name_from_status(PurpleStatus *status, const gchar *fallback) {
 	return pidgin_icon_name_from_status_type(type, fallback);
 }
 
-const gchar *
-pidgin_icon_name_from_presence(PurplePresence *presence, const gchar *fallback)
+const char *
+pidgin_icon_name_from_presence_primitive(PurplePresencePrimitive primitive,
+                                         const char *fallback)
 {
-	PurpleStatus *status = NULL;
-
-	if(!PURPLE_IS_PRESENCE(presence)) {
-		return fallback;
+	switch(primitive) {
+	case PURPLE_PRESENCE_PRIMITIVE_OFFLINE:
+		return "pidgin-user-offline";
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_AVAILABLE:
+		return "pidgin-user-available";
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_IDLE:
+		return "pidgin-user-unavailable";
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_INVISIBLE:
+		return "pidgin-user-invisible";
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_AWAY:
+		return "pidgin-user-away";
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_EXTENDED_AWAY:
+		return "pidgin-user-extended-away";
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_STREAMING:
+		/* TODO: get an icon for streaming. */
+	default:
+		break;
 	}
 
-	status = purple_presence_get_active_status(presence);
+	return fallback;
+}
 
-	return pidgin_icon_name_from_status(status, fallback);
+const char *
+pidgin_icon_name_from_presence(PurplePresence *presence, const char *fallback)
+{
+	PurplePresencePrimitive primitive;
+
+	primitive = purple_presence_get_primitive(presence);
+
+	return pidgin_icon_name_from_presence_primitive(primitive, fallback);
 }
