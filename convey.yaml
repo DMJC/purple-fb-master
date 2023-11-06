@@ -27,11 +27,7 @@ tasks:
   docs-clean:
     type: convey/clean
     files:
-      - finch3-docs
-      - finch3-docs.zip
-      - pidgin3-docs
       - pidgin3-docs.zip
-      - purple3-docs
       - purple3-docs.zip
 
   docs-build:
@@ -43,10 +39,10 @@ tasks:
       - set -ex
       - meson setup build-docs -Ddoc=true
       - ninja -C build-docs doc
-      - pushd build-docs/doc/reference/finch
-      - mv finch finch3
-      - zip -9r finch3-docs.zip finch3
-      - popd
+      # - pushd build-docs/doc/reference/finch
+      # - mv finch finch3
+      # - zip -9r finch3-docs.zip finch3
+      # - popd
       - pushd build-docs/doc/reference/pidgin
       - mv pidgin pidgin3
       - zip -9r pidgin3-docs.zip pidgin3
@@ -58,7 +54,6 @@ tasks:
   docs-export:
     type: docker/export
     files:
-      - build-docs/doc/reference/finch/finch3-docs.zip:finch3-docs.zip
       - build-docs/doc/reference/libpurple/purple3-docs.zip:purple3-docs.zip
       - build-docs/doc/reference/pidgin/pidgin3-docs.zip:pidgin3-docs.zip
 
