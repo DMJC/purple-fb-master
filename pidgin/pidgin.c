@@ -27,6 +27,7 @@
 
 #ifdef _WIN32
 /* suppress gcc "no previous prototype" warning */
+G_MODULE_EXPORT
 int __cdecl pidgin_main(HINSTANCE hint, int argc, char *argv[]);
 int __cdecl pidgin_main(HINSTANCE hint, int argc, char *argv[])
 #else
