@@ -31,14 +31,19 @@ import sys
 
 
 def main():
+    if len(sys.argv) < 2:
+        print('invalid arguments:')
+        print(f'usage: {sys.argv[0]} [path to gtk4-broadwayd] [tests]...')
+        sys.exit(1)
+
     # start broadway
-    broadwayd = subprocess.Popen(['gtk4-broadwayd'])
+    broadwayd = subprocess.Popen(sys.argv[1])
 
     # run the unit test but set the GDK_BACKEND envvar to broadway
     env = {**os.environ, 'GDK_BACKEND': 'broadway'}
 
     try:
-        proc = subprocess.run(args=sys.argv[1:], env=env)
+        proc = subprocess.run(args=sys.argv[2:], env=env)
     finally:
         # kill broadway
         broadwayd.kill()
