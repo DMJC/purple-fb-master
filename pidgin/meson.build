@@ -214,7 +214,6 @@ _libpidgin_dependencies = [
 	json,
 	libadwaita,
 	math,
-	talkatu_dep,
 	libpurple_dep,
 ]
 
@@ -240,7 +239,7 @@ libpidgin_dep = declare_dependency(
     include_directories : [toplevel_inc, libpidgin_inc],
     link_with : libpidgin,
     sources : libpidgin_built_headers,
-    dependencies : [gtk, glib, libadwaita, math, talkatu_dep, gplugin_gtk_dep])
+    dependencies : [gtk, glib, libadwaita, math, gplugin_gtk_dep])
 
 executable('pidgin3',
     pidgin_SOURCES,
@@ -260,7 +259,7 @@ pkgconfig.generate(
     filebase : pidgin_filebase,
     subdirs : pidgin_filebase,
     # NOTE: Don't use dependencies from subprojects.
-    requires : [gtk, libadwaita, libpurple, 'talkatu', 'gplugin-gtk4'],
+    requires : [gtk, libadwaita, libpurple, 'gplugin-gtk4'],
     variables : [f'plugindir=${libdir}/pidgin-@purple_major_version@'])
 
 if host_machine.system() != 'windows'
@@ -292,13 +291,13 @@ if enable_introspection
 	pidgin_gir = gnome.generate_gir(libpidgin,
 		sources : introspection_sources,
 		header : 'pidgin.h',
-		includes : ['GLib-2.0', 'GObject-2.0', 'Gtk-4.0', libpurple_gir[0], 'Talkatu-0.0'],
+		includes : ['GLib-2.0', 'GObject-2.0', 'Gtk-4.0', libpurple_gir[0]],
 		namespace : 'Pidgin',
 		symbol_prefix : 'pidgin',
 		identifier_prefix : 'Pidgin',
 		export_packages : f'pidgin-@purple_major_version@',
 		nsversion : f'@purple_major_version@.@purple_minor_version@',
-		dependencies : [gplugin_dep, gplugin_gtk_dep, talkatu_dep, libpurple_dep],
+		dependencies : [gplugin_dep, gplugin_gtk_dep, libpurple_dep],
 		install : true,
 		extra_args : ['-DPIDGIN_COMPILATION', '--quiet'])
 endif

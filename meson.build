@@ -195,10 +195,6 @@ endif
 if get_option('gtkui')
 	gtk = dependency('gtk4', version : '>= 4.10.0')
 	libadwaita = dependency('libadwaita-1', version : '>= 1.2')
-
-	talkatu_dep = dependency('talkatu',
-		version: '>=0.2.0',
-		fallback: ['talkatu', 'talkatu_dep'])
 endif	# GTK
 
 ENABLE_GTK = get_option('gtkui')

@@ -7,7 +7,7 @@ authors = "Pidgin Developers"
 logo_url = ""
 license = "GPL-2.0-or-later"
 description = "Pidgin Universal Chat Client"
-dependencies = [ "GLib-2.0", "GObject-2.0", "Gtk-4.0", "Purple-3.0", "GPlugin-1.0", "GPlugin-Gtk4-1.0", "Talkatu-0.0" ]
+dependencies = [ "GLib-2.0", "GObject-2.0", "Gtk-4.0", "Purple-3.0", "GPlugin-1.0", "GPlugin-Gtk4-1.0" ]
 devhelp = true
 search_index = true
 
@@ -40,11 +40,6 @@ search_index = true
   name = "GPlugin-Gtk"
   description = "GPlugin Gtk4 Widget Library"
   docs_urls = "https://docs.imfreedom.org/gplugin-gtk4/"
-
-  [dependencies."Talkatu-0.0"]
-  name = "Talkatu"
-  description = "Talkatu Gtk Chat Widgets"
-  docs_urls = "https://docs.imfreedom.org/talkatu/"
 
 [theme]
 name = "basic"

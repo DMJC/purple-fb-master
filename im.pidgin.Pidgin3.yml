@@ -13,7 +13,6 @@ finish-args:
   - --system-talk-name=org.freedesktop.Avahi
 modules:
   - packaging/flatpak/libpurple-common.yml
-  - packaging/flatpak/talkatu.yml
   - name: pidgin3
     buildsystem: meson
     config-opts:
