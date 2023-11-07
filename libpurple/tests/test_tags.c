@@ -538,7 +538,7 @@ test_purple_tag_parse(void) {
 		{"foo:bar", "foo", "bar"},
 		{"🐦:", "🐦", ""},
 		{":🐦", "", "🐦"},
-		{NULL},
+		{NULL, NULL, NULL},
 	};
 
 	for(int i = 0; data[i].tag != NULL; i++) {

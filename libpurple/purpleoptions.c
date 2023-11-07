@@ -50,13 +50,14 @@ purple_get_option_group(void) {
 	GOptionGroup *group = NULL;
 	GOptionEntry entries[] = {
 		{
-			"force-online", 'f', G_OPTION_FLAG_NO_ARG,
-			G_OPTION_ARG_CALLBACK, &purple_options_force_online_cb,
-			_("force online, regardless of network status"),
-			NULL
-		}, {
-			NULL
+			.long_name = "force-online",
+			.short_name = 'f',
+			.flags = G_OPTION_FLAG_NO_ARG,
+			.arg = G_OPTION_ARG_CALLBACK,
+			.arg_data = &purple_options_force_online_cb,
+			.description = _("force online, regardless of network status"),
 		},
+		G_OPTION_ENTRY_NULL,
 	};
 
 	group = g_option_group_new(

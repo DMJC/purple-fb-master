@@ -89,12 +89,6 @@ enum
 	PROP_LAST
 };
 
-typedef struct
-{
-	PurpleAccount *account;
-	char *name;
-} PurpleStatusBuddyKey;
-
 static GParamSpec *properties[PROP_LAST];
 
 G_DEFINE_TYPE(PurpleStatus, purple_status, G_TYPE_OBJECT);
@@ -114,9 +108,11 @@ static int primitive_scores[] =
 	10      /* Offline messageable      */
 };
 
-#define SCORE_IDLE      9
-#define SCORE_IDLE_TIME 10
-#define SCORE_OFFLINE_MESSAGE 11
+enum {
+	SCORE_IDLE = PURPLE_STATUS_NUM_PRIMITIVES,
+	SCORE_IDLE_TIME,
+	SCORE_OFFLINE_MESSAGE,
+};
 
 /**************************************************************************
  * PurpleStatusPrimitive API
