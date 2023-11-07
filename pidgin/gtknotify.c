@@ -22,7 +22,6 @@
 #include <glib/gi18n-lib.h>
 
 #include <gdk/gdkkeysyms.h>
-#include <talkatu.h>
 
 #include <purple.h>
 
@@ -254,7 +253,6 @@ pidgin_notify_formatted(const char *title, const char *primary,
 	GtkWidget *sw;
 	GtkWidget *view;
 	GtkTextBuffer *buffer;
-	GSimpleActionGroup *ag = NULL;
 	char label_text[2048];
 	char *linked_text, *primary_esc, *secondary_esc;
 
@@ -292,12 +290,8 @@ pidgin_notify_formatted(const char *title, const char *primary,
 	gtk_box_append(GTK_BOX(vbox), sw);
 	gtk_widget_set_vexpand(sw, TRUE);
 
-	ag = talkatu_action_group_new(TALKATU_FORMAT_HTML);
-	buffer = talkatu_buffer_new(ag);
-	talkatu_action_group_set_buffer(TALKATU_ACTION_GROUP(ag), buffer);
-	g_clear_object(&ag);
-
-	view = talkatu_view_new_with_buffer(buffer);
+	view = gtk_text_view_new();
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), view);
 	gtk_widget_set_name(view, "pidgin_notify_view");
 	gtk_widget_set_size_request(view, 300, 250);
@@ -313,7 +307,7 @@ pidgin_notify_formatted(const char *title, const char *primary,
 
 	/* Make sure URLs are clickable */
 	linked_text = purple_markup_linkify(text);
-	talkatu_markup_set_html(TALKATU_BUFFER(buffer), linked_text, -1);
+	gtk_text_buffer_set_text(buffer, linked_text, -1);
 	g_free(linked_text);
 
 	g_object_set_data(G_OBJECT(window), "view-widget", view);
@@ -572,7 +566,8 @@ pidgin_notify_userinfo(PurpleConnection *gc, const char *who,
 		GtkWidget *view = g_object_get_data(G_OBJECT(pinfo->window), "view-widget");
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
 		char *linked_text = purple_markup_linkify(info);
-		talkatu_markup_set_html(TALKATU_BUFFER(buffer), linked_text, -1);
+
+		gtk_text_buffer_set_text(buffer, linked_text, -1);
 		g_free(linked_text);
 		g_free(key);
 		ui_handle = pinfo->window;
