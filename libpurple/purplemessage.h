@@ -132,7 +132,7 @@ G_DECLARE_FINAL_TYPE(PurpleMessage, purple_message, PURPLE, MESSAGE, GObject)
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleMessage *purple_message_new_outgoing(const gchar *author, const gchar *recipient, const gchar *contents, PurpleMessageFlags flags);
+PurpleMessage *purple_message_new_outgoing(const char *author, const char *recipient, const char *contents, PurpleMessageFlags flags);
 
 /**
  * purple_message_new_incoming:
@@ -150,7 +150,7 @@ PurpleMessage *purple_message_new_outgoing(const gchar *author, const gchar *rec
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleMessage *purple_message_new_incoming(const gchar *who, const gchar *contents, PurpleMessageFlags flags, guint64 timestamp);
+PurpleMessage *purple_message_new_incoming(const char *who, const char *contents, PurpleMessageFlags flags, guint64 timestamp);
 
 /**
  * purple_message_new_system:
@@ -166,7 +166,7 @@ PurpleMessage *purple_message_new_incoming(const gchar *who, const gchar *conten
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleMessage *purple_message_new_system(const gchar *contents, PurpleMessageFlags flags);
+PurpleMessage *purple_message_new_system(const char *contents, PurpleMessageFlags flags);
 
 /**
  * purple_message_get_id:
@@ -180,7 +180,7 @@ PurpleMessage *purple_message_new_system(const gchar *contents, PurpleMessageFla
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_message_get_id(PurpleMessage *message);
+const char *purple_message_get_id(PurpleMessage *message);
 
 /**
  * purple_message_set_id:
@@ -208,7 +208,7 @@ void purple_message_set_id(PurpleMessage *message, const char *id);
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_message_get_author(PurpleMessage *message);
+const char *purple_message_get_author(PurpleMessage *message);
 
 /**
  * purple_message_set_author_name_color:
@@ -223,7 +223,7 @@ const gchar *purple_message_get_author(PurpleMessage *message);
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_message_set_author_name_color(PurpleMessage *message, const gchar *color);
+void purple_message_set_author_name_color(PurpleMessage *message, const char *color);
 
 /**
  * purple_message_get_author_name_color:
@@ -236,7 +236,7 @@ void purple_message_set_author_name_color(PurpleMessage *message, const gchar *c
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_message_get_author_name_color(PurpleMessage *message);
+const char *purple_message_get_author_name_color(PurpleMessage *message);
 
 /**
  * purple_message_set_recipient:
@@ -248,7 +248,7 @@ const gchar *purple_message_get_author_name_color(PurpleMessage *message);
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_message_set_recipient(PurpleMessage *message, const gchar *recipient);
+void purple_message_set_recipient(PurpleMessage *message, const char *recipient);
 
 /**
  * purple_message_get_recipient:
@@ -261,7 +261,7 @@ void purple_message_set_recipient(PurpleMessage *message, const gchar *recipient
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_message_get_recipient(PurpleMessage *message);
+const char *purple_message_get_recipient(PurpleMessage *message);
 
 /**
  * purple_message_set_author_alias:
@@ -273,7 +273,7 @@ const gchar *purple_message_get_recipient(PurpleMessage *message);
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_message_set_author_alias(PurpleMessage *message, const gchar *alias);
+void purple_message_set_author_alias(PurpleMessage *message, const char *alias);
 
 /**
  * purple_message_get_author_alias:
@@ -286,7 +286,7 @@ void purple_message_set_author_alias(PurpleMessage *message, const gchar *alias)
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_message_get_author_alias(PurpleMessage *message);
+const char *purple_message_get_author_alias(PurpleMessage *message);
 
 /**
  * purple_message_set_contents:
@@ -298,7 +298,7 @@ const gchar *purple_message_get_author_alias(PurpleMessage *message);
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_message_set_contents(PurpleMessage *message, const gchar *cont);
+void purple_message_set_contents(PurpleMessage *message, const char *cont);
 
 /**
  * purple_message_get_contents:
@@ -311,7 +311,7 @@ void purple_message_set_contents(PurpleMessage *message, const gchar *cont);
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_message_get_contents(PurpleMessage *message);
+const char *purple_message_get_contents(PurpleMessage *message);
 
 /**
  * purple_message_set_content_type:
@@ -389,7 +389,7 @@ GDateTime *purple_message_get_timestamp(PurpleMessage *message);
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-gchar *purple_message_format_timestamp(PurpleMessage *message, const gchar *format);
+char *purple_message_format_timestamp(PurpleMessage *message, const char *format);
 
 /**
  * purple_message_set_flags:

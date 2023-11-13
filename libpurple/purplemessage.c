@@ -30,13 +30,13 @@
 struct _PurpleMessage {
 	GObject parent;
 
-	gchar *id;
-	gchar *author;
-	gchar *author_name_color;
-	gchar *author_alias;
-	gchar *recipient;
+	char *id;
+	char *author;
+	char *author_name_color;
+	char *author_alias;
+	char *recipient;
 
-	gchar *contents;
+	char *contents;
 	PurpleMessageContentType content_type;
 	gboolean action;
 
@@ -78,7 +78,7 @@ G_DEFINE_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
  * Helpers
  *****************************************************************************/
 static void
-purple_message_set_author(PurpleMessage *message, const gchar *author) {
+purple_message_set_author(PurpleMessage *message, const char *author) {
 	g_free(message->author);
 	message->author = g_strdup(author);
 
@@ -458,8 +458,8 @@ purple_message_class_init(PurpleMessageClass *klass) {
  * Public API
  *****************************************************************************/
 PurpleMessage *
-purple_message_new_outgoing(const gchar *author, const gchar *recipient,
-                            const gchar *contents, PurpleMessageFlags flags)
+purple_message_new_outgoing(const char *author, const char *recipient,
+                            const char *contents, PurpleMessageFlags flags)
 {
 	PurpleMessage *message = NULL;
 	GDateTime *dt = NULL;
@@ -485,7 +485,7 @@ purple_message_new_outgoing(const gchar *author, const gchar *recipient,
 }
 
 PurpleMessage *
-purple_message_new_incoming(const gchar *who, const gchar *contents,
+purple_message_new_incoming(const char *who, const char *contents,
                             PurpleMessageFlags flags, guint64 timestamp)
 {
 	PurpleMessage *message = NULL;
@@ -516,7 +516,7 @@ purple_message_new_incoming(const gchar *who, const gchar *contents,
 }
 
 PurpleMessage *
-purple_message_new_system(const gchar *contents, PurpleMessageFlags flags) {
+purple_message_new_system(const char *contents, PurpleMessageFlags flags) {
 	PurpleMessage *message = NULL;
 	GDateTime *dt = NULL;
 
@@ -537,7 +537,7 @@ purple_message_new_system(const gchar *contents, PurpleMessageFlags flags) {
 	return message;
 }
 
-const gchar *
+const char *
 purple_message_get_id(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
 
@@ -545,7 +545,7 @@ purple_message_get_id(PurpleMessage *message) {
 }
 
 void
-purple_message_set_id(PurpleMessage *message, const gchar *id) {
+purple_message_set_id(PurpleMessage *message, const char *id) {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
 	g_free(message->id);
@@ -554,7 +554,7 @@ purple_message_set_id(PurpleMessage *message, const gchar *id) {
 	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ID]);
 }
 
-const gchar *
+const char *
 purple_message_get_author(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
@@ -563,7 +563,7 @@ purple_message_get_author(PurpleMessage *message) {
 
 void
 purple_message_set_author_name_color(PurpleMessage *message,
-                                     const gchar *color)
+                                     const char *color)
 {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
@@ -574,7 +574,7 @@ purple_message_set_author_name_color(PurpleMessage *message,
 	                         properties[PROP_AUTHOR_NAME_COLOR]);
 }
 
-const gchar *
+const char *
 purple_message_get_author_name_color(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
@@ -582,7 +582,7 @@ purple_message_get_author_name_color(PurpleMessage *message) {
 }
 
 void
-purple_message_set_recipient(PurpleMessage *message, const gchar *recipient) {
+purple_message_set_recipient(PurpleMessage *message, const char *recipient) {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
 	g_free(message->recipient);
@@ -591,7 +591,7 @@ purple_message_set_recipient(PurpleMessage *message, const gchar *recipient) {
 	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_RECIPIENT]);
 }
 
-const gchar *
+const char *
 purple_message_get_recipient(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
@@ -600,7 +600,7 @@ purple_message_get_recipient(PurpleMessage *message) {
 
 void
 purple_message_set_author_alias(PurpleMessage *message,
-                                const gchar *author_alias)
+                                const char *author_alias)
 {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
@@ -610,7 +610,7 @@ purple_message_set_author_alias(PurpleMessage *message,
 	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_AUTHOR_ALIAS]);
 }
 
-const gchar *
+const char *
 purple_message_get_author_alias(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
@@ -621,7 +621,7 @@ purple_message_get_author_alias(PurpleMessage *message) {
 }
 
 void
-purple_message_set_contents(PurpleMessage *message, const gchar *contents) {
+purple_message_set_contents(PurpleMessage *message, const char *contents) {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
 	g_free(message->contents);
@@ -630,7 +630,7 @@ purple_message_set_contents(PurpleMessage *message, const gchar *contents) {
 	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_CONTENTS]);
 }
 
-const gchar *
+const char *
 purple_message_get_contents(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
@@ -686,8 +686,8 @@ purple_message_get_timestamp(PurpleMessage *message) {
 	return message->timestamp;
 }
 
-gchar *
-purple_message_format_timestamp(PurpleMessage *message, const gchar *format) {
+char *
+purple_message_format_timestamp(PurpleMessage *message, const char *format) {
 	GDateTime *dt = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
