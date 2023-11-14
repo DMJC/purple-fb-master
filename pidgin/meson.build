@@ -306,6 +306,5 @@ if enable_introspection
 endif
 
 subdir('data')
-subdir('pixmaps')
 subdir('plugins')
 subdir('tests')
