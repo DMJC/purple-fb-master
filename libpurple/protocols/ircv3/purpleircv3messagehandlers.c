@@ -125,7 +125,6 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	PurpleContact *contact = NULL;
 	PurpleContactManager *contact_manager = NULL;
 	PurpleConversation *conversation = NULL;
-	PurpleConversationManager *conversation_manager = NULL;
 	PurpleMessage *message = NULL;
 	PurpleMessageFlags flags = PURPLE_MESSAGE_RECV;
 	GDateTime *dt = NULL;
@@ -174,44 +173,12 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	}
 	g_clear_object(&contact);
 
-	conversation_manager = purple_conversation_manager_get_default();
-
 	target = params[0];
-	if(target[0] == '#') {
-		conversation = purple_conversation_manager_find(conversation_manager,
-		                                                account, target);
-	} else {
-		conversation = purple_conversation_manager_find(conversation_manager,
-		                                                account, nick);
+	if(!purple_ircv3_connection_is_channel(connection, target)) {
+		target = nick;
 	}
-
-	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		if(target[0] == '#') {
-			conversation = g_object_new(
-				PURPLE_TYPE_CONVERSATION,
-				"account", account,
-				"name", target,
-				"type", PurpleConversationTypeChannel,
-				"id", target,
-				NULL);
-		} else {
-			conversation = g_object_new(
-				PURPLE_TYPE_CONVERSATION,
-				"account", account,
-				"name", nick,
-				"type", PurpleConversationTypeDM,
-				"id", nick,
-				NULL);
-		}
-
-		purple_conversation_manager_register(conversation_manager,
-		                                     conversation);
-
-		/* The manager creates its own reference on our new conversation, so we
-		 * borrow it like we do above if it already exists.
-		 */
-		g_object_unref(conversation);
-	}
+	conversation = purple_ircv3_connection_find_or_create_conversation(connection,
+	                                                                   target);
 
 	/* Grab the msgid if one was provided. */
 	if(g_hash_table_lookup_extended(tags, "msgid", NULL, &raw_id)) {

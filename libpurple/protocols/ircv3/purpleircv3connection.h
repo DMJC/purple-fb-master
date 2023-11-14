@@ -122,6 +122,43 @@ gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connectio
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, PurpleIRCv3Message *message);
 
+/**
+ * purple_ircv3_connection_is_channel:
+ * @connection: The instance.
+ * @id: The id to check.
+ *
+ * Checks if @id is a channel.
+ *
+ * Right now this just checks if @id starts with a `#` but in the future this
+ * will be updated to check all channel prefixes that the connection supports.
+ *
+ * Returns: %TRUE if @id is a channel otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
+gboolean purple_ircv3_connection_is_channel(PurpleIRCv3Connection *connection, const char *id);
+
+/**
+ * purple_ircv3_connection_find_or_create_conversation:
+ * @connection: The instance.
+ * @id: The id of the conversation.
+ *
+ * Looks for an existing conversation belonging to @connection and returns it
+ * if found. If not found a new conversation will be created.
+ *
+ * This will only ever return %NULL if @connection is invalid or @id is %NULL.
+ *
+ * Note that ownership of the conversation remains with the default
+ * [class@Purple.ConversationManager].
+ *
+ * Returns: (transfer none) (nullable): The conversation.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
+PurpleConversation *purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *connection, const char *id);
+
 G_END_DECLS
 
 #endif /* PURPLE_IRCV3_CONNECTION_H */

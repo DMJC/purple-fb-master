@@ -697,3 +697,55 @@ purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
 
 	g_clear_object(&message);
 }
+
+gboolean
+purple_ircv3_connection_is_channel(PurpleIRCv3Connection *connection,
+                                   const char *id)
+{
+	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), FALSE);
+	g_return_val_if_fail(id != NULL, FALSE);
+
+	return (id[0] == '#');
+}
+
+PurpleConversation *
+purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *connection,
+                                                    const char *id)
+{
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *manager = NULL;
+
+	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), NULL);
+	g_return_val_if_fail(id != NULL, NULL);
+
+	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
+	manager = purple_conversation_manager_get_default();
+	conversation = purple_conversation_manager_find_with_id(manager, account,
+	                                                        id);
+
+	if(!PURPLE_IS_CONVERSATION(conversation)) {
+		PurpleConversationType type = PurpleConversationTypeDM;
+
+		if(purple_ircv3_connection_is_channel(connection, id)) {
+			type = PurpleConversationTypeChannel;
+		}
+
+		conversation = g_object_new(
+			PURPLE_TYPE_CONVERSATION,
+			"account", account,
+			"id", id,
+			"name", id,
+			"type", type,
+			NULL);
+
+		purple_conversation_manager_register(manager, conversation);
+
+		/* The manager creates its own reference on our new conversation, so we
+		 * borrow it like we do above if it already exists.
+		 */
+		g_object_unref(conversation);
+	}
+
+	return conversation;
+}
