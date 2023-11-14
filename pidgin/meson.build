@@ -258,8 +258,7 @@ pkgconfig.generate(
     version : meson.project_version(),
     filebase : pidgin_filebase,
     subdirs : pidgin_filebase,
-    # NOTE: Don't use dependencies from subprojects.
-    requires : [gtk, libadwaita, libpurple, 'gplugin-gtk4'],
+    libraries : [gtk, libadwaita, libpurple_dep, gplugin_gtk_dep],
     variables : [f'plugindir=${libdir}/pidgin-@purple_major_version@'])
 
 if host_machine.system() != 'windows'

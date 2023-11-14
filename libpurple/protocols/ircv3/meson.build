@@ -76,7 +76,7 @@ pkgconfig.generate(
 	version : meson.project_version(),
 	subdirs : [ircv3_include_base],
 	filebase : ircv3_filebase,
-	requires : [gio, glib, 'gplugin', 'hasl', libpurple])
+	libraries : [gio, glib, hasl, libpurple])
 
 meson.override_dependency(ircv3_filebase, ircv3_dep)
 

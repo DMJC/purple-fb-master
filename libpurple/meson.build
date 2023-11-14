@@ -406,8 +406,7 @@ pkgconfig.generate(
     filebase : purple_filebase,
 # TODO: Only use purple_filebase once everything is ported to only use purple.h
     subdirs : [purple_filebase, purple_include_base],
-    # NOTE: Don't use gplugin from pkgconfig, as it might be a subproject.
-    requires : [glib, gdk_pixbuf, 'gplugin'],
+    libraries : [glib, gdk_pixbuf, gplugin_dep],
     variables : [
       f'plugindir=${libdir}/@purple_filebase@',
     ])

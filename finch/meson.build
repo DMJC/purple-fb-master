@@ -231,8 +231,7 @@ pkgconfig.generate(
     version : meson.project_version(),
     filebase : 'finch-3',
     subdirs : 'finch-3',
-    # NOTE: Don't use gnt from pkgconfig, as it might be a subproject.
-    requires : ['gnt', libpurple],
+    libraries : [libgnt_dep, libpurple_dep],
     variables : [f'plugindir=${libdir}/finch-@purple_major_version@'])
 
 subdir('plugins')
