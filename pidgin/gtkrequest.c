@@ -2142,14 +2142,14 @@ pidgin_request_file(const char *title, const char *filename,
 	if(!folder_set &&
 	   (purple_strempty(filename) || !g_file_test(filename, G_FILE_TEST_EXISTS)))
 	{
-		char *my_documents = wpurple_get_special_folder(CSIDL_PERSONAL);
+		const char *my_documents = NULL;
 
+		my_documents = g_get_user_special_dir(G_USER_DIRECTORY_DOCUMENTS);
 		if (my_documents != NULL) {
 			GFile *file = g_file_new_for_path(my_documents);
 
 			gtk_file_dialog_set_initial_folder(dialog, file);
 
-			g_free(my_documents);
 			g_clear_object(&file);
 		}
 	}
