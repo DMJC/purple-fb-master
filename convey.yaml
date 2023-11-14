@@ -20,9 +20,12 @@ tasks:
       - alpine-edge-amd64
       - clang
       - debian-trixie-amd64
-      - fedora-38-amd64
+      - debian-trixie-arm64
+      - debian-trixie-riscv64
+      - fedora-39-amd64
+      - fedora-rawhide-amd64
       - scanbuild
-      - ubuntu-lunar-amd64
+      - ubuntu-mantic-amd64
 
   docs-clean:
     type: convey/clean
@@ -90,13 +93,31 @@ plans:
       - tasks: [import, build]
       - tasks: [export]
         run: always
+  debian-trixie-arm64:
+    environment: [TARGET=debian-trixie-arm64]
+    stages:
+      - tasks: [import, build]
+      - tasks: [export]
+        run: always
+  debian-trixie-riscv64:
+    environment: [TARGET=debian-trixie-riscv64]
+    stages:
+      - tasks: [import, build]
+      - tasks: [export]
+        run: always
 
   docs:
     stages:
       - tasks: [docs-clean, import, docs-build, docs-export]
 
-  fedora-38-amd64:
-    environment: [TARGET=fedora-38-amd64]
+  fedora-39-amd64:
+    environment: [TARGET=fedora-39-amd64]
+    stages:
+      - tasks: [import, build]
+      - tasks: [export]
+        run: always
+  fedora-rawhide-amd64:
+    environment: [TARGET=fedora-rawhide-amd64]
     stages:
       - tasks: [import, build]
       - tasks: [export]
@@ -109,8 +130,8 @@ plans:
       - tasks: [export]
         run: always
 
-  ubuntu-lunar-amd64:
-    environment: [TARGET=ubuntu-lunar-amd64]
+  ubuntu-mantic-amd64:
+    environment: [TARGET=ubuntu-mantic-amd64]
     stages:
       - tasks: [import, build]
       - tasks: [export]
