@@ -230,7 +230,14 @@ pidgin_converation_get_timestamp_string(G_GNUC_UNUSED GObject *self,
 
 	timestamp = purple_message_get_timestamp(message);
 	if(timestamp != NULL) {
-		return g_date_time_format(timestamp, "%I:%M %p");
+		GDateTime *local = NULL;
+		char *ret = NULL;
+
+		local = g_date_time_to_local(timestamp);
+		ret = g_date_time_format(local, "%I:%M %p");
+		g_date_time_unref(local);
+
+		return ret;
 	}
 
 	return NULL;
