@@ -30,18 +30,6 @@
 G_BEGIN_DECLS
 
 /**
- * purple_home_dir:
- *
- * Gets the user's home directory.
- *
- * Returns: The user's home directory.
- *
- * Since: 2.0.0
- */
-PURPLE_AVAILABLE_IN_ALL
-const gchar *purple_home_dir(void);
-
-/**
  * purple_cache_dir:
  *
  * Returns the purple cache directory according to XDG Base Directory Specification.

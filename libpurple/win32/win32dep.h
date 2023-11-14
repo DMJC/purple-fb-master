@@ -45,8 +45,6 @@ G_BEGIN_DECLS
  **/
 
 /* Determine Purple paths */
-PURPLE_AVAILABLE_IN_ALL
-gchar *wpurple_get_special_folder(int folder_type); /* needs to be g_free'd */
 PURPLE_AVAILABLE_IN_3_0
 const char *wpurple_bin_dir(void);
 PURPLE_AVAILABLE_IN_ALL
@@ -55,8 +53,6 @@ PURPLE_AVAILABLE_IN_ALL
 const char *wpurple_lib_dir(const char *subdir);
 PURPLE_AVAILABLE_IN_ALL
 const char *wpurple_locale_dir(void);
-PURPLE_AVAILABLE_IN_3_0
-const char *wpurple_home_dir(void);
 PURPLE_AVAILABLE_IN_3_0
 const char *wpurple_sysconf_dir(void);
 

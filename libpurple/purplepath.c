@@ -64,15 +64,6 @@ purple_xdg_dir(gchar **xdg_dir, const gchar *xdg_base_dir,
  * Public API
  *****************************************************************************/
 const gchar *
-purple_home_dir(void) {
-#ifndef _WIN32
-	return g_get_home_dir();
-#else
-	return wpurple_home_dir();
-#endif
-}
-
-const gchar *
 purple_cache_dir(void) {
 	return purple_xdg_dir(&cache_dir, g_get_user_cache_dir(), "cache");
 }

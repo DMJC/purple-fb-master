@@ -5,18 +5,6 @@
 #include "test_ui.h"
 
 static void
-test_purplepath_home_dir(void) {
-	const gchar *home_dir;
-
-#ifndef _WIN32
-	home_dir = g_get_home_dir();
-#else
-	home_dir = g_getenv("APPDATA");
-#endif
-	g_assert_cmpstr(home_dir, ==, purple_home_dir());
-}
-
-static void
 test_purplepath_cache_dir(void) {
 	gchar *cache_dir;
 
@@ -51,8 +39,6 @@ main(gint argc, gchar **argv) {
 
 	test_ui_purple_init();
 
-	g_test_add_func("/purplepath/homedir",
-	                test_purplepath_home_dir);
 	g_test_add_func("/purplepath/cachedir",
 	                test_purplepath_cache_dir);
 	g_test_add_func("/purplepath/configdir",

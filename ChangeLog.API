@@ -460,6 +460,7 @@ version 3.0.0 (??/??/????):
 		* purple_get_attention_type_from_code
 		* purple_get_host_name. Use g_get_host_name, instead.
 		* purple_get_tzoff_str(). Use g_date_time_format, instead.
+		* purple_home_dir
 		* PurpleIdleUiOps
 		* purple_idle_get_ui_ops
 		* purple_idle_set_ui_ops
