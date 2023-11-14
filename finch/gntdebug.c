@@ -258,7 +258,7 @@ save_debug_win(G_GNUC_UNUSED GntWidget *w, GntTextView *tv)
 {
 	GntWidget *window = gnt_file_sel_new();
 	GntFileSel *sel = GNT_FILE_SEL(window);
-	gnt_file_sel_set_current_location(sel, purple_home_dir());
+	gnt_file_sel_set_current_location(sel, g_get_home_dir());
 	gnt_file_sel_set_suggested_filename(sel, "debug.txt");
 	g_signal_connect(G_OBJECT(sel), "file_selected", G_CALLBACK(file_save), tv);
 	g_signal_connect(G_OBJECT(sel), "cancelled", G_CALLBACK(gnt_widget_destroy), NULL);

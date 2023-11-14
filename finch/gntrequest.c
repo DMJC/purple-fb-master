@@ -807,7 +807,7 @@ finch_file_request_window(const char *title, const char *path,
 	data->dialog = window;
 	gnt_box_set_title(GNT_BOX(window), title);
 
-	gnt_file_sel_set_current_location(sel, (path && *path) ? path : purple_home_dir());
+	gnt_file_sel_set_current_location(sel, (path && *path) ? path : g_get_home_dir());
 
 	g_signal_connect(G_OBJECT(sel), "destroy",
 			G_CALLBACK(file_cancel_cb), data);
