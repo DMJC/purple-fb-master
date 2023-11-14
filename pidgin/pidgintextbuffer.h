@@ -45,9 +45,9 @@ G_BEGIN_DECLS
  * This is the same as calling [func@text_buffer_get_html_range] with the start
  * and end iterators of @buffer.
  *
- * Returns: (transfer full) (nullable): The HTML string, which could be empty.
+ * See also [func@text_buffer_get_html_range].
  *
- * See Also: [func@text_buffer_get_html_range]
+ * Returns: (transfer full) (nullable): The HTML string, which could be empty.
  *
  * Since: 3.0.0
  */
@@ -64,9 +64,9 @@ char *pidgin_text_buffer_get_html(GtkTextBuffer *buffer);
  * This will work with any [class@Gtk.TextBuffer] as it deciphers the tags it
  * finds.
  *
- * Returns: (transfer full) (nullable): The HTML string, which could be empty.
+ * See also [func@text_buffer_get_html].
  *
- * See Also: [func@text_buffer_get_html]
+ * Returns: (transfer full) (nullable): The HTML string, which could be empty.
  *
  * Since: 3.0.0
  */

@@ -568,9 +568,9 @@ void purple_conversation_set_topic(PurpleConversation *conversation, const char 
  *
  * Sets everything about the topic all at once.
  *
- * See also: [method@Conversation.set_topic],
- *           [method@Conversation.set_topic_author], and
- *           [method@Conversation.set_topic_updated].
+ * See also [method@Conversation.set_topic],
+ * [method@Conversation.set_topic_author], and
+ * [method@Conversation.set_topic_updated].
  *
  * Since: 3.0.0
  */

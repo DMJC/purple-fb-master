@@ -241,7 +241,7 @@ ggp_avatar_buddy_update(PurpleConnection *gc, uin_t uin, time_t timestamp)
  * Own avatar setting.
  ******************************************************************************/
 
-/**
+/*
  * TODO: use new, GG11 method, when IMToken will be provided by libgadu.
  *
  * POST https://avatars.mpa.gg.pl/avatars/user,<uin>/0

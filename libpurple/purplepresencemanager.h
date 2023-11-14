@@ -59,11 +59,11 @@ G_DECLARE_FINAL_TYPE(PurplePresenceManager, purple_presence_manager, PURPLE,
  * This may be %NULL if libpurple hasn't been initialized or if someone
  * incorrectly unref'd it.
  *
+ * See also [func@PresenceManager.get_default_as_model].
+ *
  * Returns: (transfer none) (nullable): The default presence manager.
  *
  * Since: 3.0.0
- *
- * See Also: [func@PresenceManager.get_default_as_model]
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePresenceManager *purple_presence_manager_get_default(void);
@@ -74,17 +74,17 @@ PurplePresenceManager *purple_presence_manager_get_default(void);
  * Gets the default [class@PresenceManager] as a [iface@Gio.ListModel].
  *
  * This is the equivalent to calling [func@PresenceManager.get_default] and
- * type casting it to [iface@gio.ListModel].
+ * type casting it to [iface@Gio.ListModel].
  *
  * This may be %NULL if libpurple hasn't been initialized or if someone
  * incorrectly unref'd it.
+ *
+ * See also [func@PresenceManager.get_default].
  *
  * Returns: (transfer none) (nullable): The default presence manager type cast
  *          to a list model.
  *
  * Since: 3.0.0
- *
- * See Also: [func@PresenceManager.get_default]
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_presence_manager_get_default_as_model(void);

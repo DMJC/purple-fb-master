@@ -533,7 +533,7 @@ gboolean purple_message_get_action(PurpleMessage *message);
  *
  * Sets whether or not @message is an action.
  *
- * See also: [property@Message:action] for more information.
+ * See also [property@Message:action] for more information.
  *
  * Since: 3.0.0
  */

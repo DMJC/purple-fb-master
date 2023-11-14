@@ -197,7 +197,8 @@ GList *purple_media_backend_get_codecs(PurpleMediaBackend *self,
  *
  * Gets the list of local candidates for a stream.
  *
- * Return Value: (transfer full) (element-type PurpleMediaCandidate): The list of local candidates.
+ * Returns: (transfer full) (element-type PurpleMediaCandidate): The list of
+ *          local candidates.
  *
  * Since: 2.7.0
  */
@@ -317,7 +318,8 @@ void purple_media_backend_set_params(PurpleMediaBackend *self,
  * Gets the list of optional parameters supported by the media backend.
  * The list should NOT be freed.
  *
- * Return Value: (transfer none): NULL-terminated array of names of supported parameters.
+ * Returns: (transfer none): NULL-terminated array of names of supported
+ *          parameters.
  *
  * Since: 2.8.0
  */

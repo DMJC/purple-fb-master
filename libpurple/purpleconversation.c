@@ -874,7 +874,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 * for a conversation to be offline if the server it is on is currently
 	 * unreachable.
 	 *
-	 * See Also: [property@Conversation:federated].
+	 * See also [property@Conversation:federated].
 	 *
 	 * Since: 3.0.0
 	 */
