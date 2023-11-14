@@ -19,9 +19,11 @@ if IS_WIN32
 		'dns_sd_proxy.c', 'dns_sd_proxy.h', 'mdns_dns_sd.c', 'mdns_dns_sd.h',
 		'mdns_win32.c'
 	]
+	gmodule = dependency('gmodule-2.0')
 	bonjour_link_args = ['-lnetapi32']
 else
 	BONJOUR_SOURCES += ['mdns_avahi.c']
+	gmodule = []
 	bonjour_link_args = []
 endif
 
@@ -36,7 +38,7 @@ if DYNAMIC_BONJOUR
 	    c_args : ['-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-Bonjour"'],
 	    gnu_symbol_visibility : 'hidden',
 	    link_args : bonjour_link_args,
-	    dependencies : [libxml, avahi, libpurple_dep, glib, ws2_32],
+	    dependencies : [libxml, avahi, libpurple_dep, glib, gmodule, ws2_32],
 	    install : true,
 	    install_dir : PURPLE_PLUGINDIR)
 

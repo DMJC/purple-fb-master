@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 
+#include <gmodule.h>
+
 #include <purple.h>
 
 #include "dns_sd_proxy.h"
@@ -55,26 +57,35 @@ gboolean dns_sd_available(void) {
 	static gboolean loaded = FALSE;
 
 	if (!initialized) {
+		GModule *dnssd = NULL;
 		initialized = TRUE;
-		if ((_DNSServiceAddRecord = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceAddRecord"))
-				&& (_DNSServiceBrowse = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceBrowse"))
-				&& (_DNSServiceConstructFullName = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceConstructFullName"))
-				&& (_DNSServiceGetAddrInfo = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceGetAddrInfo"))
-				&& (_DNSServiceProcessResult = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceProcessResult"))
-				&& (_DNSServiceQueryRecord = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceQueryRecord"))
-				&& (_DNSServiceRefDeallocate = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRefDeallocate"))
-				&& (_DNSServiceRefSockFD = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRefSockFD"))
-				&& (_DNSServiceRegister = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRegister"))
-				&& (_DNSServiceResolve = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceResolve"))
-				&& (_DNSServiceRemoveRecord = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceRemoveRecord"))
-				&& (_DNSServiceUpdateRecord = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "DNSServiceUpdateRecord"))
-				&& (_TXTRecordCreate = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordCreate"))
-				&& (_TXTRecordDeallocate = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordDeallocate"))
-				&& (_TXTRecordGetBytesPtr = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetBytesPtr"))
-				&& (_TXTRecordGetLength = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetLength"))
-				&& (_TXTRecordGetValuePtr = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordGetValuePtr"))
-				&& (_TXTRecordSetValue = (gpointer)wpurple_find_and_loadproc("dnssd.dll", "TXTRecordSetValue"))) {
+		if((dnssd = g_module_open("dnssd.dll", 0)) != NULL &&
+		   g_module_symbol(dnssd, "DNSServiceAddRecord", (gpointer *)&_DNSServiceAddRecord) &&
+		   g_module_symbol(dnssd, "DNSServiceBrowse", (gpointer *)&_DNSServiceBrowse) &&
+		   g_module_symbol(dnssd, "DNSServiceConstructFullName", (gpointer *)&_DNSServiceConstructFullName) &&
+		   g_module_symbol(dnssd, "DNSServiceGetAddrInfo", (gpointer *)&_DNSServiceGetAddrInfo) &&
+		   g_module_symbol(dnssd, "DNSServiceProcessResult", (gpointer *)&_DNSServiceProcessResult) &&
+		   g_module_symbol(dnssd, "DNSServiceQueryRecord", (gpointer *)&_DNSServiceQueryRecord) &&
+		   g_module_symbol(dnssd, "DNSServiceRefDeallocate", (gpointer *)&_DNSServiceRefDeallocate) &&
+		   g_module_symbol(dnssd, "DNSServiceRefSockFD", (gpointer *)&_DNSServiceRefSockFD) &&
+		   g_module_symbol(dnssd, "DNSServiceRegister", (gpointer *)&_DNSServiceRegister) &&
+		   g_module_symbol(dnssd, "DNSServiceResolve", (gpointer *)&_DNSServiceResolve) &&
+		   g_module_symbol(dnssd, "DNSServiceRemoveRecord", (gpointer *)&_DNSServiceRemoveRecord) &&
+		   g_module_symbol(dnssd, "DNSServiceUpdateRecord", (gpointer *)&_DNSServiceUpdateRecord) &&
+		   g_module_symbol(dnssd, "TXTRecordCreate", (gpointer *)&_TXTRecordCreate) &&
+		   g_module_symbol(dnssd, "TXTRecordDeallocate", (gpointer *)&_TXTRecordDeallocate) &&
+		   g_module_symbol(dnssd, "TXTRecordGetBytesPtr", (gpointer *)&_TXTRecordGetBytesPtr) &&
+		   g_module_symbol(dnssd, "TXTRecordGetLength", (gpointer *)&_TXTRecordGetLength) &&
+		   g_module_symbol(dnssd, "TXTRecordGetValuePtr", (gpointer *)&_TXTRecordGetValuePtr) &&
+		   g_module_symbol(dnssd, "TXTRecordSetValue", (gpointer *)&_TXTRecordSetValue))
+		{
+			/* TODO: The dnssd module leaks, but there's not a good
+			 * place to put the cleanup yet, as there's quite a bit
+			 * of abstraction between mDNS API here to the actual
+			 * plugin unload. */
 			loaded = TRUE;
+		} else {
+			g_clear_pointer(&dnssd, g_module_close);
 		}
 	}
 	return loaded;

@@ -158,6 +158,17 @@ libpidgin_SOURCES += pidgin_resource
 pidgin_filebase = 'pidgin-3'
 pidgin_include_base = pidgin_filebase / 'pidgin'
 
+_libpidgin_dependencies = [
+	glib,
+	gplugin_gtk_dep,
+	gtk,
+	IOKIT,
+	json,
+	libadwaita,
+	math,
+	libpurple_dep,
+]
+
 if IS_WIN32
 	libpidgin_SOURCES += [
 		'pidgin.c',
@@ -184,6 +195,10 @@ if IS_WIN32
 		'win32/winpidgin.c',
 		pidgin_WIN32_RESOURCES,
 	]
+
+	_libpidgin_dependencies += [
+		dependency('gmodule-2.0'),
+	]
 endif
 
 PIDGIN_H_INCLUDES = []
@@ -205,17 +220,6 @@ pidgin_version_h = configure_file(input : 'pidginversionconsts.h.in',
 
 install_headers(libpidgin_headers, subdir : pidgin_include_base)
 install_headers(libpidgin_prefs_headers, subdir : pidgin_include_base / 'prefs')
-
-_libpidgin_dependencies = [
-	glib,
-	gplugin_gtk_dep,
-	gtk,
-	IOKIT,
-	json,
-	libadwaita,
-	math,
-	libpurple_dep,
-]
 
 libpidgin_built_sources = [
 ]

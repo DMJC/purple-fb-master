@@ -43,9 +43,6 @@ G_BEGIN_DECLS
 /**
  ** win32dep.c
  **/
-/* Windows helper functions */
-PURPLE_AVAILABLE_IN_ALL
-FARPROC wpurple_find_and_loadproc(const char *dllname, const char *procedure);
 
 /* Determine Purple paths */
 PURPLE_AVAILABLE_IN_ALL
