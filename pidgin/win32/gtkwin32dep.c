@@ -126,30 +126,8 @@ static HWND winpidgin_message_window_init(void) {
 }
 
 void winpidgin_init(void) {
-	typedef void (__cdecl* LPFNSETLOGFILE)(const LPCSTR);
-	LPFNSETLOGFILE MySetLogFile;
-	gchar *exchndl_dll_path;
-
 	if (purple_debug_is_verbose())
 		purple_debug_misc("winpidgin", "winpidgin_init start\n");
-
-	exchndl_dll_path = g_build_filename(wpurple_bin_dir(), "exchndl.dll", NULL);
-	MySetLogFile = (gpointer)wpurple_find_and_loadproc(exchndl_dll_path, "SetLogFile");
-	g_free(exchndl_dll_path);
-	exchndl_dll_path = NULL;
-	if (MySetLogFile) {
-		gchar *debug_dir, *locale_debug_dir;
-
-		debug_dir = g_build_filename(purple_cache_dir(), "pidgin.RPT", NULL);
-		locale_debug_dir = g_locale_from_utf8(debug_dir, -1, NULL, NULL, NULL);
-
-		purple_debug_info("winpidgin", "Setting exchndl.dll LogFile to %s\n", debug_dir);
-
-		MySetLogFile(locale_debug_dir);
-
-		g_free(debug_dir);
-		g_free(locale_debug_dir);
-	}
 
 	messagewin_hwnd = winpidgin_message_window_init();
 
