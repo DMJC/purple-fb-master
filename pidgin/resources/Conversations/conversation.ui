@@ -90,6 +90,9 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
         <property name="vexpand">0</property>
         <child>
           <object class="GtkTextView" id="input">
+            <property name="wrap-mode">word-char</property>
+            <property name="input-purpose">free-form</property>
+            <property name="input-hints">emoji|spellcheck|word-completion</property>
             <child>
               <object class="GtkEventControllerKey">
                 <signal name="key-pressed" handler="pidgin_conversation_input_key_pressed_cb"/>
