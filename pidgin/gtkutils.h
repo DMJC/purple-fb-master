@@ -45,20 +45,6 @@ typedef gboolean (*PidginFilterBuddyCompletionEntryFunc) (const PidginBuddyCompl
 G_BEGIN_DECLS
 
 /**
- * pidgin_make_frame:
- * @parent: The widget to put the frame into.
- * @title:  The title for the frame.
- *
- * Creates a HIG preferences frame.
- *
- * Returns: (transfer full): The vbox to put things into.
- *
- * Since: 2.0.0
- */
-PIDGIN_AVAILABLE_IN_ALL
-GtkWidget *pidgin_make_frame(GtkWidget *parent, const char *title);
-
-/**
  * pidgin_setup_screenname_autocomplete:
  * @entry:       The GtkEntry on which to setup autocomplete.
  * @chooser: A menu for accounts, returned by pidgin_account_chooser_new(). If
@@ -130,21 +116,6 @@ void pidgin_retrieve_user_info_in_chat(PurpleConnection *conn, const char *name,
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l);
-
-/**
- * pidgin_tree_view_search_equal_func:
- *
- * This is a callback function to be used for Ctrl+F searching in treeviews.
- * Sample Use:
- * 		gtk_tree_view_set_search_equal_func(treeview,
- * 				pidgin_tree_view_search_equal_func,
- * 				search_data, search_data_destroy_cb);
- *
- * Since: 2.0.0
- */
-PIDGIN_AVAILABLE_IN_ALL
-gboolean pidgin_tree_view_search_equal_func(GtkTreeModel *model, gint column,
-			const gchar *key, GtkTreeIter *iter, gpointer data);
 
 /**
  * pidgin_auto_parent_window:

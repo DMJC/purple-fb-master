@@ -1068,6 +1068,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_get_dim_grey_string
 		* pidgin_gdk_pixbuf_make_round, use purple_gdk_pixbuf_make_round instead.
 		* pidgin_gdk_pixbuf_is_opaque, use purple_gdk_pixbuf_is_opaque instead.
+		* pidgin_make_frame
 		* pidgin_menu_popup_at_treeview_selection
 		* pidgin_new_menu_item
 		* pidgin_pixbuf_from_data, use purple_gdk_pixbuf_from_data instead.
@@ -1235,6 +1236,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_tooltip_setup_for_widget
 		* pidgin_tooltip_show
 		* PidginThemeFont
+		* pidgin_tree_view_search_equal_func
 		* PIDGIN_UI
 		* PidginUnseenState enum and all values.
 		* PidginUtilMiniDialogCallback; use PidginMiniDialogCallback
