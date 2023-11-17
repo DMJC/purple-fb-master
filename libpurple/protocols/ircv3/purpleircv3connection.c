@@ -428,6 +428,7 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *info = NULL;
+	PurpleConversationManager *conversation_manager = NULL;
 	char **userparts = NULL;
 	const char *username = NULL;
 	char *title = NULL;
@@ -451,22 +452,30 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	/* Free the userparts vector. */
 	g_strfreev(userparts);
 
-	/* Create our status conversation. */
-	priv->status_conversation = g_object_new(
-		PURPLE_TYPE_CONVERSATION,
-		"account", account,
-		"name", priv->server_name,
-		"title", title,
-		NULL);
+	/* Check if we have an existing status conversation. */
+	conversation_manager = purple_conversation_manager_get_default();
+	priv->status_conversation = purple_conversation_manager_find_with_id(conversation_manager,
+	                                                                     account,
+	                                                                     priv->server_name);
+
+	if(!PURPLE_IS_CONVERSATION(priv->status_conversation)) {
+		/* Create our status conversation. */
+		priv->status_conversation = g_object_new(
+			PURPLE_TYPE_CONVERSATION,
+			"account", account,
+			"id", priv->server_name,
+			"name", priv->server_name,
+			"title", title,
+			NULL);
+
+			purple_conversation_manager_register(conversation_manager,
+			                                     priv->status_conversation);
+	} else {
+		/* The conversation existed, so add a reference to it. */
+		g_object_ref(priv->status_conversation);
+	}
 
 	g_clear_pointer(&title, g_free);
-
-	/* TODO later: add an account action that'll register and unregister this
-	 * with the conversation manager.
-	 */
-	purple_conversation_manager_register(purple_conversation_manager_get_default(),
-	                                     priv->status_conversation);
-
 
 	/* Finally create our objects. */
 	priv->cancellable = g_cancellable_new();
