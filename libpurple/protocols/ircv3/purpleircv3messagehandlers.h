@@ -55,6 +55,7 @@ G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status(PurpleIRCv3Message 
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status_ignore_param0(PurpleIRCv3Message *message, GError **error, gpointer data);
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_ping(PurpleIRCv3Message *message, GError **error, gpointer data);
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_topic(PurpleIRCv3Message *message, GError **error, gpointer data);
 
 G_END_DECLS
 

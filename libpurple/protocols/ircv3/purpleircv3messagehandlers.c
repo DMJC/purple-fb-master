@@ -21,6 +21,7 @@
 #include "purpleircv3messagehandlers.h"
 
 #include "purpleircv3connection.h"
+#include "purpleircv3constants.h"
 #include "purpleircv3core.h"
 #include "purpleircv3source.h"
 
@@ -224,6 +225,77 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 
 	g_clear_pointer(&nick, g_free);
 	g_clear_object(&message);
+
+	return TRUE;
+}
+
+gboolean
+purple_ircv3_message_handler_topic(PurpleIRCv3Message *message,
+                                   GError **error,
+                                   gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+	PurpleConversation *conversation = NULL;
+	GStrv params = NULL;
+	const char *channel = NULL;
+	const char *command = NULL;
+	const char *topic = NULL;
+	guint n_params = 0;
+
+	command = purple_ircv3_message_get_command(message);
+	params = purple_ircv3_message_get_params(message);
+	n_params = g_strv_length(params);
+
+	if(purple_strequal(command, PURPLE_IRCV3_MSG_TOPIC)) {
+		if(n_params != 2) {
+			g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
+			            "received TOPIC with %u parameters, expected 2",
+			            n_params);
+
+			return FALSE;
+		}
+
+		channel = params[0];
+		topic = params[1];
+	} else if(purple_strequal(command, PURPLE_IRCV3_RPL_NOTOPIC)) {
+		if(n_params != 3) {
+			g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
+			            "received RPL_NOTOPIC with %u parameters, expected 3",
+			            n_params);
+
+			return FALSE;
+		}
+
+		channel = params[1];
+		topic = "";
+	} else if(purple_strequal(command, PURPLE_IRCV3_RPL_TOPIC)) {
+		if(n_params != 3) {
+			g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
+			            "received RPL_TOPIC with %u parameters, expected 3",
+			            n_params);
+
+			return FALSE;
+		}
+
+		channel = params[1];
+		topic = params[2];
+	} else {
+		g_set_error(error, PURPLE_IRCV3_DOMAIN, 0, "unexpected command %s",
+		            command);
+
+		return FALSE;
+	}
+
+	conversation = purple_ircv3_connection_find_or_create_conversation(connection,
+	                                                                   channel);
+	if(!PURPLE_IS_CONVERSATION(conversation)) {
+		g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
+		            "failed to find or create channel '%s'", channel);
+
+		return FALSE;
+	}
+
+	purple_conversation_set_topic(conversation, topic);
 
 	return TRUE;
 }

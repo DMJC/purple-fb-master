@@ -14,6 +14,7 @@ IRCV3_SOURCES = [
 IRCV3_HEADERS = [
 	'purpleircv3capabilities.h',
 	'purpleircv3connection.h',
+	'purpleircv3constants.h',
 	'purpleircv3core.h',
 	'purpleircv3message.h',
 	'purpleircv3messagehandlers.h',

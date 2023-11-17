@@ -19,6 +19,7 @@
 #include "purpleircv3parser.h"
 
 #include "purpleircv3capabilities.h"
+#include "purpleircv3constants.h"
 #include "purpleircv3core.h"
 #include "purpleircv3message.h"
 #include "purpleircv3messagehandlers.h"
@@ -441,6 +442,14 @@ purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser) {
 	                                purple_ircv3_message_handler_ping);
 	purple_ircv3_parser_add_handler(parser, "PRIVMSG",
 	                                purple_ircv3_message_handler_privmsg);
+
+	/* Topic stuff. */
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_MSG_TOPIC,
+	                                purple_ircv3_message_handler_topic);
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_RPL_NOTOPIC,
+	                                purple_ircv3_message_handler_topic);
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_RPL_TOPIC,
+	                                purple_ircv3_message_handler_topic);
 
 	/* Post Registration Greetings */
 	purple_ircv3_parser_add_handlers(parser,
