@@ -21,6 +21,7 @@
 #include "purpleircv3connection.h"
 
 #include "purpleircv3core.h"
+#include "purpleircv3formatting.h"
 #include "purpleircv3parser.h"
 
 enum {
@@ -665,6 +666,7 @@ purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
 	PurpleMessage *message = NULL;
 	GString *str = NULL;
 	GStrv params = NULL;
+	char *stripped = NULL;
 	const char *command = NULL;
 
 	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
@@ -685,13 +687,15 @@ purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
 		g_free(joined);
 	}
 
+	stripped = purple_ircv3_formatting_strip(str->str);
+	g_string_free(str, TRUE);
+
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
 		"author", purple_ircv3_message_get_source(v3_message),
-		"contents", str->str,
+		"contents", stripped,
 		NULL);
-
-	g_string_free(str, TRUE);
+	g_free(stripped);
 
 	purple_conversation_write_message(priv->status_conversation, message);
 

@@ -1,4 +1,5 @@
 TESTS = [
+	'formatting',
 	'parser',
 	'source',
 ]

@@ -23,6 +23,7 @@
 #include "purpleircv3connection.h"
 #include "purpleircv3constants.h"
 #include "purpleircv3core.h"
+#include "purpleircv3formatting.h"
 #include "purpleircv3source.h"
 
 /******************************************************************************
@@ -134,6 +135,7 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	gpointer raw_id = NULL;
 	gpointer raw_timestamp = NULL;
 	char *nick = NULL;
+	char *stripped = NULL;
 	const char *command = NULL;
 	const char *id = NULL;
 	const char *source = NULL;
@@ -210,14 +212,16 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 		dt = g_date_time_new_now_local();
 	}
 
+	stripped = purple_ircv3_formatting_strip(params[1]);
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
 		"author", source,
-		"contents", params[1],
+		"contents", stripped,
 		"flags", flags,
 		"id", id,
 		"timestamp", dt,
 		NULL);
+	g_free(stripped);
 
 	g_date_time_unref(dt);
 
