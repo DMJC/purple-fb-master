@@ -36,7 +36,6 @@
 #include "gtkblist.h"
 #include "gtkdialogs.h"
 #include "gtkroomlist.h"
-#include "gtksavedstatuses.h"
 #include "gtkxfer.h"
 #include "pidginabout.h"
 #include "pidginaccounteditor.h"

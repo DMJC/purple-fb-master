@@ -27,8 +27,8 @@
 #include <adwaita.h>
 
 #include "pidginawayprefs.h"
-#include "gtksavedstatuses.h"
 #include "gtkutils.h"
+#include "pidginiconname.h"
 #include "pidginprefsinternal.h"
 
 struct _PidginAwayPrefs {
@@ -48,8 +48,7 @@ G_DEFINE_TYPE(PidginAwayPrefs, pidgin_away_prefs, ADW_TYPE_PREFERENCES_PAGE)
  * Helpers
  *****************************************************************************/
 static gchar *
-idle_reporting_expression_cb(GObject *self, G_GNUC_UNUSED gpointer data)
-{
+idle_reporting_expression_cb(GObject *self, G_GNUC_UNUSED gpointer data) {
 	const gchar *text = "";
 	const gchar *value = NULL;
 
@@ -65,18 +64,136 @@ idle_reporting_expression_cb(GObject *self, G_GNUC_UNUSED gpointer data)
 	return g_strdup(text);
 }
 
-static void
-set_idle_away(PurpleSavedStatus *status)
+static char *
+idle_presence_icon_name_from_primitive(G_GNUC_UNUSED GObject *self,
+                                       PurplePresencePrimitive primitive,
+                                       G_GNUC_UNUSED gpointer data)
 {
-	purple_prefs_set_int("/purple/savedstatus/idleaway",
-	                     purple_savedstatus_get_creation_time(status));
+	const char *icon_name = NULL;
+
+	icon_name = pidgin_icon_name_from_presence_primitive(primitive,
+	                                                     "icon-missing");
+
+	return g_strdup(icon_name);
 }
 
-static void
-set_startupstatus(PurpleSavedStatus *status)
+static gboolean
+idle_get_reporting_mapping(GValue *value, GVariant *variant,
+                           G_GNUC_UNUSED gpointer data)
 {
-	purple_prefs_set_int("/purple/savedstatus/startup",
-	                     purple_savedstatus_get_creation_time(status));
+	const char *id = NULL;
+
+	id = g_variant_get_string(variant, NULL);
+	if(purple_strequal(id, "none")) {
+		g_value_set_uint(value, 0);
+	} else if(purple_strequal(id, "purple")) {
+		g_value_set_uint(value, 1);
+	} else if(purple_strequal(id, "system")) {
+		g_value_set_uint(value, 2);
+	} else {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static GVariant *
+idle_set_reporting_mapping(const GValue *value, const GVariantType *expected,
+                           G_GNUC_UNUSED gpointer data)
+{
+	const char *id = NULL;
+
+	if(!g_variant_type_equal(expected, G_VARIANT_TYPE_STRING)) {
+		return NULL;
+	}
+
+	switch(g_value_get_uint(value)) {
+	case 0:
+		id = "none";
+		break;
+	case 1:
+		id = "purple";
+		break;
+	case 2:
+		id = "system";
+		break;
+	}
+
+	if(id != NULL) {
+		return g_variant_new_string(id);
+	}
+
+	return NULL;
+}
+
+static gboolean
+idle_get_saved_presence_mapping(GValue *value, GVariant *variant,
+                                G_GNUC_UNUSED gpointer data)
+{
+	GListModel *model = NULL;
+	const char *name = NULL;
+	guint n_items = 0;
+
+	model = purple_presence_manager_get_default_as_model();
+
+	name = g_variant_get_string(variant, NULL);
+
+	n_items = g_list_model_get_n_items(model);
+	for(guint i = 0; i < n_items; i++) {
+		PurpleSavedPresence *presence = NULL;
+
+		presence = g_list_model_get_item(model, i);
+		if(PURPLE_IS_SAVED_PRESENCE(presence)) {
+			const char *presence_name = NULL;
+
+			presence_name = purple_saved_presence_get_name(presence);
+			if(purple_strequal(presence_name, name)) {
+				g_value_set_uint(value, i);
+
+				g_clear_object(&presence);
+
+				return TRUE;
+			}
+		}
+
+		g_clear_object(&presence);
+	}
+
+	g_value_set_uint(value, 0);
+
+	return TRUE;
+}
+
+static GVariant *
+idle_set_saved_presence_mapping(const GValue *value,
+                                const GVariantType *expected,
+                                G_GNUC_UNUSED gpointer data)
+{
+	PurpleSavedPresence *presence = NULL;
+	GListModel *model = NULL;
+	guint position = 0;
+
+	if(!g_variant_type_equal(expected, G_VARIANT_TYPE_STRING)) {
+		return NULL;
+	}
+
+	model = purple_presence_manager_get_default_as_model();
+	position = g_value_get_uint(value);
+	presence = g_list_model_get_item(model, position);
+
+	if(PURPLE_IS_SAVED_PRESENCE(presence)) {
+		GVariant *ret = NULL;
+		const char *name = NULL;
+
+		name = purple_saved_presence_get_name(presence);
+		ret = g_variant_new_string(name);
+
+		g_clear_object(&presence);
+
+		return ret;
+	}
+
+	return NULL;
 }
 
 /******************************************************************************
@@ -106,47 +223,64 @@ pidgin_away_prefs_class_init(PidginAwayPrefsClass *klass)
 	                                     startup_current_status);
 	gtk_widget_class_bind_template_child(widget_class, PidginAwayPrefs,
 	                                     startup_row);
+
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        idle_presence_icon_name_from_primitive);
 }
 
 static void
 pidgin_away_prefs_init(PidginAwayPrefs *prefs)
 {
-	GtkWidget *menu;
+	GListModel *model = NULL;
+	GSettings *settings = NULL;
+	gpointer backend = NULL;
 
 	gtk_widget_init_template(GTK_WIDGET(prefs));
 
-	pidgin_prefs_bind_combo_row("/purple/away/idle_reporting",
-	                            prefs->idle_reporting);
+	backend = purple_core_get_settings_backend();
+	model = purple_presence_manager_get_default_as_model();
 
-	pidgin_prefs_bind_spin_button("/purple/away/mins_before_away",
-			prefs->mins_before_away);
+	/* Finish setting up our idle preferences. */
+	adw_combo_row_set_model(ADW_COMBO_ROW(prefs->idle_row), model);
 
-	pidgin_prefs_bind_switch("/purple/away/away_when_idle",
-	                         prefs->away_when_idle);
+	settings = g_settings_new_with_backend("im.pidgin.Purple.Idle", backend);
 
-	/* TODO: Show something useful if we don't have any saved statuses. */
-	menu = pidgin_status_menu(purple_savedstatus_get_idleaway(),
-	                          G_CALLBACK(set_idle_away));
-	gtk_widget_set_valign(menu, GTK_ALIGN_CENTER);
-	adw_action_row_add_suffix(ADW_ACTION_ROW(prefs->idle_row), menu);
-	adw_action_row_set_activatable_widget(ADW_ACTION_ROW(prefs->idle_row),
-	                                      menu);
+	g_settings_bind_with_mapping(settings, "method",
+	                             prefs->idle_reporting, "selected",
+	                             G_SETTINGS_BIND_DEFAULT,
+	                             idle_get_reporting_mapping,
+	                             idle_set_reporting_mapping,
+	                             NULL, NULL);
+	g_settings_bind(settings, "duration", prefs->mins_before_away,
+	                "value", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(settings, "change-presence", prefs->away_when_idle,
+	                "active", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind_with_mapping(settings, "saved-presence",
+	                             prefs->idle_row, "selected",
+	                             G_SETTINGS_BIND_DEFAULT,
+	                             idle_get_saved_presence_mapping,
+	                             idle_set_saved_presence_mapping,
+	                             NULL, NULL);
 
-	g_object_bind_property(prefs->away_when_idle, "active",
-			menu, "sensitive",
-			G_BINDING_SYNC_CREATE);
+	g_clear_object(&settings);
 
-	/* Signon status stuff */
-	pidgin_prefs_bind_switch("/purple/savedstatus/startup_current_status",
-	                         prefs->startup_current_status);
+	/* Finish setting up the startup presence preferences. */
+	adw_combo_row_set_model(ADW_COMBO_ROW(prefs->startup_row), model);
 
-	/* TODO: Show something useful if we don't have any saved statuses. */
-	menu = pidgin_status_menu(purple_savedstatus_get_startup(),
-	                          G_CALLBACK(set_startupstatus));
-	gtk_widget_set_valign(menu, GTK_ALIGN_CENTER);
-	adw_action_row_add_suffix(ADW_ACTION_ROW(prefs->startup_row), menu);
-	adw_action_row_set_activatable_widget(ADW_ACTION_ROW(prefs->startup_row),
-	                                      menu);
+	settings = g_settings_new_with_backend("im.pidgin.Purple.Startup",
+	                                       backend);
+
+	g_settings_bind(settings, "use-previous-presence",
+	                prefs->startup_current_status, "active",
+	                G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind_with_mapping(settings, "saved-presence",
+	                             prefs->startup_row, "selected",
+	                             G_SETTINGS_BIND_DEFAULT,
+	                             idle_get_saved_presence_mapping,
+	                             idle_set_saved_presence_mapping,
+	                             NULL, NULL);
+
+	g_clear_object(&settings);
 }
 
 /******************************************************************************
@@ -154,5 +288,5 @@ pidgin_away_prefs_init(PidginAwayPrefs *prefs)
  *****************************************************************************/
 GtkWidget *
 pidgin_away_prefs_new(void) {
-	return GTK_WIDGET(g_object_new(PIDGIN_TYPE_AWAY_PREFS, NULL));
+	return g_object_new(PIDGIN_TYPE_AWAY_PREFS, NULL);
 }

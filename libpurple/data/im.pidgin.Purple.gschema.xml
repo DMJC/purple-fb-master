@@ -27,13 +27,13 @@
   </schema>
 
   <enum id="im.pidgin.Purple.Idle.Method">
-    <value nick="Never" value="0"/>
-    <value nick="Purple" value="1"/>
-    <value nick="System" value="2"/>
+    <value nick="none" value="0"/>
+    <value nick="purple" value="1"/>
+    <value nick="system" value="2"/>
   </enum>
   <schema path="/purple/idle/" id="im.pidgin.Purple.Idle">
     <key name="method" enum="im.pidgin.Purple.Idle.Method">
-      <default>"System"</default>
+      <default>"system"</default>
       <summary>Idle reporting method</summary>
       <description>
         The method to use to report idle time.
@@ -49,19 +49,38 @@
       </description>
     </key>
 
-    <key name="change-status" type="b">
+    <key name="change-presence" type="b">
       <default>false</default>
-      <summary>Change status when idle</summary>
+      <summary>Change presence when idle</summary>
       <description>
-        When going idle switch statuses.
+        When going idle switch presences.
       </description>
     </key>
 
-    <key name="status" type="s">
+    <key name="saved-presence" type="s">
       <default>""</default>
-      <summary>The status to use when idle</summary>
+      <summary>The saved presence to use when idle</summary>
       <description>
-        The ID of the status to use when the user has gone idle.
+        The name of the saved presence to use when the user has gone idle.
+      </description>
+    </key>
+  </schema>
+
+  <schema path="/purple/startup/" id="im.pidgin.Purple.Startup">
+    <key name="use-previous-presence" type="b">
+      <default>true</default>
+      <summary>Use the saved presence from last exit</summary>
+      <description>
+        Use the saved presence that was in use the last time the application
+        was exited.
+      </description>
+    </key>
+
+    <key name="saved-presence" type="s">
+      <default>""</default>
+      <summary>The saved presence to use at startup</summary>
+      <description>
+        The name of the saved presence to use at startup.
       </description>
     </key>
   </schema>

@@ -23,6 +23,44 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
+  <object class="GtkBuilderListItemFactory" id="saved_presence_factory">
+    <property name="bytes">
+<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkImage">
+            <binding name="icon-name">
+              <closure type="gchararray" function="idle_presence_icon_name_from_primitive">
+                <lookup name="primitive" type="PurpleSavedPresence">
+                  <lookup name="item">GtkListItem</lookup>
+                </lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <binding name="label">
+              <lookup name="name" type="PurpleSavedPresence">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
+]]>
+    </property>
+  </object>
+
   <template class="PidginAwayPrefs" parent="AdwPreferencesPage">
     <child>
       <object class="AdwPreferencesGroup">
@@ -70,10 +108,11 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           </object>
         </child>
         <child>
-          <object class="AdwActionRow" id="idle_row">
+          <object class="AdwComboRow" id="idle_row">
             <property name="activatable-widget">away_when_idle</property>
             <property name="title" translatable="1">Change to this status when _idle</property>
             <property name="use-underline">1</property>
+            <property name="factory">saved_presence_factory</property>
             <child type="prefix">
               <object class="GtkSwitch" id="away_when_idle">
                 <property name="focusable">1</property>
@@ -101,10 +140,11 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           </object>
         </child>
         <child>
-          <object class="AdwActionRow" id="startup_row">
+          <object class="AdwComboRow" id="startup_row">
             <property name="title" translatable="1">Status to a_pply at startup</property>
             <property name="use-underline">1</property>
             <property name="sensitive" bind-source="startup_current_status" bind-property="active" bind-flags="sync-create|invert-boolean">0</property>
+            <property name="factory">saved_presence_factory</property>
           </object>
         </child>
       </object>

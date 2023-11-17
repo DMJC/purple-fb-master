@@ -241,7 +241,6 @@ pidgin/gtkmedia.c
 pidgin/gtknotify.c
 pidgin/gtkrequest.c
 pidgin/gtkroomlist.c
-pidgin/gtksavedstatuses.c
 pidgin/gtkutils.c
 pidgin/gtkwhiteboard.c
 pidgin/gtkxfer.c
