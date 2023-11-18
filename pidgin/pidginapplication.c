@@ -924,9 +924,6 @@ pidgin_application_startup(GApplication *application) {
 	/* Populate our dynamic menus. */
 	pidgin_application_populate_dynamic_menus(PIDGIN_APPLICATION(application));
 
-	/* TODO: Use GtkApplicationWindow or add a window instead */
-	g_application_hold(application);
-
 	/* connect to the online and offline signals in purple connections.  This
 	 * is used to toggle states of actions that require being online.
 	 */
