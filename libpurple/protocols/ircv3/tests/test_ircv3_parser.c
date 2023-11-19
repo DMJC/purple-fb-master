@@ -324,7 +324,7 @@ static void
 test_purple_ircv3_last_param_no_colon(void) {
 	TestPurpleIRCv3ParserData data = {
 		.source = "src",
-		.command = "JOIN",
+		.command = PURPLE_IRCV3_MSG_JOIN,
 		.n_params = 1,
 		.params = {"#chan"},
 	};
@@ -336,7 +336,7 @@ static void
 test_purple_ircv3_last_param_with_colon(void) {
 	TestPurpleIRCv3ParserData data = {
 		.source = "src",
-		.command = "JOIN",
+		.command = PURPLE_IRCV3_MSG_JOIN,
 		.n_params = 1,
 		.params = {"#chan"},
 	};

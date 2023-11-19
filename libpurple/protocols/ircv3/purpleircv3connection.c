@@ -20,6 +20,7 @@
 
 #include "purpleircv3connection.h"
 
+#include "purpleircv3constants.h"
 #include "purpleircv3core.h"
 #include "purpleircv3formatting.h"
 #include "purpleircv3parser.h"
@@ -115,6 +116,32 @@ purple_ircv3_connection_send_nick_command(PurpleIRCv3Connection *connection) {
 		purple_connection_get_display_name(PURPLE_CONNECTION(connection));
 
 	purple_ircv3_connection_writef(connection, "NICK %s", nickname);
+}
+
+static void
+purple_ircv3_connection_rejoin_channels(PurpleIRCv3Connection *connection) {
+	PurpleAccount *account = NULL;
+	PurpleConversationManager *manager = NULL;
+	GList *conversations = NULL;
+
+	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
+	manager = purple_conversation_manager_get_default();
+
+	conversations = purple_conversation_manager_get_all(manager);
+	while(conversations != NULL) {
+		PurpleConversation *conversation = conversations->data;
+		PurpleAccount *conv_account = NULL;
+
+		conv_account = purple_conversation_get_account(conversation);
+		if(conv_account == account) {
+			const char *id = purple_conversation_get_id(conversation);
+
+			purple_ircv3_connection_writef(connection, "%s %s",
+			                               PURPLE_IRCV3_MSG_JOIN, id);
+		}
+
+		conversations = g_list_delete_link(conversations, conversations);
+	}
 }
 
 /******************************************************************************
@@ -263,6 +290,11 @@ purple_ircv3_connection_caps_done_cb(G_GNUC_UNUSED PurpleIRCv3Capabilities *caps
 	priv->registered = TRUE;
 
 	g_signal_emit(connection, signals[SIG_REGISTRATION_COMPLETE], 0);
+
+	/* Now that registration is complete, rejoin any channels that the
+	 * conversation manager has for us.
+	 */
+	purple_ircv3_connection_rejoin_channels(connection);
 }
 
 /******************************************************************************

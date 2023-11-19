@@ -21,6 +21,7 @@
 #include "purpleircv3protocolconversation.h"
 
 #include "purpleircv3connection.h"
+#include "purpleircv3constants.h"
 #include "purpleircv3core.h"
 
 /******************************************************************************
@@ -126,8 +127,8 @@ purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation
 	}
 
 	/* Build our join string. */
-	cmd = g_string_new("JOIN ");
-	g_string_append_printf(cmd, "%s", name);
+	cmd = g_string_new(NULL);
+	g_string_append_printf(cmd, "%s %s", PURPLE_IRCV3_MSG_JOIN, name);
 
 	password = purple_channel_join_details_get_password(details);
 	if(!purple_strempty(password)) {
