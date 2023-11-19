@@ -24,6 +24,7 @@
 
 #include "purpleircv3capabilities.h"
 #include "purpleircv3connection.h"
+#include "purpleircv3constants.h"
 #include "purpleircv3core.h"
 
 #define PURPLE_IRCV3_SASL_DATA_KEY ("sasl-data")
@@ -113,7 +114,8 @@ purple_ircv3_sasl_attempt(PurpleIRCv3Connection *connection) {
 
 	g_message("trying SASL '%s' mechanism", next_mechanism);
 
-	purple_ircv3_connection_writef(connection, "AUTHENTICATE %s",
+	purple_ircv3_connection_writef(connection, "%s %s",
+	                               PURPLE_IRCV3_MSG_AUTHENTICATE,
 	                               next_mechanism);
 }
 
@@ -543,11 +545,13 @@ purple_ircv3_sasl_authenticate(PurpleIRCv3Message *message,
 			encoded = g_base64_encode(client_out, client_out_length);
 			g_clear_pointer(&client_out, g_free);
 
-			purple_ircv3_connection_writef(connection, "AUTHENTICATE %s",
+			purple_ircv3_connection_writef(connection, "%s %s",
+			                               PURPLE_IRCV3_MSG_AUTHENTICATE,
 			                               encoded);
 			g_free(encoded);
 		} else {
-			purple_ircv3_connection_writef(connection, "AUTHENTICATE +");
+			purple_ircv3_connection_writef(connection, "%s +",
+			                               PURPLE_IRCV3_MSG_AUTHENTICATE);
 		}
 	}
 

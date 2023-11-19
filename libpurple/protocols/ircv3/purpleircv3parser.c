@@ -434,13 +434,13 @@ purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser) {
 	                                         purple_ircv3_message_handler_fallback);
 
 	/* Core functionality. */
-	purple_ircv3_parser_add_handler(parser, "CAP",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_MSG_CAP,
 	                                purple_ircv3_capabilities_message_handler);
-	purple_ircv3_parser_add_handler(parser, "NOTICE",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_MSG_NOTICE,
 	                                purple_ircv3_message_handler_privmsg);
-	purple_ircv3_parser_add_handler(parser, "PING",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_MSG_PING,
 	                                purple_ircv3_message_handler_ping);
-	purple_ircv3_parser_add_handler(parser, "PRIVMSG",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_MSG_PRIVMSG,
 	                                purple_ircv3_message_handler_privmsg);
 
 	/* Topic stuff. */
@@ -454,37 +454,50 @@ purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser) {
 	/* Post Registration Greetings */
 	purple_ircv3_parser_add_handlers(parser,
 	                                 purple_ircv3_message_handler_status_ignore_param0,
-	                                 "001", "002", "003", "004", NULL);
+	                                 PURPLE_IRCV3_RPL_WELCOME,
+	                                 PURPLE_IRCV3_RPL_YOURHOST,
+	                                 PURPLE_IRCV3_RPL_CREATED,
+	                                 PURPLE_IRCV3_RPL_MYINFO,
+	                                 NULL);
 
 	/* Luser's */
 	purple_ircv3_parser_add_handlers(parser,
 	                                 purple_ircv3_message_handler_status_ignore_param0,
-	                                 "251", "252", "253", "254", "255", NULL);
+	                                 PURPLE_IRCV3_RPL_LUSERCLIENT,
+	                                 PURPLE_IRCV3_RPL_LUSEROP,
+	                                 PURPLE_IRCV3_RPL_LUSERUNKNOWN,
+	                                 PURPLE_IRCV3_RPL_LUSERCHANNELS,
+	                                 PURPLE_IRCV3_RPL_LUSERME,
+	                                 NULL);
 
 	/* MOTD */
 	purple_ircv3_parser_add_handlers(parser,
 	                                 purple_ircv3_message_handler_status_ignore_param0,
-	                                 "372", "375", "376", NULL);
+	                                 PURPLE_IRCV3_RPL_MOTD,
+	                                 PURPLE_IRCV3_RPL_MOTDSTART,
+	                                 PURPLE_IRCV3_RPL_ENDOFMOTD,
+	                                 NULL);
 
 	/* SASL stuff. */
-	purple_ircv3_parser_add_handler(parser, "900",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_RPL_LOGGEDIN,
 	                                purple_ircv3_sasl_logged_in);
-	purple_ircv3_parser_add_handler(parser, "901",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_RPL_LOGGEDOUT,
 	                                purple_ircv3_sasl_logged_out);
-	purple_ircv3_parser_add_handler(parser, "902",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_ERR_NICKLOCKED,
 	                                purple_ircv3_sasl_nick_locked);
-	purple_ircv3_parser_add_handler(parser, "903",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_RPL_SASLSUCCESS,
 	                                purple_ircv3_sasl_success);
-	purple_ircv3_parser_add_handler(parser, "904",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_ERR_SASLFAIL,
 	                                purple_ircv3_sasl_failed);
-	purple_ircv3_parser_add_handler(parser, "905",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_ERR_SASLTOOLONG,
 	                                purple_ircv3_sasl_message_too_long);
-	purple_ircv3_parser_add_handler(parser, "906",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_ERR_SASLABORTED,
 	                                purple_ircv3_sasl_aborted);
-	purple_ircv3_parser_add_handler(parser, "907",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_ERR_SASLALREADY,
 	                                purple_ircv3_sasl_already_authed);
-	purple_ircv3_parser_add_handler(parser, "908",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_RPL_SASLMECHS,
 	                                purple_ircv3_sasl_mechanisms);
-	purple_ircv3_parser_add_handler(parser, "AUTHENTICATE",
+	purple_ircv3_parser_add_handler(parser, PURPLE_IRCV3_MSG_AUTHENTICATE,
 	                                purple_ircv3_sasl_authenticate);
+
 }

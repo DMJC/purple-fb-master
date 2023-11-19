@@ -190,7 +190,7 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 		}
 	}
 
-	if(purple_strequal(command, "NOTICE")) {
+	if(purple_strequal(command, PURPLE_IRCV3_MSG_NOTICE)) {
 		flags |= PURPLE_MESSAGE_NOTIFY;
 	}
 

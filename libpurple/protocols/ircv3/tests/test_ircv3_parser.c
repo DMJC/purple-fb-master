@@ -20,6 +20,7 @@
 
 #include <purple.h>
 
+#include "../purpleircv3constants.h"
 #include "../purpleircv3message.h"
 #include "../purpleircv3parser.h"
 
@@ -240,7 +241,7 @@ static void
 test_purple_ircv3_parser_with_source_and_trailing_colon(void) {
 	TestPurpleIRCv3ParserData data = {
 		.source = "coolguy",
-		.command = "PRIVMSG",
+		.command = PURPLE_IRCV3_MSG_PRIVMSG,
 		.n_params = 2,
 		.params = {"bar", "lol :) "},
 	};
@@ -383,7 +384,7 @@ test_purple_ircv3_source_control_characters_1(void) {
 	 */
 	TestPurpleIRCv3ParserData data = {
 		.source = "coolguy!ag@net\x03" "5w\x03" "ork.admin",
-		.command = "PRIVMSG",
+		.command = PURPLE_IRCV3_MSG_PRIVMSG,
 		.n_params = 2,
 		.params = {"foo", "bar baz"},
 	};
@@ -402,7 +403,7 @@ test_purple_ircv3_source_control_characters_2(void) {
 	 */
 	TestPurpleIRCv3ParserData data = {
 		.source = "coolguy!~ag@n\x02" "et\x03" "05w\x0f" "ork.admin",
-		.command = "PRIVMSG",
+		.command = PURPLE_IRCV3_MSG_PRIVMSG,
 		.n_params = 2,
 		.params = {"foo", "bar baz"},
 	};
@@ -634,7 +635,7 @@ static void
 test_purple_ircv3_parser_message_tags_none(void) {
 	TestPurpleIRCv3ParserData data = {
 		.source = "nick!ident@host.com",
-		.command = "PRIVMSG",
+		.command = PURPLE_IRCV3_MSG_PRIVMSG,
 		.n_params = 2,
 		.params = {"me", "Hello"},
 	};
@@ -649,7 +650,7 @@ static void
 test_purple_ircv3_parser_message_tags_3_tags(void) {
 	TestPurpleIRCv3ParserData data = {
 		.source = "nick!ident@host.com",
-		.command = "PRIVMSG",
+		.command = PURPLE_IRCV3_MSG_PRIVMSG,
 		.n_params = 2,
 		.params = {"me", "Hello"},
 	};
@@ -670,7 +671,7 @@ static void
 test_purple_ircv3_parser_message_tags_client_only(void) {
 	TestPurpleIRCv3ParserData data = {
 		.source = "url_bot!bot@example.com",
-		.command = "PRIVMSG",
+		.command = PURPLE_IRCV3_MSG_PRIVMSG,
 		.n_params = 2,
 		.params = {"#channel", "Example.com: A News Story"},
 	};
