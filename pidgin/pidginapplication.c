@@ -247,8 +247,8 @@ static const gchar *pidgin_application_room_list_actions[] = {
 	"room-list",
 };
 
-/*< private >
- * pidgin_action_group_actions_set_enable:
+/**
+ * pidgin_action_group_actions_set_enable: (skip)
  * @group: The #PidginActionGroup instance.
  * @actions: The action names.
  * @n_actions: The number of @actions.
@@ -259,10 +259,10 @@ static const gchar *pidgin_application_room_list_actions[] = {
 static void
 pidgin_application_actions_set_enabled(PidginApplication *application,
                                        const gchar *const *actions,
-                                       gint n_actions,
+                                       guint n_actions,
                                        gboolean enabled)
 {
-	gint i = 0;
+	guint i = 0;
 
 	for(i = 0; i < n_actions; i++) {
 		GAction *action = NULL;
@@ -640,34 +640,24 @@ static GActionEntry app_entries[] = {
  * Purple Signal Callbacks
  *****************************************************************************/
 static void
-pidgin_application_online_cb(gpointer data) {
-	gint n_actions = G_N_ELEMENTS(pidgin_application_online_actions);
-
-	pidgin_application_actions_set_enabled(PIDGIN_APPLICATION(data),
-	                                       pidgin_application_online_actions,
-	                                       n_actions,
-	                                       TRUE);
-}
-
-static void
-pidgin_application_offline_cb(gpointer data) {
-	gint n_actions = G_N_ELEMENTS(pidgin_application_online_actions);
-
-	pidgin_application_actions_set_enabled(PIDGIN_APPLICATION(data),
-	                                       pidgin_application_online_actions,
-	                                       n_actions,
-	                                       FALSE);
-}
-
-static void
-pidgin_application_signed_on_cb(PurpleAccount *account, gpointer data) {
-	PidginApplication *application = PIDGIN_APPLICATION(data);
+pidgin_application_connected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
+                                PurpleAccount *account,
+                                gpointer data)
+{
+	PidginApplication *application = data;
 	PurpleProtocol *protocol = NULL;
 	gboolean should_enable_channel = FALSE;
 	gboolean should_enable_chat = FALSE;
 	gboolean should_enable_room_list = FALSE;
-	gint n_actions = 0;
+	guint n_actions = 0;
 
+	n_actions = G_N_ELEMENTS(pidgin_application_online_actions);
+	pidgin_application_actions_set_enabled(PIDGIN_APPLICATION(data),
+	                                       pidgin_application_online_actions,
+	                                       n_actions,
+	                                       TRUE);
+
+	/* Now figure out what menus items should be enabled. */
 	protocol = purple_account_get_protocol(account);
 
 	/* We assume that the current state is correct, so we don't bother changing
@@ -708,51 +698,78 @@ pidgin_application_signed_on_cb(PurpleAccount *account, gpointer data) {
 }
 
 static void
-pidgin_application_signed_off_cb(G_GNUC_UNUSED PurpleAccount *account,
-                                 gpointer data)
+pidgin_application_disconnected_cb(PurpleAccountManager *manager,
+                                   G_GNUC_UNUSED PurpleAccount *account,
+                                   gpointer data)
 {
-	PidginApplication *application = PIDGIN_APPLICATION(data);
-	gboolean should_disable_chat = TRUE, should_disable_room_list = TRUE;
-	GList *connections = NULL, *l = NULL;
-	gint n_actions = 0;
+	PidginApplication *application = data;
+	GList *connected = NULL;
+	gboolean should_disable_actions = TRUE;
+	gboolean should_disable_chat = TRUE;
+	gboolean should_disable_channel = TRUE;
+	gboolean should_disable_room_list = TRUE;
+	guint n_actions = 0;
 
-	/* walk through all the connections, looking for online ones that implement
-	 * the chat interface.  We don't bother checking the account that this
-	 * signal was emitted for, because it's already offline and will be
-	 * filtered out by the online check.
-	 */
-	connections = purple_connections_get_all();
-	for(l = connections; l != NULL; l = l->next) {
-		PurpleConnection *connection = PURPLE_CONNECTION(l->data);
+	connected = purple_account_manager_get_connected(manager);
+
+	while(connected != NULL) {
+		PurpleAccount *account = connected->data;
 		PurpleProtocol *protocol = NULL;
 
-		/* if the connection isn't online, we don't care about it */
-		if(!PURPLE_CONNECTION_IS_CONNECTED(connection)) {
-			continue;
-		}
+		/* We have at least one account connected so we're online. */
+		should_disable_actions = FALSE;
 
-		protocol = purple_connection_get_protocol(connection);
+		protocol = purple_account_get_protocol(account);
 
-		/* check if the protocol implements the chat interface */
+		/* Check if the protocol implements the chat interface. */
 		if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, CHAT, info)) {
 			should_disable_chat = FALSE;
 		}
 
-		/* check if the protocol implements the room list interface */
+		/* Check if the protocol implements joining channels. */
+		if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, CONVERSATION,
+		                              get_channel_join_details))
+		{
+			should_disable_channel = FALSE;
+		}
+
+		/* Check if the protocol implements the room list interface. */
 		if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, ROOMLIST, get_list)) {
 			should_disable_room_list = FALSE;
 		}
 
-		/* if we can't disable both, we can bail out of the loop */
-		if(!should_disable_chat && !should_disable_room_list) {
+		/* If we can't disable anything we can exit the loop early. */
+		if(!should_disable_chat && !should_disable_channel &&
+		   !should_disable_room_list)
+		{
+			g_clear_list(&connected, NULL);
+
 			break;
 		}
+
+		connected = g_list_delete_link(connected, connected);
+	}
+
+	if(should_disable_actions) {
+		n_actions = G_N_ELEMENTS(pidgin_application_online_actions);
+		pidgin_application_actions_set_enabled(PIDGIN_APPLICATION(data),
+		                                       pidgin_application_online_actions,
+		                                       n_actions,
+		                                       FALSE);
 	}
 
 	if(should_disable_chat) {
 		n_actions = G_N_ELEMENTS(pidgin_application_chat_actions);
 		pidgin_application_actions_set_enabled(application,
 		                                       pidgin_application_chat_actions,
+		                                       n_actions,
+		                                       FALSE);
+	}
+
+	if(should_disable_channel) {
+		n_actions = G_N_ELEMENTS(pidgin_application_channel_actions);
+		pidgin_application_actions_set_enabled(application,
+		                                       pidgin_application_channel_actions,
 		                                       n_actions,
 		                                       FALSE);
 	}
@@ -810,7 +827,6 @@ pidgin_application_startup(GApplication *application) {
 	PurpleAccountManager *manager = NULL;
 	GError *error = NULL;
 	GList *active_accounts = NULL;
-	gpointer handle = NULL;
 
 	G_APPLICATION_CLASS(pidgin_application_parent_class)->startup(application);
 
@@ -924,28 +940,15 @@ pidgin_application_startup(GApplication *application) {
 	/* Populate our dynamic menus. */
 	pidgin_application_populate_dynamic_menus(PIDGIN_APPLICATION(application));
 
-	/* connect to the online and offline signals in purple connections.  This
-	 * is used to toggle states of actions that require being online.
+	/* Connect to the connected and disconnected signals to manage which menus
+	 * are active.
 	 */
-	handle = purple_connections_get_handle();
-	purple_signal_connect(handle, "online", application,
-	                      G_CALLBACK(pidgin_application_online_cb),
-	                      application);
-	purple_signal_connect(handle, "offline", application,
-	                      G_CALLBACK(pidgin_application_offline_cb),
-	                      application);
-
-	/* connect to account-signed-on and account-signed-off to toggle actions
-	 * that depend on specific interfaces in accounts.
-	 */
-	handle = purple_accounts_get_handle();
-	purple_signal_connect(handle, "account-signed-on", application,
-	                      G_CALLBACK(pidgin_application_signed_on_cb),
-	                      application);
-	purple_signal_connect(handle, "account-signed-off", application,
-	                      G_CALLBACK(pidgin_application_signed_off_cb),
-	                      application);
-
+	g_signal_connect_object(manager, "account-connected",
+	                        G_CALLBACK(pidgin_application_connected_cb),
+	                        application, 0);
+	g_signal_connect_object(manager, "account-disconnected",
+	                        G_CALLBACK(pidgin_application_disconnected_cb),
+	                        application, 0);
 }
 
 static void
