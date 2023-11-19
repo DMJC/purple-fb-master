@@ -794,3 +794,25 @@ purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *conne
 
 	return conversation;
 }
+
+PurpleContact *
+purple_ircv3_connection_find_or_create_contact(PurpleIRCv3Connection *connection,
+                                               const char *nick)
+{
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
+
+	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_id(manager, account, nick);
+
+	if(!PURPLE_IS_CONTACT(contact)) {
+		contact = purple_contact_new(account, nick);
+		purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), nick);
+
+		purple_contact_manager_add(manager, contact);
+	}
+
+	return contact;
+}

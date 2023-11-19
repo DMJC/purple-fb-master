@@ -123,9 +123,7 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
                                      gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
-	PurpleAccount *account = NULL;
 	PurpleContact *contact = NULL;
-	PurpleContactManager *contact_manager = NULL;
 	PurpleConversation *conversation = NULL;
 	PurpleMessage *message = NULL;
 	PurpleMessageFlags flags = PURPLE_MESSAGE_RECV;
@@ -162,26 +160,30 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 
 	purple_ircv3_source_parse(source, &nick, NULL, NULL);
 
-	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
-
-	contact_manager = purple_contact_manager_get_default();
-	contact = purple_contact_manager_find_with_username(contact_manager,
-	                                                    account,
-	                                                    nick);
-	if(!PURPLE_IS_CONTACT(contact)) {
-		contact = purple_contact_new(account, NULL);
-		purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), nick);
-		purple_contact_info_set_sid(PURPLE_CONTACT_INFO(contact), source);
-		purple_contact_manager_add(contact_manager, contact);
-	}
-	g_clear_object(&contact);
-
+	/* Find or create the conversation. */
 	target = params[0];
 	if(!purple_ircv3_connection_is_channel(connection, target)) {
 		target = nick;
 	}
 	conversation = purple_ircv3_connection_find_or_create_conversation(connection,
 	                                                                   target);
+	/* Find or create the contact. */
+	contact = purple_ircv3_connection_find_or_create_contact(connection, nick);
+	if(PURPLE_IS_CONTACT(contact)) {
+		PurpleConversationMember *member = NULL;
+
+		/* Update the contact's sid as it may have changed. */
+		purple_contact_info_set_sid(PURPLE_CONTACT_INFO(contact), source);
+
+		/* Make sure the contact is in the conversation. */
+		member = purple_conversation_find_member(conversation,
+		                                         PURPLE_CONTACT_INFO(contact));
+		if(!PURPLE_IS_CONVERSATION_MEMBER(member)) {
+			member = purple_conversation_add_member(conversation,
+			                                        PURPLE_CONTACT_INFO(contact),
+			                                        FALSE, NULL);
+		}
+	}
 
 	/* Grab the msgid if one was provided. */
 	if(g_hash_table_lookup_extended(tags, "msgid", NULL, &raw_id)) {

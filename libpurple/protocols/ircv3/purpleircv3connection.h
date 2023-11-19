@@ -159,6 +159,27 @@ gboolean purple_ircv3_connection_is_channel(PurpleIRCv3Connection *connection, c
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleConversation *purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *connection, const char *id);
 
+/**
+ * purple_ircv3_connection_find_or_create_contact:
+ * @connection: The instance.
+ * @nick: The nickname of the user.
+ *
+ * Looks for an existing contact belonging to @connection and returns it if
+ * found. If not a new contact will be created.
+ *
+ * This will only ever return %NULL if @connection is invalid or @nick is
+ * %NULL.
+ *
+ * Note that the ownership of the contact remains with the default
+ * [class@Purple.ContactManager].
+ *
+ * Returns: (transfer none) (nullable): The contact.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_IRCV3_AVAILABLE_IN_ALL
+PurpleContact *purple_ircv3_connection_find_or_create_contact(PurpleIRCv3Connection *connection, const char *nick);
+
 G_END_DECLS
 
 #endif /* PURPLE_IRCV3_CONNECTION_H */
