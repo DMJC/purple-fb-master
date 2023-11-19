@@ -46,7 +46,6 @@ struct _PidginConversation {
 	GtkWidget *info_pane;
 	GtkWidget *history;
 	GtkAdjustment *history_adjustment;
-	GtkNoSelection *history_selection;
 
 	GtkWidget *input;
 };
@@ -61,18 +60,10 @@ pidgin_conversation_set_conversation(PidginConversation *conversation,
                                      PurpleConversation *purple_conversation)
 {
 	if(g_set_object(&conversation->conversation, purple_conversation)) {
-		GListModel *model = NULL;
-
 		if(PURPLE_IS_CONVERSATION(purple_conversation)) {
 			g_object_set_data(G_OBJECT(purple_conversation),
 			                  PIDGIN_CONVERSATION_DATA, conversation);
-			model = purple_conversation_get_messages(purple_conversation);
 		}
-
-		gtk_no_selection_set_model(conversation->history_selection, model);
-
-		pidgin_info_pane_set_conversation(PIDGIN_INFO_PANE(conversation->info_pane),
-		                                  purple_conversation);
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_CONVERSATION]);
@@ -379,8 +370,6 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	                                     info_pane);
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     history);
-	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
-	                                     history_selection);
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     history_adjustment);
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,

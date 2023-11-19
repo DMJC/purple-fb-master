@@ -31,6 +31,9 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
         <child>
           <object class="PidginInfoPane" id="info_pane">
             <property name="hexpand">1</property>
+            <binding name="conversation">
+              <lookup name="conversation">PidginConversation</lookup>
+            </binding>
           </object>
         </child>
         <child>
@@ -67,7 +70,13 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                   </object>
                 </property>
                 <property name="model">
-                  <object class="GtkNoSelection" id="history_selection"/>
+                  <object class="GtkNoSelection">
+                    <binding name="model">
+                      <lookup name="messages" type="PurpleConversation">
+                        <lookup name="conversation">PidginConversation</lookup>
+                      </lookup>
+                    </binding>
+                  </object>
                 </property>
               </object>
             </child>
