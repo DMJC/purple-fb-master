@@ -329,6 +329,7 @@ pidgin/resources/Whiteboard/whiteboard.ui
 pidgin/resources/Xfer/xfer.ui
 pidgin/resources/gtk/menus.ui
 pidgin/resources/account-row.ui
+pidgin/resources/contactlistitem.ui
 pidgin/win32/gtkwin32dep.c
 pidgin/win32/winpidgin.c
 purple-history/purplehistorycore.c
