@@ -66,10 +66,11 @@ typedef struct _PurplePresence PurplePresence;
  *                                       visible to others.
  * @PURPLE_PRESENCE_PRIMITIVE_AWAY: The presence is online, but the user is
  *                                  away from their device.
- * @PURPLE_PRESENCE_PRIMITIVE_EXTENDED_AWAY: Similar to
- *                                           @PURPLE_PRESENCE_PRIMITIVE_AWAY,
- *                                           but typically means the user does
- *                                           not want to be disturbed.
+ * @PURPLE_PRESENCE_PRIMITIVE_DO_NOT_DISTURB: Similar to
+ *                                            @PURPLE_PRESENCE_PRIMITIVE_AWAY,
+ *                                            but typically means the user has
+ *                                            notifications and sounds
+ *                                            disabled.
  * @PURPLE_PRESENCE_PRIMITIVE_STREAMING: The presence is online but is
  *                                       streaming.
  *
@@ -84,7 +85,7 @@ typedef enum {
 	PURPLE_PRESENCE_PRIMITIVE_IDLE,
 	PURPLE_PRESENCE_PRIMITIVE_INVISIBLE,
 	PURPLE_PRESENCE_PRIMITIVE_AWAY,
-	PURPLE_PRESENCE_PRIMITIVE_EXTENDED_AWAY,
+	PURPLE_PRESENCE_PRIMITIVE_DO_NOT_DISTURB,
 	PURPLE_PRESENCE_PRIMITIVE_STREAMING,
 } PurplePresencePrimitive;
 

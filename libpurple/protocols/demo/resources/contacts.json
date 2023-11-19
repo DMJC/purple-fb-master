@@ -72,7 +72,7 @@
 		"id": "markus"
 	},
 	"presence": {
-		"primitive": "extended-away",
+		"primitive": "do-not-disturb",
 		"message": "Running all the things in valgrind..."
 	},
 	"tags": [

@@ -816,7 +816,7 @@ purple_presence_primitive_to_string(PurplePresencePrimitive primitive) {
 		case PURPLE_PRESENCE_PRIMITIVE_AWAY:
 			return _("Away");
 			break;
-		case PURPLE_PRESENCE_PRIMITIVE_EXTENDED_AWAY:
+		case PURPLE_PRESENCE_PRIMITIVE_DO_NOT_DISTURB:
 			return _("Do not disturb");
 			break;
 		case PURPLE_PRESENCE_PRIMITIVE_STREAMING:

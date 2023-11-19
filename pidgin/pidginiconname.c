@@ -46,7 +46,7 @@ pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primitive,
 			return "pidgin-user-invisible";
 			break;
 		case PURPLE_STATUS_EXTENDED_AWAY:
-			return "pidgin-user-extended-away";
+			return "pidgin-user-do-not-disturb";
 			break;
 		case PURPLE_STATUS_MOBILE:
 		case PURPLE_STATUS_UNSET:
@@ -107,8 +107,8 @@ pidgin_icon_name_from_presence_primitive(PurplePresencePrimitive primitive,
 	case PURPLE_PRESENCE_PRIMITIVE_AWAY:
 		return "pidgin-user-away";
 		break;
-	case PURPLE_PRESENCE_PRIMITIVE_EXTENDED_AWAY:
-		return "pidgin-user-extended-away";
+	case PURPLE_PRESENCE_PRIMITIVE_DO_NOT_DISTURB:
+		return "pidgin-user-do-not-disturb";
 		break;
 	case PURPLE_PRESENCE_PRIMITIVE_STREAMING:
 		/* TODO: get an icon for streaming. */
