@@ -126,13 +126,26 @@ static void
 purple_conversation_set_account(PurpleConversation *conv,
                                 PurpleAccount *account)
 {
+	PurpleConversationMember *member = NULL;
 	PurpleConversationPrivate *priv = NULL;
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 	priv = purple_conversation_get_instance_private(conv);
 
+	/* Remove the account from the conversation if it's a member. */
+	if(PURPLE_IS_ACCOUNT(priv->account)) {
+		member = purple_conversation_find_member(conv,
+		                                         PURPLE_CONTACT_INFO(priv->account));
+		if(PURPLE_IS_CONVERSATION_MEMBER(member)) {
+			purple_conversation_remove_member(conv, member, FALSE, NULL);
+		}
+	}
+
 	if(g_set_object(&priv->account, account)) {
 		if(PURPLE_IS_ACCOUNT(priv->account)) {
+			purple_conversation_add_member(conv, PURPLE_CONTACT_INFO(account),
+			                               FALSE, NULL);
+
 			g_signal_connect_object(account, "notify::connected",
 			                        G_CALLBACK(purple_conversation_account_connected_cb),
 			                        conv, 0);

@@ -241,6 +241,7 @@ test_purple_conversation_members_add_remove(void) {
 	PurpleConversationManager *conversation_manager = NULL;
 	PurpleConversationMember *member = NULL;
 	PurpleConversationMember *member1 = NULL;
+	PurpleConversationMember *test_member = NULL;
 	gboolean removed = FALSE;
 	gint added_called = 0;
 	gint removed_called = 0;
@@ -253,6 +254,11 @@ test_purple_conversation_members_add_remove(void) {
 		"account", account,
 		"name", "test-conversation",
 		NULL);
+
+	/* Make sure the account got added as a member. */
+	test_member = purple_conversation_find_member(conversation,
+	                                              PURPLE_CONTACT_INFO(account));
+	g_assert_nonnull(test_member);
 
 	/* Connect our signals. */
 	g_signal_connect(conversation, "member-added",
@@ -267,6 +273,9 @@ test_purple_conversation_members_add_remove(void) {
 	                                        "announcement message");
 	g_assert_cmpint(added_called, ==, 1);
 	g_assert_true(PURPLE_IS_CONVERSATION_MEMBER(member));
+
+	test_member = purple_conversation_find_member(conversation, info);
+	g_assert_true(member == test_member);
 
 	/* Add our own reference to the returned member as we use it later to
 	 * verify that double remove doesn't do anything.
@@ -287,6 +296,9 @@ test_purple_conversation_members_add_remove(void) {
 	                                            "announcement message");
 	g_assert_true(removed);
 	g_assert_cmpint(removed_called, ==, 1);
+
+	test_member = purple_conversation_find_member(conversation, info);
+	g_assert_null(test_member);
 
 	/* Try to remove the member again and verify that nothing was removed and
 	 * that the signal wasn't emitted.
