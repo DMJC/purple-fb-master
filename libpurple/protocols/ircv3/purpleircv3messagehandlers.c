@@ -179,9 +179,9 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 		member = purple_conversation_find_member(conversation,
 		                                         PURPLE_CONTACT_INFO(contact));
 		if(!PURPLE_IS_CONVERSATION_MEMBER(member)) {
-			member = purple_conversation_add_member(conversation,
-			                                        PURPLE_CONTACT_INFO(contact),
-			                                        FALSE, NULL);
+			purple_conversation_add_member(conversation,
+			                               PURPLE_CONTACT_INFO(contact),
+			                               FALSE, NULL);
 		}
 	}
 
