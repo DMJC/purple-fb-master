@@ -27,6 +27,11 @@
 #define ICONAWAY_PLUGIN_ID "gtk-iconaway"
 
 static void
+iconify_window(gpointer data, G_GNUC_UNUSED gpointer user_data) {
+	gtk_window_minimize(data);
+}
+
+static void
 iconify_windows(G_GNUC_UNUSED PurpleAccount *account,
                 G_GNUC_UNUSED PurpleStatus *old,
                 PurpleStatus *newstatus)
@@ -45,7 +50,7 @@ iconify_windows(G_GNUC_UNUSED PurpleAccount *account,
 
 	application = g_application_get_default();
 	windows = gtk_application_get_windows(GTK_APPLICATION(application));
-	g_list_foreach(windows, (GFunc)gtk_window_minimize, NULL);
+	g_list_foreach(windows, iconify_window, NULL);
 }
 
 /*
