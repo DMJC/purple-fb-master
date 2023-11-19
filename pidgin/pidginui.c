@@ -38,7 +38,6 @@
 #include "gtkroomlist.h"
 #include "gtkrequest.h"
 #include "gtkwhiteboard.h"
-#include "gtkxfer.h"
 #include "pidgincore.h"
 #include "pidgindebug.h"
 #include "pidginprefs.h"
@@ -129,7 +128,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	                                pidgin_ui_protocol_foreach_theme_cb, NULL);
 
 	/* Set the UI operation structures. */
-	purple_xfers_set_ui_ops(pidgin_xfers_get_ui_ops());
 	purple_blist_set_ui(PIDGIN_TYPE_BUDDY_LIST);
 	purple_notify_set_ui_ops(pidgin_notify_get_ui_ops());
 	purple_request_set_ui_ops(pidgin_request_get_ui_ops());
@@ -139,7 +137,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	pidgin_request_init();
 	pidgin_conversations_init();
 	pidgin_commands_init();
-	pidgin_xfers_init();
 	pidgin_roomlist_init();
 	pidgin_medias_init();
 	pidgin_notify_init();
@@ -156,7 +153,6 @@ pidgin_ui_stop(G_GNUC_UNUSED PurpleUi *ui) {
 	pidgin_commands_uninit();
 	pidgin_conversations_uninit();
 	pidgin_request_uninit();
-	pidgin_xfers_uninit();
 	pidgin_debug_window_hide();
 	pidgin_debug_uninit();
 

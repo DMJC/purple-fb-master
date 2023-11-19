@@ -230,7 +230,6 @@ libpurple/tests/test_xmlnode.c
 libpurple/util.c
 libpurple/win32/libc_interface.c
 libpurple/win32/win32dep.c
-libpurple/xfer.c
 libpurple/xmlnode.c
 pidgin/data/im.pidgin.Pidgin3.metainfo.xml
 pidgin/gtkblist.c
@@ -243,7 +242,6 @@ pidgin/gtkrequest.c
 pidgin/gtkroomlist.c
 pidgin/gtkutils.c
 pidgin/gtkwhiteboard.c
-pidgin/gtkxfer.c
 pidgin/libpidgin.c
 pidgin/pidginabout.c
 pidgin/pidginaccountchooser.c

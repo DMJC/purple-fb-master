@@ -36,7 +36,6 @@
 #include "gtkblist.h"
 #include "gtkdialogs.h"
 #include "gtkroomlist.h"
-#include "gtkxfer.h"
 #include "pidginabout.h"
 #include "pidginaccounteditor.h"
 #include "pidginaccountmanager.h"
@@ -430,7 +429,7 @@ pidgin_application_file_transfers(G_GNUC_UNUSED GSimpleAction *simple,
                                   G_GNUC_UNUSED GVariant *parameter,
                                   G_GNUC_UNUSED gpointer data)
 {
-	pidgin_xfer_dialog_show(NULL);
+	g_warning("sorry not yet ported...");
 }
 
 static void

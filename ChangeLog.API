@@ -1066,6 +1066,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_dialogs_remove_contact
 		* pidgin_dialogs_remove_group
 		* pidgin_get_dim_grey_string
+		* pidgin_get_xfer_dialog
 		* pidgin_gdk_pixbuf_make_round, use purple_gdk_pixbuf_make_round instead.
 		* pidgin_gdk_pixbuf_is_opaque, use purple_gdk_pixbuf_is_opaque instead.
 		* pidgin_make_frame
@@ -1158,6 +1159,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_set_custom_buddy_icon
 		* pidgin_set_sensitive_if_input
 		* pidgin_set_urgent, use gtk_window_set_urgency_hint instead.
+		* pidgin_set_xfer_dialog
 		* pidgin_setup_screenname_autocomplete_with_filter
 		* PidginSmiley
 		* pidgin_smiley_add_to_list
@@ -1242,6 +1244,17 @@ version 3.0.0 (??/??/????):
 		* PidginUnseenState enum and all values.
 		* PidginUtilMiniDialogCallback; use PidginMiniDialogCallback
 		  instead
+		* pidgin_xfer_dialog_add_xfer
+		* pidgin_xfer_dialog_cancel_xfer
+		* pidgin_xfer_dialog_destroy
+		* pidgin_xfer_dialog_hide
+		* pidgin_xfer_dialog_new
+		* pidgin_xfer_dialog_remove_xfer
+		* pidgin_xfer_dialog_show
+		* pidgin_xfer_dialog_update_xfer
+		* pidgin_xfers_get_ui_ops
+		* pidgin_xfers_init
+		* pidgin_xfers_uninit
 		* struct _GtkIMHtmlAnimation
 		* struct _GtkIMHtmlFontDetail
 		* struct _GtkIMHtmlHr
