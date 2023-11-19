@@ -505,6 +505,7 @@ summary({
     'KWallet credential provider': kwallet.found(),
     'libsecret credential provider': libsecret.found(),
     'Unity integration': enable_unity,
+    'WinCred credential provider': IS_WIN32,
 }, section: 'Plugin support', bool_yn: true)
 
 summary({
