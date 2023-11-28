@@ -880,7 +880,7 @@ process_link(GString *ret,
 
 		url_buf = g_strndup(c, t - c);
 		tmpurlbuf = purple_unescape_html(url_buf);
-		g_string_append_printf(ret, "<A HREF=\"%s%s\">%s</A>",
+		g_string_append_printf(ret, "<a href=\"%s%s\">%s</a>",
 				urlprefix,
 				tmpurlbuf, url_buf);
 		g_free(tmpurlbuf);
@@ -926,9 +926,9 @@ purple_markup_linkify(const char *text)
 			}
 		} else if(*c == '<') {
 			inside_html = TRUE;
-			if (!g_ascii_strncasecmp(c, "<A", 2)) {
+			if (!g_ascii_strncasecmp(c, "<a", 2)) {
 				while (1) {
-					if (!g_ascii_strncasecmp(c, "/A>", 3)) {
+					if (!g_ascii_strncasecmp(c, "/a>", 3)) {
 						inside_html = FALSE;
 						break;
 					}
@@ -975,7 +975,7 @@ purple_markup_linkify(const char *text)
 					g_free(url_buf);
 					url_buf = g_strndup(c, t - c);
 					tmpurlbuf = purple_unescape_html(url_buf);
-					g_string_append_printf(ret, "<A HREF=\"%s\">%s</A>",
+					g_string_append_printf(ret, "<a href=\"%s\">%s</a>",
 							  tmpurlbuf, url_buf);
 					g_free(url_buf);
 					g_free(tmpurlbuf);
@@ -1037,7 +1037,7 @@ purple_markup_linkify(const char *text)
 
 					tmpurlbuf = purple_unescape_html(url_buf);
 					if (purple_email_is_valid(tmpurlbuf)) {
-						g_string_append_printf(ret, "<A HREF=\"mailto:%s\">%s</A>",
+						g_string_append_printf(ret, "<a href=\"mailto:%s\">%s</a>",
 								tmpurlbuf, url_buf);
 					} else {
 						g_string_append(ret, url_buf);

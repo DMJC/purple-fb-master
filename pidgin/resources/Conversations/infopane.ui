@@ -25,10 +25,14 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
   <template class="PidginInfoPane" parent="GtkBox">
     <child>
-      <object class="GtkBox" id="hbox">
+      <object class="GtkBox">
         <property name="spacing">6</property>
         <child>
-          <object class="PidginAvatar" id="avatar"/>
+          <object class="PidginAvatar">
+            <binding name="conversation">
+              <lookup name="conversation">PidginInfoPane</lookup>
+            </binding>
+          </object>
         </child>
         <child>
           <object class="GtkBox">
@@ -37,17 +41,31 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             <property name="valign">center</property>
             <child>
               <object class="GtkLabel" id="name">
-                <property name="label" translatable="1">[Place Holder]</property>
+                <binding name="label">
+                  <lookup name="name" type="PurpleConversation">
+                    <lookup name="conversation">PidginInfoPane</lookup>
+                  </lookup>
+                </binding>
                 <property name="xalign">0</property>
-                <attributes>
-                  <attribute name="weight" value="bold"></attribute>
-                  <attribute name="scale" value="1.2"></attribute>
-                </attributes>
+                <style>
+                  <class name="title-2"/>
+                </style>
               </object>
             </child>
             <child>
               <object class="GtkLabel" id="topic">
-                <property name="wrap">1</property>
+                <binding name="label">
+                  <closure type="gchararray" function="pidgin_info_pane_linkify_text_cb">
+                    <lookup name="topic" type="PurpleConversation">
+                      <lookup name="conversation">PidginInfoPane</lookup>
+                    </lookup>
+                  </closure>
+                </binding>
+                <property name="ellipsize">end</property>
+                <property name="lines">2</property>
+                <property name="use-markup">yes</property>
+                <property name="wrap">yes</property>
+                <property name="wrap-mode">word-char</property>
                 <property name="xalign">0</property>
               </object>
             </child>

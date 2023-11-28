@@ -22,25 +22,12 @@
 
 #include "pidgin/pidgininfopane.h"
 
-#include "pidgin/gtkblist.h"
-#include "pidgin/gtkutils.h"
-#include "pidgin/pidginavatar.h"
-#include "pidgin/pidgincore.h"
-#include "pidgin/pidginpresenceicon.h"
-
 struct _PidginInfoPane {
 	GtkBox parent;
 
 	PurpleConversation *conversation;
 
-	GtkWidget *hbox;
-	GtkWidget *avatar;
-
-	GtkWidget *name;
-	GBinding *name_binding;
-
 	GtkWidget *topic;
-	GBinding *topic_binding;
 };
 
 enum {
@@ -53,25 +40,19 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 G_DEFINE_TYPE(PidginInfoPane, pidgin_info_pane, GTK_TYPE_BOX)
 
 /******************************************************************************
- * Helpers
+ * Callbacks
  *****************************************************************************/
-static gboolean
-pidgin_info_pane_topic_to_label(G_GNUC_UNUSED GBinding *binding,
-                                const GValue *from_value,
-                                GValue *to_value,
-                                gpointer data)
+static char *
+pidgin_info_pane_linkify_text_cb(GObject *self, const char *topic,
+                                 G_GNUC_UNUSED gpointer data)
 {
-	PidginInfoPane *pane = data;
-	const char *topic = NULL;
-	gboolean visible = FALSE;
+	PidginInfoPane *pane = PIDGIN_INFO_PANE(self);
+	char *ret = NULL;
 
-	topic = g_value_get_string(from_value);
-	visible = !purple_strempty(topic);
-	g_value_set_string(to_value, topic);
+	ret = purple_markup_linkify(topic);
+	gtk_widget_set_visible(pane->topic, !purple_strempty(ret));
 
-	gtk_widget_set_visible(pane->topic, visible);
-
-	return TRUE;
+	return ret;
 }
 
 /******************************************************************************
@@ -150,10 +131,10 @@ pidgin_info_pane_class_init(PidginInfoPaneClass *klass) {
 	    "/im/pidgin/Pidgin3/Conversations/infopane.ui"
 	);
 
-	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, hbox);
-	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, avatar);
-	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, name);
 	gtk_widget_class_bind_template_child(widget_class, PidginInfoPane, topic);
+
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_info_pane_linkify_text_cb);
 }
 
 /******************************************************************************
@@ -184,29 +165,5 @@ pidgin_info_pane_set_conversation(PidginInfoPane *pane,
 		return;
 	}
 
-	/* Remove the old bindings. */
-	g_clear_pointer(&pane->name_binding, g_binding_unbind);
-	g_clear_pointer(&pane->topic_binding, g_binding_unbind);
-
-	/* Tell the avatar about the new conversation. */
-	pidgin_avatar_set_conversation(PIDGIN_AVATAR(pane->avatar),
-	                               pane->conversation);
-
-	if(PURPLE_IS_CONVERSATION(conversation)) {
-		pane->name_binding =
-			g_object_bind_property(G_OBJECT(conversation), "name",
-			                       G_OBJECT(pane->name), "label",
-			                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-
-		pane->topic_binding =
-			g_object_bind_property_full(G_OBJECT(conversation), "topic",
-			                            G_OBJECT(pane->topic), "label",
-			                            G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
-			                            pidgin_info_pane_topic_to_label,
-			                            NULL,
-			                            pane, NULL);
-	}
-
-	/* Notify that we changed. */
 	g_object_notify_by_pspec(G_OBJECT(pane), properties[PROP_CONVERSATION]);
 }
