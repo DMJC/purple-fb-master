@@ -217,8 +217,14 @@ pidgin_contact_list_activate_cb(GtkListView *self, guint position,
 	conversation = purple_conversation_manager_find_im(manager, account, name);
 
 	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		conversation = purple_im_conversation_new(account, name);
+		conversation = g_object_new(
+			PURPLE_TYPE_CONVERSATION,
+			"account", account,
+			"name", name,
+			"type", PurpleConversationTypeDM,
+			NULL);
 		purple_conversation_manager_register(manager, conversation);
+		g_clear_object(&conversation);
 	}
 
 	g_clear_object(&person);
