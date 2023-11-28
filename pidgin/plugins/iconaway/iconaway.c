@@ -32,36 +32,37 @@ iconify_window(gpointer data, G_GNUC_UNUSED gpointer user_data) {
 }
 
 static void
-iconify_windows(G_GNUC_UNUSED PurpleAccount *account,
-                G_GNUC_UNUSED PurpleStatus *old,
-                PurpleStatus *newstatus)
+iconify_presence_changed_cb(GObject *obj,
+                            G_GNUC_UNUSED GParamSpec *pspec,
+                            G_GNUC_UNUSED gpointer data)
 {
-	GApplication *application = NULL;
-	PurplePresence *presence;
-	GList *windows;
+	PurplePresenceManager *manager = PURPLE_PRESENCE_MANAGER(obj);
+	PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
+	PurpleSavedPresence *presence = NULL;
 
-	presence = purple_status_get_presence(newstatus);
+	presence = purple_presence_manager_get_active(manager);
+	primitive = purple_saved_presence_get_primitive(presence);
 
-	if(purple_presence_is_available(presence)) {
-		return;
+	if(primitive == PURPLE_PRESENCE_PRIMITIVE_AWAY ||
+	   primitive == PURPLE_PRESENCE_PRIMITIVE_DO_NOT_DISTURB)
+	{
+		GApplication *application = NULL;
+		GList *windows = NULL;
+
+		application = g_application_get_default();
+		windows = gtk_application_get_windows(GTK_APPLICATION(application));
+		g_list_foreach(windows, iconify_window, NULL);
 	}
-
-	purple_blist_set_visible(FALSE);
-
-	application = g_application_get_default();
-	windows = gtk_application_get_windows(GTK_APPLICATION(application));
-	g_list_foreach(windows, iconify_window, NULL);
 }
 
-/*
- *  EXPORTED FUNCTIONS
- */
-
+/******************************************************************************
+ * Plugin Exports
+ *****************************************************************************/
 static GPluginPluginInfo *
 icon_away_query(G_GNUC_UNUSED GError **error)
 {
 	const gchar * const authors[] = {
-		"Eric Warmenhoven <eric@warmenhoven.org>",
+		"Pidgin Developers <devel@pidgin.im>",
 		NULL
 	};
 
@@ -82,10 +83,13 @@ icon_away_query(G_GNUC_UNUSED GError **error)
 }
 
 static gboolean
-icon_away_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
-{
-	purple_signal_connect(purple_accounts_get_handle(), "account-status-changed",
-						plugin, G_CALLBACK(iconify_windows), NULL);
+icon_away_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
+	PurplePresenceManager *manager = NULL;
+
+	manager = purple_presence_manager_get_default();
+	g_signal_connect_object(manager, "notify::active-presence",
+	                        G_CALLBACK(iconify_presence_changed_cb),
+	                        plugin, 0);
 
 	return TRUE;
 }
