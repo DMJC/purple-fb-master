@@ -35,7 +35,6 @@ struct _PidginContactList {
 	GtkCustomFilter *search_filter;
 
 	GtkWidget *search_entry;
-	GtkWidget *view;
 };
 
 G_DEFINE_TYPE(PidginContactList, pidgin_contact_list, GTK_TYPE_BOX)
@@ -366,8 +365,6 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 
 	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
 	                                     search_entry);
-	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
-	                                     view);
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_contact_list_search_changed_cb);
