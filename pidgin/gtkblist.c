@@ -33,7 +33,6 @@
 #include "pidgin/pidginaccountchooser.h"
 #include "pidgin/pidginaccountfilterconnected.h"
 #include "pidgin/pidginaddbuddydialog.h"
-#include "pidgin/pidginaddchatdialog.h"
 
 typedef struct
 {
@@ -428,18 +427,6 @@ pidgin_blist_request_add_buddy(G_GNUC_UNUSED PurpleBuddyList *list,
 }
 
 static void
-pidgin_blist_request_add_chat(G_GNUC_UNUSED PurpleBuddyList *list,
-                              PurpleAccount *account, PurpleGroup *group,
-                              const char *alias, const char *name)
-{
-	GtkWidget *dialog = NULL;
-
-	dialog = pidgin_add_chat_dialog_new(account, group, alias, name);
-
-	gtk_widget_set_visible(dialog, TRUE);
-}
-
-static void
 add_group_cb(G_GNUC_UNUSED PurpleConnection *connection,
              const char *group_name)
 {
@@ -476,6 +463,5 @@ pidgin_buddy_list_class_init(PidginBuddyListClass *klass) {
 	PurpleBuddyListClass *purple_blist_class = PURPLE_BUDDY_LIST_CLASS(klass);
 
 	purple_blist_class->request_add_buddy = pidgin_blist_request_add_buddy;
-	purple_blist_class->request_add_chat = pidgin_blist_request_add_chat;
 	purple_blist_class->request_add_group = pidgin_blist_request_add_group;
 }
