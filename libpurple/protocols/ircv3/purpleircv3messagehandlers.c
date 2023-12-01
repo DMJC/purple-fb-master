@@ -23,6 +23,7 @@
 #include "purpleircv3connection.h"
 #include "purpleircv3constants.h"
 #include "purpleircv3core.h"
+#include "purpleircv3ctcp.h"
 #include "purpleircv3formatting.h"
 #include "purpleircv3source.h"
 
@@ -226,6 +227,9 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	g_free(stripped);
 
 	g_date_time_unref(dt);
+
+	/* Check if this is a CTCP message. */
+	purple_ircv3_ctcp_handle(connection, message);
 
 	purple_conversation_write_message(conversation, message);
 

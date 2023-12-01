@@ -24,6 +24,15 @@
 #define PURPLE_IRCV3_CONSTANTS_H
 
 /**
+ * PURPLE_IRCV3_CTCP_DELIMITER:
+ *
+ * The delimiter used for CTCP messages.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_IRCV3_CTCP_DELIMITER (0x1) PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
+
+/**
  * PURPLE_IRCV3_ERR_NICKLOCKED:
  *
  * A constant for the IRC %NICKLOCKED error.

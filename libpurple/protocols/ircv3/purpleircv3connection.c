@@ -36,6 +36,8 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 enum {
 	SIG_REGISTRATION_COMPLETE,
+	SIG_CTCP_REQUEST,
+	SIG_CTCP_RESPONSE,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -606,6 +608,52 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 		NULL,
 		G_TYPE_NONE,
 		0);
+
+	/**
+	 * PurpleIRCv3Connection::ctcp-request:
+	 * @connection: The instance.
+	 * @command: The CTCP command.
+	 * @params: (nullable): The CTCP parameters.
+	 *
+	 * This signal is emitted after a CTCP request has been received.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_CTCP_REQUEST] = g_signal_new_class_handler(
+		"ctcp-request",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		2,
+		G_TYPE_STRING,
+		G_TYPE_STRING);
+
+	/**
+	 * PurpleIRCv3Connection::ctcp-response:
+	 * @connection: The instance.
+	 * @command: The CTCP command.
+	 * @params: (nullable): The CTCP parameters.
+	 *
+	 * This signal is emitted after a CTCP response has been received.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_CTCP_RESPONSE] = g_signal_new_class_handler(
+		"ctcp-response",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		2,
+		G_TYPE_STRING,
+		G_TYPE_STRING);
 }
 
 /******************************************************************************
@@ -637,6 +685,30 @@ purple_ircv3_connection_get_cancellable(PurpleIRCv3Connection *connection) {
 	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	return priv->cancellable;
+}
+
+void
+purple_ircv3_connection_emit_ctcp_request(PurpleIRCv3Connection *connection,
+                                          const char *command,
+                                          const char *parameters)
+{
+	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
+	g_return_if_fail(!purple_strempty(command));
+
+	g_signal_emit(connection, signals[SIG_CTCP_REQUEST], 0, command,
+	              parameters);
+}
+
+void
+purple_ircv3_connection_emit_ctcp_response(PurpleIRCv3Connection *connection,
+                                           const char *command,
+                                           const char *parameters)
+{
+	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
+	g_return_if_fail(!purple_strempty(command));
+
+	g_signal_emit(connection, signals[SIG_CTCP_RESPONSE], 0, command,
+	              parameters);
 }
 
 /******************************************************************************

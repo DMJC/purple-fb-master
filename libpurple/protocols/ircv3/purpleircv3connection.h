@@ -75,6 +75,32 @@ G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugi
 G_GNUC_INTERNAL GCancellable *purple_ircv3_connection_get_cancellable(PurpleIRCv3Connection *connection);
 
 /**
+ * purple_ircv3_connection_emit_ctcp_request:
+ * @connection: The instance.
+ * @command: The CTCP command.
+ * @parameters: (nullable): The CTCP parameters.
+ *
+ * Emits the [signal@Connection:ctcp-request] signal with the given @command
+ * and @parameters.
+ *
+ * Since: 3.0.0
+ */
+G_GNUC_INTERNAL void purple_ircv3_connection_emit_ctcp_request(PurpleIRCv3Connection *connection, const char *command, const char *parameters);
+
+/**
+ * purple_ircv3_connection_emit_ctcp_response:
+ * @connection: The instance.
+ * @command: The CTCP command.
+ * @parameters: (nullable): The CTCP parameters.
+ *
+ * Emits the [signal@Connection:ctcp-response] signal with the given @command
+ * and @parameters.
+ *
+ * Since: 3.0.0
+ */
+G_GNUC_INTERNAL void purple_ircv3_connection_emit_ctcp_response(PurpleIRCv3Connection *connection, const char *command, const char *parameters);
+
+/**
  * purple_ircv3_connection_writef:
  * @connection: The instance.
  * @format: The format string.
