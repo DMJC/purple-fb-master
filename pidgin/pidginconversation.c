@@ -26,6 +26,7 @@
 
 #include "pidginautoadjustment.h"
 #include "pidgincolor.h"
+#include "pidgincontactinfomenu.h"
 #include "pidginconversation.h"
 #include "pidgininfopane.h"
 
@@ -283,6 +284,37 @@ pidgin_conversation_process_message_contents_cb(G_GNUC_UNUSED GObject *self,
 	return g_markup_escape_text(contents, -1);
 }
 
+static void
+pidgin_conversation_member_list_context_cb(GtkGestureSingle *self,
+                                           G_GNUC_UNUSED gint n_press,
+                                           gdouble x,
+                                           gdouble y,
+                                           gpointer data)
+{
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
+	PurpleConversationMember *member = NULL;
+	GtkWidget *parent = NULL;
+	GtkListItem *item = data;
+
+	parent = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self));
+
+	member = gtk_list_item_get_item(item);
+	info = purple_conversation_member_get_contact_info(member);
+
+	/* ConversationMembers are a PurpleAccount for the libpurple user, or in
+	 * most cases are PurpleContact for all the other users. Because of this,
+	 * we have to do a runtime check to determine which one they are.
+	 */
+	if(PURPLE_IS_ACCOUNT(info)) {
+		account = PURPLE_ACCOUNT(info);
+	} else if(PURPLE_IS_CONTACT(info)) {
+		account = purple_contact_get_account(PURPLE_CONTACT(info));
+	}
+
+	pidgin_contact_info_menu_popup(info, account, parent, x, y);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -387,6 +419,8 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	                                        pidgin_conversation_query_tooltip_edited_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_conversation_process_message_contents_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_conversation_member_list_context_cb);
 }
 
 /******************************************************************************
