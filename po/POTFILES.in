@@ -272,10 +272,6 @@ pidgin/pidginpluginsdialog.c
 pidgin/pidginpluginsmenu.c
 pidgin/pidginpresenceicon.c
 pidgin/pidginprotocolchooser.c
-pidgin/pidginstatusbox.c
-pidgin/pidginstatuseditor.c
-pidgin/pidginstatusmanager.c
-pidgin/pidginstatusprimitivechooser.c
 pidgin/plugins/disco/gtkdisco.c
 pidgin/plugins/disco/resources/disco.ui
 pidgin/plugins/disco/xmppdisco.c
@@ -319,8 +315,6 @@ pidgin/resources/Prefs/vv.ui
 pidgin/resources/Protocols/chooser.ui
 pidgin/resources/Protocols/detailed-view.ui
 pidgin/resources/Roomlist/roomlist.ui
-pidgin/resources/Status/editor.ui
-pidgin/resources/Status/manager.ui
 pidgin/resources/Whiteboard/whiteboard.ui
 pidgin/resources/Xfer/xfer.ui
 pidgin/resources/gtk/menus.ui

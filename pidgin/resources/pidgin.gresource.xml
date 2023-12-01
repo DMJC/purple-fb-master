@@ -36,10 +36,6 @@
     <file compressed="true" preprocess="xml-stripblanks">Protocols/chooser.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Protocols/detailed-view.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Roomlist/roomlist.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Status/box.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Status/display.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Status/editor.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Status/manager.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Whiteboard/whiteboard.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Xfer/xfer.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file>
@@ -47,7 +43,6 @@
     <file compressed="true" preprocess="xml-stripblanks">channeljoindialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">contactlistitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">statusprimitivechooser.ui</file>
     <file>icons/16x16/status/pidgin-user-available.png</file>
     <file>icons/16x16/status/pidgin-user-away.png</file>
     <file>icons/16x16/status/pidgin-user-busy.png</file>

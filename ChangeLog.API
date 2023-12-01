@@ -1193,6 +1193,8 @@ version 3.0.0 (??/??/????):
 		* PidginStatusBoxItemType
 		* pidgin_status_box_add
 		* pidgin_status_box_add_separator
+		* pidgin_status_box_get_type
+		* pidgin_status_box_new
 		* pidgin_status_box_pulse_connecting
 		* pidgin_status_box_set_buddy_icon
 		* pidgin_status_box_set_network_available

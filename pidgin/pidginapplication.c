@@ -48,8 +48,6 @@
 #include "pidginpluginsdialog.h"
 #include "pidginpluginsmenu.h"
 #include "pidginprefs.h"
-#include "pidginstatuseditor.h"
-#include "pidginstatusmanager.h"
 #include "pidginui.h"
 
 struct _PidginApplication {
@@ -474,15 +472,6 @@ pidgin_application_new_message(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_application_new_status(G_GNUC_UNUSED GSimpleAction *simple,
-                              G_GNUC_UNUSED GVariant *parameter,
-                              G_GNUC_UNUSED gpointer data)
-{
-	GtkWidget *editor = pidgin_status_editor_new(NULL);
-	gtk_window_present_with_time(GTK_WINDOW(editor), GDK_CURRENT_TIME);
-}
-
-static void
 pidgin_application_online_help(G_GNUC_UNUSED GSimpleAction *simple,
                                G_GNUC_UNUSED GVariant *parameter,
                                G_GNUC_UNUSED gpointer data)
@@ -550,23 +539,6 @@ pidgin_application_room_list(G_GNUC_UNUSED GSimpleAction *simple,
 	pidgin_roomlist_dialog_show();
 }
 
-static void
-pidgin_application_show_status_manager(G_GNUC_UNUSED GSimpleAction *simple,
-                                       G_GNUC_UNUSED GVariant *parameter,
-                                       gpointer data)
-{
-	PidginApplication *application = data;
-	static GtkWidget *manager = NULL;
-
-	if(!GTK_IS_WIDGET(manager)) {
-		manager = pidgin_status_manager_new();
-		g_object_add_weak_pointer(G_OBJECT(manager), (gpointer)&manager);
-	}
-
-	pidgin_application_present_transient_window(application,
-	                                            GTK_WINDOW(manager));
-}
-
 static GActionEntry app_entries[] = {
 	{
 		.name = "about",
@@ -615,9 +587,6 @@ static GActionEntry app_entries[] = {
 		.name = "new-message",
 		.activate = pidgin_application_new_message,
 	}, {
-		.name = "new-status",
-		.activate = pidgin_application_new_status,
-	}, {
 		.name = "online-help",
 		.activate = pidgin_application_online_help,
 	}, {
@@ -629,9 +598,6 @@ static GActionEntry app_entries[] = {
 	}, {
 		.name = "room-list",
 		.activate = pidgin_application_room_list,
-	}, {
-		.name = "status-manager",
-		.activate = pidgin_application_show_status_manager,
 	}
 };
 
