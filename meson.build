@@ -288,9 +288,14 @@ Then rerun this Meson build
 	endif
 endif
 
+#######################################################################
+# Check for Xeme XMPP Library
+#######################################################################
+xeme = dependency('xeme')
+
 dependency('shoes', required : false)
 
-DEFAULT_PRPLS = ['bonjour', 'demo', 'gg', 'ircv3', 'jabber']
+DEFAULT_PRPLS = ['bonjour', 'demo', 'gg', 'ircv3', 'jabber', 'xmpp']
 
 dynamic_list = get_option('dynamic-prpls').split(',')
 if dynamic_list == ['all']
@@ -300,9 +305,11 @@ DYNAMIC_PRPLS = []
 foreach prpl : dynamic_list
 	if prpl == ''
 		# The list was empty; do nothing.
-	elif prpl == 'bonjour' and not enable_avahi
+	elif prpl == 'bonjour' and not enable_avahi and not xeme.found()
 		# Do nothing.
 	elif prpl == 'gg' and not libgadu.found()
+		# Do nothing.
+	elif prpl == 'xmpp' and not xeme.found()
 		# Do nothing.
 	else
 		DYNAMIC_PRPLS += [prpl]
@@ -314,7 +321,7 @@ DYNAMIC_DEMO = DYNAMIC_PRPLS.contains('demo')
 DYNAMIC_GG  = DYNAMIC_PRPLS.contains('gg')
 DYNAMIC_IRCV3 = DYNAMIC_PRPLS.contains('ircv3')
 DYNAMIC_JABBER = DYNAMIC_PRPLS.contains('jabber')
-
+DYNAMIC_XMPP = DYNAMIC_PRPLS.contains('xmpp')
 
 add_project_arguments(
     '-DPURPLE_DISABLE_DEPRECATED',
@@ -462,6 +469,7 @@ subdir('libpurple')
 subdir('purple-history')
 subdir('finch')
 subdir('pidgin')
+subdir('protocols')
 subdir('doc')
 subdir('po')
 
