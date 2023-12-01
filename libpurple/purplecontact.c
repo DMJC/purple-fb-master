@@ -18,8 +18,7 @@
 
 #include "purplecontact.h"
 
-#include "purpleenums.h"
-#include "util.h"
+#include "purpleconversationmanager.h"
 
 struct _PurpleContact {
 	PurpleContactInfo parent;
@@ -140,4 +139,38 @@ purple_contact_get_account(PurpleContact *contact) {
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
 	return contact->account;
+}
+
+PurpleConversation *
+purple_contact_find_dm(PurpleContact *contact, gboolean create) {
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *manager = NULL;
+	const char *name = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
+
+	manager = purple_conversation_manager_get_default();
+	name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact));
+	conversation = purple_conversation_manager_find_im(manager,
+	                                                   contact->account,
+	                                                   name);
+
+	if(PURPLE_IS_CONVERSATION(conversation)) {
+		return conversation;
+	}
+
+	if(create) {
+		conversation = g_object_new(
+			PURPLE_TYPE_CONVERSATION,
+			"account", contact->account,
+			"name", name,
+			"type", PurpleConversationTypeDM,
+			NULL);
+		purple_conversation_manager_register(manager, conversation);
+
+		/* The manager holds a reference, so we're just returning that. */
+		g_object_unref(conversation);
+	}
+
+	return conversation;
 }

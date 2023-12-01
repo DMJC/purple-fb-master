@@ -40,6 +40,7 @@ G_DECLARE_FINAL_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT,
                      PurpleContactInfo)
 
 #include "purpleaccount.h"
+#include "purpleconversation.h"
 
 /**
  * PurpleContact:
@@ -78,6 +79,25 @@ PurpleContact *purple_contact_new(PurpleAccount *account, const gchar *id);
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_contact_get_account(PurpleContact *contact);
+
+/**
+ * purple_contact_find_dm:
+ * @contact: The instance.
+ * @create: Whether or not to create a new DM if one can't be found.
+ *
+ * Attempts to find a conversation for @contact in the default
+ * [class@ContactManager] by using @contact's username.
+ *
+ * If no existing direct messages exists for @contact and @create is %TRUE,
+ * then a new direct message will be created and registered in the default
+ * [class@ConversationManager].
+ *
+ * Returns: (transfer none) (nullable): The conversation or %NULL.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleConversation *purple_contact_find_dm(PurpleContact *contact, gboolean create);
 
 G_END_DECLS
 

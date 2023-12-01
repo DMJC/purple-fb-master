@@ -191,13 +191,9 @@ static void
 pidgin_contact_list_activate_cb(GtkListView *self, guint position,
                                 G_GNUC_UNUSED gpointer data)
 {
-	PurpleAccount *account = NULL;
 	PurpleContactInfo *info = NULL;
-	PurpleConversation *conversation = NULL;
-	PurpleConversationManager *manager = NULL;
 	PurplePerson *person = NULL;
 	GtkSelectionModel *model = NULL;
-	const char *name = NULL;
 
 	model = gtk_list_view_get_model(self);
 
@@ -210,22 +206,7 @@ pidgin_contact_list_activate_cb(GtkListView *self, guint position,
 	}
 
 	info = purple_person_get_priority_contact_info(person);
-	account = purple_contact_get_account(PURPLE_CONTACT(info));
-	name = purple_contact_info_get_username(info);
-
-	manager = purple_conversation_manager_get_default();
-	conversation = purple_conversation_manager_find_im(manager, account, name);
-
-	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		conversation = g_object_new(
-			PURPLE_TYPE_CONVERSATION,
-			"account", account,
-			"name", name,
-			"type", PurpleConversationTypeDM,
-			NULL);
-		purple_conversation_manager_register(manager, conversation);
-		g_clear_object(&conversation);
-	}
+	purple_contact_find_dm(PURPLE_CONTACT(info), TRUE);
 
 	g_clear_object(&person);
 }
