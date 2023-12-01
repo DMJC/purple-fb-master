@@ -64,14 +64,14 @@ install_headers(IRCV3_HEADERS,
 ircv3_prpl = shared_library('ircv3', IRCV3_SOURCES + IRCV3_HEADERS + [ircv3_h],
 	c_args : ['-DPURPLE_IRCV3_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-IRCv3"'],
 	gnu_symbol_visibility : 'hidden',
-	dependencies : [libpurple_dep, glib, gio, hasl, ws2_32],
+	dependencies : [libpurple_dep, glib, gio, hasl],
 	install : true,
 	install_dir : PURPLE_PLUGINDIR)
 
 ircv3_dep = declare_dependency(
 	sources : [IRCV3_SOURCES, IRCV3_HEADERS],
 	include_directories : ircv3_includes,
-	dependencies : [libpurple_dep, glib, gio, hasl, ws2_32])
+	dependencies : [libpurple_dep, glib, gio, hasl])
 
 pkgconfig.generate(
 	# we purposely don't put the library here because you should not be
@@ -94,7 +94,7 @@ if get_option('introspection')
 
 	ircv3_introspection_stub = executable('ircv3generategir',
 		sources : 'ircv3generategir.c',
-		dependencies : [ircv3_dep, libpurple_dep, glib, gio, hasl, ws2_32, GPLUGIN_INTROSPECTION],
+		dependencies : [ircv3_dep, libpurple_dep, glib, gio, hasl, GPLUGIN_INTROSPECTION],
 		c_args : ['-DPURPLE_IRCV3_COMPILATION', f'-DPLUGIN_FILENAME="@plugin_filename@"'],
 		install : false)
 
