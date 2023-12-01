@@ -132,15 +132,15 @@ xmpp_protocol_new(void) {
 	          OPT_PROTO_MAIL_CHECK | OPT_PROTO_SLASH_COMMANDS_NATIVE |
 	          OPT_PROTO_PASSWORD_OPTIONAL;
 
-	return PURPLE_PROTOCOL(g_object_new(
+	return g_object_new(
 		XMPP_TYPE_PROTOCOL,
 		"id", XMPP_PROTOCOL_ID,
-		"name", "XMPP",
+		"name", "XMPP (Deprecated)",
 		"description", _("Extensible Messaging and Presence Protocol for IM, "
 		                 "voice, and video."),
 		"icon-name", "im-jabber",
 		"icon-resource-path", "/im/pidgin/libpurple/xmpp/icons",
 		"options", options,
 		NULL
-	));
+	);
 }
