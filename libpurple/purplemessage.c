@@ -37,7 +37,6 @@ struct _PurpleMessage {
 	char *recipient;
 
 	char *contents;
-	PurpleMessageContentType content_type;
 	gboolean action;
 
 	GDateTime *timestamp;
@@ -59,7 +58,6 @@ enum {
 	PROP_AUTHOR_NAME_COLOR,
 	PROP_RECIPIENT,
 	PROP_CONTENTS,
-	PROP_CONTENT_TYPE,
 	PROP_ACTION,
 	PROP_TIMESTAMP,
 	PROP_FLAGS,
@@ -113,9 +111,6 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 			break;
 		case PROP_CONTENTS:
 			g_value_set_string(value, purple_message_get_contents(message));
-			break;
-		case PROP_CONTENT_TYPE:
-			g_value_set_enum(value, purple_message_get_content_type(message));
 			break;
 		case PROP_ACTION:
 			g_value_set_boolean(value, purple_message_get_action(message));
@@ -172,9 +167,6 @@ purple_message_set_property(GObject *object, guint param_id,
 			break;
 		case PROP_CONTENTS:
 			purple_message_set_contents(message, g_value_get_string(value));
-			break;
-		case PROP_CONTENT_TYPE:
-			purple_message_set_content_type(message, g_value_get_enum(value));
 			break;
 		case PROP_ACTION:
 			purple_message_set_action(message, g_value_get_boolean(value));
@@ -318,19 +310,6 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		"contents", "Contents",
 		"The message text",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleMessage:content-type:
-	 *
-	 * The content-type of the message.
-	 *
-	 * Since: 3.0.0
-	 */
-	properties[PROP_CONTENT_TYPE] = g_param_spec_enum(
-		"content-type", "content-type",
-		"The content-type of the message.",
-		PURPLE_TYPE_MESSAGE_CONTENT_TYPE, PURPLE_MESSAGE_CONTENT_TYPE_PLAIN,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -635,25 +614,6 @@ purple_message_get_contents(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
 	return message->contents;
-}
-
-void
-purple_message_set_content_type(PurpleMessage *message,
-                                PurpleMessageContentType content_type)
-{
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	message->content_type = content_type;
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_CONTENT_TYPE]);
-}
-
-PurpleMessageContentType
-purple_message_get_content_type(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message),
-	                     PURPLE_MESSAGE_CONTENT_TYPE_PLAIN);
-
-	return message->content_type;
 }
 
 gboolean

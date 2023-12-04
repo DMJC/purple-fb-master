@@ -39,7 +39,6 @@ test_purple_message_notify_counter_cb(G_GNUC_UNUSED GObject *obj,
 static void
 test_purple_message_properties(void) {
 	PurpleMessage *message = NULL;
-	PurpleMessageContentType content_type = 0;
 	PurpleMessageFlags flags = 0;
 	GDateTime *timestamp = NULL;
 	GDateTime *timestamp1 = NULL;
@@ -76,7 +75,6 @@ test_purple_message_properties(void) {
 		"edited", TRUE,
 		"recipient", "pidgy",
 		"contents", "Now that is a big door",
-		"content-type", PURPLE_MESSAGE_CONTENT_TYPE_MARKDOWN,
 		"timestamp", timestamp,
 		"flags", PURPLE_MESSAGE_SYSTEM,
 		"error", error,
@@ -95,7 +93,6 @@ test_purple_message_properties(void) {
 		"edited-at", &edited_at1,
 		"recipient", &recipient,
 		"contents", &contents,
-		"content-type", &content_type,
 		"timestamp", &timestamp1,
 		"flags", &flags,
 		"error", &error1,
@@ -112,7 +109,6 @@ test_purple_message_properties(void) {
 	g_assert_nonnull(edited_at1);
 	g_assert_cmpstr(recipient, ==, "pidgy");
 	g_assert_cmpstr(contents, ==, "Now that is a big door");
-	g_assert_cmpint(content_type, ==, PURPLE_MESSAGE_CONTENT_TYPE_MARKDOWN);
 	g_assert_true(g_date_time_equal(timestamp1, timestamp));
 	g_assert_cmpint(flags, ==, PURPLE_MESSAGE_SYSTEM);
 	g_assert_error(error1, error->domain, error->code);

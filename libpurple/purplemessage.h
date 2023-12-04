@@ -51,15 +51,11 @@ G_BEGIN_DECLS
  * @PURPLE_MESSAGE_ERROR: Error message.
  * @PURPLE_MESSAGE_DELAYED: Delayed message.
  * @PURPLE_MESSAGE_RAW: "Raw" message - don't apply formatting.
- * @PURPLE_MESSAGE_IMAGES: Message contains images.
  * @PURPLE_MESSAGE_NOTIFY: Message is a notification.
  * @PURPLE_MESSAGE_NO_LINKIFY: Message should not be auto-linkified.
  *                             Since: 2.1.0
  * @PURPLE_MESSAGE_INVISIBLE: Message should not be displayed.
  *                            Since: 2.2.0
- * @PURPLE_MESSAGE_REMOTE_SEND: Message sent from another location, not an echo
- *                              of a local one.
- *                              Since: 2.12.0
  * @PURPLE_MESSAGE_FORWARDED: The message has been forward to the recipient.
  *                            Since: 3.0.0
  *
@@ -77,33 +73,11 @@ typedef enum /*< flags >*/
 	PURPLE_MESSAGE_ERROR        = 1 << 7,
 	PURPLE_MESSAGE_DELAYED      = 1 << 8,
 	PURPLE_MESSAGE_RAW          = 1 << 9,
-	PURPLE_MESSAGE_IMAGES       = 1 << 10,
 	PURPLE_MESSAGE_NOTIFY       = 1 << 11,
 	PURPLE_MESSAGE_NO_LINKIFY PURPLE_AVAILABLE_ENUMERATOR_IN_2_1 = 1 << 12,
 	PURPLE_MESSAGE_INVISIBLE PURPLE_AVAILABLE_ENUMERATOR_IN_2_2 = 1 << 13,
-	PURPLE_MESSAGE_REMOTE_SEND PURPLE_AVAILABLE_ENUMERATOR_IN_2_12 = 1 << 14,
 	PURPLE_MESSAGE_FORWARDED PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 1 << 15,
 } PurpleMessageFlags;
-
-/**
- * PurpleMessageContentType:
- * @PURPLE_MESSAGE_CONTENT_TYPE_PLAIN: The message has no formatting.
- * @PURPLE_MESSAGE_CONTENT_TYPE_HTML: The message is formatted in HTML.
- * @PURPLE_MESSAGE_CONTENT_TYPE_XHTML: The message is formatted in XHTML.
- * @PURPLE_MESSAGE_CONTENT_TYPE_MARKDOWN: The message is formatted in Markdown.
- *
- * The message formatting for the message.
- *
- * Since: 3.0.0
- */
-PURPLE_AVAILABLE_TYPE_IN_3_0
-typedef enum /*< prefix=PURPLE_MESSAGE_CONTENT_TYPE,underscore_name=PURPLE_MESSAGE_CONTENT_TYPE >*/
-{
-	PURPLE_MESSAGE_CONTENT_TYPE_PLAIN = 0,
-	PURPLE_MESSAGE_CONTENT_TYPE_HTML,
-	PURPLE_MESSAGE_CONTENT_TYPE_XHTML,
-	PURPLE_MESSAGE_CONTENT_TYPE_MARKDOWN,
-} PurpleMessageContentType;
 
 /**
  * PurpleMessage:
@@ -312,31 +286,6 @@ void purple_message_set_contents(PurpleMessage *message, const char *cont);
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_message_get_contents(PurpleMessage *message);
-
-/**
- * purple_message_set_content_type:
- * @message: The #PurpleMessage instance.
- * @content_type: The #PurpleMessageContentType value.
- *
- * Sets the content-type of @message to @content_type.
- *
- * Since: 3.0.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_message_set_content_type(PurpleMessage *message, PurpleMessageContentType content_type);
-
-/**
- * purple_message_get_content_type:
- * @message: The #PurpleMessage instance.
- *
- * Gets the content-type of @message.
- *
- * Returns: The #PurpleMessageContentType of @message.
- *
- * Since: 3.0.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleMessageContentType purple_message_get_content_type(PurpleMessage *message);
 
 /**
  * purple_message_is_empty:
