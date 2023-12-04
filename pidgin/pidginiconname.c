@@ -36,15 +36,13 @@ pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primitive,
 		case PURPLE_STATUS_AVAILABLE:
 			return "pidgin-user-available";
 			break;
-		case PURPLE_STATUS_UNAVAILABLE:
-			return "pidgin-user-unavailable";
-			break;
 		case PURPLE_STATUS_AWAY:
 			return "pidgin-user-away";
 			break;
 		case PURPLE_STATUS_INVISIBLE:
 			return "pidgin-user-invisible";
 			break;
+		case PURPLE_STATUS_UNAVAILABLE:
 		case PURPLE_STATUS_EXTENDED_AWAY:
 			return "pidgin-user-do-not-disturb";
 			break;
