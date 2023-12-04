@@ -401,6 +401,57 @@ purple_ircv3_connection_registration_complete_cb(PurpleIRCv3Connection *connecti
 }
 
 /******************************************************************************
+ * Default Handlers
+ *****************************************************************************/
+static gboolean
+purple_ircv3_connection_ctcp_request_default_handler(G_GNUC_UNUSED PurpleIRCv3Connection *connection,
+                                                     G_GNUC_UNUSED PurpleConversation *conversation,
+                                                     PurpleMessage *message,
+                                                     const char *command,
+                                                     const char *params)
+{
+	char *contents = NULL;
+
+	if(!purple_strempty(params)) {
+		contents = g_strdup_printf(_("requested CTCP %s: %s"), command,
+		                           params);
+	} else {
+		contents = g_strdup_printf(_("requested CTCP %s"),
+		                           command);
+	}
+
+	purple_message_set_contents(message, contents);
+
+	g_clear_pointer(&contents, g_free);
+
+	return FALSE;
+}
+
+static gboolean
+purple_ircv3_connection_ctcp_response_default_handler(G_GNUC_UNUSED PurpleIRCv3Connection *connection,
+                                                      G_GNUC_UNUSED PurpleConversation *conversation,
+                                                      PurpleMessage *message,
+                                                      const char *command,
+                                                      const char *params)
+{
+	char *contents = NULL;
+
+	if(!purple_strempty(params)) {
+		contents = g_strdup_printf(_("CTCP %s response: %s"), command,
+		                           params);
+	} else {
+		contents = g_strdup_printf(_("CTCP %s response was empty"),
+		                           command);
+	}
+
+	purple_message_set_contents(message, contents);
+
+	g_clear_pointer(&contents, g_free);
+
+	return FALSE;
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 static void
@@ -595,10 +646,19 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 	/**
 	 * PurpleIRCv3Connection::ctcp-request:
 	 * @connection: The instance.
+	 * @conversation: The conversation.
+	 * @message: The message.
 	 * @command: The CTCP command.
 	 * @params: (nullable): The CTCP parameters.
 	 *
 	 * This signal is emitted after a CTCP request has been received.
+	 *
+	 * Signal handlers should return TRUE if they fully handled the request and
+	 * do not want it echoed out to the user.
+	 *
+	 * Handlers may also modify the message. For example, the CTCP ACTION
+	 * command has its message contents replaced with just the CTCP parameters
+	 * and sets the [property@Message:action] to %TRUE and then returns %TRUE.
 	 *
 	 * Since: 3.0.0
 	 */
@@ -606,22 +666,32 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 		"ctcp-request",
 		G_OBJECT_CLASS_TYPE(klass),
 		G_SIGNAL_RUN_LAST,
+		G_CALLBACK(purple_ircv3_connection_ctcp_request_default_handler),
+		g_signal_accumulator_true_handled,
 		NULL,
 		NULL,
-		NULL,
-		NULL,
-		G_TYPE_NONE,
-		2,
+		G_TYPE_BOOLEAN,
+		4,
+		PURPLE_TYPE_CONVERSATION,
+		PURPLE_TYPE_MESSAGE,
 		G_TYPE_STRING,
 		G_TYPE_STRING);
 
 	/**
 	 * PurpleIRCv3Connection::ctcp-response:
 	 * @connection: The instance.
+	 * @conversation: The conversation.
+	 * @message: The message.
 	 * @command: The CTCP command.
 	 * @params: (nullable): The CTCP parameters.
 	 *
 	 * This signal is emitted after a CTCP response has been received.
+	 *
+	 * Signal handlers should return TRUE if they fully handled the response
+	 * and do not want it echoed out to the user.
+	 *
+	 * Handlers may modify @conversation or @message to depending on their
+	 * needs.
 	 *
 	 * Since: 3.0.0
 	 */
@@ -629,12 +699,14 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 		"ctcp-response",
 		G_OBJECT_CLASS_TYPE(klass),
 		G_SIGNAL_RUN_LAST,
+		G_CALLBACK(purple_ircv3_connection_ctcp_response_default_handler),
+		g_signal_accumulator_true_handled,
 		NULL,
 		NULL,
-		NULL,
-		NULL,
-		G_TYPE_NONE,
-		2,
+		G_TYPE_BOOLEAN,
+		4,
+		PURPLE_TYPE_CONVERSATION,
+		PURPLE_TYPE_MESSAGE,
 		G_TYPE_STRING,
 		G_TYPE_STRING);
 }
@@ -659,28 +731,44 @@ purple_ircv3_connection_register(GPluginNativePlugin *plugin) {
 	g_type_class_unref(hack);
 }
 
-void
+gboolean
 purple_ircv3_connection_emit_ctcp_request(PurpleIRCv3Connection *connection,
+                                          PurpleConversation *conversation,
+                                          PurpleMessage *message,
                                           const char *command,
                                           const char *parameters)
 {
-	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
-	g_return_if_fail(!purple_strempty(command));
+	gboolean ret = FALSE;
 
-	g_signal_emit(connection, signals[SIG_CTCP_REQUEST], 0, command,
-	              parameters);
+	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), FALSE);
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+	g_return_val_if_fail(!purple_strempty(command), FALSE);
+
+	g_signal_emit(connection, signals[SIG_CTCP_REQUEST], 0, conversation,
+	              message, command, parameters, &ret);
+
+	return ret;
 }
 
-void
+gboolean
 purple_ircv3_connection_emit_ctcp_response(PurpleIRCv3Connection *connection,
+                                           PurpleConversation *conversation,
+                                           PurpleMessage *message,
                                            const char *command,
                                            const char *parameters)
 {
-	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
-	g_return_if_fail(!purple_strempty(command));
+	gboolean ret = FALSE;
 
-	g_signal_emit(connection, signals[SIG_CTCP_RESPONSE], 0, command,
-	              parameters);
+	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), FALSE);
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+	g_return_val_if_fail(!purple_strempty(command), FALSE);
+
+	g_signal_emit(connection, signals[SIG_CTCP_RESPONSE], 0, conversation,
+	              message, command, parameters, &ret);
+
+	return ret;
 }
 
 /******************************************************************************

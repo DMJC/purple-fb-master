@@ -229,9 +229,9 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	g_date_time_unref(dt);
 
 	/* Check if this is a CTCP message. */
-	purple_ircv3_ctcp_handle(connection, message);
-
-	purple_conversation_write_message(conversation, message);
+	if(!purple_ircv3_ctcp_handle(connection, conversation, message)) {
+		purple_conversation_write_message(conversation, message);
+	}
 
 	g_clear_pointer(&nick, g_free);
 	g_clear_object(&message);

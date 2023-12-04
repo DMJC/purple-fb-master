@@ -34,15 +34,18 @@ G_BEGIN_DECLS
 
 /**
  * purple_ircv3_ctcp_handle: (skip)
- * @connection: The connection instance.
- * @message: The message instance.
+ * @connection: The connection.
+ * @conversation: The conversation.
+ * @message: The message.
  *
  * Check if @message is a CTCP message and handles it accordingly.
+ *
+ * Returns: %TRUE if the message was a CTCP message and %FALSE otherwise.
  *
  * Since: 3.0.0
  */
 G_GNUC_INTERNAL
-void purple_ircv3_ctcp_handle(PurpleIRCv3Connection *connection, PurpleMessage *message);
+gboolean purple_ircv3_ctcp_handle(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message);
 
 G_END_DECLS
 

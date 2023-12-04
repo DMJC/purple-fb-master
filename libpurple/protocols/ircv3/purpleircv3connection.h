@@ -65,28 +65,46 @@ G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugi
 /**
  * purple_ircv3_connection_emit_ctcp_request:
  * @connection: The instance.
+ * @conversation: The conversation.
+ * @message: The message.
  * @command: The CTCP command.
  * @parameters: (nullable): The CTCP parameters.
  *
  * Emits the [signal@Connection:ctcp-request] signal with the given @command
- * and @parameters.
+ * and @parameters which originated from @message in @conversation.
+ *
+ * The message may be modified by a signal handler. For example, the default
+ * handler will output an internationalized string that describes what command
+ * was requested.
+ *
+ * Returns: %TRUE if the request was handled and the message should not be
+ *          echoed, otherwise %FALSE.
  *
  * Since: 3.0.0
  */
-G_GNUC_INTERNAL void purple_ircv3_connection_emit_ctcp_request(PurpleIRCv3Connection *connection, const char *command, const char *parameters);
+G_GNUC_INTERNAL gboolean purple_ircv3_connection_emit_ctcp_request(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message, const char *command, const char *parameters);
 
 /**
  * purple_ircv3_connection_emit_ctcp_response:
  * @connection: The instance.
+ * @conversation: The conversation.
+ * @message: The message.
  * @command: The CTCP command.
  * @parameters: (nullable): The CTCP parameters.
  *
  * Emits the [signal@Connection:ctcp-response] signal with the given @command
- * and @parameters.
+ * and @parameters which originated from @message in @conversation.
+ *
+ * The message may be modified by a signal handler. For example, the default
+ * handler will output an internationalized string that describes what the
+ * response was.
+ *
+ * Returns: %TRUE if the request was handled and the message should not be
+ *          echoed, otherwise %FALSE.
  *
  * Since: 3.0.0
  */
-G_GNUC_INTERNAL void purple_ircv3_connection_emit_ctcp_response(PurpleIRCv3Connection *connection, const char *command, const char *parameters);
+G_GNUC_INTERNAL gboolean purple_ircv3_connection_emit_ctcp_response(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message, const char *command, const char *parameters);
 
 /**
  * purple_ircv3_connection_writef:
