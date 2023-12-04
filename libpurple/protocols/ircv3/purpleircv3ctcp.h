@@ -47,6 +47,17 @@ G_BEGIN_DECLS
 G_GNUC_INTERNAL
 gboolean purple_ircv3_ctcp_handle(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message);
 
+/**
+ * purple_ircv3_ctcp_add_default_handlers: (skip)
+ * @connection: The connection.
+ *
+ * Adds handlers for the CTCP commands that we support directly.
+ *
+ * Since: 3.0.0
+ */
+G_GNUC_INTERNAL
+void purple_ircv3_ctcp_add_default_handlers(PurpleIRCv3Connection *connection);
+
 G_END_DECLS
 
 #endif /* PURPLE_IRCV3_CTCP_H */

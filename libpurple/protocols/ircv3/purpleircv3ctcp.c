@@ -21,6 +21,66 @@
 #include "purpleircv3ctcp.h"
 
 #include "purpleircv3constants.h"
+#include "purpleircv3source.h"
+
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static void
+purple_ircv3_ctcp_respond(PurpleIRCv3Connection *connection,
+                          PurpleMessage *message,
+                          const char *response)
+{
+	const char *author = NULL;
+	char *nick = NULL;
+
+	author = purple_message_get_author(message);
+	purple_ircv3_source_parse(author, &nick, NULL, NULL);
+	if(!purple_strempty(nick)) {
+		PurpleContact *contact = NULL;
+
+		contact = purple_ircv3_connection_find_or_create_contact(connection,
+		                                                         nick);
+
+		if(PURPLE_IS_CONTACT(contact)) {
+			const char *id = NULL;
+
+			id = purple_contact_info_get_id(PURPLE_CONTACT_INFO(contact));
+
+			purple_ircv3_connection_writef(connection, "%s %s :%s",
+			                               PURPLE_IRCV3_MSG_NOTICE,
+			                               id,
+			                               response);
+		}
+	}
+
+	g_clear_pointer(&nick, g_free);
+}
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static gboolean
+purple_ircv3_ctcp_handler(PurpleIRCv3Connection *connection,
+                          PurpleConversation *conversation,
+                          PurpleMessage *message,
+                          const char *command,
+                          const char *params,
+                          G_GNUC_UNUSED gpointer data)
+{
+	if(purple_strequal(command, PURPLE_IRCV3_CTCP_ACTION)) {
+		purple_message_set_contents(message, params);
+		purple_message_set_action(message, TRUE);
+
+		purple_conversation_write_message(conversation, message);
+
+		return TRUE;
+	} else if(purple_strequal(command, PURPLE_IRCV3_CTCP_VERSION)) {
+		purple_ircv3_ctcp_respond(connection, message, "Purple3 IRCv3");
+	}
+
+	return FALSE;
+}
 
 /******************************************************************************
  * Internal API
@@ -87,4 +147,10 @@ purple_ircv3_ctcp_handle(PurpleIRCv3Connection *connection,
 	g_clear_pointer(&params, g_free);
 
 	return ret;
+}
+
+void
+purple_ircv3_ctcp_add_default_handlers(PurpleIRCv3Connection *connection) {
+	g_signal_connect(connection, "ctcp-request",
+	                 G_CALLBACK(purple_ircv3_ctcp_handler), NULL);
 }

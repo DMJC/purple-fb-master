@@ -22,6 +22,7 @@
 
 #include "purpleircv3constants.h"
 #include "purpleircv3core.h"
+#include "purpleircv3ctcp.h"
 #include "purpleircv3formatting.h"
 #include "purpleircv3parser.h"
 
@@ -295,6 +296,9 @@ purple_ircv3_connection_caps_done_cb(G_GNUC_UNUSED PurpleIRCv3Capabilities *caps
 	priv->registered = TRUE;
 
 	g_signal_emit(connection, signals[SIG_REGISTRATION_COMPLETE], 0);
+
+	/* Add our supported CTCP commands. */
+	purple_ircv3_ctcp_add_default_handlers(connection);
 
 	/* Now that registration is complete, rejoin any channels that the
 	 * conversation manager has for us.
