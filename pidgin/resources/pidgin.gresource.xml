@@ -46,7 +46,6 @@
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
     <file>icons/16x16/status/pidgin-user-available.png</file>
     <file>icons/16x16/status/pidgin-user-away.png</file>
-    <file>icons/16x16/status/pidgin-user-busy.png</file>
     <file>icons/16x16/status/pidgin-user-do-not-disturb.png</file>
     <file>icons/16x16/status/pidgin-user-invisible.png</file>
     <file>icons/16x16/status/pidgin-user-offline.png</file>
