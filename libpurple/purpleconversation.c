@@ -134,10 +134,10 @@ purple_conversation_set_account(PurpleConversation *conv,
 
 	/* Remove the account from the conversation if it's a member. */
 	if(PURPLE_IS_ACCOUNT(priv->account)) {
-		member = purple_conversation_find_member(conv,
-		                                         PURPLE_CONTACT_INFO(priv->account));
 		if(PURPLE_IS_CONVERSATION_MEMBER(member)) {
-			purple_conversation_remove_member(conv, member, FALSE, NULL);
+			purple_conversation_remove_member(conv,
+			                                  PURPLE_CONTACT_INFO(priv->account),
+			                                  FALSE, NULL);
 		}
 	}
 
@@ -1916,32 +1916,29 @@ purple_conversation_add_member(PurpleConversation *conversation,
 
 gboolean
 purple_conversation_remove_member(PurpleConversation *conversation,
-                                  PurpleConversationMember *member,
-                                  gboolean announce, const char *message)
+                                  PurpleContactInfo *info, gboolean announce,
+                                  const char *message)
 {
+	PurpleConversationMember *member = NULL;
 	PurpleConversationPrivate *priv = NULL;
 	guint position = 0;
 
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MEMBER(member), FALSE);
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(!g_list_store_find(priv->members, member, &position)) {
+	if(!purple_conversation_has_member(conversation, info, &position)) {
 		return FALSE;
 	}
 
-	/* We need to ref member to make sure it stays around long enough for us
-	 * to emit the signal.
-	 */
-	g_object_ref(member);
+	priv = purple_conversation_get_instance_private(conversation);
+	member = g_list_model_get_item(G_LIST_MODEL(priv->members), position);
 
 	g_list_store_remove(priv->members, position);
 
 	g_signal_emit(conversation, signals[SIG_MEMBER_REMOVED], 0, member,
 	              announce, message);
 
-	g_object_unref(member);
+	g_clear_object(&member);
 
 	return TRUE;
 }

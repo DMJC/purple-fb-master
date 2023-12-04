@@ -870,12 +870,12 @@ PurpleConversationMember *purple_conversation_add_member(PurpleConversation *con
 /**
  * purple_conversation_remove_member:
  * @conversation: The instance.
- * @member: The [class@Purple.ConversationMember] to remove.
+ * @info: The [class@Purple.ContactInfo] of the person leaving.
  * @announce: Whether or not this removal should be announced.
  * @message: (nullable): An optional message for the announcement.
  *
- * Attempts to remove @member from the collection of members in @conversation.
- * If found, @member is removed and the
+ * Attempts to remove @info from the collection of members in @conversation.
+ * If found, @info is removed and the
  * [signal@Purple.Conversation::member-removed] signal is emitted with
  * @announce and @message as parameters.
  *
@@ -888,7 +888,7 @@ PurpleConversationMember *purple_conversation_add_member(PurpleConversation *con
  * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
-gboolean purple_conversation_remove_member(PurpleConversation *conversation, PurpleConversationMember *member, gboolean announce, const char *message);
+gboolean purple_conversation_remove_member(PurpleConversation *conversation, PurpleContactInfo *info, gboolean announce, const char *message);
 
 /**
  * purple_conversation_get_messages:

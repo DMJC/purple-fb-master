@@ -237,6 +237,7 @@ static void
 test_purple_conversation_members_add_remove(void) {
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *info = NULL;
+	PurpleContactInfo *member_info = NULL;
 	PurpleConversation *conversation = NULL;
 	PurpleConversationManager *conversation_manager = NULL;
 	PurpleConversationMember *member = NULL;
@@ -292,8 +293,9 @@ test_purple_conversation_members_add_remove(void) {
 	g_assert_true(member1 == member);
 
 	/* Now remove the member and verify the signal was called. */
-	removed = purple_conversation_remove_member(conversation, member, TRUE,
-	                                            "announcement message");
+	member_info = purple_conversation_member_get_contact_info(member);
+	removed = purple_conversation_remove_member(conversation, member_info,
+	                                            TRUE, "announcement message");
 	g_assert_true(removed);
 	g_assert_cmpint(removed_called, ==, 1);
 
@@ -303,8 +305,9 @@ test_purple_conversation_members_add_remove(void) {
 	/* Try to remove the member again and verify that nothing was removed and
 	 * that the signal wasn't emitted.
 	 */
-	removed = purple_conversation_remove_member(conversation, member, TRUE,
-	                                            "announcement message");
+	member_info = purple_conversation_member_get_contact_info(member);
+	removed = purple_conversation_remove_member(conversation, member_info,
+	                                            TRUE, "announcement message");
 	g_assert_false(removed);
 	g_assert_cmpint(removed_called, ==, 1);
 
