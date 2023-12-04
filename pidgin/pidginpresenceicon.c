@@ -154,7 +154,7 @@ pidgin_presence_icon_class_init(PidginPresenceIconClass *klass) {
 	properties[PROP_FALLBACK] = g_param_spec_string(
 		"fallback", "fallback",
 		"The name of the icon to use as a fallback",
-		"user-invisible",
+		"pidgin-user-invisible",
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
 	/**
