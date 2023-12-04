@@ -50,6 +50,17 @@ G_DECLARE_INTERFACE(PurpleProtocolContacts,
  */
 
 /**
+ * PURPLE_PROTOCOL_CONTACTS_DOMAIN:
+ *
+ * A domain for errors from the [class@ProtocolContacts] API.
+ *
+ * Since: 3.0.0
+ */
+#define PURPLE_PROTOCOL_CONTACTS_DOMAIN \
+	g_quark_from_static_string("purple-protocol-contacts") \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
+
+/**
  * PurpleProtocolContactsInterface:
  *
  * This interface defines the behavior for interacting with contacts at the
@@ -63,6 +74,9 @@ struct _PurpleProtocolContactsInterface {
 	GTypeInterface parent;
 
 	/*< public >*/
+	void (*search_async)(PurpleProtocolContacts *protocol_contacts, PurpleAccount *account, const char *text, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	GListModel *(*search_finish)(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
+
 	void (*get_profile_async)(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	char *(*get_profile_finish)(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
 
@@ -74,6 +88,44 @@ struct _PurpleProtocolContactsInterface {
 };
 
 G_BEGIN_DECLS
+
+/**
+ * purple_protocol_contacts_search_async:
+ * @protocol_contacts: The instance.
+ * @account: The [class@Account] to search under.
+ * @text: The text to search for which must not be an empty string.
+ * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request is
+ *            satisfied.
+ * @data: User data to pass to @callback.
+ *
+ * Starts the process of searching for contacts using @account that match
+ * @text.
+ *
+ * Call [method@ProtocolContacts.search_finish] to get the results.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_protocol_contacts_search_async(PurpleProtocolContacts *protocol_contacts, PurpleAccount *account, const char *text, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_protocol_contacts_search_finish:
+ * @search: The instance.
+ * @result: The [iface@Gio.AsyncResult] from the previous
+ *          [method@ProtocolContacts.search_async] call.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * Finishes a previous call to [method@ProtocolContacts.search_async] and
+ * gets the result.
+ *
+ * Returns: (transfer full): A [iface@Gio.ListModel] of the matched contacts or
+ *          %NULL with @error set on error.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+GListModel *purple_protocol_contacts_search_finish(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
 
 /**
  * purple_protocol_contacts_get_profile_async:

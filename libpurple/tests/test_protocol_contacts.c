@@ -85,6 +85,48 @@ test_purple_protocol_contacts_empty_class_init(G_GNUC_UNUSED TestPurpleProtocolC
  * TestProtocolContactsEmpty Tests
  *****************************************************************************/
 static void
+test_purple_protocol_contacts_empty_search_async(void) {
+	if(g_test_subprocess()) {
+		PurpleAccount *account = NULL;
+		PurpleProtocolContacts *protocol = NULL;
+
+		protocol = g_object_new(test_purple_protocol_contacts_empty_get_type(),
+		                        NULL);
+
+		account = purple_account_new("test", "test");
+		purple_protocol_contacts_search_async(protocol, account, "alice", NULL,
+		                                      NULL, NULL);
+
+		g_clear_object(&account);
+		g_clear_object(&protocol);
+	}
+
+	g_test_trap_subprocess(NULL, 0, 0);
+	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolContactsEmpty*search_async*");
+}
+
+static void
+test_purple_protocol_contacts_empty_search_finish(void) {
+	if(g_test_subprocess()) {
+		PurpleProtocolContacts *protocol = NULL;
+		GTask *task = NULL;
+
+		protocol = g_object_new(test_purple_protocol_contacts_empty_get_type(),
+		                        NULL);
+
+		task = g_task_new(protocol, NULL, NULL, NULL);
+		purple_protocol_contacts_search_finish(protocol, G_ASYNC_RESULT(task),
+		                                       NULL);
+
+		g_clear_object(&task);
+		g_clear_object(&protocol);
+	}
+
+	g_test_trap_subprocess(NULL, 0, 0);
+	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolContactsEmpty*search_finish*");
+}
+
+static void
 test_purple_protocol_contacts_empty_get_profile_async(void) {
 	if(g_test_subprocess()) {
 		PurpleContactInfo *info = NULL;
@@ -178,9 +220,52 @@ struct _TestPurpleProtocolContacts {
 
 	gboolean should_error;
 
+	guint search_async;
+	guint search_finish;
 	guint get_profile_async;
 	guint get_profile_finish;
 };
+
+static void
+test_purple_protocol_contacts_search_async(PurpleProtocolContacts *protocol_contacts,
+                                           G_GNUC_UNUSED PurpleAccount *account,
+                                           G_GNUC_UNUSED const char *text,
+                                           GCancellable *cancellable,
+                                           GAsyncReadyCallback callback,
+                                           gpointer data)
+{
+	TestPurpleProtocolContacts *protocol = NULL;
+	GTask *task = NULL;
+
+	protocol = TEST_PURPLE_PROTOCOL_CONTACTS(protocol_contacts);
+	protocol->search_async += 1;
+
+	task = g_task_new(protocol_contacts, cancellable, callback, data);
+	if(protocol->should_error) {
+		GError *error = g_error_new_literal(TEST_PURPLE_PROTOCOL_CONTACTS_DOMAIN,
+		                                    0, "error");
+		g_task_return_error(task, error);
+	} else {
+		g_task_return_pointer(task,
+		                      g_list_store_new(PURPLE_TYPE_CONTACT_INFO),
+		                      g_object_unref);
+	}
+
+	g_clear_object(&task);
+}
+
+static GListModel *
+test_purple_protocol_contacts_search_finish(PurpleProtocolContacts *protocol_contacts,
+                                            GAsyncResult *result,
+                                            GError **error)
+{
+	TestPurpleProtocolContacts *protocol = NULL;
+
+	protocol = TEST_PURPLE_PROTOCOL_CONTACTS(protocol_contacts);
+	protocol->search_finish += 1;
+
+	return g_task_propagate_pointer(G_TASK(result), error);
+}
 
 static void
 test_purple_protocol_contacts_get_profile_async(PurpleProtocolContacts *r,
@@ -240,6 +325,9 @@ test_purple_protocol_contacts_get_menu(G_GNUC_UNUSED PurpleProtocolContacts *pro
 
 static void
 test_purple_protocol_contacts_iface_init(PurpleProtocolContactsInterface *iface) {
+	iface->search_async = test_purple_protocol_contacts_search_async;
+	iface->search_finish = test_purple_protocol_contacts_search_finish;
+
 	iface->get_profile_async = test_purple_protocol_contacts_get_profile_async;
 	iface->get_profile_finish = test_purple_protocol_contacts_get_profile_finish;
 
@@ -255,6 +343,8 @@ G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolContacts, test_purple_protocol_contact
 static void
 test_purple_protocol_contacts_init(TestPurpleProtocolContacts *protocol_contacts)
 {
+	protocol_contacts->search_async = 0;
+	protocol_contacts->search_finish = 0;
 	protocol_contacts->get_profile_async = 0;
 	protocol_contacts->get_profile_finish = 0;
 }
@@ -266,6 +356,91 @@ test_purple_protocol_contacts_class_init(G_GNUC_UNUSED TestPurpleProtocolContact
 
 /******************************************************************************
  * TestProtocolContacts search test
+ *****************************************************************************/
+static void
+test_purple_protocol_contacts_search_cb(GObject *obj, GAsyncResult *res,
+                                        gpointer data)
+{
+	TestPurpleProtocolContacts *test_protocol = NULL;
+	PurpleAccount *account = data;
+	PurpleProtocolContacts *protocol = NULL;
+	GError *error = NULL;
+	GListModel *result = NULL;
+
+	test_protocol = TEST_PURPLE_PROTOCOL_CONTACTS(obj);
+	protocol = PURPLE_PROTOCOL_CONTACTS(obj);
+
+	result = purple_protocol_contacts_search_finish(protocol, res, &error);
+	if(test_protocol->should_error) {
+		g_assert_error(error, TEST_PURPLE_PROTOCOL_CONTACTS_DOMAIN, 0);
+		g_clear_error(&error);
+		g_assert_null(result);
+	} else {
+		GType type = G_TYPE_INVALID;
+		g_assert_no_error(error);
+		g_assert_true(G_IS_LIST_MODEL(result));
+
+		type = g_list_model_get_item_type(result);
+		g_assert_true(g_type_is_a(type, PURPLE_TYPE_CONTACT_INFO));
+		g_clear_object(&result);
+	}
+
+	g_clear_object(&account);
+
+	g_main_loop_quit(loop);
+}
+
+static gboolean
+test_purple_protocol_contacts_search_idle(gpointer data) {
+	PurpleProtocolContacts *protocol = data;
+	PurpleAccount *account = NULL;
+
+	account = purple_account_new("test", "test");
+
+	purple_protocol_contacts_search_async(protocol, account, "bob", NULL,
+	                                      test_purple_protocol_contacts_search_cb,
+	                                      account);
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+test_purple_protocol_contacts_search_normal(void) {
+	TestPurpleProtocolContacts *protocol = NULL;
+
+	protocol = g_object_new(test_purple_protocol_contacts_get_type(), NULL);
+
+	g_idle_add(test_purple_protocol_contacts_search_idle, protocol);
+	g_timeout_add_seconds(10, test_purple_protocol_contacts_timeout_cb, loop);
+
+	g_main_loop_run(loop);
+
+	g_assert_cmpuint(protocol->search_async, ==, 1);
+	g_assert_cmpuint(protocol->search_finish, ==, 1);
+
+	g_clear_object(&protocol);
+}
+
+static void
+test_purple_protocol_contacts_search_error(void) {
+	TestPurpleProtocolContacts *protocol = NULL;
+
+	protocol = g_object_new(test_purple_protocol_contacts_get_type(), NULL);
+	protocol->should_error = TRUE;
+
+	g_idle_add(test_purple_protocol_contacts_search_idle, protocol);
+	g_timeout_add_seconds(10, test_purple_protocol_contacts_timeout_cb, loop);
+
+	g_main_loop_run(loop);
+
+	g_assert_cmpuint(protocol->search_async, ==, 1);
+	g_assert_cmpuint(protocol->search_finish, ==, 1);
+
+	g_clear_object(&protocol);
+}
+
+/******************************************************************************
+ * TestProtocolContacts get profile test
  *****************************************************************************/
 static void
 test_purple_protocol_contacts_get_profile_cb(GObject *obj, GAsyncResult *res,
@@ -401,6 +576,10 @@ main(int argc, char **argv) {
 
 	loop = g_main_loop_new(NULL, FALSE);
 
+	g_test_add_func("/protocol-contacts/empty/search-async",
+	                test_purple_protocol_contacts_empty_search_async);
+	g_test_add_func("/protocol-contacts/empty/search-finish",
+	                test_purple_protocol_contacts_empty_search_finish);
 	g_test_add_func("/protocol-contacts/empty/get-profile-async",
 	                test_purple_protocol_contacts_empty_get_profile_async);
 	g_test_add_func("/protocol-contacts/empty/get-profile-finish",
@@ -410,6 +589,10 @@ main(int argc, char **argv) {
 	g_test_add_func("/protocol-contacts/empty/get-menu",
 	                test_purple_protocol_contacts_empty_get_menu);
 
+	g_test_add_func("/protocol-contacts/normal/search-async-normal",
+	                test_purple_protocol_contacts_search_normal);
+	g_test_add_func("/protocol-contacts/normal/search-async-error",
+	                test_purple_protocol_contacts_search_error);
 	g_test_add_func("/protocol-contacts/normal/get-profile-normal",
 	                test_purple_protocol_contacts_get_profile_normal);
 	g_test_add_func("/protocol-contacts/normal/get-profile-error",
