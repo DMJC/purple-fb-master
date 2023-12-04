@@ -46,6 +46,8 @@ typedef struct {
 
 	gchar *id;
 
+	GCancellable *cancellable;
+
 	PurpleProtocol *protocol;     /* The protocol.                     */
 	PurpleConnectionFlags flags;  /* Connection flags.                 */
 
@@ -81,6 +83,7 @@ typedef struct {
 enum {
 	PROP_0,
 	PROP_ID,
+	PROP_CANCELLABLE,
 	PROP_PROTOCOL,
 	PROP_FLAGS,
 	PROP_STATE,
@@ -715,6 +718,12 @@ purple_connection_default_disconnect(PurpleConnection *connection,
 
 	priv = purple_connection_get_instance_private(connection);
 
+	/* Tell everyone we're shutting down. */
+	if(G_IS_CANCELLABLE(priv->cancellable)) {
+		g_cancellable_cancel(priv->cancellable);
+		g_clear_object(&priv->cancellable);
+	}
+
 	purple_protocol_close(priv->protocol, connection);
 
 	return TRUE;
@@ -773,6 +782,10 @@ purple_connection_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_ID:
 			g_value_set_string(value, purple_connection_get_id(connection));
 			break;
+		case PROP_CANCELLABLE:
+			g_value_set_object(value,
+			                   purple_connection_get_cancellable(connection));
+			break;
 		case PROP_PROTOCOL:
 			g_value_set_object(value,
 			                   purple_connection_get_protocol(connection));
@@ -803,6 +816,12 @@ purple_connection_get_property(GObject *obj, guint param_id, GValue *value,
 
 static void
 purple_connection_init(PurpleConnection *connection) {
+	PurpleConnectionPrivate *priv = NULL;
+
+	priv = purple_connection_get_instance_private(connection);
+
+	priv->cancellable = g_cancellable_new();
+
 	purple_connection_set_state(connection, PURPLE_CONNECTION_STATE_CONNECTING);
 	connections = g_list_append(connections, connection);
 }
@@ -855,6 +874,8 @@ purple_connection_finalize(GObject *object) {
 	g_free(priv->display_name);
 	g_free(priv->id);
 
+	g_clear_object(&priv->cancellable);
+
 	G_OBJECT_CLASS(purple_connection_parent_class)->finalize(object);
 }
 
@@ -876,6 +897,22 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 		"The identifier of the account",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConnection:cancellable:
+	 *
+	 * A [class@Gio.Cancellable] to be used with the connection.
+	 *
+	 * This can be passed function that require a cancellable for the
+	 * connection.
+	 *
+	 * Since: 3.0.0
+	 */
+	properties[PROP_CANCELLABLE] = g_param_spec_object(
+		"cancellable", "cancellable",
+		"A cancellable for the connection.",
+		G_TYPE_CANCELLABLE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_PROTOCOL] = g_param_spec_object(
 		"protocol", "Protocol",
@@ -1033,6 +1070,17 @@ purple_connection_disconnect(PurpleConnection *connection, GError **error) {
 	purple_debug_info("connection", "Destroying connection %p", connection);
 
 	return ret;
+}
+
+GCancellable *
+purple_connection_get_cancellable(PurpleConnection *connection) {
+	PurpleConnectionPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), NULL);
+
+	priv = purple_connection_get_instance_private(connection);
+
+	return priv->cancellable;
 }
 
 /**************************************************************************

@@ -63,18 +63,6 @@ struct _PurpleIRCv3ConnectionClass {
 G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugin);
 
 /**
- * purple_ircv3_connection_get_cancellable: (skip)
- * @connection: The instance.
- *
- * This is a private method that is not exposed externally.
- *
- * Gets the cancellable for @connection.
- *
- * Since: 3.0.0
- */
-G_GNUC_INTERNAL GCancellable *purple_ircv3_connection_get_cancellable(PurpleIRCv3Connection *connection);
-
-/**
  * purple_ircv3_connection_emit_ctcp_request:
  * @connection: The instance.
  * @command: The CTCP command.

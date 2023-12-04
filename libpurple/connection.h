@@ -390,6 +390,19 @@ PURPLE_AVAILABLE_IN_3_0
 void purple_connection_set_password(PurpleConnection *connection, const char *password);
 
 /**
+ * purple_connection_get_cancellable:
+ * @connection: The instance.
+ *
+ * Gets the cancellable that should be used with @connection.
+ *
+ * Returns: (transfer none): The cancellable.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+GCancellable *purple_connection_get_cancellable(PurpleConnection *connection);
+
+/**
  * purple_connection_get_active_chats:
  * @gc: The connection.
  *
