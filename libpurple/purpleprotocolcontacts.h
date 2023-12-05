@@ -111,7 +111,7 @@ void purple_protocol_contacts_search_async(PurpleProtocolContacts *protocol_cont
 
 /**
  * purple_protocol_contacts_search_finish:
- * @search: The instance.
+ * @protocol_contacts: The instance.
  * @result: The [iface@Gio.AsyncResult] from the previous
  *          [method@ProtocolContacts.search_async] call.
  * @error: Return address for a #GError, or %NULL.
