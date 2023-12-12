@@ -520,7 +520,7 @@ gboolean purple_message_get_delivered(PurpleMessage *message);
  * @delivered is %TRUE it will be set to the current time, otherwise it will be
  * unset.
  *
- * Since: 3.0.0.
+ * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_delivered(PurpleMessage *message, gboolean delivered);

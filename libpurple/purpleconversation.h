@@ -215,7 +215,7 @@ const char *purple_conversation_get_id(PurpleConversation *conversation);
  *
  * Returns: The [enum@ConversationType] of @conversation.
  *
- * Since: 3.0.0.
+ * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversationType purple_conversation_get_conversation_type(PurpleConversation *conversation);

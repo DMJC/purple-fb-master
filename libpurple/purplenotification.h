@@ -36,7 +36,7 @@ G_BEGIN_DECLS
 /**
  * PurpleNotificationType:
  *
- * Since: 3.0.0.
+ * Since: 3.0.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
@@ -95,7 +95,7 @@ PurpleNotification *purple_notification_new(PurpleNotificationType type, PurpleA
  *
  * Returns: (transfer full): The new notification.
  *
- * Since: 3.0.0.
+ * Since: 3.0.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new_from_add_contact_request(PurpleAddContactRequest *request);
