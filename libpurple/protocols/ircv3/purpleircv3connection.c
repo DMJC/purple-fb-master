@@ -18,6 +18,8 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <birb.h>
+
 #include "purpleircv3connection.h"
 
 #include "purpleircv3constants.h"
@@ -49,7 +51,7 @@ typedef struct {
 	gboolean registered;
 
 	GDataInputStream *input;
-	PurpleQueuedOutputStream *output;
+	GOutputStream *output;
 
 	PurpleIRCv3Parser *parser;
 
@@ -208,15 +210,15 @@ purple_ircv3_connection_write_cb(GObject *source, GAsyncResult *result,
                                  gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
-	PurpleQueuedOutputStream *stream = PURPLE_QUEUED_OUTPUT_STREAM(source);
+	BirbQueuedOutputStream *stream = BIRB_QUEUED_OUTPUT_STREAM(source);
 	GError *error = NULL;
 	gboolean success = FALSE;
 
-	success = purple_queued_output_stream_push_bytes_finish(stream, result,
-	                                                        &error);
+	success = birb_queued_output_stream_push_bytes_finish(stream, result,
+	                                                      &error);
 
 	if(!success) {
-		purple_queued_output_stream_clear_queue(stream);
+		birb_queued_output_stream_clear_queue(stream);
 
 		g_prefix_error(&error, "%s", _("Lost connection with server: "));
 
@@ -261,7 +263,7 @@ purple_ircv3_connection_connected_cb(GObject *source, GAsyncResult *result,
 	purple_ircv3_parser_add_default_handlers(priv->parser);
 
 	ostream = g_io_stream_get_output_stream(G_IO_STREAM(conn));
-	priv->output = purple_queued_output_stream_new(ostream);
+	priv->output = birb_queued_output_stream_new(ostream);
 
 	istream = g_io_stream_get_input_stream(G_IO_STREAM(conn));
 	priv->input = g_data_input_stream_new(istream);
@@ -807,11 +809,12 @@ purple_ircv3_connection_writef(PurpleIRCv3Connection *connection,
 	bytes = g_string_free_to_bytes(msg);
 
 	cancellable = purple_connection_get_cancellable(PURPLE_CONNECTION(connection));
-	purple_queued_output_stream_push_bytes_async(priv->output, bytes,
-	                                             G_PRIORITY_DEFAULT,
-	                                             cancellable,
-	                                             purple_ircv3_connection_write_cb,
-	                                             connection);
+	birb_queued_output_stream_push_bytes_async(BIRB_QUEUED_OUTPUT_STREAM(priv->output),
+	                                           bytes,
+	                                           G_PRIORITY_DEFAULT,
+	                                           cancellable,
+	                                           purple_ircv3_connection_write_cb,
+	                                           connection);
 
 	g_bytes_unref(bytes);
 }
