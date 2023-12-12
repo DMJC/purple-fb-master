@@ -26,6 +26,7 @@
 
 #include "purplexmppcore.h"
 
+#include "purplexmppconnection.h"
 #include "purplexmppprotocol.h"
 
 /******************************************************************************
@@ -71,6 +72,7 @@ purple_xmpp_load(GPluginPlugin *plugin, GError **error) {
 	}
 
 	purple_xmpp_protocol_register(GPLUGIN_NATIVE_PLUGIN(plugin));
+	purple_xmpp_connection_register(GPLUGIN_NATIVE_PLUGIN(plugin));
 
 	xmpp_protocol = purple_xmpp_protocol_new();
 

@@ -1,9 +1,12 @@
 XMPP_SOURCES = [
+	'purplexmppconnection.c',
 	'purplexmppcore.c',
 	'purplexmppprotocol.c',
 ]
 
 XMPP_HEADERS = [
+	'purplexmppconnection.h',
+	'purplexmppconstants.h',
 	'purplexmppcore.h',
 	'purplexmppprotocol.h',
 ]
