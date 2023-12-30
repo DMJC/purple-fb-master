@@ -727,7 +727,7 @@ bonjour_protocol_new(void) {
 	return PURPLE_PROTOCOL(g_object_new(
 		BONJOUR_TYPE_PROTOCOL,
 		"id", "prpl-bonjour",
-		"name", "Bonjour",
+		"name", "Bonjour (Deprecated)",
 		"description", _("Bonjour is a serverless protocol for local "
 		                 "networks."),
 		"icon-name", "im-bonjour",
