@@ -990,6 +990,8 @@ version 3.0.0 (??/??/????):
 		* pidgin_blist_visibility_manager_add
 		* pidgin_blist_visibility_manager_remove
 		* PidginBlistLayout
+		* PidginBuddyCompletionEntry
+		* PidginFilterBuddyCompletionEntryFunc
 		* pidgin_buddy_icon_chooser_new
 		* pidgin_buddy_icon_get_scale_size
 		* PidginBuddyList.connection_errors
@@ -1150,6 +1152,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_request_add_block
 		* pidgin_save_accels
 		* pidgin_save_accels_cb
+		* pidgin_screenname_autocomplete_default_filter
 		* PidginScrollBook
 		* pidgin_scroll_book_new
 		* pidgin_scroll_book_get_notebook
@@ -1160,6 +1163,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_set_sensitive_if_input
 		* pidgin_set_urgent, use gtk_window_set_urgency_hint instead.
 		* pidgin_set_xfer_dialog
+		* pidgin_setup_screenname_autocomplete
 		* pidgin_setup_screenname_autocomplete_with_filter
 		* PidginSmiley
 		* pidgin_smiley_add_to_list

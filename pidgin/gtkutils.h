@@ -32,52 +32,8 @@
 
 #include "pidginversion.h"
 
-PIDGIN_AVAILABLE_TYPE_IN_2_1
-typedef struct {
-	gboolean is_buddy;
-	PurpleBuddy *buddy;
-} PidginBuddyCompletionEntry;
-
-PIDGIN_AVAILABLE_TYPE_IN_2_1
-typedef gboolean (*PidginFilterBuddyCompletionEntryFunc) (const PidginBuddyCompletionEntry *completion_entry, gpointer user_data);
-
 
 G_BEGIN_DECLS
-
-/**
- * pidgin_setup_screenname_autocomplete:
- * @entry:       The GtkEntry on which to setup autocomplete.
- * @chooser: A menu for accounts, returned by pidgin_account_chooser_new(). If
- *           @chooser is not %NULL, it'll be updated when a username is chosen
- *           from the autocomplete list.
- * @filter_func: (scope call): A function for checking if an autocomplete entry
- *                    should be shown. This can be %NULL.
- * @user_data:  The data to be passed to the filter_func function.
- *
- * Add autocompletion of screenames to an entry, supporting a filtering
- * function.
- *
- * Since: 2.0.0
- */
-PIDGIN_AVAILABLE_IN_ALL
-void pidgin_setup_screenname_autocomplete(
-        GtkWidget *entry, GtkWidget *chooser,
-        PidginFilterBuddyCompletionEntryFunc filter_func, gpointer user_data);
-
-/**
- * pidgin_screenname_autocomplete_default_filter:
- * @completion_entry: The completion entry to filter.
- * @all_accounts:  If this is %FALSE, only the autocompletion entries
- *                         which belong to an online account will be filtered.
- *
- * The default filter function for username autocomplete.
- *
- * Returns: Returns %TRUE if the autocompletion entry is filtered.
- *
- * Since: 2.1.0
- */
-PIDGIN_AVAILABLE_IN_2_1
-gboolean pidgin_screenname_autocomplete_default_filter(const PidginBuddyCompletionEntry *completion_entry, gpointer all_accounts);
 
 /**
  * pidgin_retrieve_user_info:

@@ -1960,28 +1960,8 @@ pidgin_request_fields(const char *title, const char *primary,
 			g_object_unref(field);
 		}
 
-		/* Link autocompletion of entry widgets to account if we found any. */
-		if(username_widgets != NULL && account_hint != NULL) {
-
-			while(username_widgets != NULL) {
-				PurpleKeyValuePair *pair = username_widgets->data;
-				const char *type_hint = pair->key;
-				GtkWidget *entry = pair->value;
-				gboolean show_all;
-
-				show_all = purple_strequal(type_hint, "screenname-all");
-				pidgin_setup_screenname_autocomplete(entry, account_hint,
-				                                     pidgin_screenname_autocomplete_default_filter,
-				                                     GINT_TO_POINTER(show_all));
-
-				purple_key_value_pair_free(pair);
-				username_widgets = g_slist_delete_link(username_widgets,
-				                                       username_widgets);
-			}
-		} else {
-			g_slist_free_full(username_widgets,
-			                  (GDestroyNotify)purple_key_value_pair_free);
-		}
+		g_slist_free_full(username_widgets,
+		                  (GDestroyNotify)purple_key_value_pair_free);
 
 		g_object_unref(group);
 	}
