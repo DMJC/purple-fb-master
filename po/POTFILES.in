@@ -251,7 +251,6 @@ pidgin/pidginaccountmanagerrow.c
 pidgin/pidginaccountrow.c
 pidgin/pidginaccountsdisabledmenu.c
 pidgin/pidginaccountsenabledmenu.c
-pidgin/pidginactiongroup.c
 pidgin/pidginaddbuddydialog.c
 pidgin/pidginapplication.c
 pidgin/pidginavatar.c
