@@ -27,7 +27,6 @@
 
 #include <purple.h>
 
-#include "gtkconv.h"
 #include "gtkdialogs.h"
 #include "gtkutils.h"
 #include "pidgincore.h"

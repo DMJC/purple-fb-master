@@ -1,5 +1,4 @@
 pidgin_doc_content_files = [
-	'signals_gtkconv.md',
 ]
 
 if get_option('doc')

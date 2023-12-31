@@ -1046,6 +1046,10 @@ version 3.0.0 (??/??/????):
 		* pidgin_conv_update_buddy_icon
 		* pidgin_conv_update_buttons_by_protocol
 		* pidgin_conversations_fill_menu
+		* pidgin_conversations_get_conv_ui_ops
+		* pidgin_conversations_get_handle
+		* pidgin_conversations_init
+		* pidgin_conversations_uninit
 		* pidgin_conversations_get_unseen_all
 		* pidgin_convert_buddy_icon
 		* pidgin_create_dialog, use pidgin_dialog_new instead.

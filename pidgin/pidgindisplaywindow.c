@@ -26,7 +26,6 @@
 
 #include "pidgindisplaywindow.h"
 
-#include "gtkconv.h"
 #include "gtkdialogs.h"
 #include "gtkutils.h"
 #include "pidginconversation.h"

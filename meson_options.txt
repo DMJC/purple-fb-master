@@ -46,7 +46,7 @@ option('console-logging', type : 'boolean', value : false,
 option('gtkui', type : 'boolean', value : true,
        description : 'compile with GTK+ user interface')
 
-option('unity-integration', type : 'feature',
+option('unity-integration', type : 'feature', value : 'disabled',
        description : 'compile with support for unity integration plugin')
 
 ##############################################################################
