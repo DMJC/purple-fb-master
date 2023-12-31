@@ -9,7 +9,6 @@
     <file compressed="true" preprocess="xml-stripblanks">Accounts/manager.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Accounts/manager-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">avatar.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">BuddyList/window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/infopane.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/invite_dialog.ui</file>

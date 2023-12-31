@@ -260,7 +260,6 @@ pidgin/pidgin.c
 pidgin/pidgincolor.c
 pidgin/pidgincommands.c
 pidgin/pidgincontactinfomenu.c
-pidgin/pidgincontactlistwindow.c
 pidgin/pidgindebug.c
 pidgin/pidgindisplaywindow.c
 pidgin/pidginiconname.c
@@ -295,7 +294,6 @@ pidgin/resources/Accounts/editor.ui
 pidgin/resources/Accounts/manager.ui
 pidgin/resources/Accounts/manager-row.ui
 pidgin/resources/avatar.ui
-pidgin/resources/BuddyList/window.ui
 pidgin/resources/Conversations/infopane.ui
 pidgin/resources/Conversations/invite_dialog.ui
 pidgin/resources/Debug/debug.ui
