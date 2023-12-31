@@ -25,7 +25,6 @@
 
 #include <purple.h>
 
-#include "gtkblist.h"
 #include "gtknotify.h"
 #include "gtkutils.h"
 #include "pidgincore.h"

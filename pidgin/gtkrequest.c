@@ -24,7 +24,6 @@
 #include <purple.h>
 
 #include "gtkrequest.h"
-#include "gtkblist.h"
 #include "gtkutils.h"
 #include "pidginaccountdisplay.h"
 #include "pidginaccountfilterconnected.h"

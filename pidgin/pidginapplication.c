@@ -33,7 +33,6 @@
 
 #include "pidginapplication.h"
 
-#include "gtkblist.h"
 #include "gtkdialogs.h"
 #include "gtkroomlist.h"
 #include "pidginabout.h"
@@ -456,14 +455,6 @@ pidgin_application_join_channel(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_application_join_chat(G_GNUC_UNUSED GSimpleAction *simple,
-                             G_GNUC_UNUSED GVariant *parameter,
-                             G_GNUC_UNUSED gpointer data)
-{
-	pidgin_blist_joinchat_show();
-}
-
-static void
 pidgin_application_new_message(G_GNUC_UNUSED GSimpleAction *simple,
                                G_GNUC_UNUSED GVariant *parameter,
                                G_GNUC_UNUSED gpointer data)
@@ -574,9 +565,6 @@ static GActionEntry app_entries[] = {
 	}, {
 		.name = "join-channel",
 		.activate = pidgin_application_join_channel,
-	}, {
-		.name = "join-chat",
-		.activate = pidgin_application_join_chat,
 	}, {
 		.name = "manage-accounts",
 		.activate = pidgin_application_accounts,

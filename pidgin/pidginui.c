@@ -30,7 +30,6 @@
 
 #include "pidginui.h"
 
-#include "gtkblist.h"
 #include "gtkconv.h"
 #include "gtkidle.h"
 #include "gtkmedia.h"
@@ -128,7 +127,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	                                pidgin_ui_protocol_foreach_theme_cb, NULL);
 
 	/* Set the UI operation structures. */
-	purple_blist_set_ui(PIDGIN_TYPE_BUDDY_LIST);
 	purple_notify_set_ui_ops(pidgin_notify_get_ui_ops());
 	purple_request_set_ui_ops(pidgin_request_get_ui_ops());
 	purple_whiteboard_set_ui_ops(pidgin_whiteboard_get_ui_ops());

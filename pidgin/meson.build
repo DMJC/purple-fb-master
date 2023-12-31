@@ -3,7 +3,6 @@ if not ENABLE_GTK
 endif
 
 libpidgin_SOURCES = [
-	'gtkblist.c',
 	'gtkconv.c',
 	'gtkdialogs.c',
 	'gtkidle.c',
@@ -65,7 +64,6 @@ libpidgin_SOURCES = [
 ]
 
 libpidgin_headers = [
-	'gtkblist.h',
 	'gtkconv.h',
 	'gtkdialogs.h',
 	'gtkidle.h',
