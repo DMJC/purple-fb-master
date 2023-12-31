@@ -102,73 +102,8 @@ pidgin_display_window_find_conversation(gconstpointer a, gconstpointer b) {
 }
 
 /******************************************************************************
- * Callbacks
- *****************************************************************************/
-static void
-pidgin_display_window_invite_cb(GtkDialog *dialog, gint response_id,
-                                G_GNUC_UNUSED gpointer data)
-{
-	PidginInviteDialog *invite_dialog = PIDGIN_INVITE_DIALOG(dialog);
-	PurpleChatConversation *chat = NULL;
-
-	chat = pidgin_invite_dialog_get_conversation(invite_dialog);
-
-	g_object_set_data(G_OBJECT(chat), "pidgin-invite-dialog", NULL);
-
-	if(response_id == GTK_RESPONSE_ACCEPT) {
-		const gchar *contact = NULL, *message = NULL;
-
-		contact = pidgin_invite_dialog_get_contact(invite_dialog);
-		message = pidgin_invite_dialog_get_message(invite_dialog);
-
-		if(!purple_strequal(contact, "")) {
-			PurpleConnection *connection = NULL;
-
-			connection = purple_conversation_get_connection(PURPLE_CONVERSATION(chat));
-			purple_serv_chat_invite(connection,
-			                        purple_chat_conversation_get_id(chat),
-			                        message, contact);
-		}
-	}
-
-	gtk_window_destroy(GTK_WINDOW(invite_dialog));
-}
-
-/******************************************************************************
  * Actions
  *****************************************************************************/
-static void
-pidgin_display_window_alias(G_GNUC_UNUSED GSimpleAction *simple,
-                            G_GNUC_UNUSED GVariant *parameter,
-                            gpointer data)
-{
-	PidginDisplayWindow *window = data;
-	PurpleConversation *selected = NULL;
-
-	selected = pidgin_display_window_get_selected(window);
-	if(PURPLE_IS_CONVERSATION(selected)) {
-		PurpleAccount *account;
-		const gchar *name;
-
-		account = purple_conversation_get_account(selected);
-		name = purple_conversation_get_name(selected);
-
-		if(PURPLE_IS_IM_CONVERSATION(selected)) {
-			PurpleBuddy *buddy = purple_blist_find_buddy(account, name);
-
-			if(PURPLE_IS_BUDDY(buddy)) {
-				pidgin_dialogs_alias_buddy(buddy);
-			}
-		} else if(PURPLE_IS_CHAT_CONVERSATION(selected)) {
-			PurpleChat *chat = purple_blist_find_chat(account, name);
-
-			if(PURPLE_IS_CHAT(chat)) {
-				pidgin_dialogs_alias_chat(chat);
-			}
-		}
-	}
-}
-
 static void
 pidgin_display_window_close_conversation(G_GNUC_UNUSED GSimpleAction *simple,
                                          G_GNUC_UNUSED GVariant *parameter,
@@ -212,39 +147,6 @@ pidgin_display_window_get_info(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_display_window_invite(G_GNUC_UNUSED GSimpleAction *simple,
-                             G_GNUC_UNUSED GVariant *parameter,
-                             gpointer data)
-{
-	PidginDisplayWindow *window = data;
-	PurpleConversation *selected = NULL;
-
-	selected = pidgin_display_window_get_selected(window);
-	if(PURPLE_IS_CHAT_CONVERSATION(selected)) {
-		GtkWidget *invite_dialog = NULL;
-
-		invite_dialog = g_object_get_data(G_OBJECT(selected),
-		                                  "pidgin-invite-dialog");
-
-		if(!GTK_IS_WIDGET(invite_dialog)) {
-			invite_dialog = pidgin_invite_dialog_new(PURPLE_CHAT_CONVERSATION(selected));
-			g_object_set_data(G_OBJECT(selected), "pidgin-invite-dialog",
-			                  invite_dialog);
-
-			gtk_window_set_transient_for(GTK_WINDOW(invite_dialog),
-			                             GTK_WINDOW(window));
-			gtk_window_set_destroy_with_parent(GTK_WINDOW(invite_dialog), TRUE);
-
-			g_signal_connect(invite_dialog, "response",
-			                 G_CALLBACK(pidgin_display_window_invite_cb),
-			                 NULL);
-		}
-
-		gtk_widget_set_visible(invite_dialog, TRUE);
-	}
-}
-
-static void
 pidgin_display_window_send_file(G_GNUC_UNUSED GSimpleAction *simple,
                                 G_GNUC_UNUSED GVariant *parameter,
                                 gpointer data)
@@ -265,17 +167,11 @@ pidgin_display_window_send_file(G_GNUC_UNUSED GSimpleAction *simple,
 
 static GActionEntry win_entries[] = {
 	{
-		.name = "alias",
-		.activate = pidgin_display_window_alias
-	}, {
 		.name = "close",
 		.activate = pidgin_display_window_close_conversation
 	}, {
 		.name = "get-info",
 		.activate = pidgin_display_window_get_info
-	}, {
-		.name = "invite",
-		.activate = pidgin_display_window_invite
 	}, {
 		.name = "send-file",
 		.activate = pidgin_display_window_send_file

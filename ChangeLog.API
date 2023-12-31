@@ -1063,6 +1063,8 @@ version 3.0.0 (??/??/????):
 		* pidgin_dialog_get_action_area
 		* pidgin_dialog_get_vbox
 		* pidgin_dialog_get_vbox_with_properties
+		* pidgin_dialogs_alias_buddy
+		* pidgin_dialogs_alias_chat
 		* pidgin_dialogs_alias_contact
 		* pidgin_dialogs_destroy_all
 		* pidgin_dialogs_log
