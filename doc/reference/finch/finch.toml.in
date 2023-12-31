@@ -1,5 +1,5 @@
 [library]
-version = "@PURPLE_VERSION@"
+version = "@PURPLE_MAJOR_VERSION@.@PURPLE_MINOR_VERSION@.@PURPLE_MICRO_VERSION@"
 browse_url = "https://keep.imfreedom.org/pidgin/pidgin/"
 repository_url = "https://keep.imfreedom.org/pidgin/pidgin/"
 website_url = "https://keep.imfreedom.org/pidgin/pidgin/"
