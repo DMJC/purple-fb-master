@@ -224,16 +224,6 @@ static const gchar *pidgin_application_channel_actions[] = {
 };
 
 /*< private >
- * pidgin_application_chat_actions:
- *
- * This list keeps track of which actions should only be enabled if a protocol
- * supporting groups chats is connected.
- */
-static const gchar *pidgin_application_chat_actions[] = {
-	"join-chat",
-};
-
-/*< private >
  * pidgin_application_room_list_actions:
  *
  * This list keeps track of which actions should only be enabled if an online
@@ -600,7 +590,6 @@ pidgin_application_connected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
 	PidginApplication *application = data;
 	PurpleProtocol *protocol = NULL;
 	gboolean should_enable_channel = FALSE;
-	gboolean should_enable_chat = FALSE;
 	gboolean should_enable_room_list = FALSE;
 	guint n_actions = 0;
 
@@ -614,18 +603,9 @@ pidgin_application_connected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
 	protocol = purple_account_get_protocol(account);
 
 	/* We assume that the current state is correct, so we don't bother changing
-	 * state unless the newly connected account implements the chat interface,
-	 * which would cause a state change.
+	 * state unless the newly connected account implements the channel virtual
+	 * functions, which would cause a state change.
 	 */
-	should_enable_chat = PURPLE_PROTOCOL_IMPLEMENTS(protocol, CHAT, info);
-	if(should_enable_chat) {
-		n_actions = G_N_ELEMENTS(pidgin_application_chat_actions);
-		pidgin_application_actions_set_enabled(application,
-		                                       pidgin_application_chat_actions,
-		                                       n_actions,
-		                                       TRUE);
-	}
-
 	should_enable_channel = PURPLE_PROTOCOL_IMPLEMENTS(protocol, CONVERSATION,
 	                                                   get_channel_join_details);
 	if(should_enable_channel) {
@@ -658,7 +638,6 @@ pidgin_application_disconnected_cb(PurpleAccountManager *manager,
 	PidginApplication *application = data;
 	GList *connected = NULL;
 	gboolean should_disable_actions = TRUE;
-	gboolean should_disable_chat = TRUE;
 	gboolean should_disable_channel = TRUE;
 	gboolean should_disable_room_list = TRUE;
 	guint n_actions = 0;
@@ -674,11 +653,6 @@ pidgin_application_disconnected_cb(PurpleAccountManager *manager,
 
 		protocol = purple_account_get_protocol(account);
 
-		/* Check if the protocol implements the chat interface. */
-		if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, CHAT, info)) {
-			should_disable_chat = FALSE;
-		}
-
 		/* Check if the protocol implements joining channels. */
 		if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, CONVERSATION,
 		                              get_channel_join_details))
@@ -692,9 +666,7 @@ pidgin_application_disconnected_cb(PurpleAccountManager *manager,
 		}
 
 		/* If we can't disable anything we can exit the loop early. */
-		if(!should_disable_chat && !should_disable_channel &&
-		   !should_disable_room_list)
-		{
+		if(!should_disable_channel && !should_disable_room_list) {
 			g_clear_list(&connected, NULL);
 
 			break;
@@ -707,14 +679,6 @@ pidgin_application_disconnected_cb(PurpleAccountManager *manager,
 		n_actions = G_N_ELEMENTS(pidgin_application_online_actions);
 		pidgin_application_actions_set_enabled(PIDGIN_APPLICATION(data),
 		                                       pidgin_application_online_actions,
-		                                       n_actions,
-		                                       FALSE);
-	}
-
-	if(should_disable_chat) {
-		n_actions = G_N_ELEMENTS(pidgin_application_chat_actions);
-		pidgin_application_actions_set_enabled(application,
-		                                       pidgin_application_chat_actions,
 		                                       n_actions,
 		                                       FALSE);
 	}
@@ -985,12 +949,6 @@ pidgin_application_init(PidginApplication *application) {
 	n_actions = G_N_ELEMENTS(pidgin_application_online_actions);
 	pidgin_application_actions_set_enabled(application,
 	                                       pidgin_application_online_actions,
-	                                       n_actions,
-	                                       online);
-
-	n_actions = G_N_ELEMENTS(pidgin_application_chat_actions);
-	pidgin_application_actions_set_enabled(application,
-	                                       pidgin_application_chat_actions,
 	                                       n_actions,
 	                                       online);
 
