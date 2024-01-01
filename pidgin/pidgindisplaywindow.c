@@ -290,6 +290,26 @@ pidgin_display_window_selected_item_changed_cb(GObject *self,
 	}
 }
 
+static void
+pidgin_display_window_conversation_registered_cb(G_GNUC_UNUSED PurpleConversationManager *manager,
+                                                 PurpleConversation *conversation,
+                                                 gpointer data)
+{
+	PidginDisplayWindow *window = data;
+
+	pidgin_display_window_add(window, conversation);
+}
+
+static void
+pidgin_display_window_conversation_unregistered_cb(G_GNUC_UNUSED PurpleConversationManager *manager,
+                                                   PurpleConversation *conversation,
+                                                   gpointer data)
+{
+	PidginDisplayWindow *window = data;
+
+	pidgin_display_window_remove(window, conversation);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -397,9 +417,19 @@ pidgin_display_window_class_init(PidginDisplayWindowClass *klass) {
 GtkWidget *
 pidgin_display_window_get_default(void) {
 	if(!GTK_IS_WIDGET(default_window)) {
+		PurpleConversationManager *manager = NULL;
+
 		default_window = pidgin_display_window_new();
 		g_object_add_weak_pointer(G_OBJECT(default_window),
 		                          (gpointer)&default_window);
+
+		manager = purple_conversation_manager_get_default();
+		g_signal_connect_object(manager, "registered",
+		                        G_CALLBACK(pidgin_display_window_conversation_registered_cb),
+		                        default_window, 0);
+		g_signal_connect_object(manager, "unregistered",
+		                        G_CALLBACK(pidgin_display_window_conversation_unregistered_cb),
+		                        default_window, 0);
 	}
 
 	return default_window;
