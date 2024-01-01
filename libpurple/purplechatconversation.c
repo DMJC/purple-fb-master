@@ -22,7 +22,9 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "conversations.h"
 #include "debug.h"
+#include "prefs.h"
 #include "purplecontactmanager.h"
 #include "purpleconversationmanager.h"
 #include "purplechatconversation.h"

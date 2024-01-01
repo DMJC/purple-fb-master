@@ -25,6 +25,7 @@
 #include "glibcompat.h"
 #include "media.h"
 #include "mediamanager.h"
+#include "prefs.h"
 #include "purpleaccount.h"
 #include "purplepath.h"
 

@@ -42,6 +42,7 @@ typedef struct _PurpleMedia PurpleMedia;
 #define PURPLE_IS_MEDIA_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), PURPLE_TYPE_MEDIA))
 #define PURPLE_MEDIA_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), PURPLE_TYPE_MEDIA, PurpleMediaClass))
 
+#include "purpleaccount.h"
 #include "purpleversion.h"
 #include "signals.h"
 #include "util.h"

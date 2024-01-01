@@ -25,6 +25,8 @@
 #include "core.h"
 #include "debug.h"
 #include "network.h"
+#include "notify.h"
+#include "prefs.h"
 #include "purpleaccountmanager.h"
 #include "purpleconversationmanager.h"
 #include "purplecredentialmanager.h"

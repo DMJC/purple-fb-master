@@ -21,8 +21,9 @@
  */
 
 #include "conversations.h"
-#include "purpleprivate.h"
 
+#include "prefs.h"
+#include "purpleprivate.h"
 #include "purpleconversationmanager.h"
 
 static PurpleConversationUiOps *default_ops = NULL;

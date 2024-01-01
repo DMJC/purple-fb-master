@@ -28,7 +28,6 @@
 
 #include "purpleaccount.h"
 #include "purpleversion.h"
-#include "status.h"
 
 G_BEGIN_DECLS
 

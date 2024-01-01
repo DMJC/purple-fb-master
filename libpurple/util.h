@@ -29,13 +29,10 @@
 
 #include <stdio.h>
 
-#include "signals.h"
-#include "xmlnode.h"
-#include "notify.h"
-#include "protocols.h"
 #include "purpleaccount.h"
 #include "purpleprotocol.h"
 #include "purpleversion.h"
+#include "xmlnode.h"
 
 G_BEGIN_DECLS
 

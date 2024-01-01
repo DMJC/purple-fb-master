@@ -34,7 +34,6 @@
 
 typedef struct _PurpleAccount PurpleAccount;
 
-#include "buddy.h"
 #include "connection.h"
 #include "group.h"
 #include "purpleconnectionerrorinfo.h"

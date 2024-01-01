@@ -28,6 +28,7 @@
 #include "debug.h"
 #include "notify.h"
 #include "prefs.h"
+#include "protocols.h"
 #include "purpleaccountpresence.h"
 #include "purplebuddypresence.h"
 #include "status.h"

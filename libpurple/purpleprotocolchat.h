@@ -31,6 +31,7 @@
 #include <glib-object.h>
 
 #include "connection.h"
+#include "purpleconversation.h"
 #include "purplemessage.h"
 #include "purpleprotocol.h"
 #include "purpleversion.h"

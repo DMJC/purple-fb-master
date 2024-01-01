@@ -32,6 +32,7 @@
 #include <string.h>
 #include <glib.h>
 
+#include "notify.h"
 #include "purplemarkup.h"
 #include "util.h"
 #include "xmlnode.h"

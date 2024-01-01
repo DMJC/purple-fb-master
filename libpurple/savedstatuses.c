@@ -25,6 +25,7 @@
 #include "debug.h"
 #include "idle.h"
 #include "notify.h"
+#include "prefs.h"
 #include "purpleaccountmanager.h"
 #include "purplemarkup.h"
 #include "savedstatuses.h"

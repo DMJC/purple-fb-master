@@ -22,6 +22,8 @@
 
 #include "purpleprotocol.h"
 
+#include "notify.h"
+#include "prefs.h"
 #include "purpleaccountmanager.h"
 #include "purpleenums.h"
 

@@ -23,6 +23,7 @@
 
 #include "purpleaccountpresence.h"
 
+#include "protocols.h"
 #include "purpleprotocolserver.h"
 
 struct _PurpleAccountPresence {

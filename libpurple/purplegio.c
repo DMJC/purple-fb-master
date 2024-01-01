@@ -23,6 +23,7 @@
 #include "purplegio.h"
 
 #include "debug.h"
+#include "prefs.h"
 #include "proxy.h"
 
 typedef struct {

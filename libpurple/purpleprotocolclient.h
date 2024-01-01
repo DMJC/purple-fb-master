@@ -30,8 +30,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "purpleaccount.h"
 #include "connection.h"
+#include "purpleaccount.h"
+#include "purpleconversation.h"
 #include "purpleprotocol.h"
 #include "purpleversion.h"
 

@@ -23,6 +23,8 @@
 
 #include "purplebuddypresence.h"
 
+#include "prefs.h"
+#include "protocols.h"
 #include "purpleprivate.h"
 
 struct _PurpleBuddyPresence {

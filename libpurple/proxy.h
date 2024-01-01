@@ -29,7 +29,6 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "eventloop.h"
 #include "purpleaccount.h"
 #include "purpleproxyinfo.h"
 #include "purpleversion.h"

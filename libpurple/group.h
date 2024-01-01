@@ -38,11 +38,8 @@
 typedef struct _PurpleGroup PurpleGroup;
 typedef struct _PurpleGroupClass PurpleGroupClass;
 
-#include "blistnode.h"
-#include "buddyicon.h"
 #include "purpleaccount.h"
 #include "purpleversion.h"
-#include "status.h"
 
 /**************************************************************************/
 /* Data Structures                                                        */

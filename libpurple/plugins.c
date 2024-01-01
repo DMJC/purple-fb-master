@@ -26,7 +26,9 @@
 
 #include "core.h"
 #include "debug.h"
+#include "notify.h"
 #include "plugins.h"
+#include "prefs.h"
 #include "purpleenums.h"
 #include "purplenotification.h"
 #include "purplenotificationmanager.h"

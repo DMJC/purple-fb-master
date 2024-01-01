@@ -22,6 +22,7 @@
 
 #include "core.h"
 #include "debug.h"
+#include "notify.h"
 #include "prefs.h"
 #include "purplenoopcredentialprovider.h"
 #include "purpleprivate.h"

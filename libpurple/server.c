@@ -26,6 +26,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "buddylist.h"
+#include "conversations.h"
 #include "debug.h"
 #include "notify.h"
 #include "prefs.h"

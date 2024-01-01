@@ -26,7 +26,7 @@
 #ifndef PURPLE_BUDDY_PRESENCE_H
 #define PURPLE_BUDDY_PRESENCE_H
 
-#include "buddylist.h"
+#include "buddy.h"
 #include "purplepresence.h"
 #include "purpleversion.h"
 

@@ -27,10 +27,8 @@
 #ifndef PURPLE_SERVER_H
 #define PURPLE_SERVER_H
 
-#include "accounts.h"
-#include "conversations.h"
+#include "buddy.h"
 #include "group.h"
-#include "protocols.h"
 #include "purpleimconversation.h"
 #include "purplemessage.h"
 #include "purpleversion.h"

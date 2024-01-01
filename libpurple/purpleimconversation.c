@@ -23,6 +23,7 @@
 
 #include "debug.h"
 #include "conversations.h"
+#include "prefs.h"
 #include "purpleconversationmanager.h"
 #include "purpleenums.h"
 #include "purpleprivate.h"

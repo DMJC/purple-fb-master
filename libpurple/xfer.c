@@ -27,6 +27,7 @@
 #include <glib/gstdio.h>
 
 #include "debug.h"
+#include "eventloop.h"
 #include "glibcompat.h"
 #include "image-store.h"
 #include "network.h"

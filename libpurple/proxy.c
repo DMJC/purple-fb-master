@@ -23,6 +23,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "debug.h"
+#include "eventloop.h"
 #include "notify.h"
 #include "prefs.h"
 #include "proxy.h"

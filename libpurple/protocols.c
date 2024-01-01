@@ -23,6 +23,9 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "protocols.h"
+
+#include "accounts.h"
 #include "debug.h"
 #include "network.h"
 #include "notify.h"
