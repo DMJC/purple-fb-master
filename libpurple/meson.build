@@ -56,6 +56,7 @@ purple_coresources = [
 	'purplecredentialprovider.c',
 	'purpledebugui.c',
 	'purplefiletransfer.c',
+	'purplefiletransfermanager.c',
 	'purplegdkpixbuf.c',
 	'purplegio.c',
 	'purplehistoryadapter.c',
@@ -180,6 +181,7 @@ purple_coreheaders = [
 	'purplecredentialprovider.h',
 	'purpledebugui.h',
 	'purplefiletransfer.h',
+	'purplefiletransfermanager.h',
 	'purplegdkpixbuf.h',
 	'purplegio.h',
 	'purplehistoryadapter.h',
@@ -243,6 +245,7 @@ purple_coreheaders = [
 ]
 
 purple_private_headers = [
+	'purplefiletransfermanagerprivate.h',
 	'purplepresencemanagerprivate.h',
 	'purpleprivate.h',
 	'purplesavedpresenceprivate.h',

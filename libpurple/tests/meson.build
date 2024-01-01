@@ -13,6 +13,7 @@ PROGS = [
     'credential_manager',
     'credential_provider',
     'file_transfer',
+    'file_transfer_manager',
     'history_adapter',
     'history_manager',
     'idle_manager',

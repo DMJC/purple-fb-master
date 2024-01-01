@@ -64,7 +64,7 @@ typedef enum {
  * Since: 3.0.0
  */
 
-#define PURPLE_TYPE_FILE_TRANSFER purple_file_transfer_get_type()
+#define PURPLE_TYPE_FILE_TRANSFER (purple_file_transfer_get_type())
 
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleFileTransfer, purple_file_transfer, PURPLE,
