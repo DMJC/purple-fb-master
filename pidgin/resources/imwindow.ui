@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Pidgin - Internet Messenger
+Copyright (C) Pidgin Developers <devel@pidgin.im>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this library; if not, see <https://www.gnu.org/licenses/>.
+-->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <!-- interface-license-type gplv2 -->
+  <!-- interface-name Pidgin -->
+  <!-- interface-description Internet Messenger -->
+  <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
+  <template class="PidginIMWindow" parent="AdwMessageDialog">
+    <property name="heading" translatable="yes">New Instant Message</property>
+    <property name="body" translatable="yes">Please enter the username or alias of the person you would like to IM.</property>
+    <property name="extra-child">
+      <object class="AdwPreferencesGroup">
+        <property name="vexpand">true</property>
+        <property name="hexpand">true</property>
+        <child>
+          <object class="PidginAccountRow" id="account">
+            <property name="filter">
+              <object class="GtkEveryFilter">
+                <child>
+                  <object class="GtkCustomFilter" id="filter"/>
+                </child>
+                <child>
+                  <object class="PidginAccountFilterConnected"/>
+                </child>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwEntryRow" id="username">
+            <property name="focusable">no</property>
+            <property name="title" translatable="yes">_Username</property>
+            <property name="use-underline">yes</property>
+            <property name="activates-default">yes</property>
+            <signal name="changed" handler="pidgin_im_window_username_changed_cb"/>
+          </object>
+        </child>
+      </object>
+    </property>
+    <property name="default-response">okay</property>
+    <property name="close-response">cancel</property>
+    <responses>
+      <response id="cancel" translatable="yes">_Cancel</response>
+      <response id="okay" translatable="yes" appearance="suggested" enabled="false">_Okay</response>
+    </responses>
+    <signal name="response" handler="pidgin_im_window_response_cb"/>
+  </template>
+</interface>

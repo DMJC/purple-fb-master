@@ -1,4 +1,6 @@
-/* pidgin
+/*
+ * Pidgin - Internet Messenger
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Pidgin is the legal property of its developers, whose names are too numerous
  * to list here.  Please refer to the COPYRIGHT file distributed with this
@@ -15,29 +17,49 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #if !defined(PIDGIN_GLOBAL_HEADER_INSIDE) && !defined(PIDGIN_COMPILATION)
 # error "only <pidgin.h> may be included directly"
 #endif
 
-#ifndef _PIDGINDIALOGS_H_
-#define _PIDGINDIALOGS_H_
+#ifndef PIDGIN_IM_WINDOW_H
+#define PIDGIN_IM_WINDOW_H
 
-#include <purple.h>
+#include <glib.h>
+
+#include <gtk/gtk.h>
+
+#include <adwaita.h>
 
 #include "pidginversion.h"
 
 G_BEGIN_DECLS
 
-PIDGIN_AVAILABLE_IN_ALL
-void pidgin_dialogs_im_with_user(PurpleAccount *account, const char *username);
+/**
+ * PidginIMWindow:
+ *
+ * A window used to start a new direct message.
+ *
+ * Since: 3.0.0
+ */
 
-PIDGIN_AVAILABLE_IN_ALL
-void pidgin_dialogs_info(void);
+#define PIDGIN_TYPE_IM_WINDOW (pidgin_im_window_get_type())
+
+PIDGIN_AVAILABLE_IN_3_0
+G_DECLARE_FINAL_TYPE(PidginIMWindow, pidgin_im_window,
+                     PIDGIN, IM_WINDOW, AdwMessageDialog)
+
+/**
+ * pidgin_im_window_new:
+ *
+ * Creates a new #PidginIMWindow instance.
+ *
+ * Returns: (transfer full): The new #PidginIMWindow instance.
+ */
+GtkWidget *pidgin_im_window_new(void);
 
 G_END_DECLS
 
-#endif /* _PIDGINDIALOGS_H_ */
+#endif /* PIDGIN_IM_WINDOW_H */

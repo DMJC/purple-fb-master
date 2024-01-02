@@ -1067,6 +1067,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_dialogs_alias_chat
 		* pidgin_dialogs_alias_contact
 		* pidgin_dialogs_destroy_all
+		* pidgin_dialogs_im
 		* pidgin_dialogs_log
 		* pidgin_dialogs_merge_groups
 		* pidgin_dialogs_remove_buddy

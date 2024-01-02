@@ -44,6 +44,7 @@
 #include "pidgincore.h"
 #include "pidgindebug.h"
 #include "pidgindisplaywindow.h"
+#include "pidginimwindow.h"
 #include "pidginpluginsdialog.h"
 #include "pidginpluginsmenu.h"
 #include "pidginprefs.h"
@@ -447,9 +448,18 @@ pidgin_application_join_channel(G_GNUC_UNUSED GSimpleAction *simple,
 static void
 pidgin_application_new_message(G_GNUC_UNUSED GSimpleAction *simple,
                                G_GNUC_UNUSED GVariant *parameter,
-                               G_GNUC_UNUSED gpointer data)
+                               gpointer data)
 {
-	pidgin_dialogs_im();
+	PidginApplication *application = data;
+	static GtkWidget *dialog = NULL;
+
+	if(!PIDGIN_IS_IM_WINDOW(dialog)) {
+		dialog = pidgin_im_window_new();
+		g_object_add_weak_pointer(G_OBJECT(dialog), (gpointer)&dialog);
+	}
+
+	pidgin_application_present_transient_window(application,
+	                                            GTK_WINDOW(dialog));
 }
 
 static void
