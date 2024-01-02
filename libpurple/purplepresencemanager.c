@@ -19,6 +19,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
+
+#include <glib/gi18n-lib.h>
+
 #define G_SETTINGS_ENABLE_BACKEND
 #include <gio/gsettingsbackend.h>
 
@@ -170,6 +173,36 @@ purple_presence_manager_load_saved_presences(PurplePresenceManager *manager) {
 	GStrv ids = NULL;
 
 	ids = g_settings_get_strv(manager->settings, "presences");
+
+	/* If we don't have any existing presences, create an available one. */
+	if(ids[0] == NULL) {
+		PurpleSavedPresence *presence = NULL;
+		const char *id = NULL;
+
+		/* We aren't going to use the ids anymore so free them right away. */
+		g_strfreev(ids);
+
+		/* Create the default available presence and set it as active. */
+		presence = purple_presence_manager_create(manager);
+		purple_saved_presence_set_name(presence, _("Available"));
+		purple_saved_presence_set_primitive(presence,
+		                                    PURPLE_PRESENCE_PRIMITIVE_AVAILABLE);
+
+		id = purple_saved_presence_get_id(presence);
+		purple_presence_manager_set_active(manager, id);
+
+		g_clear_object(&presence);
+
+		/* Create the default offline presence as well. */
+		presence = purple_presence_manager_create(manager);
+		purple_saved_presence_set_name(presence, _("Offline"));
+		purple_saved_presence_set_primitive(presence,
+		                                    PURPLE_PRESENCE_PRIMITIVE_OFFLINE);
+		g_clear_object(&presence);
+
+		return;
+	}
+
 	for(int i = 0; ids[i] != NULL; i++) {
 		PurpleSavedPresence *presence = NULL;
 		GSettings *settings = NULL;
@@ -489,7 +522,11 @@ purple_presence_manager_set_active(PurplePresenceManager *manager,
 	if(g_set_object(&manager->active, presence)) {
 		g_object_notify_by_pspec(G_OBJECT(manager), properties[PROP_ACTIVE]);
 
-		g_settings_set_string(manager->settings, "active", id);
+		/* g_settings_set_string can't handle nulls, so use an empty string if
+		 * it is null.
+		 */
+		g_settings_set_string(manager->settings, "active",
+		                      id == NULL ? "" : id);
 	}
 
 	return TRUE;

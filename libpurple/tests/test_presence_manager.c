@@ -52,9 +52,17 @@ test_purple_presence_manager_list_changed_counter(G_GNUC_UNUSED GListModel *list
 static void
 test_purple_presence_manager_new(void) {
 	PurplePresenceManager *manager = NULL;
+	GListModel *model = NULL;
 
 	manager = purple_presence_manager_new(NULL);
 	g_assert_true(PURPLE_IS_PRESENCE_MANAGER(manager));
+
+	/* Make sure we have our 2 default saved presences.
+	 *
+	 * This may change over time, but we should update this for those changes.
+	 */
+	model = G_LIST_MODEL(manager);
+	g_assert_cmpuint(g_list_model_get_n_items(model), ==, 2);
 
 	g_clear_object(&manager);
 }
@@ -63,6 +71,7 @@ static void
 test_purple_presence_manager_add_remove(void) {
 	PurplePresenceManager *manager = NULL;
 	PurpleSavedPresence *presence = NULL;
+	GListModel *model = NULL;
 	gboolean success = FALSE;
 	guint len = 0;
 	guint added = 0;
@@ -71,6 +80,28 @@ test_purple_presence_manager_add_remove(void) {
 	const char *id = NULL;
 
 	manager = purple_presence_manager_new(NULL);
+
+	/* When a presence manager is created, if there are no saved statuses it
+	 * adds some default ones and sets the active presence. We need to clear
+	 * all of that to get to a known state.
+	 *
+	 * The default statuses are checked in test_purple_presence_manager_new.
+	 */
+	model = G_LIST_MODEL(manager);
+	purple_presence_manager_set_active(manager, NULL);
+	while(g_list_model_get_n_items(model) > 0) {
+		PurpleSavedPresence *presence = NULL;
+
+		/* Since we're removing items, the positions change, so we just always
+		 * want to remove the item at position 0.
+		 */
+		presence = g_list_model_get_item(model, 0);
+		purple_presence_manager_remove(manager,
+		                               purple_saved_presence_get_id(presence));
+		g_assert_finalize_object(presence);
+	}
+
+	/* Connect all of our signals to make sure they're being emitted. */
 	g_signal_connect(manager, "added",
 	                 G_CALLBACK(test_purple_presence_manager_add_remove_counter),
 	                 &added);
