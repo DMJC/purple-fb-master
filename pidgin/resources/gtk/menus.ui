@@ -31,7 +31,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         <item>
           <attribute name="label" translatable="yes">New Instant _Message</attribute>
           <attribute name="action">app.new-message</attribute>
-          <attribute name="accel">&lt;Primary&gt;M</attribute>
         </item>
         <item>
           <attribute name="label" translatable="yes">Join Channel</attribute>
@@ -42,14 +41,12 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         <item>
           <attribute name="label" translatable="yes">Get User _Info...</attribute>
           <attribute name="action">app.get-user-info</attribute>
-          <attribute name="accel">&lt;Primary&gt;I</attribute>
         </item>
       </section>
       <section>
         <item>
           <attribute name="label" translatable="yes">_Quit</attribute>
           <attribute name="action">app.quit</attribute>
-          <attribute name="accel">&lt;Primary&gt;Q</attribute>
         </item>
       </section>
     </submenu>
@@ -61,7 +58,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         <item>
           <attribute name="label" translatable="yes">Account _Manager</attribute>
           <attribute name="action">app.manage-accounts</attribute>
-          <attribute name="accel">&lt;Primary&gt;A</attribute>
         </item>
         <submenu>
           <attribute name="label" translatable="yes">_Enable Account</attribute>
@@ -78,7 +74,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         <item>
           <attribute name="label" translatable="yes">Pr_eferences</attribute>
           <attribute name="action">app.preferences</attribute>
-          <attribute name="accel">&lt;Primary&gt;P</attribute>
         </item>
       </section>
 
@@ -86,7 +81,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         <item>
           <attribute name="label" translatable="yes">_File Transfers</attribute>
           <attribute name="action">app.file-transfers</attribute>
-          <attribute name="accel">&lt;Primary&gt;T</attribute>
         </item>
         <item>
           <attribute name="label" translatable="yes">R_oom List</attribute>
@@ -108,7 +102,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         <item>
           <attribute name="label" translatable="yes">Manage Plu_gins</attribute>
           <attribute name="action">app.manage-plugins</attribute>
-          <attribute name="accel">&lt;Primary&gt;U</attribute>
         </item>
       </section>
       <section id="plugins-menu"/>
@@ -120,6 +113,10 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
         <item>
           <attribute name="label" translatable="yes">Online _Help</attribute>
           <attribute name="action">app.online-help</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Keyboard _Shortcuts</attribute>
+          <attribute name="action">win.show-help-overlay</attribute>
         </item>
         <item>
           <attribute name="label" translatable="yes">_Donate</attribute>

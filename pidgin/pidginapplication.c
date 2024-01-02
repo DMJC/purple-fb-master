@@ -580,6 +580,37 @@ static GActionEntry app_entries[] = {
 };
 
 /******************************************************************************
+ * Shortcuts
+ *****************************************************************************/
+static inline void
+pidgin_application_add_shortcut(PidginApplication *application,
+                                const char *action,
+                                const char *accelerator)
+{
+	const char *accels[] = {accelerator, NULL};
+
+	gtk_application_set_accels_for_action(GTK_APPLICATION(application),
+	                                      action, accels);
+}
+
+static void
+pidgin_application_add_shortcuts(PidginApplication *application) {
+	pidgin_application_add_shortcut(application, "app.file-transfers",
+	                                "<Primary>T");
+	pidgin_application_add_shortcut(application, "app.get-user-info",
+	                                "<Primary>I");
+	pidgin_application_add_shortcut(application, "app.manage-accounts",
+	                                "<Primary>S");
+	pidgin_application_add_shortcut(application, "app.manage-plugins",
+	                                "<Primary>U");
+	pidgin_application_add_shortcut(application, "app.new-message",
+	                                "<Primary>M");
+	pidgin_application_add_shortcut(application, "app.preferences",
+	                                "<Primary>comma");
+	pidgin_application_add_shortcut(application, "app.quit", "<Primary>Q");
+}
+
+/******************************************************************************
  * Purple Signal Callbacks
  *****************************************************************************/
 static void
@@ -942,6 +973,8 @@ pidgin_application_init(PidginApplication *application) {
 
 	g_action_map_add_action_entries(G_ACTION_MAP(application), app_entries,
 	                                G_N_ELEMENTS(app_entries), application);
+
+	pidgin_application_add_shortcuts(application);
 
 	/* Set the default state for our actions to match our online state. */
 	online = purple_connections_is_online();
