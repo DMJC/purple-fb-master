@@ -56,6 +56,10 @@ conf.set_quoted('GETTEXT_PACKAGE', GETTEXT_PACKAGE)
 conf.set_quoted('VERSION', meson.project_version())
 conf.set_quoted('DISPLAY_VERSION', meson.project_version())
 
+conf.set_quoted('PURPLE_BUILD_CPU', host_machine.cpu())
+conf.set_quoted('PURPLE_BUILD_ARCHITECTURE', host_machine.cpu_family())
+conf.set_quoted('PURPLE_BUILD_ENDIANNESS', host_machine.endian())
+
 version_conf.set('PURPLE_MAJOR_VERSION', purple_major_version)
 version_conf.set('PURPLE_MINOR_VERSION', purple_minor_version)
 version_conf.set('PURPLE_MICRO_VERSION', purple_micro_version)

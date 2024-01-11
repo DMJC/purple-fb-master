@@ -172,10 +172,24 @@ pidgin_about_dialog_build_info_add_version(AdwPreferencesGroup *group,
 
 static void
 pidgin_about_dialog_load_build_info(PidginAboutDialog *about) {
+	/* add the cpu */
+	pidgin_about_dialog_group_add_row(about->build_info_group,
+	                                  _("CPU"),
+	                                  PURPLE_BUILD_CPU);
+
+	/* add the architecture */
+	pidgin_about_dialog_group_add_row(about->build_info_group,
+	                                  _("Architecture"),
+	                                  PURPLE_BUILD_ARCHITECTURE);
+
+	/* add the endianness */
+	pidgin_about_dialog_group_add_row(about->build_info_group,
+	                                  _("Endianness"),
+	                                  PURPLE_BUILD_ENDIANNESS);
 
 	/* add the commit hash */
-	pidgin_about_dialog_group_add_row(about->build_info_group, "Commit Hash",
-	                                  REVISION);
+	pidgin_about_dialog_group_add_row(about->build_info_group,
+	                                  _("Commit Hash"), REVISION);
 
 	/* add the purple version */
 	pidgin_about_dialog_build_info_add_version(about->build_info_group,
@@ -197,6 +211,13 @@ pidgin_about_dialog_load_build_info(PidginAboutDialog *about) {
 	                                           GTK_MAJOR_VERSION,
 	                                           GTK_MINOR_VERSION,
 	                                           GTK_MICRO_VERSION);
+
+	/* add the adwaita version */
+	pidgin_about_dialog_build_info_add_version(about->build_info_group,
+	                                           _("Adwaita Version"),
+	                                           ADW_MAJOR_VERSION,
+	                                           ADW_MINOR_VERSION,
+	                                           ADW_MICRO_VERSION);
 }
 
 static char *
@@ -206,14 +227,20 @@ pidgin_about_dialog_copy_build_info(void) {
 	info = g_strdup_printf(
 		"Build Information\n"
 		"=================\n"
+		"CPU: %s\n"
+		"Architecture: %s\n"
+		"Endianness: %s\n"
 		"Commit Hash: %s\n"
 		"Purple Version: %u.%u.%u\n"
 		"GLib Version: %u.%u.%u\n"
-		"GTK Version: %u.%u.%u\n",
+		"GTK Version: %u.%u.%u\n"
+		"Adwaita Version: %u.%u.%u\n",
+		PURPLE_BUILD_CPU, PURPLE_BUILD_ARCHITECTURE, PURPLE_BUILD_ENDIANNESS,
 		REVISION,
 		PURPLE_MAJOR_VERSION, PURPLE_MINOR_VERSION, PURPLE_MICRO_VERSION,
 		GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION,
-		GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+		GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION,
+		ADW_MAJOR_VERSION, ADW_MINOR_VERSION, ADW_MICRO_VERSION);
 
 	return info;
 }
@@ -240,6 +267,13 @@ pidgin_about_dialog_load_runtime_info(PidginAboutDialog *about) {
 	                                           gtk_get_major_version(),
 	                                           gtk_get_minor_version(),
 	                                           gtk_get_micro_version());
+
+	/* add the adwaita version */
+	pidgin_about_dialog_build_info_add_version(about->runtime_info_group,
+	                                           _("Adwaita Version"),
+	                                           adw_get_major_version(),
+	                                           adw_get_minor_version(),
+	                                           adw_get_micro_version());
 }
 
 static char *
@@ -251,10 +285,12 @@ pidgin_about_dialog_copy_runtime_info(void) {
 		"===================\n"
 		"Purple Version: %u.%u.%u\n"
 		"GLib Version: %u.%u.%u\n"
-		"GTK Version: %u.%u.%u\n",
+		"GTK Version: %u.%u.%u\n"
+		"Adwaita Version: %u.%u.%u\n",
 		purple_major_version, purple_minor_version, purple_micro_version,
 		glib_major_version, glib_minor_version, glib_micro_version,
-		gtk_get_major_version(), gtk_get_minor_version(), gtk_get_micro_version());
+		gtk_get_major_version(), gtk_get_minor_version(), gtk_get_micro_version(),
+		adw_get_major_version(), adw_get_minor_version(), adw_get_micro_version());
 
 	return info;
 }
