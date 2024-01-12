@@ -523,7 +523,7 @@ gboolean purple_media_set_send_rtcp_mux(PurpleMedia *media,
  *
  * Gets whether the local user is the conference/session/stream's initiator.
  *
- * Returns: TRUE if the local user is the stream's initator, else FALSE.
+ * Returns: TRUE if the local user is the stream's initiator, else FALSE.
  *
  * Since: 2.6.0
  */

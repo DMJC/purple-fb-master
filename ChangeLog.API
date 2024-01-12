@@ -2021,12 +2021,12 @@ version 2.3.0 (11/24/2007):
 		* purple_network_listen_map_external()
 
 		MSN:
-		* A new independant status type with PURPLE_STATUS_TUNE primitive, and
+		* A new independent status type with PURPLE_STATUS_TUNE primitive, and
 		  PURPLE_TUNE_ARTIST, PURPLE_TUNE_ALBUM and PURPLE_TUNE_TITLE
 		  attributes.
 
 		XMPP:
-		* A new independant status type with PURPLE_STATUS_TUNE primitive, and
+		* A new independent status type with PURPLE_STATUS_TUNE primitive, and
 		  PURPLE_TUNE_{ARTIST, TITLE, ALBUM, GENRE, COMMENT, TRACK, TIME,
 		  YEAR, URL} attributes.
 
@@ -2234,7 +2234,7 @@ version 2.1.0 (7/28/2007):
 			* gnt_tree_set_column_is_right_aligned
 			* gnt_tree_set_search_function, gnt_tree_set_search_column,
 			  gnt_tree_is_searching
-			* 'file-selected' signal is emited for GntFileSel
+			* 'file-selected' signal is emitted for GntFileSel
 			* gnt_style_parse_bool
 			* gnt_util_set_trigger_widget
 
@@ -2290,7 +2290,7 @@ version 2.0.0 (5/3/2007):
 	* gtk_imhtml_toggle_italic(): No longer returns a value
 	* gtk_imhtml_toggle_underline(): No longer returns a value
 	* gtk_imhtml_toggle_strike(): No longer returns a value
-	* gtk_imhtml_scroll_to_end(): Added the smooth paramter
+	* gtk_imhtml_scroll_to_end(): Added the smooth parameter
 	* gaim_log_new(), added conv parameter
 	* gaim_buddy_icon_new(), leaves a reference which the caller owns.  Use
 	  gaim_buddy_icon_unref() immediately if you don't want a reference (the
@@ -2359,9 +2359,10 @@ version 2.0.0 (5/3/2007):
 	  FALSE.  Previously they were set to TRUE or left alone.  Also, you
 	  may now pass NULL if you're not interested in a specific formatting.
 	* Smiley Themes: Backslashes must be backslash-escaped.
-	* Plugins: Depedencies are now honored when unloading plugins.
+	* Plugins: Dependencies are now honored when unloading plugins.
 	* gaim_markup_extract_info_field(): Added format_cb parameter.
-	* gaim_markup_extract_info_field(): Changed GString parameter to a GaimNotifyUserInfo paramter.
+	* gaim_markup_extract_info_field(): Changed GString parameter to a
+	  GaimNotifyUserInfo parameter.
 	* gaim_str_to_time(): Added support for parsing the MM/DD/YYYY format.
 	* gaim_plugin_action_new(): label is now const char *
 	* gaim_plugin_pref_new_with_name(): name is now const char *
@@ -2549,7 +2550,7 @@ version 2.0.0 (5/3/2007):
 	* gaim_util_chrreplace() to replace a given character with a
 	  different character
 	* gaim_gtk_blist_toggle_visibility() to intelligently toggle the
-	  visiblity of the buddy list
+	  visibility of the buddy list
 	* gaim_gtk_blist_visibility_manager_add() to indicate the addition of a
 	  visibility manager - see the docs for more information
 	* gaim_gtk_blist_visibility_manager_remove() to indicate the removal of
@@ -2782,7 +2783,7 @@ version 1.1.0 (12/02/2004):
 		 #ifdef ENABLE_BINRELOC from prefix.h, it won't be
 		 loadable on a copy of Gaim compiled without binreloc
 		 support. In particular, watch out for the autoconf-like
-		 macros, and accidently including them through internal.h,
+		 macros, and accidentally including them through internal.h,
 		 which you probably shouldn't be including anyway.
 
 version 1.0.0 (09/17/2004):
@@ -2923,17 +2924,17 @@ version 0.78 (05/30/2004):
 	* Added: "buddy-idle-updated" signal, for when the idle time changes.
 	* Changed: "received-im-msg" and "received-chat-msg" no longer pass
 			   pointers to who, message and flags, and are now void.
-	* Removed: "drawing-menu" - it was UI sepecific and
+	* Removed: "drawing-menu" - it was UI-specific and
 			   "blist-node-extended-menu" is superior
 
 version 0.77 (04/22/2004):
-	Loader & Protocol Plugins independantly versioned
+	Loader & Protocol Plugins independently versioned
 	Plugin loading now checks versioning on plugins (Standard, Loader &
 	Protocol)
 	new GAIM_{PLUGIN,PRPL,LOADER}_API_VERSION constants
 
 	Plugin API: v3
-	* Added: prefs_info for UI independant plugin prefs
+	* Added: prefs_info for UI independent plugin prefs
 
 	Loader Plugin API: v2
 	* Added: api_version at top of GaimPluginLoaderInfo struct

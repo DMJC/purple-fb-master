@@ -1039,7 +1039,7 @@ static void ggp_roster_reply_ack(PurpleConnection *gc, uint32_t version)
 	}
 
 	/* we need to remove "synchronized" flag for all contacts, that have
-	 * beed modified between roster update start and now
+	 * been modified between roster update start and now
 	 */
 	updates_it = g_list_first(rdata->pending_updates);
 	while (updates_it) {

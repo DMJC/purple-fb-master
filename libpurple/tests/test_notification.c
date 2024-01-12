@@ -26,7 +26,7 @@
  * Helpers
  *****************************************************************************/
 static void
-test_purple_notification_destory_data_callback(gpointer data) {
+test_purple_notification_destroy_data_callback(gpointer data) {
 	gboolean *called = data;
 
 	*called = TRUE;
@@ -70,7 +70,7 @@ test_purple_notification_new(void) {
 	created_timestamp = purple_notification_get_created_timestamp(notification);
 	g_assert_nonnull(created_timestamp);
 
-	/* Unref it to destory it. */
+	/* Unref it to destroy it. */
 	g_clear_object(&notification);
 
 	/* Clean up the account. */
@@ -78,7 +78,7 @@ test_purple_notification_new(void) {
 }
 
 static void
-test_purple_notification_destory_data_func(void) {
+test_purple_notification_destroy_data_func(void) {
 	PurpleNotification *notification = NULL;
 	gboolean called = FALSE;
 
@@ -86,12 +86,12 @@ test_purple_notification_destory_data_func(void) {
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
 	                                       NULL,
 	                                       &called,
-	                                       test_purple_notification_destory_data_callback);
+	                                       test_purple_notification_destroy_data_callback);
 
 	/* Sanity check. */
 	g_assert_true(PURPLE_IS_NOTIFICATION(notification));
 
-	/* Unref it to force the destory callback to be called. */
+	/* Unref it to force the destroy callback to be called. */
 	g_clear_object(&notification);
 
 	/* Make sure the callback was called. */
@@ -156,8 +156,8 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/notification/new",
 	                test_purple_notification_new);
-	g_test_add_func("/notification/destory-data-func",
-	                test_purple_notification_destory_data_func);
+	g_test_add_func("/notification/destroy-data-func",
+	                test_purple_notification_destroy_data_func);
 	g_test_add_func("/notification/properties",
 	                test_purple_notification_properties);
 

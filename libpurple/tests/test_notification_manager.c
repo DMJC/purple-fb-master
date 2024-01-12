@@ -121,7 +121,7 @@ test_purple_notification_manager_double_add(void) {
 		purple_notification_manager_add(manager, notification);
 
 		/* This will never get called as the double add outputs a g_warning()
-		 * that causes the test to fail. This is left to avoid a false postive
+		 * that causes the test to fail. This is left to avoid a false positive
 		 * in static analysis.
 		 */
 		g_clear_object(&manager);
@@ -348,7 +348,7 @@ test_purple_notification_manager_read_propagation(void) {
 	                 &unread_count_called);
 
 	/* Create the notification and add a reference to it before we give our
-	 * original refernce to the manager.
+	 * original reference to the manager.
 	 */
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
 	                                       NULL,

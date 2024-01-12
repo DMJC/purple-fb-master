@@ -115,7 +115,7 @@ test_purple_contact_manager_double_add(void) {
 		purple_contact_manager_add(manager, contact);
 
 		/* This will never get called as the double add outputs a g_warning()
-		 * that causes the test to fail. This is left to avoid a false postive
+		 * that causes the test to fail. This is left to avoid a false positive
 		 * in static analysis.
 		 */
 		g_clear_object(&account);

@@ -242,7 +242,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	 * Since: 3.0.0
 	 */
 	properties[PROP_SETTINGS] = g_param_spec_object(
-		"settings", "setings",
+		"settings", "settings",
 		"The GSettings for the provider",
 		G_TYPE_SETTINGS,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);

@@ -383,7 +383,7 @@ purple_notification_manager_remove(PurpleNotificationManager *manager,
 		g_object_ref(notification);
 
 		g_ptr_array_remove_index(manager->notifications, index);
-		/* Remove the notify signal handler for the read state incase someone
+		/* Remove the notify signal handler for the read state in case someone
 		 * else added a reference to the notification which would then mess
 		 * with our unread count accounting.
 		 */

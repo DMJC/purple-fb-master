@@ -52,7 +52,7 @@ pidgin_accounts_disabled_menu_refresh(PidginAccountsDisabledMenu *menu) {
 	g_list_free(menu->accounts);
 	menu->accounts = purple_account_manager_get_disabled(manager);
 
-	/* Similar to the aboved note about removed items, if every account is
+	/* Similar to the above note about removed items, if every account is
 	 * enabled, we add an item saying "no disabled accounts".
 	 */
 	added = MAX(1, g_list_length(menu->accounts));
