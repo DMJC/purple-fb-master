@@ -28,11 +28,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
       <object class="GtkBox">
         <property name="spacing">6</property>
         <child>
-          <object class="PidginAvatar">
-            <binding name="conversation">
-              <lookup name="conversation">PidginInfoPane</lookup>
-            </binding>
-          </object>
+          <object class="PidginAvatar"></object>
         </child>
         <child>
           <object class="GtkBox">
@@ -40,11 +36,9 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             <property name="orientation">vertical</property>
             <property name="valign">center</property>
             <child>
-              <object class="GtkLabel" id="name">
+              <object class="GtkLabel" id="title">
                 <binding name="label">
-                  <lookup name="name" type="PurpleConversation">
-                    <lookup name="conversation">PidginInfoPane</lookup>
-                  </lookup>
+                  <lookup name="title">PidginInfoPane</lookup>
                 </binding>
                 <property name="xalign">0</property>
                 <style>
@@ -53,12 +47,10 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="topic">
+              <object class="GtkLabel" id="subtitle_label">
                 <binding name="label">
-                  <closure type="gchararray" function="pidgin_info_pane_linkify_text_cb">
-                    <lookup name="topic" type="PurpleConversation">
-                      <lookup name="conversation">PidginInfoPane</lookup>
-                    </lookup>
+                  <closure type="gchararray" function="pidgin_info_pane_linkify_text_cb" object="subtitle_label">
+                      <lookup name="subtitle">PidginInfoPane</lookup>
                   </closure>
                 </binding>
                 <property name="ellipsize">end</property>

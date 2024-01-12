@@ -31,15 +31,27 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
         <child>
           <object class="PidginInfoPane" id="info_pane">
             <property name="hexpand">1</property>
-            <binding name="conversation">
-              <lookup name="conversation">PidginConversation</lookup>
+            <binding name="title">
+              <lookup name="title" type="PurpleConversation">
+                <lookup name="conversation">PidginConversation</lookup>
+              </lookup>
             </binding>
-          </object>
-        </child>
-        <child>
-          <object class="GtkToggleButton" id="toggle_flap">
-            <property name="icon-name">view-dual-symbolic</property>
-            <property name="valign">center</property>
+            <binding name="subtitle">
+              <lookup name="topic" type="PurpleConversation">
+                <lookup name="conversation">PidginConversation</lookup>
+              </lookup>
+            </binding>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkToggleButton" id="toggle_flap">
+                    <property name="icon-name">view-dual-symbolic</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </property>
           </object>
         </child>
       </object>

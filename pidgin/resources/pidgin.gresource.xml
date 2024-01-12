@@ -10,7 +10,6 @@
     <file compressed="true" preprocess="xml-stripblanks">Accounts/manager-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">avatar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/conversation.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Conversations/infopane.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/invite_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/message.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ContactList/widget.ui</file>
@@ -44,6 +43,7 @@
     <file compressed="true" preprocess="xml-stripblanks">contactlistitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conversationmemberlistitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">imwindow.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">infopane.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
     <file>icons/16x16/status/pidgin-user-available.png</file>
     <file>icons/16x16/status/pidgin-user-away.png</file>

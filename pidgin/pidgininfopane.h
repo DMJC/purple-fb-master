@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * #PidginInfoPane is a widget that displays information above
  * #PidginConversations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_INFO_PANE (pidgin_info_pane_get_type())
@@ -54,44 +54,90 @@ G_DECLARE_FINAL_TYPE(PidginInfoPane, pidgin_info_pane, PIDGIN, INFO_PANE,
 
 /**
  * pidgin_info_pane_new:
- * @conversation: The #PurpleConversation instance.
  *
- * Creates a new #PidginInfoPane instance that will display information about
- * @conversation.
+ * Creates a new #PidginInfoPane instance.
  *
  * Returns: (transfer full): The new #PidginInfoPane instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
-GtkWidget *pidgin_info_pane_new(PurpleConversation *conversation);
+GtkWidget *pidgin_info_pane_new(void);
 
 /**
- * pidgin_info_pane_get_conversation:
+ * pidgin_info_pane_get_title:
  * @pane: The #PidginInfoPane instance.
  *
- * Gets the #PurpleConversation that @pane is displaying information for.
+ * Gets the title of @pane.
  *
- * Returns: (transfer none): The #PurpleConversation displayed by @pane.
+ * Returns: (transfer none) (nullable): The title or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
-PurpleConversation *pidgin_info_pane_get_conversation(PidginInfoPane *pane);
+const char *pidgin_info_pane_get_title(PidginInfoPane *pane);
 
 /**
- * pidgin_info_pane_set_conversation:
+ * pidgin_info_pane_set_title:
  * @pane: The instance.
- * @conversation: (nullable): The [class@Purple.Conversation] to use.
+ * @title: (nullable): The new title.
  *
- * Sets the conversation that @pane uses to get its values.
+ * Sets the title of @pane.
  *
- * Typically this is only necessary for the conversation instance itself.
- *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
-void pidgin_info_pane_set_conversation(PidginInfoPane *pane, PurpleConversation *conversation);
+void pidgin_info_pane_set_title(PidginInfoPane *pane, const char *title);
+
+/**
+ * pidgin_info_pane_get_subtitle:
+ * @pane: The #PidginInfoPane instance.
+ *
+ * Gets the subtitle of @pane.
+ *
+ * Returns: (transfer none) (nullable): The subtitle or %NULL.
+ *
+ * Since: 3.0
+ */
+PIDGIN_AVAILABLE_IN_3_0
+const char *pidgin_info_pane_get_subtitle(PidginInfoPane *pane);
+
+/**
+ * pidgin_info_pane_set_subtitle:
+ * @pane: The instance.
+ * @subtitle: (nullable): The new subtitle.
+ *
+ * Sets the subtitle of @pane.
+ *
+ * Since: 3.0
+ */
+PIDGIN_AVAILABLE_IN_3_0
+void pidgin_info_pane_set_subtitle(PidginInfoPane *pane, const char *subtitle);
+
+/**
+ * pidgin_info_pane_get_child:
+ * @pane: The instance.
+ *
+ * Gets the widget that is being displayed at the end of @pane.
+ *
+ * Returns: (nullable): The child widget or %NULL if one is not set.
+ *
+ * Since: 3.0
+ */
+PIDGIN_AVAILABLE_IN_3_0
+GtkWidget *pidgin_info_pane_get_child(PidginInfoPane *pane);
+
+/**
+ * pidgin_info_pane_set_child:
+ * @pane: The instance.
+ * @widget: (nullable): The new child.
+ *
+ * Sets the child widget of @pane to @widget.
+ *
+ * Since: 3.0
+ */
+PIDGIN_AVAILABLE_IN_3_0
+void pidgin_info_pane_set_child(PidginInfoPane *pane, GtkWidget *widget);
 
 G_END_DECLS
 

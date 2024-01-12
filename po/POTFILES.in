@@ -292,7 +292,6 @@ pidgin/resources/Accounts/editor.ui
 pidgin/resources/Accounts/manager.ui
 pidgin/resources/Accounts/manager-row.ui
 pidgin/resources/avatar.ui
-pidgin/resources/Conversations/infopane.ui
 pidgin/resources/Conversations/invite_dialog.ui
 pidgin/resources/Debug/debug.ui
 pidgin/resources/Dialogs/addbuddy.ui
@@ -315,6 +314,7 @@ pidgin/resources/Xfer/xfer.ui
 pidgin/resources/gtk/menus.ui
 pidgin/resources/account-row.ui
 pidgin/resources/contactlistitem.ui
+pidgin/resources/infopane.ui
 pidgin/win32/gtkwin32dep.c
 pidgin/win32/winpidgin.c
 purple-history/purplehistorycore.c
