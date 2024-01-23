@@ -367,7 +367,7 @@ void jabber_process_packet(JabberStream *js, PurpleXmlNode **packet)
 static void
 jabber_push_bytes_cb(GObject *source, GAsyncResult *res, gpointer data)
 {
-	PurpleQueuedOutputStream *stream = PURPLE_QUEUED_OUTPUT_STREAM(source);
+	BirbQueuedOutputStream *stream = BIRB_QUEUED_OUTPUT_STREAM(source);
 	JabberStream *js = data;
 	gboolean result;
 	GError *error = NULL;
@@ -398,8 +398,8 @@ static gboolean do_jabber_send_raw(JabberStream *js, const char *data, int len)
 
 	output = g_bytes_new(data, len);
 	birb_queued_output_stream_push_bytes_async(
-	        js->output, output, G_PRIORITY_DEFAULT, js->cancellable,
-	        jabber_push_bytes_cb, js);
+	        BIRB_QUEUED_OUTPUT_STREAM(js->output), output, G_PRIORITY_DEFAULT,
+	        js->cancellable, jabber_push_bytes_cb, js);
 	g_bytes_unref(output);
 
 	return success;

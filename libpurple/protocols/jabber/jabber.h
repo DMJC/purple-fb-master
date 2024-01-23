@@ -56,7 +56,6 @@ typedef struct _JabberStream JabberStream;
 #include <gmodule.h>
 #include <gio/gio.h>
 #include <libsoup/soup.h>
-#include <birb.h>
 
 #include <purple.h>
 
@@ -179,7 +178,7 @@ struct _JabberStream
 	GSocketClient *client;
 	GIOStream *stream;
 	GInputStream *input;
-	BirbQueuedOutputStream *output;
+	GOutputStream *output;
 
 	char *initial_avatar_hash;
 	char *avatar_hash;
