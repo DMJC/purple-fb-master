@@ -21,6 +21,7 @@
  */
 
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
 #define G_SETTINGS_ENABLE_BACKEND
 #include <gio/gsettingsbackend.h>
@@ -29,17 +30,15 @@
 #include "purplepresencemanagerprivate.h"
 
 #include "core.h"
-#include "purplesavedpresenceprivate.h"
 #include "purpleui.h"
 #include "util.h"
 
 #define MANAGER_SCHEMA_ID "im.pidgin.Purple.PresenceManager"
-#define PRESENCE_SCHEMA_ID "im.pidgin.Purple.SavedPresence"
-#define MANAGER_PATH "/purple/presence-manager"
+#define SAVED_PRESENCE_SCHEMA_ID "im.pidgin.Purple.SavedPresence"
 
 enum {
 	PROP_0,
-	PROP_FILENAME,
+	PROP_PATH,
 	PROP_ACTIVE,
 	N_PROPERTIES,
 };
@@ -55,7 +54,7 @@ static guint signals[N_SIGNALS] = {0, };
 struct _PurplePresenceManager {
 	GObject parent;
 
-	char *filename;
+	char *path;
 	GSettingsBackend *backend;
 	GSettings *settings;
 
@@ -69,8 +68,17 @@ static PurplePresenceManager *default_manager = NULL;
  * Helpers
  *****************************************************************************/
 static inline char *
-purple_presence_manager_path_for_presence(const char *id) {
-	return g_strdup_printf("%s/presences/%s/", MANAGER_PATH, id);
+purple_presence_manager_get_path_for_id(PurplePresenceManager *manager,
+                                        const char *id)
+{
+	char *filename = NULL;
+	char *basename = NULL;
+
+	basename = g_strdup_printf("%s.ini", id);
+	filename = g_build_filename(manager->path, basename, NULL);
+	g_clear_pointer(&basename, g_free);
+
+	return filename;
 }
 
 static gboolean
@@ -116,116 +124,171 @@ purple_presence_manager_find_with_id(PurplePresenceManager *manager,
 	return ret;
 }
 
-static void
-purple_presence_manager_update_presences_setting(PurplePresenceManager *manager)
-{
-	GStrvBuilder *builder = NULL;
-	GStrv presences = NULL;
+static PurpleSavedPresence *
+purple_presence_manager_add(PurplePresenceManager *manager, const char *id) {
+	PurpleSavedPresence *presence = NULL;
+	GSettingsBackend *backend = NULL;
+	GSettings *settings = NULL;
 
-	builder = g_strv_builder_new();
-	for(guint i = 0; i < manager->presences->len; i++) {
-		PurpleSavedPresence *presence = NULL;
-		const char *id = NULL;
+	g_return_val_if_fail(PURPLE_IS_PRESENCE_MANAGER(manager), NULL);
+	g_return_val_if_fail(!purple_strempty(id), NULL);
 
-		presence = g_ptr_array_index(manager->presences, i);
-		id = purple_saved_presence_get_id(presence);
-		g_strv_builder_add(builder, id);
+	/* Figure out which settings backend to use. */
+	if(!purple_strempty(manager->path)) {
+		char *filename = NULL;
+
+		filename = purple_presence_manager_get_path_for_id(manager, id);
+		backend = g_keyfile_settings_backend_new(filename, "/", NULL);
+		g_clear_pointer(&filename, g_free);
+	} else {
+		backend = g_memory_settings_backend_new();
 	}
 
-	presences = g_strv_builder_end(builder);
-	g_settings_set_strv(manager->settings, "presences",
-	                    (const char * const *)presences);
-	g_strfreev(presences);
-	g_strv_builder_unref(builder);
-}
+	/* Create the settings object with the determined backend. */
+	settings = g_settings_new_with_backend(SAVED_PRESENCE_SCHEMA_ID, backend);
+	g_clear_object(&backend);
 
-static inline void
-purple_presence_manager_add(PurplePresenceManager *manager,
-                            PurpleSavedPresence *presence)
-{
-	g_return_if_fail(PURPLE_IS_PRESENCE_MANAGER(manager));
-	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
+	/* Create the presence. */
+	presence = g_object_new(
+		PURPLE_TYPE_SAVED_PRESENCE,
+		"id", id,
+		"settings", settings,
+		NULL);
 
 	g_ptr_array_add(manager->presences, g_object_ref(presence));
-	purple_presence_manager_update_presences_setting(manager);
 
 	g_signal_emit(manager, signals[SIG_ADDED], 0, presence);
 	g_list_model_items_changed(G_LIST_MODEL(manager),
 	                           manager->presences->len - 1, 0, 1);
+
+	return presence;
 }
 
 static void
-purple_presence_manager_set_filename(PurplePresenceManager *manager,
-                                     const char *filename)
+purple_presence_manager_set_path(PurplePresenceManager *manager,
+                                 const char *path)
 {
 	g_return_if_fail(PURPLE_IS_PRESENCE_MANAGER(manager));
 
-	if(!purple_strequal(filename, manager->filename)) {
-		g_free(manager->filename);
-		manager->filename = g_strdup(filename);
+	if(!purple_strequal(path, manager->path)) {
+		g_free(manager->path);
+		manager->path = g_strdup(path);
 
-		g_object_notify_by_pspec(G_OBJECT(manager), properties[PROP_FILENAME]);
+		g_object_notify_by_pspec(G_OBJECT(manager), properties[PROP_PATH]);
 	}
 }
 
 static void
 purple_presence_manager_load_saved_presences(PurplePresenceManager *manager) {
-	GStrv ids = NULL;
+	PurpleSavedPresence *presence = NULL;
+	const char *id = NULL;
 
-	ids = g_settings_get_strv(manager->settings, "presences");
+	/* Load the presences from disk. */
+	if(manager->path != NULL) {
+		GDir *dir = NULL;
+		GError *error = NULL;
+		const char *basename = NULL;
 
-	/* If we don't have any existing presences, create an available one. */
-	if(ids[0] == NULL) {
-		PurpleSavedPresence *presence = NULL;
-		const char *id = NULL;
+		dir = g_dir_open(manager->path, 0, &error);
+		if(error != NULL) {
+			g_warning("failed to open directory '%s': %s", manager->path,
+			          error->message);
+		} else {
+			GPatternSpec *pattern = NULL;
 
-		/* We aren't going to use the ids anymore so free them right away. */
-		g_strfreev(ids);
+			/* We use ?* to make sure we have at least one character before the
+			 * .ini.
+			 */
+			pattern = g_pattern_spec_new("?*.ini");
 
-		/* Create the default available presence and set it as active. */
-		presence = purple_presence_manager_create(manager);
+			while((basename = g_dir_read_name(dir)) != NULL) {
+				if(purple_strequal(basename, "manager.ini")) {
+					continue;
+				}
+
+				if(g_pattern_spec_match_string(pattern, basename)) {
+					PurpleSavedPresence *presence = NULL;
+					char *id = NULL;
+
+					id = g_strndup(basename, strlen(basename) - 4);
+					presence = purple_presence_manager_add(manager, id);
+					g_clear_pointer(&id, g_free);
+					g_clear_object(&presence);
+				}
+			}
+			g_dir_close(dir);
+
+			g_clear_pointer(&pattern, g_pattern_spec_free);
+		}
+	}
+
+	/* Make sure we have our default available presence. */
+	id = "ffffffff-ffff-ffff-ffff-ffffffffffff";
+	presence = purple_presence_manager_find_with_id(manager, id, NULL);
+	if(!PURPLE_IS_SAVED_PRESENCE(presence)) {
+		presence = purple_presence_manager_add(manager, id);
 		purple_saved_presence_set_name(presence, _("Available"));
 		purple_saved_presence_set_primitive(presence,
 		                                    PURPLE_PRESENCE_PRIMITIVE_AVAILABLE);
-
-		id = purple_saved_presence_get_id(presence);
-		purple_presence_manager_set_active(manager, id);
-
 		g_clear_object(&presence);
+	}
 
-		/* Create the default offline presence as well. */
-		presence = purple_presence_manager_create(manager);
+	/* Make sure we have our default offline presence as well. */
+	id = "00000000-0000-0000-0000-000000000000";
+	presence = purple_presence_manager_find_with_id(manager, id, NULL);
+	if(!PURPLE_IS_SAVED_PRESENCE(presence)) {
+		presence = purple_presence_manager_add(manager, id);
 		purple_saved_presence_set_name(presence, _("Offline"));
 		purple_saved_presence_set_primitive(presence,
 		                                    PURPLE_PRESENCE_PRIMITIVE_OFFLINE);
 		g_clear_object(&presence);
+	}
+}
 
-		return;
+/******************************************************************************
+ * GSettings Mappings
+ *****************************************************************************/
+static gboolean
+purple_presence_manager_get_active_mapping(GValue *value, GVariant *variant,
+                                           gpointer data)
+{
+	PurplePresenceManager *manager = data;
+	PurpleSavedPresence *presence = NULL;
+	const char *id = NULL;
+
+	/* Get the id of the saved presence from gsettings. */
+	id = g_variant_get_string(variant, NULL);
+
+	presence = purple_presence_manager_find_with_id(manager, id, NULL);
+	if(PURPLE_IS_SAVED_PRESENCE(presence)) {
+		g_value_set_object(value, G_OBJECT(presence));
+
+		return TRUE;
 	}
 
-	for(int i = 0; ids[i] != NULL; i++) {
-		PurpleSavedPresence *presence = NULL;
-		GSettings *settings = NULL;
-		char *path = NULL;
+	return FALSE;
+}
 
-		path = purple_presence_manager_path_for_presence(ids[i]);
-		settings = g_settings_new_with_backend_and_path(PRESENCE_SCHEMA_ID,
-		                                                manager->backend,
-		                                                path);
-		g_clear_pointer(&path, g_free);
+static GVariant *
+purple_presence_manager_set_active_mapping(const GValue *value,
+                                           const GVariantType *expected_type,
+                                           G_GNUC_UNUSED gpointer data)
+{
+	PurpleSavedPresence *presence = NULL;
+	const char *id = NULL;
 
-		presence = g_object_new(
-			PURPLE_TYPE_SAVED_PRESENCE,
-			"id", ids[i],
-			"settings", settings,
-			NULL);
-
-		purple_presence_manager_add(manager, presence);
-
-		g_clear_object(&presence);
+	if(!g_variant_type_equal(expected_type, G_VARIANT_TYPE_STRING)) {
+		return NULL;
 	}
 
-	g_strfreev(ids);
+	presence = g_value_get_object(value);
+	if(!PURPLE_IS_SAVED_PRESENCE(presence)) {
+		return NULL;
+	}
+
+	id = purple_saved_presence_get_id(presence);
+
+	return g_variant_new_string(id);
 }
 
 /******************************************************************************
@@ -274,15 +337,17 @@ G_DEFINE_TYPE_EXTENDED(PurplePresenceManager, purple_presence_manager,
 static void
 purple_presence_manager_constructed(GObject *obj) {
 	PurplePresenceManager *manager = PURPLE_PRESENCE_MANAGER(obj);
-	char *active_id = NULL;
 
 	G_OBJECT_CLASS(purple_presence_manager_parent_class)->constructed(obj);
 
-	if(manager->filename == NULL) {
+	if(manager->path == NULL) {
 		manager->backend = g_memory_settings_backend_new();
 	} else {
-		manager->backend = g_keyfile_settings_backend_new(manager->filename,
-		                                                  "/", NULL);
+		char *filename = NULL;
+
+		filename = g_build_filename(manager->path, "manager.ini", NULL);
+		manager->backend = g_keyfile_settings_backend_new(filename, "/", NULL);
+		g_clear_pointer(&filename, g_free);
 	}
 
 	manager->settings = g_settings_new_with_backend(MANAGER_SCHEMA_ID,
@@ -290,21 +355,18 @@ purple_presence_manager_constructed(GObject *obj) {
 
 	purple_presence_manager_load_saved_presences(manager);
 
-	active_id = g_settings_get_string(manager->settings, "active");
-	if(!purple_strempty(active_id)) {
-		if(!purple_presence_manager_set_active(manager, active_id)) {
-			g_warning("failed to set the active saved presence to %s",
-			          active_id);
-		}
-	}
-	g_clear_pointer(&active_id, g_free);
+	g_settings_bind_with_mapping(manager->settings, "active", manager,
+	                             "active-presence", G_SETTINGS_BIND_DEFAULT,
+	                             purple_presence_manager_get_active_mapping,
+	                             purple_presence_manager_set_active_mapping,
+	                             manager, NULL);
 }
 
 static void
 purple_presence_manager_finalize(GObject *obj) {
 	PurplePresenceManager *manager = PURPLE_PRESENCE_MANAGER(obj);
 
-	g_clear_pointer(&manager->filename, g_free);
+	g_clear_pointer(&manager->path, g_free);
 
 	g_clear_object(&manager->active);
 	if(manager->presences != NULL) {
@@ -325,9 +387,9 @@ purple_presence_manager_get_property(GObject *obj, guint param_id,
 	PurplePresenceManager *manager = PURPLE_PRESENCE_MANAGER(obj);
 
 	switch(param_id) {
-		case PROP_FILENAME:
+		case PROP_PATH:
 			g_value_set_string(value,
-			                   purple_presence_manager_get_filename(manager));
+			                   purple_presence_manager_get_path(manager));
 			break;
 		case PROP_ACTIVE:
 			g_value_set_object(value,
@@ -346,9 +408,13 @@ purple_presence_manager_set_property(GObject *obj, guint param_id,
 	PurplePresenceManager *manager = PURPLE_PRESENCE_MANAGER(obj);
 
 	switch(param_id) {
-		case PROP_FILENAME:
-			purple_presence_manager_set_filename(manager,
-			                                     g_value_get_string(value));
+		case PROP_PATH:
+			purple_presence_manager_set_path(manager,
+			                                 g_value_get_string(value));
+			break;
+		case PROP_ACTIVE:
+			purple_presence_manager_set_active(manager,
+			                                   g_value_get_object(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -372,16 +438,16 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	obj_class->set_property = purple_presence_manager_set_property;
 
 	/**
-	 * PurplePresenceManager:filename:
+	 * PurplePresenceManager:path:
 	 *
-	 * The filename where settings should be stored. If this is %NULL settings
-	 * will not be saved to disk.
+	 * The directory path where settings should be stored. If this is %NULL
+	 * settings will not be saved to disk.
 	 *
 	 * Since: 3.0.0
 	 */
-	properties[PROP_FILENAME] = g_param_spec_string(
-		"filename", "filename",
-		"The name of the file where settings should be stored.",
+	properties[PROP_PATH] = g_param_spec_string(
+		"path", "path",
+		"The directory path where settings should be stored.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -396,7 +462,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 		"active-presence", "active-presence",
 		"The active presence.",
 		PURPLE_TYPE_SAVED_PRESENCE,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
@@ -484,17 +550,17 @@ purple_presence_manager_get_default_as_model(void) {
 }
 
 PurplePresenceManager *
-purple_presence_manager_new(const char *filename) {
+purple_presence_manager_new(const char *path) {
 	return g_object_new(PURPLE_TYPE_PRESENCE_MANAGER,
-	                    "filename", filename,
+	                    "path", path,
 	                    NULL);
 }
 
 const char *
-purple_presence_manager_get_filename(PurplePresenceManager *manager) {
+purple_presence_manager_get_path(PurplePresenceManager *manager) {
 	g_return_val_if_fail(PURPLE_IS_PRESENCE_MANAGER(manager), NULL);
 
-	return manager->filename;
+	return manager->path;
 }
 
 PurpleSavedPresence *
@@ -506,27 +572,21 @@ purple_presence_manager_get_active(PurplePresenceManager *manager) {
 
 gboolean
 purple_presence_manager_set_active(PurplePresenceManager *manager,
-                                   const char *id)
+                                   PurpleSavedPresence *presence)
 {
-	PurpleSavedPresence *presence = NULL;
+	PurpleSavedPresence *found = NULL;
+	const char *id = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PRESENCE_MANAGER(manager), FALSE);
+	g_return_val_if_fail(PURPLE_IS_SAVED_PRESENCE(presence), FALSE);
 
-	if(id != NULL) {
-		presence = purple_presence_manager_find_with_id(manager, id, NULL);
-		if(!PURPLE_IS_SAVED_PRESENCE(presence)) {
-			return FALSE;
-		}
-	}
+	/* We need to make sure the manager knows about the passed in presence. */
+	id = purple_saved_presence_get_id(presence);
+	found = purple_presence_manager_find_with_id(manager, id, NULL);
+	g_return_val_if_fail(PURPLE_IS_SAVED_PRESENCE(found), FALSE);
 
 	if(g_set_object(&manager->active, presence)) {
 		g_object_notify_by_pspec(G_OBJECT(manager), properties[PROP_ACTIVE]);
-
-		/* g_settings_set_string can't handle nulls, so use an empty string if
-		 * it is null.
-		 */
-		g_settings_set_string(manager->settings, "active",
-		                      id == NULL ? "" : id);
 	}
 
 	return TRUE;
@@ -535,28 +595,13 @@ purple_presence_manager_set_active(PurplePresenceManager *manager,
 PurpleSavedPresence *
 purple_presence_manager_create(PurplePresenceManager *manager) {
 	PurpleSavedPresence *presence = NULL;
-	GSettings *settings = NULL;
 	char *id = NULL;
-	char *path = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PRESENCE_MANAGER(manager), FALSE);
 
 	id = g_uuid_string_random();
-	path = purple_presence_manager_path_for_presence(id);
-	settings = g_settings_new_with_backend_and_path(PRESENCE_SCHEMA_ID,
-	                                                manager->backend, path);
-	g_free(path);
-
-	presence = g_object_new(
-		PURPLE_TYPE_SAVED_PRESENCE,
-		"id", id,
-		"settings", settings,
-		NULL);
-
-	g_clear_pointer(&id, g_free);
-	g_clear_object(&settings);
-
-	purple_presence_manager_add(manager, presence);
+	presence = purple_presence_manager_add(manager, id);
+	g_free(id);
 
 	return presence;
 }
@@ -565,6 +610,7 @@ gboolean
 purple_presence_manager_remove(PurplePresenceManager *manager, const char *id)
 {
 	PurpleSavedPresence *presence = NULL;
+	char *filename = NULL;
 	guint index;
 
 	g_return_val_if_fail(PURPLE_IS_PRESENCE_MANAGER(manager), FALSE);
@@ -581,8 +627,10 @@ purple_presence_manager_remove(PurplePresenceManager *manager, const char *id)
 	g_object_ref(presence);
 
 	g_ptr_array_remove_index(manager->presences, index);
-	purple_presence_manager_update_presences_setting(manager);
-	purple_saved_presence_reset(presence);
+
+	filename = purple_presence_manager_get_path_for_id(manager, id);
+	g_remove(filename);
+	g_clear_pointer(&filename, g_free);
 
 	g_signal_emit(manager, signals[SIG_REMOVED], 0, presence);
 	g_list_model_items_changed(G_LIST_MODEL(manager), index, 1, 0);

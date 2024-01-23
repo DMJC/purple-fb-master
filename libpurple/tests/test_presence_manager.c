@@ -71,7 +71,6 @@ static void
 test_purple_presence_manager_add_remove(void) {
 	PurplePresenceManager *manager = NULL;
 	PurpleSavedPresence *presence = NULL;
-	GListModel *model = NULL;
 	gboolean success = FALSE;
 	guint len = 0;
 	guint added = 0;
@@ -80,26 +79,6 @@ test_purple_presence_manager_add_remove(void) {
 	const char *id = NULL;
 
 	manager = purple_presence_manager_new(NULL);
-
-	/* When a presence manager is created, if there are no saved statuses it
-	 * adds some default ones and sets the active presence. We need to clear
-	 * all of that to get to a known state.
-	 *
-	 * The default statuses are checked in test_purple_presence_manager_new.
-	 */
-	model = G_LIST_MODEL(manager);
-	purple_presence_manager_set_active(manager, NULL);
-	while(g_list_model_get_n_items(model) > 0) {
-		PurpleSavedPresence *presence = NULL;
-
-		/* Since we're removing items, the positions change, so we just always
-		 * want to remove the item at position 0.
-		 */
-		presence = g_list_model_get_item(model, 0);
-		purple_presence_manager_remove(manager,
-		                               purple_saved_presence_get_id(presence));
-		g_assert_finalize_object(presence);
-	}
 
 	/* Connect all of our signals to make sure they're being emitted. */
 	g_signal_connect(manager, "added",
@@ -113,7 +92,8 @@ test_purple_presence_manager_add_remove(void) {
 	                 &changed);
 
 	len = g_list_model_get_n_items(G_LIST_MODEL(manager));
-	g_assert_cmpuint(len, ==, 0);
+	/* The manager makes sure we always have online and offline presences. */
+	g_assert_cmpuint(len, ==, 2);
 
 	presence = purple_presence_manager_create(manager);
 	g_assert_true(PURPLE_IS_SAVED_PRESENCE(presence));
@@ -126,7 +106,7 @@ test_purple_presence_manager_add_remove(void) {
 	g_assert_nonnull(id);
 
 	len = g_list_model_get_n_items(G_LIST_MODEL(manager));
-	g_assert_cmpuint(len, ==, 1);
+	g_assert_cmpuint(len, ==, 3);
 
 	success = purple_presence_manager_remove(manager, id);
 	g_assert_true(success);
@@ -135,7 +115,7 @@ test_purple_presence_manager_add_remove(void) {
 	g_assert_cmpuint(changed, ==, 2);
 
 	len = g_list_model_get_n_items(G_LIST_MODEL(manager));
-	g_assert_cmpuint(len, ==, 0);
+	g_assert_cmpuint(len, ==, 2);
 
 	g_clear_object(&presence);
 	g_clear_object(&manager);
@@ -145,32 +125,34 @@ static void
 test_purple_presence_manager_persistence(void) {
 	PurplePresenceManager *manager = NULL;
 	PurpleSavedPresence *presence = NULL;
+	char *path = NULL;
 	char *filename = NULL;
 	char *old_id = NULL;
 	const char *id = NULL;
 	const char *id1 = NULL;
 	gboolean ret = FALSE;
 
-	filename = g_build_filename(TEST_CACHE_DIR,
-	                            "presence_manager_persistence.ini",
-	                            NULL);
+	path = g_build_filename(TEST_CACHE_DIR, "presence_manager_persistence",
+	                        NULL);
 
 	/* Remove the file if it exists so we can start from a known state. */
+	filename = g_build_filename(path, "manager.ini", NULL);
 	g_remove(filename);
+	g_clear_pointer(&filename, g_free);
 
 	/* Create the manager, add a presence, and make it active. */
-	manager = purple_presence_manager_new(filename);
+	manager = purple_presence_manager_new(path);
 	g_assert_true(PURPLE_IS_PRESENCE_MANAGER(manager));
 
 	presence = purple_presence_manager_create(manager);
-	g_assert_true(PURPLE_IS_SAVED_PRESENCE(presence));
+	purple_saved_presence_set_name(presence, "test-presence");
 
 	/* Save the id of the presence as we need to use it later. */
 	id = purple_saved_presence_get_id(presence);
 	old_id = g_strdup(id);
 
 	/* Make the presence active. */
-	ret = purple_presence_manager_set_active(manager, id);
+	ret = purple_presence_manager_set_active(manager, presence);
 	g_assert_true(ret);
 	g_clear_object(&presence);
 
@@ -187,7 +169,7 @@ test_purple_presence_manager_persistence(void) {
 	g_clear_object(&manager);
 
 	/* Now create the manager again and verify that everything was restored. */
-	manager = purple_presence_manager_new(filename);
+	manager = purple_presence_manager_new(path);
 	g_assert_true(PURPLE_IS_PRESENCE_MANAGER(manager));
 
 	presence = purple_presence_manager_get_active(manager);
@@ -199,7 +181,7 @@ test_purple_presence_manager_persistence(void) {
 
 	/* Cleanup. */
 	g_clear_object(&manager);
-	g_clear_pointer(&filename, g_free);
+	g_clear_pointer(&path, g_free);
 }
 
 /******************************************************************************

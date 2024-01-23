@@ -10,7 +10,7 @@
     <value nick="streaming" value="6"/>
   </enum>
 
-  <schema id="im.pidgin.Purple.SavedPresence">
+  <schema path="/purple/saved-presence/" id="im.pidgin.Purple.SavedPresence">
     <key name="last-used" type="s">
       <default>""</default>
       <summary>The last time this presence was used</summary>
@@ -62,23 +62,11 @@
 
   <schema path="/purple/presence-manager/" id="im.pidgin.Purple.PresenceManager">
     <key name="active" type="s">
-      <default>""</default>
+      <default>"ffffffff-ffff-ffff-ffff-ffffffffffff"</default>
       <summary>The id of the active presence</summary>
       <description>
-        The name of the active presence that the libpurple user is currently
+        The id of the active presence that the libpurple user is currently
         using.
-
-        The presence itself should be have a path of `/presences/%name%` inside
-        the im.pidgin.Purple.PresenceManager settings.
-      </description>
-    </key>
-
-    <key name="presences" type="as">
-      <default>[]</default>
-      <summary>A list of the ids of all saved presences</summary>
-      <description>
-        The list is used to find all of the saved presences as they are
-        relocatable settings.
       </description>
     </key>
   </schema>

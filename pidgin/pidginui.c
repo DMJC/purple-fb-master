@@ -185,13 +185,13 @@ pidgin_ui_get_history_adapter(G_GNUC_UNUSED PurpleUi *ui) {
 static PurplePresenceManager *
 pidgin_ui_get_presence_manager(G_GNUC_UNUSED PurpleUi *ui) {
 	PurplePresenceManager *manager = NULL;
-	char *filename = NULL;
+	char *path = NULL;
 
 	g_mkdir_with_parents(purple_config_dir(), 0700);
 
-	filename = g_build_filename(purple_config_dir(), "presences.ini", NULL);
-	manager = purple_presence_manager_new(filename);
-	g_free(filename);
+	path = g_build_filename(purple_config_dir(), "presences", NULL);
+	manager = purple_presence_manager_new(path);
+	g_free(path);
 
 	return manager;
 }

@@ -24,7 +24,6 @@
 
 #include "purpleenums.h"
 #include "purplesavedpresence.h"
-#include "purplesavedpresenceprivate.h"
 #include "util.h"
 
 struct _PurpleSavedPresence {
@@ -434,27 +433,6 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
-}
-
-/******************************************************************************
- * Private API
- *****************************************************************************/
-void
-purple_saved_presence_reset(PurpleSavedPresence *presence) {
-	GSettingsSchema *schema = NULL;
-	GStrv keys = NULL;
-
-	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
-
-	g_object_get(presence->settings, "settings-schema", &schema, NULL);
-
-	keys = g_settings_schema_list_keys(schema);
-	for(int i = 0; keys[i] != NULL; i++) {
-		g_settings_reset(presence->settings, keys[i]);
-	}
-	g_strfreev(keys);
-
-	g_clear_pointer(&schema, g_settings_schema_unref);
 }
 
 /******************************************************************************

@@ -248,7 +248,6 @@ purple_private_headers = [
 	'purplefiletransfermanagerprivate.h',
 	'purplepresencemanagerprivate.h',
 	'purpleprivate.h',
-	'purplesavedpresenceprivate.h',
 ]
 
 purple_request_headers = [

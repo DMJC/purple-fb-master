@@ -124,7 +124,7 @@ test_purple_saved_presence_set_settings(void) {
 	char *timestamp = NULL;
 
 	backend = g_memory_settings_backend_new();
-	settings = g_settings_new_with_backend_and_path(SCHEMA_ID, backend, "/");
+	settings = g_settings_new_with_backend(SCHEMA_ID, backend);
 
 	presence = g_object_new(
 		PURPLE_TYPE_SAVED_PRESENCE,
@@ -178,7 +178,7 @@ test_purple_saved_presence_set_properties(void) {
 	char *timestamp = NULL;
 
 	backend = g_memory_settings_backend_new();
-	settings = g_settings_new_with_backend_and_path(SCHEMA_ID, backend, "/");
+	settings = g_settings_new_with_backend(SCHEMA_ID, backend);
 
 	presence = g_object_new(
 		PURPLE_TYPE_SAVED_PRESENCE,

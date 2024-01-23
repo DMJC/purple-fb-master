@@ -48,7 +48,7 @@ G_DECLARE_FINAL_TYPE(PurplePresenceManager, purple_presence_manager, PURPLE,
  *
  * A manager for [class@SavedPresence]'s.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -63,7 +63,7 @@ G_DECLARE_FINAL_TYPE(PurplePresenceManager, purple_presence_manager, PURPLE,
  *
  * Returns: (transfer none) (nullable): The default presence manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePresenceManager *purple_presence_manager_get_default(void);
@@ -84,39 +84,39 @@ PurplePresenceManager *purple_presence_manager_get_default(void);
  * Returns: (transfer none) (nullable): The default presence manager type cast
  *          to a list model.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_presence_manager_get_default_as_model(void);
 
 /**
  * purple_presence_manager_new:
- * @filename: (nullable): An optional filename where settings will be stored.
+ * @path: (nullable): An optional directory path where settings will be stored.
  *
  * Creates a new presence manager instance.
  *
- * If @filename is %NULL, settings will not be stored to disk.
+ * If @path is %NULL, settings will not be stored to disk.
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurplePresenceManager *purple_presence_manager_new(const char *filename);
+PurplePresenceManager *purple_presence_manager_new(const char *path);
 
 /**
- * purple_presence_manager_get_filename:
+ * purple_presence_manager_get_path:
  * @manager: The instance.
  *
- * Gets the file name that @manager is using for storage.
+ * Gets the directory path that @manager is using for storage.
  *
- * Returns: (nullable): The filename where settings are being saved to disk or
- *          %NULL.
+ * Returns: (nullable): The directory path where settings are being saved to
+ *          disk or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const char *purple_presence_manager_get_filename(PurplePresenceManager *manager);
+const char *purple_presence_manager_get_path(PurplePresenceManager *manager);
 
 /**
  * purple_presence_manager_get_active:
@@ -127,7 +127,7 @@ const char *purple_presence_manager_get_filename(PurplePresenceManager *manager)
  * Returns: (transfer none) (nullable): The active presence if there is one,
  *          otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleSavedPresence *purple_presence_manager_get_active(PurplePresenceManager *manager);
@@ -135,21 +135,19 @@ PurpleSavedPresence *purple_presence_manager_get_active(PurplePresenceManager *m
 /**
  * purple_presence_manager_set_active:
  * @manager: The instance.
- * @id: The id of the presence to make active.
+ * @presence: The presence to set as active.
  *
- * Sets the active presence to the [class@SavedPresence] with a
- * [property@SavedPresence:id] of @id.
+ * Sets the active presence to @presence.
  *
- * If @manager doesn't know of a presence with an id of @id, %FALSE will be
- * returned to indicate failure.
+ * If @manager doesn't know about @presence, %FALSE will be returned to
+ * indicate a failure.
  *
- * Returns: %TRUE if a presence was found with an id of @id and made active,
- *          otherwise %FALSE.
+ * Returns: %TRUE if a presence was found and made active, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-gboolean purple_presence_manager_set_active(PurplePresenceManager *manager, const char *id);
+gboolean purple_presence_manager_set_active(PurplePresenceManager *manager, PurpleSavedPresence *presence);
 
 /**
  * purple_presence_manager_create:
@@ -163,7 +161,7 @@ gboolean purple_presence_manager_set_active(PurplePresenceManager *manager, cons
  *
  * Returns: (transfer full): The new [class@SavedPresence].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleSavedPresence *purple_presence_manager_create(PurplePresenceManager *manager);
@@ -179,7 +177,7 @@ PurpleSavedPresence *purple_presence_manager_create(PurplePresenceManager *manag
  * Returns: %TRUE if a [class@SavedPresence] was found with @id and removed,
  *          otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_presence_manager_remove(PurplePresenceManager *manager, const char *id);
