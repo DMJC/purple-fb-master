@@ -37,7 +37,8 @@ struct _JabberOOBXfer {
 	SoupMessage *msg;
 };
 
-G_DEFINE_DYNAMIC_TYPE(JabberOOBXfer, jabber_oob_xfer, PURPLE_TYPE_XFER);
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(JabberOOBXfer, jabber_oob_xfer,
+                               PURPLE_TYPE_XFER, G_TYPE_FLAG_FINAL, {})
 
 static void jabber_oob_xfer_xfer_init(PurpleXfer *xfer)
 {

@@ -74,7 +74,8 @@ struct _JabberSIXfer {
 	PurpleCircularBuffer *ibb_buffer;
 };
 
-G_DEFINE_DYNAMIC_TYPE(JabberSIXfer, jabber_si_xfer, PURPLE_TYPE_XFER);
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(JabberSIXfer, jabber_si_xfer, PURPLE_TYPE_XFER,
+                               G_TYPE_FLAG_FINAL, {})
 
 /* some forward declarations */
 static void jabber_si_xfer_ibb_send_init(JabberStream *js, PurpleXfer *xfer);

@@ -114,7 +114,8 @@ xmpp_protocol_class_finalize(G_GNUC_UNUSED XMPPProtocolClass *klass)
 {
 }
 
-G_DEFINE_DYNAMIC_TYPE(XMPPProtocol, xmpp_protocol, JABBER_TYPE_PROTOCOL);
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(XMPPProtocol, xmpp_protocol,
+                               JABBER_TYPE_PROTOCOL, G_TYPE_FLAG_FINAL, {})
 
 /* This exists solely because the above macro makes xmpp_protocol_register_type
  * static. */

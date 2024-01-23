@@ -67,7 +67,8 @@ struct _XepXfer
 	PurpleContact *contact;
 };
 
-G_DEFINE_DYNAMIC_TYPE(XepXfer, xep_xfer, PURPLE_TYPE_XFER);
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(XepXfer, xep_xfer, PURPLE_TYPE_XFER,
+                               G_TYPE_FLAG_FINAL, {})
 
 static void
 xep_ft_si_reject(BonjourData *bd, const char *id, const char *to, const char *error_code, const char *error_type)

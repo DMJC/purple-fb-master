@@ -166,8 +166,9 @@ purple_ircv3_capabilities_default_ready_cb(PurpleIRCv3Capabilities *capabilities
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_DYNAMIC_TYPE(PurpleIRCv3Capabilities, purple_ircv3_capabilities,
-                      G_TYPE_OBJECT)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleIRCv3Capabilities,
+                               purple_ircv3_capabilities, G_TYPE_OBJECT,
+                               G_TYPE_FLAG_FINAL, {})
 
 static void
 purple_ircv3_capabilities_get_property(GObject *obj, guint param_id,

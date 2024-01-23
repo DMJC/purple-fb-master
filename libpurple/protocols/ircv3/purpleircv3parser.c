@@ -39,7 +39,7 @@ struct _PurpleIRCv3Parser {
 	GHashTable *handlers;
 };
 
-G_DEFINE_TYPE(PurpleIRCv3Parser, purple_ircv3_parser, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleIRCv3Parser, purple_ircv3_parser, G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers

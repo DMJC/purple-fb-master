@@ -68,7 +68,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	JingleSession,
 	jingle_session,
 	G_TYPE_OBJECT,
-	0,
+	G_TYPE_FLAG_FINAL,
 	G_ADD_PRIVATE_DYNAMIC(JingleSession)
 );
 

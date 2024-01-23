@@ -26,8 +26,8 @@ struct _PurpleDemoConnection {
 	PurpleConnection parent;
 };
 
-G_DEFINE_DYNAMIC_TYPE(PurpleDemoConnection, purple_demo_connection,
-                      PURPLE_TYPE_CONNECTION)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleDemoConnection, purple_demo_connection,
+                               PURPLE_TYPE_CONNECTION, G_TYPE_FLAG_FINAL, {})
 
 /******************************************************************************
  * PurpleConnection Implementation

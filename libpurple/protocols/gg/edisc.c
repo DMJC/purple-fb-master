@@ -1270,7 +1270,8 @@ ggp_edisc_xfer_ticket_changed(PurpleConnection *gc, const char *data)
  * GObject implementation
  ******************************************************************************/
 
-G_DEFINE_DYNAMIC_TYPE(GGPXfer, ggp_xfer, PURPLE_TYPE_XFER);
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(GGPXfer, ggp_xfer, PURPLE_TYPE_XFER,
+                               G_TYPE_FLAG_FINAL, {})
 
 static void
 ggp_xfer_init_xfer(PurpleXfer *xfer) {

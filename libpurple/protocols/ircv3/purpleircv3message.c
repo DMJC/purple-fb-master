@@ -46,7 +46,7 @@ struct _PurpleIRCv3Message {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleIRCv3Message, purple_ircv3_message, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleIRCv3Message, purple_ircv3_message, G_TYPE_OBJECT)
 
 static void
 purple_ircv3_message_finalize(GObject *obj) {
