@@ -77,7 +77,8 @@ struct _PidginXmppConsole {
 	} message;
 };
 
-G_DEFINE_DYNAMIC_TYPE(PidginXmppConsole, pidgin_xmpp_console, GTK_TYPE_WINDOW)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PidginXmppConsole, pidgin_xmpp_console,
+                               GTK_TYPE_WINDOW, G_TYPE_FLAG_FINAL, {})
 
 static PidginXmppConsole *console = NULL;
 

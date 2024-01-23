@@ -418,8 +418,8 @@ void pidgin_disco_dialogs_destroy_all(void)
 /******************************************************************************
  * GObject implementation
  *****************************************************************************/
-
-G_DEFINE_DYNAMIC_TYPE(PidginDiscoDialog, pidgin_disco_dialog, GTK_TYPE_DIALOG)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PidginDiscoDialog, pidgin_disco_dialog,
+                               GTK_TYPE_DIALOG, G_TYPE_FLAG_FINAL, {})
 
 static void
 pidgin_disco_dialog_class_init(PidginDiscoDialogClass *klass)

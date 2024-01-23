@@ -96,7 +96,8 @@ xmpp_disco_service_refresh_child_model(GObject *obj,
 /******************************************************************************
  * GObject implementation
  *****************************************************************************/
-G_DEFINE_DYNAMIC_TYPE(XmppDiscoService, xmpp_disco_service, G_TYPE_OBJECT)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(XmppDiscoService, xmpp_disco_service,
+                               G_TYPE_OBJECT, G_TYPE_FLAG_FINAL, {})
 
 static void
 xmpp_disco_service_get_property(GObject *object, guint prop_id, GValue *value,
