@@ -42,8 +42,9 @@ struct _PurpleKeychainAccess {
 	PurpleCredentialProvider parent;
 };
 
-G_DEFINE_DYNAMIC_TYPE(PurpleKeychainAccess, purple_keychain_access,
-                      PURPLE_TYPE_CREDENTIAL_PROVIDER)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleKeychainAccess, purple_keychain_access,
+                               PURPLE_TYPE_CREDENTIAL_PROVIDER,
+                               G_TYPE_FLAG_FINAL, {})
 
 /* Most of this work is heavily based off of
  * https://stackoverflow.com/a/58850099.

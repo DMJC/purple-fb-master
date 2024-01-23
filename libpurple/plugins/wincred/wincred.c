@@ -49,8 +49,9 @@ struct _PurpleWinCred {
 
 #define PURPLE_WINCRED_ERROR (g_quark_from_static_string("wincred"))
 
-G_DEFINE_DYNAMIC_TYPE(PurpleWinCred, purple_wincred,
-                      PURPLE_TYPE_CREDENTIAL_PROVIDER)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleWinCred, purple_wincred,
+                               PURPLE_TYPE_CREDENTIAL_PROVIDER,
+                               G_TYPE_FLAG_FINAL, {})
 
 /******************************************************************************
  * PurpleCredentialProvider Implementation

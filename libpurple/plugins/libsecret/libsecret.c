@@ -70,8 +70,9 @@ struct _PurpleLibSecret {
 	PurpleCredentialProvider parent;
 };
 
-G_DEFINE_DYNAMIC_TYPE(PurpleLibSecret, purple_libsecret,
-                      PURPLE_TYPE_CREDENTIAL_PROVIDER)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleLibSecret, purple_libsecret,
+                               PURPLE_TYPE_CREDENTIAL_PROVIDER,
+                               G_TYPE_FLAG_FINAL, {})
 
 /******************************************************************************
  * Callbacks

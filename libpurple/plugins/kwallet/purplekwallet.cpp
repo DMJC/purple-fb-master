@@ -49,8 +49,9 @@ struct _PurpleKWalletProvider {
 	PurpleKWalletPlugin::Engine *engine;
 };
 
-G_DEFINE_DYNAMIC_TYPE(PurpleKWalletProvider, purple_kwallet_provider,
-                      PURPLE_TYPE_CREDENTIAL_PROVIDER)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleKWalletProvider, purple_kwallet_provider,
+                               PURPLE_TYPE_CREDENTIAL_PROVIDER,
+                               G_TYPE_FLAG_FINAL, {})
 
 /******************************************************************************
  * Helpers
