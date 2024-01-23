@@ -35,7 +35,6 @@ PROGS = [
     'protocol_roster',
     'protocol_xfer',
     'purplepath',
-    'queued_output_stream',
     'request_field',
     'request_group',
     'request_page',

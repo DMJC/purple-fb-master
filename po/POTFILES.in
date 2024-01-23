@@ -187,7 +187,6 @@ libpurple/purpleui.c
 libpurple/purplewhiteboard.c
 libpurple/purplewhiteboardmanager.c
 libpurple/purplewhiteboarduiops.c
-libpurple/queuedoutputstream.c
 libpurple/request.c
 libpurple/request-datasheet.c
 libpurple/request/purplerequestfield.c
@@ -222,7 +221,6 @@ libpurple/tests/test_markup.c
 libpurple/tests/test_protocol_action.c
 libpurple/tests/test_protocol_xfer.c
 libpurple/tests/test_purplepath.c
-libpurple/tests/test_queued_output_stream.c
 libpurple/tests/test_ui.c
 libpurple/tests/test_util.c
 libpurple/tests/test_whiteboard_manager.c
