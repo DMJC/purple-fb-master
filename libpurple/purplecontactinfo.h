@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <birb.h>
+
 #include "purpleavatar.h"
 #include "purplepresence.h"
 #include "purpletags.h"
@@ -524,6 +526,23 @@ int purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b);
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_contact_info_matches(PurpleContactInfo *info, const char *needle);
+
+/**
+ * purple_contact_info_get_menu:
+ * @info: The instance.
+ *
+ * Gets a [class@Birb.ActionMenu] that can be used as a context menu for @info.
+ *
+ * This will emit the [signal@ContactInfo::populate-menu] signals so that
+ * plugins can add additional items. Please note that the order of the menu is
+ * not guaranteed.
+ *
+ * Returns: (transfer full) (nullable): The menu for the contact info or %NULL.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+BirbActionMenu *purple_contact_info_get_menu(PurpleContactInfo *info);
 
 G_END_DECLS
 

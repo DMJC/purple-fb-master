@@ -257,7 +257,7 @@ gstreamer_app = dependency('gstreamer-app-1.0')
 #######################################################################
 # Check for birb glib utility library
 #######################################################################
-birb = dependency('birb')
+birb_dep = dependency('birb')
 
 #######################################################################
 # Check for Native Avahi headers (for Bonjour)

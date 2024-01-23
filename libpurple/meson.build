@@ -387,7 +387,7 @@ libpurple = library('purple3',
                     dependencies : # static_link_libs
                         [dnsapi, ws2_32, glib, gio, gplugin_dep, libsoup,
                          libxml, gdk_pixbuf, gstreamer, gstreamer_app, json,
-                         sqlite3, math])
+                         sqlite3, math, birb_dep])
 
 install_headers(purple_coreheaders,
                 subdir : purple_include_base)
@@ -417,14 +417,14 @@ if enable_introspection
 
 	libpurple_gir = gnome.generate_gir(libpurple,
 	    sources : introspection_sources,
-	    includes : ['GdkPixbuf-2.0', 'GLib-2.0', 'Gio-2.0', 'GObject-2.0', 'Gst-1.0', 'GPlugin-1.0'],
+	    includes : ['Birb-1.0', 'GdkPixbuf-2.0', 'GLib-2.0', 'Gio-2.0', 'GObject-2.0', 'Gst-1.0', 'GPlugin-1.0'],
 	    header : 'purple.h',
 	    namespace : 'Purple',
 	    symbol_prefix : 'purple',
 	    identifier_prefix : 'Purple',
 	    export_packages : purple_filebase,
 	    nsversion : f'@purple_major_version@.@purple_minor_version@',
-	    dependencies: [gplugin_dep],
+	    dependencies: [birb_dep, gplugin_dep],
 	    install : true,
 	    extra_args : ['-DPURPLE_COMPILATION', '--quiet'])
 
@@ -436,7 +436,7 @@ libpurple_dep = declare_dependency(
     sources : [purple_builtheaders] + purple_generated_sources,
     include_directories : [toplevel_inc, libpurple_inc],
     link_with : libpurple,
-    dependencies : [gdk_pixbuf, gstreamer, gplugin_dep, glib, gio])
+    dependencies : [birb_dep, gdk_pixbuf, gstreamer, gplugin_dep, glib, gio])
 
 meson.override_dependency(purple_filebase, libpurple_dep)
 

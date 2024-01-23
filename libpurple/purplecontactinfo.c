@@ -71,6 +71,7 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 enum {
 	SIG_PRESENCE_CHANGED,
+	SIG_POPULATE_MENU,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -623,6 +624,32 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 		2,
 		PURPLE_TYPE_PRESENCE,
 		G_TYPE_PARAM);
+
+	/**
+	 * PurpleContactInfo::populate-menu:
+	 * @info: The instance.
+	 * @menu: The [class@Birb.ActionMenu] to be displayed.
+	 *
+	 * Emitted in response to [method@PurpleContactInfo.get_menu] being called,
+	 * so that plugins can add additional items to @menu.
+	 *
+	 * The user interface is responsible for displaying @menu which means it
+	 * can add additional items, hide items, and lay them out however it
+	 * pleases.
+	 *
+	 * Since: 3.0.0
+	 */
+	signals[SIG_POPULATE_MENU] = g_signal_new_class_handler(
+		"populate-menu",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		1,
+		BIRB_TYPE_ACTION_MENU);
 }
 
 /******************************************************************************
@@ -1149,4 +1176,17 @@ purple_contact_info_matches(PurpleContactInfo *info, const char *needle) {
 
 	/* Nothing matched, so return FALSE. */
 	return FALSE;
+}
+
+BirbActionMenu *
+purple_contact_info_get_menu(PurpleContactInfo *info) {
+	BirbActionMenu *menu = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
+
+	menu = birb_action_menu_new();
+
+	g_signal_emit(info, signals[SIG_POPULATE_MENU], 0, menu);
+
+	return menu;
 }

@@ -21,6 +21,7 @@ if get_option('doc')
 			'--output-dir=@OUTPUT@',
 			'--no-namespace-dir',
 			'--content-dir=@0@'.format(meson.current_source_dir()),
+			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/birb/birb'),
 			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/gplugin/gplugin'),
 			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/libgnt'),
 			'--add-include-path=@0@'.format(meson.project_build_root() / 'libpurple'),

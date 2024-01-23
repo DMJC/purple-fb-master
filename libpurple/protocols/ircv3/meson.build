@@ -64,14 +64,14 @@ install_headers(IRCV3_HEADERS,
 ircv3_prpl = shared_library('ircv3', IRCV3_SOURCES + IRCV3_HEADERS + [ircv3_h],
 	c_args : ['-DPURPLE_IRCV3_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-IRCv3"'],
 	gnu_symbol_visibility : 'hidden',
-	dependencies : [libpurple_dep, birb, glib, gio, hasl],
+	dependencies : [birb_dep, libpurple_dep, glib, gio, hasl],
 	install : true,
 	install_dir : PURPLE_PLUGINDIR)
 
 ircv3_dep = declare_dependency(
 	sources : [IRCV3_SOURCES, IRCV3_HEADERS],
 	include_directories : ircv3_includes,
-	dependencies : [libpurple_dep, birb, glib, gio, hasl])
+	dependencies : [birb_dep, libpurple_dep, glib, gio, hasl])
 
 pkgconfig.generate(
 	# we purposely don't put the library here because you should not be
@@ -101,12 +101,12 @@ if get_option('introspection')
 	gnome.generate_gir(
 		ircv3_introspection_stub,
 		sources : [IRCV3_SOURCES, IRCV3_HEADERS],
-		includes : ['GLib-2.0', 'GObject-2.0', 'GPlugin-1.0', libpurple_gir[0]],
+		includes : ['Birb-1.0', 'GLib-2.0', 'GObject-2.0', 'GPlugin-1.0', libpurple_gir[0]],
 		namespace : 'PurpleIRCv3',
 		symbol_prefix : 'purple_ircv3',
 		nsversion : '1.0',
 		install : true,
-		dependencies: [gplugin_dep],
+		dependencies: [birb_dep, gplugin_dep],
 		export_packages : ['ircv3'],
 		extra_args : ['-DPURPLE_IRCV3_COMPILATION', '--verbose'])
 endif

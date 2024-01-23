@@ -18,6 +18,8 @@
 
 #include <glib.h>
 
+#include <birb.h>
+
 #include <purple.h>
 
 #include "test_ui.h"
@@ -462,6 +464,61 @@ test_purple_contact_info_presence_changed_signal(void) {
 }
 
 /******************************************************************************
+ * get_menu tests
+ *****************************************************************************/
+static void
+test_purple_contact_info_get_menu_populate_cb(PurpleContactInfo *info,
+                                              BirbActionMenu *action_menu,
+                                              gpointer data)
+{
+	GMenu *menu = NULL;
+	guint *counter = data;
+
+	g_assert_true(PURPLE_IS_CONTACT_INFO(info));
+	g_assert_true(BIRB_IS_ACTION_MENU(action_menu));
+
+	menu = birb_action_menu_get_menu(action_menu);
+
+	g_menu_append(menu, "testing", "app.test");
+
+	/* Increment our called counter. */
+	*counter = *counter + 1;
+}
+
+static void
+test_purple_contact_info_get_menu(void) {
+	PurpleContactInfo *info = NULL;
+	BirbActionMenu *action_menu = NULL;
+	GMenu *menu = NULL;
+	guint counter = 0;
+
+	info = purple_contact_info_new(NULL);
+
+	/* Check that we get an empty menu back with no signal handlers. */
+	action_menu = purple_contact_info_get_menu(info);
+	menu = birb_action_menu_get_menu(action_menu);
+	g_assert_true(G_IS_MENU_MODEL(menu));
+	g_assert_cmpuint(g_menu_model_get_n_items(G_MENU_MODEL(menu)), ==, 0);
+	g_clear_object(&action_menu);
+
+	/* Add a signal handler and verify that our items got added. */
+	g_signal_connect(info, "populate-menu",
+	                 G_CALLBACK(test_purple_contact_info_get_menu_populate_cb),
+	                 &counter);
+
+	action_menu = purple_contact_info_get_menu(info);
+	menu = birb_action_menu_get_menu(action_menu);
+	g_assert_cmpuint(counter, ==, 1);
+	g_assert_true(G_IS_MENU_MODEL(menu));
+	g_assert_cmpuint(g_menu_model_get_n_items(G_MENU_MODEL(menu)), ==, 1);
+
+	g_assert_finalize_object(action_menu);
+
+	/* Cleanup. */
+	g_clear_object(&info);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -516,6 +573,9 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/contact-info/presence-changed-signal",
 	                test_purple_contact_info_presence_changed_signal);
+
+	g_test_add_func("/contact-info/get_menu",
+	                test_purple_contact_info_get_menu);
 
 	ret = g_test_run();
 
