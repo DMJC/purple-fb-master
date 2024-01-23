@@ -115,13 +115,18 @@ pidgin_contact_list_search_filter(GObject *item, gpointer data) {
  * Callbacks
  *****************************************************************************/
 static void
-pidgin_contact_list_search_changed_cb(G_GNUC_UNUSED GtkSearchEntry *self,
-                                      gpointer data)
-{
+pidgin_contact_list_search_changed_cb(GtkSearchEntry *self, gpointer data) {
 	PidginContactList *list = data;
 
 	gtk_filter_changed(GTK_FILTER(list->search_filter),
 	                   GTK_FILTER_CHANGE_DIFFERENT);
+
+	/* Make sure the search widget has focus, this allows the user to clear a
+	 * search that has filtered out every item in the list via their keyboard.
+	 */
+	if(!gtk_widget_has_focus(GTK_WIDGET(self))) {
+		gtk_widget_grab_focus(GTK_WIDGET(self));
+	}
 }
 
 static GdkTexture *
@@ -328,10 +333,13 @@ pidgin_contact_list_init(PidginContactList *list) {
 	                        G_CALLBACK(pidgin_contact_list_account_disconnected_cb),
 	                        list, 0);
 
-	/* Setup the search filter. */
+	/* Setup the search filter and forwarding widget. */
 	gtk_custom_filter_set_filter_func(list->search_filter,
 	                                  (GtkCustomFilterFunc)pidgin_contact_list_search_filter,
 	                                  list, NULL);
+
+	gtk_search_entry_set_key_capture_widget(GTK_SEARCH_ENTRY(list->search_entry),
+	                                        GTK_WIDGET(list));
 }
 
 static void
@@ -340,7 +348,7 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 
 	gtk_widget_class_set_template_from_resource(
 	    widget_class,
-	    "/im/pidgin/Pidgin3/ContactList/widget.ui"
+	    "/im/pidgin/Pidgin3/contactlist.ui"
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginContactList,

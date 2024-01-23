@@ -120,7 +120,8 @@ void pidgin_info_pane_set_subtitle(PidginInfoPane *pane, const char *subtitle);
  *
  * Gets the widget that is being displayed at the end of @pane.
  *
- * Returns: (nullable): The child widget or %NULL if one is not set.
+ * Returns: (transfer none) (nullable): The child widget or %NULL if one is not
+ *          set.
  *
  * Since: 3.0
  */

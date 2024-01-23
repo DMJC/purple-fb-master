@@ -311,6 +311,7 @@ pidgin/resources/Whiteboard/whiteboard.ui
 pidgin/resources/Xfer/xfer.ui
 pidgin/resources/gtk/menus.ui
 pidgin/resources/account-row.ui
+pidgin/resources/contactlist.ui
 pidgin/resources/contactlistitem.ui
 pidgin/resources/infopane.ui
 pidgin/win32/gtkwin32dep.c
