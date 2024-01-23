@@ -131,8 +131,8 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	PurpleXmppProtocol,
 	purple_xmpp_protocol,
 	PURPLE_TYPE_PROTOCOL,
-	0,
-	)
+	G_TYPE_FLAG_FINAL,
+	{})
 
 static void
 purple_xmpp_protocol_init(G_GNUC_UNUSED PurpleXmppProtocol *protocol) {

@@ -32,8 +32,8 @@ struct _PurpleXmppConnection {
 	XemeOutputStream *output;
 };
 
-G_DEFINE_DYNAMIC_TYPE(PurpleXmppConnection, purple_xmpp_connection,
-                      PURPLE_TYPE_CONNECTION)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleXmppConnection, purple_xmpp_connection,
+                               PURPLE_TYPE_CONNECTION, G_TYPE_FLAG_FINAL, {})
 
 /******************************************************************************
  * Callbacks
