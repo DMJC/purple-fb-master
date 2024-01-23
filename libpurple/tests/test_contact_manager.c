@@ -20,6 +20,8 @@
 
 #include <purple.h>
 
+#include <birb.h>
+
 #include "test_ui.h"
 
 /******************************************************************************
@@ -466,6 +468,64 @@ test_purple_contact_manager_person_add_via_contact_remove_person_with_contacts(v
 }
 
 /******************************************************************************
+ * propagate_populate_menu tests
+ *****************************************************************************/
+static void
+test_purple_contact_manager_propagate_populate_menu_cb(PurpleContactManager *manager,
+                                                       PurpleContactInfo *info,
+                                                       BirbActionMenu *action_menu,
+                                                       gpointer data)
+{
+	GMenu *menu = NULL;
+	guint *counter = data;
+
+	g_assert_true(PURPLE_IS_CONTACT_MANAGER(manager));
+	g_assert_true(PURPLE_IS_CONTACT_INFO(info));
+	g_assert_true(BIRB_IS_ACTION_MENU(action_menu));
+
+	menu = birb_action_menu_get_menu(action_menu);
+	g_menu_append(menu, "test", "test.action");
+
+	/* Increment our counter. */
+	*counter = *counter + 1;
+}
+
+static void
+test_purple_contact_manager_propagate_populate_menu(void) {
+	PurpleAccount *account = NULL;
+	PurpleContactManager *manager = NULL;
+	PurpleContact *contact = NULL;
+	BirbActionMenu *action_menu = NULL;
+	GMenu *menu = NULL;
+	guint counter = 0;
+
+	account = purple_account_new("test", "test");
+
+	manager = g_object_new(PURPLE_TYPE_CONTACT_MANAGER, NULL);
+	g_signal_connect(manager, "populate-menu",
+	                 G_CALLBACK(test_purple_contact_manager_propagate_populate_menu_cb),
+	                 &counter);
+
+	contact = purple_contact_new(account, NULL);
+	purple_contact_manager_add(manager, contact);
+
+	action_menu = purple_contact_info_get_menu(PURPLE_CONTACT_INFO(contact));
+	g_assert_true(BIRB_IS_ACTION_MENU(action_menu));
+
+	menu = birb_action_menu_get_menu(action_menu);
+	g_assert_true(G_IS_MENU(menu));
+
+	g_assert_cmpuint(counter, ==, 1);
+	g_assert_cmpuint(g_menu_model_get_n_items(G_MENU_MODEL(menu)), ==, 1);
+
+	g_assert_finalize_object(action_menu);
+
+	g_clear_object(&account);
+	g_clear_object(&manager);
+	g_clear_object(&contact);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -500,6 +560,9 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_contact_manager_person_add_remove);
 	g_test_add_func("/contact-manager/person/add-via-contact-remove-person-with-contacts",
 	                test_purple_contact_manager_person_add_via_contact_remove_person_with_contacts);
+
+	g_test_add_func("/contact-manager/propagate-populate-menu",
+	                test_purple_contact_manager_propagate_populate_menu);
 
 	ret = g_test_run();
 

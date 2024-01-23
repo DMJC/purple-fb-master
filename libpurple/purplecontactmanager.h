@@ -43,7 +43,7 @@ G_DECLARE_FINAL_TYPE(PurpleContactManager, purple_contact_manager, PURPLE,
  *
  * A manager for [class@Purple.Contact]s.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -56,7 +56,7 @@ G_DECLARE_FINAL_TYPE(PurpleContactManager, purple_contact_manager, PURPLE,
  *
  * Returns: (transfer none): The default [class@Purple.ContactManager] instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactManager *purple_contact_manager_get_default(void);
@@ -69,7 +69,7 @@ PurpleContactManager *purple_contact_manager_get_default(void);
  * Adds @contact to @manager. If a contact with a matching account and id
  * already exists, no action will be taken.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_manager_add(PurpleContactManager *manager, PurpleContact *contact);
@@ -84,7 +84,7 @@ void purple_contact_manager_add(PurpleContactManager *manager, PurpleContact *co
  * Returns: If @contact is found and removed %TRUE will be returned otherwise
  *          %FALSE will be returned.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_contact_manager_remove(PurpleContactManager *manager, PurpleContact *contact);
@@ -98,7 +98,7 @@ gboolean purple_contact_manager_remove(PurpleContactManager *manager, PurpleCont
  *
  * Returns: %TRUE if anything was removed, %FALSE if nothing was removed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_contact_manager_remove_all(PurpleContactManager *manager, PurpleAccount *account);
@@ -113,7 +113,7 @@ gboolean purple_contact_manager_remove_all(PurpleContactManager *manager, Purple
  * Returns: (transfer none) (nullable): A [iface@Gio.ListModel] of all the
  *          contacts belonging to @account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_contact_manager_get_all(PurpleContactManager *manager, PurpleAccount *account);
@@ -130,7 +130,7 @@ GListModel *purple_contact_manager_get_all(PurpleContactManager *manager, Purple
  * Returns: (transfer full): The [class@Purple.Contact] if found, otherwise
  *          %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContact *purple_contact_manager_find_with_username(PurpleContactManager *manager, PurpleAccount *account, const gchar *username);
@@ -146,7 +146,7 @@ PurpleContact *purple_contact_manager_find_with_username(PurpleContactManager *m
  * Returns: (transfer full): The [class@Purple.Contact] if found, otherwise
  *          %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContact *purple_contact_manager_find_with_id(PurpleContactManager *manager, PurpleAccount *account, const gchar *id);
@@ -163,7 +163,7 @@ PurpleContact *purple_contact_manager_find_with_id(PurpleContactManager *manager
  * This method is meant to help us transition to the new API and this method
  * shouldn't be used elsewhere.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_DEPRECATED
 void purple_contact_manager_add_buddy(PurpleContactManager *manager, PurpleBuddy *buddy);
@@ -180,7 +180,7 @@ void purple_contact_manager_add_buddy(PurpleContactManager *manager, PurpleBuddy
  * automatically add the [class@Purple.Person] instance when
  * [method@Purple.ContactManager.add] is called.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_manager_add_person(PurpleContactManager *manager, PurplePerson *person);
@@ -195,7 +195,7 @@ void purple_contact_manager_add_person(PurpleContactManager *manager, PurplePers
  * Removes @person from @manager optionally removing all of the contacts
  * contained in @person as well if @remove_contacts is %TRUE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_manager_remove_person(PurpleContactManager *manager, PurplePerson *person, gboolean remove_contacts);

@@ -52,7 +52,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleContactInfo, purple_contact_info, PURPLE,
  * A representation of whether or not a contact has permission to contact the
  * user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
@@ -68,7 +68,7 @@ typedef enum {
  *
  * The class struct for [class@Purple.ContactInfo].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleContactInfoClass {
 	/*< private >*/
@@ -85,7 +85,7 @@ struct _PurpleContactInfoClass {
  * need to refer to a user. Be it a chat, an direct message, a file transfer,
  * etc.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -98,7 +98,7 @@ struct _PurpleContactInfoClass {
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_contact_info_new(const gchar *id);
@@ -114,7 +114,7 @@ PurpleContactInfo *purple_contact_info_new(const gchar *id);
  *
  * Returns: The id of the contact.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_contact_info_get_id(PurpleContactInfo *info);
@@ -128,7 +128,7 @@ const gchar *purple_contact_info_get_id(PurpleContactInfo *info);
  * at all. The main intent of this, is for protocols to update the id of an
  * an account when it is connected if the id is missing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_id(PurpleContactInfo *info, const char *id);
@@ -141,7 +141,7 @@ void purple_contact_info_set_id(PurpleContactInfo *info, const char *id);
  *
  * Returns: The username of @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_contact_info_get_username(PurpleContactInfo *info);
@@ -156,7 +156,7 @@ const gchar *purple_contact_info_get_username(PurpleContactInfo *info);
  * This is primarily used by protocol plugins like IRC when a user changes
  * their "nick" which is their username.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_username(PurpleContactInfo *info, const gchar *username);
@@ -171,7 +171,7 @@ void purple_contact_info_set_username(PurpleContactInfo *info, const gchar *user
  * Returns: (nullable): The display name of @info if one is set, otherwise
  *          %NULL will be returned.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_contact_info_get_display_name(PurpleContactInfo *info);
@@ -186,7 +186,7 @@ const gchar *purple_contact_info_get_display_name(PurpleContactInfo *info);
  * This should primarily only be used by protocol plugins and everyone else
  * should be using [method@Purple.ContactInfo.set_alias].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_display_name(PurpleContactInfo *info, const gchar *display_name);
@@ -199,7 +199,7 @@ void purple_contact_info_set_display_name(PurpleContactInfo *info, const gchar *
  *
  * Returns: (nullable): The alias of @info if one is set, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_contact_info_get_alias(PurpleContactInfo *info);
@@ -213,7 +213,7 @@ const gchar *purple_contact_info_get_alias(PurpleContactInfo *info);
  *
  * Protocol plugins may use this value to synchronize across instances.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_alias(PurpleContactInfo *info, const gchar *alias);
@@ -227,7 +227,7 @@ void purple_contact_info_set_alias(PurpleContactInfo *info, const gchar *alias);
  *
  * Returns: The RGB hex code.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_color(PurpleContactInfo *info);
@@ -243,7 +243,7 @@ const char *purple_contact_info_get_color(PurpleContactInfo *info);
  * following it. Different user interfaces may be able to handle additional
  * precision, but using `#RRGGBB` will have the highest compatibility.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_color(PurpleContactInfo *info, const char *color);
@@ -256,7 +256,7 @@ void purple_contact_info_set_color(PurpleContactInfo *info, const char *color);
  *
  * Returns: (nullable): The primary email address or %NULL if not set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_email(PurpleContactInfo *info);
@@ -268,7 +268,7 @@ const char *purple_contact_info_get_email(PurpleContactInfo *info);
  *
  * Sets the primary email address for @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_email(PurpleContactInfo *info, const char *email);
@@ -281,7 +281,7 @@ void purple_contact_info_set_email(PurpleContactInfo *info, const char *email);
  *
  * Returns: (nullable): The primary phone number for the contact.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_phone_number(PurpleContactInfo *info);
@@ -293,7 +293,7 @@ const char *purple_contact_info_get_phone_number(PurpleContactInfo *info);
  *
  * Sets the primary phone number for @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_phone_number(PurpleContactInfo *info, const char *phone_number);
@@ -306,7 +306,7 @@ void purple_contact_info_set_phone_number(PurpleContactInfo *info, const char *p
  *
  * Returns: (transfer none) (nullable): The time zone if set, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GTimeZone *purple_contact_info_get_time_zone(PurpleContactInfo *info);
@@ -318,7 +318,7 @@ GTimeZone *purple_contact_info_get_time_zone(PurpleContactInfo *info);
  *
  * Sets the time zone of @info to @time_zone.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_time_zone(PurpleContactInfo *info, GTimeZone *timezone);
@@ -331,7 +331,7 @@ void purple_contact_info_set_time_zone(PurpleContactInfo *info, GTimeZone *timez
  *
  * Returns: The note.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_note(PurpleContactInfo *info);
@@ -343,7 +343,7 @@ const char *purple_contact_info_get_note(PurpleContactInfo *info);
  *
  * Sets the note for @info to @note.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_note(PurpleContactInfo *info, const char *note);
@@ -356,7 +356,7 @@ void purple_contact_info_set_note(PurpleContactInfo *info, const char *note);
  *
  * Returns: (transfer none): The avatar if set, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_contact_info_get_avatar(PurpleContactInfo *info);
@@ -371,7 +371,7 @@ PurpleAvatar *purple_contact_info_get_avatar(PurpleContactInfo *info);
  *
  * Typically this should only called by the protocol plugin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_avatar(PurpleContactInfo *info, PurpleAvatar *avatar);
@@ -385,7 +385,7 @@ void purple_contact_info_set_avatar(PurpleContactInfo *info, PurpleAvatar *avata
  * Returns: (transfer none) (nullable): The presence for @info if one is
  *          set, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePresence *purple_contact_info_get_presence(PurpleContactInfo *info);
@@ -398,7 +398,7 @@ PurplePresence *purple_contact_info_get_presence(PurpleContactInfo *info);
  *
  * Returns: (transfer none): The tags for @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_contact_info_get_tags(PurpleContactInfo *info);
@@ -410,7 +410,7 @@ PurpleTags *purple_contact_info_get_tags(PurpleContactInfo *info);
  *
  * Sets the person that @info belongs to to @person.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_person(PurpleContactInfo *info, PurplePerson *person);
@@ -424,7 +424,7 @@ void purple_contact_info_set_person(PurpleContactInfo *info, PurplePerson *perso
  * Returns: (transfer none) (nullable): The [class@Purple.Person] that @info
  *          belongs to, or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePerson *purple_contact_info_get_person(PurpleContactInfo *info);
@@ -437,7 +437,7 @@ PurplePerson *purple_contact_info_get_person(PurpleContactInfo *info);
  *
  * Returns: The permission for @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfoPermission purple_contact_info_get_permission(PurpleContactInfo *info);
@@ -449,7 +449,7 @@ PurpleContactInfoPermission purple_contact_info_get_permission(PurpleContactInfo
  *
  * Sets the permission of @info to @permission.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_permission(PurpleContactInfo *info, PurpleContactInfoPermission permission);
@@ -462,7 +462,7 @@ void purple_contact_info_set_permission(PurpleContactInfo *info, PurpleContactIn
  *
  * Returns: (transfer none) (nullable): The sid if set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_sid(PurpleContactInfo *info);
@@ -474,7 +474,7 @@ const char *purple_contact_info_get_sid(PurpleContactInfo *info);
  *
  * Sets the sid, or secondary id, of @info to @sid.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid);
@@ -488,7 +488,7 @@ void purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid);
  *
  * Returns: (transfer none): The name to display for @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_contact_info_get_name_for_display(PurpleContactInfo *info);
@@ -503,7 +503,7 @@ const char *purple_contact_info_get_name_for_display(PurpleContactInfo *info);
  * Returns: less than 0 if @a should be sorted before @b, 0 if they sorted
  *          equally, and greater than 0 if @a should be sorted after @b.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b);
@@ -522,7 +522,7 @@ int purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b);
  * Returns: %TRUE if @needle matches any of the above properties, otherwise
  *          %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_contact_info_matches(PurpleContactInfo *info, const char *needle);
@@ -539,7 +539,7 @@ gboolean purple_contact_info_matches(PurpleContactInfo *info, const char *needle
  *
  * Returns: (transfer full) (nullable): The menu for the contact info or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 BirbActionMenu *purple_contact_info_get_menu(PurpleContactInfo *info);

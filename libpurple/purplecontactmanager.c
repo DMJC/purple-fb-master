@@ -18,6 +18,8 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <birb.h>
+
 #include "purplecontactmanager.h"
 
 #include "purplegdkpixbuf.h"
@@ -30,6 +32,7 @@ enum {
 	SIG_REMOVED,
 	SIG_PERSON_ADDED,
 	SIG_PERSON_REMOVED,
+	SIG_POPULATE_MENU,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -191,6 +194,14 @@ purple_contact_manager_contact_person_changed_cb(GObject *obj,
 }
 
 static void
+purple_contact_manager_contact_populate_menu_cb(PurpleContactInfo *info,
+                                                GMenu *menu,
+                                                gpointer data)
+{
+	g_signal_emit(data, signals[SIG_POPULATE_MENU], 0, info, menu);
+}
+
+static void
 purple_contact_manager_tags_changed_cb(G_GNUC_UNUSED PurpleTags *tags,
                                        G_GNUC_UNUSED const char *tag,
                                        G_GNUC_UNUSED const char *name,
@@ -295,7 +306,7 @@ purple_contact_manager_class_init(PurpleContactManagerClass *klass) {
 	 *
 	 * Emitted after @contact has been added to @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ADDED] = g_signal_new_class_handler(
 		"added",
@@ -316,7 +327,7 @@ purple_contact_manager_class_init(PurpleContactManagerClass *klass) {
 	 *
 	 * Emitted after @contact has been removed from @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REMOVED] = g_signal_new_class_handler(
 		"removed",
@@ -339,7 +350,7 @@ purple_contact_manager_class_init(PurpleContactManagerClass *klass) {
 	 * when a contact is added via [method@Purple.ContactManager.add] but can
 	 * also happen if [method@Purple.ContactManager.add_person] is called.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_PERSON_ADDED] = g_signal_new_class_handler(
 		"person-added",
@@ -361,7 +372,7 @@ purple_contact_manager_class_init(PurpleContactManagerClass *klass) {
 	 * Emitted after @person has been removed from @manager. This typically
 	 * happens when [method@Purple.ContactManager.remove_person] is called.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_PERSON_REMOVED] = g_signal_new_class_handler(
 		"person-removed",
@@ -374,6 +385,31 @@ purple_contact_manager_class_init(PurpleContactManagerClass *klass) {
 		G_TYPE_NONE,
 		1,
 		PURPLE_TYPE_PERSON);
+
+	/**
+	 * PurpleContactManager::populate-menu:
+	 * @manager: The instance.
+	 * @info: The [class@ContactInfo] instance.
+	 * @menu: The [class@Gio.Menu] to populate.
+	 *
+	 * This is a propagation of [signal@ContactInfo::populate-menu]. This means
+	 * that your callback will be called for any contact info to populate its
+	 * context menu.
+	 *
+	 * Since: 3.0
+	 */
+	signals[SIG_POPULATE_MENU] = g_signal_new_class_handler(
+		"populate-menu",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		2,
+		PURPLE_TYPE_CONTACT_INFO,
+		BIRB_TYPE_ACTION_MENU);
 }
 
 /******************************************************************************
@@ -455,15 +491,19 @@ purple_contact_manager_add(PurpleContactManager *manager,
 		tags = purple_contact_info_get_tags(info);
 
 		/* Add some notify signals to track changes. */
-		g_signal_connect_object(contact, "notify::alias",
+		g_signal_connect_object(info, "notify::alias",
 		                        G_CALLBACK(purple_contact_manager_contact_update_cb),
 		                        manager, 0);
-		g_signal_connect_object(contact, "notify::permission",
+		g_signal_connect_object(info, "notify::permission",
 		                        G_CALLBACK(purple_contact_manager_contact_update_cb),
 		                        manager, 0);
-		g_signal_connect_object(contact, "notify::person",
+		g_signal_connect_object(info, "notify::person",
 		                        G_CALLBACK(purple_contact_manager_contact_person_changed_cb),
 		                        manager, 0);
+		g_signal_connect_object(info, "populate-menu",
+		                        G_CALLBACK(purple_contact_manager_contact_populate_menu_cb),
+		                        manager, 0);
+
 		g_signal_connect_object(tags, "added",
 		                        G_CALLBACK(purple_contact_manager_tags_changed_cb),
 		                        contact, 0);

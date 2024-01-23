@@ -360,7 +360,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 *
 	 * The protocol specific id for the contact.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -374,7 +374,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * The username for this contact. In rare cases this can change, like when
 	 * a user changes their "nick" on IRC which is their user name.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_USERNAME] = g_param_spec_string(
 		"username", "username",
@@ -388,7 +388,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * The display name for this contact. This is generally set by the person
 	 * the contact is representing and controlled via the protocol plugin.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DISPLAY_NAME] = g_param_spec_string(
 		"display-name", "display-name",
@@ -402,7 +402,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * The alias for this contact. This is controlled by the libpurple user and
 	 * may be used by the protocol if it allows for aliasing.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ALIAS] = g_param_spec_string(
 		"alias", "alias",
@@ -418,7 +418,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * protocol plugin in the event that the protocol allows people to set a
 	 * highlight/branding color.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_COLOR] = g_param_spec_string(
 		"color", "color",
@@ -432,7 +432,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * The primary email address for the contact. This may also be controlled
 	 * via a protocol plugin in the event that the protocol makes it available.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_EMAIL] = g_param_spec_string(
 		"email", "email",
@@ -446,7 +446,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * The primary phone number for the contact. This may also be set via a
 	 * protocol plugin in the event that the protocol knows it.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PHONE_NUMBER] = g_param_spec_string(
 		"phone-number", "phone-number",
@@ -460,7 +460,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * The time zone for this contact. This is typically controlled by the
 	 * protocol and should only be read by others.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TIME_ZONE] = g_param_spec_boxed(
 		"time-zone", "time-zone",
@@ -475,7 +475,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * a contact and store it server side. This property is where that is kept
 	 * track of.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NOTE] = g_param_spec_string(
 		"note", "note",
@@ -489,7 +489,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * The avatar for this contact. This is typically controlled by the
 	 * protocol and should only be read by others.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_AVATAR] = g_param_spec_object(
 		"avatar", "avatar",
@@ -503,7 +503,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * The [class@Purple.Presence] for this contact. This is typically
 	 * controlled by the protocol and should only be read by others.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PRESENCE] = g_param_spec_object(
 		"presence", "presence",
@@ -516,7 +516,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 *
 	 * The [class@Purple.Tags] for this contact.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TAGS] = g_param_spec_object(
 		"tags", "tags",
@@ -529,7 +529,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 *
 	 * The [class@Purple.Person] that this contact belongs to.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PERSON] = g_param_spec_object(
 		"person", "person",
@@ -542,7 +542,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 *
 	 * The permission level for the contact.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PERMISSION] = g_param_spec_enum(
 		"permission", "permission",
@@ -560,7 +560,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * This could be used to hold the `ident` for an IRC contact, the
 	 * `resource` for an XMPP contact, or something similar.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SID] = g_param_spec_string(
 		"sid", "sid",
@@ -587,7 +587,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 *  * [property@Purple.ContactInfo:username]
 	 *  * [property@Purple.ContactInfo:id]
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NAME_FOR_DISPLAY] = g_param_spec_string(
 		"name-for-display", "name-for-display",
@@ -610,7 +610,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * something like `presence-changed::message` and your callback will only
 	 * be called when the message property of @presence has been changed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_PRESENCE_CHANGED] = g_signal_new_class_handler(
 		"presence-changed",
@@ -637,7 +637,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 	 * can add additional items, hide items, and lay them out however it
 	 * pleases.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_POPULATE_MENU] = g_signal_new_class_handler(
 		"populate-menu",
