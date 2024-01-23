@@ -46,9 +46,9 @@ struct _TestPurpleHistoryAdapter {
 	gboolean write;
 };
 
-G_DEFINE_TYPE(TestPurpleHistoryAdapter,
-              test_purple_history_adapter,
-              PURPLE_TYPE_HISTORY_ADAPTER)
+G_DEFINE_FINAL_TYPE(TestPurpleHistoryAdapter,
+                    test_purple_history_adapter,
+                    PURPLE_TYPE_HISTORY_ADAPTER)
 
 static gboolean
 test_purple_history_adapter_activate(PurpleHistoryAdapter *a,

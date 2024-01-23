@@ -55,9 +55,9 @@ struct _TestPurpleCredentialProvider {
 	PurpleCredentialProvider parent;
 };
 
-G_DEFINE_TYPE(TestPurpleCredentialProvider,
-              test_purple_credential_provider,
-              PURPLE_TYPE_CREDENTIAL_PROVIDER)
+G_DEFINE_FINAL_TYPE(TestPurpleCredentialProvider,
+                    test_purple_credential_provider,
+                    PURPLE_TYPE_CREDENTIAL_PROVIDER)
 
 static void
 test_purple_credential_provider_read_password_async(PurpleCredentialProvider *p,

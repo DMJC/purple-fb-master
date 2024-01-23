@@ -112,7 +112,7 @@ enum {
 };
 static guint signals[N_SIGNALS] = {0, };
 
-G_DEFINE_TYPE(PurpleAccount, purple_account, PURPLE_TYPE_CONTACT_INFO);
+G_DEFINE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE_TYPE_CONTACT_INFO);
 
 /******************************************************************************
  * Helpers

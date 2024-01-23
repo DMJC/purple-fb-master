@@ -26,8 +26,9 @@ struct _PurpleNoopCredentialProvider {
 	PurpleCredentialProvider parent;
 };
 
-G_DEFINE_TYPE(PurpleNoopCredentialProvider, purple_noop_credential_provider,
-              PURPLE_TYPE_CREDENTIAL_PROVIDER)
+G_DEFINE_FINAL_TYPE(PurpleNoopCredentialProvider,
+                    purple_noop_credential_provider,
+                    PURPLE_TYPE_CREDENTIAL_PROVIDER)
 
 /******************************************************************************
  * PurpleCredentialProvider Implementation

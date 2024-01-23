@@ -56,7 +56,7 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES];
 
-G_DEFINE_TYPE(PurpleSavedPresence, purple_saved_presence, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleSavedPresence, purple_saved_presence, G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers

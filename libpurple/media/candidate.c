@@ -64,8 +64,8 @@ enum {
 	PROP_TTL,
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE(PurpleMediaCandidate, purple_media_candidate,
-		G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaCandidate, purple_media_candidate,
+                                 G_TYPE_OBJECT)
 
 static void
 purple_media_candidate_init(PurpleMediaCandidate *info)

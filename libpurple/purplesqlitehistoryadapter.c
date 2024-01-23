@@ -40,8 +40,8 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PurpleSqliteHistoryAdapter, purple_sqlite_history_adapter,
-              PURPLE_TYPE_HISTORY_ADAPTER)
+G_DEFINE_FINAL_TYPE(PurpleSqliteHistoryAdapter, purple_sqlite_history_adapter,
+                    PURPLE_TYPE_HISTORY_ADAPTER)
 
 /******************************************************************************
  * Helpers

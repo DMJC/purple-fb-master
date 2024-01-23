@@ -69,8 +69,8 @@ purple_request_field_string_is_filled(PurpleRequestField *field) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleRequestFieldString, purple_request_field_string,
-              PURPLE_TYPE_REQUEST_FIELD)
+G_DEFINE_FINAL_TYPE(PurpleRequestFieldString, purple_request_field_string,
+                    PURPLE_TYPE_REQUEST_FIELD)
 
 static void
 purple_request_field_string_get_property(GObject *obj, guint param_id,

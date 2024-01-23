@@ -68,7 +68,7 @@ struct _TestPurpleUi {
 
 G_DECLARE_FINAL_TYPE(TestPurpleUi, test_purple_ui, TEST_PURPLE, UI, PurpleUi)
 
-G_DEFINE_TYPE(TestPurpleUi, test_purple_ui, PURPLE_TYPE_UI)
+G_DEFINE_FINAL_TYPE(TestPurpleUi, test_purple_ui, PURPLE_TYPE_UI)
 
 static gboolean
 test_purple_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {

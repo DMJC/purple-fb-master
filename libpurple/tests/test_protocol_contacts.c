@@ -65,11 +65,11 @@ test_purple_protocol_contacts_empty_iface_init(G_GNUC_UNUSED PurpleProtocolConta
 {
 }
 
-G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolContactsEmpty,
-                        test_purple_protocol_contacts_empty,
-                        PURPLE_TYPE_PROTOCOL,
-                        G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_CONTACTS,
-                                              test_purple_protocol_contacts_empty_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(TestPurpleProtocolContactsEmpty,
+                              test_purple_protocol_contacts_empty,
+                              PURPLE_TYPE_PROTOCOL,
+                              G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_CONTACTS,
+                                                    test_purple_protocol_contacts_empty_iface_init))
 
 static void
 test_purple_protocol_contacts_empty_init(G_GNUC_UNUSED TestPurpleProtocolContactsEmpty *empty)
@@ -335,10 +335,10 @@ test_purple_protocol_contacts_iface_init(PurpleProtocolContactsInterface *iface)
 	iface->get_menu = test_purple_protocol_contacts_get_menu;
 }
 
-G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolContacts, test_purple_protocol_contacts,
-                        PURPLE_TYPE_PROTOCOL,
-                        G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_CONTACTS,
-                                              test_purple_protocol_contacts_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(TestPurpleProtocolContacts, test_purple_protocol_contacts,
+                              PURPLE_TYPE_PROTOCOL,
+                              G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_CONTACTS,
+                                                    test_purple_protocol_contacts_iface_init))
 
 static void
 test_purple_protocol_contacts_init(TestPurpleProtocolContacts *protocol_contacts)

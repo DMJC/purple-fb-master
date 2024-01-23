@@ -73,8 +73,8 @@ purple_request_field_int_is_valid(PurpleRequestField *field, char **errmsg) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleRequestFieldInt, purple_request_field_int,
-              PURPLE_TYPE_REQUEST_FIELD)
+G_DEFINE_FINAL_TYPE(PurpleRequestFieldInt, purple_request_field_int,
+                    PURPLE_TYPE_REQUEST_FIELD)
 
 static void
 purple_request_field_int_get_property(GObject *obj, guint param_id,

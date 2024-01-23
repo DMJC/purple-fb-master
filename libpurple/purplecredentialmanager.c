@@ -44,8 +44,8 @@ struct _PurpleCredentialManager {
 	PurpleCredentialProvider *active;
 };
 
-G_DEFINE_TYPE(PurpleCredentialManager, purple_credential_manager,
-              G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE(PurpleCredentialManager, purple_credential_manager,
+                    G_TYPE_OBJECT);
 
 static PurpleCredentialManager *default_manager = NULL;
 

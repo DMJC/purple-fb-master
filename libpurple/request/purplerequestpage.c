@@ -129,9 +129,9 @@ purple_request_page_list_model_init(GListModelInterface *iface) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE_WITH_CODE(PurpleRequestPage, purple_request_page, G_TYPE_OBJECT,
-                        G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL,
-                                              purple_request_page_list_model_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(PurpleRequestPage, purple_request_page, G_TYPE_OBJECT,
+                              G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL,
+                                                    purple_request_page_list_model_init))
 
 static void
 purple_request_page_get_property(GObject *obj, guint param_id, GValue *value,

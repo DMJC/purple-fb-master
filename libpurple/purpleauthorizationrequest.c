@@ -50,8 +50,8 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PurpleAuthorizationRequest, purple_authorization_request,
-              G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleAuthorizationRequest, purple_authorization_request,
+                    G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers

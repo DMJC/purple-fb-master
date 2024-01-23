@@ -41,7 +41,7 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PurpleProxyInfo, purple_proxy_info, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleProxyInfo, purple_proxy_info, G_TYPE_OBJECT)
 
 /******************************************************************************
  * GObject Implementation

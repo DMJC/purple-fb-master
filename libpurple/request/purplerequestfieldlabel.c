@@ -32,8 +32,8 @@ struct _PurpleRequestFieldLabel {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleRequestFieldLabel, purple_request_field_label,
-              PURPLE_TYPE_REQUEST_FIELD)
+G_DEFINE_FINAL_TYPE(PurpleRequestFieldLabel, purple_request_field_label,
+                    PURPLE_TYPE_REQUEST_FIELD)
 
 static void
 purple_request_field_label_init(G_GNUC_UNUSED PurpleRequestFieldLabel *field) {

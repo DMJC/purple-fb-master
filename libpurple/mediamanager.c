@@ -120,8 +120,8 @@ enum {
 };
 static guint purple_media_manager_signals[LAST_SIGNAL] = {0};
 
-G_DEFINE_TYPE_WITH_PRIVATE(PurpleMediaManager, purple_media_manager,
-		G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaManager, purple_media_manager,
+                                 G_TYPE_OBJECT);
 
 static void
 purple_media_manager_class_init (PurpleMediaManagerClass *klass)
@@ -2240,8 +2240,8 @@ enum {
 	PROP_CREATE_CB,
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE(PurpleMediaElementInfo,
-		purple_media_element_info, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaElementInfo,
+                                 purple_media_element_info, G_TYPE_OBJECT);
 
 static void
 purple_media_element_info_init(PurpleMediaElementInfo *info)

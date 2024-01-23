@@ -186,7 +186,8 @@ purple_buddy_presence_get_statuses(PurplePresence *presence) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleBuddyPresence, purple_buddy_presence, PURPLE_TYPE_PRESENCE)
+G_DEFINE_FINAL_TYPE(PurpleBuddyPresence, purple_buddy_presence,
+                    PURPLE_TYPE_PRESENCE)
 
 static void
 purple_buddy_presence_set_property(GObject *obj, guint param_id,

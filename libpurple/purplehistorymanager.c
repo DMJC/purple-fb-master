@@ -41,7 +41,8 @@ struct _PurpleHistoryManager {
 	PurpleHistoryAdapter *active_adapter;
 };
 
-G_DEFINE_TYPE(PurpleHistoryManager, purple_history_manager, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE(PurpleHistoryManager, purple_history_manager,
+                    G_TYPE_OBJECT)
 
 static PurpleHistoryManager *default_manager = NULL;
 

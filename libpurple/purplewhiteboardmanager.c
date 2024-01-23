@@ -74,9 +74,11 @@ purple_whiteboard_manager_list_model_init(GListModelInterface *iface) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE_EXTENDED(PurpleWhiteboardManager, purple_whiteboard_manager,
-                       G_TYPE_OBJECT, G_TYPE_FLAG_FINAL,
-                       G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL, purple_whiteboard_manager_list_model_init));
+G_DEFINE_FINAL_TYPE_WITH_CODE(PurpleWhiteboardManager,
+                              purple_whiteboard_manager,
+                              G_TYPE_OBJECT,
+                              G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL,
+                                                    purple_whiteboard_manager_list_model_init))
 
 static void
 purple_whiteboard_manager_finalize(GObject *obj) {

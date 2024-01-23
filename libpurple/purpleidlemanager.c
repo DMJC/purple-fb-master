@@ -42,7 +42,7 @@ struct _PurpleIdleManager {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleIdleManager, purple_idle_manager, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleIdleManager, purple_idle_manager, G_TYPE_OBJECT)
 
 static void
 purple_idle_manager_finalize(GObject *obj) {

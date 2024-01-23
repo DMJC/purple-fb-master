@@ -67,11 +67,11 @@ test_purple_protocol_conversation_empty_iface_init(G_GNUC_UNUSED PurpleProtocolC
 {
 }
 
-G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolConversationEmpty,
-                        test_purple_protocol_conversation_empty,
-                        PURPLE_TYPE_PROTOCOL,
-                        G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_CONVERSATION,
-                                              test_purple_protocol_conversation_empty_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(TestPurpleProtocolConversationEmpty,
+                              test_purple_protocol_conversation_empty,
+                              PURPLE_TYPE_PROTOCOL,
+                              G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_CONVERSATION,
+                                                    test_purple_protocol_conversation_empty_iface_init))
 
 static void
 test_purple_protocol_conversation_empty_init(G_GNUC_UNUSED TestPurpleProtocolConversationEmpty *empty)
@@ -606,10 +606,11 @@ test_purple_protocol_conversation_iface_init(PurpleProtocolConversationInterface
 	iface->send_typing = test_purple_protocol_conversation_send_typing;
 }
 
-G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolConversation, test_purple_protocol_conversation,
-                        PURPLE_TYPE_PROTOCOL,
-                        G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_CONVERSATION,
-                                              test_purple_protocol_conversation_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(TestPurpleProtocolConversation,
+                              test_purple_protocol_conversation,
+                              PURPLE_TYPE_PROTOCOL,
+                              G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_CONVERSATION,
+                                                    test_purple_protocol_conversation_iface_init))
 
 static void
 test_purple_protocol_conversation_init(TestPurpleProtocolConversation *protocol)

@@ -74,8 +74,8 @@ purple_channel_join_details_set_password_supported(PurpleChannelJoinDetails *det
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleChannelJoinDetails, purple_channel_join_details,
-              G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleChannelJoinDetails, purple_channel_join_details,
+                    G_TYPE_OBJECT)
 
 static void
 purple_channel_join_details_finalize(GObject *obj) {

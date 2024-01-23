@@ -52,7 +52,8 @@ struct _TestPurpleProtocol {
 	gboolean can_connect_finish;
 };
 
-G_DEFINE_TYPE(TestPurpleProtocol, test_purple_protocol, PURPLE_TYPE_PROTOCOL)
+G_DEFINE_FINAL_TYPE(TestPurpleProtocol, test_purple_protocol,
+                    PURPLE_TYPE_PROTOCOL)
 
 static void
 test_purple_protocol_can_connect_async(PurpleProtocol *protocol,

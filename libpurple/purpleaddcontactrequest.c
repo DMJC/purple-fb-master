@@ -47,8 +47,8 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PurpleAddContactRequest, purple_add_contact_request,
-              G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleAddContactRequest, purple_add_contact_request,
+                    G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers

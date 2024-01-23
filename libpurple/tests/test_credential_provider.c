@@ -43,9 +43,9 @@ struct _TestPurpleCredentialProviderEmpty {
 	PurpleCredentialProvider parent;
 };
 
-G_DEFINE_TYPE(TestPurpleCredentialProviderEmpty,
-              test_purple_credential_provider_empty,
-              PURPLE_TYPE_CREDENTIAL_PROVIDER)
+G_DEFINE_FINAL_TYPE(TestPurpleCredentialProviderEmpty,
+                    test_purple_credential_provider_empty,
+                    PURPLE_TYPE_CREDENTIAL_PROVIDER)
 
 static void
 test_purple_credential_provider_empty_read_password_async(G_GNUC_UNUSED PurpleCredentialProvider *provider,
@@ -224,9 +224,9 @@ struct _TestPurpleCredentialProvider {
 	gboolean clear_password_finish;
 };
 
-G_DEFINE_TYPE(TestPurpleCredentialProvider,
-              test_purple_credential_provider,
-              PURPLE_TYPE_CREDENTIAL_PROVIDER)
+G_DEFINE_FINAL_TYPE(TestPurpleCredentialProvider,
+                    test_purple_credential_provider,
+                    PURPLE_TYPE_CREDENTIAL_PROVIDER)
 
 static void
 test_purple_credential_provider_read_password_async(PurpleCredentialProvider *p,

@@ -39,8 +39,8 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PurpleConversationMember, purple_conversation_member,
-              G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleConversationMember, purple_conversation_member,
+                    G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers

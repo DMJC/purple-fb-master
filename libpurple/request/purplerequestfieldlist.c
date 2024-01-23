@@ -48,8 +48,8 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleRequestFieldList, purple_request_field_list,
-              PURPLE_TYPE_REQUEST_FIELD)
+G_DEFINE_FINAL_TYPE(PurpleRequestFieldList, purple_request_field_list,
+                    PURPLE_TYPE_REQUEST_FIELD)
 
 static void
 purple_request_field_list_get_property(GObject *obj, guint param_id, GValue *value,

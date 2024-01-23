@@ -35,7 +35,7 @@ struct _PurpleAttachment {
 	guint64 size;
 };
 
-G_DEFINE_TYPE(PurpleAttachment, purple_attachment, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE(PurpleAttachment, purple_attachment, G_TYPE_OBJECT);
 
 enum {
 	PROP_0 = 0,

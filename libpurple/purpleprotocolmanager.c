@@ -90,10 +90,10 @@ purple_protocol_manager_list_model_iface_init(GListModelInterface *iface) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE_WITH_CODE(PurpleProtocolManager, purple_protocol_manager,
-                        G_TYPE_OBJECT,
-                        G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL,
-                                              purple_protocol_manager_list_model_iface_init));
+G_DEFINE_FINAL_TYPE_WITH_CODE(PurpleProtocolManager, purple_protocol_manager,
+                              G_TYPE_OBJECT,
+                              G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL,
+                                                    purple_protocol_manager_list_model_iface_init));
 
 static void
 purple_protocol_manager_finalize(GObject *obj) {

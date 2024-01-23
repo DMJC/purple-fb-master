@@ -111,8 +111,8 @@ purple_account_presence_get_statuses(PurplePresence *presence) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleAccountPresence, purple_account_presence,
-              PURPLE_TYPE_PRESENCE)
+G_DEFINE_FINAL_TYPE(PurpleAccountPresence, purple_account_presence,
+                    PURPLE_TYPE_PRESENCE)
 
 static void
 purple_account_presence_set_property(GObject *obj, guint param_id,

@@ -78,7 +78,7 @@ purple_chat_user_set_alias(PurpleChatUser *chat_user, const gchar *alias) {
 /**************************************************************************
  * GObject Implementation
  **************************************************************************/
-G_DEFINE_TYPE(PurpleChatUser, purple_chat_user, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE(PurpleChatUser, purple_chat_user, G_TYPE_OBJECT)
 
 static void
 purple_chat_user_set_property(GObject *obj, guint param_id, const GValue *value,

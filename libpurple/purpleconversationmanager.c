@@ -37,8 +37,8 @@ struct _PurpleConversationManager {
 
 static PurpleConversationManager *default_manager = NULL;
 
-G_DEFINE_TYPE(PurpleConversationManager, purple_conversation_manager,
-              G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleConversationManager, purple_conversation_manager,
+                    G_TYPE_OBJECT)
 
 typedef gboolean (*PurpleConversationManagerCompareFunc)(PurpleConversation *conversation, gpointer userdata);
 

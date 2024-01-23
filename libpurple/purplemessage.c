@@ -70,7 +70,7 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES];
 
-G_DEFINE_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers

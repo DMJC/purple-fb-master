@@ -49,7 +49,8 @@ enum {
 
 static GParamSpec *properties[PROP_LAST];
 
-G_DEFINE_TYPE_WITH_PRIVATE(PurpleMediaCodec, purple_media_codec, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaCodec, purple_media_codec,
+                                 G_TYPE_OBJECT)
 
 static void
 purple_media_codec_init(PurpleMediaCodec *info)

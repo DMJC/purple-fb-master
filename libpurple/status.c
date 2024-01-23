@@ -92,7 +92,7 @@ enum
 
 static GParamSpec *properties[PROP_LAST];
 
-G_DEFINE_TYPE(PurpleStatus, purple_status, G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE(PurpleStatus, purple_status, G_TYPE_OBJECT)
 
 static int primitive_scores[] =
 {

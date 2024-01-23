@@ -181,7 +181,7 @@ purple_file_transfer_get_local_file_name_and_size(GFile *local_file,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleFileTransfer, purple_file_transfer, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleFileTransfer, purple_file_transfer, G_TYPE_OBJECT)
 
 static void
 purple_file_transfer_finalize(GObject *obj) {

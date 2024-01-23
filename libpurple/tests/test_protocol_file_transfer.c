@@ -65,11 +65,11 @@ test_purple_protocol_file_transfer_empty_iface_init(G_GNUC_UNUSED PurpleProtocol
 {
 }
 
-G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolFileTransferEmpty,
-                        test_purple_protocol_file_transfer_empty,
-                        PURPLE_TYPE_PROTOCOL,
-                        G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_FILE_TRANSFER,
-                                              test_purple_protocol_file_transfer_empty_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(TestPurpleProtocolFileTransferEmpty,
+                              test_purple_protocol_file_transfer_empty,
+                              PURPLE_TYPE_PROTOCOL,
+                              G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_FILE_TRANSFER,
+                                                    test_purple_protocol_file_transfer_empty_iface_init))
 
 static void
 test_purple_protocol_file_transfer_empty_init(G_GNUC_UNUSED TestPurpleProtocolFileTransferEmpty *empty)
@@ -306,10 +306,11 @@ test_purple_protocol_file_transfer_iface_init(PurpleProtocolFileTransferInterfac
 	iface->receive_finish = test_purple_protocol_file_transfer_receive_finish;
 }
 
-G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolFileTransfer, test_purple_protocol_file_transfer,
-                        PURPLE_TYPE_PROTOCOL,
-                        G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_FILE_TRANSFER,
-                                              test_purple_protocol_file_transfer_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(TestPurpleProtocolFileTransfer,
+                              test_purple_protocol_file_transfer,
+                              PURPLE_TYPE_PROTOCOL,
+                              G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_FILE_TRANSFER,
+                                                    test_purple_protocol_file_transfer_iface_init))
 
 static void
 test_purple_protocol_file_transfer_init(TestPurpleProtocolFileTransfer *protocol_file_transfer)

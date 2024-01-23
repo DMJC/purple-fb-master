@@ -54,8 +54,9 @@ purple_request_field_datasheet_set_sheet(PurpleRequestFieldDatasheet *field,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PurpleRequestFieldDatasheet, purple_request_field_datasheet,
-              PURPLE_TYPE_REQUEST_FIELD)
+G_DEFINE_FINAL_TYPE(PurpleRequestFieldDatasheet,
+                    purple_request_field_datasheet,
+                    PURPLE_TYPE_REQUEST_FIELD)
 
 static void
 purple_request_field_datasheet_get_property(GObject *obj, guint param_id,

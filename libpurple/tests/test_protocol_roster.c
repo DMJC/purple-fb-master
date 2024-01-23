@@ -65,11 +65,11 @@ test_purple_protocol_roster_empty_iface_init(G_GNUC_UNUSED PurpleProtocolRosterI
 {
 }
 
-G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolRosterEmpty,
-                        test_purple_protocol_roster_empty,
-                        PURPLE_TYPE_PROTOCOL,
-                        G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_ROSTER,
-                                              test_purple_protocol_roster_empty_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(TestPurpleProtocolRosterEmpty,
+                              test_purple_protocol_roster_empty,
+                              PURPLE_TYPE_PROTOCOL,
+                              G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_ROSTER,
+                                                    test_purple_protocol_roster_empty_iface_init))
 
 static void
 test_purple_protocol_roster_empty_init(G_GNUC_UNUSED TestPurpleProtocolRosterEmpty *empty)
@@ -296,10 +296,11 @@ test_purple_protocol_roster_iface_init(PurpleProtocolRosterInterface *iface) {
 	iface->remove_finish = test_purple_protocol_roster_remove_finish;
 }
 
-G_DEFINE_TYPE_WITH_CODE(TestPurpleProtocolRoster, test_purple_protocol_roster,
-                        PURPLE_TYPE_PROTOCOL,
-                        G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_ROSTER,
-                                              test_purple_protocol_roster_iface_init))
+G_DEFINE_FINAL_TYPE_WITH_CODE(TestPurpleProtocolRoster,
+                              test_purple_protocol_roster,
+                              PURPLE_TYPE_PROTOCOL,
+                              G_IMPLEMENT_INTERFACE(PURPLE_TYPE_PROTOCOL_ROSTER,
+                                                    test_purple_protocol_roster_iface_init))
 
 static void
 test_purple_protocol_roster_init(G_GNUC_UNUSED TestPurpleProtocolRoster *roster)

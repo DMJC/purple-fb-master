@@ -37,7 +37,7 @@ struct _PurpleTags {
 	GList *tags;
 };
 
-G_DEFINE_TYPE(PurpleTags, purple_tags, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurpleTags, purple_tags, G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers
