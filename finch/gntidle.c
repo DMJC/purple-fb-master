@@ -42,11 +42,10 @@ finch_idle_purple_idle_ui_init(PurpleIdleUiInterface *iface) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE_EXTENDED(
+G_DEFINE_FINAL_TYPE_WITH_CODE(
     FinchIdle,
     finch_idle,
     G_TYPE_OBJECT,
-    0,
     G_IMPLEMENT_INTERFACE(
         PURPLE_TYPE_IDLE_UI,
         finch_idle_purple_idle_ui_init

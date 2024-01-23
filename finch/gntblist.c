@@ -2943,7 +2943,7 @@ GntTree * finch_blist_get_tree(void)
 /**************************************************************************
  * GObject code
  **************************************************************************/
-G_DEFINE_TYPE(FinchBuddyList, finch_buddy_list, PURPLE_TYPE_BUDDY_LIST)
+G_DEFINE_FINAL_TYPE(FinchBuddyList, finch_buddy_list, PURPLE_TYPE_BUDDY_LIST)
 
 static void
 finch_buddy_list_init(FinchBuddyList *self)

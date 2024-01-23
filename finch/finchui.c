@@ -48,7 +48,7 @@ struct _FinchUi {
 	PurpleUi parent;
 };
 
-G_DEFINE_TYPE(FinchUi, finch_ui, PURPLE_TYPE_UI)
+G_DEFINE_FINAL_TYPE(FinchUi, finch_ui, PURPLE_TYPE_UI)
 
 /******************************************************************************
  * PurpleUi Implementation
