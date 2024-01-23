@@ -93,7 +93,7 @@ if DYNAMIC_JABBER
 	    c_args : ['-DPURPLE_XMPP_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple-XMPP"'],
 	    gnu_symbol_visibility : 'hidden',
 	    link_args : jabber_link_args,
-	    dependencies : [gstreamer, idn, libxml, libpurple_dep, libsoup, glib, gio, math],
+	    dependencies : [birb, gstreamer, idn, libxml, libpurple_dep, libsoup, glib, gio, math],
 	    install : true,
 	    install_dir : PURPLE_PLUGINDIR)
 

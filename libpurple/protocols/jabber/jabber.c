@@ -30,6 +30,8 @@
 #include <gplugin.h>
 #include <gplugin-native.h>
 
+#include <birb.h>
+
 #include <purple.h>
 
 #include "auth.h"
@@ -370,10 +372,10 @@ jabber_push_bytes_cb(GObject *source, GAsyncResult *res, gpointer data)
 	gboolean result;
 	GError *error = NULL;
 
-	result = purple_queued_output_stream_push_bytes_finish(stream, res, &error);
+	result = birb_queued_output_stream_push_bytes_finish(stream, res, &error);
 
 	if (!result) {
-		purple_queued_output_stream_clear_queue(stream);
+		birb_queued_output_stream_clear_queue(stream);
 
 		if (error->code != G_IO_ERROR_CANCELLED) {
 			g_prefix_error(&error, "%s", _("Lost connection with server: "));
@@ -395,7 +397,7 @@ static gboolean do_jabber_send_raw(JabberStream *js, const char *data, int len)
 		jabber_stream_restart_inactivity_timer(js);
 
 	output = g_bytes_new(data, len);
-	purple_queued_output_stream_push_bytes_async(
+	birb_queued_output_stream_push_bytes_async(
 	        js->output, output, G_PRIORITY_DEFAULT, js->cancellable,
 	        jabber_push_bytes_cb, js);
 	g_bytes_unref(output);
@@ -602,7 +604,7 @@ jabber_stream_connect_finish(JabberStream *js, GIOStream *stream)
 
 	js->stream = stream;
 	js->input = g_object_ref(g_io_stream_get_input_stream(js->stream));
-	js->output = purple_queued_output_stream_new(
+	js->output = birb_queued_output_stream_new(
 	        g_io_stream_get_output_stream(js->stream));
 
 	if (js->state == JABBER_STREAM_CONNECTING) {
