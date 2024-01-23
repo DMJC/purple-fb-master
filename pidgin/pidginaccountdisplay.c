@@ -83,7 +83,7 @@ pidgin_account_display_refresh(PidginAccountDisplay *display) {
 /******************************************************************************
  * GObject implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountDisplay, pidgin_account_display, GTK_TYPE_BOX)
+G_DEFINE_FINAL_TYPE(PidginAccountDisplay, pidgin_account_display, GTK_TYPE_BOX)
 
 static void
 pidgin_account_display_get_property(GObject *object, guint prop_id,

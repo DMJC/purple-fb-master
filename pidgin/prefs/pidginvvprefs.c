@@ -58,7 +58,7 @@ struct _PidginVVPrefs {
 	} video;
 };
 
-G_DEFINE_TYPE(PidginVVPrefs, pidgin_vv_prefs, ADW_TYPE_PREFERENCES_PAGE)
+G_DEFINE_FINAL_TYPE(PidginVVPrefs, pidgin_vv_prefs, ADW_TYPE_PREFERENCES_PAGE)
 
 /* Keep in sync with voice.level's GtkLevelBar::max-value in the
  * pidgin/resources/Prefs.vv.ui builder file. */

@@ -45,7 +45,7 @@ struct _PidginUi {
 	PurpleUi parent;
 };
 
-G_DEFINE_TYPE(PidginUi, pidgin_ui, PURPLE_TYPE_UI)
+G_DEFINE_FINAL_TYPE(PidginUi, pidgin_ui, PURPLE_TYPE_UI)
 
 /******************************************************************************
  * Helpers

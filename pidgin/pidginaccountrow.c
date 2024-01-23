@@ -40,7 +40,7 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = { NULL, };
 
-G_DEFINE_TYPE(PidginAccountRow, pidgin_account_row, ADW_TYPE_COMBO_ROW)
+G_DEFINE_FINAL_TYPE(PidginAccountRow, pidgin_account_row, ADW_TYPE_COMBO_ROW)
 
 /******************************************************************************
  * Callbacks

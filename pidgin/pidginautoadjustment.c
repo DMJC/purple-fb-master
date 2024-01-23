@@ -30,8 +30,8 @@ struct _PidginAutoAdjustment {
 	gboolean auto_scroll;
 };
 
-G_DEFINE_TYPE(PidginAutoAdjustment, pidgin_auto_adjustment,
-              GTK_TYPE_ADJUSTMENT)
+G_DEFINE_FINAL_TYPE(PidginAutoAdjustment, pidgin_auto_adjustment,
+                    GTK_TYPE_ADJUSTMENT)
 
 /******************************************************************************
  * Callbacks

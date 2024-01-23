@@ -38,7 +38,7 @@ enum {
 
 static GParamSpec *properties[N_PROPERTIES] = {0, };
 
-G_DEFINE_TYPE(PidginInviteDialog, pidgin_invite_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_FINAL_TYPE(PidginInviteDialog, pidgin_invite_dialog, GTK_TYPE_DIALOG)
 
 /******************************************************************************
  * Helpers

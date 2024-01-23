@@ -64,7 +64,8 @@ struct _PidginRoomlistDialog {
 	guint pg_update_to;
 };
 
-G_DEFINE_TYPE(PidginRoomlistDialog, pidgin_roomlist_dialog, GTK_TYPE_DIALOG)
+G_DEFINE_FINAL_TYPE(PidginRoomlistDialog, pidgin_roomlist_dialog,
+                    GTK_TYPE_DIALOG)
 
 typedef struct {
 	PidginRoomlistDialog *dialog;

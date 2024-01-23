@@ -37,7 +37,7 @@ struct _PidginContactList {
 	GtkWidget *search_entry;
 };
 
-G_DEFINE_TYPE(PidginContactList, pidgin_contact_list, GTK_TYPE_BOX)
+G_DEFINE_FINAL_TYPE(PidginContactList, pidgin_contact_list, GTK_TYPE_BOX)
 
 /******************************************************************************
  * Helpers

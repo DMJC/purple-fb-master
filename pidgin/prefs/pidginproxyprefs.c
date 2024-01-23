@@ -48,7 +48,8 @@ struct _PidginProxyPrefs {
 	GtkWidget *password;
 };
 
-G_DEFINE_TYPE(PidginProxyPrefs, pidgin_proxy_prefs, ADW_TYPE_PREFERENCES_PAGE)
+G_DEFINE_FINAL_TYPE(PidginProxyPrefs, pidgin_proxy_prefs,
+                    ADW_TYPE_PREFERENCES_PAGE)
 
 /******************************************************************************
  * Helpers

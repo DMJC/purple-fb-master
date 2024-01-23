@@ -84,7 +84,7 @@ pidgin_keypad_key_pressed_cb(G_GNUC_UNUSED GtkEventControllerKey *controller,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginKeypad, pidgin_keypad, GTK_TYPE_GRID)
+G_DEFINE_FINAL_TYPE(PidginKeypad, pidgin_keypad, GTK_TYPE_GRID)
 
 static void
 pidgin_keypad_init(PidginKeypad *keypad) {

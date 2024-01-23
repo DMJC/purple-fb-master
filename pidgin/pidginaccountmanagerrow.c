@@ -291,8 +291,8 @@ pidgin_account_manager_row_remove_cb(G_GNUC_UNUSED GtkButton *self,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountManagerRow, pidgin_account_manager_row,
-              GTK_TYPE_LIST_BOX_ROW)
+G_DEFINE_FINAL_TYPE(PidginAccountManagerRow, pidgin_account_manager_row,
+                    GTK_TYPE_LIST_BOX_ROW)
 
 static void
 pidgin_account_manager_row_get_property(GObject *obj, guint param_id,

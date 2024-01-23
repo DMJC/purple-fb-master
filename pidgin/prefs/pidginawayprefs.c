@@ -42,7 +42,8 @@ struct _PidginAwayPrefs {
 	GtkWidget *startup_row;
 };
 
-G_DEFINE_TYPE(PidginAwayPrefs, pidgin_away_prefs, ADW_TYPE_PREFERENCES_PAGE)
+G_DEFINE_FINAL_TYPE(PidginAwayPrefs, pidgin_away_prefs,
+                    ADW_TYPE_PREFERENCES_PAGE)
 
 /******************************************************************************
  * Helpers

@@ -57,7 +57,8 @@ pidgin_plugins_dialog_response_cb(GtkDialog* self, gint response_id,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginPluginsDialog, pidgin_plugins_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_FINAL_TYPE(PidginPluginsDialog, pidgin_plugins_dialog,
+                    GTK_TYPE_DIALOG)
 
 static void
 pidgin_plugins_dialog_class_init(PidginPluginsDialogClass *klass) {

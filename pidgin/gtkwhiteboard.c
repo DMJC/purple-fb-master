@@ -81,7 +81,7 @@ struct _PidginWhiteboard
 	gdouble last_y;
 };
 
-G_DEFINE_TYPE(PidginWhiteboard, pidgin_whiteboard, GTK_TYPE_WINDOW)
+G_DEFINE_FINAL_TYPE(PidginWhiteboard, pidgin_whiteboard, GTK_TYPE_WINDOW)
 
 /******************************************************************************
  * Helpers

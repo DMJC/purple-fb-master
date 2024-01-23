@@ -50,8 +50,8 @@ struct _PidginDisplayWindow {
 	GListStore *conversation_model;
 };
 
-G_DEFINE_TYPE(PidginDisplayWindow, pidgin_display_window,
-              GTK_TYPE_APPLICATION_WINDOW)
+G_DEFINE_FINAL_TYPE(PidginDisplayWindow, pidgin_display_window,
+                    GTK_TYPE_APPLICATION_WINDOW)
 
 static GtkWidget *default_window = NULL;
 

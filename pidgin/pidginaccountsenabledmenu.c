@@ -34,8 +34,8 @@ struct _PidginAccountsEnabledMenu {
 	GQueue *accounts;
 };
 
-G_DEFINE_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
-              G_TYPE_MENU_MODEL)
+G_DEFINE_FINAL_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
+                    G_TYPE_MENU_MODEL)
 
 /******************************************************************************
  * Helpers

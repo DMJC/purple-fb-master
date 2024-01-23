@@ -50,7 +50,8 @@ enum {
 	RESPONSE_ADD,
 };
 
-G_DEFINE_TYPE(PidginAccountManager, pidgin_account_manager, GTK_TYPE_DIALOG)
+G_DEFINE_FINAL_TYPE(PidginAccountManager, pidgin_account_manager,
+                    GTK_TYPE_DIALOG)
 
 /******************************************************************************
  * Helpers

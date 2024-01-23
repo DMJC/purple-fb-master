@@ -34,8 +34,8 @@ struct _PidginCredentialPrefs {
 	GtkWidget *credential_list;
 };
 
-G_DEFINE_TYPE(PidginCredentialPrefs, pidgin_credential_prefs,
-              ADW_TYPE_PREFERENCES_PAGE)
+G_DEFINE_FINAL_TYPE(PidginCredentialPrefs, pidgin_credential_prefs,
+                    ADW_TYPE_PREFERENCES_PAGE)
 
 /******************************************************************************
  * Helpers

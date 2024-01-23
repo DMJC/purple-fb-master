@@ -100,7 +100,7 @@ pidgin_im_window_response_cb(AdwMessageDialog *self,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginIMWindow, pidgin_im_window, ADW_TYPE_MESSAGE_DIALOG)
+G_DEFINE_FINAL_TYPE(PidginIMWindow, pidgin_im_window, ADW_TYPE_MESSAGE_DIALOG)
 
 static void
 pidgin_im_window_init(PidginIMWindow *window) {

@@ -78,7 +78,7 @@ static PidginDebugWindow *debug_win = NULL;
 static guint pref_callback_id = 0;
 static guint debug_enabled_timer = 0;
 
-G_DEFINE_TYPE(PidginDebugWindow, pidgin_debug_window, GTK_TYPE_WINDOW);
+G_DEFINE_FINAL_TYPE(PidginDebugWindow, pidgin_debug_window, GTK_TYPE_WINDOW)
 
 static gboolean
 save_default_size_cb(GObject *gobject, G_GNUC_UNUSED GParamSpec *pspec,

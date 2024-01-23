@@ -55,8 +55,8 @@ dropdown_changed_cb(G_GNUC_UNUSED GObject *obj,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginProtocolChooser, pidgin_protocol_chooser,
-              ADW_TYPE_COMBO_ROW)
+G_DEFINE_FINAL_TYPE(PidginProtocolChooser, pidgin_protocol_chooser,
+                    ADW_TYPE_COMBO_ROW)
 
 static void
 pidgin_protocol_chooser_get_property(GObject *obj, guint prop_id,

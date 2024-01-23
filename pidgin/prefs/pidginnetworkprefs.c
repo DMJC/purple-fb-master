@@ -42,8 +42,8 @@ struct _PidginNetworkPrefs {
 	GtkWidget *ports_range_end;
 };
 
-G_DEFINE_TYPE(PidginNetworkPrefs, pidgin_network_prefs,
-              ADW_TYPE_PREFERENCES_PAGE)
+G_DEFINE_FINAL_TYPE(PidginNetworkPrefs, pidgin_network_prefs,
+                    ADW_TYPE_PREFERENCES_PAGE)
 
 /******************************************************************************
  * Helpers

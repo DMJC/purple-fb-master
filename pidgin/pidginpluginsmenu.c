@@ -34,7 +34,7 @@ struct _PidginPluginsMenu {
 	GQueue *plugins;
 };
 
-G_DEFINE_TYPE(PidginPluginsMenu, pidgin_plugins_menu, G_TYPE_MENU_MODEL)
+G_DEFINE_FINAL_TYPE(PidginPluginsMenu, pidgin_plugins_menu, G_TYPE_MENU_MODEL)
 
 /******************************************************************************
  * Helpers

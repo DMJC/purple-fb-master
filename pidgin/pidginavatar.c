@@ -46,7 +46,7 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PidginAvatar, pidgin_avatar, GTK_TYPE_BOX)
+G_DEFINE_FINAL_TYPE(PidginAvatar, pidgin_avatar, GTK_TYPE_BOX)
 
 /******************************************************************************
  * Helpers

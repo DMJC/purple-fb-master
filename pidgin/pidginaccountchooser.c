@@ -57,7 +57,7 @@ pidgin_account_chooser_changed_cb(G_GNUC_UNUSED GObject *obj,
 /******************************************************************************
  * GObject implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountChooser, pidgin_account_chooser, ADW_TYPE_BIN)
+G_DEFINE_FINAL_TYPE(PidginAccountChooser, pidgin_account_chooser, ADW_TYPE_BIN)
 
 static void
 pidgin_account_chooser_get_property(GObject *object, guint prop_id,

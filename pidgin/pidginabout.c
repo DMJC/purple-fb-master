@@ -638,7 +638,7 @@ pidgin_about_dialog_copy_button_cb(GtkButton *button,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAboutDialog, pidgin_about_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_FINAL_TYPE(PidginAboutDialog, pidgin_about_dialog, GTK_TYPE_DIALOG)
 
 static void
 pidgin_about_dialog_class_init(PidginAboutDialogClass *klass) {

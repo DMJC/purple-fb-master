@@ -71,8 +71,8 @@ pidgin_account_filter_connected_match(G_GNUC_UNUSED GtkFilter *self,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountFilterConnected, pidgin_account_filter_connected,
-              GTK_TYPE_FILTER)
+G_DEFINE_FINAL_TYPE(PidginAccountFilterConnected,
+                    pidgin_account_filter_connected, GTK_TYPE_FILTER)
 
 static void
 pidgin_account_filter_connected_init(PidginAccountFilterConnected *filter) {

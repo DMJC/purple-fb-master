@@ -46,8 +46,9 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = { NULL, };
 
-G_DEFINE_TYPE(PidginNotificationAuthorizationRequest,
-              pidgin_notification_authorization_request, ADW_TYPE_ACTION_ROW)
+G_DEFINE_FINAL_TYPE(PidginNotificationAuthorizationRequest,
+                    pidgin_notification_authorization_request,
+                    ADW_TYPE_ACTION_ROW)
 
 /******************************************************************************
  * Helpers

@@ -40,7 +40,7 @@ struct _PidginPrefsWindow {
 	GtkDialog parent;
 };
 
-G_DEFINE_TYPE(PidginPrefsWindow, pidgin_prefs_window, GTK_TYPE_DIALOG);
+G_DEFINE_FINAL_TYPE(PidginPrefsWindow, pidgin_prefs_window, GTK_TYPE_DIALOG)
 
 /******************************************************************************
  * Helpers

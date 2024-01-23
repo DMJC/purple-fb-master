@@ -44,8 +44,8 @@ struct _PidginConversationPrefs {
 	GtkWidget *minimum_entry_lines;
 };
 
-G_DEFINE_TYPE(PidginConversationPrefs, pidgin_conversation_prefs,
-              ADW_TYPE_PREFERENCES_PAGE)
+G_DEFINE_FINAL_TYPE(PidginConversationPrefs, pidgin_conversation_prefs,
+                    ADW_TYPE_PREFERENCES_PAGE)
 
 /******************************************************************************
  * GObject Implementation

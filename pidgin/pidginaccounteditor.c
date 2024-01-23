@@ -1072,8 +1072,8 @@ pidgin_account_editor_proxy_type_changed_cb(G_GNUC_UNUSED GObject *obj,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountEditor, pidgin_account_editor,
-              ADW_TYPE_PREFERENCES_PAGE)
+G_DEFINE_FINAL_TYPE(PidginAccountEditor, pidgin_account_editor,
+                    ADW_TYPE_PREFERENCES_PAGE)
 
 static void
 pidgin_account_editor_get_property(GObject *obj, guint param_id, GValue *value,

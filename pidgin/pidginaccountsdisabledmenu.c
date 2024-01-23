@@ -30,8 +30,8 @@ struct _PidginAccountsDisabledMenu {
 	GList *accounts;
 };
 
-G_DEFINE_TYPE(PidginAccountsDisabledMenu, pidgin_accounts_disabled_menu,
-              G_TYPE_MENU_MODEL)
+G_DEFINE_FINAL_TYPE(PidginAccountsDisabledMenu, pidgin_accounts_disabled_menu,
+                    G_TYPE_MENU_MODEL)
 
 /******************************************************************************
  * Callbacks

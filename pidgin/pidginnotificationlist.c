@@ -36,7 +36,8 @@ struct _PidginNotificationList {
 	GtkWidget *list_box;
 };
 
-G_DEFINE_TYPE(PidginNotificationList, pidgin_notification_list, GTK_TYPE_BOX)
+G_DEFINE_FINAL_TYPE(PidginNotificationList, pidgin_notification_list,
+                    GTK_TYPE_BOX)
 
 /******************************************************************************
  * Helpers

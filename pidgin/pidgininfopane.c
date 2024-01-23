@@ -40,7 +40,7 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE(PidginInfoPane, pidgin_info_pane, GTK_TYPE_BOX)
+G_DEFINE_FINAL_TYPE(PidginInfoPane, pidgin_info_pane, GTK_TYPE_BOX)
 
 /******************************************************************************
  * Callbacks

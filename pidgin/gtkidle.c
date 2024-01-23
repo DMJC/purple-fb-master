@@ -190,11 +190,10 @@ pidgin_idle_purple_ui_init(PurpleIdleUiInterface *iface) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE_EXTENDED(
+G_DEFINE_FINAL_TYPE_WITH_CODE(
 	PidginIdle,
 	pidgin_idle,
 	G_TYPE_OBJECT,
-	0,
 	G_IMPLEMENT_INTERFACE(
 		PURPLE_TYPE_IDLE_UI,
 		pidgin_idle_purple_ui_init

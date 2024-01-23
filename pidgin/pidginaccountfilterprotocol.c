@@ -82,8 +82,8 @@ pidgin_account_filter_protocol_match(G_GNUC_UNUSED GtkFilter *self,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_TYPE(PidginAccountFilterProtocol, pidgin_account_filter_protocol,
-              GTK_TYPE_FILTER)
+G_DEFINE_FINAL_TYPE(PidginAccountFilterProtocol,
+                    pidgin_account_filter_protocol, GTK_TYPE_FILTER)
 
 static void
 pidgin_account_filter_protocol_get_property(GObject *obj, guint param_id,

@@ -45,8 +45,8 @@ struct _PidginChannelJoinDialog {
 	PurpleChannelJoinDetails *details;
 };
 
-G_DEFINE_TYPE(PidginChannelJoinDialog, pidgin_channel_join_dialog,
-              GTK_TYPE_WINDOW)
+G_DEFINE_FINAL_TYPE(PidginChannelJoinDialog, pidgin_channel_join_dialog,
+                    GTK_TYPE_WINDOW)
 
 /******************************************************************************
  * Helpers

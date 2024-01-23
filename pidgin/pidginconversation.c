@@ -51,7 +51,7 @@ struct _PidginConversation {
 	GtkWidget *input;
 };
 
-G_DEFINE_TYPE(PidginConversation, pidgin_conversation, GTK_TYPE_BOX)
+G_DEFINE_FINAL_TYPE(PidginConversation, pidgin_conversation, GTK_TYPE_BOX)
 
 /******************************************************************************
  * Helpers
