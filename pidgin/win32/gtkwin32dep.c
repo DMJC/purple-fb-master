@@ -40,8 +40,6 @@
 #include "resource.h"
 
 #include "gtkwin32dep.h"
-#include "gtkblist.h"
-#include "gtkconv.h"
 #include "pidgindisplaywindow.h"
 
 /*
