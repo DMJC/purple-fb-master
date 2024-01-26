@@ -40,10 +40,10 @@ enum
 	PROP_TOTAL_SIZE,
 	PROP_CURRENT_SIZE,
 	PROP_ONLINE_COUNT,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(PurpleCountingNode, purple_counting_node,
 		PURPLE_TYPE_BLIST_NODE);
@@ -244,6 +244,6 @@ purple_counting_node_class_init(PurpleCountingNodeClass *klass)
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS
 	);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 

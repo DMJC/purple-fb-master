@@ -132,10 +132,10 @@ enum
 	PROP_STATUS,
 	PROP_PROGRESS,
 	PROP_VISIBLE,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 /* GObject signal enums */
 enum
@@ -146,9 +146,9 @@ enum
 	SIG_WRITE_LOCAL,
 	SIG_DATA_NOT_SENT,
 	SIG_ADD_THUMBNAIL,
-	SIG_LAST
+	N_SIGNALS,
 };
-static guint signals[SIG_LAST] = {0};
+static guint signals[N_SIGNALS] = {0, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleXfer, purple_xfer, G_TYPE_OBJECT);
 
@@ -2279,7 +2279,7 @@ purple_xfer_class_init(PurpleXferClass *klass)
 	        "Hint for UIs whether this transfer should be visible.", FALSE,
 	        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/* Signals */
 

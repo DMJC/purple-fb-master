@@ -37,17 +37,17 @@ typedef struct
 } PurpleMediaCodecPrivate;
 
 enum {
-	PROP_CODEC_0,
+	PROP_0,
 	PROP_ID,
 	PROP_ENCODING_NAME,
 	PROP_MEDIA_TYPE,
 	PROP_CLOCK_RATE,
 	PROP_CHANNELS,
 	PROP_OPTIONAL_PARAMS,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaCodec, purple_media_codec,
                                  G_TYPE_OBJECT)
@@ -194,7 +194,7 @@ purple_media_codec_class_init(PurpleMediaCodecClass *klass)
 			"A list of optional parameters for the codec.",
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(gobject_class, PROP_LAST, properties);
+	g_object_class_install_properties(gobject_class, N_PROPERTIES, properties);
 }
 
 PurpleMediaCodec *

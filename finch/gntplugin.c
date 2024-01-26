@@ -39,7 +39,7 @@ enum
 {
 	PROP_0,
 	PROP_GNT_PREF_FRAME_CB,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
 static struct

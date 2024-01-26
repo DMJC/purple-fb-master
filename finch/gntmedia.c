@@ -74,14 +74,15 @@ static void finch_media_get_property (GObject *object, guint prop_id, GValue *va
 static void finch_media_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
 
 enum {
-	MESSAGE,
-	LAST_SIGNAL
+	SIG_MESSAGE,
+	N_SIGNALS,
 };
-static guint finch_media_signals[LAST_SIGNAL] = {0};
+static guint finch_media_signals[N_SIGNALS] = {0, };
 
 enum {
 	PROP_0,
 	PROP_MEDIA,
+	N_PROPERTIES,
 };
 
 G_DEFINE_TYPE(FinchMedia, finch_media, GNT_TYPE_BOX);
@@ -102,7 +103,7 @@ finch_media_class_init (FinchMediaClass *klass)
 			PURPLE_TYPE_MEDIA,
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
-	finch_media_signals[MESSAGE] = g_signal_new("message", G_TYPE_FROM_CLASS(klass),
+	finch_media_signals[SIG_MESSAGE] = g_signal_new("message", G_TYPE_FROM_CLASS(klass),
 					G_SIGNAL_RUN_LAST, 0, NULL, NULL,
 					g_cclosure_marshal_VOID__STRING,
 					G_TYPE_NONE, 1, G_TYPE_STRING);
@@ -134,7 +135,7 @@ finch_media_finalize (GObject *media)
 static void
 finch_media_emit_message(FinchMedia *gntmedia, const char *msg)
 {
-	g_signal_emit(gntmedia, finch_media_signals[MESSAGE], 0, msg);
+	g_signal_emit(gntmedia, finch_media_signals[SIG_MESSAGE], 0, msg);
 }
 
 static void

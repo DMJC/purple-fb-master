@@ -41,13 +41,13 @@ enum
 	PROP_0,
 	PROP_ALIAS,
 	PROP_PRIORITY_BUDDY,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
 /******************************************************************************
  * Globals
  *****************************************************************************/
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleMetaContact, purple_meta_contact,
 		PURPLE_TYPE_COUNTING_NODE);
@@ -345,7 +345,7 @@ static void purple_meta_contact_class_init(PurpleMetaContactClass *klass)
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS
 	);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 PurpleMetaContact *

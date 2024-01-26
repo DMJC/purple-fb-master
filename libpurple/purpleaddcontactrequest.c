@@ -33,7 +33,7 @@ struct _PurpleAddContactRequest {
 
 enum {
 	SIG_ADD,
-	N_SIGNALS
+	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
 

@@ -90,10 +90,10 @@ enum {
 	PROP_ACCOUNT,
 	PROP_PASSWORD,
 	PROP_DISPLAY_NAME,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST] = {NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 static GList *connections = NULL;
 static GList *connections_connected = NULL;
@@ -947,7 +947,7 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 		"Your name that appears to other people.", NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 gboolean

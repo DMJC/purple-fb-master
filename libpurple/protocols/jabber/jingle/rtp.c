@@ -58,10 +58,10 @@ enum {
 	PROP_0,
 	PROP_MEDIA_TYPE,
 	PROP_SSRC,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	JingleRtp,
@@ -776,7 +776,7 @@ jingle_rtp_class_init (JingleRtpClass *klass)
 			NULL,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************

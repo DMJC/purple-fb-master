@@ -29,14 +29,14 @@ struct _PidginInviteDialog {
 };
 
 enum {
-	PROP_ZERO,
+	PROP_0,
 	PROP_CONTACT,
 	PROP_MESSAGE,
 	PROP_CONVERSATION,
 	N_PROPERTIES,
 };
 
-static GParamSpec *properties[N_PROPERTIES] = {0, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PidginInviteDialog, pidgin_invite_dialog, GTK_TYPE_DIALOG)
 

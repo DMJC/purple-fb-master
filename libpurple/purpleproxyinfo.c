@@ -37,7 +37,7 @@ enum {
     PROP_PORT,
     PROP_USERNAME,
     PROP_PASSWORD,
-    N_PROPERTIES
+    N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 

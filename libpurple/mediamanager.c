@@ -112,13 +112,13 @@ static void purple_media_manager_register_static_elements(PurpleMediaManager *ma
 
 
 enum {
-	INIT_MEDIA,
-	INIT_PRIVATE_MEDIA,
-	UI_CAPS_CHANGED,
-	ELEMENTS_CHANGED,
-	LAST_SIGNAL
+	SIG_INIT_MEDIA,
+	SIG_INIT_PRIVATE_MEDIA,
+	SIG_UI_CAPS_CHANGED,
+	SIG_ELEMENTS_CHANGED,
+	N_SIGNALS,
 };
-static guint purple_media_manager_signals[LAST_SIGNAL] = {0};
+static guint signals[N_SIGNALS] = {0, };
 
 G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaManager, purple_media_manager,
                                  G_TYPE_OBJECT);
@@ -130,30 +130,28 @@ purple_media_manager_class_init (PurpleMediaManagerClass *klass)
 
 	gobject_class->finalize = purple_media_manager_finalize;
 
-	purple_media_manager_signals[INIT_MEDIA] = g_signal_new ("init-media",
+	signals[SIG_INIT_MEDIA] = g_signal_new("init-media",
 		G_TYPE_FROM_CLASS (klass),
 		G_SIGNAL_RUN_LAST,
 		0, NULL, NULL, NULL,
 		G_TYPE_BOOLEAN, 3, PURPLE_TYPE_MEDIA,
 		G_TYPE_POINTER, G_TYPE_STRING);
 
-	purple_media_manager_signals[INIT_PRIVATE_MEDIA] =
-		g_signal_new ("init-private-media",
+	signals[SIG_INIT_PRIVATE_MEDIA] = g_signal_new("init-private-media",
 			G_TYPE_FROM_CLASS (klass),
 			G_SIGNAL_RUN_LAST,
 			0, NULL, NULL, NULL,
 			G_TYPE_BOOLEAN, 3, PURPLE_TYPE_MEDIA,
 			G_TYPE_POINTER, G_TYPE_STRING);
 
-	purple_media_manager_signals[UI_CAPS_CHANGED] = g_signal_new ("ui-caps-changed",
+	signals[SIG_UI_CAPS_CHANGED] = g_signal_new("ui-caps-changed",
 		G_TYPE_FROM_CLASS (klass),
 		G_SIGNAL_RUN_LAST,
 		0, NULL, NULL, NULL,
 		G_TYPE_NONE, 2, PURPLE_MEDIA_TYPE_CAPS,
 		PURPLE_MEDIA_TYPE_CAPS);
 
-	purple_media_manager_signals[ELEMENTS_CHANGED] =
-		g_signal_new("elements-changed",
+	signals[SIG_ELEMENTS_CHANGED] = g_signal_new("elements-changed",
 			G_TYPE_FROM_CLASS(klass),
 			G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
 			0, NULL, NULL, NULL,
@@ -296,8 +294,8 @@ create_media(PurpleMediaManager *manager,
 			     NULL));
 
 	signal_id = private ?
-			purple_media_manager_signals[INIT_PRIVATE_MEDIA] :
-			purple_media_manager_signals[INIT_MEDIA];
+			signals[SIG_INIT_PRIVATE_MEDIA] :
+			signals[SIG_INIT_MEDIA];
 
 	if (g_signal_has_handler_pending(manager, signal_id, 0, FALSE)) {
 		gboolean signal_ret;
@@ -1195,9 +1193,7 @@ purple_media_manager_register_element(PurpleMediaManager *manager,
 
 	detail = element_info_to_detail(info);
 	if (detail != 0) {
-		g_signal_emit(manager,
-				purple_media_manager_signals[ELEMENTS_CHANGED],
-				detail);
+		g_signal_emit(manager, signals[SIG_ELEMENTS_CHANGED], detail);
 	}
 
 	return TRUE;
@@ -1239,9 +1235,7 @@ purple_media_manager_unregister_element(PurpleMediaManager *manager,
 	g_object_unref(info);
 
 	if (detail != 0) {
-		g_signal_emit(manager,
-				purple_media_manager_signals[ELEMENTS_CHANGED],
-				detail);
+		g_signal_emit(manager, signals[SIG_ELEMENTS_CHANGED], detail);
 	}
 
 	return TRUE;
@@ -1529,9 +1523,7 @@ purple_media_manager_set_ui_caps(PurpleMediaManager *manager,
 	manager->priv->ui_caps = caps;
 
 	if (caps != oldcaps) {
-		g_signal_emit(manager,
-				purple_media_manager_signals[UI_CAPS_CHANGED],
-				0, caps, oldcaps);
+		g_signal_emit(manager, signals[SIG_UI_CAPS_CHANGED], 0, caps, oldcaps);
 	}
 }
 
@@ -2238,6 +2230,7 @@ enum {
 	PROP_NAME,
 	PROP_TYPE,
 	PROP_CREATE_CB,
+	N_PROPERTIES,
 };
 
 G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaElementInfo,

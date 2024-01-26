@@ -52,10 +52,10 @@ enum {
 	PROP_SENDERS,
 	PROP_TRANSPORT,
 	PROP_PENDING_TRANSPORT,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	JingleContent,
@@ -296,7 +296,7 @@ jingle_content_class_init (JingleContentClass *klass)
 			JINGLE_TYPE_TRANSPORT,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************

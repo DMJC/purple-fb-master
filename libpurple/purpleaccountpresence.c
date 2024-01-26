@@ -36,9 +36,9 @@ struct _PurpleAccountPresence {
 enum {
 	PROP_0,
 	PROP_ACCOUNT,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 /******************************************************************************
  * Helpers

@@ -23,11 +23,11 @@
 #include "purpleprivate.h"
 
 enum {
-	PROP_ZERO,
+	PROP_0,
 	PROP_UNREAD_COUNT,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 enum {
 	SIG_ADDED,
@@ -36,7 +36,7 @@ enum {
 	SIG_UNREAD,
 	N_SIGNALS,
 };
-static guint signals[N_SIGNALS] = { 0, };
+static guint signals[N_SIGNALS] = {0, };
 
 struct _PurpleNotificationManager {
 	GObject parent;

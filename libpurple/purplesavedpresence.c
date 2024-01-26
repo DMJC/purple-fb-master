@@ -52,9 +52,9 @@ enum {
 	PROP_PRIMITIVE,
 	PROP_MESSAGE,
 	PROP_EMOJI,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PurpleSavedPresence, purple_saved_presence, G_TYPE_OBJECT)
 

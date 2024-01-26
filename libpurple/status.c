@@ -87,10 +87,10 @@ enum
 	PROP_STATUS_TYPE,
 	PROP_PRESENCE,
 	PROP_ACTIVE,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PurpleStatus, purple_status, G_TYPE_OBJECT)
 
@@ -1123,7 +1123,7 @@ purple_status_class_init(PurpleStatusClass *klass)
 				"Whether the status is active or not.", FALSE,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 PurpleStatus *

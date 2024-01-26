@@ -50,18 +50,18 @@ typedef struct {
  * Enums
  *****************************************************************************/
 enum {
-	PROP_ZERO,
+	PROP_0,
 	PROP_GROW_SIZE,
 	PROP_BUFFER_USED,
 	PROP_INPUT,
 	PROP_OUTPUT,
-	PROP_LAST,
+	N_PROPERTIES,
 };
 
 /******************************************************************************
  * Globals
  *****************************************************************************/
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleCircularBuffer, purple_circular_buffer,
 		G_TYPE_OBJECT);
@@ -329,7 +329,7 @@ purple_circular_buffer_class_init(PurpleCircularBufferClass *klass) {
 		                     "The output pointer of the buffer",
 		                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************

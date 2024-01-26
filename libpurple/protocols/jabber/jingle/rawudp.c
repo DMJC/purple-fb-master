@@ -46,9 +46,9 @@ enum {
 	PROP_0,
 	PROP_LOCAL_CANDIDATES,
 	PROP_REMOTE_CANDIDATES,
-	PROP_LAST
+	N_PROPERTIES,
 };
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	JingleRawUdp,
@@ -318,7 +318,7 @@ jingle_rawudp_class_init (JingleRawUdpClass *klass)
 			"The remote candidates for this transport.",
 			G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************

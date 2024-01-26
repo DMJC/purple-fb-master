@@ -66,9 +66,9 @@ enum {
 	PROP_DELIVERED_AT,
 	PROP_EDITED,
 	PROP_EDITED_AT,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
 

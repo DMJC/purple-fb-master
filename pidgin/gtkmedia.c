@@ -109,7 +109,8 @@ static void pidgin_media_set_state(PidginMedia *gtkmedia, PidginMediaState state
 enum {
 	PROP_0,
 	PROP_MEDIA,
-	PROP_SCREENNAME
+	PROP_SCREENNAME,
+	N_PROPERTIES,
 };
 
 static gboolean

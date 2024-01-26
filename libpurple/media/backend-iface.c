@@ -22,15 +22,15 @@
 #include "backend-iface.h"
 
 enum {
-	S_ERROR,
-	CANDIDATES_PREPARED,
-	CODECS_CHANGED,
-	NEW_CANDIDATE,
-	ACTIVE_CANDIDATE_PAIR,
-	LAST_SIGNAL
+	SIG_ERROR,
+	SIG_CANDIDATES_PREPARED,
+	SIG_CODECS_CHANGED,
+	SIG_NEW_CANDIDATE,
+	SIG_ACTIVE_CANDIDATE_PAIR,
+	N_SIGNALS,
 };
 
-static guint purple_media_backend_signals[LAST_SIGNAL] = {0};
+static guint signals[N_SIGNALS] = {0, };
 
 static void
 purple_media_backend_base_init(gpointer iface)
@@ -56,29 +56,25 @@ purple_media_backend_base_init(gpointer iface)
 			PURPLE_TYPE_MEDIA,
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
-	purple_media_backend_signals[S_ERROR] =
-			g_signal_new("error", G_TYPE_FROM_CLASS(iface),
+	signals[SIG_ERROR] = g_signal_new("error",
+			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 1, G_TYPE_STRING);
-	purple_media_backend_signals[CANDIDATES_PREPARED] =
-			g_signal_new("candidates-prepared",
+	signals[SIG_CANDIDATES_PREPARED] = g_signal_new("candidates-prepared",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 2, G_TYPE_STRING,
 			G_TYPE_STRING);
-	purple_media_backend_signals[CODECS_CHANGED] =
-			g_signal_new("codecs-changed",
+	signals[SIG_CODECS_CHANGED] = g_signal_new("codecs-changed",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 1, G_TYPE_STRING);
-	purple_media_backend_signals[NEW_CANDIDATE] =
-			g_signal_new("new-candidate",
+	signals[SIG_NEW_CANDIDATE] = g_signal_new("new-candidate",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 3, G_TYPE_POINTER,
 			G_TYPE_POINTER, PURPLE_MEDIA_TYPE_CANDIDATE);
-	purple_media_backend_signals[ACTIVE_CANDIDATE_PAIR] =
-			g_signal_new("active-candidate-pair",
+	signals[SIG_ACTIVE_CANDIDATE_PAIR] = g_signal_new("active-candidate-pair",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_STRING,

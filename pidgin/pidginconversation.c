@@ -37,7 +37,7 @@ enum {
 	PROP_CONVERSATION,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = {NULL,};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 struct _PidginConversation {
 	GtkBox parent;

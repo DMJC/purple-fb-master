@@ -35,12 +35,12 @@ struct _PurpleBlistNodePrivate {
 /* Blist node property enums */
 enum
 {
-	BLNODE_PROP_0,
-	BLNODE_PROP_TRANSIENT,
-	BLNODE_PROP_LAST
+	PROP_0,
+	PROP_TRANSIENT,
+	N_PROPERTIES,
 };
 
-static GParamSpec *bn_properties[BLNODE_PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(PurpleBlistNode, purple_blist_node,
 		G_TYPE_OBJECT);
@@ -123,8 +123,7 @@ purple_blist_node_set_transient(PurpleBlistNode *node, gboolean transient)
 	priv = purple_blist_node_get_instance_private(node);
 	priv->transient = transient;
 
-	g_object_notify_by_pspec(G_OBJECT(node),
-			bn_properties[BLNODE_PROP_TRANSIENT]);
+	g_object_notify_by_pspec(G_OBJECT(node), properties[PROP_TRANSIENT]);
 }
 
 gboolean
@@ -314,7 +313,7 @@ purple_blist_node_set_property(GObject *obj, guint param_id, const GValue *value
 	PurpleBlistNode *node = PURPLE_BLIST_NODE(obj);
 
 	switch (param_id) {
-		case BLNODE_PROP_TRANSIENT:
+		case PROP_TRANSIENT:
 			purple_blist_node_set_transient(node, g_value_get_boolean(value));
 			break;
 		default:
@@ -331,7 +330,7 @@ purple_blist_node_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleBlistNode *node = PURPLE_BLIST_NODE(obj);
 
 	switch (param_id) {
-		case BLNODE_PROP_TRANSIENT:
+		case PROP_TRANSIENT:
 			g_value_set_boolean(value, purple_blist_node_is_transient(node));
 			break;
 		default:
@@ -375,12 +374,10 @@ purple_blist_node_class_init(PurpleBlistNodeClass *klass)
 	obj_class->get_property = purple_blist_node_get_property;
 	obj_class->set_property = purple_blist_node_set_property;
 
-	bn_properties[BLNODE_PROP_TRANSIENT] = g_param_spec_boolean("transient",
+	properties[PROP_TRANSIENT] = g_param_spec_boolean("transient",
 				"Transient",
 				"Whether node should not be saved with the buddy list.",
 				FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, BLNODE_PROP_LAST,
-				bn_properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
-

@@ -37,7 +37,7 @@ enum {
 	PROP_CLIENT_TYPE,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = {NULL,};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(PurpleUi, purple_ui, G_TYPE_OBJECT)
 

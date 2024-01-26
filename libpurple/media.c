@@ -91,17 +91,17 @@ static void purple_media_codecs_changed_cb(PurpleMediaBackend *backend,
 
 
 enum {
-	S_ERROR,
-	CANDIDATES_PREPARED,
-	CODECS_CHANGED,
-	LEVEL,
-	NEW_CANDIDATE,
-	STATE_CHANGED,
-	STREAM_INFO,
-	CANDIDATE_PAIR_ESTABLISHED,
-	LAST_SIGNAL
+	SIG_ERROR,
+	SIG_CANDIDATES_PREPARED,
+	SIG_CODECS_CHANGED,
+	SIG_LEVEL,
+	SIG_NEW_CANDIDATE,
+	SIG_STATE_CHANGED,
+	SIG_STREAM_INFO,
+	SIG_CANDIDATE_PAIR_ESTABLISHED,
+	N_SIGNALS,
 };
-static guint purple_media_signals[LAST_SIGNAL] = {0};
+static guint signals[N_SIGNALS] = {0, };
 
 enum {
 	PROP_0,
@@ -111,6 +111,7 @@ enum {
 	PROP_CONFERENCE_TYPE,
 	PROP_INITIATOR,
 	PROP_PROTOCOL_DATA,
+	N_PROPERTIES,
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleMedia, purple_media, G_TYPE_OBJECT);
@@ -174,33 +175,40 @@ purple_media_class_init (PurpleMediaClass *klass)
 			"Data the protocol set on the media session.",
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-	purple_media_signals[S_ERROR] = g_signal_new("error", G_TYPE_FROM_CLASS(klass),
+	signals[SIG_ERROR] = g_signal_new("error", G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 1, G_TYPE_STRING);
-	purple_media_signals[CANDIDATES_PREPARED] = g_signal_new("candidates-prepared", G_TYPE_FROM_CLASS(klass),
+	signals[SIG_CANDIDATES_PREPARED] = g_signal_new("candidates-prepared",
+					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 2, G_TYPE_STRING,
 					 G_TYPE_STRING);
-	purple_media_signals[CODECS_CHANGED] = g_signal_new("codecs-changed", G_TYPE_FROM_CLASS(klass),
+	signals[SIG_CODECS_CHANGED] = g_signal_new("codecs-changed",
+					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 1, G_TYPE_STRING);
-	purple_media_signals[LEVEL] = g_signal_new("level", G_TYPE_FROM_CLASS(klass),
+	signals[SIG_LEVEL] = g_signal_new("level",
+					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 3, G_TYPE_STRING,
 					 G_TYPE_STRING, G_TYPE_DOUBLE);
-	purple_media_signals[NEW_CANDIDATE] = g_signal_new("new-candidate", G_TYPE_FROM_CLASS(klass),
+	signals[SIG_NEW_CANDIDATE] = g_signal_new("new-candidate",
+					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 3, G_TYPE_POINTER,
 					 G_TYPE_POINTER, PURPLE_MEDIA_TYPE_CANDIDATE);
-	purple_media_signals[STATE_CHANGED] = g_signal_new("state-changed", G_TYPE_FROM_CLASS(klass),
+	signals[SIG_STATE_CHANGED] = g_signal_new("state-changed",
+					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 3, PURPLE_MEDIA_TYPE_STATE,
 					 G_TYPE_STRING, G_TYPE_STRING);
-	purple_media_signals[STREAM_INFO] = g_signal_new("stream-info", G_TYPE_FROM_CLASS(klass),
+	signals[SIG_STREAM_INFO] = g_signal_new("stream-info",
+					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 4, PURPLE_MEDIA_TYPE_INFO_TYPE,
 					 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
-	purple_media_signals[CANDIDATE_PAIR_ESTABLISHED] = g_signal_new("candidate-pair-established", G_TYPE_FROM_CLASS(klass),
+	signals[SIG_CANDIDATE_PAIR_ESTABLISHED] = g_signal_new("candidate-pair-established",
+					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 4, G_TYPE_POINTER, G_TYPE_POINTER,
 					 PURPLE_MEDIA_TYPE_CANDIDATE, PURPLE_MEDIA_TYPE_CANDIDATE);
@@ -520,7 +528,7 @@ purple_media_error(PurpleMedia *media, const gchar *error, ...)
 	va_end(args);
 
 	purple_debug_error("media", "%s\n", message);
-	g_signal_emit(media, purple_media_signals[S_ERROR], 0, message);
+	g_signal_emit(media, signals[SIG_ERROR], 0, message);
 
 	g_free(message);
 }
@@ -539,7 +547,7 @@ purple_media_end(PurpleMedia *media,
 	for (; iter; iter = g_list_delete_link(iter, iter)) {
 		PurpleMediaStream *stream = iter->data;
 
-		g_signal_emit(media, purple_media_signals[STATE_CHANGED],
+		g_signal_emit(media, signals[SIG_STATE_CHANGED],
 				0, PURPLE_MEDIA_STATE_END,
 				stream->session->id, stream->participant);
 
@@ -573,7 +581,7 @@ purple_media_end(PurpleMedia *media,
 	for (; sessions; sessions = g_list_delete_link(sessions, sessions)) {
 		PurpleMediaSession *session = sessions->data;
 
-		g_signal_emit(media, purple_media_signals[STATE_CHANGED],
+		g_signal_emit(media, signals[SIG_STATE_CHANGED],
 				0, PURPLE_MEDIA_STATE_END,
 				session->id, NULL);
 
@@ -604,7 +612,7 @@ purple_media_end(PurpleMedia *media,
 		GList *link = g_list_find_custom(media->priv->participants,
 				participant, (GCompareFunc)strcmp);
 
-		g_signal_emit(media, purple_media_signals[STATE_CHANGED],
+		g_signal_emit(media, signals[SIG_STATE_CHANGED],
 				0, PURPLE_MEDIA_STATE_END,
 				NULL, participant);
 
@@ -620,7 +628,7 @@ purple_media_end(PurpleMedia *media,
 	/* Free the conference if no sessions left */
 	if (media->priv->sessions != NULL &&
 			g_hash_table_size(media->priv->sessions) == 0) {
-		g_signal_emit(media, purple_media_signals[STATE_CHANGED],
+		g_signal_emit(media, signals[SIG_STATE_CHANGED],
 				0, PURPLE_MEDIA_STATE_END,
 				NULL, NULL);
 		g_object_unref(media);
@@ -648,8 +656,7 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 
 			stream->accepted = TRUE;
 
-			g_signal_emit(media,
-					purple_media_signals[STREAM_INFO],
+			g_signal_emit(media, signals[SIG_STREAM_INFO],
 					0, type, stream->session->id,
 					stream->participant, local);
 
@@ -671,9 +678,8 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 			PurpleMediaSession *session = sessions->data;
 
 			if (purple_media_accepted(media, session->id, NULL)) {
-				g_signal_emit(media, purple_media_signals[
-						STREAM_INFO], 0,
-						PURPLE_MEDIA_INFO_ACCEPT,
+				g_signal_emit(media, signals[SIG_STREAM_INFO],
+						0, PURPLE_MEDIA_INFO_ACCEPT,
 						session->id, NULL, local);
 			}
 		}
@@ -684,9 +690,8 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 			gchar *participant = participants->data;
 
 			if (purple_media_accepted(media, NULL, participant)) {
-				g_signal_emit(media, purple_media_signals[
-						STREAM_INFO], 0,
-						PURPLE_MEDIA_INFO_ACCEPT,
+				g_signal_emit(media, signals[SIG_STREAM_INFO],
+						0, PURPLE_MEDIA_INFO_ACCEPT,
 						NULL, participant, local);
 			}
 
@@ -695,8 +700,7 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 
 		/* Emit conference acceptance */
 		if (purple_media_accepted(media, NULL, NULL)) {
-			g_signal_emit(media,
-					purple_media_signals[STREAM_INFO],
+			g_signal_emit(media, signals[SIG_STREAM_INFO],
 					0, PURPLE_MEDIA_INFO_ACCEPT,
 					NULL, NULL, local);
 		}
@@ -714,8 +718,7 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 		for (; streams; streams = g_list_delete_link(streams, streams)) {
 			PurpleMediaStream *stream = streams->data;
 
-			g_signal_emit(media,
-					purple_media_signals[STREAM_INFO],
+			g_signal_emit(media, signals[SIG_STREAM_INFO],
 					0, type, stream->session->id,
 					stream->participant, local);
 		}
@@ -737,8 +740,8 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 					sessions, sessions)) {
 				PurpleMediaSession *session = sessions->data;
 
-				g_signal_emit(media, purple_media_signals[
-						STREAM_INFO], 0, type,
+				g_signal_emit(media, signals[SIG_STREAM_INFO],
+						0, type,
 						session->id, NULL, local);
 			}
 
@@ -747,14 +750,13 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 					g_list_next(participants)) {
 				gchar *participant = participants->data;
 
-				g_signal_emit(media, purple_media_signals[
-						STREAM_INFO], 0, type,
+				g_signal_emit(media, signals[SIG_STREAM_INFO],
+						0, type,
 						NULL, participant, local);
 			}
 
 			/* Emit for conference */
-			g_signal_emit(media,
-					purple_media_signals[STREAM_INFO],
+			g_signal_emit(media, signals[SIG_STREAM_INFO],
 					0, type, NULL, NULL, local);
 		} else if (session_id != NULL) {
 			/* Emit just the specific session */
@@ -767,8 +769,8 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 						"Couldn't find session"
 						" to hangup/reject.\n");
 			} else {
-				g_signal_emit(media, purple_media_signals[
-						STREAM_INFO], 0, type,
+				g_signal_emit(media, signals[SIG_STREAM_INFO],
+						0, type,
 						session->id, NULL, local);
 			}
 		} else if (participant != NULL) {
@@ -779,8 +781,8 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 						"Couldn't find participant"
 						" to hangup/reject.\n");
 			} else {
-				g_signal_emit(media, purple_media_signals[
-						STREAM_INFO], 0, type, NULL,
+				g_signal_emit(media, signals[SIG_STREAM_INFO],
+						0, type, NULL,
 						participant, local);
 			}
 		}
@@ -789,7 +791,7 @@ purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
 		return;
 	}
 
-	g_signal_emit(media, purple_media_signals[STREAM_INFO],
+	g_signal_emit(media, signals[SIG_STREAM_INFO],
 			0, type, session_id, participant, local);
 }
 
@@ -839,7 +841,7 @@ purple_media_new_local_candidate_cb(G_GNUC_UNUSED PurpleMediaBackend *backend,
 	purple_media_insert_local_candidate(session, participant,
 			purple_media_candidate_copy(candidate));
 
-	g_signal_emit(session->media, purple_media_signals[NEW_CANDIDATE],
+	g_signal_emit(session->media, signals[SIG_NEW_CANDIDATE],
 		      0, session->id, participant, candidate);
 }
 
@@ -854,7 +856,7 @@ purple_media_candidates_prepared_cb(G_GNUC_UNUSED PurpleMediaBackend *backend,
 	stream_data = purple_media_get_stream(media, sess_id, name);
 	stream_data->candidates_prepared = TRUE;
 
-	g_signal_emit(media, purple_media_signals[CANDIDATES_PREPARED],
+	g_signal_emit(media, signals[SIG_CANDIDATES_PREPARED],
 			0, sess_id, name);
 }
 
@@ -910,7 +912,7 @@ purple_media_candidate_pair_established_cb(G_GNUC_UNUSED PurpleMediaBackend *bac
 			purple_media_candidate_copy(
 			remote_candidate));
 
-	g_signal_emit(media, purple_media_signals[CANDIDATE_PAIR_ESTABLISHED],
+	g_signal_emit(media, signals[SIG_CANDIDATE_PAIR_ESTABLISHED],
 		0, sess_id, name, local_candidate, remote_candidate);
 	purple_debug_info("media", "candidate pair established\n");
 }
@@ -919,7 +921,7 @@ static void
 purple_media_codecs_changed_cb(G_GNUC_UNUSED PurpleMediaBackend *backend,
 		const gchar *sess_id, PurpleMedia *media)
 {
-	g_signal_emit(media, purple_media_signals[CODECS_CHANGED], 0, sess_id);
+	g_signal_emit(media, signals[SIG_CODECS_CHANGED], 0, sess_id);
 }
 
 gboolean
@@ -948,7 +950,7 @@ purple_media_add_stream(PurpleMedia *media, const gchar *sess_id,
 		session->initiator = initiator;
 
 		purple_media_add_session(media, session);
-		g_signal_emit(media, purple_media_signals[STATE_CHANGED],
+		g_signal_emit(media, signals[SIG_STATE_CHANGED],
 				0, PURPLE_MEDIA_STATE_NEW,
 				session->id, NULL);
 	}
@@ -958,14 +960,14 @@ purple_media_add_stream(PurpleMedia *media, const gchar *sess_id,
 		media->priv->participants = g_list_prepend(
 				media->priv->participants, g_strdup(who));
 
-		g_signal_emit(media, purple_media_signals[STATE_CHANGED], 0,
+		g_signal_emit(media, signals[SIG_STATE_CHANGED], 0,
 				PURPLE_MEDIA_STATE_NEW, NULL, who);
 	}
 
 	if (purple_media_get_stream(media, sess_id, who) == NULL) {
 		purple_media_insert_stream(session, who, initiator);
 
-		g_signal_emit(media, purple_media_signals[STATE_CHANGED],
+		g_signal_emit(media, signals[SIG_STATE_CHANGED],
 				0, PURPLE_MEDIA_STATE_NEW,
 				session->id, who);
 	}

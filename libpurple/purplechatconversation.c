@@ -44,16 +44,16 @@ enum {
 	PROP_0,
 	PROP_CHAT_ID,
 	PROP_LEFT,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 enum {
 	SIG_USER_JOINED,
 	SIG_USER_LEFT,
-	N_SIGNALS
+	N_SIGNALS,
 };
-static guint signals[N_SIGNALS] = { 0, };
+static guint signals[N_SIGNALS] = {0, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleChatConversation, purple_chat_conversation,
                            PURPLE_TYPE_CONVERSATION);

@@ -38,7 +38,7 @@ enum {
 	PROP_FILTER,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PidginAccountRow, pidgin_account_row, ADW_TYPE_COMBO_ROW)
 

@@ -30,7 +30,7 @@ struct _PidginKeypad {
 
 enum {
 	SIG_PRESSED,
-	N_SIGNALS
+	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
 

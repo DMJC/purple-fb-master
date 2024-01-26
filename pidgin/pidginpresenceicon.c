@@ -38,9 +38,9 @@ enum {
 	PROP_PRESENCE,
 	PROP_FALLBACK,
 	PROP_ICON_SIZE,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PidginPresenceIcon, pidgin_presence_icon, GTK_TYPE_BOX)
 

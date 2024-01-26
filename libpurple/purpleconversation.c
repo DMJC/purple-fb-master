@@ -86,9 +86,9 @@ enum {
 	PROP_TAGS,
 	PROP_MEMBERS,
 	PROP_MESSAGES,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 enum {
 	SIG_MEMBER_ADDED,

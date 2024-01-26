@@ -24,7 +24,7 @@
 #include "pidginprotocolchooser.h"
 
 enum {
-	PROP_ZERO,
+	PROP_0,
 	PROP_PROTOCOL,
 	N_PROPERTIES,
 };

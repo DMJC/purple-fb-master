@@ -38,9 +38,9 @@ struct _PurpleBuddyPresence {
 enum {
 	PROP_0,
 	PROP_BUDDY,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 /******************************************************************************
  * Helpers

@@ -44,13 +44,13 @@ enum
 	PROP_ALIAS,
 	PROP_ACCOUNT,
 	PROP_COMPONENTS,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
 /******************************************************************************
  * Globals
  *****************************************************************************/
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleChat, purple_chat, PURPLE_TYPE_BLIST_NODE);
 
@@ -288,7 +288,7 @@ static void purple_chat_class_init(PurpleChatClass *klass)
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS
 	);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 PurpleChat *

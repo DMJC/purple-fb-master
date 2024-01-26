@@ -108,7 +108,7 @@ enum {
 	SIG_SETTING_CHANGED,
 	SIG_CONNECTED,
 	SIG_DISCONNECTED,
-	N_SIGNALS
+	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
 

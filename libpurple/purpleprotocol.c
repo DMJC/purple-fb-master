@@ -38,7 +38,7 @@ enum {
 	PROP_OPTIONS,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 typedef struct {
 	gchar *id;

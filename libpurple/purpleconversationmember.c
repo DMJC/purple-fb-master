@@ -35,7 +35,7 @@ enum {
 	PROP_CONTACT_INFO,
 	PROP_TAGS,
 	PROP_TYPING_STATE,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 

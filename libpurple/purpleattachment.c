@@ -46,7 +46,7 @@ enum {
 	PROP_SIZE,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 /******************************************************************************
  * Private Setters

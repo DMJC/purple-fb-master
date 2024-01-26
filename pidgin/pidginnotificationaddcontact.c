@@ -43,7 +43,7 @@ enum {
 	PROP_NOTIFICATION,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PidginNotificationAddContact,
                     pidgin_notification_add_contact, ADW_TYPE_ACTION_ROW)

@@ -54,10 +54,10 @@ enum {
 	PROP_ACCOUNT,
 	PROP_PRESENCE,
 	PROP_MEDIA_CAPS,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleBuddy, purple_buddy, PURPLE_TYPE_BLIST_NODE)
 

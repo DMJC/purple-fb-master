@@ -45,7 +45,7 @@ enum {
 	PROP_ACTION_MENU,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurplePluginInfo, purple_plugin_info,
                            GPLUGIN_TYPE_PLUGIN_INFO);

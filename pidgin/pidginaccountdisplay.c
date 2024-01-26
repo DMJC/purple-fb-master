@@ -37,10 +37,10 @@ struct _PidginAccountDisplay {
 enum {
 	PROP_0,
 	PROP_ACCOUNT,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST] = {NULL};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 /******************************************************************************
  * Callbacks
@@ -151,7 +151,7 @@ pidgin_account_display_class_init(PidginAccountDisplayClass *klass) {
 	        PURPLE_TYPE_ACCOUNT,
 	        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/* Widget template */
 	gtk_widget_class_set_template_from_resource(

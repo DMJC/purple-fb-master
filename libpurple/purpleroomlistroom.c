@@ -33,7 +33,7 @@ enum {
 	PROP_DESCRIPTION,
 	PROP_CATEGORY,
 	PROP_USER_COUNT,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 

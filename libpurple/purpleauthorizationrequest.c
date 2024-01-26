@@ -35,7 +35,7 @@ struct _PurpleAuthorizationRequest {
 enum {
 	SIG_ACCEPTED,
 	SIG_DENIED,
-	N_SIGNALS
+	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
 

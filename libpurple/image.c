@@ -39,10 +39,10 @@ enum {
 	PROP_PATH,
 	PROP_CONTENTS,
 	PROP_SIZE,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleImage, purple_image, G_TYPE_OBJECT);
 
@@ -165,7 +165,7 @@ purple_image_class_init(PurpleImageClass *klass) {
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS
 	);
 
-	g_object_class_install_properties(gobj_class, PROP_LAST, properties);
+	g_object_class_install_properties(gobj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************

@@ -25,7 +25,7 @@ enum {
 	SIG_TRANSFER_CHANGED,
 	N_SIGNALS,
 };
-static guint signals[N_SIGNALS] = {};
+static guint signals[N_SIGNALS] = {0, };
 
 struct _PurpleFileTransferManager {
 	GObject parent;

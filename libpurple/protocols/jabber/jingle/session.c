@@ -59,10 +59,10 @@ enum {
 	PROP_STATE,
 	PROP_CONTENTS,
 	PROP_PENDING_CONTENTS,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	JingleSession,
@@ -303,7 +303,7 @@ jingle_session_class_init (JingleSessionClass *klass)
 			"The pending contents contained within this session",
 			G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************

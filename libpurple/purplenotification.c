@@ -43,7 +43,7 @@ struct _PurpleNotification {
 
 enum {
 	SIG_DELETED,
-	N_SIGNALS
+	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
 

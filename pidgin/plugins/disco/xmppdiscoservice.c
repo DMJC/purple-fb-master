@@ -55,10 +55,10 @@ enum {
 	PROP_EXPANDED,
 	PROP_ICON_NAME,
 	PROP_CHILD_MODEL,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST] = {NULL};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 /******************************************************************************
  * Helpers
@@ -274,7 +274,7 @@ xmpp_disco_service_class_init(XmppDiscoServiceClass *klass)
 	        G_TYPE_LIST_MODEL,
 	        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 static void

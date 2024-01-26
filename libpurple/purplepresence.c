@@ -55,9 +55,9 @@ enum {
 	PROP_EMOJI,
 	PROP_MOBILE,
 	PROP_NOTIFICATIONS_DISABLED,
-	N_PROPERTIES
+	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurplePresence, purple_presence, G_TYPE_OBJECT)
 

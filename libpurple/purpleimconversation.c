@@ -45,7 +45,7 @@ enum {
 	PROP_TYPING_STATE,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 #define SEND_TYPED_TIMEOUT_SECONDS 5
 

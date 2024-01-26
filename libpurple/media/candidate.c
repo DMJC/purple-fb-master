@@ -49,7 +49,7 @@ typedef struct
 } PurpleMediaCandidatePrivate;
 
 enum {
-	PROP_CANDIDATE_0,
+	PROP_0,
 	PROP_FOUNDATION,
 	PROP_COMPONENT_ID,
 	PROP_IP,
@@ -62,6 +62,7 @@ enum {
 	PROP_USERNAME,
 	PROP_PASSWORD,
 	PROP_TTL,
+	N_PROPERTIES,
 };
 
 G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaCandidate, purple_media_candidate,

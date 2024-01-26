@@ -41,15 +41,15 @@ struct _PurpleGroupPrivate {
 /* Group property enums */
 enum
 {
-	GROUP_PROP_0,
-	GROUP_PROP_NAME,
-	GROUP_PROP_LAST
+	PROP_0,
+	PROP_NAME,
+	N_PROPERTIES,
 };
 
 /******************************************************************************
  * Globals
  *****************************************************************************/
-static GParamSpec *properties[GROUP_PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleGroup, purple_group,
 		PURPLE_TYPE_COUNTING_NODE);
@@ -176,7 +176,7 @@ void purple_group_set_name(PurpleGroup *source, const char *name) {
 		old_name = priv->name;
 		priv->name = new_name;
 
-		g_object_notify_by_pspec(G_OBJECT(source), properties[GROUP_PROP_NAME]);
+		g_object_notify_by_pspec(G_OBJECT(source), properties[PROP_NAME]);
 	}
 
 	/* Save our changes */
@@ -236,7 +236,7 @@ void purple_group_set_name(PurpleGroup *source, const char *name) {
 	g_list_free(moved_buddies);
 	g_free(old_name);
 
-	g_object_notify_by_pspec(G_OBJECT(source), properties[GROUP_PROP_NAME]);
+	g_object_notify_by_pspec(G_OBJECT(source), properties[PROP_NAME]);
 }
 
 const char *purple_group_get_name(PurpleGroup *group) {
@@ -260,7 +260,7 @@ purple_group_set_property(GObject *obj, guint param_id, const GValue *value,
 	PurpleGroupPrivate *priv = purple_group_get_instance_private(group);
 
 	switch (param_id) {
-		case GROUP_PROP_NAME:
+		case PROP_NAME:
 			if (priv->is_constructed)
 				purple_group_set_name(group, g_value_get_string(value));
 			else
@@ -281,7 +281,7 @@ purple_group_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleGroup *group = PURPLE_GROUP(obj);
 
 	switch (param_id) {
-		case GROUP_PROP_NAME:
+		case PROP_NAME:
 			g_value_set_string(value, purple_group_get_name(group));
 			break;
 		default:
@@ -332,7 +332,7 @@ purple_group_class_init(PurpleGroupClass *klass) {
 	obj_class->get_property = purple_group_get_property;
 	obj_class->set_property = purple_group_set_property;
 
-	properties[GROUP_PROP_NAME] = g_param_spec_string(
+	properties[PROP_NAME] = g_param_spec_string(
 		"name",
 		"Name",
 		"Name of the group.",
@@ -340,7 +340,7 @@ purple_group_class_init(PurpleGroupClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS
 	);
 
-	g_object_class_install_properties(obj_class, GROUP_PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 PurpleGroup *

@@ -43,10 +43,10 @@ enum
 	PROP_0,
 	PROP_ACCOUNT,
 	PROP_IN_PROGRESS,
-	PROP_LAST
+	N_PROPERTIES,
 };
 
-static GParamSpec *properties[PROP_LAST];
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 static PurpleRoomlistUiOps *ops = NULL;
 
 G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleRoomlist, purple_roomlist,
@@ -284,7 +284,7 @@ purple_roomlist_class_init(PurpleRoomlistClass *klass)
 				"Whether the room list is being fetched.", FALSE,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-	g_object_class_install_properties(obj_class, PROP_LAST, properties);
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 PurpleRoomlist *purple_roomlist_new(PurpleAccount *account)

@@ -50,7 +50,7 @@ enum {
 	PROP_CHILDREN,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = {NULL,};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PidginDisplayItem, pidgin_display_item, G_TYPE_OBJECT)
 

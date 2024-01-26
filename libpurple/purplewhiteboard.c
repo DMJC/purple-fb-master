@@ -51,7 +51,7 @@ enum {
 	PROP_DRAW_LIST,
 	N_PROPERTIES,
 };
-static GParamSpec *properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE(PurpleWhiteboard, purple_whiteboard, G_TYPE_OBJECT)
 
