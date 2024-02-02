@@ -400,6 +400,75 @@ test_purple_saved_presence_equal_emoji(void) {
 	g_clear_object(&b);
 }
 
+static void
+test_purple_saved_presence_matches_accepts_null(void) {
+	PurpleSavedPresence *presence = NULL;
+
+	presence = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	g_assert_true(purple_saved_presence_matches(presence, NULL));
+
+	g_assert_finalize_object(presence);
+}
+
+static void
+test_purple_saved_presence_matches_empty_string(void) {
+	PurpleSavedPresence *presence = NULL;
+
+	presence = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	g_assert_true(purple_saved_presence_matches(presence, ""));
+
+	g_assert_finalize_object(presence);
+}
+
+static void
+test_purple_saved_presence_matches_name(void) {
+	PurpleSavedPresence *presence = NULL;
+
+	presence = g_object_new(PURPLE_TYPE_SAVED_PRESENCE,
+	                        "name", "getting pidgy with it",
+	                        NULL);
+	g_assert_true(purple_saved_presence_matches(presence, "pidgy"));
+
+	g_assert_finalize_object(presence);
+}
+
+static void
+test_purple_saved_presence_matches_message(void) {
+	PurpleSavedPresence *presence = NULL;
+
+	/* This message came from a Twitch viewer while I was writing this code.
+	 * Previously I typoed purple as purpel and started making jokes with it.
+	 */
+	presence = g_object_new(PURPLE_TYPE_SAVED_PRESENCE,
+	                        "message", "Uro666: purpelling to new heights",
+	                        NULL);
+	g_assert_true(purple_saved_presence_matches(presence, "purpel"));
+
+	g_assert_finalize_object(presence);
+}
+
+static void
+test_purple_saved_presence_matches_emoji(void) {
+	PurpleSavedPresence *presence = NULL;
+
+	presence = g_object_new(PURPLE_TYPE_SAVED_PRESENCE,
+	                        "emoji", "😴",
+	                        NULL);
+	g_assert_true(purple_saved_presence_matches(presence, "😴"));
+
+	g_assert_finalize_object(presence);
+}
+
+static void
+test_purple_saved_presence_matches_none(void) {
+	PurpleSavedPresence *presence = NULL;
+
+	presence = g_object_new(PURPLE_TYPE_SAVED_PRESENCE, NULL);
+	g_assert_false(purple_saved_presence_matches(presence, "away"));
+
+	g_assert_finalize_object(presence);
+}
+
 /******************************************************************************
  * Main
  *****************************************************************************/
@@ -439,6 +508,19 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_saved_presence_equal_message);
 	g_test_add_func("/saved-presence/equal/emoji",
 	                test_purple_saved_presence_equal_emoji);
+
+	g_test_add_func("/saved-presence/matches/accepts_null",
+	                test_purple_saved_presence_matches_accepts_null);
+	g_test_add_func("/saved-presence/matches/empty_string",
+	                test_purple_saved_presence_matches_empty_string);
+	g_test_add_func("/saved-presence/matches/name",
+	                test_purple_saved_presence_matches_name);
+	g_test_add_func("/saved-presence/matches/message",
+	                test_purple_saved_presence_matches_message);
+	g_test_add_func("/saved-presence/matches/emoji",
+	                test_purple_saved_presence_matches_emoji);
+	g_test_add_func("/saved-presence/matches/none",
+	                test_purple_saved_presence_matches_none);
 
 	return g_test_run();
 }

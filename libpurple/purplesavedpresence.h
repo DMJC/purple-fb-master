@@ -247,6 +247,24 @@ void purple_saved_presence_set_emoji(PurpleSavedPresence *presence, const char *
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_saved_presence_equal(PurpleSavedPresence *a, PurpleSavedPresence *b);
 
+/**
+ * purple_saved_presence_matches:
+ * @presence: The instance.
+ * @needle: (nullable): The string to match on.
+ *
+ * Checks if @needle matches the [property@SavedPresence:name],
+ * [property@SavedPresence:message], or [property@SavedPresence:emoji] of
+ * @presence.
+ *
+ * If @needle is %NULL or empty string, %TRUE will be returned.
+ *
+ * Returns: %TRUE if @presence matches @needle in any way, otherwise %FALSE.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_saved_presence_matches(PurpleSavedPresence *presence, const char *needle);
+
 G_END_DECLS
 
 #endif /* PURPLE_SAVED_PRESENCE_H */

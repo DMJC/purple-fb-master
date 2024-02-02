@@ -634,3 +634,28 @@ purple_saved_presence_equal(PurpleSavedPresence *a, PurpleSavedPresence *b) {
 
 	return TRUE;
 }
+
+gboolean
+purple_saved_presence_matches(PurpleSavedPresence *presence,
+                              const char *needle)
+{
+	g_return_val_if_fail(PURPLE_IS_SAVED_PRESENCE(presence), FALSE);
+
+	if(purple_strempty(needle)) {
+		return TRUE;
+	}
+
+	if(purple_strmatches(needle, presence->name)) {
+		return TRUE;
+	}
+
+	if(purple_strmatches(needle, presence->message)) {
+		return TRUE;
+	}
+
+	if(purple_strequal(needle, presence->emoji)) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
