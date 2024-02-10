@@ -181,7 +181,7 @@ jabber_parser_element_text_libxml(void *user_data, const xmlChar *text, int text
 }
 
 static void
-jabber_parser_structured_error_handler(void *user_data, xmlErrorPtr error)
+jabber_parser_structured_error_handler(void *user_data, const xmlError *error)
 {
 	JabberStream *js = user_data;
 
@@ -271,7 +271,7 @@ void jabber_parser_process(JabberStream *js, const char *buf, int len)
 		js->context = xmlCreatePushParserCtxt(&jabber_parser_libxml, js, buf, len, NULL);
 		xmlParseChunk(js->context, "", 0, 0);
 	} else if ((ret = xmlParseChunk(js->context, buf, len, 0)) != XML_ERR_OK) {
-		xmlError *err = xmlCtxtGetLastError(js->context);
+		const xmlError *err = xmlCtxtGetLastError(js->context);
 		/*
 		 * libxml2 uses a global setting to determine whether or not to store
 		 * warnings.  Other libraries may set this, which causes err to be

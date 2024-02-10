@@ -159,7 +159,7 @@ bonjour_parser_element_text_libxml(void *user_data, const xmlChar *text, int tex
 }
 
 static void
-bonjour_parser_structured_error_handler(void *user_data, xmlErrorPtr error)
+bonjour_parser_structured_error_handler(void *user_data, const xmlError *error)
 {
 	BonjourXMPPConversation *bconv = user_data;
 
