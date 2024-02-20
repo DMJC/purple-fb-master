@@ -244,6 +244,7 @@ purple_coreheaders = [
 
 purple_private_headers = [
 	'purplefiletransfermanagerprivate.h',
+	'purpleidlemanagerprivate.h',
 	'purplepresencemanagerprivate.h',
 	'purpleprivate.h',
 ]
@@ -328,11 +329,6 @@ purple_enumheaders = [
 	'status.h',
 	'xfer.h',
 	'xmlnode.h'
-]
-
-purple_private_headers = [
-	'purpleidlemanagerprivate.h',
-	'purpleprivate.h',
 ]
 
 enums = gnome.mkenums_simple('purpleenums',
