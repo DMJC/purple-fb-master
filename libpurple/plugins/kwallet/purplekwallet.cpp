@@ -416,6 +416,12 @@ purple_kwallet_read_password_async(PurpleCredentialProvider *provider,
 
 	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
 
+	/* We manually set the task name otherwise the (gpointer) cast ends up in
+	 * the name.
+	 */
+	g_task_set_static_name(task, "purple_kwallet_read_password_async");
+	g_task_set_source_tag(task, (gpointer)purple_kwallet_read_password_async);
+
 	request = new PurpleKWalletPlugin::ReadRequest(key, task);
 
 	kwallet_provider = PURPLE_KWALLET_PROVIDER(provider);
@@ -445,6 +451,12 @@ purple_kwallet_write_password_async(PurpleCredentialProvider *provider,
 	QString key;
 
 	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+
+	/* We manually set the task name otherwise the (gpointer) cast ends up in
+	 * the name.
+	 */
+	g_task_set_static_name(task, "purple_kwallet_write_password_async");
+	g_task_set_source_tag(task, (gpointer)purple_kwallet_write_password_async);
 
 	key = purple_kwallet_provider_account_key(account);
 
@@ -476,6 +488,12 @@ purple_kwallet_clear_password_async(PurpleCredentialProvider *provider,
 	QString key;
 
 	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+
+	/* We manually set the task name otherwise the (gpointer) cast ends up in
+	 * the name.
+	 */
+	g_task_set_static_name(task, "purple_kwallet_clear_password_async");
+	g_task_set_source_tag(task, (gpointer)purple_kwallet_clear_password_async);
 
 	key = purple_kwallet_provider_account_key(account);
 

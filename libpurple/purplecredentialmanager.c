@@ -482,6 +482,7 @@ purple_credential_manager_read_password_async(PurpleCredentialManager *manager,
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
 	task = g_task_new(manager, cancellable, callback, data);
+	g_task_set_source_tag(task, purple_credential_manager_read_password_async);
 
 	if(manager->active != NULL) {
 		purple_credential_provider_read_password_async(manager->active,
@@ -521,6 +522,8 @@ purple_credential_manager_write_password_async(PurpleCredentialManager *manager,
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
 	task = g_task_new(manager, cancellable, callback, data);
+	g_task_set_source_tag(task,
+	                      purple_credential_manager_write_password_async);
 
 	if(!purple_account_get_remember_password(account)) {
 		const gchar *name = NULL;
@@ -574,6 +577,8 @@ purple_credential_manager_clear_password_async(PurpleCredentialManager *manager,
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
 	task = g_task_new(manager, cancellable, callback, data);
+	g_task_set_source_tag(task,
+	                      purple_credential_manager_clear_password_async);
 
 	if(manager->active != NULL) {
 		purple_credential_provider_clear_password_async(manager->active,
@@ -616,4 +621,3 @@ purple_credential_manager_foreach(PurpleCredentialManager *manager,
 		func(PURPLE_CREDENTIAL_PROVIDER(value), data);
 	}
 }
-

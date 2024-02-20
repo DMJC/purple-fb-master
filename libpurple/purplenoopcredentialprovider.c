@@ -40,7 +40,11 @@ purple_noop_credential_provider_read_password_async(PurpleCredentialProvider *pr
                                                     GAsyncReadyCallback callback,
                                                     gpointer data)
 {
-	GTask *task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	GTask *task = NULL;
+
+	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	g_task_set_source_tag(task,
+	                      purple_noop_credential_provider_read_password_async);
 
 	g_task_return_new_error(task, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
 	                        _("provider does not store passwords"));
@@ -64,7 +68,11 @@ purple_noop_credential_provider_write_password_async(PurpleCredentialProvider *p
                                                      GAsyncReadyCallback callback,
                                                      gpointer data)
 {
-	GTask *task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	GTask *task = NULL;
+
+	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	g_task_set_source_tag(task,
+	                      purple_noop_credential_provider_write_password_async);
 
 	g_task_return_new_error(task, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
 	                        _("provider does not store passwords"));

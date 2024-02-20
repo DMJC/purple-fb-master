@@ -139,6 +139,7 @@ purple_keychain_access_read_password_async(PurpleCredentialProvider *provider,
 
 	/* Create the task and return our results. */
 	task = g_task_new(provider, cancellable, callback, data);
+	g_task_set_source_tag(task, purple_keychain_access_read_password_async);
 
 	if(result == errSecSuccess) {
 		if(CFGetTypeID(item) != CFDataGetTypeID()) {
@@ -236,6 +237,7 @@ purple_keychain_access_write_password_async(PurpleCredentialProvider *provider,
 
 	/* Now create the GTask and set the result. */
 	task = g_task_new(provider, cancellable, callback, data);
+	g_task_set_source_tag(task, purple_keychain_access_write_password_async);
 
 	if(result == errSecSuccess) {
 		g_task_return_boolean(task, TRUE);
@@ -303,6 +305,7 @@ purple_keychain_access_clear_password_async(PurpleCredentialProvider *provider,
 
 	/* Now create the GTask and set the result. */
 	task = g_task_new(provider, cancellable, callback, data);
+	g_task_set_source_tag(task, purple_keychain_access_clear_password_async);
 
 	if(result == errSecSuccess) {
 		g_task_return_boolean(task, TRUE);

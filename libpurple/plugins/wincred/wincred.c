@@ -96,6 +96,8 @@ purple_wincred_read_password_async(PurpleCredentialProvider *provider,
 	PCREDENTIALW credential = NULL;
 
 	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	g_task_set_source_tag(task, purple_wincred_read_password_async);
+
 	target_name = wincred_get_target_name(account, &error);
 	if (target_name == NULL) {
 		g_task_return_error(task, error);
@@ -193,6 +195,7 @@ purple_wincred_write_password_async(PurpleCredentialProvider *provider,
 	CREDENTIALW credential;
 
 	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	g_task_set_source_tag(task, purple_wincred_write_password_async);
 
 	target_name = wincred_get_target_name(account, &error);
 	if (target_name == NULL) {
@@ -284,6 +287,7 @@ purple_wincred_clear_password_async(PurpleCredentialProvider *provider,
 	gunichar2 *target_name = NULL;
 
 	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	g_task_set_source_tag(task, purple_wincred_clear_password_async);
 
 	target_name = wincred_get_target_name(account, &error);
 	if (target_name == NULL) {
