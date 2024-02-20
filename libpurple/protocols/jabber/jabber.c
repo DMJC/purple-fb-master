@@ -1056,7 +1056,7 @@ jabber_close(G_GNUC_UNUSED PurpleProtocol *protocol, PurpleConnection *gc) {
 	g_clear_handle_id(&js->conn_close_timeout, g_source_remove);
 
 	g_cancellable_cancel(js->cancellable);
-	g_object_unref(G_OBJECT(js->cancellable));
+	g_object_unref(js->cancellable);
 
 	g_free(js);
 

@@ -109,7 +109,7 @@ test_purple_credential_provider_is_valid_no_id(void) {
 	g_assert_error(error, PURPLE_CREDENTIAL_PROVIDER_DOMAIN, 0);
 	g_clear_error(&error);
 
-	g_object_unref(G_OBJECT(provider));
+	g_object_unref(provider);
 }
 
 static void
@@ -126,7 +126,7 @@ test_purple_credential_provider_is_valid_no_name(void) {
 	g_assert_error(error, PURPLE_CREDENTIAL_PROVIDER_DOMAIN, 1);
 	g_clear_error(&error);
 
-	g_object_unref(G_OBJECT(provider));
+	g_object_unref(provider);
 }
 
 static void
@@ -151,7 +151,7 @@ test_purple_credential_provider_is_valid_no_reader(void) {
 	g_assert_error(error, PURPLE_CREDENTIAL_PROVIDER_DOMAIN, 2);
 	g_clear_error(&error);
 
-	g_object_unref(G_OBJECT(provider));
+	g_object_unref(provider);
 }
 
 static void
@@ -176,7 +176,7 @@ test_purple_credential_provider_is_valid_no_writer(void) {
 	g_assert_error(error, PURPLE_CREDENTIAL_PROVIDER_DOMAIN, 3);
 	g_clear_error(&error);
 
-	g_object_unref(G_OBJECT(provider));
+	g_object_unref(provider);
 }
 
 static void
@@ -202,7 +202,7 @@ test_purple_credential_provider_is_valid_valid(void) {
 	g_assert_no_error(error);
 	g_assert_true(ret);
 
-	g_object_unref(G_OBJECT(provider));
+	g_object_unref(provider);
 }
 
 /******************************************************************************
@@ -242,7 +242,7 @@ test_purple_credential_provider_read_password_async(PurpleCredentialProvider *p,
 
 	task = g_task_new(p, cancellable, callback, data);
 	g_task_return_pointer(task, NULL, NULL);
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static gchar *
@@ -272,7 +272,7 @@ test_purple_credential_provider_write_password_async(PurpleCredentialProvider *p
 
 	task = g_task_new(p, cancellable, callback, data);
 	g_task_return_boolean(task, TRUE);
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static gboolean
@@ -301,7 +301,7 @@ test_purple_credential_provider_clear_password_async(PurpleCredentialProvider *p
 
 	task = g_task_new(p, cancellable, callback, data);
 	g_task_return_boolean(task, TRUE);
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static gboolean

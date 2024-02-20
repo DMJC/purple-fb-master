@@ -1262,7 +1262,7 @@ bonjour_xmpp_close_conversation(BonjourXMPPConversation *bconv)
 	g_clear_object(&bconv->input);
 	g_clear_object(&bconv->output);
 
-	g_object_unref(G_OBJECT(bconv->tx_buf));
+	g_object_unref(bconv->tx_buf);
 	if (bconv->stream_data != NULL) {
 		struct _stream_start_data *ss = bconv->stream_data;
 		g_free(ss->msg);

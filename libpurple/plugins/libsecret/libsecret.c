@@ -93,7 +93,7 @@ purple_libsecret_read_password_callback(G_GNUC_UNUSED GObject *obj,
 		g_task_return_pointer(task, password, g_free);
 	}
 
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static void
@@ -112,7 +112,7 @@ purple_libsecret_write_password_callback(G_GNUC_UNUSED GObject *obj,
 		g_task_return_boolean(task, ret);
 	}
 
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static void
@@ -135,7 +135,7 @@ purple_libsecret_clear_password_callback(G_GNUC_UNUSED GObject *obj,
 		g_task_return_boolean(task, TRUE);
 	}
 
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 /******************************************************************************
@@ -151,7 +151,7 @@ purple_libsecret_read_password_async(PurpleCredentialProvider *provider,
 	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = NULL;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_libsecret_read_password_async);
 
 	secret_password_lookup(&purple_libsecret_schema, cancellable,
@@ -185,7 +185,7 @@ purple_libsecret_write_password_async(PurpleCredentialProvider *provider,
 	gchar *label = NULL;
 	const gchar *username = NULL;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_libsecret_write_password_async);
 	username = purple_contact_info_get_username(info);
 
@@ -221,7 +221,7 @@ purple_libsecret_clear_password_async(PurpleCredentialProvider *provider,
 	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = NULL;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_libsecret_clear_password_async);
 
 	secret_password_clear(&purple_libsecret_schema, cancellable,

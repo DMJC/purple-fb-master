@@ -724,7 +724,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 
 static PurpleProtocol *
 bonjour_protocol_new(void) {
-	return PURPLE_PROTOCOL(g_object_new(
+	return g_object_new(
 		BONJOUR_TYPE_PROTOCOL,
 		"id", "prpl-bonjour",
 		"name", "Bonjour (Deprecated)",
@@ -733,7 +733,7 @@ bonjour_protocol_new(void) {
 		"icon-name", "im-bonjour",
 		"icon-resource-path", "/im/pidgin/libpurple/bonjour/icons",
 		"options", OPT_PROTO_NO_PASSWORD,
-		NULL));
+		NULL);
 }
 
 static GPluginPluginInfo *

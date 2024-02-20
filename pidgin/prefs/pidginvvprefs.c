@@ -603,7 +603,7 @@ pidgin_vv_prefs_init(PidginVVPrefs *prefs)
  *****************************************************************************/
 GtkWidget *
 pidgin_vv_prefs_new(void) {
-	return GTK_WIDGET(g_object_new(PIDGIN_TYPE_VV_PREFS, NULL));
+	return g_object_new(PIDGIN_TYPE_VV_PREFS, NULL);
 }
 
 void

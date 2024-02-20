@@ -175,10 +175,10 @@ pidgin_invite_dialog_class_init(PidginInviteDialogClass *klass) {
  *****************************************************************************/
 GtkWidget *
 pidgin_invite_dialog_new(PurpleChatConversation *conversation) {
-	return GTK_WIDGET(g_object_new(
+	return g_object_new(
 		PIDGIN_TYPE_INVITE_DIALOG,
 		"conversation", conversation,
-		NULL));
+		NULL);
 }
 
 const gchar *

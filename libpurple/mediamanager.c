@@ -215,7 +215,7 @@ purple_media_manager_get(void)
 	static PurpleMediaManager *manager = NULL;
 
 	if (manager == NULL) {
-		manager = PURPLE_MEDIA_MANAGER(g_object_new(purple_media_manager_get_type(), NULL));
+		manager = g_object_new(PURPLE_TYPE_MEDIA_MANAGER, NULL);
 	}
 
 	return manager;
@@ -286,12 +286,13 @@ create_media(PurpleMediaManager *manager,
 	PurpleMedia *media;
 	guint signal_id;
 
-	media = PURPLE_MEDIA(g_object_new(purple_media_get_type(),
-			     "manager", manager,
-			     "account", account,
-			     "conference-type", conference_type,
-			     "initiator", initiator,
-			     NULL));
+	media = g_object_new(
+		PURPLE_TYPE_MEDIA,
+		"manager", manager,
+		"account", account,
+		"conference-type", conference_type,
+		"initiator", initiator,
+		NULL);
 
 	signal_id = private ?
 			signals[SIG_INIT_PRIVATE_MEDIA] :
@@ -591,7 +592,7 @@ purple_media_manager_set_video_caps(PurpleMediaManager *manager, GstCaps *caps)
 		if (src) {
 			GstElement *capsfilter = gst_bin_get_by_name(GST_BIN(src), "protocol_video_caps");
 			if (capsfilter) {
-				g_object_set(G_OBJECT(capsfilter), "caps", caps, NULL);
+				g_object_set(capsfilter, "caps", caps, NULL);
 				gst_object_unref (capsfilter);
 			}
 			gst_object_unref (src);
@@ -1058,7 +1059,7 @@ purple_media_manager_get_element(PurpleMediaManager *manager,
 				videoscale = gst_element_factory_make("videoscale", NULL);
 				capsfilter = gst_element_factory_make("capsfilter", "protocol_video_caps");
 
-				g_object_set(G_OBJECT(capsfilter),
+				g_object_set(capsfilter,
 					"caps", purple_media_manager_get_video_caps(manager), NULL);
 
 				gst_bin_add_many(GST_BIN(bin), videoscale, capsfilter, NULL);
@@ -1353,12 +1354,10 @@ purple_media_manager_create_output_window(PurpleMediaManager *manager,
 				GObjectClass *klass =
 						G_OBJECT_GET_CLASS(ow->sink);
 				if (g_object_class_find_property(klass, "sync")) {
-					g_object_set(G_OBJECT(ow->sink),
-							"sync", FALSE, NULL);
+					g_object_set(ow->sink, "sync", FALSE, NULL);
 				}
 				if (g_object_class_find_property(klass, "async")) {
-					g_object_set(G_OBJECT(ow->sink),
-							"async", FALSE, NULL);
+					g_object_set(ow->sink, "async", FALSE, NULL);
 				}
 			}
 

@@ -189,5 +189,5 @@ pidgin_credential_prefs_class_init(PidginCredentialPrefsClass *klass) {
  *****************************************************************************/
 GtkWidget *
 pidgin_credential_prefs_new(void) {
-	return GTK_WIDGET(g_object_new(PIDGIN_TYPE_CREDENTIAL_PREFS, NULL));
+	return g_object_new(PIDGIN_TYPE_CREDENTIAL_PREFS, NULL);
 }

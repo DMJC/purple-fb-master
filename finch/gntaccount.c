@@ -146,7 +146,7 @@ save_account_cb(AccountEditDialog *dialog)
 		 * only unref this new instance here. The pointer will remain valid as
 		 * the account manager adds a reference.
 		 */
-		g_object_unref(G_OBJECT(account));
+		g_object_unref(account);
 	} else {
 		account = dialog->account;
 		info = PURPLE_CONTACT_INFO(account);

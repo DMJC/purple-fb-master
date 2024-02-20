@@ -390,7 +390,7 @@ void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
 	pmsg = purple_message_new_incoming(name, message, flags, mtime);
 	purple_conversation_write_message(im, pmsg);
 	g_free(message);
-	g_object_unref(G_OBJECT(pmsg));
+	g_object_unref(pmsg);
 
 	g_free(name);
 }
@@ -678,7 +678,7 @@ void purple_serv_got_chat_in(PurpleConnection *g, int id, const char *who,
 	g_free(angel);
 	g_free(buffy);
 
-	g_object_unref(G_OBJECT(pmsg));
+	g_object_unref(pmsg);
 }
 
 void purple_serv_send_file(PurpleConnection *gc, const char *who, const char *file)

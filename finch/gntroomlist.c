@@ -217,7 +217,7 @@ setup_roomlist(PurpleAccount *account)
 		return;
 
 	froomlist.window = window = gnt_window_new();
-	g_object_set(G_OBJECT(window), "vertical", TRUE, NULL);
+	g_object_set(window, "vertical", TRUE, NULL);
 	gnt_box_set_pad(GNT_BOX(window), 0);
 	gnt_box_set_title(GNT_BOX(window), _("Room List"));
 	gnt_box_set_alignment(GNT_BOX(window), GNT_ALIGN_MID);

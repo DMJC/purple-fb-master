@@ -88,7 +88,7 @@ _test_image(PurpleImage *image,
 	g_assert_cmpstr(purple_image_get_extension(image), ==, ext);
 	g_assert_cmpstr(purple_image_get_mimetype(image), ==, mimetype);
 
-	g_object_unref(G_OBJECT(image));
+	g_object_unref(image);
 }
 
 /******************************************************************************

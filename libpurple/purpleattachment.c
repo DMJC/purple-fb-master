@@ -224,12 +224,11 @@ PurpleAttachment *
 purple_attachment_new(guint64 id, const gchar *content_type) {
 	g_return_val_if_fail(content_type != NULL, NULL);
 
-	return PURPLE_ATTACHMENT(g_object_new(
+	return g_object_new(
 		PURPLE_TYPE_ATTACHMENT,
 		"id", id,
 		"content-type", content_type,
-		NULL
-	));
+		NULL);
 }
 
 guint64

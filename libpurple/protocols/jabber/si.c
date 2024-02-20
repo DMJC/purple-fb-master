@@ -1783,7 +1783,7 @@ jabber_si_parse(JabberStream *js, const char *from,
 	}
 
 	if(jsx->stream_method == STREAM_METHOD_UNKNOWN) {
-		g_object_unref(G_OBJECT(jsx));
+		g_object_unref(jsx);
 		return;
 	}
 
@@ -1857,7 +1857,7 @@ jabber_si_xfer_finalize(GObject *obj) {
 	}
 
 	if (jsx->ibb_buffer) {
-		g_object_unref(G_OBJECT(jsx->ibb_buffer));
+		g_object_unref(jsx->ibb_buffer);
 	}
 
 	purple_debug_info("jabber", "jabber_si_xfer_free(): freeing jsx %p\n", jsx);

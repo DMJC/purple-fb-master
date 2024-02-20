@@ -145,7 +145,7 @@ purple_saved_presence_set_settings(PurpleSavedPresence *presence,
 	if(G_IS_SETTINGS(settings)) {
 		char *schema_id = NULL;
 
-		g_object_get(G_OBJECT(settings), "schema-id", &schema_id, NULL);
+		g_object_get(settings, "schema-id", &schema_id, NULL);
 
 		if(!purple_strequal("im.pidgin.Purple.SavedPresence", schema_id)) {
 			g_warning("expected schema id of im.pidgin.Purple.SavedPresence, "

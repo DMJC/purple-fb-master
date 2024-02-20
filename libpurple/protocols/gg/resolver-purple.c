@@ -84,7 +84,7 @@ void ggp_resolver_purple_cb(GObject *sender, GAsyncResult *res, gpointer cbdata)
 			addresses, cbdata);
 	}
 
-	g_object_unref(G_OBJECT(data->cancellable));
+	g_object_unref(data->cancellable);
 	data->cancellable = NULL;
 
 	for(l = addresses; l; l = l->next) {
@@ -193,7 +193,7 @@ void ggp_resolver_purple_cleanup(void **private_data, int force)
 	if (G_IS_CANCELLABLE(data->cancellable)) {
 		g_cancellable_cancel(data->cancellable);
 
-		g_object_unref(G_OBJECT(data->cancellable));
+		g_object_unref(data->cancellable);
 	}
 
 	if (data->pipes[0])

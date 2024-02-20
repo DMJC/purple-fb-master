@@ -137,7 +137,7 @@ static GObject *purple_gdk_pixbuf_from_data_helper(const guchar *buf, gsize coun
 				"failed with size=%" G_GSIZE_FORMAT ": %s\n", count,
 				error ? error->message : "(no error message)");
 		g_clear_error(&error);
-		g_object_unref(G_OBJECT(loader));
+		g_object_unref(loader);
 		return NULL;
 	}
 
@@ -146,7 +146,7 @@ static GObject *purple_gdk_pixbuf_from_data_helper(const guchar *buf, gsize coun
 				"failed for image of size %" G_GSIZE_FORMAT ": %s\n", count,
 				error ? error->message : "(no error message)");
 		g_clear_error(&error);
-		g_object_unref(G_OBJECT(loader));
+		g_object_unref(loader);
 		return NULL;
 	}
 
@@ -159,12 +159,12 @@ static GObject *purple_gdk_pixbuf_from_data_helper(const guchar *buf, gsize coun
 				"of size %" G_GSIZE_FORMAT "\n",
 				animated ? "gdk_pixbuf_loader_get_animation"
 					: "gdk_pixbuf_loader_get_pixbuf", count);
-		g_object_unref(G_OBJECT(loader));
+		g_object_unref(loader);
 		return NULL;
 	}
 
 	g_object_ref(pixbuf);
-	g_object_unref(G_OBJECT(loader));
+	g_object_unref(loader);
 
 	return pixbuf;
 }

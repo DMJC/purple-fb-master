@@ -476,7 +476,7 @@ pidgin_whiteboard_create(PurpleWhiteboard *wb)
 	PurpleBuddy *buddy;
 	GdkRGBA color;
 
-	gtkwb = PIDGIN_WHITEBOARD(g_object_new(PIDGIN_TYPE_WHITEBOARD, NULL));
+	gtkwb = g_object_new(PIDGIN_TYPE_WHITEBOARD, NULL);
 	gtkwb->wb = wb;
 	g_object_set_data_full(G_OBJECT(wb), UI_DATA, gtkwb, g_object_unref);
 

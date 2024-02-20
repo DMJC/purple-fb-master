@@ -175,5 +175,5 @@ pidgin_network_prefs_init(PidginNetworkPrefs *prefs)
  *****************************************************************************/
 GtkWidget *
 pidgin_network_prefs_new(void) {
-	return GTK_WIDGET(g_object_new(PIDGIN_TYPE_NETWORK_PREFS, NULL));
+	return g_object_new(PIDGIN_TYPE_NETWORK_PREFS, NULL);
 }

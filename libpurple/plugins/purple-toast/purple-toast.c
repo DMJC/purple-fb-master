@@ -64,7 +64,7 @@ purple_toast_show_notification(const gchar *title,
 	                                NULL,
 	                                notification);
 
-	g_object_unref(G_OBJECT(notification));
+	g_object_unref(notification);
 }
 
 static GIcon *
@@ -102,9 +102,9 @@ purple_toast_find_icon(PurpleAccount *account,
 
 				icon = g_file_icon_new(file);
 
-				g_object_unref(G_OBJECT(file));
+				g_object_unref(file);
 			}
-			g_object_unref(G_OBJECT(image));
+			g_object_unref(image);
 		}
 	}
 
@@ -137,7 +137,7 @@ purple_toast_im_message_received(PurpleAccount *account,
 	purple_toast_show_notification(title, message, icon);
 
 	if(G_IS_ICON(icon)) {
-		g_object_unref(G_OBJECT(icon));
+		g_object_unref(icon);
 	}
 }
 
@@ -182,7 +182,7 @@ purple_toast_chat_message_received(PurpleAccount *account,
 	g_free(title);
 
 	if(G_IS_ICON(icon)) {
-		g_object_unref(G_OBJECT(icon));
+		g_object_unref(icon);
 	}
 }
 

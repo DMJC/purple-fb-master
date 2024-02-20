@@ -1348,14 +1348,14 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 
 static PurpleProtocol *
 ggp_protocol_new(void) {
-	return PURPLE_PROTOCOL(g_object_new(
+	return g_object_new(
 		GGP_TYPE_PROTOCOL,
 		"id", "prpl-gg",
 		"name", "Gadu-Gadu",
 		"description", _("Gadu-Gadu is a Polish instant messaging network."),
 		"icon-name", "im-gadu-gadu",
 		"icon-resource-path", "/im/pidgin/libpurple/gg/icons",
-		NULL));
+		NULL);
 }
 
 static GPluginPluginInfo *

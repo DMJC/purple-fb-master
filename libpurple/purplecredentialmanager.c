@@ -72,7 +72,7 @@ purple_credential_manager_read_password_callback(GObject *obj,
 	}
 
 	/* Clean up our initial reference to the task. */
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static void
@@ -95,7 +95,7 @@ purple_credential_manager_write_password_callback(GObject *obj,
 	}
 
 	/* Clean up our initial reference to the task. */
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static void
@@ -118,7 +118,7 @@ purple_credential_manager_clear_password_callback(GObject *obj,
 	}
 
 	/* Clean up our initial reference to the task. */
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 /******************************************************************************
@@ -426,7 +426,7 @@ purple_credential_manager_set_active(PurpleCredentialManager *manager,
 	}
 
 	if(PURPLE_IS_CREDENTIAL_PROVIDER(manager->active)) {
-		previous = PURPLE_CREDENTIAL_PROVIDER(g_object_ref(manager->active));
+		previous = g_object_ref(manager->active);
 	}
 
 	if(g_set_object(&manager->active, provider)) {
@@ -494,7 +494,7 @@ purple_credential_manager_read_password_async(PurpleCredentialManager *manager,
 		g_task_return_new_error(task, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
 		                        _("can not read password, no active "
 		                          "credential provider"));
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 	}
 }
 
@@ -533,7 +533,7 @@ purple_credential_manager_write_password_async(PurpleCredentialManager *manager,
 		g_task_return_new_error(task, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
 		                        _("account \"%s\" is not marked to be stored"),
 		                        name);
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 
 		return;
 	}
@@ -549,7 +549,7 @@ purple_credential_manager_write_password_async(PurpleCredentialManager *manager,
 		                        _("can not write password, no active "
 		                          "credential provider"));
 
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 	}
 
 }
@@ -591,7 +591,7 @@ purple_credential_manager_clear_password_async(PurpleCredentialManager *manager,
 		                        _("can not clear password, no active "
 		                          "credential provider"));
 
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 	}
 }
 

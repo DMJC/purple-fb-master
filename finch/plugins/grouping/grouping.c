@@ -193,7 +193,7 @@ static gboolean
 no_group_init(void)
 {
 	GntTree *tree = finch_blist_get_tree();
-	g_object_set(G_OBJECT(tree), "expander-level", 0, NULL);
+	g_object_set(tree, "expander-level", 0, NULL);
 	return TRUE;
 }
 
@@ -201,7 +201,7 @@ static gboolean
 no_group_uninit(void)
 {
 	GntTree *tree = finch_blist_get_tree();
-	g_object_set(G_OBJECT(tree), "expander-level", 1, NULL);
+	g_object_set(tree, "expander-level", 1, NULL);
 	return TRUE;
 }
 

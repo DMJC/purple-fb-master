@@ -114,7 +114,7 @@ kwallet_message_handler(QtMsgType type, const QMessageLogContext &,
  *****************************************************************************/
 PurpleKWalletPlugin::Request::Request(const QString &key, GTask *task) {
 	this->key = key;
-	this->task = G_TASK(g_object_ref(G_OBJECT(task)));
+	this->task = g_object_ref(task);
 }
 
 PurpleKWalletPlugin::Request::~Request(void) {
@@ -414,7 +414,7 @@ purple_kwallet_read_password_async(PurpleCredentialProvider *provider,
 
 	key = purple_kwallet_provider_account_key(account);
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 
 	/* We manually set the task name otherwise the (gpointer) cast ends up in
 	 * the name.
@@ -450,7 +450,7 @@ purple_kwallet_write_password_async(PurpleCredentialProvider *provider,
 	GTask *task = NULL;
 	QString key;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 
 	/* We manually set the task name otherwise the (gpointer) cast ends up in
 	 * the name.
@@ -487,7 +487,7 @@ purple_kwallet_clear_password_async(PurpleCredentialProvider *provider,
 	GTask *task = NULL;
 	QString key;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 
 	/* We manually set the task name otherwise the (gpointer) cast ends up in
 	 * the name.

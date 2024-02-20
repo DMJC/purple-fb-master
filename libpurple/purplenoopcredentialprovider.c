@@ -42,14 +42,14 @@ purple_noop_credential_provider_read_password_async(PurpleCredentialProvider *pr
 {
 	GTask *task = NULL;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task,
 	                      purple_noop_credential_provider_read_password_async);
 
 	g_task_return_new_error(task, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
 	                        _("provider does not store passwords"));
 
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static gchar *
@@ -70,14 +70,14 @@ purple_noop_credential_provider_write_password_async(PurpleCredentialProvider *p
 {
 	GTask *task = NULL;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task,
 	                      purple_noop_credential_provider_write_password_async);
 
 	g_task_return_new_error(task, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
 	                        _("provider does not store passwords"));
 
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static gboolean
@@ -117,11 +117,10 @@ purple_noop_credential_provider_class_init(PurpleNoopCredentialProviderClass *kl
  *****************************************************************************/
 PurpleCredentialProvider *
 purple_noop_credential_provider_new(void) {
-	return PURPLE_CREDENTIAL_PROVIDER(g_object_new(
+	return g_object_new(
 		PURPLE_TYPE_NOOP_CREDENTIAL_PROVIDER,
 		"id", "noop-provider",
 		"name", _("None"),
 		"description", _("Passwords will not be saved."),
-		NULL
-	));
+		NULL);
 }

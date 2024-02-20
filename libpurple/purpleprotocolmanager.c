@@ -260,7 +260,7 @@ purple_protocol_manager_unregister(PurpleProtocolManager *manager,
 	 * will need to pass it to the signal emission after it's removed from the
 	 * hash table that'll unref it.
 	 */
-	g_object_ref(G_OBJECT(protocol));
+	g_object_ref(protocol);
 
 	id = purple_protocol_get_id(protocol);
 
@@ -292,7 +292,7 @@ purple_protocol_manager_unregister(PurpleProtocolManager *manager,
 		ret = FALSE;
 	}
 
-	g_object_unref(G_OBJECT(protocol));
+	g_object_unref(protocol);
 
 	return ret;
 }

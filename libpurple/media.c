@@ -495,7 +495,7 @@ purple_media_get_account(PurpleMedia *media)
 {
 	PurpleAccount *account;
 	g_return_val_if_fail(PURPLE_IS_MEDIA(media), NULL);
-	g_object_get(G_OBJECT(media), "account", &account, NULL);
+	g_object_get(media, "account", &account, NULL);
 	return account;
 }
 
@@ -504,7 +504,7 @@ purple_media_get_protocol_data(PurpleMedia *media)
 {
 	gpointer protocol_data;
 	g_return_val_if_fail(PURPLE_IS_MEDIA(media), NULL);
-	g_object_get(G_OBJECT(media), "protocol-data", &protocol_data, NULL);
+	g_object_get(media, "protocol-data", &protocol_data, NULL);
 	return protocol_data;
 }
 
@@ -512,7 +512,7 @@ void
 purple_media_set_protocol_data(PurpleMedia *media, gpointer protocol_data)
 {
 	g_return_if_fail(PURPLE_IS_MEDIA(media));
-	g_object_set(G_OBJECT(media), "protocol-data", protocol_data, NULL);
+	g_object_set(media, "protocol-data", protocol_data, NULL);
 }
 
 void

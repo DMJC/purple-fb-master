@@ -187,9 +187,10 @@ GtkWidget *
 pidgin_credential_provider_row_new(PurpleCredentialProvider *provider) {
 	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider), NULL);
 
-	return GTK_WIDGET(g_object_new(PIDGIN_TYPE_CREDENTIAL_PROVIDER_ROW,
-	                               "provider", provider,
-	                               NULL));
+	return g_object_new(
+		PIDGIN_TYPE_CREDENTIAL_PROVIDER_ROW,
+		"provider", provider,
+		NULL);
 }
 
 PurpleCredentialProvider *

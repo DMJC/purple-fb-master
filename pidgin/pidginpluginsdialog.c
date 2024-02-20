@@ -96,5 +96,5 @@ pidgin_plugins_dialog_init(PidginPluginsDialog *dialog) {
  *****************************************************************************/
 GtkWidget *
 pidgin_plugins_dialog_new(void) {
-	return GTK_WIDGET(g_object_new(PIDGIN_TYPE_PLUGINS_DIALOG, NULL));
+	return g_object_new(PIDGIN_TYPE_PLUGINS_DIALOG, NULL);
 }

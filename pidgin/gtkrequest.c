@@ -1181,8 +1181,8 @@ create_image_field(PurpleRequestField *field)
 			purple_request_field_image_get_scale_y(ifield) * gdk_pixbuf_get_height(buf),
 			GDK_INTERP_BILINEAR);
 	widget = gtk_image_new_from_pixbuf(scale);
-	g_object_unref(G_OBJECT(buf));
-	g_object_unref(G_OBJECT(scale));
+	g_object_unref(buf);
+	g_object_unref(scale);
 
 	return widget;
 }
@@ -1678,7 +1678,7 @@ create_datasheet_field(PurpleRequestField *field, GtkSizeGroup *buttons_sg)
 	view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(
 		GTK_TREE_MODEL(model)));
 	g_object_set_data(G_OBJECT(model), "sheet-widget", main_box);
-	g_object_unref(G_OBJECT(model));
+	g_object_unref(model);
 
 	id_column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_visible(id_column, FALSE);

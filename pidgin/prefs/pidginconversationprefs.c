@@ -105,5 +105,5 @@ pidgin_conversation_prefs_init(PidginConversationPrefs *prefs)
  *****************************************************************************/
 GtkWidget *
 pidgin_conversation_prefs_new(void) {
-	return GTK_WIDGET(g_object_new(PIDGIN_TYPE_CONVERSATION_PREFS, NULL));
+	return g_object_new(PIDGIN_TYPE_CONVERSATION_PREFS, NULL);
 }

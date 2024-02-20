@@ -141,7 +141,7 @@ pidgin_about_dialog_load_json(AdwPreferencesPage *page,
 	g_list_free(sections);
 
 	/* clean up */
-	g_object_unref(G_OBJECT(parser));
+	g_object_unref(parser);
 
 	g_input_stream_close(istream, NULL, NULL);
 }

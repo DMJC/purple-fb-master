@@ -190,7 +190,7 @@ purple_history_manager_unregister(PurpleHistoryManager *manager,
 		return FALSE;
 	}
 
-	g_object_ref(G_OBJECT(adapter));
+	g_object_ref(adapter);
 
 	id = purple_history_adapter_get_id(adapter);
 
@@ -206,7 +206,7 @@ purple_history_manager_unregister(PurpleHistoryManager *manager,
 		ret = FALSE;
 	}
 
-	g_object_unref(G_OBJECT(adapter));
+	g_object_unref(adapter);
 
 	return ret;
 }

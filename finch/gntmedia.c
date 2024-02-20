@@ -315,11 +315,12 @@ finch_media_get_property (GObject *object, guint prop_id, GValue *value, GParamS
 static GntWidget *
 finch_media_new(PurpleMedia *media)
 {
-	return GNT_WIDGET(g_object_new(finch_media_get_type(),
-				"media", media,
-				"vertical", FALSE,
-				"homogeneous", FALSE,
-				NULL));
+	return g_object_new(
+		FINCH_TYPE_MEDIA,
+		"media", media,
+		"vertical", FALSE,
+		"homogeneous", FALSE,
+		NULL);
 }
 
 static void

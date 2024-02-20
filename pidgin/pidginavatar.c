@@ -548,7 +548,7 @@ pidgin_avatar_class_init(PidginAvatarClass *klass) {
  *****************************************************************************/
 GtkWidget *
 pidgin_avatar_new(void) {
-	return GTK_WIDGET(g_object_new(PIDGIN_TYPE_AVATAR, NULL));
+	return g_object_new(PIDGIN_TYPE_AVATAR, NULL);
 }
 
 void

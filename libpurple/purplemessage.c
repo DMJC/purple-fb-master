@@ -450,13 +450,14 @@ purple_message_new_outgoing(const char *author, const char *recipient,
 	dt = g_date_time_new_now_local();
 
 	/* who may be NULL for outgoing MUC messages */
-	message = PURPLE_MESSAGE(g_object_new(PURPLE_TYPE_MESSAGE,
+	message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
 		"author", author,
 		"recipient", recipient,
 		"contents", contents,
 		"timestamp", dt,
 		"flags", flags,
-		NULL));
+		NULL);
 
 	g_date_time_unref(dt);
 
@@ -481,13 +482,14 @@ purple_message_new_incoming(const char *who, const char *contents,
 		dt = g_date_time_new_from_unix_local((gint64)timestamp);
 	}
 
-	message = PURPLE_MESSAGE(g_object_new(PURPLE_TYPE_MESSAGE,
+	message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
 		"author", who,
 		"author-alias", who,
 		"contents", contents,
 		"timestamp", dt,
 		"flags", flags,
-		NULL));
+		NULL);
 
 	g_date_time_unref(dt);
 
@@ -505,11 +507,12 @@ purple_message_new_system(const char *contents, PurpleMessageFlags flags) {
 	flags |= PURPLE_MESSAGE_SYSTEM;
 	dt = g_date_time_new_now_local();
 
-	message = PURPLE_MESSAGE(g_object_new(PURPLE_TYPE_MESSAGE,
+	message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
 		"contents", contents,
 		"timestamp", dt,
 		"flags", flags,
-		NULL));
+		NULL);
 
 	g_date_time_unref(dt);
 
@@ -702,7 +705,7 @@ purple_message_add_attachment(PurpleMessage *message,
 
 	return g_hash_table_insert(message->attachments,
 	                           purple_attachment_get_hash_key(attachment),
-	                           g_object_ref(G_OBJECT(attachment)));
+	                           g_object_ref(attachment));
 }
 
 gboolean
@@ -720,7 +723,7 @@ purple_message_get_attachment(PurpleMessage *message, guint64 id) {
 
 	attachment = g_hash_table_lookup(message->attachments, &id);
 	if(PURPLE_IS_ATTACHMENT(attachment)) {
-		return PURPLE_ATTACHMENT(g_object_ref(G_OBJECT(attachment)));
+		return g_object_ref(attachment);
 	}
 
 	return NULL;

@@ -95,13 +95,13 @@ purple_wincred_read_password_async(PurpleCredentialProvider *provider,
 	gchar *password = NULL;
 	PCREDENTIALW credential = NULL;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_wincred_read_password_async);
 
 	target_name = wincred_get_target_name(account, &error);
 	if (target_name == NULL) {
 		g_task_return_error(task, error);
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 		return;
 	}
 
@@ -136,7 +136,7 @@ purple_wincred_read_password_async(PurpleCredentialProvider *provider,
 		}
 
 		g_task_return_error(task, error);
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 		return;
 	}
 
@@ -154,7 +154,7 @@ purple_wincred_read_password_async(PurpleCredentialProvider *provider,
 			0,
 			_("Cannot read password (unicode error)."));
 		g_task_return_error(task, error);
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 		return;
 	} else {
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
@@ -164,7 +164,7 @@ purple_wincred_read_password_async(PurpleCredentialProvider *provider,
 	}
 
 	g_task_return_pointer(task, password, g_free);
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static gchar *
@@ -194,13 +194,13 @@ purple_wincred_write_password_async(PurpleCredentialProvider *provider,
 	glong password_len = 0;
 	CREDENTIALW credential;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_wincred_write_password_async);
 
 	target_name = wincred_get_target_name(account, &error);
 	if (target_name == NULL) {
 		g_task_return_error(task, error);
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 		return;
 	}
 
@@ -210,7 +210,7 @@ purple_wincred_write_password_async(PurpleCredentialProvider *provider,
 		g_free(target_name);
 		purple_debug_error("keyring-wincred", "Couldn't convert username");
 		g_task_return_error(task, error);
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 		return;
 	}
 
@@ -220,7 +220,7 @@ purple_wincred_write_password_async(PurpleCredentialProvider *provider,
 		g_free(target_name);
 		purple_debug_error("keyring-wincred", "Couldn't convert password");
 		g_task_return_error(task, error);
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 		return;
 	}
 
@@ -263,7 +263,7 @@ purple_wincred_write_password_async(PurpleCredentialProvider *provider,
 		g_task_return_boolean(task, TRUE);
 	}
 
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static gboolean
@@ -286,13 +286,13 @@ purple_wincred_clear_password_async(PurpleCredentialProvider *provider,
 	GError *error = NULL;
 	gunichar2 *target_name = NULL;
 
-	task = g_task_new(G_OBJECT(provider), cancellable, callback, data);
+	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_wincred_clear_password_async);
 
 	target_name = wincred_get_target_name(account, &error);
 	if (target_name == NULL) {
 		g_task_return_error(task, error);
-		g_object_unref(G_OBJECT(task));
+		g_object_unref(task);
 		return;
 	}
 
@@ -328,7 +328,7 @@ purple_wincred_clear_password_async(PurpleCredentialProvider *provider,
 		}
 	}
 
-	g_object_unref(G_OBJECT(task));
+	g_object_unref(task);
 }
 
 static gboolean
@@ -376,13 +376,12 @@ purple_wincred_class_finalize(PurpleWinCredClass *klass)
 static PurpleCredentialProvider *
 purple_wincred_new(void)
 {
-	return PURPLE_CREDENTIAL_PROVIDER(g_object_new(
+	return g_object_new(
 		PURPLE_TYPE_WINCRED,
 		"id", WINCRED_ID,
 		"name", _(WINCRED_NAME),
 		"description", _(WINCRED_DESCRIPTION),
-		NULL
-	));
+		NULL);
 }
 
 /******************************************************************************

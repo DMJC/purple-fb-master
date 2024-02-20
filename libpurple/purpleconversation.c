@@ -295,7 +295,7 @@ common_send(PurpleConversation *conv, const gchar *message,
 			purple_signal_emit(handle, "sent-im-msg", account, msg);
 		}
 
-		g_object_unref(G_OBJECT(msg));
+		g_object_unref(msg);
 	} else if(PURPLE_IS_CHAT_CONVERSATION(conv)) {
 		PurpleMessage *msg;
 		gint id = purple_chat_conversation_get_id(PURPLE_CHAT_CONVERSATION(conv));
@@ -310,7 +310,7 @@ common_send(PurpleConversation *conv, const gchar *message,
 			purple_signal_emit(handle, "sent-chat-msg", account, msg, id);
 		}
 
-		g_object_unref(G_OBJECT(msg));
+		g_object_unref(msg);
 	}
 
 	if(err < 0) {

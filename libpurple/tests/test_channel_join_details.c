@@ -52,7 +52,8 @@ test_purple_channel_join_details_properties(void) {
 		"password-supported", TRUE,
 		NULL);
 
-	g_object_get(G_OBJECT(details),
+	g_object_get(
+		details,
 		"name", &name,
 		"nickname", &nickname,
 		"nickname-supported", &nickname_supported,

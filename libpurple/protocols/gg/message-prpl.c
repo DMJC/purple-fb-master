@@ -257,7 +257,7 @@ static void ggp_message_got_display(PurpleConnection *gc,
 
 		purple_conversation_write_message(im, pmsg);
 
-		g_object_unref(G_OBJECT(pmsg));
+		g_object_unref(pmsg);
 	} else {
 		purple_debug_error("gg", "ggp_message_got_display: "
 			"unexpected message type: %d\n", msg->type);

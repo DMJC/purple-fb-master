@@ -681,7 +681,7 @@ pidgin_media_ready_cb(PurpleMedia *media, PidginMedia *gtkmedia, const gchar *si
 		if (sink == NULL) {
 			sink = gst_bin_get_by_name(GST_BIN(pipeline), "gtksink");
 		}
-		g_object_get(G_OBJECT(sink), "widget", &remote_video, NULL);
+		g_object_get(sink, "widget", &remote_video, NULL);
 		gtk_widget_set_visible(remote_video, TRUE);
 		gtk_widget_set_vexpand(remote_video, TRUE);
 		gtk_box_append(GTK_BOX(recv_widget), remote_video);
@@ -703,7 +703,7 @@ pidgin_media_ready_cb(PurpleMedia *media, PidginMedia *gtkmedia, const gchar *si
 		if (sink == NULL) {
 			sink = gst_bin_get_by_name(GST_BIN(pipeline), "gtksink");
 		}
-		g_object_get(G_OBJECT(sink), "widget", &local_video, NULL);
+		g_object_get(sink, "widget", &local_video, NULL);
 		gtk_widget_set_visible(local_video, TRUE);
 		gtk_widget_set_vexpand(local_video, TRUE);
 		gtk_box_append(GTK_BOX(send_widget), local_video);

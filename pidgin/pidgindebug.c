@@ -459,9 +459,7 @@ debug_window_set_filter_level(PidginDebugWindow *win, int level)
 
 	scroll = view_near_bottom(win);
 	for (i = 0; i <= PURPLE_DEBUG_FATAL; i++) {
-		g_object_set(G_OBJECT(win->tags.level[i]),
-				"invisible", i < level,
-				NULL);
+		g_object_set(win->tags.level[i], "invisible", i < level, NULL);
 	}
 	if (scroll) {
 		gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(win->textview),
