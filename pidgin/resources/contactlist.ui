@@ -34,6 +34,18 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             <property name="spacing">6</property>
             <property name="valign">center</property>
             <child>
+              <object class="GtkToggleButton" id="show_offline">
+                <signal name="toggled" handler="pidgin_contact_list_show_offline_toggled_cb"/>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Show _Offline Contacts</property>
+                    <property name="use-underline">true</property>
+                    <property name="mnemonic-widget">show_offline</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="GtkSearchEntry" id="search_entry">
                 <property name="placeholder-text" translatable="yes">Search</property>
                 <signal name="search-changed" handler="pidgin_contact_list_search_changed_cb"/>
@@ -62,6 +74,9 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                   <object class="GtkEveryFilter">
                     <child>
                       <object class="GtkCustomFilter" id="account_connected_filter"/>
+                    </child>
+                    <child>
+                      <object class="GtkCustomFilter" id="offline_filter"/>
                     </child>
                     <child>
                       <object class="GtkCustomFilter" id="search_filter"/>

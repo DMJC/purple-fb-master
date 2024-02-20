@@ -30,8 +30,11 @@
 struct _PidginContactList {
 	GtkBox parent;
 
+	GtkWidget *show_offline;
+
 	GtkFilterListModel *filter_model;
 	GtkCustomFilter *account_connected_filter;
+	GtkCustomFilter *offline_filter;
 	GtkCustomFilter *search_filter;
 
 	GtkWidget *search_entry;
@@ -101,6 +104,36 @@ pidgin_contact_list_account_disconnected_cb(G_GNUC_UNUSED PurpleAccountManager *
 }
 
 static gboolean
+pidgin_contact_list_offline_filter(GObject *item, gpointer data) {
+	PidginContactList *list = data;
+	PurplePerson *person = PURPLE_PERSON(item);
+	PurpleContactInfo *info = NULL;
+	PurplePresence *presence = NULL;
+
+	/* If we're showing offline, there's nothing to do here. */
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(list->show_offline))) {
+		return TRUE;
+	}
+
+	info = purple_person_get_priority_contact_info(person);
+	if(!PURPLE_IS_CONTACT_INFO(info)) {
+		return FALSE;
+	}
+
+	presence = purple_contact_info_get_presence(info);
+	if(PURPLE_IS_PRESENCE(presence)) {
+		PurplePresencePrimitive primitive = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
+
+		primitive = purple_presence_get_primitive(presence);
+		if(primitive == PURPLE_PRESENCE_PRIMITIVE_OFFLINE) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+static gboolean
 pidgin_contact_list_search_filter(GObject *item, gpointer data) {
 	PidginContactList *list = data;
 	PurplePerson *person = PURPLE_PERSON(item);
@@ -114,6 +147,16 @@ pidgin_contact_list_search_filter(GObject *item, gpointer data) {
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
+static void
+pidgin_contact_list_show_offline_toggled_cb(G_GNUC_UNUSED GtkToggleButton *self,
+                                            gpointer data)
+{
+	PidginContactList *list = data;
+
+	gtk_filter_changed(GTK_FILTER(list->offline_filter),
+	                   GTK_FILTER_CHANGE_DIFFERENT);
+}
+
 static void
 pidgin_contact_list_search_changed_cb(GtkSearchEntry *self, gpointer data) {
 	PidginContactList *list = data;
@@ -333,6 +376,11 @@ pidgin_contact_list_init(PidginContactList *list) {
 	                        G_CALLBACK(pidgin_contact_list_account_disconnected_cb),
 	                        list, 0);
 
+	/* Set the filter function for the offline filter. */
+	gtk_custom_filter_set_filter_func(list->offline_filter,
+	                                  (GtkCustomFilterFunc)pidgin_contact_list_offline_filter,
+	                                  list, NULL);
+
 	/* Setup the search filter and forwarding widget. */
 	gtk_custom_filter_set_filter_func(list->search_filter,
 	                                  (GtkCustomFilterFunc)pidgin_contact_list_search_filter,
@@ -356,11 +404,17 @@ pidgin_contact_list_class_init(PidginContactListClass *klass) {
 	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
 	                                     account_connected_filter);
 	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
+	                                     show_offline);
+	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
+	                                     offline_filter);
+	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
 	                                     search_filter);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginContactList,
 	                                     search_entry);
 
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_contact_list_show_offline_toggled_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_contact_list_search_changed_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
