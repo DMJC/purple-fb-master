@@ -263,6 +263,8 @@ purple_request_headers = [
 	'request/purplerequestpage.h',
 ]
 
+purple_builtsources = []
+purple_builtheaders = []
 purple_generated_sources = []
 
 # An environment for unit tests.
@@ -272,7 +274,7 @@ purple_resource = gnome.compile_resources('purpleresources',
 	'resources/libpurple.gresource.xml',
 	source_dir : 'resources',
 	c_name : 'purple')
-purple_coresources += purple_resource
+purple_builtsources += purple_resource
 
 purple_filebase = f'purple-@purple_major_version@'
 purple_include_base = purple_filebase / 'libpurple'
@@ -360,11 +362,9 @@ version_h = configure_file(input : 'purpleversionconsts.h.in',
                            install : true,
                            install_dir : get_option('includedir') / purple_include_base)
 
-purple_builtsources = [
-	enums_c,
-]
+purple_builtsources += enums_c
 
-purple_builtheaders = [
+purple_builtheaders += [
 	purple_h,
 	version_h,
 	enums_h,
@@ -376,7 +376,7 @@ libpurple_inc = include_directories('.')
 libpurple = library('purple3',
                     purple_coresources + purple_builtsources +
                     purple_builtheaders + purple_schemas +
-                    purple_private_headers,
+                    purple_private_headers + ['glibcompat.h'],
                     c_args : ['-DPURPLE_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Purple"'],
                     gnu_symbol_visibility : 'hidden',
                     include_directories : [toplevel_inc, libpurple_inc],
@@ -441,3 +441,14 @@ meson.override_dependency(purple_filebase, libpurple_dep)
 subdir('tests')
 subdir('plugins')
 subdir('protocols')
+
+test(
+	'purple_license_headers',
+	check_license_header,
+	verbose : true,
+	args : [
+		meson.current_source_dir(),
+		'check_license_header_template.h',
+	] + ['glibcompat.h'] + purple_coresources + purple_coreheaders +
+	purple_mediaheaders + purple_private_headers + purple_request_headers)
+

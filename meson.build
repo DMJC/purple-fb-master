@@ -474,6 +474,9 @@ conf.set('DEBUG', enable_debug)
 # So that purpleconfig.h may be found.
 toplevel_inc = include_directories('.')
 
+# make sure we found our license checker script
+check_license_header = find_program('./scripts/check_license_header.py', required : true)
+
 subdir('libpurple')
 subdir('purple-history')
 subdir('finch')
