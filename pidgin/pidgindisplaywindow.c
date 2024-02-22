@@ -24,6 +24,9 @@
 
 #include <adwaita.h>
 
+#include <gplugin.h>
+#include <gplugin-gtk.h>
+
 #include "pidgindisplaywindow.h"
 
 #include "gtkdialogs.h"
@@ -43,6 +46,8 @@ struct _PidginDisplayWindow {
 
 	GtkWidget *view;
 	GtkWidget *bin;
+
+	GtkWidget *plugin_list;
 
 	GListModel *base_model;
 	GListModel *selection_model;
@@ -327,6 +332,8 @@ static void
 pidgin_display_window_init(PidginDisplayWindow *window) {
 	GtkEventController *key = NULL;
 	GtkTreeListModel *tree_model = NULL;
+	GPluginManager *plugin_manager = NULL;
+	gpointer settings_backend = NULL;
 
 	gtk_widget_init_template(GTK_WIDGET(window));
 
@@ -360,6 +367,15 @@ pidgin_display_window_init(PidginDisplayWindow *window) {
 	                 G_CALLBACK(pidgin_display_window_key_pressed_cb),
 	                 window);
 	gtk_widget_add_controller(GTK_WIDGET(window), key);
+
+	/* Set up the plugin list. */
+	plugin_manager = gplugin_manager_get_default();
+	gplugin_gtk_view_set_manager(GPLUGIN_GTK_VIEW(window->plugin_list),
+	                             plugin_manager);
+
+	settings_backend = purple_core_get_settings_backend();
+	gplugin_gtk_view_set_settings_backend(GPLUGIN_GTK_VIEW(window->plugin_list),
+	                                      settings_backend);
 }
 
 static void
@@ -398,6 +414,8 @@ pidgin_display_window_class_init(PidginDisplayWindowClass *klass) {
 	                                     view);
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
 	                                     bin);
+	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
+	                                     plugin_list);
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
 	                                     base_model);
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,

@@ -56,6 +56,47 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
     </child>
     <child>
       <object class="PidginDisplayItem">
+        <property name="id">__plugins__</property>
+        <property name="title" translatable="1">Plugins</property>
+        <property name="widget">
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="PidginInfoPane">
+                <property name="title" translatable="yes">Plugins</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="margin-end">6</property>
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">6</property>
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="tooltip-text" translatable="yes">Refresh</property>
+                        <!-- we can't actually refresh the gplugin pluging list right now, so we just show an insensitive button to remind us to fix it later. -->
+                        <property name="sensitive">false</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">view-refresh-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GPluginGtkView" id="plugin_list">
+                <property name="orientation">vertical</property>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </child>
+    <child>
+      <object class="PidginDisplayItem">
         <property name="id">__conversations__</property>
         <property name="title" translatable="1">Conversations</property>
         <property name="widget">
