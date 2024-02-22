@@ -60,6 +60,7 @@ test_purple_contact_info_properties(void) {
 	char *note = NULL;
 	char *sid = NULL;
 	char *name_for_display = NULL;
+	gboolean favorite = FALSE;
 
 	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
 	person = purple_person_new();
@@ -85,6 +86,7 @@ test_purple_contact_info_properties(void) {
 		"person", person,
 		"permission", PURPLE_CONTACT_INFO_PERMISSION_ALLOW,
 		"sid", "sid",
+		"favorite", TRUE,
 		NULL);
 
 	/* Now use g_object_get to read all of the properties. */
@@ -105,6 +107,7 @@ test_purple_contact_info_properties(void) {
 		"permission", &permission,
 		"sid", &sid,
 		"name-for-display", &name_for_display,
+		"favorite", &favorite,
 		NULL);
 
 	/* Compare all the things. */
@@ -125,6 +128,7 @@ test_purple_contact_info_properties(void) {
 	g_assert_true(person1 == person);
 	g_assert_true(permission == PURPLE_CONTACT_INFO_PERMISSION_ALLOW);
 	g_assert_cmpstr(sid, ==, "sid");
+	g_assert_true(favorite);
 
 	/* Free/unref all the things. */
 	g_clear_pointer(&id, g_free);

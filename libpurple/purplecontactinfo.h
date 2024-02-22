@@ -484,6 +484,31 @@ PURPLE_AVAILABLE_IN_3_0
 void purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid);
 
 /**
+ * purple_contact_info_get_favorite:
+ * @info: The instance.
+ *
+ * Gets whether or not @info is a favorite or starred contact.
+ *
+ * Returns: %TRUE if @info is a favorite, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_contact_info_get_favorite(PurpleContactInfo *info);
+
+/**
+ * purple_contact_info_set_favorite:
+ * @info: The instance.
+ * @favorite: %TRUE to mark @info as a favorite, otherwise %FALSE.
+ *
+ * Sets whether or not @info is a favorite.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_contact_info_set_favorite(PurpleContactInfo *info, gboolean favorite);
+
+/**
  * purple_contact_info_get_name_for_display:
  * @info: The instance.
  *

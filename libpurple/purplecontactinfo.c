@@ -37,6 +37,7 @@ typedef struct  {
 	GTimeZone *time_zone;
 	char *note;
 	char *sid;
+	gboolean favorite;
 
 	char *name_for_display;
 
@@ -68,6 +69,7 @@ enum {
 	PROP_PERSON,
 	PROP_PERMISSION,
 	PROP_SID,
+	PROP_FAVORITE,
 	PROP_NAME_FOR_DISPLAY,
 	N_PROPERTIES,
 };
@@ -221,6 +223,9 @@ purple_contact_info_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_SID:
 			g_value_set_string(value, purple_contact_info_get_sid(info));
 			break;
+		case PROP_FAVORITE:
+			g_value_set_boolean(value, purple_contact_info_get_favorite(info));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -274,6 +279,9 @@ purple_contact_info_set_property(GObject *obj, guint param_id,
 			break;
 		case PROP_SID:
 			purple_contact_info_set_sid(info, g_value_get_string(value));
+			break;
+		case PROP_FAVORITE:
+			purple_contact_info_set_favorite(info, g_value_get_boolean(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -570,6 +578,19 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 		"sid", "sid",
 		"The secondary id for the contact.",
 		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleContactInfo:favorite:
+	 *
+	 * Whether or not the contact info has been marked as a favorite or stared.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_FAVORITE] = g_param_spec_boolean(
+		"favorite", "favorite",
+		"Whether or not this is a favorite contact.",
+		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -1101,6 +1122,32 @@ purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid) {
 		priv->sid = g_strdup(sid);
 
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_SID]);
+	}
+}
+
+gboolean
+purple_contact_info_get_favorite(PurpleContactInfo *info) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), FALSE);
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	return priv->favorite;
+}
+
+void
+purple_contact_info_set_favorite(PurpleContactInfo *info, gboolean favorite) {
+	PurpleContactInfoPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
+
+	priv = purple_contact_info_get_instance_private(info);
+
+	if(priv->favorite != favorite) {
+		priv->favorite = favorite;
+
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_FAVORITE]);
 	}
 }
 
