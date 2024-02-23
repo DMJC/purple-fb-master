@@ -85,6 +85,25 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
 		g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
 		                purple_demo_protocol_echo_im_cb, info,
 		                (GDestroyNotify)purple_demo_protocol_im_info_free);
+	} else if(purple_strequal(who, "Aegina")) {
+		PurpleDemoProtocolIMInfo *info = g_new(PurpleDemoProtocolIMInfo, 1);
+		const char *author = purple_message_get_author(message);
+		const char *contents = NULL;
+
+		if(purple_strequal(author, "Hades")) {
+			contents = "🫥️";
+		} else {
+			/* TRANSLATORS: This is a reference to the Cap of Invisibility owned by
+			 * various Greek gods, such as Hades, as mentioned. */
+			contents = _("Don't tell Hades I have his Cap");
+		}
+
+		info->conversation = g_object_ref(conversation);
+		info->message = purple_message_new_outgoing(author, who, contents,
+		                                            PURPLE_MESSAGE_SEND);
+
+		g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, purple_demo_protocol_echo_im_cb,
+		                info, (GDestroyNotify)purple_demo_protocol_im_info_free);
 	}
 
 	purple_conversation_write_message(conversation, message);

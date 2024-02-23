@@ -92,4 +92,18 @@
 		"group:Nymphs"
 	],
 	"username": "Echo"
+}, {
+	"id": "aegina",
+	"person": {
+		"id": "aegina"
+	},
+	"presence": {
+		"primitive": "offline",
+		"emoji": "🫥️",
+		"message": "Stole the Cap of Invisibility from Hades"
+	},
+	"tags": [
+		"group:Nymphs"
+	],
+	"username": "Aegina"
 }]
