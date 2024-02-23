@@ -1,1 +1,2 @@
+subdir('bonjour')
 subdir('xmpp')

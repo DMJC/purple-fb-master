@@ -314,6 +314,8 @@ pidgin/resources/contactlistitem.ui
 pidgin/resources/infopane.ui
 pidgin/win32/gtkwin32dep.c
 pidgin/win32/winpidgin.c
+protocols/bonjour/purplebonjourcore.c
+protocols/bonjour/purplebonjourprotocol.c
 protocols/xmpp/purplexmppconnection.c
 protocols/xmpp/purplexmppcore.c
 protocols/xmpp/purplexmppprotocol.c
