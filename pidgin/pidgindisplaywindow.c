@@ -466,9 +466,13 @@ pidgin_display_window_add(PidginDisplayWindow *window,
                           PurpleConversation *purple_conversation)
 {
 	GtkWidget *pidgin_conversation = NULL;
+	const char *conversation_id = NULL;
 
 	g_return_if_fail(PIDGIN_IS_DISPLAY_WINDOW(window));
 	g_return_if_fail(PURPLE_IS_CONVERSATION(purple_conversation));
+
+	conversation_id = purple_conversation_get_id(purple_conversation);
+	g_return_if_fail(conversation_id != NULL);
 
 	pidgin_conversation = pidgin_conversation_from_purple_conversation(purple_conversation);
 
@@ -478,7 +482,10 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 
 	if(PIDGIN_IS_CONVERSATION(pidgin_conversation)) {
 		PidginDisplayItem *item = NULL;
-		const char *id = NULL;
+		PurpleAccount *account = purple_conversation_get_account(purple_conversation);
+		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+		const char *account_id = NULL;
+		char *id = NULL;
 
 		GtkWidget *parent = gtk_widget_get_parent(pidgin_conversation);
 
@@ -487,8 +494,10 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 			gtk_widget_unparent(pidgin_conversation);
 		}
 
-		id = purple_conversation_get_name(purple_conversation);
+		account_id = purple_contact_info_get_id(info);
+		id = g_strdup_printf("%s-%s", account_id, conversation_id);
 		item = pidgin_display_item_new(pidgin_conversation, id);
+		g_free(id);
 		g_object_set_data(G_OBJECT(item), "conversation", purple_conversation);
 
 		g_object_bind_property(purple_conversation, "title",
