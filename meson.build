@@ -22,7 +22,7 @@
 #
 project('pidgin', 'c',
     version : '3.0.0-devel',
-    meson_version : '>=0.58.0',
+    meson_version : '>=1.0.0',
     default_options : ['c_std=c17', 'warning_level=2'])
 purple_soversion = 0
 
