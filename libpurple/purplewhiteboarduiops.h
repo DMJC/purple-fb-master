@@ -50,7 +50,7 @@ G_BEGIN_DECLS
  *
  * The PurpleWhiteboard UI Operations
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 struct _PurpleWhiteboardUiOps
 {
@@ -78,7 +78,7 @@ GType purple_whiteboard_ui_ops_get_type(void);
  *
  * Sets the UI operations
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_set_ui_ops(PurpleWhiteboardUiOps *ops);
@@ -89,7 +89,7 @@ void purple_whiteboard_set_ui_ops(PurpleWhiteboardUiOps *ops);
  *
  * Creates a user interface for @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_ui_ops_create(PurpleWhiteboard *whiteboard);
@@ -100,7 +100,7 @@ void purple_whiteboard_ui_ops_create(PurpleWhiteboard *whiteboard);
  *
  * Destroys the user interface for @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_ui_ops_destroy(PurpleWhiteboard *whiteboard);
@@ -113,7 +113,7 @@ void purple_whiteboard_ui_ops_destroy(PurpleWhiteboard *whiteboard);
  *
  * Sets the user interface dimensions for @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_ui_ops_set_dimensions(PurpleWhiteboard *whiteboard, gint width, gint height);
@@ -126,7 +126,7 @@ void purple_whiteboard_ui_ops_set_dimensions(PurpleWhiteboard *whiteboard, gint 
  *
  * Sets the size and color of the active brush for @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_ui_ops_set_brush(PurpleWhiteboard *whiteboard, gint size, gint color);
@@ -141,7 +141,7 @@ void purple_whiteboard_ui_ops_set_brush(PurpleWhiteboard *whiteboard, gint size,
  *
  * Draws a point on @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_ui_ops_draw_point(PurpleWhiteboard *whiteboard, gint x, gint y, gint color, gint size);
@@ -158,7 +158,7 @@ void purple_whiteboard_ui_ops_draw_point(PurpleWhiteboard *whiteboard, gint x, g
  *
  * Draws a line on @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_ui_ops_draw_line(PurpleWhiteboard *whiteboard, gint x1, gint y1, gint x2, gint y2, gint color, gint size);
@@ -169,7 +169,7 @@ void purple_whiteboard_ui_ops_draw_line(PurpleWhiteboard *whiteboard, gint x1, g
  *
  * Clears all the contents of @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_ui_ops_clear(PurpleWhiteboard *whiteboard);

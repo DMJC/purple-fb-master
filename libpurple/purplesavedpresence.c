@@ -331,7 +331,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 * When this is non-null, this saved presence will bind all of its
 	 * properties to the settings object.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SETTINGS] = g_param_spec_object(
 		"settings", "settings",
@@ -344,7 +344,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 *
 	 * The [struct@GLib.DateTime] when this saved presence was last used.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_LAST_USED] = g_param_spec_boxed(
 		"last-used", "last-used",
@@ -357,7 +357,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 *
 	 * The number of times this saved presence has been used.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_USE_COUNT] = g_param_spec_uint64(
 		"use-count", "use-count",
@@ -371,7 +371,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 * The identifier of the saved presence. If not specified, one will be
 	 * randomly generated.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -384,7 +384,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 *
 	 * The name of the saved presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "name",
@@ -397,7 +397,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 *
 	 * The [enum@Purple.StatusPrimitive] for this saved presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PRIMITIVE] = g_param_spec_enum(
 		"primitive", "primitive",
@@ -411,7 +411,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 *
 	 * The status message of this saved presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MESSAGE] = g_param_spec_string(
 		"message", "message",
@@ -424,7 +424,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	 *
 	 * The emoji or mood of the presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_EMOJI] = g_param_spec_string(
 		"emoji", "emoji",

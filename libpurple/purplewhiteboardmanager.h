@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * A #GError domain for errors from #PurpleWhiteboardManager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_WHITEBOARD_MANAGER_DOMAIN \
 	g_quark_from_static_string("purple-whiteboard-manager") \
@@ -54,7 +54,7 @@ G_BEGIN_DECLS
  * #PurpleWhiteboardManager keeps track of all whiteboards and emits signals
  * when whiteboards are registered and unregistered.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleWhiteboardManager, purple_whiteboard_manager,
@@ -67,7 +67,7 @@ G_DECLARE_FINAL_TYPE(PurpleWhiteboardManager, purple_whiteboard_manager,
  *
  * Returns: (transfer none): The default #PurpleWhiteboardManager instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboardManager *purple_whiteboard_manager_get_default(void);
@@ -80,7 +80,7 @@ PurpleWhiteboardManager *purple_whiteboard_manager_get_default(void);
  * Returns: (transfer none): The default manager cast to a
  *          [iface@Gio.ListModel].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_whiteboard_manager_get_default_as_model(void);
@@ -96,7 +96,7 @@ GListModel *purple_whiteboard_manager_get_default_as_model(void);
  * Returns: %TRUE if @whiteboard was successfully registered with @manager,
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_whiteboard_manager_register(PurpleWhiteboardManager *manager, PurpleWhiteboard *whiteboard, GError **error);
@@ -112,7 +112,7 @@ gboolean purple_whiteboard_manager_register(PurpleWhiteboardManager *manager, Pu
  * Returns: %TRUE if @whiteboard was successfully unregistered from @manager,
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_whiteboard_manager_unregister(PurpleWhiteboardManager *manager, PurpleWhiteboard *whiteboard, GError **error);
@@ -126,7 +126,7 @@ gboolean purple_whiteboard_manager_unregister(PurpleWhiteboardManager *manager, 
  *
  * Returns: (transfer none): The #PurpleWhiteboard identified by @id or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboard *purple_whiteboard_manager_find(PurpleWhiteboardManager *manager, const gchar *id);

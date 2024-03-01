@@ -46,7 +46,7 @@ G_DECLARE_FINAL_TYPE(PurpleSavedPresence, purple_saved_presence, PURPLE,
  *
  * A data structure used to save a presence.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PurpleSavedPresence, purple_saved_presence, PURPLE,
  * Returns: (transfer none) (nullable): The time @presence was last used or
  *          %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_saved_presence_get_last_used(PurpleSavedPresence *presence);
@@ -71,7 +71,7 @@ GDateTime *purple_saved_presence_get_last_used(PurpleSavedPresence *presence);
  * Sets the last time @presence was used to @last_used. If @last_used is %NULL,
  * the time will be cleared.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_last_used(PurpleSavedPresence *presence, GDateTime *last_used);
@@ -84,7 +84,7 @@ void purple_saved_presence_set_last_used(PurpleSavedPresence *presence, GDateTim
  *
  * Returns: The number of times @presence has been used.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint64 purple_saved_presence_get_use_count(PurpleSavedPresence *presence);
@@ -96,7 +96,7 @@ guint64 purple_saved_presence_get_use_count(PurpleSavedPresence *presence);
  *
  * Sets the number of times @presence has been used to @use_count.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_use_count(PurpleSavedPresence *presence, guint64 use_count);
@@ -110,7 +110,7 @@ void purple_saved_presence_set_use_count(PurpleSavedPresence *presence, guint64 
  *
  * Returns: The identifier for @presence.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_id(PurpleSavedPresence *presence);
@@ -123,7 +123,7 @@ const char *purple_saved_presence_get_id(PurpleSavedPresence *presence);
  *
  * Returns: (nullable): The name of @presence.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_name(PurpleSavedPresence *presence);
@@ -136,7 +136,7 @@ const char *purple_saved_presence_get_name(PurpleSavedPresence *presence);
  * Sets the name of @presence to @name. If @name is %NULL the name will be
  * cleared.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_name(PurpleSavedPresence *presence, const char *name);
@@ -150,7 +150,7 @@ void purple_saved_presence_set_name(PurpleSavedPresence *presence, const char *n
  *
  * Returns: The escaped name.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_escaped_name(PurpleSavedPresence *presence);
@@ -163,7 +163,7 @@ const char *purple_saved_presence_get_escaped_name(PurpleSavedPresence *presence
  *
  * Returns: The [enum@PresencePrimitive] for @presence.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePresencePrimitive purple_saved_presence_get_primitive(PurpleSavedPresence *presence);
@@ -175,7 +175,7 @@ PurplePresencePrimitive purple_saved_presence_get_primitive(PurpleSavedPresence 
  *
  * Sets the [enum@PresencePrimitive] of @presence to @primitive.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_primitive(PurpleSavedPresence *presence, PurplePresencePrimitive primitive);
@@ -188,7 +188,7 @@ void purple_saved_presence_set_primitive(PurpleSavedPresence *presence, PurplePr
  *
  * Returns: (nullable): The message from @presence.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_message(PurpleSavedPresence *presence);
@@ -201,7 +201,7 @@ const char *purple_saved_presence_get_message(PurpleSavedPresence *presence);
  * Sets the message of @presence to @message. If @message is %NULL the message
  * is cleared.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_message(PurpleSavedPresence *presence, const char *message);
@@ -214,7 +214,7 @@ void purple_saved_presence_set_message(PurpleSavedPresence *presence, const char
  *
  * Returns: (nullable): The emoji for @presence.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_saved_presence_get_emoji(PurpleSavedPresence *presence);
@@ -227,7 +227,7 @@ const char *purple_saved_presence_get_emoji(PurpleSavedPresence *presence);
  * Sets the emoji of @presence to @emoji. If @emoji is %NULL, the emoji will be
  * cleared.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_saved_presence_set_emoji(PurpleSavedPresence *presence, const char *emoji);
@@ -242,7 +242,7 @@ void purple_saved_presence_set_emoji(PurpleSavedPresence *presence, const char *
  *
  * Returns: %TRUE if @a is equal to @b, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_saved_presence_equal(PurpleSavedPresence *a, PurpleSavedPresence *b);
@@ -260,7 +260,7 @@ gboolean purple_saved_presence_equal(PurpleSavedPresence *a, PurpleSavedPresence
  *
  * Returns: %TRUE if @presence matches @needle in any way, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_saved_presence_matches(PurpleSavedPresence *presence, const char *needle);

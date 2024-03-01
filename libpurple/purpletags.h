@@ -46,7 +46,7 @@ G_DECLARE_FINAL_TYPE(PurpleTags, purple_tags, PURPLE, TAGS, GObject)
  * a tag with a name and value. Please note this distinction when the API calls
  * for a name versus a tag which would be the name and the value.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 G_BEGIN_DECLS
@@ -58,7 +58,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer full): The new tags object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_tags_new(void);
@@ -77,7 +77,7 @@ PurpleTags *purple_tags_new(void);
  * Returns: The value of the first tag matching @name. If there is no value,
  *          %NULL is returned.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_tags_lookup(PurpleTags *tags, const gchar *name, gboolean *found);
@@ -92,7 +92,7 @@ const gchar *purple_tags_lookup(PurpleTags *tags, const gchar *name, gboolean *f
  * Returns: The value of the first tag matching @name. If there is no value,
  *          %NULL is returned.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_tags_get(PurpleTags *tags, const gchar *name);
@@ -105,7 +105,7 @@ const gchar *purple_tags_get(PurpleTags *tags, const gchar *name);
  * Adds @tag to @tags. If the tag already exists, the existing tag will be
  * replaced.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_tags_add(PurpleTags *tags, const gchar *tag);
@@ -119,7 +119,7 @@ void purple_tags_add(PurpleTags *tags, const gchar *tag);
  * Formats @name and @value into a tag and adds it to @tags. If the tag already
  * exists, the existing tag will be replaced.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_tags_add_with_value(PurpleTags *tags, const char *name, const char *value);
@@ -134,7 +134,7 @@ void purple_tags_add_with_value(PurpleTags *tags, const char *name, const char *
  *
  * Returns: %TRUE if @tag was found and removed, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_tags_remove(PurpleTags *tags, const gchar *tag);
@@ -150,7 +150,7 @@ gboolean purple_tags_remove(PurpleTags *tags, const gchar *tag);
  *
  * Returns: %TRUE if a tag was found and removed, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_tags_remove_with_value(PurpleTags *tags, const char *name, const char *value);
@@ -161,7 +161,7 @@ gboolean purple_tags_remove_with_value(PurpleTags *tags, const char *name, const
  *
  * Removes all tags from @tags.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_tags_remove_all(PurpleTags *tags);
@@ -174,7 +174,7 @@ void purple_tags_remove_all(PurpleTags *tags);
  *
  * Returns: The number of tags that @tags is keeping track of.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint purple_tags_get_count(PurpleTags *tags);
@@ -187,7 +187,7 @@ guint purple_tags_get_count(PurpleTags *tags);
  *
  * Returns: (transfer none) (element-type utf8): The list of all the tags.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_tags_get_all(PurpleTags *tags);
@@ -202,7 +202,7 @@ GList *purple_tags_get_all(PurpleTags *tags);
  * Returns: (transfer container) (element-type utf8): The list of matching
  *          tags.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_tags_get_all_with_name(PurpleTags *tags, const char *name);
@@ -216,7 +216,7 @@ GList *purple_tags_get_all_with_name(PurpleTags *tags, const char *name);
  *
  * Returns: (transfer full): The string representation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gchar *purple_tags_to_string(PurpleTags *tags, const gchar *separator);
@@ -231,7 +231,7 @@ gchar *purple_tags_to_string(PurpleTags *tags, const gchar *separator);
  *
  * Splits a tag into its name and value parts.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_tag_parse(const char *tag, char **name, char **value);

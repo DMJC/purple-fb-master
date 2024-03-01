@@ -229,7 +229,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * The identifier of the user interface. This is used in places where a
 	 * constant string is need to represent the user interface.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -243,7 +243,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * The name of the user interface. This is used in places where it will be
 	 * displayed to users, so it should be translated.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "name",
@@ -256,7 +256,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 *
 	 * The version number of the user interface.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VERSION] = g_param_spec_string(
 		"version", "version",
@@ -269,7 +269,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 *
 	 * The website of the user interface. This should be the main website.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_WEBSITE] = g_param_spec_string(
 		"website", "website",
@@ -284,7 +284,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * that specifically directs users how to get support for your user
 	 * interface.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SUPPORT_WEBSITE] = g_param_spec_string(
 		"support-website", "support-website",
@@ -298,7 +298,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * The client type of the user interface. Common values include `bot`,
 	 * `console`, `mobile`, `pc`, `web`, etc.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CLIENT_TYPE] = g_param_spec_string(
 		"client-type", "client-type",

@@ -47,7 +47,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleUi, purple_ui, PURPLE, UI, GObject)
  * An abstract class representing a user interface. All user interfaces must
  * create a subclass of this and pass it to [func@Purple.Core.init].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -65,7 +65,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleUi, purple_ui, PURPLE, UI, GObject)
  * The base class for all user interfaces which is used to identify themselves
  * to libpurple when calling [func@Purple.Core.init].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleUiClass {
 	/*< private >*/
@@ -92,7 +92,7 @@ struct _PurpleUiClass {
  *
  * Returns: id of the user interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_id(PurpleUi *ui);
@@ -105,7 +105,7 @@ const char *purple_ui_get_id(PurpleUi *ui);
  *
  * Returns: The name of the user interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_name(PurpleUi *ui);
@@ -118,7 +118,7 @@ const char *purple_ui_get_name(PurpleUi *ui);
  *
  * Returns: The version of the user interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_version(PurpleUi *ui);
@@ -131,7 +131,7 @@ const char *purple_ui_get_version(PurpleUi *ui);
  *
  * Returns: (nullable): The website URI of the user interface or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_website(PurpleUi *ui);
@@ -144,7 +144,7 @@ const char *purple_ui_get_website(PurpleUi *ui);
  *
  * Returns: (nullable): The support website URI of the user interface or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_support_website(PurpleUi *ui);
@@ -157,7 +157,7 @@ const char *purple_ui_get_support_website(PurpleUi *ui);
  *
  * Returns: (transfer none): The client type of the user interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_client_type(PurpleUi *ui);
@@ -170,7 +170,7 @@ const char *purple_ui_get_client_type(PurpleUi *ui);
  *
  * Note: This should only be called by libpurple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_ui_prefs_init(PurpleUi *ui);
@@ -190,7 +190,7 @@ void purple_ui_prefs_init(PurpleUi *ui);
  *
  * Returns: %TRUE if successful, otherwise %FALSE with @error optionally set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_ui_start(PurpleUi *ui, GError **error);
@@ -203,7 +203,7 @@ gboolean purple_ui_start(PurpleUi *ui, GError **error);
  *
  * Note: This should only be called by libpurple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_ui_stop(PurpleUi *ui);
@@ -218,7 +218,7 @@ void purple_ui_stop(PurpleUi *ui);
  *
  * Returns: (transfer full): The settings that @ui is using.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gpointer purple_ui_get_settings_backend(PurpleUi *ui);
@@ -235,7 +235,7 @@ gpointer purple_ui_get_settings_backend(PurpleUi *ui);
  * Returns: (transfer full) (nullable): The [class@HistoryAdapter] to use or
  *          %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryAdapter *purple_ui_get_history_adapter(PurpleUi *ui);
@@ -251,7 +251,7 @@ PurpleHistoryAdapter *purple_ui_get_history_adapter(PurpleUi *ui);
  *
  * Returns: (transfer full) (nullable): The new presence manager or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePresenceManager *purple_ui_get_presence_manager(PurpleUi *ui);

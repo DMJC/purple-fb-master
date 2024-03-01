@@ -39,7 +39,7 @@ G_BEGIN_DECLS
  *
  * An error domain for sqlite3 errors.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_SQLITE3_DOMAIN \
 	g_quark_from_static_string("sqlite3") \
@@ -56,7 +56,7 @@ G_BEGIN_DECLS
  * If that header is included first, this will be exactly equivalent, otherwise
  * it will be a generic `gpointer`, which you should cast to a `sqlite3`.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 #ifdef SQLITE_API
@@ -75,7 +75,7 @@ typedef gpointer PurpleSqlite3;
  *
  * Returns: %TRUE on success, or %FALSE on error with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_sqlite3_get_schema_version(PurpleSqlite3 *db, GError **error);
@@ -117,7 +117,7 @@ int purple_sqlite3_get_schema_version(PurpleSqlite3 *db, GError **error);
  *
  * Returns: %TRUE on success, or %FALSE on error potentially with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_sqlite3_run_migrations_from_strings(PurpleSqlite3 *db, const char *migrations[], GError **error);
@@ -144,7 +144,7 @@ gboolean purple_sqlite3_run_migrations_from_strings(PurpleSqlite3 *db, const cha
  *
  * Returns: %TRUE on success, or %FALSE on error potentially with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_sqlite3_run_migrations_from_resources(PurpleSqlite3 *db, const char *path, const char *migrations[], GError **error);

@@ -114,7 +114,7 @@ purple_whiteboard_manager_class_init(PurpleWhiteboardManagerClass *klass) {
 	 *
 	 * Emitted after @whiteboard has been registered in @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REGISTERED] = g_signal_new_class_handler(
 		"registered",
@@ -135,7 +135,7 @@ purple_whiteboard_manager_class_init(PurpleWhiteboardManagerClass *klass) {
 	 *
 	 * Emitted after @whiteboard has been unregistered from @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_UNREGISTERED] = g_signal_new_class_handler(
 		"unregistered",

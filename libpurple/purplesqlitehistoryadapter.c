@@ -553,7 +553,7 @@ purple_sqlite_history_adapter_class_init(PurpleSqliteHistoryAdapterClass *klass)
 	 *
 	 * The filename that the sqlite database will store data to.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FILENAME] = g_param_spec_string(
 		"filename", "filename", "The filename of the sqlite database",

@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType of #PurpleRoomlistRoom.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -52,7 +52,7 @@ G_BEGIN_DECLS
  * #PurpleRoomlistRoom keeps track of all #PurpleConversation's inside
  * of libpurple and allows searching of them.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleRoomlistRoom, purple_roomlist_room, PURPLE,
@@ -72,7 +72,7 @@ struct _PurpleRoomlistRoomClass {
  *
  * Creates a new room to be added to a [class@Purple.Roomlist].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRoomlistRoom *purple_roomlist_room_new(const gchar *name, const gchar *description);
@@ -85,7 +85,7 @@ PurpleRoomlistRoom *purple_roomlist_room_new(const gchar *name, const gchar *des
  *
  * Returns: The name of @room.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 const gchar *purple_roomlist_room_get_name(PurpleRoomlistRoom *room);
@@ -98,7 +98,7 @@ const gchar *purple_roomlist_room_get_name(PurpleRoomlistRoom *room);
  *
  * Returns: The description of @room.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_roomlist_room_get_description(PurpleRoomlistRoom *room);
@@ -112,7 +112,7 @@ const gchar *purple_roomlist_room_get_description(PurpleRoomlistRoom *room);
  *
  * Returns: The category of @room if set otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_roomlist_room_get_category(PurpleRoomlistRoom *room);
@@ -124,7 +124,7 @@ const gchar *purple_roomlist_room_get_category(PurpleRoomlistRoom *room);
  *
  * Sets the category of @room.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_roomlist_room_set_category(PurpleRoomlistRoom *room, const gchar *category);
@@ -137,7 +137,7 @@ void purple_roomlist_room_set_category(PurpleRoomlistRoom *room, const gchar *ca
  *
  * Returns: The number of users in @room if set, otherwise 0.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint purple_roomlist_room_get_user_count(PurpleRoomlistRoom *room);
@@ -149,7 +149,7 @@ guint purple_roomlist_room_get_user_count(PurpleRoomlistRoom *room);
  *
  * Sets the user count of @room to @user_count.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_roomlist_room_set_user_count(PurpleRoomlistRoom *room, guint user_count);
@@ -162,7 +162,7 @@ void purple_roomlist_room_set_user_count(PurpleRoomlistRoom *room, guint user_co
  *
  * Adds a new field to @room with the name of @field and value of @value.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_roomlist_room_add_field(PurpleRoomlistRoom *room, const gchar *field, const gchar *value);
@@ -176,7 +176,7 @@ void purple_roomlist_room_add_field(PurpleRoomlistRoom *room, const gchar *field
  *
  * Returns: The value of @field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_roomlist_room_get_field(PurpleRoomlistRoom *room, const gchar *field);
@@ -190,7 +190,7 @@ const gchar *purple_roomlist_room_get_field(PurpleRoomlistRoom *room, const gcha
  *
  * Returns: (transfer none): The components used to join the room.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GHashTable *purple_roomlist_room_get_components(PurpleRoomlistRoom *room);

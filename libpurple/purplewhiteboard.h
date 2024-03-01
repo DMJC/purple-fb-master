@@ -39,7 +39,7 @@ typedef struct _PurpleWhiteboard PurpleWhiteboard;
  *
  * A abstract whiteboard object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 G_BEGIN_DECLS
@@ -52,7 +52,7 @@ G_BEGIN_DECLS
  * Right now this is empty but it will be filled out with the function from
  * PurpleWhiteboardOps in a future review request.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleWhiteboardClass {
 	/*< private >*/
@@ -68,7 +68,7 @@ struct _PurpleWhiteboardClass {
  *
  * Returns: The #GType for the #PurpleWhiteboard object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleWhiteboard, purple_whiteboard, PURPLE,
@@ -81,7 +81,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleWhiteboard, purple_whiteboard, PURPLE,
  *
  * Sets the protocol operations for @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_set_protocol_ops(PurpleWhiteboard *whiteboard, PurpleWhiteboardOps *ops);
@@ -96,7 +96,7 @@ void purple_whiteboard_set_protocol_ops(PurpleWhiteboard *whiteboard, PurpleWhit
  *
  * Returns: (transfer full): The new #PurpleWhiteboard instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboard *purple_whiteboard_new(PurpleAccount *account, const gchar *id, gint state);
@@ -109,7 +109,7 @@ PurpleWhiteboard *purple_whiteboard_new(PurpleAccount *account, const gchar *id,
  *
  * Returns: (transfer none): The #PurpleAccount for @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_whiteboard_get_account(PurpleWhiteboard *whiteboard);
@@ -122,7 +122,7 @@ PurpleAccount *purple_whiteboard_get_account(PurpleWhiteboard *whiteboard);
  *
  * Returns: The id of @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_whiteboard_get_id(PurpleWhiteboard *whiteboard);
@@ -134,7 +134,7 @@ const gchar *purple_whiteboard_get_id(PurpleWhiteboard *whiteboard);
  *
  * Set the state of @whiteboard to @state.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_set_state(PurpleWhiteboard *whiteboard, gint state);
@@ -147,7 +147,7 @@ void purple_whiteboard_set_state(PurpleWhiteboard *whiteboard, gint state);
  *
  * Returns: The state of the @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gint purple_whiteboard_get_state(PurpleWhiteboard *whiteboard);
@@ -158,7 +158,7 @@ gint purple_whiteboard_get_state(PurpleWhiteboard *whiteboard);
  *
  * Puts @whiteboard into the started state if it wasn't already.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_start(PurpleWhiteboard *whiteboard);
@@ -169,7 +169,7 @@ void purple_whiteboard_start(PurpleWhiteboard *whiteboard);
  *
  * Destroys a drawing list for a whiteboard
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_draw_list_destroy(GList *draw_list);
@@ -184,7 +184,7 @@ void purple_whiteboard_draw_list_destroy(GList *draw_list);
  *
  * Returns: %TRUE if the values of @width and @height were set.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_whiteboard_get_dimensions(PurpleWhiteboard *whiteboard, gint *width, gint *height);
@@ -197,7 +197,7 @@ gboolean purple_whiteboard_get_dimensions(PurpleWhiteboard *whiteboard, gint *wi
  *
  * Sets the dimensions for @whiteboard.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_set_dimensions(PurpleWhiteboard *whiteboard, gint width, gint height);
@@ -212,7 +212,7 @@ void purple_whiteboard_set_dimensions(PurpleWhiteboard *whiteboard, gint width, 
  *
  * Draws a point on @whiteboard with the given parameters.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_draw_point(PurpleWhiteboard *whiteboard, gint x, gint y, gint color, gint size);
@@ -224,7 +224,7 @@ void purple_whiteboard_draw_point(PurpleWhiteboard *whiteboard, gint x, gint y, 
  *
  * Send a list of points to draw.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_send_draw_list(PurpleWhiteboard *whiteboard, GList *list);
@@ -241,7 +241,7 @@ void purple_whiteboard_send_draw_list(PurpleWhiteboard *whiteboard, GList *list)
  *
  * Draws a line on @whiteboard with the given parameters.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_draw_line(PurpleWhiteboard *whiteboard, gint x1, gint y1, gint x2, gint y2, gint color, gint size);
@@ -252,7 +252,7 @@ void purple_whiteboard_draw_line(PurpleWhiteboard *whiteboard, gint x1, gint y1,
  *
  * Clears the contents of @whiteboard.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_clear(PurpleWhiteboard *whiteboard);
@@ -263,7 +263,7 @@ void purple_whiteboard_clear(PurpleWhiteboard *whiteboard);
  *
  * Sends a request to the buddy to clear @whiteboard.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_send_clear(PurpleWhiteboard *whiteboard);
@@ -276,7 +276,7 @@ void purple_whiteboard_send_clear(PurpleWhiteboard *whiteboard);
  *
  * Sends a request to change the size and color of the brush.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_send_brush(PurpleWhiteboard *whiteboard, gint size, gint color);
@@ -291,7 +291,7 @@ void purple_whiteboard_send_brush(PurpleWhiteboard *whiteboard, gint size, gint 
  *
  * Returns:	%TRUE if the size and color were set.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_whiteboard_get_brush(PurpleWhiteboard *whiteboard, gint *size, gint *color);
@@ -304,7 +304,7 @@ gboolean purple_whiteboard_get_brush(PurpleWhiteboard *whiteboard, gint *size, g
  *
  * Sets the size and color of the brush.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_whiteboard_set_brush(PurpleWhiteboard *whiteboard, gint size, gint color);
@@ -317,7 +317,7 @@ void purple_whiteboard_set_brush(PurpleWhiteboard *whiteboard, gint size, gint c
  *
  * Returns: (transfer none) (element-type gint): The drawing list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_whiteboard_get_draw_list(PurpleWhiteboard *whiteboard);
@@ -329,7 +329,7 @@ GList *purple_whiteboard_get_draw_list(PurpleWhiteboard *whiteboard);
  *
  * Sets the drawing list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_set_draw_list(PurpleWhiteboard *whiteboard, GList* draw_list);
@@ -341,7 +341,7 @@ void purple_whiteboard_set_draw_list(PurpleWhiteboard *whiteboard, GList* draw_l
  *
  * Sets the protocol data for @whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_whiteboard_set_protocol_data(PurpleWhiteboard *whiteboard, gpointer proto_data);
@@ -354,7 +354,7 @@ void purple_whiteboard_set_protocol_data(PurpleWhiteboard *whiteboard, gpointer 
  *
  * Returns: The protocol data for the whiteboard.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gpointer purple_whiteboard_get_protocol_data(PurpleWhiteboard *whiteboard);
@@ -369,7 +369,7 @@ gpointer purple_whiteboard_get_protocol_data(PurpleWhiteboard *whiteboard);
  *
  * Returns: %TRUE if the id's of @whiteboard1 and @whiteboard2 are equal.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_whiteboard_equal(PurpleWhiteboard *whiteboard1, PurpleWhiteboard *whiteboard2);

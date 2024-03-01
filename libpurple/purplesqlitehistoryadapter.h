@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * #PurpleSqliteHistoryAdapter is a class that allows interfacing with an
  * SQLite database to store history. It is a subclass of @PurpleHistoryAdapter.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PURPLE_TYPE_SQLITE_HISTORY_ADAPTER (purple_sqlite_history_adapter_get_type())
@@ -59,7 +59,7 @@ G_DECLARE_FINAL_TYPE(PurpleSqliteHistoryAdapter, purple_sqlite_history_adapter,
  *
  * Returns: (transfer full): The new #PurpleSqliteHistoryAdapter instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryAdapter *purple_sqlite_history_adapter_new(const gchar *filename);
@@ -72,7 +72,7 @@ PurpleHistoryAdapter *purple_sqlite_history_adapter_new(const gchar *filename);
  *
  * Returns: The filename that the @adapter reads and writes to
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_sqlite_history_adapter_get_filename(PurpleSqliteHistoryAdapter *adapter);

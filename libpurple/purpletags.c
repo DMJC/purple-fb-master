@@ -114,7 +114,7 @@ purple_tags_class_init(PurpleTagsClass *klass) {
 	 * > which will emit the [signal@Tags::removed] signal and then the new tag
 	 * > will be added which will emit [signal@Tags::added].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ADDED] = g_signal_new_class_handler(
 		"added",
@@ -144,7 +144,7 @@ purple_tags_class_init(PurpleTagsClass *klass) {
 	 * > which will emit the [signal@Tags::removed] signal and then the new tag
 	 * > will be added which will emit [signal@Tags::added].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REMOVED] = g_signal_new_class_handler(
 		"removed",

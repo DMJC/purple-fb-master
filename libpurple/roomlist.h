@@ -47,7 +47,7 @@ typedef struct _PurpleRoomlistUiOps PurpleRoomlistUiOps;
  *
  * The types of fields.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef enum
 {
@@ -75,7 +75,7 @@ typedef enum
  *
  * The room list ops to be filled out by the UI.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 struct _PurpleRoomlistUiOps {
 	void (*show_with_account)(PurpleAccount *account);
@@ -95,7 +95,7 @@ struct _PurpleRoomlistUiOps {
  *
  * Represents a list of rooms for a given connection on a given protocol.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 struct _PurpleRoomlist {
 	GObject gparent;
@@ -114,7 +114,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the Room List object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleRoomlist, purple_roomlist, PURPLE, ROOMLIST, GObject)
@@ -129,7 +129,7 @@ G_DECLARE_FINAL_TYPE(PurpleRoomlist, purple_roomlist, PURPLE, ROOMLIST, GObject)
  * While we're pretending, predend I didn't say anything about dialogs
  * or buttons, since this is the core.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_roomlist_show_with_account(PurpleAccount *account);
@@ -142,7 +142,7 @@ void purple_roomlist_show_with_account(PurpleAccount *account);
  *
  * Returns: The new room list handle.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleRoomlist *purple_roomlist_new(PurpleAccount *account);
@@ -156,7 +156,7 @@ PurpleRoomlist *purple_roomlist_new(PurpleAccount *account);
  *
  * Returns: (transfer none): The PurpleAccount tied to this room list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_roomlist_get_account(PurpleRoomlist *list);
@@ -171,7 +171,7 @@ PurpleAccount *purple_roomlist_get_account(PurpleRoomlist *list);
  *
  * This must be called before purple_roomlist_room_add().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_roomlist_set_fields(PurpleRoomlist *list, GList *fields);
@@ -186,7 +186,7 @@ void purple_roomlist_set_fields(PurpleRoomlist *list, GList *fields);
  * The UI is encouraged to somehow hint to the user
  * whether or not we're busy downloading a room list or not.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_roomlist_set_in_progress(PurpleRoomlist *list, gboolean in_progress);
@@ -202,7 +202,7 @@ void purple_roomlist_set_in_progress(PurpleRoomlist *list, gboolean in_progress)
  *
  * Returns: True if we're downloading it, or false if we're not.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_roomlist_get_in_progress(PurpleRoomlist *list);
@@ -215,7 +215,7 @@ gboolean purple_roomlist_get_in_progress(PurpleRoomlist *list);
  *
  * Adds a room to the list of them.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_roomlist_room_add(PurpleRoomlist *list, PurpleRoomlistRoom *room);
@@ -230,7 +230,7 @@ void purple_roomlist_room_add(PurpleRoomlist *list, PurpleRoomlistRoom *room);
  * Returns: (transfer full): A PurpleRoomlist* or %NULL if the protocol doesn't
  *          support that.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleRoomlist *purple_roomlist_get_list(PurpleConnection *gc);
@@ -244,7 +244,7 @@ PurpleRoomlist *purple_roomlist_get_list(PurpleConnection *gc);
  * call set_in_progress with %FALSE and possibly
  * unref the list if it took a reference.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_roomlist_cancel_get_list(PurpleRoomlist *list);
@@ -256,7 +256,7 @@ void purple_roomlist_cancel_get_list(PurpleRoomlist *list);
  *
  * Create a new conversation for @room.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_roomlist_join_room(PurpleRoomlist *list, PurpleRoomlistRoom *room);
@@ -272,7 +272,7 @@ void purple_roomlist_join_room(PurpleRoomlist *list, PurpleRoomlistRoom *room);
  *
  * Returns: The #GType for the #PurpleRoomlistUiOps boxed structure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_roomlist_ui_ops_get_type(void);
@@ -283,7 +283,7 @@ GType purple_roomlist_ui_ops_get_type(void);
  *
  * Sets the UI operations structure to be used in all purple room lists.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_roomlist_set_ui_ops(PurpleRoomlistUiOps *ops);
@@ -296,7 +296,7 @@ void purple_roomlist_set_ui_ops(PurpleRoomlistUiOps *ops);
  *
  * Returns: A filled-out PurpleRoomlistUiOps structure.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleRoomlistUiOps *purple_roomlist_get_ui_ops(void);
