@@ -50,7 +50,7 @@ typedef struct _PurpleXferUiOps PurpleXferUiOps;
  *
  * Types of file transfers.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef enum
 {
@@ -73,7 +73,7 @@ typedef enum
  *
  * The different states of the xfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef enum
 {
@@ -95,7 +95,7 @@ G_BEGIN_DECLS
  *
  * A representation of a file transfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 
 PURPLE_AVAILABLE_IN_ALL
@@ -110,7 +110,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleXfer, purple_xfer, PURPLE, XFER, GObject)
  * Any UI representing a file transfer must assign a filled-out
  * PurpleXferUiOps structure to the purple_xfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 struct _PurpleXferUiOps
 {
@@ -129,15 +129,15 @@ struct _PurpleXferUiOps
  * @read: Called when reading data from the file transfer.
  * @write: Called when writing data to the file transfer.
  * @ack: Called when a file transfer is acknowledged.
- * @open_local: The vfunc for PurpleXfer::open-local. Since: 3.0.0
- * @query_local: The vfunc for PurpleXfer::query-local. Since: 3.0.0
- * @read_local: The vfunc for PurpleXfer::read-local. Since: 3.0.0
- * @write_local: The vfunc for PurpleXfer::write-local. Since: 3.0.0
- * @data_not_sent: The vfunc for PurpleXfer::data-not-sent. Since: 3.0.0
+ * @open_local: The vfunc for PurpleXfer::open-local. Since: 3.0
+ * @query_local: The vfunc for PurpleXfer::query-local. Since: 3.0
+ * @read_local: The vfunc for PurpleXfer::read-local. Since: 3.0
+ * @write_local: The vfunc for PurpleXfer::write-local. Since: 3.0
+ * @data_not_sent: The vfunc for PurpleXfer::data-not-sent. Since: 3.0
  *
  * Base class for all #PurpleXfer's
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleXferClass
 {
@@ -179,7 +179,7 @@ struct _PurpleXferClass
  *
  * Returns: A file transfer handle.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleXfer *purple_xfer_new(PurpleAccount *account, PurpleXferType type, const char *who);
@@ -194,7 +194,7 @@ PurpleXfer *purple_xfer_new(PurpleAccount *account, PurpleXferType type, const c
  * to accept the file transfer. In this case protocol must call this function
  * again once the filename is available.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_request(PurpleXfer *xfer);
@@ -206,7 +206,7 @@ void purple_xfer_request(PurpleXfer *xfer);
  *
  * Called if the user accepts the file transfer request.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_request_accepted(PurpleXfer *xfer, const gchar *filename);
@@ -217,7 +217,7 @@ void purple_xfer_request_accepted(PurpleXfer *xfer, const gchar *filename);
  *
  * Called if the user rejects the file transfer request.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_request_denied(PurpleXfer *xfer);
@@ -230,7 +230,7 @@ void purple_xfer_request_denied(PurpleXfer *xfer);
  *
  * Returns: The socket file descriptor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_xfer_get_fd(PurpleXfer *xfer);
@@ -243,7 +243,7 @@ int purple_xfer_get_fd(PurpleXfer *xfer);
  *
  * Returns: The watcher.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_xfer_get_watcher(PurpleXfer *xfer);
@@ -256,7 +256,7 @@ int purple_xfer_get_watcher(PurpleXfer *xfer);
  *
  * Returns: The type of the file transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleXferType purple_xfer_get_xfer_type(PurpleXfer *xfer);
@@ -269,7 +269,7 @@ PurpleXferType purple_xfer_get_xfer_type(PurpleXfer *xfer);
  *
  * Returns: (transfer none): The account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_xfer_get_account(PurpleXfer *xfer);
@@ -281,7 +281,7 @@ PurpleAccount *purple_xfer_get_account(PurpleXfer *xfer);
  *
  * Sets the name of the remote user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_xfer_set_remote_user(PurpleXfer *xfer, const char *who);
@@ -294,7 +294,7 @@ void purple_xfer_set_remote_user(PurpleXfer *xfer, const char *who);
  *
  * Returns: The name of the remote user.
  *
- * Since: 2.1.0
+ * Since: 2.1
  */
 PURPLE_AVAILABLE_IN_2_1
 const char *purple_xfer_get_remote_user(PurpleXfer *xfer);
@@ -307,7 +307,7 @@ const char *purple_xfer_get_remote_user(PurpleXfer *xfer);
  *
  * Returns: The status.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleXferStatus purple_xfer_get_status(PurpleXfer *xfer);
@@ -322,7 +322,7 @@ PurpleXferStatus purple_xfer_get_status(PurpleXfer *xfer);
  *
  * Returns: The visibility.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_xfer_get_visible(PurpleXfer *xfer);
@@ -335,7 +335,7 @@ gboolean purple_xfer_get_visible(PurpleXfer *xfer);
  *
  * Returns: Whether or not the transfer was cancelled.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_xfer_is_cancelled(PurpleXfer *xfer);
@@ -348,7 +348,7 @@ gboolean purple_xfer_is_cancelled(PurpleXfer *xfer);
  *
  * Returns: The completed state.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_xfer_is_completed(PurpleXfer *xfer);
@@ -361,7 +361,7 @@ gboolean purple_xfer_is_completed(PurpleXfer *xfer);
  *
  * Returns: The filename.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_xfer_get_filename(PurpleXfer *xfer);
@@ -374,7 +374,7 @@ const char *purple_xfer_get_filename(PurpleXfer *xfer);
  *
  * Returns: The destination filename.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_xfer_get_local_filename(PurpleXfer *xfer);
@@ -387,7 +387,7 @@ const char *purple_xfer_get_local_filename(PurpleXfer *xfer);
  *
  * Returns: The number of bytes sent.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 goffset purple_xfer_get_bytes_sent(PurpleXfer *xfer);
@@ -400,7 +400,7 @@ goffset purple_xfer_get_bytes_sent(PurpleXfer *xfer);
  *
  * Returns: The number of bytes remaining.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 goffset purple_xfer_get_bytes_remaining(PurpleXfer *xfer);
@@ -413,7 +413,7 @@ goffset purple_xfer_get_bytes_remaining(PurpleXfer *xfer);
  *
  * Returns: The total size of the file.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 goffset purple_xfer_get_size(PurpleXfer *xfer);
@@ -428,7 +428,7 @@ goffset purple_xfer_get_size(PurpleXfer *xfer);
  *
  * Returns: The percentage complete.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 double purple_xfer_get_progress(PurpleXfer *xfer);
@@ -441,7 +441,7 @@ double purple_xfer_get_progress(PurpleXfer *xfer);
  *
  * Returns: The port number on this end.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 guint16 purple_xfer_get_local_port(PurpleXfer *xfer);
@@ -454,7 +454,7 @@ guint16 purple_xfer_get_local_port(PurpleXfer *xfer);
  *
  * Returns: The IP address on the other end.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_xfer_get_remote_ip(PurpleXfer *xfer);
@@ -467,7 +467,7 @@ const char *purple_xfer_get_remote_ip(PurpleXfer *xfer);
  *
  * Returns: The port number on the other end.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 guint16 purple_xfer_get_remote_port(PurpleXfer *xfer);
@@ -480,7 +480,7 @@ guint16 purple_xfer_get_remote_port(PurpleXfer *xfer);
  *
  * Returns: The monotonic time when the transfer started.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 gint64 purple_xfer_get_start_time(PurpleXfer *xfer);
@@ -493,7 +493,7 @@ gint64 purple_xfer_get_start_time(PurpleXfer *xfer);
  *
  * Returns: The monotonic time when the transfer ended.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 gint64 purple_xfer_get_end_time(PurpleXfer *xfer);
@@ -505,7 +505,7 @@ gint64 purple_xfer_get_end_time(PurpleXfer *xfer);
  *
  * Sets the socket file descriptor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_xfer_set_fd(PurpleXfer *xfer, int fd);
@@ -517,7 +517,7 @@ void purple_xfer_set_fd(PurpleXfer *xfer, int fd);
  *
  * Sets the watcher for the file transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_xfer_set_watcher(PurpleXfer *xfer, int watcher);
@@ -529,7 +529,7 @@ void purple_xfer_set_watcher(PurpleXfer *xfer, int watcher);
  *
  * Sets the completed state for the file transfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_set_completed(PurpleXfer *xfer, gboolean completed);
@@ -541,7 +541,7 @@ void purple_xfer_set_completed(PurpleXfer *xfer, gboolean completed);
  *
  * Sets the current status for the file transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_xfer_set_status(PurpleXfer *xfer, PurpleXferStatus status);
@@ -555,7 +555,7 @@ void purple_xfer_set_status(PurpleXfer *xfer, PurpleXferStatus status);
  *
  * Note, this is just a hint for UIs and has no effect internally.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_xfer_set_visible(PurpleXfer *xfer, gboolean visible);
@@ -567,7 +567,7 @@ void purple_xfer_set_visible(PurpleXfer *xfer, gboolean visible);
  *
  * Sets the message for the file transfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_set_message(PurpleXfer *xfer, const char *message);
@@ -580,7 +580,7 @@ void purple_xfer_set_message(PurpleXfer *xfer, const char *message);
  *
  * Returns: The message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_xfer_get_message(PurpleXfer *xfer);
@@ -592,7 +592,7 @@ const char *purple_xfer_get_message(PurpleXfer *xfer);
  *
  * Sets the filename for the file transfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_set_filename(PurpleXfer *xfer, const char *filename);
@@ -604,7 +604,7 @@ void purple_xfer_set_filename(PurpleXfer *xfer, const char *filename);
  *
  * Sets the local filename for the file transfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_set_local_filename(PurpleXfer *xfer, const char *filename);
@@ -616,7 +616,7 @@ void purple_xfer_set_local_filename(PurpleXfer *xfer, const char *filename);
  *
  * Sets the size of the file in a file transfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_set_size(PurpleXfer *xfer, goffset size);
@@ -628,7 +628,7 @@ void purple_xfer_set_size(PurpleXfer *xfer, goffset size);
  *
  * Sets the local port of the file transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_xfer_set_local_port(PurpleXfer *xfer, guint16 local_port);
@@ -647,7 +647,7 @@ void purple_xfer_set_local_port(PurpleXfer *xfer, guint16 local_port);
  *
  * It's used for pausing and resuming an oscar file transfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_set_bytes_sent(PurpleXfer *xfer, goffset bytes_sent);
@@ -660,7 +660,7 @@ void purple_xfer_set_bytes_sent(PurpleXfer *xfer, goffset bytes_sent);
  *
  * Returns: The UI operations structure.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleXferUiOps *purple_xfer_get_ui_ops(PurpleXfer *xfer);
@@ -674,7 +674,7 @@ PurpleXferUiOps *purple_xfer_get_ui_ops(PurpleXfer *xfer);
  *
  * Returns: The number of bytes read, or -1.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gssize purple_xfer_read(PurpleXfer *xfer, guchar **buffer);
@@ -689,7 +689,7 @@ gssize purple_xfer_read(PurpleXfer *xfer, guchar **buffer);
  *
  * Returns: The number of bytes written, or -1.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gssize purple_xfer_write(PurpleXfer *xfer, const guchar *buffer, gsize size);
@@ -704,7 +704,7 @@ gssize purple_xfer_write(PurpleXfer *xfer, const guchar *buffer, gsize size);
  *
  * Returns: TRUE on success, FALSE otherwise.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gboolean purple_xfer_write_file(PurpleXfer *xfer, const guchar *buffer, gsize size);
@@ -720,7 +720,7 @@ gboolean purple_xfer_write_file(PurpleXfer *xfer, const guchar *buffer, gsize si
  * Returns: Number of bytes written (0 means, the device is busy), or -1 on
  *         failure.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gssize purple_xfer_read_file(PurpleXfer *xfer, guchar *buffer, gsize size);
@@ -741,7 +741,7 @@ gssize purple_xfer_read_file(PurpleXfer *xfer, guchar *buffer, gsize size);
  * Passing @fd as '-1' is a special-case and indicates to the
  * protocol to facilitate the file transfer itself.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_start(PurpleXfer *xfer, int fd, const char *ip, guint16 port);
@@ -752,7 +752,7 @@ void purple_xfer_start(PurpleXfer *xfer, int fd, const char *ip, guint16 port);
  *
  * Ends a file transfer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_end(PurpleXfer *xfer);
@@ -763,7 +763,7 @@ void purple_xfer_end(PurpleXfer *xfer);
  *
  * Cancels a file transfer on the local end.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_cancel_local(PurpleXfer *xfer);
@@ -774,7 +774,7 @@ void purple_xfer_cancel_local(PurpleXfer *xfer);
  *
  * Cancels a file transfer from the remote end.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_cancel_remote(PurpleXfer *xfer);
@@ -792,7 +792,7 @@ void purple_xfer_cancel_remote(PurpleXfer *xfer);
  * specifies a title ("File transfer to <literal>user</literal> failed" or
  * "File Transfer from <literal>user</literal> failed").
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_error(PurpleXferType type, PurpleAccount *account, const char *who, const char *msg);
@@ -807,7 +807,7 @@ void purple_xfer_error(PurpleXferType type, PurpleAccount *account, const char *
  *
  * This is a wrapper around purple_conversation_write_system_message.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfer_conversation_write(PurpleXfer *xfer, const gchar *message, gboolean is_error);
@@ -820,7 +820,7 @@ void purple_xfer_conversation_write(PurpleXfer *xfer, const gchar *message, gboo
  * the direction of the file transfer. Used when the UI is providing
  * read/write/data_not_sent UI ops.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_xfer_ui_ready(PurpleXfer *xfer);
@@ -833,7 +833,7 @@ void purple_xfer_ui_ready(PurpleXfer *xfer);
  * the direction of the file transfer. Used when the protocol provides read/write
  * ops and cannot/does not provide a raw fd to the core.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_xfer_protocol_ready(PurpleXfer *xfer);
@@ -848,7 +848,7 @@ void purple_xfer_protocol_ready(PurpleXfer *xfer);
  *
  * Returns: The thumbnail data, or NULL if there is no thumbnail
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 gconstpointer purple_xfer_get_thumbnail(PurpleXfer *xfer, gsize *len);
@@ -861,7 +861,7 @@ gconstpointer purple_xfer_get_thumbnail(PurpleXfer *xfer, gsize *len);
  *
  * Returns: The mimetype of the thumbnail, or %NULL if not thumbnail is set
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 const gchar *purple_xfer_get_thumbnail_mimetype(PurpleXfer *xfer);
@@ -876,7 +876,7 @@ const gchar *purple_xfer_get_thumbnail_mimetype(PurpleXfer *xfer);
  *
  * Sets the thumbnail data for a transfer
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 void purple_xfer_set_thumbnail(PurpleXfer *xfer, gconstpointer thumbnail,
@@ -891,7 +891,7 @@ void purple_xfer_set_thumbnail(PurpleXfer *xfer, gconstpointer thumbnail,
  * Prepare a thumbnail for a transfer (if the UI supports it)
  * will be no-op in case the UI doesn't implement thumbnail creation
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 void purple_xfer_prepare_thumbnail(PurpleXfer *xfer, const gchar *formats);
@@ -907,7 +907,7 @@ void purple_xfer_prepare_thumbnail(PurpleXfer *xfer, const gchar *formats);
  *
  * Returns: The #GType for the #PurpleXferUiOps boxed structure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_xfer_ui_ops_get_type(void);
@@ -920,7 +920,7 @@ GType purple_xfer_ui_ops_get_type(void);
  * Returns: (element-type Purple.Xfer) (transfer none): all current xfers
  *          with refs
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GList *purple_xfers_get_all(void);
@@ -932,7 +932,7 @@ GList *purple_xfers_get_all(void);
  *
  * Returns: The handle.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void *purple_xfers_get_handle(void);
@@ -942,7 +942,7 @@ void *purple_xfers_get_handle(void);
  *
  * Initializes the file transfer subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfers_init(void);
@@ -952,7 +952,7 @@ void purple_xfers_init(void);
  *
  * Uninitializes the file transfer subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfers_uninit(void);
@@ -963,7 +963,7 @@ void purple_xfers_uninit(void);
  *
  * Sets the UI operations structure to be used in all purple file transfers.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_xfers_set_ui_ops(PurpleXferUiOps *ops);
@@ -975,7 +975,7 @@ void purple_xfers_set_ui_ops(PurpleXferUiOps *ops);
  *
  * Returns: The UI operations structure.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleXferUiOps *purple_xfers_get_ui_ops(void);
@@ -1000,7 +1000,7 @@ G_DECLARE_INTERFACE(PurpleProtocolXfer, purple_protocol_xfer, PURPLE,
  *
  * This interface provides file transfer callbacks for the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolXferInterface {
 	/*< private >*/
@@ -1028,7 +1028,7 @@ struct _PurpleProtocolXferInterface {
  *
  * Returns: TRUE on success, FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_xfer_can_receive(PurpleProtocolXfer *prplxfer, PurpleConnection *connection, const gchar *who);
@@ -1042,7 +1042,7 @@ gboolean purple_protocol_xfer_can_receive(PurpleProtocolXfer *prplxfer, PurpleCo
  *
  * Sends @filename to @who.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_xfer_send_file(PurpleProtocolXfer *prplxfer, PurpleConnection *connection, const gchar *who, const gchar *filename);
@@ -1057,7 +1057,7 @@ void purple_protocol_xfer_send_file(PurpleProtocolXfer *prplxfer, PurpleConnecti
  *
  * Returns: (transfer full): A new #PurpleXfer instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleXfer *purple_protocol_xfer_new_xfer(PurpleProtocolXfer *prplxfer, PurpleConnection *connection, const gchar *who);

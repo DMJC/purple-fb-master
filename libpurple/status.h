@@ -46,7 +46,7 @@ typedef struct _PurpleStatus PurpleStatus;
  * hardcoded in each protocol and will not change often.  And because
  * they are hardcoded, they do not need to be saved to any XML file.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef struct _PurpleStatusType PurpleStatusType;
 
@@ -83,7 +83,7 @@ typedef struct _PurpleStatusType PurpleStatusType;
  *
  * See <link linkend="libpurple-purplepresence">Presence API</link>
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef struct _PurpleStatusAttribute PurpleStatusAttribute;
 
@@ -101,7 +101,7 @@ typedef struct _PurpleStatusAttribute PurpleStatusAttribute;
  *
  * A primitive defining the basic structure of a status type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 /*
  * If you add a value to this enum, make sure you update
@@ -138,7 +138,7 @@ G_BEGIN_DECLS
  *
  * Returns: The unique ID for this type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_primitive_get_id_from_type(PurpleStatusPrimitive type);
@@ -153,7 +153,7 @@ const char *purple_primitive_get_id_from_type(PurpleStatusPrimitive type);
  *
  * Returns: The name of this type, suitable for users to see.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_primitive_get_name_from_type(PurpleStatusPrimitive type);
@@ -167,7 +167,7 @@ const char *purple_primitive_get_name_from_type(PurpleStatusPrimitive type);
  *
  * Returns: The PurpleStatusPrimitive value.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatusPrimitive purple_primitive_get_type_from_id(const char *id);
@@ -183,7 +183,7 @@ PurpleStatusPrimitive purple_primitive_get_type_from_id(const char *id);
  *
  * Returns: The #GType for #PurpleStatusType.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_status_type_get_type(void);
@@ -204,7 +204,7 @@ GType purple_status_type_get_type(void);
  *
  * Returns: (transfer full): A new status type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatusType *purple_status_type_new_full(PurpleStatusPrimitive primitive,
@@ -227,7 +227,7 @@ PurpleStatusType *purple_status_type_new_full(PurpleStatusPrimitive primitive,
  *
  * Returns: (transfer full): A new status type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatusType *purple_status_type_new(PurpleStatusPrimitive primitive,
@@ -254,7 +254,7 @@ PurpleStatusType *purple_status_type_new(PurpleStatusPrimitive primitive,
  *
  * Returns: (transfer full): A new status type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatusType *purple_status_type_new_with_attrs(PurpleStatusPrimitive primitive,
@@ -287,7 +287,7 @@ PurpleStatusType *purple_status_type_new_with_attrs(PurpleStatusPrimitive primit
  *
  * Returns: (transfer full): A new status type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleStatusType *purple_status_type_new_with_attrsv(PurpleStatusPrimitive primitive,
@@ -307,7 +307,7 @@ PurpleStatusType *purple_status_type_new_with_attrsv(PurpleStatusPrimitive primi
  *
  * Destroys a status type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_status_type_destroy(PurpleStatusType *status_type);
@@ -320,7 +320,7 @@ void purple_status_type_destroy(PurpleStatusType *status_type);
  *
  * Returns: The primitive type of the status type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatusPrimitive purple_status_type_get_primitive(
@@ -334,7 +334,7 @@ PurpleStatusPrimitive purple_status_type_get_primitive(
  *
  * Returns: The ID of the status type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_status_type_get_id(const PurpleStatusType *status_type);
@@ -347,7 +347,7 @@ const char *purple_status_type_get_id(const PurpleStatusType *status_type);
  *
  * Returns: The name of the status type.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_status_type_get_name(const PurpleStatusType *status_type);
@@ -361,7 +361,7 @@ const char *purple_status_type_get_name(const PurpleStatusType *status_type);
  * Returns: TRUE if user-defined statuses based off this type are saveable.
  *         FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_type_is_saveable(const PurpleStatusType *status_type);
@@ -376,7 +376,7 @@ gboolean purple_status_type_is_saveable(const PurpleStatusType *status_type);
  * Returns: TRUE if the status type can be set or modified by the user.
  *         FALSE if it's a protocol-set setting.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_type_is_user_settable(const PurpleStatusType *status_type);
@@ -392,7 +392,7 @@ gboolean purple_status_type_is_user_settable(const PurpleStatusType *status_type
  *
  * Returns: TRUE if the status type is independent, or FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_type_is_independent(const PurpleStatusType *status_type);
@@ -405,7 +405,7 @@ gboolean purple_status_type_is_independent(const PurpleStatusType *status_type);
  *
  * Returns: TRUE if the status type is exclusive, FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_type_is_exclusive(const PurpleStatusType *status_type);
@@ -420,7 +420,7 @@ gboolean purple_status_type_is_exclusive(const PurpleStatusType *status_type);
  *
  * Returns: TRUE if the status is available, or FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_type_is_available(const PurpleStatusType *status_type);
@@ -434,7 +434,7 @@ gboolean purple_status_type_is_available(const PurpleStatusType *status_type);
  *
  * Returns: The attribute, if found. NULL otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatusAttribute *purple_status_type_get_attr(const PurpleStatusType *status_type,
@@ -448,7 +448,7 @@ PurpleStatusAttribute *purple_status_type_get_attr(const PurpleStatusType *statu
  *
  * Returns: (element-type PurpleStatusAttribute) (transfer none): The list of attributes.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GList *purple_status_type_get_attrs(const PurpleStatusType *status_type);
@@ -464,7 +464,7 @@ GList *purple_status_type_get_attrs(const PurpleStatusType *status_type);
  * Returns: The status type with the given ID, or NULL if one could
  *         not be found.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const PurpleStatusType *purple_status_type_find_with_id(GList *status_types,
@@ -481,7 +481,7 @@ const PurpleStatusType *purple_status_type_find_with_id(GList *status_types,
  *
  * Returns: The #GType for the #PurpleStatusAttribute boxed structure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_status_attribute_get_type(void);
@@ -496,7 +496,7 @@ GType purple_status_attribute_get_type(void);
  *
  * Returns: A new status attribute.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleStatusAttribute *purple_status_attribute_new(const char *id, const char *name,
@@ -508,7 +508,7 @@ PurpleStatusAttribute *purple_status_attribute_new(const char *id, const char *n
  *
  * Destroys a status attribute.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_status_attribute_destroy(PurpleStatusAttribute *attr);
@@ -521,7 +521,7 @@ void purple_status_attribute_destroy(PurpleStatusAttribute *attr);
  *
  * Returns: The status attribute's ID.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_status_attribute_get_id(const PurpleStatusAttribute *attr);
@@ -534,7 +534,7 @@ const char *purple_status_attribute_get_id(const PurpleStatusAttribute *attr);
  *
  * Returns: The status attribute's name.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_status_attribute_get_name(const PurpleStatusAttribute *attr);
@@ -547,7 +547,7 @@ const char *purple_status_attribute_get_name(const PurpleStatusAttribute *attr);
  *
  * Returns: The status attribute's value.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GValue *purple_status_attribute_get_value(const PurpleStatusAttribute *attr);
@@ -563,7 +563,7 @@ GValue *purple_status_attribute_get_value(const PurpleStatusAttribute *attr);
  *
  * Returns: The #GType for #PurpleStatus.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 G_DECLARE_FINAL_TYPE(PurpleStatus, purple_status, PURPLE, STATUS, GObject)
@@ -577,7 +577,7 @@ G_DECLARE_FINAL_TYPE(PurpleStatus, purple_status, PURPLE, STATUS, GObject)
  *
  * Returns: The new status.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatus *purple_status_new(PurpleStatusType *status_type,
@@ -592,7 +592,7 @@ PurpleStatus *purple_status_new(PurpleStatusType *status_type,
  *
  * This should only be called by the account, conversation, and buddy APIs.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_status_set_active(PurpleStatus *status, gboolean active);
@@ -610,7 +610,7 @@ void purple_status_set_active(PurpleStatus *status, gboolean active);
  *
  * This should only be called by the account, conversation, and buddy APIs.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_status_set_active_with_attributes(PurpleStatus *status, gboolean active, GHashTable *attrs);
@@ -623,7 +623,7 @@ void purple_status_set_active_with_attributes(PurpleStatus *status, gboolean act
  *
  * Returns: The status's type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleStatusType *purple_status_get_status_type(PurpleStatus *status);
@@ -636,7 +636,7 @@ PurpleStatusType *purple_status_get_status_type(PurpleStatus *status);
  *
  * Returns: (transfer none): The status's presence.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurplePresence *purple_status_get_presence(PurpleStatus *status);
@@ -652,7 +652,7 @@ PurplePresence *purple_status_get_presence(PurpleStatus *status);
  *
  * Returns: The status's ID.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_status_get_id(PurpleStatus *status);
@@ -668,7 +668,7 @@ const char *purple_status_get_id(PurpleStatus *status);
  *
  * Returns: The status's name.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_status_get_name(PurpleStatus *status);
@@ -684,7 +684,7 @@ const char *purple_status_get_name(PurpleStatus *status);
  *
  * Returns: TRUE if the status is independent, or FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_is_independent(PurpleStatus *status);
@@ -700,7 +700,7 @@ gboolean purple_status_is_independent(PurpleStatus *status);
  *
  * Returns: TRUE if the status is exclusive, FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_is_exclusive(PurpleStatus *status);
@@ -718,7 +718,7 @@ gboolean purple_status_is_exclusive(PurpleStatus *status);
  *
  * Returns: TRUE if the status is available, or FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_is_available(PurpleStatus *status);
@@ -731,7 +731,7 @@ gboolean purple_status_is_available(PurpleStatus *status);
  *
  * Returns: The active state of the status.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_is_active(PurpleStatus *status);
@@ -744,7 +744,7 @@ gboolean purple_status_is_active(PurpleStatus *status);
  *
  * Returns: TRUE if the status is considered online, FALSE otherwise
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_is_online(PurpleStatus *status);
@@ -758,7 +758,7 @@ gboolean purple_status_is_online(PurpleStatus *status);
  *
  * Returns: The value of the attribute.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GValue *purple_status_get_attr_value(PurpleStatus *status,
@@ -773,7 +773,7 @@ GValue *purple_status_get_attr_value(PurpleStatus *status,
  *
  * Returns: The boolean value of the attribute.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_status_get_attr_boolean(PurpleStatus *status,
@@ -788,7 +788,7 @@ gboolean purple_status_get_attr_boolean(PurpleStatus *status,
  *
  * Returns: The integer value of the attribute.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 int purple_status_get_attr_int(PurpleStatus *status, const char *id);
@@ -802,7 +802,7 @@ int purple_status_get_attr_int(PurpleStatus *status, const char *id);
  *
  * Returns: The string value of the attribute.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_status_get_attr_string(PurpleStatus *status, const char *id);
@@ -818,7 +818,7 @@ const char *purple_status_get_attr_string(PurpleStatus *status, const char *id);
  *           0 if @status1 is equal to @status2.
  *           1 if @status2 is more available than @status1.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gint purple_status_compare(PurpleStatus *status1, PurpleStatus *status2);
@@ -834,7 +834,7 @@ gint purple_status_compare(PurpleStatus *status1, PurpleStatus *status2);
  *
  * Returns: the handle to the status subsystem
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void *purple_statuses_get_handle(void);
@@ -844,7 +844,7 @@ void *purple_statuses_get_handle(void);
  *
  * Initializes the status subsystem.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_statuses_init(void);
@@ -854,7 +854,7 @@ void purple_statuses_init(void);
  *
  * Uninitializes the status subsystem.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_statuses_uninit(void);
@@ -874,7 +874,7 @@ void purple_statuses_uninit(void);
  *
  * Returns: (element-type utf8 gpointer) (transfer container): The hash table of attributes.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GHashTable *purple_attrs_from_vargs(va_list args);

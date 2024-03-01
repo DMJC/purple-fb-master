@@ -45,7 +45,7 @@ G_BEGIN_DECLS
  *
  * Initializes the utility subsystem.
  *
- * Since: 2.3.0
+ * Since: 2.3
  */
 PURPLE_AVAILABLE_IN_2_3
 void purple_util_init(void);
@@ -55,7 +55,7 @@ void purple_util_init(void);
  *
  * Uninitializes the util subsystem.
  *
- * Since: 2.3.0
+ * Since: 2.3
  */
 PURPLE_AVAILABLE_IN_2_3
 void purple_util_uninit(void);
@@ -78,7 +78,7 @@ void purple_util_uninit(void);
  *
  * Returns: TRUE if the file was written successfully.  FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean
@@ -98,7 +98,7 @@ purple_util_write_data_to_cache_file(const char *filename, const char *data, gss
  *
  * Returns: TRUE if the file was written successfully.  FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean
@@ -118,7 +118,7 @@ purple_util_write_data_to_config_file(const char *filename, const char *data, gs
  *
  * Returns: TRUE if the file was written successfully.  FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean
@@ -139,7 +139,7 @@ purple_util_write_data_to_data_file(const char *filename, const char *data, gssi
  * Returns: An PurpleXmlNode tree of the contents of the given file.  Or NULL, if
  *         the file does not exist or there was an error reading the file.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleXmlNode *
@@ -160,7 +160,7 @@ purple_util_read_xml_from_cache_file(const char *filename, const char *descripti
  * Returns: An PurpleXmlNode tree of the contents of the given file.  Or NULL, if
  *         the file does not exist or there was an error reading the file.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleXmlNode *
@@ -181,7 +181,7 @@ purple_util_read_xml_from_config_file(const char *filename, const char *descript
  * Returns: An PurpleXmlNode tree of the contents of the given file.  Or NULL, if
  *         the file does not exist or there was an error reading the file.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleXmlNode *
@@ -198,7 +198,7 @@ purple_util_read_xml_from_data_file(const char *filename, const char *descriptio
  *
  * Returns: TRUE if running GNOME, FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_running_gnome(void);
@@ -210,7 +210,7 @@ gboolean purple_running_gnome(void);
  *
  * Returns: TRUE if running KDE, FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_running_kde(void);
@@ -231,7 +231,7 @@ gboolean purple_running_kde(void);
  *
  * Returns: %TRUE if the strings are the same, else %FALSE.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_STATIC_INLINE_IN_2_6
 static inline gboolean
@@ -248,7 +248,7 @@ purple_strequal(const gchar *left, const gchar *right)
  *
  * Returns: %TRUE if the @str is %NULL or an empty string.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_STATIC_INLINE_IN_3_0
 static inline gboolean
@@ -274,7 +274,7 @@ purple_strempty(const char *str) {
  *
  * Returns: A pointer to the normalized version stored in a static buffer.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_normalize(PurpleAccount *account, const char *str);
@@ -288,7 +288,7 @@ const char *purple_normalize(PurpleAccount *account, const char *str);
  *
  * Returns: TRUE, if string is valid, otherwise FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_validate(PurpleProtocol *protocol, const char *str);
@@ -302,7 +302,7 @@ gboolean purple_validate(PurpleProtocol *protocol, const char *str);
  *
  * Returns: The new string.  Must be g_free'd by the caller.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gchar *purple_strdup_withhtml(const gchar *src);
@@ -319,7 +319,7 @@ gchar *purple_strdup_withhtml(const gchar *src);
  * Example usage:
  * purple_str_strip_char(my_dumb_string, '\n');
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_str_strip_char(char *str, char thechar);
@@ -335,7 +335,7 @@ void purple_str_strip_char(char *str, char thechar);
  * with another.  This happens inline (the original string IS
  * modified).
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_util_chrreplace(char *string, char delimiter,
@@ -354,7 +354,7 @@ void purple_util_chrreplace(char *string, char delimiter,
  * Returns: A new string, after performing the substitution.
  *         free this with g_free().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gchar *purple_strreplace(const char *string, const char *delimiter,
@@ -369,7 +369,7 @@ gchar *purple_strreplace(const char *string, const char *delimiter,
  * Returns: A human-readable form, containing days, hours, minutes, and
  *         seconds.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 char *purple_str_seconds_to_string(guint sec);
@@ -382,7 +382,7 @@ char *purple_str_seconds_to_string(guint sec);
  *
  * It should be used to free sensitive data, like passwords.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_str_wipe(gchar *str);
@@ -401,7 +401,7 @@ void purple_str_wipe(gchar *str);
  * Returns: %TRUE if @pattern occurs in sequential order in @str, %FALSE
  *          otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_strmatches(const char *pattern, const char *str);
@@ -423,7 +423,7 @@ void purple_got_protocol_handler_uri(const char *uri);
  *
  * Returns: The resulting string.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_url_encode(const char *str);
@@ -436,7 +436,7 @@ const char *purple_url_encode(const char *str);
  *
  * Returns: True if the email address is syntactically correct.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_email_is_valid(const char *address);
@@ -455,7 +455,7 @@ gboolean purple_email_is_valid(const char *address);
  *
  * Returns: The UTF-8 string, or %NULL if it could not be converted.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gchar *purple_utf8_try_convert(const char *str);
@@ -472,7 +472,7 @@ gchar *purple_utf8_try_convert(const char *str);
  *
  * Returns: A newly allocated UTF-8 string without the unprintable characters.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gchar *purple_utf8_strip_unprintables(const gchar *str);
@@ -491,7 +491,7 @@ gchar *purple_utf8_strip_unprintables(const gchar *str);
  *           0 if @a is equal to @b.
  *           1 if @a is greater than @b.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 int purple_utf8_strcasecmp(const char *a, const char *b);
@@ -507,7 +507,7 @@ int purple_utf8_strcasecmp(const char *a, const char *b);
  *
  * Returns: TRUE if haystack has the word, otherwise FALSE
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_utf8_has_word(const char *haystack, const char *needle);
@@ -521,7 +521,7 @@ gboolean purple_utf8_has_word(const char *haystack, const char *needle);
  *
  * Returns: The stripped string
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 char *purple_text_strip_mnemonic(const char *in);
@@ -534,7 +534,7 @@ char *purple_text_strip_mnemonic(const char *in);
  *
  * Returns: The resulting string.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_escape_filename(const char *str);
@@ -547,7 +547,7 @@ const char *purple_escape_filename(const char *str);
  *
  * Returns:  The created GValue
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GValue *purple_value_new(GType type);
@@ -560,7 +560,7 @@ GValue *purple_value_new(GType type);
  *
  * Returns:  The duplicated GValue
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GValue *purple_value_dup(GValue *value);
@@ -571,7 +571,7 @@ GValue *purple_value_dup(GValue *value);
  *
  * Frees a GValue.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_value_free(GValue *value);

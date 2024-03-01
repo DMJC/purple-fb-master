@@ -2298,7 +2298,7 @@ purple_xfer_class_init(PurpleXferClass *klass)
 	 * Returns: %TRUE if the file was opened successfully, or %FALSE otherwise,
 	 *          and the transfer should be cancelled (libpurple will cancel).
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_OPEN_LOCAL] = g_signal_new(
 	        "open-local", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_LAST,
@@ -2324,7 +2324,7 @@ purple_xfer_class_init(PurpleXferClass *klass)
 	 *          otherwise, and the transfer should be cancelled (libpurple will
 	 *          cancel).
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_QUERY_LOCAL] = g_signal_new(
 	        "query-local", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_LAST,
@@ -2350,7 +2350,7 @@ purple_xfer_class_init(PurpleXferClass *klass)
 	 *          and a negative value if an error occurred and the transfer
 	 *          should be cancelled (libpurple will cancel).
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_READ_LOCAL] = g_signal_new(
 	        "read-local", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_LAST,
@@ -2377,7 +2377,7 @@ purple_xfer_class_init(PurpleXferClass *klass)
 	 * Returns: @size if the write was successful, or a value between 0 and
 	 *          @size on error.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_WRITE_LOCAL] = g_signal_new(
 	        "write-local", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_LAST,
@@ -2403,7 +2403,7 @@ purple_xfer_class_init(PurpleXferClass *klass)
 	 *          otherwise, and the transfer should be cancelled (libpurple
 	 *          will cancel).
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_DATA_NOT_SENT] = g_signal_new(
 	        "data-not-sent", G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_LAST,
@@ -2418,7 +2418,7 @@ purple_xfer_class_init(PurpleXferClass *klass)
 	 *
 	 * Request that a thumbnail be added to a file transfer.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ADD_THUMBNAIL] = g_signal_new(
 	        "add-thumbnail", G_TYPE_FROM_CLASS(klass), G_SIGNAL_ACTION, 0, NULL,

@@ -51,7 +51,7 @@ G_BEGIN_DECLS
  *         user is still typing then Purple will send another PURPLE_IM_TYPING
  *         message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 /* TODO Could probably move this into the conversation API. */
 PURPLE_AVAILABLE_IN_3_0
@@ -65,7 +65,7 @@ unsigned int purple_serv_send_typing(PurpleConnection *gc, const char *name, Pur
  *
  * Move a buddy from one group to another on server.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_move_buddy(PurpleBuddy *buddy, PurpleGroup *orig, PurpleGroup *dest);
@@ -79,7 +79,7 @@ void purple_serv_move_buddy(PurpleBuddy *buddy, PurpleGroup *orig, PurpleGroup *
  *
  * Returns: The error value returned from the protocol interface function.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int  purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg);
@@ -97,7 +97,7 @@ int  purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg);
  *
  * Invite a user to join a chat.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_chat_invite(PurpleConnection *gc, int id, const char *message, const char *name);
@@ -109,7 +109,7 @@ void purple_serv_chat_invite(PurpleConnection *gc, int id, const char *message, 
  *
  * Called when the user requests leaving a chat.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_chat_leave(PurpleConnection *gc, int id);
@@ -133,7 +133,7 @@ void purple_serv_chat_leave(PurpleConnection *gc, int id);
  * Returns:  A positive number or 0 in case of success, a
  *           negative error number in case of failure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int  purple_serv_chat_send(PurpleConnection *gc, int id, PurpleMessage *msg);
@@ -148,7 +148,7 @@ int  purple_serv_chat_send(PurpleConnection *gc, int id, PurpleMessage *msg);
  *
  * Save/store buddy's alias on server list/roster
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_alias_buddy(PurpleBuddy *buddy);
@@ -161,7 +161,7 @@ void purple_serv_alias_buddy(PurpleBuddy *buddy);
  *
  * Protocol should call this function when it retrieves an alias form the server.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_alias(PurpleConnection *gc, const char *who, const char *alias);
@@ -176,7 +176,7 @@ void purple_serv_got_alias(PurpleConnection *gc, const char *who, const char *al
  * the server.  Private aliases are the aliases the user sets, while public
  * aliases are the aliases or display names that buddies set for themselves.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 void purple_serv_got_private_alias(PurpleConnection *gc, const char *who, const char *alias);
@@ -199,7 +199,7 @@ void purple_serv_got_private_alias(PurpleConnection *gc, const char *who, const 
  *
  * @todo Could probably move this into the conversation API.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_typing(PurpleConnection *gc, const char *name, int timeout,
@@ -214,7 +214,7 @@ void purple_serv_got_typing(PurpleConnection *gc, const char *name, int timeout,
  *
  * @todo Could probably move this into the conversation API.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_typing_stopped(PurpleConnection *gc, const char *name);
@@ -229,7 +229,7 @@ void purple_serv_got_typing_stopped(PurpleConnection *gc, const char *name);
  *
  * This function is called by the protocol when it receives an IM message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
@@ -241,7 +241,7 @@ void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
  * @data: The hash function should be g_str_hash() and the equal
  *             function should be g_str_equal().
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data);
@@ -252,7 +252,7 @@ void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data);
  * @data: The hash function should be g_str_hash() and the equal
  *             function should be g_str_equal().
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_reject_chat(PurpleConnection *gc, GHashTable *data);
@@ -269,7 +269,7 @@ void purple_serv_reject_chat(PurpleConnection *gc, GHashTable *data);
  *
  * Called by a protocol when an account is invited into a chat.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_chat_invite(PurpleConnection *gc, const char *name,
@@ -286,7 +286,7 @@ void purple_serv_got_chat_invite(PurpleConnection *gc, const char *name,
  *
  * Returns: (transfer none): The resulting conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_serv_got_joined_chat(PurpleConnection *gc,
@@ -302,7 +302,7 @@ PurpleConversation *purple_serv_got_joined_chat(PurpleConnection *gc,
  * Called by a protocol when an attempt to join a chat via purple_serv_join_chat()
  * fails.
  *
- * Since: 2.5.0
+ * Since: 2.5
  */
 PURPLE_AVAILABLE_IN_2_5
 void purple_serv_got_join_chat_failed(PurpleConnection *gc, GHashTable *data);
@@ -314,7 +314,7 @@ void purple_serv_got_join_chat_failed(PurpleConnection *gc, GHashTable *data);
  *
  * Called by a protocol when an account has left a chat.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_chat_left(PurpleConnection *g, int id);
@@ -330,7 +330,7 @@ void purple_serv_got_chat_left(PurpleConnection *g, int id);
  *
  * Called by a protocol when a message has been received in a chat.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_got_chat_in(PurpleConnection *g, int id, const char *who,
@@ -344,7 +344,7 @@ void purple_serv_got_chat_in(PurpleConnection *g, int id, const char *who,
  *
  * Send a filename to a given contact.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_send_file(PurpleConnection *gc, const char *who, const char *file);
