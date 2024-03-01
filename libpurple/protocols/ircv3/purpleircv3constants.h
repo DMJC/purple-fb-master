@@ -33,7 +33,7 @@
  *
  * A constant representing the CTCP ACTION command.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_CTCP_ACTION ("ACTION") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -42,7 +42,7 @@
  *
  * The delimiter used for CTCP messages.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_CTCP_DELIMITER (0x1) PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -51,7 +51,7 @@
  *
  * A constant representing the CTCP VERSION command.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_CTCP_VERSION ("VERSION") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -60,7 +60,7 @@
  *
  * A constant for the IRC %NICKLOCKED error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_ERR_NICKLOCKED ("902") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -69,7 +69,7 @@
  *
  * A constant for the IRC %SASLABORTED error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_ERR_SASLABORTED ("906") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -78,7 +78,7 @@
  *
  * A constant for the IRC %SASLALREADY error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_ERR_SASLALREADY ("907") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -87,7 +87,7 @@
  *
  * A constant for the IRC %SASLFAIL error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_ERR_SASLFAIL ("904") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -96,7 +96,7 @@
  *
  * A constant for the IRC %SASLTOOLONG error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_ERR_SASLTOOLONG ("905") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -105,7 +105,7 @@
  *
  * A constant for the IRC %AUTHENTICATE message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_MSG_AUTHENTICATE ("AUTHENTICATE") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -114,7 +114,7 @@
  *
  * A constant for the IRC %CAP message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_MSG_CAP ("CAP") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -123,7 +123,7 @@
  *
  * A constant for the IRC %JOIN message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_MSG_JOIN ("JOIN") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -132,7 +132,7 @@
  *
  * A constant for the IRC %NOTICE message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_MSG_NOTICE ("NOTICE") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -141,7 +141,7 @@
  *
  * A constant for the IRC %PING message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_MSG_PING ("PING") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -150,7 +150,7 @@
  *
  * A constant for the IRC %PRIVMSG message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_MSG_PRIVMSG ("PRIVMSG") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -159,7 +159,7 @@
  *
  * A constant for the IRC %TOPIC message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_MSG_TOPIC ("TOPIC") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -168,7 +168,7 @@
  *
  * A constant for the IRC %CREATED reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_CREATED ("003") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -177,7 +177,7 @@
  *
  * A constant for the IRC %ENDOFMOTD reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_ENDOFMOTD ("376") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -186,7 +186,7 @@
  *
  * A constant for the IRC %LOGGEDIN reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_LOGGEDIN ("900") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -195,7 +195,7 @@
  *
  * A constant for the IRC %LOGGEDOUT reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_LOGGEDOUT ("901") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -204,7 +204,7 @@
  *
  * A constant for the IRC %LUSERCHANNELS reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_LUSERCHANNELS ("254") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -213,7 +213,7 @@
  *
  * A constant for the IRC %LUSERCLIENT reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_LUSERCLIENT ("251") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -222,7 +222,7 @@
  *
  * A constant for the IRC %LUSERME reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_LUSERME ("255") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -231,7 +231,7 @@
  *
  * A constant for the IRC %LUSEROP reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_LUSEROP ("252") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -240,7 +240,7 @@
  *
  * A constant for the IRC %LUSERUNKNOWN reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_LUSERUNKNOWN ("253") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -249,7 +249,7 @@
  *
  * A constant for the IRC %MYINFO reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_MYINFO ("004") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -258,7 +258,7 @@
  *
  * A constant for the IRC %MOTD reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_MOTD ("372") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -267,7 +267,7 @@
  *
  * A constant for the IRC %MOTDSTART reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_MOTDSTART ("375") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -276,7 +276,7 @@
  *
  * A constant for the IRC %NOTOPIC reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_NOTOPIC ("331") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -285,7 +285,7 @@
  *
  * A constant for the IRC %SASLMECHS reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_SASLMECHS ("908") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -294,7 +294,7 @@
  *
  * A constant for the IRC %SASLSUCCESS reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_SASLSUCCESS ("903") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -303,7 +303,7 @@
  *
  * A constant for the IRC %TOPIC reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_TOPIC ("332") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -312,7 +312,7 @@
  *
  * A constant for the IRC %WELCOME reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_WELCOME ("001") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 
@@ -321,7 +321,7 @@
  *
  * A constant for the IRC %YOURHOST reply.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_RPL_YOURHOST ("002") PURPLE_IRCV3_AVAILABLE_MACRO_IN_3_0
 

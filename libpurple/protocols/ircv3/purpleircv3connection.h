@@ -63,7 +63,7 @@ struct _PurpleIRCv3ConnectionClass {
  *
  * Registers the dynamic type using @plugin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugin);
 
@@ -85,7 +85,7 @@ G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugi
  * Returns: %TRUE if the request was handled and the message should not be
  *          echoed, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL gboolean purple_ircv3_connection_emit_ctcp_request(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message, const char *command, const char *parameters);
 
@@ -107,7 +107,7 @@ G_GNUC_INTERNAL gboolean purple_ircv3_connection_emit_ctcp_request(PurpleIRCv3Co
  * Returns: %TRUE if the request was handled and the message should not be
  *          echoed, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL gboolean purple_ircv3_connection_emit_ctcp_response(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message, const char *command, const char *parameters);
 
@@ -142,7 +142,7 @@ PurpleIRCv3Capabilities *purple_ircv3_connection_get_capabilities(PurpleIRCv3Con
  *
  * Returns: %TRUE if registration has been completed otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection);
@@ -154,7 +154,7 @@ gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connectio
  *
  * Adds a message to the status conversation/window for @connection.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, PurpleIRCv3Message *message);
@@ -171,7 +171,7 @@ void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connectio
  *
  * Returns: %TRUE if @id is a channel otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 gboolean purple_ircv3_connection_is_channel(PurpleIRCv3Connection *connection, const char *id);
@@ -191,7 +191,7 @@ gboolean purple_ircv3_connection_is_channel(PurpleIRCv3Connection *connection, c
  *
  * Returns: (transfer none) (nullable): The conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleConversation *purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *connection, const char *id);
@@ -212,7 +212,7 @@ PurpleConversation *purple_ircv3_connection_find_or_create_conversation(PurpleIR
  *
  * Returns: (transfer none) (nullable): The contact.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleContact *purple_ircv3_connection_find_or_create_contact(PurpleIRCv3Connection *connection, const char *nick);

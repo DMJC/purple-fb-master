@@ -53,7 +53,7 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Message, purple_ircv3_message, PURPLE_IRCV3,
  *
  * Returns: (transfer full): The new message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleIRCv3Message *purple_ircv3_message_new(const char *command);
@@ -66,7 +66,7 @@ PurpleIRCv3Message *purple_ircv3_message_new(const char *command);
  *
  * Returns: The command of the message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 const char *purple_ircv3_message_get_command(PurpleIRCv3Message *message);
@@ -78,7 +78,7 @@ const char *purple_ircv3_message_get_command(PurpleIRCv3Message *message);
  *
  * Sets the command for @message to @command.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_message_set_command(PurpleIRCv3Message *message, const char *command);
@@ -91,7 +91,7 @@ void purple_ircv3_message_set_command(PurpleIRCv3Message *message, const char *c
  *
  * Returns: (transfer none) (nullable): The parameters from @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 GStrv purple_ircv3_message_get_params(PurpleIRCv3Message *message);
@@ -103,7 +103,7 @@ GStrv purple_ircv3_message_get_params(PurpleIRCv3Message *message);
  *
  * Sets the parameters of @message to @params.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_message_set_params(PurpleIRCv3Message *message, GStrv params);
@@ -116,7 +116,7 @@ void purple_ircv3_message_set_params(PurpleIRCv3Message *message, GStrv params);
  *
  * Returns: (nullable): The source of @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 const char *purple_ircv3_message_get_source(PurpleIRCv3Message *message);
@@ -128,7 +128,7 @@ const char *purple_ircv3_message_get_source(PurpleIRCv3Message *message);
  *
  * Sets the source of @message to @source.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_message_set_source(PurpleIRCv3Message *message, const char *source);
@@ -142,7 +142,7 @@ void purple_ircv3_message_set_source(PurpleIRCv3Message *message, const char *so
  * Returns: (transfer none) (element-type utf8 utf8) (nullable): The tags from
  *          @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 GHashTable *purple_ircv3_message_get_tags(PurpleIRCv3Message *message);
@@ -154,7 +154,7 @@ GHashTable *purple_ircv3_message_get_tags(PurpleIRCv3Message *message);
  *
  * Sets the tags of @message to @tags.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_message_set_tags(PurpleIRCv3Message *message, GHashTable *tags);

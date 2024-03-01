@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * Returns: %TRUE if the command was handled properly, otherwise %FALSE and
  *          @error may be set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_TYPE_IN_3_0
 typedef gboolean (*PurpleIRCv3MessageHandler)(PurpleIRCv3Message *message,

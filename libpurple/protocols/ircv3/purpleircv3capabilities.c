@@ -251,7 +251,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	 * The PurpleIRCv3Connection object that this capabilities was created
 	 * with.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CONNECTION] = g_param_spec_object(
 		"connection", "connection",
@@ -271,7 +271,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	 * For dynamically added capabilities see the `added` and `removed`
 	 * signals.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_READY] = g_signal_new_class_handler(
 		"ready",
@@ -294,7 +294,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	 *
 	 * The value of @capability will be the same as the one that was requested.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACK] = g_signal_new_class_handler(
 		"ack",
@@ -318,7 +318,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	 *
 	 * The value of @capability will be the same as the one that was requested.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_NAK] = g_signal_new_class_handler(
 		"nak",
@@ -339,7 +339,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	 * Emitted when all of the requested capabilities have been either ack'd or
 	 * nak'd by the server.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_DONE] = g_signal_new_class_handler(
 		"done",
@@ -365,7 +365,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	 * you can call #purple_ircv3_capabilities_lookup to see if the
 	 * capabilities you're interested in have been added.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_NEW] = g_signal_new_class_handler(
 		"new",
@@ -392,7 +392,7 @@ purple_ircv3_capabilities_class_init(PurpleIRCv3CapabilitiesClass *klass) {
 	 * #purple_ircv3_capabilities_lookup to see if the capabilities you're
 	 * interested in have been removed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_DEL] = g_signal_new_class_handler(
 		"del",

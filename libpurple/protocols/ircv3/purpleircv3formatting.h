@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer full) (nullable): The result of stripping @text.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 char *purple_ircv3_formatting_strip(const char *text);

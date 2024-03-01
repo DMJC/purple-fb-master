@@ -47,7 +47,7 @@ G_BEGIN_DECLS
  *
  * Returns: %TRUE if the message was a CTCP message and %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 gboolean purple_ircv3_ctcp_handle(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message);
@@ -58,7 +58,7 @@ gboolean purple_ircv3_ctcp_handle(PurpleIRCv3Connection *connection, PurpleConve
  *
  * Adds handlers for the CTCP commands that we support directly.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_ircv3_ctcp_add_default_handlers(PurpleIRCv3Connection *connection);

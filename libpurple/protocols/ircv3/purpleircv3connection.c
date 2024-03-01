@@ -606,7 +606,7 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 	 * This is created during registration of the connection and is useful for
 	 * troubleshooting or just reporting them to end users.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CAPABILITIES] = g_param_spec_object(
 		"capabilities", "capabilities",
@@ -620,7 +620,7 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 	 * Whether or not the connection has finished the registration portion of
 	 * the connection.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_REGISTERED] = g_param_spec_boolean(
 		"registered", "registered",
@@ -640,7 +640,7 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 	 * completed. Plugins can use this to perform additional actions before
 	 * any channels are auto joined or similar.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REGISTRATION_COMPLETE] = g_signal_new_class_handler(
 		"registration-complete",
@@ -670,7 +670,7 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 	 * command has its message contents replaced with just the CTCP parameters
 	 * and sets the [property@Message:action] to %TRUE and then returns %TRUE.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_CTCP_REQUEST] = g_signal_new_class_handler(
 		"ctcp-request",
@@ -703,7 +703,7 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
 	 * Handlers may modify @conversation or @message to depending on their
 	 * needs.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_CTCP_RESPONSE] = g_signal_new_class_handler(
 		"ctcp-response",

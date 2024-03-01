@@ -129,7 +129,7 @@ purple_ircv3_message_class_init(PurpleIRCv3MessageClass *klass) {
 	 *
 	 * This could be something like JOIN or a server reply numeric like 005.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_COMMAND] = g_param_spec_string(
 		"command", "command",
@@ -144,7 +144,7 @@ purple_ircv3_message_class_init(PurpleIRCv3MessageClass *klass) {
 	 *
 	 * When serialized, the last item will be prefixed with a :.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PARAMS] = g_param_spec_boxed(
 		"params", "params",
@@ -160,7 +160,7 @@ purple_ircv3_message_class_init(PurpleIRCv3MessageClass *klass) {
 	 * This could be a nickname, a full nick!ident@server, a server name, or
 	 * %NULL.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SOURCE] = g_param_spec_string(
 		"source", "source",
@@ -174,7 +174,7 @@ purple_ircv3_message_class_init(PurpleIRCv3MessageClass *klass) {
 	 * The [ircv3 message tags](https://ircv3.net/specs/extensions/message-tags)
 	 * for the message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TAGS] = g_param_spec_boxed(
 		"tags", "tags",

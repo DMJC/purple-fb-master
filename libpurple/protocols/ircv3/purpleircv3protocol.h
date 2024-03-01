@@ -60,7 +60,7 @@ struct _PurpleIRCv3ProtocolClass {
  *
  * Registers the dynamic type using @plugin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_ircv3_protocol_register(GPluginNativePlugin *plugin);
 

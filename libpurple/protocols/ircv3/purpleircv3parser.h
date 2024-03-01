@@ -49,7 +49,7 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Parser, purple_ircv3_parser, PURPLE_IRCV3,
  *
  * Creates a new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleIRCv3Parser *purple_ircv3_parser_new(void);
@@ -62,7 +62,7 @@ PurpleIRCv3Parser *purple_ircv3_parser_new(void);
  * Sets @handler to be called for any messages that @parser doesn't know how to
  * handle.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_parser_set_fallback_handler(PurpleIRCv3Parser *parser, PurpleIRCv3MessageHandler handler);
@@ -78,7 +78,7 @@ void purple_ircv3_parser_set_fallback_handler(PurpleIRCv3Parser *parser, PurpleI
  *
  * Returns: %TRUE if the buffer was parsed correctly or %FALSE with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 gboolean purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffer, GError **error, gpointer data);
@@ -91,7 +91,7 @@ gboolean purple_ircv3_parser_parse(PurpleIRCv3Parser *parser, const gchar *buffe
  *
  * Calls @handler every time @parser finds the command named @command.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_parser_add_handler(PurpleIRCv3Parser *parser, const char *command, PurpleIRCv3MessageHandler handler);
@@ -105,7 +105,7 @@ void purple_ircv3_parser_add_handler(PurpleIRCv3Parser *parser, const char *comm
  * Like [method@Parser.add_handler] but allows you to add multiple commands at
  * once that share a handler.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_parser_add_handlers(PurpleIRCv3Parser *parser, PurpleIRCv3MessageHandler handler, ...) G_GNUC_NULL_TERMINATED;
@@ -116,7 +116,7 @@ void purple_ircv3_parser_add_handlers(PurpleIRCv3Parser *parser, PurpleIRCv3Mess
  *
  * Adds all of the default handlers to @parser.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_parser_add_default_handlers(PurpleIRCv3Parser *parser);

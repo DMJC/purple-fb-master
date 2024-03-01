@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * If the user or host aren't present in @source, but a return address is
  * provided for them, that pointer will be set to %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_source_parse(const char *source, char **nick, char **user, char **host);

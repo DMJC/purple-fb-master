@@ -71,7 +71,7 @@
  * A macro that evaluates to the current stable version of the IRCv3 protocol
  * plugin, in a format that can be used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_VERSION_CUR_STABLE \
 	(G_ENCODE_VERSION(PURPLE_MAJOR_VERSION, PURPLE_MINOR_VERSION))
@@ -112,7 +112,7 @@
  * A macro that evaluates to the 3.0 version of the IRCv3 protocol plugin, in a
  * format that can be used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_IRCV3_VERSION_3_0 (G_ENCODE_VERSION(3, 0))
 

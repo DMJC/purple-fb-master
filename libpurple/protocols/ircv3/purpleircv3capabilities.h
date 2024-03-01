@@ -64,7 +64,7 @@ G_DECLARE_FINAL_TYPE(PurpleIRCv3Capabilities, purple_ircv3_capabilities,
  *
  * Dynamically registers the PurpleIRCv3Capabilities type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_ircv3_capabilities_register(GPluginNativePlugin *plugin);
 
@@ -82,7 +82,7 @@ G_GNUC_INTERNAL gboolean purple_ircv3_capabilities_message_handler(PurpleIRCv3Me
  *
  * Returns: (transfer none): The connection instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleIRCv3Connection *purple_ircv3_capabilities_get_connection(PurpleIRCv3Capabilities *capabilities);
@@ -96,7 +96,7 @@ PurpleIRCv3Connection *purple_ircv3_capabilities_get_connection(PurpleIRCv3Capab
  * `::ack` and `::nak` signals which will contain the contents of @capability
  * that was passed in here.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_capabilities_request(PurpleIRCv3Capabilities *capabilities, const char *capability);
@@ -113,7 +113,7 @@ void purple_ircv3_capabilities_request(PurpleIRCv3Capabilities *capabilities, co
  *
  * Returns: The value of the capability named @name.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 const char *purple_ircv3_capabilities_lookup(PurpleIRCv3Capabilities *capabilities, const char *name, gboolean *found);
@@ -134,7 +134,7 @@ const char *purple_ircv3_capabilities_lookup(PurpleIRCv3Capabilities *capabiliti
  *
  * Returns: %TRUE if @name was found and requested, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 gboolean purple_ircv3_capabilities_lookup_and_request(PurpleIRCv3Capabilities *capabilities, const char *name);
@@ -147,7 +147,7 @@ gboolean purple_ircv3_capabilities_lookup_and_request(PurpleIRCv3Capabilities *c
  * call of `CAP END` until all capability negotiation has completed. This is
  * necessary for SASL and may be necessary for other capabilities as well.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_capabilities_add_wait(PurpleIRCv3Capabilities *capabilities);
@@ -162,7 +162,7 @@ void purple_ircv3_capabilities_add_wait(PurpleIRCv3Capabilities *capabilities);
  * This is necessary for SASL and may be necessary for other capabilities as
  * well.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_capabilities_remove_wait(PurpleIRCv3Capabilities *capabilities);
