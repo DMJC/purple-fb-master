@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  *
  * Creates the default [class@FileTransferManager].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_file_transfer_manager_startup(void);
 
@@ -45,7 +45,7 @@ G_GNUC_INTERNAL void purple_file_transfer_manager_startup(void);
  *
  * Cleans up the default [class@FileTransferManager].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_file_transfer_manager_shutdown(void);
 

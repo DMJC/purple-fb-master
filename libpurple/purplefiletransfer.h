@@ -61,7 +61,7 @@ typedef enum {
  *
  * A peer to peer file transfer object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PURPLE_TYPE_FILE_TRANSFER (purple_file_transfer_get_type())
@@ -85,7 +85,7 @@ G_DECLARE_FINAL_TYPE(PurpleFileTransfer, purple_file_transfer, PURPLE,
  *
  * Returns: (transfer full): The new file transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleFileTransfer *purple_file_transfer_new_send(PurpleAccount *account, PurpleContactInfo *remote, GFile *local_file);
@@ -105,7 +105,7 @@ PurpleFileTransfer *purple_file_transfer_new_send(PurpleAccount *account, Purple
  *
  * Returns: (transfer full): The new file transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleFileTransfer *purple_file_transfer_new_receive(PurpleAccount *account, PurpleContactInfo *remote, const char *filename, guint64 file_size);
@@ -118,7 +118,7 @@ PurpleFileTransfer *purple_file_transfer_new_receive(PurpleAccount *account, Pur
  *
  * Returns: (transfer none): The account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_file_transfer_get_account(PurpleFileTransfer *transfer);
@@ -132,7 +132,7 @@ PurpleAccount *purple_file_transfer_get_account(PurpleFileTransfer *transfer);
  *
  * Returns: (transfer none): The remote contact info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_file_transfer_get_remote(PurpleFileTransfer *transfer);
@@ -145,7 +145,7 @@ PurpleContactInfo *purple_file_transfer_get_remote(PurpleFileTransfer *transfer)
  *
  * Returns: (transfer none): The contact info who initiated the file transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_file_transfer_get_initiator(PurpleFileTransfer *transfer);
@@ -159,7 +159,7 @@ PurpleContactInfo *purple_file_transfer_get_initiator(PurpleFileTransfer *transf
  *
  * Returns: (transfer none): The cancellable.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GCancellable *purple_file_transfer_get_cancellable(PurpleFileTransfer *transfer);
@@ -172,7 +172,7 @@ GCancellable *purple_file_transfer_get_cancellable(PurpleFileTransfer *transfer)
  *
  * Returns: The state of @transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleFileTransferState purple_file_transfer_get_state(PurpleFileTransfer *transfer);
@@ -187,7 +187,7 @@ PurpleFileTransferState purple_file_transfer_get_state(PurpleFileTransfer *trans
  * This method should only be called by protocol plugins to match what it is
  * doing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_state(PurpleFileTransfer *transfer, PurpleFileTransferState state);
@@ -200,7 +200,7 @@ void purple_file_transfer_set_state(PurpleFileTransfer *transfer, PurpleFileTran
  *
  * Returns: (transfer none) (nullable): The error for the transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GError *purple_file_transfer_get_error(PurpleFileTransfer *transfer);
@@ -212,7 +212,7 @@ GError *purple_file_transfer_get_error(PurpleFileTransfer *transfer);
  *
  * Sets the error of @transfer to @error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_error(PurpleFileTransfer *transfer, GError *error);
@@ -225,7 +225,7 @@ void purple_file_transfer_set_error(PurpleFileTransfer *transfer, GError *error)
  *
  * Returns: (transfer none): The local file.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GFile *purple_file_transfer_get_local_file(PurpleFileTransfer *transfer);
@@ -237,7 +237,7 @@ GFile *purple_file_transfer_get_local_file(PurpleFileTransfer *transfer);
  *
  * Sets the local file of @transfer to @local_file.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_local_file(PurpleFileTransfer *transfer, GFile *local_file);
@@ -250,7 +250,7 @@ void purple_file_transfer_set_local_file(PurpleFileTransfer *transfer, GFile *lo
  *
  * Returns: (transfer none): The base filename.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_file_transfer_get_filename(PurpleFileTransfer *transfer);
@@ -263,7 +263,7 @@ const char *purple_file_transfer_get_filename(PurpleFileTransfer *transfer);
  *
  * Returns: The size of the file in bytes or %0 if the size is unknown.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint64 purple_file_transfer_get_file_size(PurpleFileTransfer *transfer);
@@ -276,7 +276,7 @@ guint64 purple_file_transfer_get_file_size(PurpleFileTransfer *transfer);
  *
  * Returns: (nullable): The content type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_file_transfer_get_content_type(PurpleFileTransfer *transfer);
@@ -288,7 +288,7 @@ const char *purple_file_transfer_get_content_type(PurpleFileTransfer *transfer);
  *
  * Sets the content type of @transfer to @content_type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_content_type(PurpleFileTransfer *transfer, const char *content_type);
@@ -302,7 +302,7 @@ void purple_file_transfer_set_content_type(PurpleFileTransfer *transfer, const c
  *
  * Returns: The message sent with the transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_file_transfer_get_message(PurpleFileTransfer *transfer);
@@ -314,7 +314,7 @@ const char *purple_file_transfer_get_message(PurpleFileTransfer *transfer);
  *
  * Sets the message to send with @transfer to @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_set_message(PurpleFileTransfer *transfer, const char *message);

@@ -76,7 +76,7 @@ G_DECLARE_FINAL_TYPE(PurpleIdleManager, purple_idle_manager, PURPLE,
  * the application. This is precisely why the oldest idle time is used as the
  * aggregate.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 G_BEGIN_DECLS
@@ -88,7 +88,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer none): The default idle manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleIdleManager *purple_idle_manager_get_default(void);
@@ -105,7 +105,7 @@ PurpleIdleManager *purple_idle_manager_get_default(void);
  * Returns: %TRUE if [property@IdleManager:timestamp] has changed due to this
  *          call.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_idle_manager_set_source(PurpleIdleManager *manager, const char *source, GDateTime *timestamp);
@@ -119,7 +119,7 @@ gboolean purple_idle_manager_set_source(PurpleIdleManager *manager, const char *
  * Returns: (transfer none) (nullable): The oldest timestamp or %NULL if no
  *          sources are idle.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_idle_manager_get_timestamp(PurpleIdleManager *manager);

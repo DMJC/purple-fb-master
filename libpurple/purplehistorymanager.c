@@ -84,7 +84,7 @@ purple_history_manager_class_init(PurpleHistoryManagerClass *klass) {
 	*
 	* Emitted after @adapter has been changed for @manager.
 	*
-	* Since: 3.0.0
+	* Since: 3.0
 	*/
 	signals[SIG_ACTIVE_CHANGED] = g_signal_new_class_handler(
 		"active-changed",
@@ -106,7 +106,7 @@ purple_history_manager_class_init(PurpleHistoryManagerClass *klass) {
 	 *
 	 * Emitted after @adapter has been registered in @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REGISTERED] = g_signal_new_class_handler(
 		"registered",
@@ -127,7 +127,7 @@ purple_history_manager_class_init(PurpleHistoryManagerClass *klass) {
 	 *
 	 * Emitted after @adapter has been unregistered for @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_UNREGISTERED] = g_signal_new_class_handler(
 		"unregistered",

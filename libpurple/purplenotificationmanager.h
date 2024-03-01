@@ -48,7 +48,7 @@ G_DECLARE_FINAL_TYPE(PurpleNotificationManager, purple_notification_manager,
  * Purple Notification Manager manages all notifications between protocols and
  * plugins and how the user interface interacts with them.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PurpleNotificationManager, purple_notification_manager,
  *
  * Returns: (transfer none): The default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleNotificationManager *purple_notification_manager_get_default(void);
@@ -70,7 +70,7 @@ PurpleNotificationManager *purple_notification_manager_get_default(void);
  *
  * Returns: (transfer none): The model.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_notification_manager_get_default_as_model(void);
@@ -82,7 +82,7 @@ GListModel *purple_notification_manager_get_default_as_model(void);
  *
  * Adds @notification into @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_manager_add(PurpleNotificationManager *manager, PurpleNotification *notification);
@@ -94,7 +94,7 @@ void purple_notification_manager_add(PurpleNotificationManager *manager, PurpleN
  *
  * Removes @notification from @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_manager_remove(PurpleNotificationManager *manager, PurpleNotification *notification);
@@ -112,7 +112,7 @@ void purple_notification_manager_remove(PurpleNotificationManager *manager, Purp
  * treated differently from other notifications tied to accounts, as those are
  * transient and depend on the account being connected to be valid.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_manager_remove_with_account(PurpleNotificationManager *manager, PurpleAccount *account, gboolean all);
@@ -125,7 +125,7 @@ void purple_notification_manager_remove_with_account(PurpleNotificationManager *
  *
  * Returns: The number of unread notifications.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint purple_notification_manager_get_unread_count(PurpleNotificationManager *manager);
@@ -136,7 +136,7 @@ guint purple_notification_manager_get_unread_count(PurpleNotificationManager *ma
  *
  * Removes all notifications from @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_manager_clear(PurpleNotificationManager *manager);

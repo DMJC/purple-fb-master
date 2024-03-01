@@ -85,7 +85,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the IMConversation object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_im_conversation_get_type(void);
@@ -100,7 +100,7 @@ GType purple_im_conversation_get_type(void);
  *
  * Returns: The new conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_im_conversation_new(PurpleAccount *account, const gchar *name);
@@ -112,7 +112,7 @@ PurpleConversation *purple_im_conversation_new(PurpleAccount *account, const gch
  *
  * Sets the IM's typing state.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_im_conversation_set_typing_state(PurpleIMConversation *im, PurpleIMTypingState state);
@@ -125,7 +125,7 @@ void purple_im_conversation_set_typing_state(PurpleIMConversation *im, PurpleIMT
  *
  * Returns: The IM's typing state.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleIMTypingState purple_im_conversation_get_typing_state(PurpleIMConversation *im);
@@ -138,7 +138,7 @@ PurpleIMTypingState purple_im_conversation_get_typing_state(PurpleIMConversation
  *
  * Starts the IM's typing timeout.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_im_conversation_start_typing_timeout(PurpleIMConversation *im, int timeout);
@@ -149,7 +149,7 @@ void purple_im_conversation_start_typing_timeout(PurpleIMConversation *im, int t
  *
  * Stops the IM's typing timeout.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_im_conversation_stop_typing_timeout(PurpleIMConversation *im);
@@ -162,7 +162,7 @@ void purple_im_conversation_stop_typing_timeout(PurpleIMConversation *im);
  *
  * Returns: The timeout.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint purple_im_conversation_get_typing_timeout(PurpleIMConversation *im);
@@ -179,7 +179,7 @@ guint purple_im_conversation_get_typing_timeout(PurpleIMConversation *im);
  * typing after this quiet-period, then another #PURPLE_IM_TYPING message
  * will be sent.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_im_conversation_set_type_again(PurpleIMConversation *im, guint val);
@@ -193,7 +193,7 @@ void purple_im_conversation_set_type_again(PurpleIMConversation *im, guint val);
  * Returns: The time in seconds since the epoch.  Or 0 if no additional
  *         PURPLE_IM_TYPING message should be sent.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 time_t purple_im_conversation_get_type_again(PurpleIMConversation *im);
@@ -204,7 +204,7 @@ time_t purple_im_conversation_get_type_again(PurpleIMConversation *im);
  *
  * Starts the IM's type again timeout.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_im_conversation_start_send_typed_timeout(PurpleIMConversation *im);
@@ -215,7 +215,7 @@ void purple_im_conversation_start_send_typed_timeout(PurpleIMConversation *im);
  *
  * Stops the IM's type again timeout.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_im_conversation_stop_send_typed_timeout(PurpleIMConversation *im);
@@ -228,7 +228,7 @@ void purple_im_conversation_stop_send_typed_timeout(PurpleIMConversation *im);
  *
  * Returns: The type again timeout interval.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint purple_im_conversation_get_send_typed_timeout(PurpleIMConversation *im);
@@ -239,7 +239,7 @@ guint purple_im_conversation_get_send_typed_timeout(PurpleIMConversation *im);
  *
  * Updates the visual typing notification for an IM conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_im_conversation_update_typing(PurpleIMConversation *im);

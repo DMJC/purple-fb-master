@@ -63,7 +63,7 @@ struct _PurpleKeyValuePair {
  *
  * Returns: The #GType for #PurpleKeyValuePair.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_key_value_pair_get_type(void);
@@ -78,7 +78,7 @@ GType purple_key_value_pair_get_type(void);
  *
  * Returns: (transfer full): The created PurpleKeyValuePair
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleKeyValuePair *purple_key_value_pair_new(const gchar *key, gpointer value);
@@ -94,7 +94,7 @@ PurpleKeyValuePair *purple_key_value_pair_new(const gchar *key, gpointer value);
  *
  * Returns: (transfer full): The created PurpleKeyValuePair
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleKeyValuePair *purple_key_value_pair_new_full(const gchar *key, gpointer value, GDestroyNotify value_destroy_func);
@@ -105,7 +105,7 @@ PurpleKeyValuePair *purple_key_value_pair_new_full(const gchar *key, gpointer va
  *
  * Frees @kvp.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_key_value_pair_free(PurpleKeyValuePair *kvp);
@@ -121,7 +121,7 @@ void purple_key_value_pair_free(PurpleKeyValuePair *kvp);
  *
  * Returns: (transfer full): A new copy of @kvp.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleKeyValuePair *purple_key_value_pair_copy(PurpleKeyValuePair *kvp);

@@ -321,7 +321,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 *
 	 * The account that this file transfer is for.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "account",
@@ -334,7 +334,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 *
 	 * The [class@ContactInfo] for the remote user of this file transfer.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_REMOTE] = g_param_spec_object(
 		"remote", "remote",
@@ -347,7 +347,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 *
 	 * The [class@ContactInfo] that initiated this file transfer.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_INITIATOR] = g_param_spec_object(
 		"initiator", "initiator",
@@ -361,7 +361,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 * The [class@Gio.Cancellable] for this transfer. It may be used to cancel
 	 * the file transfer at any time.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CANCELLABLE] = g_param_spec_object(
 		"cancellable", "cancellable",
@@ -380,7 +380,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 * If the state is set to error then [property@FileTransfer:error]
 	 * should be set.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_STATE] = g_param_spec_enum(
 		"state", "state",
@@ -398,7 +398,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 * This should be used to tell the user about network issues or if the
 	 * transfer was cancelled and so on.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ERROR] = g_param_spec_boxed(
 		"error", "error",
@@ -414,7 +414,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 * When sending a file, this is the file that's being sent. When receiving
 	 * a file, this is the file where the transfer is being written.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_LOCAL_FILE] = g_param_spec_object(
 		"local-file", "local-file",
@@ -428,7 +428,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 * The base filename for the transfer. This is used as the default filename
 	 * for the receiving side.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FILENAME] = g_param_spec_string(
 		"filename", "filename",
@@ -442,7 +442,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 * The size of the file in bytes. A value of %0 typically means the size is
 	 * unknown, but it is possible to transfer empty files as well.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FILE_SIZE] = g_param_spec_uint64(
 		"file-size", "file-size",
@@ -460,7 +460,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 * See the [Media Types page](https://www.iana.org/assignments/media-types/media-types.xhtml)
 	 * for more information.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CONTENT_TYPE] = g_param_spec_string(
 		"content-type", "content-type",
@@ -474,7 +474,7 @@ purple_file_transfer_class_init(PurpleFileTransferClass *klass) {
 	 * Some protocols support sending a message with the file transfer. This
 	 * field is to hold that message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MESSAGE] = g_param_spec_string(
 		"message", "message",

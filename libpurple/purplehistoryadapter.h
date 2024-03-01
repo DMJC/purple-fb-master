@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  *
  * A #GError domain for errors.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_HISTORY_ADAPTER_DOMAIN \
 	g_quark_from_static_string("purple-history-adapter") \
@@ -54,7 +54,7 @@ G_BEGIN_DECLS
  * history adapters. It defines the behavior of all history adapters
  * and implements some shared properties.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PURPLE_TYPE_HISTORY_ADAPTER (purple_history_adapter_get_type())
@@ -69,7 +69,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleHistoryAdapter, purple_history_adapter,
  * #PurpleHistoryAdapterClass defines the interface for interacting with
  * history adapters like sqlite, and so on.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleHistoryAdapterClass {
 	/*< private >*/
@@ -96,7 +96,7 @@ struct _PurpleHistoryAdapterClass {
  *
  * Returns: The identifier of @adapter.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_history_adapter_get_id(PurpleHistoryAdapter *adapter);
@@ -109,7 +109,7 @@ const gchar *purple_history_adapter_get_id(PurpleHistoryAdapter *adapter);
  *
  * Returns: The name of @adapter.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_history_adapter_get_name(PurpleHistoryAdapter *adapter);
@@ -125,7 +125,7 @@ const gchar *purple_history_adapter_get_name(PurpleHistoryAdapter *adapter);
  *
  * Returns: If the write was successful to the @adapter.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_write(PurpleHistoryAdapter *adapter,
@@ -143,7 +143,7 @@ gboolean purple_history_adapter_write(PurpleHistoryAdapter *adapter,
  *
  * Returns: (element-type PurpleMessage) (transfer container): A list of messages that match @query.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_history_adapter_query(PurpleHistoryAdapter *adapter,
@@ -160,7 +160,7 @@ GList *purple_history_adapter_query(PurpleHistoryAdapter *adapter,
  *
  * Returns: If removing the messages was successful.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_remove(PurpleHistoryAdapter *adapter,

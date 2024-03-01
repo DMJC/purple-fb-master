@@ -47,7 +47,7 @@ G_BEGIN_DECLS
  * model that was passed to [func@Purple.menu_walk] for its immediate
  * children.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleMenuWalkFunc)(GMenuModel *model, gint index, gpointer data);
@@ -60,7 +60,7 @@ typedef void (*PurpleMenuWalkFunc)(GMenuModel *model, gint index, gpointer data)
  *
  * Recursively calls @func for each item in @model and all of its children.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_menu_walk(GMenuModel *model, PurpleMenuWalkFunc func, gpointer data);
@@ -84,7 +84,7 @@ void purple_menu_walk(GMenuModel *model, PurpleMenuWalkFunc func, gpointer data)
  * call purple_menu_populate_dynamic_targets() with a property pair of
  * "account" and [method@Purple.ContactInfo.get_id].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_menu_populate_dynamic_targets(GMenu *menu, const gchar *first_property, ...) G_GNUC_NULL_TERMINATED;
@@ -106,7 +106,7 @@ void purple_menu_populate_dynamic_targets(GMenu *menu, const gchar *first_proper
  * [func@Purple.menu_populate_dynamic_targetsv] with a hash table containing
  * the key `"account"` and value from [method@Purple.ContactInfo.get_id].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_menu_populate_dynamic_targetsv(GMenu *menu, GHashTable *properties);
@@ -120,7 +120,7 @@ void purple_menu_populate_dynamic_targetsv(GMenu *menu, GHashTable *properties);
  *
  * Returns: (transfer full): The new menu.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GMenu *purple_menu_copy(GMenuModel *model);

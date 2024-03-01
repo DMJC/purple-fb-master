@@ -48,7 +48,7 @@ G_DECLARE_INTERFACE(PurpleIdleUi, purple_idle_ui, PURPLE, IDLE_UI, GObject)
  * An interface that a user interface can implement to let the core determine
  * idle times.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleIdleUiInterface {
     /*< private >*/
@@ -69,7 +69,7 @@ struct _PurpleIdleUiInterface {
  *
  * Returns: The time that the user interface went idle.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 time_t purple_idle_ui_get_idle_time(PurpleIdleUi *ui);

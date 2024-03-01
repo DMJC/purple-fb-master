@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  *
  * Rounds the corners of a GdkPixbuf in place.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_gdk_pixbuf_make_round(GdkPixbuf *pixbuf);
@@ -56,7 +56,7 @@ void purple_gdk_pixbuf_make_round(GdkPixbuf *pixbuf);
  *
  * Returns: TRUE if the pixbuf is opaque around the edges, FALSE otherwise
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_gdk_pixbuf_is_opaque(GdkPixbuf *pixbuf);
@@ -71,7 +71,7 @@ gboolean purple_gdk_pixbuf_is_opaque(GdkPixbuf *pixbuf);
  * Returns: (transfer full): A GdkPixbuf created from the image data, or NULL if
  *         there was an error parsing the data.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GdkPixbuf *purple_gdk_pixbuf_from_data(const guchar *buf, gsize count);
@@ -84,7 +84,7 @@ GdkPixbuf *purple_gdk_pixbuf_from_data(const guchar *buf, gsize count);
  *
  * Returns: (transfer full): a GdkPixbuf created from the @image.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GdkPixbuf *
@@ -112,7 +112,7 @@ purple_gdk_pixbuf_from_image(PurpleImage *image);
  * Returns: (transfer full): The GdkPixbuf if successful.  Otherwise NULL is returned and
  *         a warning is logged.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GdkPixbuf *purple_gdk_pixbuf_new_from_file(const char *filename);
@@ -141,7 +141,7 @@ GdkPixbuf *purple_gdk_pixbuf_new_from_file(const char *filename);
  * Returns: (transfer full): The GdkPixbuf if successful.  Otherwise NULL is returned and
  *         a warning is logged.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GdkPixbuf *purple_gdk_pixbuf_new_from_file_at_size(const char *filename, int width, int height);

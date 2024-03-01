@@ -239,7 +239,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The protocol-specific identifier of the message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "ID",
@@ -252,7 +252,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The author of the message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_AUTHOR] = g_param_spec_string(
 		"author", "Author",
@@ -265,7 +265,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The hex color for the author's name.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_AUTHOR_NAME_COLOR] = g_param_spec_string(
 		"author-name-color", "author-name-color",
@@ -278,7 +278,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The alias of the author.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_AUTHOR_ALIAS] = g_param_spec_string(
 		"author-alias", "Author's alias",
@@ -291,7 +291,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The recipient of the message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_RECIPIENT] = g_param_spec_string(
 		"recipient", "Recipient",
@@ -304,7 +304,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The contents of the message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CONTENTS] = g_param_spec_string(
 		"contents", "Contents",
@@ -322,7 +322,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * interface hint that this message is different than a normal text
 	 * message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACTION] = g_param_spec_boolean(
 		"action", "action",
@@ -335,7 +335,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The timestamp of the message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TIMESTAMP] = g_param_spec_boxed(
 		"timestamp", "timestamp",
@@ -348,7 +348,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The #PurpleMessageFlags for the message.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FLAGS] = g_param_spec_flags(
 		"flags", "Flags",
@@ -362,7 +362,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * An error that this message encountered. This could be something like a
 	 * failed delivery, or failed redaction, or rate limited, etc.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ERROR] = g_param_spec_boxed(
 		"error", "error",
@@ -377,7 +377,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * possibly client dependent as well. So if this is %FALSE that doesn't
 	 * necessarily mean the message was not delivered.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DELIVERED] = g_param_spec_boolean(
 		"delivered", "delivered",
@@ -392,7 +392,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * possibly client dependent as well. So if this is %NULL that doesn't
 	 * necessarily mean the message was not delivered.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DELIVERED_AT] = g_param_spec_boxed(
 		"delivered-at", "delivered-at",
@@ -407,7 +407,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * This should typically only be set by a protocol plugin.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_EDITED] = g_param_spec_boolean(
 		"edited", "edited",
@@ -422,7 +422,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * and possibly client dependent as well. So if this is %NULL that doesn't
 	 * necessarily mean the message was not edited.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_EDITED_AT] = g_param_spec_boxed(
 		"edited-at", "edited-at",

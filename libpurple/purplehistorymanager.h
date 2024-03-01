@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * A #GError domain for errors from #PurpleHistoryManager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_HISTORY_MANAGER_DOMAIN \
 	g_quark_from_static_string("purple-history-manager") \
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PurpleHistoryManager, purple_history_manager, PURPLE,
  * #PurpleHistoryManager keeps track of all adapters and emits signals when
  * adapters are registered and unregistered.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -69,7 +69,7 @@ G_DECLARE_FINAL_TYPE(PurpleHistoryManager, purple_history_manager, PURPLE,
  * A function to be used as a callback with
  * purple_history_manager_foreach().
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleHistoryManagerForeachFunc)(PurpleHistoryAdapter *adapter, gpointer data);
@@ -85,7 +85,7 @@ typedef void (*PurpleHistoryManagerForeachFunc)(PurpleHistoryAdapter *adapter, g
  * Returns: %TRUE if startup was successful, otherwise %FALSE with @error
  *          potentially set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_startup(PurpleHistoryAdapter *adapter, GError **error);
@@ -95,7 +95,7 @@ gboolean purple_history_manager_startup(PurpleHistoryAdapter *adapter, GError **
  *
  * Shuts down the history manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_history_manager_shutdown(void);
@@ -107,7 +107,7 @@ void purple_history_manager_shutdown(void);
  *
  * Returns: (transfer none): The default #PurpleHistoryManager instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryManager *purple_history_manager_get_default(void);
@@ -120,7 +120,7 @@ PurpleHistoryManager *purple_history_manager_get_default(void);
  *
  * Returns: (transfer none): The active @adapter
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryAdapter *purple_history_manager_get_active(PurpleHistoryManager *manager);
@@ -136,7 +136,7 @@ PurpleHistoryAdapter *purple_history_manager_get_active(PurpleHistoryManager *ma
  * Returns: %TRUE if setting the @adapter was successful with @manager
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_set_active(PurpleHistoryManager *manager, const gchar *id, GError **error);
@@ -152,7 +152,7 @@ gboolean purple_history_manager_set_active(PurpleHistoryManager *manager, const 
  * Returns: %TRUE if @adapter was successfully registered with @manager,
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_register(PurpleHistoryManager *manager, PurpleHistoryAdapter *adapter, GError **error);
@@ -168,7 +168,7 @@ gboolean purple_history_manager_register(PurpleHistoryManager *manager, PurpleHi
  * Returns: %TRUE if @adapter was successfully unregistered from @manager,
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_unregister(PurpleHistoryManager *manager, PurpleHistoryAdapter *adapter, GError **error);
@@ -182,7 +182,7 @@ gboolean purple_history_manager_unregister(PurpleHistoryManager *manager, Purple
  *
  * Returns: (transfer none): The #PurpleHistoryAdapter identified by @id or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleHistoryAdapter *purple_history_manager_find(PurpleHistoryManager *manager, const gchar *id);
@@ -197,7 +197,7 @@ PurpleHistoryAdapter *purple_history_manager_find(PurpleHistoryManager *manager,
  * Returns: (transfer container) (element-type PurpleHistoryAdapter): The list
  *          containing all of the #PurpleHistoryAdapter's registered with @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_history_manager_get_all(PurpleHistoryManager *manager);
@@ -214,7 +214,7 @@ GList *purple_history_manager_get_all(PurpleHistoryManager *manager);
  *          containing all of the #PurpleMessage's that matched the query
  *          with @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_history_manager_query(PurpleHistoryManager *manager, const gchar *query, GError **error);
@@ -230,7 +230,7 @@ GList *purple_history_manager_query(PurpleHistoryManager *manager, const gchar *
  * Returns: %TRUE if messages matching @query were successfully removed from
  *          the active adapter of @manager, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_remove(PurpleHistoryManager *manager, const gchar *query, GError **error);
@@ -246,7 +246,7 @@ gboolean purple_history_manager_remove(PurpleHistoryManager *manager, const gcha
  *
  * Returns: %TRUE if @message was successfully written, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_manager_write(PurpleHistoryManager *manager, PurpleConversation *conversation, PurpleMessage *message, GError **error);
@@ -259,7 +259,7 @@ gboolean purple_history_manager_write(PurpleHistoryManager *manager, PurpleConve
  *
  * Calls @func for each #PurpleHistoryAdapter that @manager knows about.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_history_manager_foreach(PurpleHistoryManager *manager, PurpleHistoryManagerForeachFunc func, gpointer data);

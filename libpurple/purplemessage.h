@@ -53,11 +53,11 @@ G_BEGIN_DECLS
  * @PURPLE_MESSAGE_RAW: "Raw" message - don't apply formatting.
  * @PURPLE_MESSAGE_NOTIFY: Message is a notification.
  * @PURPLE_MESSAGE_NO_LINKIFY: Message should not be auto-linkified.
- *                             Since: 2.1.0
+ *                             Since: 2.1
  * @PURPLE_MESSAGE_INVISIBLE: Message should not be displayed.
- *                            Since: 2.2.0
+ *                            Since: 2.2
  * @PURPLE_MESSAGE_FORWARDED: The message has been forward to the recipient.
- *                            Since: 3.0.0
+ *                            Since: 3.0
  *
  * Flags applicable to a message. Most will have send, recv or system.
  */
@@ -84,7 +84,7 @@ typedef enum /*< flags >*/
  *
  * #PurpleMessage represents any message passed between users in libpurple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleMessage, purple_message, PURPLE, MESSAGE, GObject)
@@ -103,7 +103,7 @@ G_DECLARE_FINAL_TYPE(PurpleMessage, purple_message, PURPLE, MESSAGE, GObject)
  *
  * Returns: (transfer full): The new #PurpleMessage instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleMessage *purple_message_new_outgoing(const char *author, const char *recipient, const char *contents, PurpleMessageFlags flags);
@@ -121,7 +121,7 @@ PurpleMessage *purple_message_new_outgoing(const char *author, const char *recip
  *
  * Returns: the new #PurpleMessage.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleMessage *purple_message_new_incoming(const char *who, const char *contents, PurpleMessageFlags flags, guint64 timestamp);
@@ -137,7 +137,7 @@ PurpleMessage *purple_message_new_incoming(const char *who, const char *contents
  *
  * Returns: the new #PurpleMessage.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleMessage *purple_message_new_system(const char *contents, PurpleMessageFlags flags);
@@ -151,7 +151,7 @@ PurpleMessage *purple_message_new_system(const char *contents, PurpleMessageFlag
  *
  * Returns: the global identifier of @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_message_get_id(PurpleMessage *message);
@@ -166,7 +166,7 @@ const char *purple_message_get_id(PurpleMessage *message);
  * > Note: This should really only be used by protocol plugins to update an id
  * of a sent message when the server has assigned the final id to the message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_id(PurpleMessage *message, const char *id);
@@ -179,7 +179,7 @@ void purple_message_set_id(PurpleMessage *message, const char *id);
  *
  * Returns: the author of @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_message_get_author(PurpleMessage *message);
@@ -194,7 +194,7 @@ const char *purple_message_get_author(PurpleMessage *message);
  * interface might not use this exact color, as it might need to adapt for
  * contrast or limits on the number of colors.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_author_name_color(PurpleMessage *message, const char *color);
@@ -207,7 +207,7 @@ void purple_message_set_author_name_color(PurpleMessage *message, const char *co
  *
  * Returns: (transfer none): The hex color for the author of @message's name.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_message_get_author_name_color(PurpleMessage *message);
@@ -219,7 +219,7 @@ const char *purple_message_get_author_name_color(PurpleMessage *message);
  *
  * Sets the recipient of @message to @recipient.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_recipient(PurpleMessage *message, const char *recipient);
@@ -232,7 +232,7 @@ void purple_message_set_recipient(PurpleMessage *message, const char *recipient)
  *
  * Returns: the recipient of @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_message_get_recipient(PurpleMessage *message);
@@ -244,7 +244,7 @@ const char *purple_message_get_recipient(PurpleMessage *message);
  *
  * Sets the alias of @message's author. You don't normally need to call this.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_author_alias(PurpleMessage *message, const char *alias);
@@ -257,7 +257,7 @@ void purple_message_set_author_alias(PurpleMessage *message, const char *alias);
  *
  * Returns: the @message author's alias.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_message_get_author_alias(PurpleMessage *message);
@@ -269,7 +269,7 @@ const char *purple_message_get_author_alias(PurpleMessage *message);
  *
  * Sets the contents of the @message. It might be HTML.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_contents(PurpleMessage *message, const char *cont);
@@ -282,7 +282,7 @@ void purple_message_set_contents(PurpleMessage *message, const char *cont);
  *
  * Returns: the contents of @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_message_get_contents(PurpleMessage *message);
@@ -295,7 +295,7 @@ const char *purple_message_get_contents(PurpleMessage *message);
  *
  * Returns: %TRUE, if @message is empty.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_message_is_empty(PurpleMessage *message);
@@ -307,7 +307,7 @@ gboolean purple_message_is_empty(PurpleMessage *message);
  *
  * Sets the timestamp of @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_timestamp(PurpleMessage *message, GDateTime *timestamp);
@@ -321,7 +321,7 @@ void purple_message_set_timestamp(PurpleMessage *message, GDateTime *timestamp);
  *
  * Returns: (transfer none): The #GDateTime timestamp from @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_message_get_timestamp(PurpleMessage *message);
@@ -335,7 +335,7 @@ GDateTime *purple_message_get_timestamp(PurpleMessage *message);
  *
  * Returns: The formatted timestamp.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 char *purple_message_format_timestamp(PurpleMessage *message, const char *format);
@@ -348,7 +348,7 @@ char *purple_message_format_timestamp(PurpleMessage *message, const char *format
  * Sets flags for @message. It shouldn't be in a conflict with a message type,
  * so use it carefully.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_flags(PurpleMessage *message, PurpleMessageFlags flags);
@@ -361,7 +361,7 @@ void purple_message_set_flags(PurpleMessage *message, PurpleMessageFlags flags);
  *
  * Returns: the flags of a @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleMessageFlags purple_message_get_flags(PurpleMessage *message);
@@ -374,7 +374,7 @@ PurpleMessageFlags purple_message_get_flags(PurpleMessage *message);
  * Sets the error of @message to @error. Primarily this will be used for
  * delivery failure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_error(PurpleMessage *message, GError *error);
@@ -387,7 +387,7 @@ void purple_message_set_error(PurpleMessage *message, GError *error);
  *
  * Returns: (nullable) (transfer none): The error from @message or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GError *purple_message_get_error(PurpleMessage *message);
@@ -401,7 +401,7 @@ GError *purple_message_get_error(PurpleMessage *message);
  *
  * Returns %TRUE if an attachment with the same ID did not already exist.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_message_add_attachment(PurpleMessage *message, PurpleAttachment *attachment);
@@ -416,7 +416,7 @@ gboolean purple_message_add_attachment(PurpleMessage *message, PurpleAttachment 
  * Returns: %TRUE if the #PurpleAttachment was found and removed, %FALSE
  *          otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_message_remove_attachment(PurpleMessage *message, guint64 id);
@@ -431,7 +431,7 @@ gboolean purple_message_remove_attachment(PurpleMessage *message, guint64 id);
  * Returns: (transfer full): The #PurpleAttachment if it was found, otherwise
  *                           %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAttachment *purple_message_get_attachment(PurpleMessage *message, guint64 id);
@@ -444,7 +444,7 @@ PurpleAttachment *purple_message_get_attachment(PurpleMessage *message, guint64 
  *
  * Calls @func for each #PurpleAttachment that's attached to @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_foreach_attachment(PurpleMessage *message, PurpleAttachmentForeachFunc func, gpointer data);
@@ -455,7 +455,7 @@ void purple_message_foreach_attachment(PurpleMessage *message, PurpleAttachmentF
  *
  * Removes all attachments from @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_clear_attachments(PurpleMessage *message);
@@ -470,7 +470,7 @@ void purple_message_clear_attachments(PurpleMessage *message);
  *
  * Returns: %TRUE if @message is an action, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_message_get_action(PurpleMessage *message);
@@ -484,7 +484,7 @@ gboolean purple_message_get_action(PurpleMessage *message);
  *
  * See also [property@Message:action] for more information.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_action(PurpleMessage *message, gboolean action);
@@ -504,7 +504,7 @@ void purple_message_set_action(PurpleMessage *message, gboolean action);
  * Returns: %TRUE if @message has been delivered and the protocol supports
  *          delivery notifications, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_message_get_delivered(PurpleMessage *message);
@@ -520,7 +520,7 @@ gboolean purple_message_get_delivered(PurpleMessage *message);
  * @delivered is %TRUE it will be set to the current time, otherwise it will be
  * unset.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_delivered(PurpleMessage *message, gboolean delivered);
@@ -534,7 +534,7 @@ void purple_message_set_delivered(PurpleMessage *message, gboolean delivered);
  *
  * Returns: (transfer none) (nullable): The delivery time of @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_message_get_delivered_at(PurpleMessage *message);
@@ -549,7 +549,7 @@ GDateTime *purple_message_get_delivered_at(PurpleMessage *message);
  * > Note: Setting this will also set [property@Message:delivered]. If
  * @datetime is %NULL it will be set to %FALSE, otherwise %TRUE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_delivered_at(PurpleMessage *message, GDateTime *datetime);
@@ -562,7 +562,7 @@ void purple_message_set_delivered_at(PurpleMessage *message, GDateTime *datetime
  *
  * Returns: %TRUE if edited, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_message_get_edited(PurpleMessage *message);
@@ -578,7 +578,7 @@ gboolean purple_message_get_edited(PurpleMessage *message);
  * @edited is %TRUE it will be set to the current time, otherwise it will be
  * unset.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_edited(PurpleMessage *message, gboolean edited);
@@ -592,7 +592,7 @@ void purple_message_set_edited(PurpleMessage *message, gboolean edited);
  *
  * Returns: (transfer none) (nullable): The last edit time of @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_message_get_edited_at(PurpleMessage *message);
@@ -607,7 +607,7 @@ GDateTime *purple_message_get_edited_at(PurpleMessage *message);
  * > Note: Setting this will also set [property@Message:edited]. If
  * @datetime is %NULL it will be set to %FALSE, otherwise %TRUE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_edited_at(PurpleMessage *message, GDateTime *datetime);

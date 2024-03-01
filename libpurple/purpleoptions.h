@@ -44,7 +44,7 @@ G_BEGIN_DECLS
  * Returns: (transfer full): a #GOptionGroup for the commandline arguments
  *          recognized by LibPurple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GOptionGroup *purple_get_option_group(void);

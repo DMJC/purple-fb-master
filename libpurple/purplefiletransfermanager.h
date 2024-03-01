@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * Keeps track of the [class@FileTransfer]'s that have been added to it and
  * propagates all of their signals.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 PURPLE_AVAILABLE_IN_3_0
@@ -56,7 +56,7 @@ G_DECLARE_FINAL_TYPE(PurpleFileTransferManager, purple_file_transfer_manager,
  *
  * Returns: (transfer none): The default file transfer manager for libpurple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleFileTransferManager *purple_file_transfer_manager_get_default(void);
@@ -68,7 +68,7 @@ PurpleFileTransferManager *purple_file_transfer_manager_get_default(void);
  *
  * Returns: (transfer none): The default file transfer manager for libpurple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_file_transfer_manager_get_default_as_model(void);
@@ -83,7 +83,7 @@ GListModel *purple_file_transfer_manager_get_default_as_model(void);
  * When a transfer is added to [class@FileTransferManager] the manager will
  * keep track of the transfer and propagate all of its signals.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_file_transfer_manager_add(PurpleFileTransferManager *manager, PurpleFileTransfer *transfer);
@@ -97,7 +97,7 @@ void purple_file_transfer_manager_add(PurpleFileTransferManager *manager, Purple
  *
  * Returns: %TRUE if the item was removed, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_file_transfer_manager_remove(PurpleFileTransferManager *manager, PurpleFileTransfer *transfer);

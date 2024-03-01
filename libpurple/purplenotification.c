@@ -276,7 +276,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 * Emitted when the notification is deleted. This is typically done by a
 	 * user interface calling [method@PurpleNotification.delete].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_DELETED] = g_signal_new_class_handler(
 		"deleted",
@@ -295,7 +295,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 * The ID of the notification. Used for things that need to address it.
 	 * This is auto populated at creation time.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -309,7 +309,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 *
 	 * The [enum@NotificationType] of this notification.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TYPE] = g_param_spec_enum(
 		"type", "type",
@@ -323,7 +323,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 *
 	 * An optional [class@Account] that this notification is for.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "account",
@@ -337,7 +337,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 * The creation time of this notification. This always represented as UTC
 	 * internally, and will be set to UTC now by default.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CREATED_TIMESTAMP] = g_param_spec_boxed(
 		"created-timestamp", "created-timestamp",
@@ -352,7 +352,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 * choose to use this when displaying the notification. Regardless, this
 	 * should be a translated string.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TITLE] = g_param_spec_string(
 		"title", "title",
@@ -367,7 +367,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 * interface may or may not choose to use this when display the
 	 * notification.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ICON_NAME] = g_param_spec_string(
 		"icon-name", "icon-name",
@@ -380,7 +380,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 *
 	 * Whether or not the notification has been read.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_READ] = g_param_spec_boolean(
 		"read", "read",
@@ -393,7 +393,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 *
 	 * Whether or not the notification can be interacted with.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_INTERACTIVE] = g_param_spec_boolean(
 		"interactive", "interactive",
@@ -406,7 +406,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 *
 	 * Data specific to the [enum@NotificationType] for the notification.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DATA] = g_param_spec_pointer(
 		"data", "data",
@@ -418,7 +418,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 *
 	 * A function to call to free [property@PurpleNotification:data].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DATA_DESTROY_FUNC] = g_param_spec_pointer(
 		"data-destroy-func", "data-destroy-func",

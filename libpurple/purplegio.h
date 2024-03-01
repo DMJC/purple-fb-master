@@ -45,7 +45,7 @@ G_BEGIN_DECLS
  * arguments. Ensure the Gio callbacks can safely handle this being done
  * asynchronously.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_gio_graceful_close(GIOStream *stream, GInputStream *input, GOutputStream *output);
@@ -62,7 +62,7 @@ void purple_gio_graceful_close(GIOStream *stream, GInputStream *input, GOutputSt
  * GProxyResolver, based on the #PurpleAccount settings and
  * TLS Certificate handling, or NULL if an error occurred.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GSocketClient *purple_gio_socket_client_new(PurpleAccount *account, GError **error);
@@ -80,7 +80,7 @@ GSocketClient *purple_gio_socket_client_new(PurpleAccount *account, GError **err
  *
  * Returns: The port number, or 0 in case of failure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint16 purple_socket_listener_add_any_inet_port(GSocketListener *listener, GObject *source_object, GError **error);

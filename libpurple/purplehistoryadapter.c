@@ -146,7 +146,7 @@ purple_history_adapter_class_init(PurpleHistoryAdapterClass *klass) {
 	 * The ID of the adapter.  Used for preferences and other things that need
 	 * to address it.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id", "The identifier of the adapter",
@@ -159,7 +159,7 @@ purple_history_adapter_class_init(PurpleHistoryAdapterClass *klass) {
 	 *
 	 * The name of the adapter.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "name", "The name of the adapter",

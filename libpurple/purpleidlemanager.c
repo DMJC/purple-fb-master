@@ -89,7 +89,7 @@ purple_idle_manager_class_init(PurpleIdleManagerClass *klass) {
 	 * The aggregate of the oldest idle timestamp of all of the sources that
 	 * are known.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TIMESTAMP] = g_param_spec_boxed(
 		"timestamp", "timestamp",

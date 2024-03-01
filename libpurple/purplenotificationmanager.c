@@ -207,7 +207,7 @@ purple_notification_manager_class_init(PurpleNotificationManagerClass *klass) {
 	 *
 	 * The number of unread notifications in the manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_UNREAD_COUNT] = g_param_spec_uint(
 		"unread-count", "unread-count",
@@ -226,7 +226,7 @@ purple_notification_manager_class_init(PurpleNotificationManagerClass *klass) {
 	 *
 	 * Emitted after @notification has been added to @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ADDED] = g_signal_new_class_handler(
 		"added",
@@ -247,7 +247,7 @@ purple_notification_manager_class_init(PurpleNotificationManagerClass *klass) {
 	 *
 	 * Emitted after @notification has been removed from @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REMOVED] = g_signal_new_class_handler(
 		"removed",
@@ -268,7 +268,7 @@ purple_notification_manager_class_init(PurpleNotificationManagerClass *klass) {
 	 *
 	 * Emitted after @notification has been marked as read.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_READ] = g_signal_new_class_handler(
 		"read",
@@ -289,7 +289,7 @@ purple_notification_manager_class_init(PurpleNotificationManagerClass *klass) {
 	 *
 	 * Emitted after @notification has been marked as unread.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_UNREAD] = g_signal_new_class_handler(
 		"unread",

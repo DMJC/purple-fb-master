@@ -34,7 +34,7 @@
  *
  * Starts up the idle manager by creating the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 void purple_idle_manager_startup(void);
 
@@ -43,7 +43,7 @@ void purple_idle_manager_startup(void);
  *
  * Shuts down the idle manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 void purple_idle_manager_shutdown(void);
 

@@ -125,7 +125,7 @@ purple_file_transfer_manager_class_init(PurpleFileTransferManagerClass *klass)
 	 *
 	 * Emitted when a file transfer is added to @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ADDED] = g_signal_new_class_handler(
 		"added",
@@ -147,7 +147,7 @@ purple_file_transfer_manager_class_init(PurpleFileTransferManagerClass *klass)
 	 *
 	 * Emitted when a file transfer is removed from @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REMOVED] = g_signal_new_class_handler(
 		"removed",
@@ -175,7 +175,7 @@ purple_file_transfer_manager_class_init(PurpleFileTransferManagerClass *klass)
 	 * something like `transfer-changed::state` and your callback will only
 	 * be called when the state property of @transfer has been changed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_TRANSFER_CHANGED] = g_signal_new_class_handler(
 		"transfer-changed",

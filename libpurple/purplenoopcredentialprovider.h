@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * actually provider credentials.  It is used to implement the default behavior
  * of requiring users to input passwords.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PURPLE_TYPE_NOOP_CREDENTIAL_PROVIDER (purple_noop_credential_provider_get_type())
@@ -61,7 +61,7 @@ G_DECLARE_FINAL_TYPE(PurpleNoopCredentialProvider,
  *
  * Returns: (transfer full): The new #PurpleNoopCredentialProvider instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleCredentialProvider *purple_noop_credential_provider_new(void);

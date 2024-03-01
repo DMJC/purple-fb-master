@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * #PurpleDebugUiInterface defines the behavior that libpurple uses to
  * interface the debug API with the user interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleDebugUi, purple_debug_ui, PURPLE, DEBUG_UI, GObject)
@@ -83,7 +83,7 @@ struct _PurpleDebugUiInterface {
  * Returns: %TRUE if the given level and category will be output by @ui, %FALSE
  *          otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_debug_ui_is_enabled(PurpleDebugUi *ui, PurpleDebugLevel level, const gchar *category);
@@ -97,7 +97,7 @@ gboolean purple_debug_ui_is_enabled(PurpleDebugUi *ui, PurpleDebugLevel level, c
  *
  * Outputs @arg_s via @ui with the given @level and optional @category.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_debug_ui_print(PurpleDebugUi *ui, PurpleDebugLevel level, const gchar *category, const gchar *arg_s);

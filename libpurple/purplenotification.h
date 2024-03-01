@@ -40,7 +40,7 @@ G_BEGIN_DECLS
 /**
  * PurpleNotificationType:
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
@@ -60,7 +60,7 @@ typedef enum {
  *
  * An object that represents a notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PURPLE_TYPE_NOTIFICATION (purple_notification_get_type())
@@ -84,7 +84,7 @@ G_DECLARE_FINAL_TYPE(PurpleNotification, purple_notification, PURPLE,
  *
  * Returns: (transfer full): The new notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new(PurpleNotificationType type, PurpleAccount *account, gpointer data, GDestroyNotify data_destroy_func);
@@ -99,7 +99,7 @@ PurpleNotification *purple_notification_new(PurpleNotificationType type, PurpleA
  *
  * Returns: (transfer full): The new notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new_from_add_contact_request(PurpleAddContactRequest *request);
@@ -115,7 +115,7 @@ PurpleNotification *purple_notification_new_from_add_contact_request(PurpleAddCo
  *
  * Returns: (transfer full): The new notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new_from_authorization_request(PurpleAuthorizationRequest *authorization_request);
@@ -131,7 +131,7 @@ PurpleNotification *purple_notification_new_from_authorization_request(PurpleAut
  *
  * Returns: (transfer full): The new notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleNotification *purple_notification_new_from_connection_error(PurpleAccount *account, PurpleConnectionErrorInfo *info);
@@ -144,7 +144,7 @@ PurpleNotification *purple_notification_new_from_connection_error(PurpleAccount 
  *
  * Returns: The identifier of @notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_notification_get_id(PurpleNotification *notification);
@@ -157,7 +157,7 @@ const gchar *purple_notification_get_id(PurpleNotification *notification);
  *
  * Returns: The type of @notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleNotificationType purple_notification_get_notification_type(PurpleNotification *notification);
@@ -170,7 +170,7 @@ PurpleNotificationType purple_notification_get_notification_type(PurpleNotificat
  *
  * Returns: (transfer none): The account of @notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_notification_get_account(PurpleNotification *notification);
@@ -183,7 +183,7 @@ PurpleAccount *purple_notification_get_account(PurpleNotification *notification)
  *
  * Returns: (transfer none): The creation time of @notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_notification_get_created_timestamp(PurpleNotification *notification);
@@ -200,7 +200,7 @@ GDateTime *purple_notification_get_created_timestamp(PurpleNotification *notific
  *
  * If @timestamp is %NULL, the current time will be used.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_created_timestamp(PurpleNotification *notification, GDateTime *timestamp);
@@ -213,7 +213,7 @@ void purple_notification_set_created_timestamp(PurpleNotification *notification,
  *
  * Returns: The title of @notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_notification_get_title(PurpleNotification *notification);
@@ -225,7 +225,7 @@ const gchar *purple_notification_get_title(PurpleNotification *notification);
  *
  * Sets the title of @notification to @title.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_title(PurpleNotification *notification, const gchar *title);
@@ -238,7 +238,7 @@ void purple_notification_set_title(PurpleNotification *notification, const gchar
  *
  * Returns: The named icon for @notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_notification_get_icon_name(PurpleNotification *notification);
@@ -250,7 +250,7 @@ const gchar *purple_notification_get_icon_name(PurpleNotification *notification)
  *
  * Sets the named icon for @notification to @icon_name.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_icon_name(PurpleNotification *notification, const gchar *icon_name);
@@ -263,7 +263,7 @@ void purple_notification_set_icon_name(PurpleNotification *notification, const g
  *
  * Returns: %TRUE if @notification has been read, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_notification_get_read(PurpleNotification *notification);
@@ -275,7 +275,7 @@ gboolean purple_notification_get_read(PurpleNotification *notification);
  *
  * Sets @notification's read state to @read.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_read(PurpleNotification *notification, gboolean read);
@@ -288,7 +288,7 @@ void purple_notification_set_read(PurpleNotification *notification, gboolean rea
  *
  * Returns: %TRUE if @notification can be interacted with, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_notification_get_interactive(PurpleNotification *notification);
@@ -300,7 +300,7 @@ gboolean purple_notification_get_interactive(PurpleNotification *notification);
  *
  * Sets @notification's interactive state to @interactive.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_interactive(PurpleNotification *notification, gboolean interactive);
@@ -313,7 +313,7 @@ void purple_notification_set_interactive(PurpleNotification *notification, gbool
  *
  * Returns: (transfer none): The data for @notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gpointer purple_notification_get_data(PurpleNotification *notification);
@@ -329,7 +329,7 @@ gpointer purple_notification_get_data(PurpleNotification *notification);
  * Returns: -1 if @a's created timestamp occurred before @b, 0 if they were
  *          created at the same time, or 1 if @b was created before @a.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gint purple_notification_compare(gconstpointer a, gconstpointer b);
@@ -344,7 +344,7 @@ gint purple_notification_compare(gconstpointer a, gconstpointer b);
  * If this is called more than once for @notification, the signal will not be
  * emitted.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_delete(PurpleNotification *notification);
