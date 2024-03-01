@@ -179,7 +179,7 @@ purple_request_page_class_init(PurpleRequestPageClass *klass) {
 	 *
 	 * Whether all fields in a page are valid.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALID] = g_param_spec_boolean(
 		"valid", "valid",

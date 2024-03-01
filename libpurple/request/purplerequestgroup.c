@@ -187,7 +187,7 @@ purple_request_group_class_init(PurpleRequestGroupClass *klass) {
 	 *
 	 * The title of the field group.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TITLE] = g_param_spec_string(
 		"title", "title",
@@ -200,7 +200,7 @@ purple_request_group_class_init(PurpleRequestGroupClass *klass) {
 	 *
 	 * Whether all fields in a group are valid.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALID] = g_param_spec_boolean(
 		"valid", "valid",

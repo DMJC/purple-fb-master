@@ -35,7 +35,7 @@
  *
  * Multiple fields request data.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 typedef struct _PurpleRequestPage PurpleRequestPage;
 
@@ -59,7 +59,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestPage, purple_request_page,
  *
  * Returns: (transfer full): The new request page.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestPage *purple_request_page_new(void);
@@ -71,7 +71,7 @@ PurpleRequestPage *purple_request_page_new(void);
  *
  * Adds a group of fields to the list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_request_page_add_group(PurpleRequestPage *page, PurpleRequestGroup *group);
@@ -85,7 +85,7 @@ void purple_request_page_add_group(PurpleRequestPage *page, PurpleRequestGroup *
  *
  * Returns: TRUE if the field exists, or FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
@@ -99,7 +99,7 @@ gboolean purple_request_page_exists(PurpleRequestPage *page, const char *id);
  *
  * Returns: TRUE if the specified field is required, or FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const char *id);
@@ -112,7 +112,7 @@ gboolean purple_request_page_is_field_required(PurpleRequestPage *page, const ch
  *
  * Returns: %TRUE if all fields in the page are valid, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_page_is_valid(PurpleRequestPage *page);
@@ -126,7 +126,7 @@ gboolean purple_request_page_is_valid(PurpleRequestPage *page);
  *
  * Returns: (transfer none): The field, if found.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestField *purple_request_page_get_field(PurpleRequestPage *page, const char *id);
@@ -140,7 +140,7 @@ PurpleRequestField *purple_request_page_get_field(PurpleRequestPage *page, const
  *
  * Returns: The string value, if found, or %NULL otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_request_page_get_string(PurpleRequestPage *page, const char *id);
@@ -154,7 +154,7 @@ const char *purple_request_page_get_string(PurpleRequestPage *page, const char *
  *
  * Returns: The integer value, if found, or 0 otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_request_page_get_integer(PurpleRequestPage *page, const char *id);
@@ -168,7 +168,7 @@ int purple_request_page_get_integer(PurpleRequestPage *page, const char *id);
  *
  * Returns: The boolean value, if found, or %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_page_get_bool(PurpleRequestPage *page, const char *id);
@@ -182,7 +182,7 @@ gboolean purple_request_page_get_bool(PurpleRequestPage *page, const char *id);
  *
  * Returns: The choice value, if found, or NULL otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gpointer purple_request_page_get_choice(PurpleRequestPage *page, const char *id);
@@ -196,7 +196,7 @@ gpointer purple_request_page_get_choice(PurpleRequestPage *page, const char *id)
  *
  * Returns: (transfer none): The account value, if found, or %NULL otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_request_page_get_account(PurpleRequestPage *page, const char *id);

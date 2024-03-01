@@ -151,7 +151,7 @@ purple_request_field_int_class_init(PurpleRequestFieldIntClass *klass) {
 	 *
 	 * The default value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DEFAULT_VALUE] = g_param_spec_int(
 		"default-value", "default-value",
@@ -164,7 +164,7 @@ purple_request_field_int_class_init(PurpleRequestFieldIntClass *klass) {
 	 *
 	 * The value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALUE] = g_param_spec_int(
 		"value", "value",
@@ -177,7 +177,7 @@ purple_request_field_int_class_init(PurpleRequestFieldIntClass *klass) {
 	 *
 	 * The lower bound of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_LOWER_BOUND] = g_param_spec_int(
 		"lower-bound", "lower-bound",
@@ -190,7 +190,7 @@ purple_request_field_int_class_init(PurpleRequestFieldIntClass *klass) {
 	 *
 	 * The upper bound of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_UPPER_BOUND] = g_param_spec_int(
 		"upper-bound", "upper-bound",

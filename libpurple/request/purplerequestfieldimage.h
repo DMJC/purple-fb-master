@@ -37,7 +37,7 @@
  *
  * An image request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 typedef struct _PurpleRequestFieldImage PurpleRequestFieldImage;
 

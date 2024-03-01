@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * A boolean request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_BOOL (purple_request_field_bool_get_type())
 

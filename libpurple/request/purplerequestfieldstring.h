@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * A string request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_STRING (purple_request_field_string_get_type())
 
@@ -149,7 +149,7 @@ gboolean purple_request_field_string_is_masked(PurpleRequestFieldString *field);
  *
  * Returns: TRUE, if field contains valid email address.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_email_validator(PurpleRequestField *field, char **errmsg, gpointer user_data);
@@ -167,7 +167,7 @@ gboolean purple_request_field_email_validator(PurpleRequestField *field, char **
  *
  * Returns: TRUE, if field contains only alphanumeric characters.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_alphanumeric_validator(PurpleRequestField *field, char **errmsg, gpointer allowed_characters);

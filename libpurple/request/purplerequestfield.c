@@ -197,7 +197,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * The ID of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -210,7 +210,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * The label of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_LABEL] = g_param_spec_string(
 		"label", "label",
@@ -223,7 +223,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * Whether the field should be visible.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VISIBLE] = g_param_spec_boolean(
 		"visible", "visible",
@@ -236,7 +236,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * Whether the field should be sensitive.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SENSITIVE] = g_param_spec_boolean(
 		"sensitive", "sensitive",
@@ -249,7 +249,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * The type hint of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TYPE_HINT] = g_param_spec_string(
 		"type-hint", "type-hint",
@@ -262,7 +262,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * The tooltip of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TOOLTIP] = g_param_spec_string(
 		"tooltip", "tooltip",
@@ -275,7 +275,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * Whether the field is required to complete the request.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_REQUIRED] = g_param_spec_boolean(
 		"required", "required",
@@ -288,7 +288,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * Whether the field has been filled.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FILLED] = g_param_spec_boolean(
 		"filled", "filled",
@@ -301,7 +301,7 @@ purple_request_field_class_init(PurpleRequestFieldClass *klass) {
 	 *
 	 * Whether the field has a valid value.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALID] = g_param_spec_boolean(
 		"valid", "valid",

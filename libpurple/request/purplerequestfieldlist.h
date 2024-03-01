@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * A list request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_LIST (purple_request_field_list_get_type())
 
@@ -180,7 +180,7 @@ GList *purple_request_field_list_get_items(PurpleRequestFieldList *field);
  *
  * Returns: TRUE if list field has icons, FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_list_has_icons(PurpleRequestFieldList *field);

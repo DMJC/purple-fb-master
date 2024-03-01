@@ -97,7 +97,7 @@ purple_request_datasheet_free(PurpleRequestDatasheet *sheet);
  *
  * You cannot add a column if datasheet contains any data.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -112,7 +112,7 @@ purple_request_datasheet_add_column(PurpleRequestDatasheet *sheet,
  *
  * Returns: The column count.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint
@@ -127,7 +127,7 @@ purple_request_datasheet_get_column_count(PurpleRequestDatasheet *sheet);
  *
  * Returns: The column type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestDatasheetColumnType
@@ -143,7 +143,7 @@ purple_request_datasheet_get_column_type(PurpleRequestDatasheet *sheet,
  *
  * Returns: The column title.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *
@@ -160,7 +160,7 @@ purple_request_datasheet_get_column_title(PurpleRequestDatasheet *sheet,
  *
  * Returns: (element-type PurpleRequestDatasheetRecord) (transfer none): The list of records.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const GList *
@@ -175,7 +175,7 @@ purple_request_datasheet_get_records(PurpleRequestDatasheet *sheet);
  *
  * Action object is owned by the datasheet since this call.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -190,7 +190,7 @@ purple_request_datasheet_add_action(PurpleRequestDatasheet *sheet,
  *
  * Returns: (element-type PurpleRequestDatasheetAction) (transfer none): The list of actions.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const GList *
@@ -208,7 +208,7 @@ purple_request_datasheet_get_actions(PurpleRequestDatasheet *sheet);
  *
  * Returns: (transfer full): The new action.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestDatasheetAction *
@@ -220,7 +220,7 @@ purple_request_datasheet_action_new(void);
  *
  * Destroys the datasheet action.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -233,7 +233,7 @@ purple_request_datasheet_action_free(PurpleRequestDatasheetAction *act);
  *
  * Sets the localized label for the action.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -248,7 +248,7 @@ purple_request_datasheet_action_set_label(PurpleRequestDatasheetAction *act,
  *
  * Returns: The localized label text.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar*
@@ -262,7 +262,7 @@ purple_request_datasheet_action_get_label(PurpleRequestDatasheetAction *act);
  *
  * Sets the callback for the action.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -276,7 +276,7 @@ purple_request_datasheet_action_set_cb(PurpleRequestDatasheetAction *act,
  *
  * Calls the callback of the action.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -294,7 +294,7 @@ purple_request_datasheet_action_call(PurpleRequestDatasheetAction *act,
  * If there is no callback set, default is used: the action is enabled, if any
  * record is active.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -311,7 +311,7 @@ purple_request_datasheet_action_set_sens_cb(
  *
  * Returns: %TRUE, if the action is enabled, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean
@@ -331,7 +331,7 @@ purple_request_datasheet_action_is_sensitive(PurpleRequestDatasheetAction *act,
  *
  * Returns: The key.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gpointer
@@ -346,7 +346,7 @@ purple_request_datasheet_record_get_key(
  *
  * Returns: (transfer none): The datasheet.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestDatasheet *
@@ -362,7 +362,7 @@ purple_request_datasheet_record_get_datasheet(
  *
  * Returns: (transfer none): The record if found, %NULL otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestDatasheetRecord *
@@ -380,7 +380,7 @@ purple_request_datasheet_record_find(PurpleRequestDatasheet *sheet,
  *
  * Returns: (transfer full): The record.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestDatasheetRecord *
@@ -394,7 +394,7 @@ purple_request_datasheet_record_add(PurpleRequestDatasheet *sheet,
  *
  * Removes a record from a datasheet.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -407,7 +407,7 @@ purple_request_datasheet_record_remove(PurpleRequestDatasheet *sheet,
  *
  * Removes all records from a datasheet.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -422,7 +422,7 @@ purple_request_datasheet_record_remove_all(PurpleRequestDatasheet *sheet);
  *
  * See purple_request_datasheet_record_add().
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -436,7 +436,7 @@ purple_request_datasheet_record_mark_all_for_rem(PurpleRequestDatasheet *sheet);
  *
  * See purple_request_datasheet_record_mark_all_for_rem().
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -450,7 +450,7 @@ purple_request_datasheet_record_remove_marked(PurpleRequestDatasheet *sheet);
  *
  * Sets data for a string column of specified record.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -465,7 +465,7 @@ purple_request_datasheet_record_set_string_data(
  *
  * Sets data for a image column of specified record.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void
@@ -481,7 +481,7 @@ purple_request_datasheet_record_set_image_data(
  *
  * Returns: The data.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *
@@ -497,7 +497,7 @@ purple_request_datasheet_record_get_string_data(
  *
  * Returns: The stock id of an image.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *

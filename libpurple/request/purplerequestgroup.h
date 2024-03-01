@@ -35,7 +35,7 @@
  *
  * A group of fields with a title.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 typedef struct _PurpleRequestGroup PurpleRequestGroup;
 
@@ -59,7 +59,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer full): A new fields group
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestGroup *purple_request_group_new(const char *title);
@@ -71,7 +71,7 @@ PurpleRequestGroup *purple_request_group_new(const char *title);
  *
  * Adds a field to the group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_request_group_add_field(PurpleRequestGroup *group, PurpleRequestField *field);
@@ -84,7 +84,7 @@ void purple_request_group_add_field(PurpleRequestGroup *group, PurpleRequestFiel
  *
  * Returns: (nullable): The title, if set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_request_group_get_title(PurpleRequestGroup *group);
@@ -97,7 +97,7 @@ const char *purple_request_group_get_title(PurpleRequestGroup *group);
  *
  * Returns: (transfer none): The list of fields in the group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestPage *purple_request_group_get_page(PurpleRequestGroup *group);
@@ -110,7 +110,7 @@ PurpleRequestPage *purple_request_group_get_page(PurpleRequestGroup *group);
  *
  * Returns: %TRUE if all fields in the group are valid, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_group_is_valid(PurpleRequestGroup *group);

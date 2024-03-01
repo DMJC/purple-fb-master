@@ -119,7 +119,7 @@ purple_request_field_list_class_init(PurpleRequestFieldListClass *klass) {
 	 *
 	 * Whether the field should allow multiple selections.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MULTI_SELECT] = g_param_spec_boolean(
 		"multi-select", "multi-select",

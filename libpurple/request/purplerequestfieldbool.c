@@ -104,7 +104,7 @@ purple_request_field_bool_class_init(PurpleRequestFieldBoolClass *klass) {
 	 *
 	 * The default value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DEFAULT_VALUE] = g_param_spec_boolean(
 		"default-value", "default-value",
@@ -117,7 +117,7 @@ purple_request_field_bool_class_init(PurpleRequestFieldBoolClass *klass) {
 	 *
 	 * The value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALUE] = g_param_spec_boolean(
 		"value", "value",

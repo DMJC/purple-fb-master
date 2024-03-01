@@ -131,7 +131,7 @@ purple_request_field_account_class_init(PurpleRequestFieldAccountClass *klass) {
 	 *
 	 * The default value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DEFAULT_VALUE] = g_param_spec_object(
 		"default-value", "default-value",
@@ -144,7 +144,7 @@ purple_request_field_account_class_init(PurpleRequestFieldAccountClass *klass) {
 	 *
 	 * The value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALUE] = g_param_spec_object(
 		"value", "value",
@@ -160,7 +160,7 @@ purple_request_field_account_class_init(PurpleRequestFieldAccountClass *klass) {
 	 * If %TRUE, all accounts, online or offline, will be shown. If %FALSE,
 	 * only online accounts will be shown.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SHOW_ALL] = g_param_spec_boolean(
 		"show-all", "show-all",

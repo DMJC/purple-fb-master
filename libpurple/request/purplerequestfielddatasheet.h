@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  *
  * A datasheet request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_DATASHEET (purple_request_field_datasheet_get_type())
 
@@ -59,7 +59,7 @@ G_DECLARE_FINAL_TYPE(PurpleRequestFieldDatasheet, purple_request_field_datasheet
  *
  * Returns: (transfer full): The new field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestField *purple_request_field_datasheet_new(const char *id, const gchar *text, PurpleRequestDatasheet *sheet);
@@ -72,7 +72,7 @@ PurpleRequestField *purple_request_field_datasheet_new(const char *id, const gch
  *
  * Returns: (transfer none): The datasheet object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRequestDatasheet *purple_request_field_datasheet_get_sheet(PurpleRequestFieldDatasheet *field);

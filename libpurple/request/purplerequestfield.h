@@ -35,7 +35,7 @@
  *
  * A request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 typedef struct _PurpleRequestField PurpleRequestField;
 
@@ -47,7 +47,7 @@ typedef struct _PurpleRequestField PurpleRequestField;
  *
  * #PurpleRequestFieldClass defines the interface for a request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleRequestFieldClass {
 	/*< private >*/
@@ -125,7 +125,7 @@ void purple_request_field_set_type_hint(PurpleRequestField *field,
  * This is optionally used by the UIs to provide a tooltip for
  * the field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_set_tooltip(PurpleRequestField *field, const char *tooltip);
@@ -148,7 +148,7 @@ void purple_request_field_set_required(PurpleRequestField *field, gboolean requi
  *
  * Returns: (transfer none): The UI data.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleRequestGroup *purple_request_field_get_group(PurpleRequestField *field);
@@ -205,7 +205,7 @@ const char *purple_request_field_get_type_hint(PurpleRequestField *field);
  *
  * Returns: The field's tooltip.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_request_field_get_tooltip(PurpleRequestField *field);
@@ -233,7 +233,7 @@ gboolean purple_request_field_is_required(PurpleRequestField *field);
  *
  * Returns: TRUE if the field has value, or FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_is_filled(PurpleRequestField *field);
@@ -248,7 +248,7 @@ gboolean purple_request_field_is_filled(PurpleRequestField *field);
  *
  * Set an additional validator for a field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_set_validator(PurpleRequestField *field, PurpleRequestFieldValidator validator, gpointer user_data, GDestroyNotify destroy_data);
@@ -269,7 +269,7 @@ void purple_request_field_set_validator(PurpleRequestField *field, PurpleRequest
  *
  * Returns: TRUE, if the field is valid, FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg);
@@ -281,7 +281,7 @@ gboolean purple_request_field_is_valid(PurpleRequestField *field, gchar **errmsg
  *
  * Sets field editable.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_set_sensitive(PurpleRequestField *field, gboolean sensitive);
@@ -294,7 +294,7 @@ void purple_request_field_set_sensitive(PurpleRequestField *field, gboolean sens
  *
  * Returns: TRUE, if the field is sensitive for user input.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_is_sensitive(PurpleRequestField *field);

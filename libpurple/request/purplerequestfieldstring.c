@@ -162,7 +162,7 @@ purple_request_field_string_class_init(PurpleRequestFieldStringClass *klass) {
 	 *
 	 * Whether the field should allow multiline input.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MULTILINE] = g_param_spec_boolean(
 		"multiline", "multiline",
@@ -175,7 +175,7 @@ purple_request_field_string_class_init(PurpleRequestFieldStringClass *klass) {
 	 *
 	 * Whether the field should be masked.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MASKED] = g_param_spec_boolean(
 		"masked", "masked",
@@ -188,7 +188,7 @@ purple_request_field_string_class_init(PurpleRequestFieldStringClass *klass) {
 	 *
 	 * The default value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DEFAULT_VALUE] = g_param_spec_string(
 		"default-value", "default-value",
@@ -201,7 +201,7 @@ purple_request_field_string_class_init(PurpleRequestFieldStringClass *klass) {
 	 *
 	 * The value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALUE] = g_param_spec_string(
 		"value", "value",

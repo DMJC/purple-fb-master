@@ -119,7 +119,7 @@ purple_request_field_datasheet_class_init(PurpleRequestFieldDatasheetClass *klas
 	 *
 	 * The datasheet of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SHEET] = g_param_spec_pointer(
 		"sheet", "sheet",

@@ -46,7 +46,7 @@
  *
  * Returns: %TRUE to keep the account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef gboolean (*PurpleRequestFieldAccountFilterFunc)(PurpleAccount *account, gpointer user_data);
@@ -58,7 +58,7 @@ G_BEGIN_DECLS
  *
  * An account request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_ACCOUNT (purple_request_field_account_get_type())
 
@@ -175,7 +175,7 @@ gboolean purple_request_field_account_get_show_all(PurpleRequestFieldAccount *fi
  *
  * Returns: Whether or not to show the account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_request_field_account_match(PurpleRequestFieldAccount *field, PurpleAccount *account);

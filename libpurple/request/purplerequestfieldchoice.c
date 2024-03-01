@@ -118,7 +118,7 @@ purple_request_field_choice_class_init(PurpleRequestFieldChoiceClass *klass) {
 	 *
 	 * The default value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DEFAULT_VALUE] = g_param_spec_pointer(
 		"default-value", "default-value",
@@ -130,7 +130,7 @@ purple_request_field_choice_class_init(PurpleRequestFieldChoiceClass *klass) {
 	 *
 	 * The value of the field.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALUE] = g_param_spec_pointer(
 		"value", "value",

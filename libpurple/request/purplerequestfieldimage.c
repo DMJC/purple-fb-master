@@ -129,7 +129,7 @@ purple_request_field_image_class_init(PurpleRequestFieldImageClass *klass) {
 	 *
 	 * The X scale coefficient of the image.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SCALE_X] = g_param_spec_uint(
 		"scale-x", "scale-x",
@@ -142,7 +142,7 @@ purple_request_field_image_class_init(PurpleRequestFieldImageClass *klass) {
 	 *
 	 * The Y scale coefficient of the image.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SCALE_Y] = g_param_spec_uint(
 		"scale-y", "scale-y",
@@ -155,7 +155,7 @@ purple_request_field_image_class_init(PurpleRequestFieldImageClass *klass) {
 	 *
 	 * The contents of the image.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_BUFFER] = g_param_spec_pointer(
 		"buffer", "buffer",
@@ -167,7 +167,7 @@ purple_request_field_image_class_init(PurpleRequestFieldImageClass *klass) {
 	 *
 	 * The size in bytes of the image.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SIZE] = g_param_spec_uint64(
 		"size", "size",

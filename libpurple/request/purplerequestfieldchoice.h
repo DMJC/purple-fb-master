@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * A choice request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_CHOICE (purple_request_field_choice_get_type())
 
@@ -83,7 +83,7 @@ void purple_request_field_choice_add(PurpleRequestFieldChoice *field, const char
  *
  * Adds a choice to a multiple choice field with destructor for value.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_choice_add_full(PurpleRequestFieldChoice *field, const char *label, gpointer data, GDestroyNotify destroy);
@@ -138,7 +138,7 @@ gpointer purple_request_field_choice_get_value(PurpleRequestFieldChoice *field);
  *
  * Returns: (element-type PurpleKeyValuePair) (transfer none): The list of pairs of {label, value}.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_request_field_choice_get_elements(PurpleRequestFieldChoice *field);

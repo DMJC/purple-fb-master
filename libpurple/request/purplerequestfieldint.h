@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * An integer request field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_TYPE_REQUEST_FIELD_INT (purple_request_field_int_get_type())
 
@@ -80,7 +80,7 @@ void purple_request_field_int_set_default_value(PurpleRequestFieldInt *field, in
  *
  * Sets the lower bound in an integer field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_int_set_lower_bound(PurpleRequestFieldInt *field, int lower_bound);
@@ -92,7 +92,7 @@ void purple_request_field_int_set_lower_bound(PurpleRequestFieldInt *field, int 
  *
  * Sets the upper bound in an integer field.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_request_field_int_set_upper_bound(PurpleRequestFieldInt *field, int upper_bound);
@@ -126,7 +126,7 @@ int purple_request_field_int_get_default_value(PurpleRequestFieldInt *field);
  *
  * Returns: The lower bound.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_request_field_int_get_lower_bound(PurpleRequestFieldInt *field);
@@ -139,7 +139,7 @@ int purple_request_field_int_get_lower_bound(PurpleRequestFieldInt *field);
  *
  * Returns: The upper bound.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_request_field_int_get_upper_bound(PurpleRequestFieldInt *field);
