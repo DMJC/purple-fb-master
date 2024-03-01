@@ -42,7 +42,7 @@
  * This is used by some protocols to separate the fields of the username
  * into more human-readable components.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef struct _PurpleAccountUserSplit	PurpleAccountUserSplit;
 
@@ -61,7 +61,7 @@ GType purple_account_user_split_get_type(void);
  *
  * Returns: The new user split.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleAccountUserSplit *purple_account_user_split_new(const gchar *text, const gchar *default_value, gchar sep);
@@ -74,7 +74,7 @@ PurpleAccountUserSplit *purple_account_user_split_new(const gchar *text, const g
  *
  * Returns: (transfer full): A copy of @split.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccountUserSplit *purple_account_user_split_copy(PurpleAccountUserSplit *split);
@@ -85,7 +85,7 @@ PurpleAccountUserSplit *purple_account_user_split_copy(PurpleAccountUserSplit *s
  *
  * Destroys an account username split.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_user_split_destroy(PurpleAccountUserSplit *split);
@@ -98,7 +98,7 @@ void purple_account_user_split_destroy(PurpleAccountUserSplit *split);
  *
  * Returns: The account username split's text.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_account_user_split_get_text(PurpleAccountUserSplit *split);
@@ -111,7 +111,7 @@ const gchar *purple_account_user_split_get_text(PurpleAccountUserSplit *split);
  *
  * Returns: The default string.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_account_user_split_get_default_value(PurpleAccountUserSplit *split);
@@ -124,7 +124,7 @@ const gchar *purple_account_user_split_get_default_value(PurpleAccountUserSplit 
  *
  * Returns: The field separator.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gchar purple_account_user_split_get_separator(PurpleAccountUserSplit *split);
@@ -137,7 +137,7 @@ gchar purple_account_user_split_get_separator(PurpleAccountUserSplit *split);
  *
  * Returns: The 'reverse' value.
  *
- * Since: 2.1.0
+ * Since: 2.1
  */
 PURPLE_AVAILABLE_IN_2_1
 gboolean purple_account_user_split_get_reverse(PurpleAccountUserSplit *split);
@@ -149,7 +149,7 @@ gboolean purple_account_user_split_get_reverse(PurpleAccountUserSplit *split);
  *
  * Sets the 'reverse' value for an account split.
  *
- * Since: 2.1.0
+ * Since: 2.1
  */
 PURPLE_AVAILABLE_IN_2_1
 void purple_account_user_split_set_reverse(PurpleAccountUserSplit *split, gboolean reverse);
@@ -165,7 +165,7 @@ void purple_account_user_split_set_reverse(PurpleAccountUserSplit *split, gboole
  *
  * Returns: %TRUE, if the split is constant.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_account_user_split_is_constant(PurpleAccountUserSplit *split);
@@ -177,7 +177,7 @@ gboolean purple_account_user_split_is_constant(PurpleAccountUserSplit *split);
  *
  * Sets the constant parameter of account split.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_account_user_split_set_constant(PurpleAccountUserSplit *split, gboolean constant);

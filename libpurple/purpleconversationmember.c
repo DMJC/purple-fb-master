@@ -165,7 +165,7 @@ purple_conversation_member_class_init(PurpleConversationMemberClass *klass) {
 	 *
 	 * The contact info that this member is for.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CONTACT_INFO] = g_param_spec_object(
 		"contact-info", "contact-info",
@@ -178,7 +178,7 @@ purple_conversation_member_class_init(PurpleConversationMemberClass *klass) {
 	 *
 	 * The [class@Purple.Tags] instance for this member.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TAGS] = g_param_spec_object(
 		"tags", "tags",
@@ -191,7 +191,7 @@ purple_conversation_member_class_init(PurpleConversationMemberClass *klass) {
 	 *
 	 * The [enum@Purple.TypingState] for this member.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TYPING_STATE] = g_param_spec_enum(
 		"typing-state", "typing-state",

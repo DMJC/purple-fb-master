@@ -151,7 +151,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 *
 	 * The identifier of this attachment.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_uint64(
 		"id", "id",
@@ -165,7 +165,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 * The content type of this attachment. This should be a commonly used
 	 * mime type.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CONTENT_TYPE] = g_param_spec_string(
 		"content-type", "content-type",
@@ -179,7 +179,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 * The local URI of the attachment. That is where the file can be found on
 	 * disk.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_LOCAL_URI] = g_param_spec_string(
 		"local-uri", "local-uri",
@@ -193,7 +193,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 * The remote URI of the attachment. In most cases this is just a base
 	 * filename.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_REMOTE_URI] = g_param_spec_string(
 		"remote-uri", "remote-uri",
@@ -206,7 +206,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 *
 	 * The size of the attachment in bytes.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SIZE] = g_param_spec_uint64(
 		"size", "size",

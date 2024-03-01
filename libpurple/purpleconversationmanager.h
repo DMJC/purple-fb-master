@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * #PurpleConversationManager keeps track of all #PurpleConversation's inside
  * of libpurple and allows searching of them.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleConversationManager, purple_conversation_manager,
@@ -56,7 +56,7 @@ G_DECLARE_FINAL_TYPE(PurpleConversationManager, purple_conversation_manager,
  * A function to be used as a callback with
  * purple_conversation_manager_foreach().
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleConversationManagerForeachFunc)(PurpleConversation *conversation, gpointer data);
@@ -69,7 +69,7 @@ typedef void (*PurpleConversationManagerForeachFunc)(PurpleConversation *convers
  *
  * Returns: (transfer none): The default #PurpleConversationManager instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversationManager *purple_conversation_manager_get_default(void);
@@ -83,7 +83,7 @@ PurpleConversationManager *purple_conversation_manager_get_default(void);
  *
  * Returns: %TRUE if @conversation was not yet registered.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_manager_register(PurpleConversationManager *manager, PurpleConversation *conversation);
@@ -97,7 +97,7 @@ gboolean purple_conversation_manager_register(PurpleConversationManager *manager
  *
  * Returns: %TRUE if @conversation was found and unregistered.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_manager_unregister(PurpleConversationManager *manager, PurpleConversation *conversation);
@@ -112,7 +112,7 @@ gboolean purple_conversation_manager_unregister(PurpleConversationManager *manag
  * Returns: %TRUE if @conversation is registered with @manager, %FALSE
  *          otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_manager_is_registered(PurpleConversationManager *manager, PurpleConversation *conversation);
@@ -125,7 +125,7 @@ gboolean purple_conversation_manager_is_registered(PurpleConversationManager *ma
  *
  * Calls @func for each #PurpleConversation that @manager knows about.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_manager_foreach(PurpleConversationManager *manager, PurpleConversationManagerForeachFunc func, gpointer data);
@@ -139,7 +139,7 @@ void purple_conversation_manager_foreach(PurpleConversationManager *manager, Pur
  * Returns: (transfer container) (element-type PurpleConversation): A list of
  *          all of the registered conversations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_conversation_manager_get_all(PurpleConversationManager *manager);
@@ -157,7 +157,7 @@ GList *purple_conversation_manager_get_all(PurpleConversationManager *manager);
  *
  * Returns: (transfer none): The #PurpleConversation if found, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
@@ -173,7 +173,7 @@ PurpleConversation *purple_conversation_manager_find(PurpleConversationManager *
  *
  * Returns: (transfer none): The #PurpleConversation if found, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_im(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
@@ -189,7 +189,7 @@ PurpleConversation *purple_conversation_manager_find_im(PurpleConversationManage
  *
  * Returns: (transfer none): The #PurpleConversation if found, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_chat(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
@@ -207,7 +207,7 @@ PurpleConversation *purple_conversation_manager_find_chat(PurpleConversationMana
  *
  * Returns: (transfer none): The #PurpleConversation if found, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_chat_by_id(PurpleConversationManager *manager, PurpleAccount *account, gint id);
@@ -223,7 +223,7 @@ PurpleConversation *purple_conversation_manager_find_chat_by_id(PurpleConversati
  * Returns: (transfer none) (nullable): The [class@PurpleConversation] if
  *          found, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_with_id(PurpleConversationManager *manager, PurpleAccount *account, const char *id);

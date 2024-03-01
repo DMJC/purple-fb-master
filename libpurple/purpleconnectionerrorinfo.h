@@ -121,7 +121,7 @@ typedef enum
  *
  * Holds the type of an error along with its description.
  *
- * Since: 2.3.0
+ * Since: 2.3
  */
 PURPLE_AVAILABLE_TYPE_IN_2_3
 typedef struct
@@ -145,7 +145,7 @@ GType purple_connection_error_info_get_type(void);
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConnectionErrorInfo *purple_connection_error_info_new(PurpleConnectionError type, const gchar *description);
@@ -158,7 +158,7 @@ PurpleConnectionErrorInfo *purple_connection_error_info_new(PurpleConnectionErro
  *
  * Returns: (transfer full): A new copy of @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConnectionErrorInfo *purple_connection_error_info_copy(PurpleConnectionErrorInfo *info);
@@ -169,7 +169,7 @@ PurpleConnectionErrorInfo *purple_connection_error_info_copy(PurpleConnectionErr
  *
  * Frees the memory associated with @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_connection_error_info_free(PurpleConnectionErrorInfo *info);

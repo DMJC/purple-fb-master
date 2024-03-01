@@ -196,7 +196,7 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 	 * Emitted when the user has accepted @request. This is typically emitted
 	 * by the user interface calling [method@AuthorizationRequest.accept].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACCEPTED] = g_signal_new_class_handler(
 		"accepted",
@@ -217,7 +217,7 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 	 * Emitted when the user has denied @request. This is typically emitted
 	 * by the user interface calling [method@AuthorizationRequest.deny].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_DENIED] = g_signal_new_class_handler(
 		"denied",
@@ -236,7 +236,7 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 	 *
 	 * The account that this authorization request is for.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "account",
@@ -249,7 +249,7 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 	 *
 	 * The username of the remote user that is requesting authorization.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_USERNAME] = g_param_spec_string(
 		"username", "username",
@@ -262,7 +262,7 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 	 *
 	 * The alias of the remote user that is requesting authorization.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ALIAS] = g_param_spec_string(
 		"alias", "alias",
@@ -275,7 +275,7 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 	 *
 	 * The optional message sent from the remote user.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MESSAGE] = g_param_spec_string(
 		"message", "message",
@@ -289,7 +289,7 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 	 * Whether or not the user interface should ask the end user to add the
 	 * remote user after accepting the end user's friend request.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ADD] = g_param_spec_boolean(
 		"add", "add",

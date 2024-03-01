@@ -48,7 +48,7 @@ G_DECLARE_FINAL_TYPE(PurpleAvatar, purple_avatar, PURPLE, AVATAR, GObject)
  * A representation of an Avatar that is used for accounts, contacts, and
  * conversations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -60,7 +60,7 @@ G_DECLARE_FINAL_TYPE(PurpleAvatar, purple_avatar, PURPLE, AVATAR, GObject)
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_avatar_new_from_filename(const char *filename, GError **error);
@@ -74,7 +74,7 @@ PurpleAvatar *purple_avatar_new_from_filename(const char *filename, GError **err
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_avatar_new_from_resource(const char *resource_path, GError **error);
@@ -87,7 +87,7 @@ PurpleAvatar *purple_avatar_new_from_resource(const char *resource_path, GError 
  *
  * Returns: The base filename of @avatar.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_avatar_get_filename(PurpleAvatar *avatar);
@@ -104,7 +104,7 @@ const char *purple_avatar_get_filename(PurpleAvatar *avatar);
  *
  * Returns: (transfer none): The pixbuf of the avatar which could be %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GdkPixbuf *purple_avatar_get_pixbuf(PurpleAvatar *avatar);
@@ -117,7 +117,7 @@ GdkPixbuf *purple_avatar_get_pixbuf(PurpleAvatar *avatar);
  *
  * Returns: %TRUE if @avatar is animated, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_avatar_get_animated(PurpleAvatar *avatar);
@@ -131,7 +131,7 @@ gboolean purple_avatar_get_animated(PurpleAvatar *avatar);
  *
  * Returns: (transfer none): The animation or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GdkPixbufAnimation *purple_avatar_get_animation(PurpleAvatar *avatar);
@@ -144,7 +144,7 @@ GdkPixbufAnimation *purple_avatar_get_animation(PurpleAvatar *avatar);
  *
  * Returns: (transfer none): The [class@Purple.Tags] for @avatar.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_avatar_get_tags(PurpleAvatar *avatar);

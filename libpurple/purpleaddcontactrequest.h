@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * information when someone has added you to their contact list, so the user
  * interface can ask the user to add the remote user to their contact list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PURPLE_TYPE_ADD_CONTACT_REQUEST (purple_add_contact_request_get_type())
@@ -62,7 +62,7 @@ G_DECLARE_FINAL_TYPE(PurpleAddContactRequest, purple_add_contact_request,
  *
  * Returns: The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAddContactRequest *purple_add_contact_request_new(PurpleAccount *account, const gchar *username);
@@ -75,7 +75,7 @@ PurpleAddContactRequest *purple_add_contact_request_new(PurpleAccount *account, 
  *
  * Returns: (transfer none): The account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_add_contact_request_get_account(PurpleAddContactRequest *request);
@@ -88,7 +88,7 @@ PurpleAccount *purple_add_contact_request_get_account(PurpleAddContactRequest *r
  *
  * Returns: The username of the remote user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_add_contact_request_get_username(PurpleAddContactRequest *request);
@@ -101,7 +101,7 @@ const gchar *purple_add_contact_request_get_username(PurpleAddContactRequest *re
  * Sets the alias of the remote user to @alias. User interfaces can use this
  * when presenting the authorization request to the end user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_add_contact_request_set_alias(PurpleAddContactRequest *request, const gchar *alias);
@@ -114,7 +114,7 @@ void purple_add_contact_request_set_alias(PurpleAddContactRequest *request, cons
  *
  * Returns: (nullable): The alias if one was set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_add_contact_request_get_alias(PurpleAddContactRequest *request);
@@ -127,7 +127,7 @@ const gchar *purple_add_contact_request_get_alias(PurpleAddContactRequest *reque
  * Sets an optional message from remote user, that the user interface can
  * display to the end user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_add_contact_request_set_message(PurpleAddContactRequest *request, const gchar *message);
@@ -140,7 +140,7 @@ void purple_add_contact_request_set_message(PurpleAddContactRequest *request, co
  *
  * Returns: (nullable): The optional message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_add_contact_request_get_message(PurpleAddContactRequest *request);
@@ -154,7 +154,7 @@ const gchar *purple_add_contact_request_get_message(PurpleAddContactRequest *req
  *
  * If this is called multiple times, then this does nothing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_add_contact_request_add(PurpleAddContactRequest *request);

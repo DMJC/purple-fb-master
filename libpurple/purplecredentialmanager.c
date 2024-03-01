@@ -200,7 +200,7 @@ purple_credential_manager_class_init(PurpleCredentialManagerClass *klass) {
 	 *
 	 * Emitted after @provider has been registered in @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REGISTERED] = g_signal_new_class_handler(
 		"registered",
@@ -221,7 +221,7 @@ purple_credential_manager_class_init(PurpleCredentialManagerClass *klass) {
 	 *
 	 * Emitted after @provider has been unregistered from @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_UNREGISTERED] = g_signal_new_class_handler(
 		"unregistered",
@@ -243,7 +243,7 @@ purple_credential_manager_class_init(PurpleCredentialManagerClass *klass) {
 	 *
 	 * Emitted after @provider has become the active provider for @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACTIVE_CHANGED] = g_signal_new_class_handler(
 		"active-changed",

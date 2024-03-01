@@ -111,7 +111,7 @@ typedef enum
  * ways we can't imagine right now. If you come up with one in the future,
  * please let us know!
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
@@ -134,7 +134,7 @@ typedef enum {
  *       conversation is the only one contained in the parent window, that
  *       window is also destroyed.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 
 /**
@@ -168,7 +168,7 @@ G_BEGIN_DECLS
  * Present a conversation to the user. This allows core code to initiate a
  * conversation by displaying the IM dialog.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_present(PurpleConversation *conv);
@@ -180,7 +180,7 @@ void purple_conversation_present(PurpleConversation *conv);
  *
  * Sets the specified conversation's UI operations structure.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_set_ui_ops(PurpleConversation *conv, PurpleConversationUiOps *ops);
@@ -193,7 +193,7 @@ void purple_conversation_set_ui_ops(PurpleConversation *conv, PurpleConversation
  *
  * Returns: The operations structure.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleConversationUiOps *purple_conversation_get_ui_ops(PurpleConversation *conv);
@@ -206,7 +206,7 @@ PurpleConversationUiOps *purple_conversation_get_ui_ops(PurpleConversation *conv
  *
  * Returns: (nullable): The id of @conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_id(PurpleConversation *conversation);
@@ -219,7 +219,7 @@ const char *purple_conversation_get_id(PurpleConversation *conversation);
  *
  * Returns: The [enum@ConversationType] of @conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversationType purple_conversation_get_conversation_type(PurpleConversation *conversation);
@@ -234,7 +234,7 @@ PurpleConversationType purple_conversation_get_conversation_type(PurpleConversat
  * > Note this only for the internal representation in libpurple and the
  * protocol will not be told to change the type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_conversation_type(PurpleConversation *conversation, PurpleConversationType type);
@@ -250,7 +250,7 @@ void purple_conversation_set_conversation_type(PurpleConversation *conversation,
  *
  * Returns: (transfer none): The conversation's purple_account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_conversation_get_account(PurpleConversation *conv);
@@ -263,7 +263,7 @@ PurpleAccount *purple_conversation_get_account(PurpleConversation *conv);
  *
  * Returns: (transfer none): The conversation's purple_connection.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConnection *purple_conversation_get_connection(PurpleConversation *conv);
@@ -275,7 +275,7 @@ PurpleConnection *purple_conversation_get_connection(PurpleConversation *conv);
  *
  * Sets the specified conversation's title.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_set_title(PurpleConversation *conv, const gchar *title);
@@ -288,7 +288,7 @@ void purple_conversation_set_title(PurpleConversation *conv, const gchar *title)
  *
  * Returns: The title.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_conversation_get_title(PurpleConversation *conv);
@@ -302,7 +302,7 @@ const char *purple_conversation_get_title(PurpleConversation *conv);
  * This function takes OPT_IM_ALIAS_TAB into account, as well as the
  * user's alias.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_autoset_title(PurpleConversation *conv);
@@ -314,7 +314,7 @@ void purple_conversation_autoset_title(PurpleConversation *conv);
  *
  * Sets the specified conversation's name.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_set_name(PurpleConversation *conv, const gchar *name);
@@ -328,7 +328,7 @@ void purple_conversation_set_name(PurpleConversation *conv, const gchar *name);
  * Returns: The conversation's name. If the conversation is an IM with a
  *          PurpleBuddy, then it's the name of the PurpleBuddy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_conversation_get_name(PurpleConversation *conv);
@@ -340,7 +340,7 @@ const char *purple_conversation_get_name(PurpleConversation *conv);
  *
  * Writes to a chat or an IM.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_write_message(PurpleConversation *conv, PurpleMessage *msg);
@@ -353,7 +353,7 @@ void purple_conversation_write_message(PurpleConversation *conv, PurpleMessage *
  *
  * Writes a system message to a chat or an IM.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_write_system_message(PurpleConversation *conv, const gchar *message, PurpleMessageFlags flags);
@@ -366,7 +366,7 @@ void purple_conversation_write_system_message(PurpleConversation *conv, const gc
  * Sends a message to this conversation. This function calls
  * purple_conversation_send_with_flags() with no additional flags.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_send(PurpleConversation *conv, const gchar *message);
@@ -380,7 +380,7 @@ void purple_conversation_send(PurpleConversation *conv, const gchar *message);
  *
  * Sends a message to this conversation with specified flags.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_send_with_flags(PurpleConversation *conv, const gchar *message, PurpleMessageFlags flags);
@@ -392,7 +392,7 @@ void purple_conversation_send_with_flags(PurpleConversation *conv, const gchar *
  *
  * Set the features as supported for the given conversation.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_set_features(PurpleConversation *conv, PurpleConnectionFlags features);
@@ -403,7 +403,7 @@ void purple_conversation_set_features(PurpleConversation *conv, PurpleConnection
  *
  * Get the features supported by the given conversation.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conv);
@@ -417,7 +417,7 @@ PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conv)
  * Returns: %TRUE if the conversation has focus, %FALSE if
  * it does not or the UI does not have a concept of conversation focus
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_conversation_has_focus(PurpleConversation *conv);
@@ -429,7 +429,7 @@ gboolean purple_conversation_has_focus(PurpleConversation *conv);
  *
  * Updates the visual status and UI of a conversation.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_update(PurpleConversation *conv, PurpleConversationUpdateType type);
@@ -447,7 +447,7 @@ void purple_conversation_update(PurpleConversation *conv, PurpleConversationUpda
  * The confirmation ensures that the user isn't sending a
  * message by mistake.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_send_confirm(PurpleConversation *conv, const gchar *message);
@@ -462,7 +462,7 @@ void purple_conversation_send_confirm(PurpleConversation *conv, const gchar *mes
  *          items for a conversation, as harvested by the chat-extended-menu
  *          signal.
  *
- * Since: 2.1.0
+ * Since: 2.1
  */
 PURPLE_AVAILABLE_IN_2_1
 GList * purple_conversation_get_extended_menu(PurpleConversation *conv);
@@ -482,7 +482,7 @@ GList * purple_conversation_get_extended_menu(PurpleConversation *conv);
  *
  * Returns:        TRUE if the error was presented, else FALSE
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_present_error(const gchar *who, PurpleAccount *account, const gchar *what);
@@ -495,7 +495,7 @@ gboolean purple_conversation_present_error(const gchar *who, PurpleAccount *acco
  *
  * Returns: %TRUE if age restricted, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_get_age_restricted(PurpleConversation *conversation);
@@ -508,7 +508,7 @@ gboolean purple_conversation_get_age_restricted(PurpleConversation *conversation
  * Sets whether or not @conversation is age restricted to the value of
  * @age_restricted.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_age_restricted(PurpleConversation *conversation, gboolean age_restricted);
@@ -521,7 +521,7 @@ void purple_conversation_set_age_restricted(PurpleConversation *conversation, gb
  *
  * Returns: The description of @conversation or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_description(PurpleConversation *conversation);
@@ -533,7 +533,7 @@ const char *purple_conversation_get_description(PurpleConversation *conversation
  *
  * Sets the description of @conversation to @description.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_description(PurpleConversation *conversation, const char *description);
@@ -546,7 +546,7 @@ void purple_conversation_set_description(PurpleConversation *conversation, const
  *
  * Returns: (nullable): The topic of @conversation or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_topic(PurpleConversation *conversation);
@@ -558,7 +558,7 @@ const char *purple_conversation_get_topic(PurpleConversation *conversation);
  *
  * Sets the topic of @conversation to @topic.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_topic(PurpleConversation *conversation, const char *topic);
@@ -576,7 +576,7 @@ void purple_conversation_set_topic(PurpleConversation *conversation, const char 
  * [method@Conversation.set_topic_author], and
  * [method@Conversation.set_topic_updated].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_topic_full(PurpleConversation *conversation, const char *topic, PurpleContactInfo *author, GDateTime *updated);
@@ -589,7 +589,7 @@ void purple_conversation_set_topic_full(PurpleConversation *conversation, const 
  *
  * Returns: (transfer none) (nullable): The author of the topic or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_conversation_get_topic_author(PurpleConversation *conversation);
@@ -601,7 +601,7 @@ PurpleContactInfo *purple_conversation_get_topic_author(PurpleConversation *conv
  *
  * Sets the author of the topic for @conversation to @author.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_topic_author(PurpleConversation *conversation, PurpleContactInfo *author);
@@ -615,7 +615,7 @@ void purple_conversation_set_topic_author(PurpleConversation *conversation, Purp
  * Returns: (transfer none) (nullable): The last time the topic was updated or
  *          %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_conversation_get_topic_updated(PurpleConversation *conversation);
@@ -627,7 +627,7 @@ GDateTime *purple_conversation_get_topic_updated(PurpleConversation *conversatio
  *
  * Sets the time that the topic was lasted updated for @conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_topic_updated(PurpleConversation *conversation, GDateTime *updated);
@@ -640,7 +640,7 @@ void purple_conversation_set_topic_updated(PurpleConversation *conversation, GDa
  *
  * Returns: (nullable): The nickname for the user in @conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_user_nickname(PurpleConversation *conversation);
@@ -652,7 +652,7 @@ const char *purple_conversation_get_user_nickname(PurpleConversation *conversati
  *
  * Sets the user's nickname in @conversation to @nickname.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_user_nickname(PurpleConversation *conversation, const char *nickname);
@@ -666,7 +666,7 @@ void purple_conversation_set_user_nickname(PurpleConversation *conversation, con
  * Returns: %TRUE if @conversation has been set a as a favorite, otherwise
  *          %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_get_favorite(PurpleConversation *conversation);
@@ -678,7 +678,7 @@ gboolean purple_conversation_get_favorite(PurpleConversation *conversation);
  *
  * Sets whether or not @conversation is a favorite to @favorite.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_favorite(PurpleConversation *conversation, gboolean favorite);
@@ -691,7 +691,7 @@ void purple_conversation_set_favorite(PurpleConversation *conversation, gboolean
  *
  * Returns: (transfer none) (nullable): The creation time of @conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GDateTime *purple_conversation_get_created_on(PurpleConversation *conversation);
@@ -703,7 +703,7 @@ GDateTime *purple_conversation_get_created_on(PurpleConversation *conversation);
  *
  * Sets the creation time of @conversation to @created_on.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_created_on(PurpleConversation *conversation, GDateTime *created_on);
@@ -716,7 +716,7 @@ void purple_conversation_set_created_on(PurpleConversation *conversation, GDateT
  *
  * Returns: (transfer none): The creator or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_conversation_get_creator(PurpleConversation *conversation);
@@ -728,7 +728,7 @@ PurpleContactInfo *purple_conversation_get_creator(PurpleConversation *conversat
  *
  * Sets the creator of @conversation to @creator.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_creator(PurpleConversation *conversation, PurpleContactInfo *creator);
@@ -744,7 +744,7 @@ void purple_conversation_set_creator(PurpleConversation *conversation, PurpleCon
  *
  * Returns: %TRUE if messages can be sent and received from @conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_get_online(PurpleConversation *conversation);
@@ -757,7 +757,7 @@ gboolean purple_conversation_get_online(PurpleConversation *conversation);
  * Sets whether or not the conversation is online, or able to send and receive
  * messages.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_online(PurpleConversation *conversation, gboolean online);
@@ -775,7 +775,7 @@ void purple_conversation_set_online(PurpleConversation *conversation, gboolean o
  *
  * Returns: %TRUE if @conversation is federated otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_get_federated(PurpleConversation *conversation);
@@ -788,7 +788,7 @@ gboolean purple_conversation_get_federated(PurpleConversation *conversation);
  *
  * Returns: (transfer none): The tags from @conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_conversation_get_tags(PurpleConversation *conversation);
@@ -801,7 +801,7 @@ PurpleTags *purple_conversation_get_tags(PurpleConversation *conversation);
  *
  * Returns: (transfer none): The members in @conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_conversation_get_members(PurpleConversation *conversation);
@@ -819,7 +819,7 @@ GListModel *purple_conversation_get_members(PurpleConversation *conversation);
  *
  * Returns: %TRUE if @info is in @conversation otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_has_member(PurpleConversation *conversation, PurpleContactInfo *info, guint *position);
@@ -835,7 +835,7 @@ gboolean purple_conversation_has_member(PurpleConversation *conversation, Purple
  * Returns: (transfer none) (nullable): The [class@Purple.ConversationMember]
  *          if found or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversationMember *purple_conversation_find_member(PurpleConversation *conversation, PurpleContactInfo *info);
@@ -866,7 +866,7 @@ PurpleConversationMember *purple_conversation_find_member(PurpleConversation *co
  * Returns: (transfer none): The [class@Purple.ConversationMember] that was
  *          created or found.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversationMember *purple_conversation_add_member(PurpleConversation *conversation, PurpleContactInfo *info, gboolean announce, const char *message);
@@ -889,7 +889,7 @@ PurpleConversationMember *purple_conversation_add_member(PurpleConversation *con
  * Returns: %TRUE if @member was found and removed from @conversation,
  *          otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_remove_member(PurpleConversation *conversation, PurpleContactInfo *info, gboolean announce, const char *message);
@@ -902,7 +902,7 @@ gboolean purple_conversation_remove_member(PurpleConversation *conversation, Pur
  *
  * Returns: (transfer none): The list of messages.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_conversation_get_messages(PurpleConversation *conversation);
@@ -918,7 +918,7 @@ GListModel *purple_conversation_get_messages(PurpleConversation *conversation);
  *
  * Returns: (transfer none) (nullable): The avatar for the conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_conversation_get_avatar(PurpleConversation *conversation);
@@ -933,7 +933,7 @@ PurpleAvatar *purple_conversation_get_avatar(PurpleConversation *conversation);
  * > Note: Not all protocols support this and user interfaces generally use
  * the avatar of a contact info for a direct message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_avatar(PurpleConversation *conversation, PurpleAvatar *avatar);

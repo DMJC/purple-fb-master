@@ -113,7 +113,7 @@ purple_contact_class_init(PurpleContactClass *klass) {
 	 *
 	 * The account that this contact belongs to.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "account",

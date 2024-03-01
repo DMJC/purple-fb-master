@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  *
  * A #GError domain for errors from #PurpleCredentialProviders.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_CREDENTIAL_PROVIDER_DOMAIN \
 	g_quark_from_static_string("purple-credential-provider") \
@@ -55,7 +55,7 @@ G_BEGIN_DECLS
  * libpurple ships with plugins for libsecret, macOS Keychain Access, KWallet,
  * and the Windows Credentials store by subclassing #PurpleCredentialProvider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PURPLE_TYPE_CREDENTIAL_PROVIDER (purple_credential_provider_get_type())
@@ -78,7 +78,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleCredentialProvider, purple_credential_provider,
  * #PurpleCredentialProviderClass defines the interface for interacting with
  * credential providers like libsecret, kwallet, etc.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleCredentialProviderClass {
 	/*< private >*/
@@ -111,7 +111,7 @@ struct _PurpleCredentialProviderClass {
  *
  * Returns: The identifier of @provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_credential_provider_get_id(PurpleCredentialProvider *provider);
@@ -124,7 +124,7 @@ const gchar *purple_credential_provider_get_id(PurpleCredentialProvider *provide
  *
  * Returns: The name of @provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_credential_provider_get_name(PurpleCredentialProvider *provider);
@@ -138,7 +138,7 @@ const gchar *purple_credential_provider_get_name(PurpleCredentialProvider *provi
  *
  * Returns: The description of @provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_credential_provider_get_description(PurpleCredentialProvider *provider);
@@ -154,7 +154,7 @@ const gchar *purple_credential_provider_get_description(PurpleCredentialProvider
  *
  * Returns: %FALSE on error, otherwise %TRUE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_provider_is_valid(PurpleCredentialProvider *provider, GError **error);
@@ -170,7 +170,7 @@ gboolean purple_credential_provider_is_valid(PurpleCredentialProvider *provider,
  *
  * Reads the password for @account from @provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_credential_provider_read_password_async(PurpleCredentialProvider *provider, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -187,7 +187,7 @@ void purple_credential_provider_read_password_async(PurpleCredentialProvider *pr
  * Returns: (transfer full): The password or %NULL if successful, otherwise
  *                           %NULL with @error set on failure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gchar *purple_credential_provider_read_password_finish(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
@@ -204,7 +204,7 @@ gchar *purple_credential_provider_read_password_finish(PurpleCredentialProvider 
  *
  * Writes @password for @account to @provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_credential_provider_write_password_async(PurpleCredentialProvider *provider, PurpleAccount *account, const gchar *password, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -222,7 +222,7 @@ void purple_credential_provider_write_password_async(PurpleCredentialProvider *p
  * Returns: %TRUE if the password was written successfully, otherwise %FALSE
  *          with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_provider_write_password_finish(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
@@ -238,7 +238,7 @@ gboolean purple_credential_provider_write_password_finish(PurpleCredentialProvid
  *
  * Clears the password for @account from @provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_credential_provider_clear_password_async(PurpleCredentialProvider *provider, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -256,7 +256,7 @@ void purple_credential_provider_clear_password_async(PurpleCredentialProvider *p
  * Returns: %TRUE if the password didn't exist or was cleared successfully,
  *          otherwise %FALSE with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_provider_clear_password_finish(PurpleCredentialProvider *provider, GAsyncResult *result, GError **error);
@@ -270,7 +270,7 @@ gboolean purple_credential_provider_clear_password_finish(PurpleCredentialProvid
  * Returns: (transfer none): The settings for @provider or %NULL if @provider
  *          doesn't have any settings.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GSettings *purple_credential_provider_get_settings(PurpleCredentialProvider *provider);

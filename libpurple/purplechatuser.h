@@ -37,7 +37,7 @@
  *
  * Structure representing a chat user instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -52,7 +52,7 @@
  *
  * Flags applicable to users in Chats.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 typedef enum /*< flags >*/
 {
@@ -86,7 +86,7 @@ G_BEGIN_DECLS
  *
  * Returns: The new chat user
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleChatUser *purple_chat_user_new(PurpleChatConversation *chat,
@@ -101,7 +101,7 @@ PurpleChatUser *purple_chat_user_new(PurpleChatConversation *chat,
  *
  * Set the chat conversation associated with this chat user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_chat_user_set_chat(PurpleChatUser *chat_user,
@@ -115,7 +115,7 @@ void purple_chat_user_set_chat(PurpleChatUser *chat_user,
  *
  * Returns: (transfer full): The chat conversation that the buddy belongs to.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleChatConversation *purple_chat_user_get_chat(PurpleChatUser *chat_user);
@@ -128,7 +128,7 @@ PurpleChatConversation *purple_chat_user_get_chat(PurpleChatUser *chat_user);
  *
  * Returns: The alias of the chat user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_chat_user_get_alias(PurpleChatUser *chat_user);
@@ -141,7 +141,7 @@ const gchar *purple_chat_user_get_alias(PurpleChatUser *chat_user);
  *
  * Returns: The name of the chat user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_chat_user_get_name(PurpleChatUser *chat_user);
@@ -153,7 +153,7 @@ const gchar *purple_chat_user_get_name(PurpleChatUser *chat_user);
  *
  * Set the flags of a chat user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_chat_user_set_flags(PurpleChatUser *chat_user,
@@ -167,7 +167,7 @@ void purple_chat_user_set_flags(PurpleChatUser *chat_user,
  *
  * Returns: The flags of the chat user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleChatUserFlags purple_chat_user_get_flags(PurpleChatUser *chat_user);
@@ -180,7 +180,7 @@ PurpleChatUserFlags purple_chat_user_get_flags(PurpleChatUser *chat_user);
  *
  * Returns: %TRUE if the chat user is on the buddy list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_chat_user_is_buddy(PurpleChatUser *chat_user);
@@ -195,7 +195,7 @@ gboolean purple_chat_user_is_buddy(PurpleChatUser *chat_user);
  *
  * Returns: The sorting order of @a and @b.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gint purple_chat_user_compare(PurpleChatUser *a, PurpleChatUser *b);

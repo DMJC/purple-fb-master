@@ -125,7 +125,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the #PurpleConversationUiOps boxed structure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_conversation_ui_ops_get_type(void);

@@ -164,7 +164,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 *
 	 * The filename that this avatar was created from.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FILENAME] = g_param_spec_string(
 		"filename", "filename",
@@ -179,7 +179,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 * [property@Purple.Avatar:animated] is %TRUE, this will be a static frame
 	 * from the animation.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PIXBUF] = g_param_spec_object(
 		"pixbuf", "pixbuf",
@@ -192,7 +192,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 *
 	 * Whether or not this avatar is animated.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ANIMATED] = g_param_spec_boolean(
 		"animated", "animated",
@@ -206,7 +206,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 * The [class@GdkPixbuf.PixbufAnimation] if
 	 * [property@Purple.Avatar:animated] is %TRUE.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ANIMATION] = g_param_spec_object(
 		"animation", "animation",
@@ -219,7 +219,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 *
 	 * The [class@Purple.Tags] for the avatar.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TAGS] = g_param_spec_object(
 		"tags", "tags",

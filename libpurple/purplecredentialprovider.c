@@ -203,7 +203,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	 * The ID of the provider.  Used for preferences and other things that need
 	 * to address it.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id", "The identifier of the provider",
@@ -216,7 +216,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	 *
 	 * The name of the provider which will be displayed to the user.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "name", "The name of the provider",
@@ -229,7 +229,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	 *
 	 * The description of the provider which will be displayed to the user.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DESCRIPTION] = g_param_spec_string(
 		"description", "description", "The description of the provider",
@@ -243,7 +243,7 @@ purple_credential_provider_class_init(PurpleCredentialProviderClass *klass) {
 	 * The [class@Gio.Settings] used to configure the provider. This may be
 	 * %NULL.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_SETTINGS] = g_param_spec_object(
 		"settings", "settings",

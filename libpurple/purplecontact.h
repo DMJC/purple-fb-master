@@ -65,7 +65,7 @@ G_DECLARE_FINAL_TYPE(PurpleContact, purple_contact, PURPLE, CONTACT,
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContact *purple_contact_new(PurpleAccount *account, const gchar *id);
@@ -79,7 +79,7 @@ PurpleContact *purple_contact_new(PurpleAccount *account, const gchar *id);
  * Returns: (transfer none): The [class@Purple.Account] that @contact belongs
  *          to.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_contact_get_account(PurpleContact *contact);
@@ -98,7 +98,7 @@ PurpleAccount *purple_contact_get_account(PurpleContact *contact);
  *
  * Returns: (transfer none) (nullable): The conversation or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_contact_find_dm(PurpleContact *contact, gboolean create);

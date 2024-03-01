@@ -159,7 +159,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 *
 	 * Emitted after @account was added to @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ADDED] = g_signal_new_class_handler(
 		"added",
@@ -180,7 +180,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 *
 	 * Emitted after @account was removed from @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REMOVED] = g_signal_new_class_handler(
 		"removed",
@@ -208,7 +208,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 * something like `account-changed::enabled` and your callback will only
 	 * be called when the enabled property of @account has been changed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACCOUNT_CHANGED] = g_signal_new_class_handler(
 		"account-changed",
@@ -237,7 +237,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 * something like `account-setting-changed::use-tls` and your callback will
 	 * only be called when the `use-tls` setting of @account has been changed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACCOUNT_SETTING_CHANGED] = g_signal_new_class_handler(
 		"account-setting-changed",
@@ -261,7 +261,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 * means that your callback will be called for any account that @manager
 	 * knows about.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACCOUNT_CONNECTED] = g_signal_new_class_handler(
 		"account-connected",
@@ -284,7 +284,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 * This means that your callback will be called for any account that
 	 * @manager knows about.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACCOUNT_DISCONNECTED] = g_signal_new_class_handler(
 		"account-disconnected",

@@ -828,7 +828,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * if the [class@Purple.Protocol] that this account is for allows optional
 	 * passwords.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_REQUIRE_PASSWORD] = g_param_spec_boolean(
 		"require-password", "require-password",
@@ -841,7 +841,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 *
 	 * The user information or profile for the account.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_USER_INFO] = g_param_spec_string(
 		"user-info", "user-info",
@@ -854,7 +854,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 *
 	 * The path to the file to use as the avatar for this account.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_BUDDY_ICON_PATH] = g_param_spec_string(
 		"buddy-icon-path", "buddy-icon-path",
@@ -867,7 +867,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 *
 	 * Whether or not this account should track the user's global status.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ENABLED] = g_param_spec_boolean(
 		"enabled", "enabled",
@@ -881,7 +881,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Whether or not the password for this account should be stored in the
 	 * configured [class@CredentialProvider].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_REMEMBER_PASSWORD] = g_param_spec_boolean(
 		"remember-password", "remember-password",
@@ -895,7 +895,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * The [class@Connection] object for this account. This will be %NULL when
 	 * the account is offline.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CONNECTION] = g_param_spec_object(
 		"connection", "connection",
@@ -908,7 +908,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 *
 	 * The identifier of the protocol that this account is using.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PROTOCOL_ID] = g_param_spec_string(
 		"protocol-id", "protocol-id",
@@ -921,7 +921,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 *
 	 * The [class@ProxyInfo] for this account.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PROXY_INFO] = g_param_spec_object(
 		"proxy-info", "proxy-info",
@@ -939,7 +939,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Setting this will not disconnect an account, but this will be set when
 	 * there is a connection failure.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ERROR] = g_param_spec_boxed(
 		"error", "error",
@@ -952,7 +952,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 *
 	 * Whether or not the account is connected.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CONNECTED] = g_param_spec_boolean(
 		"connected", "connected",
@@ -975,7 +975,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * connecting to `setting-changed::foo` will only be called when the `foo`
 	 * setting is changed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_SETTING_CHANGED] = g_signal_new_class_handler(
 		"setting-changed",
@@ -997,7 +997,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * [property@Connection:state] has changed to
 	 * %PURPLE_CONNECTION_STATE_CONNECTED.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_CONNECTED] = g_signal_new_class_handler(
 		"connected",
@@ -1018,7 +1018,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * [property@Connection:state] has changed to
 	 * %PURPLE_CONNECTION_STATE_DISCONNECTED.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_DISCONNECTED] = g_signal_new_class_handler(
 		"disconnected",

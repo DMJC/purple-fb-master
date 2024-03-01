@@ -186,7 +186,7 @@ purple_add_contact_request_class_init(PurpleAddContactRequestClass *klass)
 	 * typically emitted by the user interface calling
 	 * [method@AddContactRequest.add].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ADD] = g_signal_new_class_handler(
 		"add",
@@ -204,7 +204,7 @@ purple_add_contact_request_class_init(PurpleAddContactRequestClass *klass)
 	 *
 	 * The account that this add contact request is for.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "account",
@@ -217,7 +217,7 @@ purple_add_contact_request_class_init(PurpleAddContactRequestClass *klass)
 	 *
 	 * The username of the remote user to be added.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_USERNAME] = g_param_spec_string(
 		"username", "username",
@@ -230,7 +230,7 @@ purple_add_contact_request_class_init(PurpleAddContactRequestClass *klass)
 	 *
 	 * The alias of the remote user to be added.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ALIAS] = g_param_spec_string(
 		"alias", "alias",
@@ -243,7 +243,7 @@ purple_add_contact_request_class_init(PurpleAddContactRequestClass *klass)
 	 *
 	 * The optional message sent from the remote user.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MESSAGE] = g_param_spec_string(
 		"message", "message",

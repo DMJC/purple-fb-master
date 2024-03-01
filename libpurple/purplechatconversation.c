@@ -289,7 +289,7 @@ purple_chat_conversation_class_init(PurpleChatConversationClass *klass) {
 	 *
 	 * Emitted after a @username has joined the conversation.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_USER_JOINED] = g_signal_new_class_handler(
 		"user-joined",
@@ -313,7 +313,7 @@ purple_chat_conversation_class_init(PurpleChatConversationClass *klass) {
 	 *
 	 * Emitted after a @username has left the conversation.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_USER_LEFT] = g_signal_new_class_handler(
 		"user-left",

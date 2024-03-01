@@ -179,7 +179,7 @@ purple_conversation_manager_class_init(PurpleConversationManagerClass *klass) {
 	 *
 	 * Emitted after @conversation has been registered with @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REGISTERED] = g_signal_new_class_handler(
 		"registered",
@@ -200,7 +200,7 @@ purple_conversation_manager_class_init(PurpleConversationManagerClass *klass) {
 	 *
 	 * Emitted after @conversation has been unregistered from @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_UNREGISTERED] = g_signal_new_class_handler(
 		"unregistered",
@@ -228,7 +228,7 @@ purple_conversation_manager_class_init(PurpleConversationManagerClass *klass) {
 	 * something like `conversation-changed::title` and your callback will only
 	 * be called when [property@Conversation:title] has been changed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_CONVERSATION_CHANGED] = g_signal_new_class_handler(
 		"conversation-changed",

@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * #PurpleAttachment represents a file attached to a #PurpleMessage.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 PURPLE_AVAILABLE_IN_3_0
@@ -53,7 +53,7 @@ G_DECLARE_FINAL_TYPE(PurpleAttachment, purple_attachment, PURPLE, ATTACHMENT, GO
  *
  * Called when iterating #PurpleAttachment's.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 typedef void (*PurpleAttachmentForeachFunc)(PurpleAttachment *attachment, gpointer data);
 
@@ -64,7 +64,7 @@ typedef void (*PurpleAttachmentForeachFunc)(PurpleAttachment *attachment, gpoint
  *
  * Creates a new #PurpleAttachment with the given @id and @content_type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAttachment *purple_attachment_new(guint64 id, const gchar *content_type);
@@ -77,7 +77,7 @@ PurpleAttachment *purple_attachment_new(guint64 id, const gchar *content_type);
  *
  * Returns: The ID of @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint64 purple_attachment_get_id(PurpleAttachment *attachment);
@@ -92,7 +92,7 @@ guint64 purple_attachment_get_id(PurpleAttachment *attachment);
  *
  * Returns: (transfer none): The hash key of @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint64 *purple_attachment_get_hash_key(PurpleAttachment *attachment);
@@ -104,7 +104,7 @@ guint64 *purple_attachment_get_hash_key(PurpleAttachment *attachment);
  *
  * Sets the ID of @attachment to @id.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_attachment_set_id(PurpleAttachment *attachment, guint64 id);
@@ -117,7 +117,7 @@ void purple_attachment_set_id(PurpleAttachment *attachment, guint64 id);
  *
  * Returns: The content-type of @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_attachment_get_content_type(PurpleAttachment *attachment);
@@ -130,7 +130,7 @@ const gchar *purple_attachment_get_content_type(PurpleAttachment *attachment);
  *
  * Returns: (nullable): The local URI for @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_attachment_get_local_uri(PurpleAttachment *attachment);
@@ -142,7 +142,7 @@ const gchar *purple_attachment_get_local_uri(PurpleAttachment *attachment);
  *
  * Sets the local URI of @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_attachment_set_local_uri(PurpleAttachment *attachment, const gchar *local_uri);
@@ -155,7 +155,7 @@ void purple_attachment_set_local_uri(PurpleAttachment *attachment, const gchar *
  *
  * Returns: (nullable): The remote URI for @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_attachment_get_remote_uri(PurpleAttachment *attachment);
@@ -167,7 +167,7 @@ const gchar *purple_attachment_get_remote_uri(PurpleAttachment *attachment);
  *
  * Sets the remote URI of @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_attachment_set_remote_uri(PurpleAttachment *attachment, const gchar *remote_uri);
@@ -180,7 +180,7 @@ void purple_attachment_set_remote_uri(PurpleAttachment *attachment, const gchar 
  *
  * Returns: The size of @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint64 purple_attachment_get_size(PurpleAttachment *attachment);
@@ -192,7 +192,7 @@ guint64 purple_attachment_get_size(PurpleAttachment *attachment);
  *
  * Sets the size of @attachment to @size.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_attachment_set_size(PurpleAttachment *attachment, guint64 size);
@@ -206,7 +206,7 @@ void purple_attachment_set_size(PurpleAttachment *attachment, guint64 size);
  *
  * Returns: (transfer full): The filename for @attachment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gchar *purple_attachment_get_filename(PurpleAttachment *attachment);

@@ -52,7 +52,7 @@ G_BEGIN_DECLS
  * account. User interfaces typically allow users to create these in a dialog
  * or wizard.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 
 PURPLE_AVAILABLE_IN_3_0
@@ -68,7 +68,7 @@ G_DECLARE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE, ACCOUNT,
  *
  * Returns: The new account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_account_new(const char *username, const char *protocol_id);
@@ -79,7 +79,7 @@ PurpleAccount *purple_account_new(const char *username, const char *protocol_id)
  *
  * Connects to an account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_connect(PurpleAccount *account);
@@ -90,7 +90,7 @@ void purple_account_connect(PurpleAccount *account);
  *
  * Disconnects from an account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_disconnect(PurpleAccount *account);
@@ -103,7 +103,7 @@ void purple_account_disconnect(PurpleAccount *account);
  *
  * Returns: TRUE if the account is being disconnected.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_account_is_disconnecting(PurpleAccount *account);
@@ -114,7 +114,7 @@ gboolean purple_account_is_disconnecting(PurpleAccount *account);
  *
  * Close account requests registered for the given PurpleAccount
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_request_close_with_account(PurpleAccount *account);
@@ -125,7 +125,7 @@ void purple_account_request_close_with_account(PurpleAccount *account);
  *
  * Close the account request for the given ui handle
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_request_close(void *ui_handle);
@@ -140,7 +140,7 @@ void purple_account_request_close(void *ui_handle);
  * Requests a password from the user for the account. Does not set the
  * account password on success; do that in ok_cb if desired.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_request_password(PurpleAccount *account, GCallback ok_cb, GCallback cancel_cb, void *user_data);
@@ -151,7 +151,7 @@ void purple_account_request_password(PurpleAccount *account, GCallback ok_cb, GC
  *
  * Requests information from the user to change the account's password.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_request_change_password(PurpleAccount *account);
@@ -163,7 +163,7 @@ void purple_account_request_change_password(PurpleAccount *account);
  * Requests information from the user to change the account's
  * user information.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_request_change_user_info(PurpleAccount *account);
@@ -175,7 +175,7 @@ void purple_account_request_change_user_info(PurpleAccount *account);
  *
  * Sets the account's user information
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_user_info(PurpleAccount *account, const char *user_info);
@@ -187,7 +187,7 @@ void purple_account_set_user_info(PurpleAccount *account, const char *user_info)
  *
  * Sets the account's buddy icon path.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_buddy_icon_path(PurpleAccount *account, const char *path);
@@ -199,7 +199,7 @@ void purple_account_set_buddy_icon_path(PurpleAccount *account, const char *path
  *
  * Sets the account's protocol ID.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_protocol_id(PurpleAccount *account, const char *protocol_id);
@@ -211,7 +211,7 @@ void purple_account_set_protocol_id(PurpleAccount *account, const char *protocol
  *
  * Sets the account's connection.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_connection(PurpleAccount *account, PurpleConnection *gc);
@@ -223,7 +223,7 @@ void purple_account_set_connection(PurpleAccount *account, PurpleConnection *gc)
  *
  * Sets whether or not this account should save its password.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_remember_password(PurpleAccount *account, gboolean value);
@@ -235,7 +235,7 @@ void purple_account_set_remember_password(PurpleAccount *account, gboolean value
  *
  * Sets whether or not this account is enabled.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_enabled(PurpleAccount *account, gboolean value);
@@ -247,7 +247,7 @@ void purple_account_set_enabled(PurpleAccount *account, gboolean value);
  *
  * Sets the account's proxy information.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_proxy_info(PurpleAccount *account, PurpleProxyInfo *info);
@@ -259,7 +259,7 @@ void purple_account_set_proxy_info(PurpleAccount *account, PurpleProxyInfo *info
  *
  * Sets the account's status types.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_status_types(PurpleAccount *account, GList *status_types);
@@ -286,7 +286,7 @@ void purple_account_set_status_types(PurpleAccount *account, GList *status_types
  *
  * Variadic version of [method@Purple.Account.set_status_attrs].
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_status(PurpleAccount *account, const char *status_id, gboolean active, ...) G_GNUC_NULL_TERMINATED;
@@ -312,7 +312,7 @@ void purple_account_set_status(PurpleAccount *account, const char *status_id, gb
  * status. So, if @status_id is an exclusive status and @active is %FALSE, this
  * function does nothing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_account_set_status_attrs(PurpleAccount *account, const char *status_id, gboolean active, GHashTable *attrs);
@@ -325,7 +325,7 @@ void purple_account_set_status_attrs(PurpleAccount *account, const char *status_
  *
  * Sets a protocol-specific integer setting for an account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_int(PurpleAccount *account, const char *name, int value);
@@ -338,7 +338,7 @@ void purple_account_set_int(PurpleAccount *account, const char *name, int value)
  *
  * Sets a protocol-specific string setting for an account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_string(PurpleAccount *account, const char *name, const char *value);
@@ -351,7 +351,7 @@ void purple_account_set_string(PurpleAccount *account, const char *name, const c
  *
  * Sets a protocol-specific boolean setting for an account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_bool(PurpleAccount *account, const char *name, gboolean value);
@@ -364,7 +364,7 @@ void purple_account_set_bool(PurpleAccount *account, const char *name, gboolean 
  *
  * Returns: %TRUE if connected, or %FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_is_connected(PurpleAccount *account);
@@ -377,7 +377,7 @@ gboolean purple_account_is_connected(PurpleAccount *account);
  *
  * Returns: %TRUE if connecting, or %FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_is_connecting(PurpleAccount *account);
@@ -390,7 +390,7 @@ gboolean purple_account_is_connecting(PurpleAccount *account);
  *
  * Returns: %TRUE if disconnected, or %FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_is_disconnected(PurpleAccount *account);
@@ -403,7 +403,7 @@ gboolean purple_account_is_disconnected(PurpleAccount *account);
  *
  * Returns: The user information.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_account_get_user_info(PurpleAccount *account);
@@ -416,7 +416,7 @@ const char *purple_account_get_user_info(PurpleAccount *account);
  *
  * Returns: The buddy icon's non-cached path.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_account_get_buddy_icon_path(PurpleAccount *account);
@@ -429,7 +429,7 @@ const char *purple_account_get_buddy_icon_path(PurpleAccount *account);
  *
  * Returns: The protocol ID.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_account_get_protocol_id(PurpleAccount *account);
@@ -443,7 +443,7 @@ const char *purple_account_get_protocol_id(PurpleAccount *account);
  * Returns: (transfer none): The #PurpleProtocol for @account or %NULL if it
  *          could not be found.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleProtocol *purple_account_get_protocol(PurpleAccount *account);
@@ -456,7 +456,7 @@ PurpleProtocol *purple_account_get_protocol(PurpleAccount *account);
  *
  * Returns: The protocol name.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_account_get_protocol_name(PurpleAccount *account);
@@ -469,7 +469,7 @@ const char *purple_account_get_protocol_name(PurpleAccount *account);
  *
  * Returns: (transfer none): The connection.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleConnection *purple_account_get_connection(PurpleAccount *account);
@@ -482,7 +482,7 @@ PurpleConnection *purple_account_get_connection(PurpleAccount *account);
  *
  * Returns: %TRUE if it should remember the password.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_get_remember_password(PurpleAccount *account);
@@ -495,7 +495,7 @@ gboolean purple_account_get_remember_password(PurpleAccount *account);
  *
  * Returns: %TRUE if it enabled on this UI.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_get_enabled(PurpleAccount *account);
@@ -508,7 +508,7 @@ gboolean purple_account_get_enabled(PurpleAccount *account);
  *
  * Returns: (transfer none): The proxy information.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleProxyInfo *purple_account_get_proxy_info(PurpleAccount *account);
@@ -524,7 +524,7 @@ PurpleProxyInfo *purple_account_get_proxy_info(PurpleAccount *account);
  *
  * Returns: (transfer none): The active status.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatus *purple_account_get_active_status(PurpleAccount *account);
@@ -538,7 +538,7 @@ PurpleStatus *purple_account_get_active_status(PurpleAccount *account);
  *
  * Returns: (transfer none): The status, or %NULL if it was never registered.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatus *purple_account_get_status(PurpleAccount *account, const char *status_id);
@@ -552,7 +552,7 @@ PurpleStatus *purple_account_get_status(PurpleAccount *account, const char *stat
  *
  * Returns: The status type if found, or %NULL.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatusType *purple_account_get_status_type(PurpleAccount *account, const char *id);
@@ -569,7 +569,7 @@ PurpleStatusType *purple_account_get_status_type(PurpleAccount *account, const c
  *
  * Returns: The status if found, or %NULL.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatusType *purple_account_get_status_type_with_primitive(PurpleAccount *account, PurpleStatusPrimitive primitive);
@@ -582,7 +582,7 @@ PurpleStatusType *purple_account_get_status_type_with_primitive(PurpleAccount *a
  *
  * Returns: (transfer none): The account's presence.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurplePresence *purple_account_get_presence(PurpleAccount *account);
@@ -596,7 +596,7 @@ PurplePresence *purple_account_get_presence(PurpleAccount *account);
  *
  * Returns: TRUE if active, or FALSE if not.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_is_status_active(PurpleAccount *account, const char *status_id);
@@ -609,7 +609,7 @@ gboolean purple_account_is_status_active(PurpleAccount *account, const char *sta
  *
  * Returns: (transfer none) (element-type PurpleStatusType): The account's status types.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GList *purple_account_get_status_types(PurpleAccount *account);
@@ -624,7 +624,7 @@ GList *purple_account_get_status_types(PurpleAccount *account);
  *
  * Returns: The value.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 int purple_account_get_int(PurpleAccount *account, const char *name, int default_value);
@@ -639,7 +639,7 @@ int purple_account_get_int(PurpleAccount *account, const char *name, int default
  *
  * Returns: The value.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_account_get_string(PurpleAccount *account, const char *name, const char *default_value);
@@ -654,7 +654,7 @@ const char *purple_account_get_string(PurpleAccount *account, const char *name, 
  *
  * Returns: The value.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_get_bool(PurpleAccount *account, const char *name, gboolean default_value);
@@ -667,7 +667,7 @@ gboolean purple_account_get_bool(PurpleAccount *account, const char *name, gbool
  *
  * Adds a buddy to the server-side buddy list for the specified account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_add_buddy(PurpleAccount *account, PurpleBuddy *buddy, const char *message);
@@ -680,7 +680,7 @@ void purple_account_add_buddy(PurpleAccount *account, PurpleBuddy *buddy, const 
  *
  * Adds a list of buddies to the server-side buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_add_buddies(PurpleAccount *account, GList *buddies, const char *message);
@@ -693,7 +693,7 @@ void purple_account_add_buddies(PurpleAccount *account, GList *buddies, const ch
  *
  * Removes a buddy from the server-side buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_remove_buddy(PurpleAccount *account, PurpleBuddy *buddy, PurpleGroup *group);
@@ -710,7 +710,7 @@ void purple_account_remove_buddy(PurpleAccount *account, PurpleBuddy *buddy, Pur
  * Note: The lists buddies and groups are parallel lists.  Be sure that node n of
  *       groups matches node n of buddies.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_remove_buddies(PurpleAccount *account, GList *buddies, GList *groups);
@@ -722,7 +722,7 @@ void purple_account_remove_buddies(PurpleAccount *account, GList *buddies, GList
  *
  * Removes a group from the server-side buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_remove_group(PurpleAccount *account, PurpleGroup *group);
@@ -735,7 +735,7 @@ void purple_account_remove_group(PurpleAccount *account, PurpleGroup *group);
  *
  * Changes the password on the specified account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_change_password(PurpleAccount *account, const char *orig_pw, const char *new_pw);
@@ -747,7 +747,7 @@ void purple_account_change_password(PurpleAccount *account, const char *orig_pw,
  *
  * Whether the account supports sending offline messages to buddy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_supports_offline_message(PurpleAccount *account, PurpleBuddy *buddy);
@@ -764,7 +764,7 @@ gboolean purple_account_supports_offline_message(PurpleAccount *account, PurpleB
  *          pointer is guaranteed to remain valid until the @ref
  *          account-error-changed signal is emitted for @account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const PurpleConnectionErrorInfo *purple_account_get_error(PurpleAccount *account);
@@ -780,7 +780,7 @@ const PurpleConnectionErrorInfo *purple_account_get_error(PurpleAccount *account
  * connection failure, when invalid settings are entered in an account editor,
  * or similar situations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_account_set_error(PurpleAccount *account, PurpleConnectionErrorInfo *info);
@@ -794,7 +794,7 @@ void purple_account_set_error(PurpleAccount *account, PurpleConnectionErrorInfo 
  * that it should look for a password in the [class@Purple.CredentialManager]
  * or prompt the user if a password can not be found.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_account_set_require_password(PurpleAccount *account, gboolean require_password);
@@ -807,7 +807,7 @@ void purple_account_set_require_password(PurpleAccount *account, gboolean requir
  *
  * Returns: %TRUE if the account requires a password, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_account_get_require_password(PurpleAccount *account);
@@ -828,7 +828,7 @@ gboolean purple_account_get_require_password(PurpleAccount *account);
  * Call [method@Purple.Account.thaw_notify_settings] to decrement the freeze
  * counter.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_account_freeze_notify_settings(PurpleAccount *account);
@@ -841,7 +841,7 @@ void purple_account_freeze_notify_settings(PurpleAccount *account);
  *
  * See [method@Purple.Account.freeze_notify_settings] for more information.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_account_thaw_notify_settings(PurpleAccount *account);

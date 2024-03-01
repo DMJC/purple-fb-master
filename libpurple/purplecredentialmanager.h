@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  *
  * A #GError domain for errors from #PurpleCredentialManager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_CREDENTIAL_MANAGER_DOMAIN \
 	g_quark_from_static_string("purple-credential-manager") \
@@ -63,7 +63,7 @@ G_DECLARE_FINAL_TYPE(PurpleCredentialManager, purple_credential_manager,
  * Once a provider is selected, all credential access will be directed to that
  * provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -73,7 +73,7 @@ G_DECLARE_FINAL_TYPE(PurpleCredentialManager, purple_credential_manager,
  *
  * A function to be used as a callback with purple_credential_manager_foreach().
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleCredentialManagerForeachFunc)(PurpleCredentialProvider *provider, gpointer data);
@@ -85,7 +85,7 @@ typedef void (*PurpleCredentialManagerForeachFunc)(PurpleCredentialProvider *pro
  *
  * Returns: (transfer none): The default #PurpleCredentialManager instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleCredentialManager *purple_credential_manager_get_default(void);
@@ -101,7 +101,7 @@ PurpleCredentialManager *purple_credential_manager_get_default(void);
  * Returns: %TRUE if @provider was successfully registered with @manager, %FALSE
  *          otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_register(PurpleCredentialManager *manager, PurpleCredentialProvider *provider, GError **error);
@@ -117,7 +117,7 @@ gboolean purple_credential_manager_register(PurpleCredentialManager *manager, Pu
  * Returns: %TRUE if @provider was successfully unregistered from @provider,
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_unregister(PurpleCredentialManager *manager, PurpleCredentialProvider *provider, GError **error);
@@ -139,7 +139,7 @@ gboolean purple_credential_manager_unregister(PurpleCredentialManager *manager, 
  *
  * Returns: %TRUE on success or %FALSE with @error set on failure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_set_active(PurpleCredentialManager *manager, const gchar *id, GError **error);
@@ -153,7 +153,7 @@ gboolean purple_credential_manager_set_active(PurpleCredentialManager *manager, 
  *
  * Returns: (transfer none): The active #PurpleCredentialProvider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleCredentialProvider *purple_credential_manager_get_active(PurpleCredentialManager *manager);
@@ -170,7 +170,7 @@ PurpleCredentialProvider *purple_credential_manager_get_active(PurpleCredentialM
  * Reads the password for @account using the active #PurpleCredentialProvider of
  * @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_credential_manager_read_password_async(PurpleCredentialManager *manager, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -187,7 +187,7 @@ void purple_credential_manager_read_password_async(PurpleCredentialManager *mana
  * Returns: (transfer full): The password or %NULL if successful, otherwise
  *                           %NULL with @error set on failure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gchar *purple_credential_manager_read_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
@@ -205,7 +205,7 @@ gchar *purple_credential_manager_read_password_finish(PurpleCredentialManager *m
  * Writes @password for @account to the active #PurpleCredentialProvider of
  * @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_credential_manager_write_password_async(PurpleCredentialManager *manager, PurpleAccount *account, const gchar *password, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -222,7 +222,7 @@ void purple_credential_manager_write_password_async(PurpleCredentialManager *man
  * Returns: %TRUE if the password was written successfully, otherwise %FALSE
  *          with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_write_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
@@ -239,7 +239,7 @@ gboolean purple_credential_manager_write_password_finish(PurpleCredentialManager
  * Clears the password for @account from the active #PurpleCredentialProvider
  * of @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_credential_manager_clear_password_async(PurpleCredentialManager *manager, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -257,7 +257,7 @@ void purple_credential_manager_clear_password_async(PurpleCredentialManager *man
  * Returns: %TRUE if the password didn't exist or was cleared successfully,
  *          otherwise %FALSE with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_credential_manager_clear_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
@@ -270,7 +270,7 @@ gboolean purple_credential_manager_clear_password_finish(PurpleCredentialManager
  *
  * Calls @func for each #PurpleCredentialProvider that @manager knows about.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_credential_manager_foreach(PurpleCredentialManager *manager, PurpleCredentialManagerForeachFunc func, gpointer data);

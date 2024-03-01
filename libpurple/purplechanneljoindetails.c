@@ -177,7 +177,7 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
 	 *
 	 * The name of the channel to join.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "name",
@@ -194,7 +194,7 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
 	 * interfaces should check [property@ChannelJoinDetails:nickname-supported]
 	 * before displaying this option to the user.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NICKNAME] = g_param_spec_string(
 		"nickname", "nickname",
@@ -207,7 +207,7 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
 	 *
 	 * Whether or not the protocol supports channel-specific nicknames.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NICKNAME_SUPPORTED] = g_param_spec_boolean(
 		"nickname-supported", "nickname-supported",
@@ -224,7 +224,7 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
 	 * [property@PurpleChannelJoinDetails:password-supported] before displaying
 	 * this option to the user.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PASSWORD] = g_param_spec_string(
 		"password", "password",
@@ -237,7 +237,7 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
 	 *
 	 * Whether or not the protocol supports channel passwords.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PASSWORD_SUPPORTED] = g_param_spec_boolean(
 		"password-supported", "password-supported",

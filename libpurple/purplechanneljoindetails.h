@@ -46,7 +46,7 @@ G_DECLARE_FINAL_TYPE(PurpleChannelJoinDetails, purple_channel_join_details, PURP
  * user interface will ask a protocol for a [class@ChannelJoinDetails] and then
  * fill it out and pass it back to the protocol to actually join a channel.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PurpleChannelJoinDetails, purple_channel_join_details, PURP
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleChannelJoinDetails *purple_channel_join_details_new(gboolean nickname_supported, gboolean password_supported);
@@ -71,7 +71,7 @@ PurpleChannelJoinDetails *purple_channel_join_details_new(gboolean nickname_supp
  *
  * Returns: (nullable): The name of the channel.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_channel_join_details_get_name(PurpleChannelJoinDetails *details);
@@ -83,7 +83,7 @@ const char *purple_channel_join_details_get_name(PurpleChannelJoinDetails *detai
  *
  * Sets the name of the channel to @name.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_set_name(PurpleChannelJoinDetails *details, const char *name);
@@ -96,7 +96,7 @@ void purple_channel_join_details_set_name(PurpleChannelJoinDetails *details, con
  *
  * Returns: (nullable): The user's channel-specific nickname to use.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_channel_join_details_get_nickname(PurpleChannelJoinDetails *details);
@@ -108,7 +108,7 @@ const char *purple_channel_join_details_get_nickname(PurpleChannelJoinDetails *d
  *
  * Sets the channel-specific nickname for the user.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_set_nickname(PurpleChannelJoinDetails *details, const char *nickname);
@@ -121,7 +121,7 @@ void purple_channel_join_details_set_nickname(PurpleChannelJoinDetails *details,
  *
  * Returns: %TRUE if channel-specific nicknames are supported otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_channel_join_details_get_nickname_supported(PurpleChannelJoinDetails *details);
@@ -134,7 +134,7 @@ gboolean purple_channel_join_details_get_nickname_supported(PurpleChannelJoinDet
  *
  * Returns: (nullable): The password to join this channel.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_channel_join_details_get_password(PurpleChannelJoinDetails *details);
@@ -146,7 +146,7 @@ const char *purple_channel_join_details_get_password(PurpleChannelJoinDetails *d
  *
  * Sets the password to use to join this channel.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_set_password(PurpleChannelJoinDetails *details, const char *password);
@@ -159,7 +159,7 @@ void purple_channel_join_details_set_password(PurpleChannelJoinDetails *details,
  *
  * Returns: %TRUE if channel passwords are supported, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_channel_join_details_get_password_supported(PurpleChannelJoinDetails *details);
@@ -178,7 +178,7 @@ gboolean purple_channel_join_details_get_password_supported(PurpleChannelJoinDet
  * its default [class@ChannelJoinDetails] so that any input from the user can
  * be maintained.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_merge(PurpleChannelJoinDetails *source, PurpleChannelJoinDetails *destination);

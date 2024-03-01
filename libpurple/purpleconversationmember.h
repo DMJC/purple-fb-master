@@ -55,7 +55,7 @@ G_DECLARE_FINAL_TYPE(PurpleConversationMember, purple_conversation_member,
  * should not need to hold onto these and will have the
  * [class@Purple.Conversation] when you need to look it up.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -68,7 +68,7 @@ G_DECLARE_FINAL_TYPE(PurpleConversationMember, purple_conversation_member,
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversationMember *purple_conversation_member_new(PurpleContactInfo *info);
@@ -82,7 +82,7 @@ PurpleConversationMember *purple_conversation_member_new(PurpleContactInfo *info
  * Returns: (transfer none): The [class@Purple.ContactInfo] for
  *          @conversation_member.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_conversation_member_get_contact_info(PurpleConversationMember *conversation_member);
@@ -95,7 +95,7 @@ PurpleContactInfo *purple_conversation_member_get_contact_info(PurpleConversatio
  *
  * Returns: (transfer none): The [class@Purple.Tags] for @conversation_member.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_conversation_member_get_tags(PurpleConversationMember *conversation_member);
@@ -108,7 +108,7 @@ PurpleTags *purple_conversation_member_get_tags(PurpleConversationMember *conver
  *
  * Returns: The current typing state for @conversation_member.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleTypingState purple_conversation_member_get_typing_state(PurpleConversationMember *member);
@@ -124,7 +124,7 @@ PurpleTypingState purple_conversation_member_get_typing_state(PurpleConversation
  * If @seconds is greater than %0, a timeout will be added for @seconds to
  * reset the state to none.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_member_set_typing_state(PurpleConversationMember *member, PurpleTypingState state, guint seconds);

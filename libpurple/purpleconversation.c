@@ -677,7 +677,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 * An opaque identifier for this conversation. Generally speaking this is
 	 * protocol dependent and should only be used as a unique identifier.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -691,7 +691,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 * A type hint for the conversation. This may be useful for protocols, but
 	 * libpurple treats all conversations the same.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TYPE] = g_param_spec_enum(
 		"type", "type",
@@ -714,7 +714,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 * Not all protocols support this and most user interfaces will use the
 	 * avatar of the remote contact for direct messages.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_AVATAR] = g_param_spec_object(
 		"avatar", "avatar",
@@ -748,7 +748,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * This is typically set only by a protocol plugin.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_AGE_RESTRICTED] = g_param_spec_boolean(
 		"age-restricted", "age-restricted",
@@ -765,7 +765,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * This is typically set only by a protocol plugin.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DESCRIPTION] = g_param_spec_string(
 		"description", "description",
@@ -781,7 +781,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 * This is normally controlled by the protocol plugin and often times
 	 * requires permission for the user to set.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TOPIC] = g_param_spec_string(
 		"topic", "topic",
@@ -796,7 +796,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * This should typically only be set by a protocol plugin.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TOPIC_AUTHOR] = g_param_spec_object(
 		"topic-author", "topic-author",
@@ -811,7 +811,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * This should typically only be set by a protocol plugin.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TOPIC_UPDATED] = g_param_spec_boxed(
 		"topic-updated", "topic-updated",
@@ -828,7 +828,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 * contact information when joining a conversation. This field holds that
 	 * value.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_USER_NICKNAME] = g_param_spec_string(
 		"user-nickname", "user-nickname",
@@ -841,7 +841,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * Whether or not the conversation has been marked as favorite by the user.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FAVORITE] = g_param_spec_boolean(
 		"favorite", "favorite",
@@ -857,7 +857,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * This should typically only be set by a protocol plugin.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CREATED_ON] = g_param_spec_boxed(
 		"created-on", "created-on",
@@ -872,7 +872,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * This should typically only be set by a protocol plugin.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CREATOR] = g_param_spec_object(
 		"creator", "creator",
@@ -894,7 +894,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * See also [property@Conversation:federated].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ONLINE] = g_param_spec_boolean(
 		"online", "online",
@@ -916,7 +916,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 * responsibility of the protocol to manage the online property in this
 	 * case.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FEDERATED] = g_param_spec_boolean(
 		"federated", "federated",
@@ -929,7 +929,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * [class@Tags] for the conversation.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TAGS] = g_param_spec_object(
 		"tags", "tags",
@@ -942,7 +942,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * The members that are currently in this conversation.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MEMBERS] = g_param_spec_object(
 		"members", "members",
@@ -955,7 +955,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * A [iface.Gio.ListModel] of all the messages in this conversation.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MESSAGES] = g_param_spec_object(
 		"messages", "messages",
@@ -974,7 +974,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * Emitted when a new member is added to this conversation.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_MEMBER_ADDED] = g_signal_new_class_handler(
 		"member-added",
@@ -999,7 +999,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 *
 	 * Emitted when member is removed from this conversation.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_MEMBER_REMOVED] = g_signal_new_class_handler(
 		"member-removed",
