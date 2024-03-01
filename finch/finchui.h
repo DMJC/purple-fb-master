@@ -41,7 +41,7 @@ G_DECLARE_FINAL_TYPE(FinchUi, finch_ui, FINCH, UI, PurpleUi)
  *
  * Note: This isn't really useful outside of Finch itself.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PurpleUi *finch_ui_new(void);
 

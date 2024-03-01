@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * This must be called early if you want to capture logs at startup, and avoid
  * printing them out.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 void finch_debug_init_handler(void);
 
@@ -52,7 +52,7 @@ void finch_debug_init_handler(void);
  *
  * Perform necessary initializations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 void finch_debug_init(void);
 

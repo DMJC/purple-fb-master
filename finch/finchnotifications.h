@@ -36,7 +36,7 @@ G_BEGIN_DECLS
  *
  * Perform necessary initializations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 void finch_notifications_init(void);
 

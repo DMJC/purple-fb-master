@@ -30,7 +30,7 @@
  *
  * An implementation of [iface@Purple.IdleUi] for Finch.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define FINCH_TYPE_IDLE (finch_idle_get_type())
@@ -43,7 +43,7 @@ G_DECLARE_FINAL_TYPE(FinchIdle, finch_idle, FINCH, IDLE, GObject)
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PurpleIdleUi *finch_idle_new(void);
 
