@@ -144,7 +144,7 @@ pidgin_account_display_class_init(PidginAccountDisplayClass *klass) {
 	 *
 	 * The account that is currently displayed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 	        "account", "Account", "The account that is currently displayed.",

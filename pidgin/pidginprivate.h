@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  *
  * This should only be called internally from Pidgin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_commands_init(void);
@@ -54,7 +54,7 @@ void pidgin_commands_init(void);
  *
  * This should only be called internally from Pidgin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_commands_uninit(void);

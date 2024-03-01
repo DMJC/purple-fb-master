@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * #PidginAvatar is a widget that displays avatars for contacts or
  * conversations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_AVATAR (pidgin_avatar_get_type())
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PidginAvatar, pidgin_avatar, PIDGIN, AVATAR, GtkBox)
  *
  * Returns: (transfer full): The new #PidginAvatar instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_avatar_new(void);
@@ -72,7 +72,7 @@ GtkWidget *pidgin_avatar_new(void);
  * non-animated image, changing this will do nothing unless a new animated
  * image is set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_avatar_set_animate(PidginAvatar *avatar, gboolean animate);
@@ -85,7 +85,7 @@ void pidgin_avatar_set_animate(PidginAvatar *avatar, gboolean animate);
  *
  * Returns: Whether or not @avatar should be animated.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_avatar_get_animate(PidginAvatar *avatar);
@@ -97,7 +97,7 @@ gboolean pidgin_avatar_get_animate(PidginAvatar *avatar);
  *
  * Sets or unsets the #PurpleBuddy that @avatar should use for display.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_avatar_set_buddy(PidginAvatar *avatar, PurpleBuddy *buddy);
@@ -110,7 +110,7 @@ void pidgin_avatar_set_buddy(PidginAvatar *avatar, PurpleBuddy *buddy);
  *
  * Returns: (transfer none): The #PurpleBuddy that @avatar is using for display.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleBuddy *pidgin_avatar_get_buddy(PidginAvatar *avatar);
@@ -123,7 +123,7 @@ PurpleBuddy *pidgin_avatar_get_buddy(PidginAvatar *avatar);
  * Sets or unsets the #PurpleConversation that @avatar uses to find the
  * #PurpleBuddy whose icon to display.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_avatar_set_conversation(PidginAvatar *avatar, PurpleConversation *conversation);
@@ -137,7 +137,7 @@ void pidgin_avatar_set_conversation(PidginAvatar *avatar, PurpleConversation *co
  * Returns: (transfer none): The #PurpleConversation that @avatar is using to
  *          find the #PurpleBuddy whose icon to display.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleConversation *pidgin_avatar_get_conversation(PidginAvatar *avatar);

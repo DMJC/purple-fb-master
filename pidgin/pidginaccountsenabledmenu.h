@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * A [class@Gio.MenuModel] that automatically updates itself based on what
  * accounts are enabled.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_ACCOUNTS_ENABLED_MENU (pidgin_accounts_enabled_menu_get_type())
@@ -59,7 +59,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
  *
  * Returns: (transfer full): The new menu instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GMenuModel *pidgin_accounts_enabled_menu_new(void);

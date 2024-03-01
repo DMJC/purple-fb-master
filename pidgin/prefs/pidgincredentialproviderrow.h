@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  *
  * The standard _get_type macro for #PidginCredentialProviderRow.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_TYPE_CREDENTIAL_PROVIDER_ROW (pidgin_credential_provider_row_get_type())
 
@@ -57,7 +57,7 @@ G_DECLARE_FINAL_TYPE(PidginCredentialProviderRow,
  * #PidginCredentialProviderRow is a widget for the preferences window to let
  * users configure their credential provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -68,7 +68,7 @@ G_DECLARE_FINAL_TYPE(PidginCredentialProviderRow,
  *
  * Returns: (transfer full): The new #PidginCredentialProviderRow instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_credential_provider_row_new(PurpleCredentialProvider *provider);
@@ -81,7 +81,7 @@ GtkWidget *pidgin_credential_provider_row_new(PurpleCredentialProvider *provider
  *
  * Returns: (transfer none): The displayed #PurpleCredentialProvider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleCredentialProvider *pidgin_credential_provider_row_get_provider(PidginCredentialProviderRow *row);
@@ -94,7 +94,7 @@ PurpleCredentialProvider *pidgin_credential_provider_row_get_provider(PidginCred
  *
  * Returns: Whether the row is active.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_credential_provider_row_get_active(PidginCredentialProviderRow *row);
@@ -106,7 +106,7 @@ gboolean pidgin_credential_provider_row_get_active(PidginCredentialProviderRow *
  *
  * Sets whether the row is displayed as active.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_credential_provider_row_set_active(PidginCredentialProviderRow *row, gboolean active);

@@ -72,7 +72,7 @@
  * A macro that evaluates to the current stable version of Pidgin, in a format
  * that can be used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_CUR_STABLE \
 	(G_ENCODE_VERSION(PIDGIN_MAJOR_VERSION, PIDGIN_MINOR_VERSION))
@@ -113,7 +113,7 @@
  * A macro that evaluates to the 2.0 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_0 (G_ENCODE_VERSION(2, 0))
 
@@ -129,7 +129,7 @@
  * A macro that evaluates to the 2.1 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_1 (G_ENCODE_VERSION(2, 1))
 
@@ -149,7 +149,7 @@
  * A macro that evaluates to the 2.2 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_2 (G_ENCODE_VERSION(2, 2))
 
@@ -165,7 +165,7 @@
  * A macro that evaluates to the 2.3 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_3 (G_ENCODE_VERSION(2, 3))
 
@@ -181,7 +181,7 @@
  * A macro that evaluates to the 2.4 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_4 (G_ENCODE_VERSION(2, 4))
 
@@ -197,7 +197,7 @@
  * A macro that evaluates to the 2.5 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_5 (G_ENCODE_VERSION(2, 5))
 
@@ -213,7 +213,7 @@
  * A macro that evaluates to the 2.6 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_6 (G_ENCODE_VERSION(2, 6))
 
@@ -229,7 +229,7 @@
  * A macro that evaluates to the 2.7 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_7 (G_ENCODE_VERSION(2, 7))
 
@@ -245,7 +245,7 @@
  * A macro that evaluates to the 2.8 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_8 (G_ENCODE_VERSION(2, 8))
 
@@ -261,7 +261,7 @@
  * A macro that evaluates to the 2.9 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_9 (G_ENCODE_VERSION(2, 9))
 
@@ -277,7 +277,7 @@
  * A macro that evaluates to the 2.10 version of Pidgin, in a format that can
  * be used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_10 (G_ENCODE_VERSION(2, 10))
 
@@ -293,7 +293,7 @@
  * A macro that evaluates to the 2.11 version of Pidgin, in a format that can
  * be used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_11 (G_ENCODE_VERSION(2, 11))
 
@@ -309,7 +309,7 @@
  * A macro that evaluates to the 2.12 version of Pidgin, in a format that can
  * be used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_12 (G_ENCODE_VERSION(2, 12))
 
@@ -325,7 +325,7 @@
  * A macro that evaluates to the 2.13 version of Pidgin, in a format that can
  * be used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_13 (G_ENCODE_VERSION(2, 13))
 
@@ -341,7 +341,7 @@
  * A macro that evaluates to the 2.14 version of Pidgin, in a format that can
  * be used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_2_14 (G_ENCODE_VERSION(2, 14))
 
@@ -357,7 +357,7 @@
  * A macro that evaluates to the 3.0 version of Pidgin, in a format that can be
  * used by the C pre-processor.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_VERSION_3_0 (G_ENCODE_VERSION(3, 0))
 

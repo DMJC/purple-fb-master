@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  *
  * Initializes the room list subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_roomlist_init(void);
@@ -50,7 +50,7 @@ void pidgin_roomlist_init(void);
  * Returns: TRUE if there are accounts online that support listing
  *         chat rooms.  Otherwise return FALSE.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 gboolean pidgin_roomlist_is_showable(void);
@@ -60,7 +60,7 @@ gboolean pidgin_roomlist_is_showable(void);
  *
  * Shows a new roomlist dialog.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_roomlist_dialog_show(void);
@@ -71,7 +71,7 @@ void pidgin_roomlist_dialog_show(void);
  *
  * Shows a new room list dialog and fetches the list for the specified account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_roomlist_dialog_show_with_account(PurpleAccount *account);

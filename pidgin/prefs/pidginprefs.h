@@ -46,7 +46,7 @@ G_DECLARE_FINAL_TYPE(PidginPrefsWindow, pidgin_prefs_window, PIDGIN,
  *
  * Initializes all UI-specific preferences.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_prefs_init(void);
@@ -56,7 +56,7 @@ void pidgin_prefs_init(void);
  *
  * Rename legacy prefs and delete some that no longer exist.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_prefs_update_old(void);

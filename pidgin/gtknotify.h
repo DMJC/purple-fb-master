@@ -39,7 +39,7 @@ G_BEGIN_DECLS
  *
  * Returns: The GTK UI notify operations structure.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 PurpleNotifyUiOps *pidgin_notify_get_ui_ops(void);
@@ -49,7 +49,7 @@ PurpleNotifyUiOps *pidgin_notify_get_ui_ops(void);
  *
  * Initializes the GTK notifications subsystem.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PIDGIN_AVAILABLE_IN_2_6
 void pidgin_notify_init(void);
@@ -59,7 +59,7 @@ void pidgin_notify_init(void);
  *
  * Uninitialized the GTK notifications subsystem.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PIDGIN_AVAILABLE_IN_2_6
 void pidgin_notify_uninit(void);

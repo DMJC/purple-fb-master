@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  *
  * The standard _get_type macro for #PidginCredentialPrefs.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_TYPE_CREDENTIAL_PREFS (pidgin_credential_prefs_get_type())
 
@@ -55,7 +55,7 @@ G_DECLARE_FINAL_TYPE(PidginCredentialPrefs, pidgin_credential_prefs,
  * #PidginCredentialPrefs is a widget for the preferences window to let users
  * choose and configure their credential provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -65,7 +65,7 @@ G_DECLARE_FINAL_TYPE(PidginCredentialPrefs, pidgin_credential_prefs,
  *
  * Returns: (transfer full): The new #PidginCredentialPrefs instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_credential_prefs_new(void);

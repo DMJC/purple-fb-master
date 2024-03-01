@@ -224,7 +224,7 @@ pidgin_notification_connection_error_class_init(PidginNotificationConnectionErro
 	 *
 	 * The [type@Purple.ConnectionErrorInfo] that this notification is for.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NOTIFICATION] = g_param_spec_object(
 		"notification", "notification",

@@ -45,7 +45,7 @@ G_DECLARE_FINAL_TYPE(PidginDebugWindow, pidgin_debug_window, PIDGIN, DEBUG_WINDO
  * This must be called early if you want to capture logs at startup, and avoid
  * printing them out.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_debug_init_handler(void);
@@ -57,7 +57,7 @@ void pidgin_debug_init_handler(void);
  *
  * This will print to the console, if Pidgin is run from there.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_debug_set_print_enabled(gboolean enable);
@@ -67,7 +67,7 @@ void pidgin_debug_set_print_enabled(gboolean enable);
  *
  * Perform necessary initializations.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_debug_init(void);
@@ -77,7 +77,7 @@ void pidgin_debug_init(void);
  *
  * Perform necessary uninitializations.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_debug_uninit(void);
@@ -89,7 +89,7 @@ void pidgin_debug_uninit(void);
  *
  * Returns: the handle to the debug system
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void *pidgin_debug_get_handle(void);
@@ -99,7 +99,7 @@ void *pidgin_debug_get_handle(void);
  *
  * Shows the debug window.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_debug_window_show(void);
@@ -109,7 +109,7 @@ void pidgin_debug_window_show(void);
  *
  * Hides the debug window.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_debug_window_hide(void);

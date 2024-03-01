@@ -195,7 +195,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 *
 	 * The [class@Gtk.Widget] that this item is for.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_WIDGET] = g_param_spec_object(
 		"widget", "widget",
@@ -209,7 +209,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * A unique identifier for this item. This is used for things like
 	 * remembering positions and selections.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -222,7 +222,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 *
 	 * The title that should be displayed for this item.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TITLE] = g_param_spec_string(
 		"title", "title",
@@ -235,7 +235,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 *
 	 * The icon name to use for this item.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ICON_NAME] = g_param_spec_string(
 		"icon-name", "icon-name",
@@ -248,7 +248,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 *
 	 * Determines whether the item should show that it needs attention or not.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NEEDS_ATTENTION] = g_param_spec_boolean(
 		"needs-attention", "needs-attention",
@@ -262,7 +262,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * The number that should be shown in the badge. Typically this is an
 	 * unread count. If this is 0 it should not be displayed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_BADGE_NUMBER] = g_param_spec_uint(
 		"badge-number", "badge-number",
@@ -276,7 +276,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * A [iface@Gio.ListModel] of child items. The type of the model needs to
 	 * be [class@Pidgin.DisplayItem].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CHILDREN] = g_param_spec_object(
 		"children", "children",

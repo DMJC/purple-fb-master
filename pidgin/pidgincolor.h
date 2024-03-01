@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * in glib is going to take a bit of finesse.  Also we'll need to figure out how
  * to scale to ginormous Twitch channels which will constantly bust the cache.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_color_calculate_for_text(const gchar *text,  GdkRGBA *color);

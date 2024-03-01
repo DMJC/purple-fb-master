@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  * notifications from [class@Purple.NotificationManager] for authorization
  * requests.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_NOTIFICATION_AUTHORIZATION_REQUEST (pidgin_notification_authorization_request_get_type())
@@ -65,7 +65,7 @@ G_DECLARE_FINAL_TYPE(PidginNotificationAuthorizationRequest, pidgin_notification
  * Returns: (transfer full): The new #PidginNotificationAuthorizationRequest
  *          instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_authorization_request_new(PurpleNotification *notification);
@@ -78,7 +78,7 @@ GtkWidget *pidgin_notification_authorization_request_new(PurpleNotification *not
  *
  * Returns: (transfer none): The notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleNotification *pidgin_notification_authorization_request_get_notification(PidginNotificationAuthorizationRequest *request);

@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * Creates a [class@Gtk.PopoverMenu] for @info and displays it at the @x and @y
  * coordinates instead of @parent.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_contact_info_menu_popup(PurpleContactInfo *info, PurpleAccount *account, GtkWidget *parent, gdouble x, gdouble y);

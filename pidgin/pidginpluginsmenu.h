@@ -39,7 +39,7 @@ G_BEGIN_DECLS
  * #PidginPluginsMenu is a [class@Gio.MenuModel] that automatically updates
  * itself when plugins are loaded and unloaded.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_PLUGINS_MENU (pidgin_plugins_menu_get_type())
@@ -55,7 +55,7 @@ G_DECLARE_FINAL_TYPE(PidginPluginsMenu, pidgin_plugins_menu, PIDGIN,
  *
  * Returns: (transfer full): The new #PidginPluginsMenu instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GMenuModel *pidgin_plugins_menu_new(void);

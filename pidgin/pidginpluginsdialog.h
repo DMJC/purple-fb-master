@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  *
  * A dialog that allows the user to configure their plugins.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_PLUGINS_DIALOG (pidgin_plugins_dialog_get_type())
@@ -54,7 +54,7 @@ G_DECLARE_FINAL_TYPE(PidginPluginsDialog, pidgin_plugins_dialog, PIDGIN,
  *
  * Returns: (transfer full): The new #PidginPluginsDialog.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_plugins_dialog_new(void);

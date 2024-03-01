@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  *
  * A [class@Gtk.Widget] for displaying a [class@Purple.Conversation].
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 
 #define PIDGIN_TYPE_CONVERSATION (pidgin_conversation_get_type())
@@ -59,7 +59,7 @@ G_DECLARE_FINAL_TYPE(PidginConversation, pidgin_conversation, PIDGIN,
  *
  * Returns: (transfer full): The new widget.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_conversation_new(PurpleConversation *conversation);
@@ -73,7 +73,7 @@ GtkWidget *pidgin_conversation_new(PurpleConversation *conversation);
  * Returns: (transfer none) (nullable): The [class@Pidgin.Conversation] displaying
  *          @conversation if one exists, otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_conversation_from_purple_conversation(PurpleConversation *conversation);
@@ -87,7 +87,7 @@ GtkWidget *pidgin_conversation_from_purple_conversation(PurpleConversation *conv
  * Returns: (transfer none): The [class@Purple.Conversation] that @conversation
  *          is displaying.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleConversation *pidgin_conversation_get_conversation(PidginConversation *conversation);
@@ -100,7 +100,7 @@ PurpleConversation *pidgin_conversation_get_conversation(PidginConversation *con
  * conversation and the user may remain in the conversation if the protocol
  * supports it.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_conversation_close(PidginConversation *conversation);

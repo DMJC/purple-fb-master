@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * #PidginAwayPrefs is a widget for the preferences window to let users
  * choose and configure their away and idle settings.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_TYPE_AWAY_PREFS (pidgin_away_prefs_get_type())
 
@@ -57,7 +57,7 @@ G_DECLARE_FINAL_TYPE(PidginAwayPrefs, pidgin_away_prefs,
  *
  * Returns: (transfer full): The new #PidginAwayPrefs instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_away_prefs_new(void);

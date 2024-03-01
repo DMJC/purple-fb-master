@@ -82,7 +82,7 @@ pidgin_conversation_set_conversation(PidginConversation *conversation,
  *
  * Returns: %TRUE if a tooltip was set, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 static gboolean
 pidgin_conversation_set_tooltip_for_timestamp(GtkTooltip *tooltip,
@@ -407,7 +407,7 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	 *
 	 * The [class@Purple.Conversation] that this conversation is displaying.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CONVERSATION] = g_param_spec_object(
 		"conversation", "conversation",

@@ -106,7 +106,7 @@ pidgin_protocol_chooser_class_init(PidginProtocolChooserClass *klass)
 	 *
 	 * The protocol which is currently selected.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 **/
 	properties[PROP_PROTOCOL] = g_param_spec_object(
 		"protocol",

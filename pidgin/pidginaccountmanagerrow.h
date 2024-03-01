@@ -38,7 +38,7 @@
  *
  * A [class@Gtk.ListBoxRow] subclass to display a [class@Purple.Account].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_ACCOUNT_MANAGER_ROW (pidgin_account_manager_row_get_type())
@@ -57,7 +57,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer full): The new account row.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_manager_row_new(PurpleAccount *account);
@@ -70,7 +70,7 @@ GtkWidget *pidgin_account_manager_row_new(PurpleAccount *account);
  *
  * Returns: (transfer none): The account if set otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_manager_row_get_account(PidginAccountManagerRow *row);
@@ -82,7 +82,7 @@ PurpleAccount *pidgin_account_manager_row_get_account(PidginAccountManagerRow *r
  *
  * Sets the [class@Purple.Account] for @row to display.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_manager_row_set_account(PidginAccountManagerRow *row, PurpleAccount *account);

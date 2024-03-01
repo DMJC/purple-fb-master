@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  * [class@Pidgin.AccountChooser] or a [iface@Gio.ListModel] that contains
  * [class@Purple.Account].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_ACCOUNT_FILTER_CONNECTED pidgin_account_filter_connected_get_type()
@@ -59,7 +59,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountFilterConnected,
  *
  * Returns: (transfer full): The new #PidginAccountFilterConnected instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkFilter *pidgin_account_filter_connected_new(void);

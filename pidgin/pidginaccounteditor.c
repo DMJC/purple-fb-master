@@ -1176,7 +1176,7 @@ pidgin_account_editor_class_init(PidginAccountEditorClass *klass) {
 	 *
 	 * The account that this editor is modifying.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "account",
@@ -1190,7 +1190,7 @@ pidgin_account_editor_class_init(PidginAccountEditorClass *klass) {
 	 * Whether or not the account settings are valid and it is okay to save the
 	 * account.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_VALID] = g_param_spec_boolean(
 		"valid", "valid",

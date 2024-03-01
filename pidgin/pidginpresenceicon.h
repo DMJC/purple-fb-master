@@ -39,7 +39,7 @@
  * A #GtkImage subclass that will automatically update when the given presence
  * changes.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_PRESENCE_ICON (pidgin_presence_icon_get_type())
@@ -60,7 +60,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer full): The new presence icon.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_presence_icon_new(PurplePresence *presence, const gchar *fallback, GtkIconSize icon_size);
@@ -73,7 +73,7 @@ GtkWidget *pidgin_presence_icon_new(PurplePresence *presence, const gchar *fallb
  *
  * Returns: (transfer none): The #PurplePresence if set otherwise %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurplePresence *pidgin_presence_icon_get_presence(PidginPresenceIcon *icon);
@@ -85,7 +85,7 @@ PurplePresence *pidgin_presence_icon_get_presence(PidginPresenceIcon *icon);
  *
  * Sets the #PurplePresence for @icon to display.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_presence_icon_set_presence(PidginPresenceIcon *icon, PurplePresence *presence);
@@ -98,7 +98,7 @@ void pidgin_presence_icon_set_presence(PidginPresenceIcon *icon, PurplePresence 
  *
  * Returns: The fallback icon name for @icon.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_presence_icon_get_fallback(PidginPresenceIcon *icon);
@@ -110,7 +110,7 @@ const gchar *pidgin_presence_icon_get_fallback(PidginPresenceIcon *icon);
  *
  * Sets the fallback icon name for @icon to @fallback.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_presence_icon_set_fallback(PidginPresenceIcon *icon, const gchar *fallback);
@@ -123,7 +123,7 @@ void pidgin_presence_icon_set_fallback(PidginPresenceIcon *icon, const gchar *fa
  *
  * Returns: The #GtkIconSize that @icon is using to render.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkIconSize pidgin_presence_icon_get_icon_size(PidginPresenceIcon *icon);
@@ -135,7 +135,7 @@ GtkIconSize pidgin_presence_icon_get_icon_size(PidginPresenceIcon *icon);
  *
  * Sets the #GtkIconSize that @icon will use to render the icon.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_presence_icon_set_icon_size(PidginPresenceIcon *icon, GtkIconSize icon_size);

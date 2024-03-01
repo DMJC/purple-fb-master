@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  *
  * Returns: The GTK UI request operations structure.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 PurpleRequestUiOps *pidgin_request_get_ui_ops(void);
@@ -54,7 +54,7 @@ PurpleRequestUiOps *pidgin_request_get_ui_ops(void);
  *
  * Returns: (transfer none): The dialog window.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWindow *
@@ -71,7 +71,7 @@ pidgin_request_get_dialog_window(void *ui_handle);
  *
  * Returns: The requests subsystem handle.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void *pidgin_request_get_handle(void);
@@ -81,7 +81,7 @@ void *pidgin_request_get_handle(void);
  *
  * Initializes the GTK requests subsystem.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_request_init(void);
@@ -91,7 +91,7 @@ void pidgin_request_init(void);
  *
  * Uninitializes the GTK requests subsystem.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_request_uninit(void);

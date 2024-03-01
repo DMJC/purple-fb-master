@@ -40,7 +40,7 @@
  *
  * #PidginAccountEditor is a dialog that allows you to edit an account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 G_BEGIN_DECLS
@@ -60,7 +60,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountEditor, pidgin_account_editor, PIDGIN,
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_editor_new(PurpleAccount *account);
@@ -73,7 +73,7 @@ GtkWidget *pidgin_account_editor_new(PurpleAccount *account);
  *
  * Returns: (transfer none): The [class@Purple.Account] or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_editor_get_account(PidginAccountEditor *editor);
@@ -86,7 +86,7 @@ PurpleAccount *pidgin_account_editor_get_account(PidginAccountEditor *editor);
  * Sets the account that @editor is editing to @account. You can pass %NULL
  * to remove the current account or edit a new account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_editor_set_account(PidginAccountEditor *editor, PurpleAccount *account);
@@ -100,7 +100,7 @@ void pidgin_account_editor_set_account(PidginAccountEditor *editor, PurpleAccoun
  * Returns: %TRUE if the account being edited has valid values, otherwise
  *          %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_account_editor_get_is_valid(PidginAccountEditor *editor);
@@ -112,7 +112,7 @@ gboolean pidgin_account_editor_get_is_valid(PidginAccountEditor *editor);
  * Save the account to disk. If this is a new account, it will be set to match
  * the current global status which is "online" in most cases.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_editor_save(PidginAccountEditor *editor);

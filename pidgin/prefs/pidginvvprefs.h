@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * #PidginVVPrefs is a widget for the preferences window to let users
  * choose and configure their voice and video settings.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_TYPE_VV_PREFS (pidgin_vv_prefs_get_type())
 
@@ -57,7 +57,7 @@ G_DECLARE_FINAL_TYPE(PidginVVPrefs, pidgin_vv_prefs,
  *
  * Returns: (transfer full): The new #PidginVVPrefs instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_vv_prefs_new(void);
@@ -69,7 +69,7 @@ GtkWidget *pidgin_vv_prefs_new(void);
  * Disable any test pipelines that may be playing on this widget. This may be
  * used when switching focus or views to a different widget.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_vv_prefs_disable_test_pipelines(PidginVVPrefs *prefs);

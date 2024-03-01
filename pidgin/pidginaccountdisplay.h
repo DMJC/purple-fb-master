@@ -49,7 +49,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountDisplay, pidgin_account_display, PIDGIN,
  *
  * Returns: (transfer full): The account display.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_display_new(PurpleAccount *account);
@@ -63,7 +63,7 @@ GtkWidget *pidgin_account_display_new(PurpleAccount *account);
  * Returns: (transfer none): Returns the [type@Purple.Account] that is
  *          currently displayed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_display_get_account(PidginAccountDisplay *display);
@@ -75,7 +75,7 @@ PurpleAccount *pidgin_account_display_get_account(PidginAccountDisplay *display)
  *
  * Sets the currently displayed account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_display_set_account(PidginAccountDisplay *display, PurpleAccount *account);

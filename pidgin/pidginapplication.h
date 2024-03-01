@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * #PidginApplication is a subclass of #GtkApplication that holds all of the
  * application wide actions.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_APPLICATION (pidgin_application_get_type())
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PidginApplication, pidgin_application, PIDGIN,
  *
  * Returns: (transfer full): The new #PidginApplication instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GApplication *pidgin_application_new(void);
@@ -76,7 +76,7 @@ GApplication *pidgin_application_new(void);
  * To remove @action_group from every window, call this function with the same
  * prefix, but %NULL for @action_group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_application_add_action_group(PidginApplication *application, const gchar *prefix, GActionGroup *action_group);
@@ -92,7 +92,7 @@ void pidgin_application_add_action_group(PidginApplication *application, const g
  * Returns: (transfer none) (nullable): The active window or %NULL if one could
  *          not be found.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWindow *pidgin_application_get_active_window(PidginApplication *application);

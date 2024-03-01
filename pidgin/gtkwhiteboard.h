@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  *
  * Returns: The GtkWhiteboard UI Operations.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 PurpleWhiteboardUiOps *pidgin_whiteboard_get_ui_ops(void);

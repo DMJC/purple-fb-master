@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * #PidginConversationPrefs is a widget for the preferences window to let users
  * choose and configure their conversation settings.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_TYPE_CONVERSATION_PREFS (pidgin_conversation_prefs_get_type())
 
@@ -57,7 +57,7 @@ G_DECLARE_FINAL_TYPE(PidginConversationPrefs, pidgin_conversation_prefs,
  *
  * Returns: (transfer full): The new #PidginConversationPrefs instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_conversation_prefs_new(void);

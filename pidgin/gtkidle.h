@@ -34,7 +34,7 @@ G_BEGIN_DECLS
  *
  * An implementation of [iface@Purple.IdleUi] for Pidgin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_IDLE (pidgin_idle_get_type())
@@ -49,7 +49,7 @@ G_DECLARE_FINAL_TYPE(PidginIdle, pidgin_idle, PIDGIN, IDLE, GObject)
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleIdleUi *pidgin_idle_new(void);

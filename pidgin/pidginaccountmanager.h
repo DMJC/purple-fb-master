@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  *
  * A singleton dialog for managing accounts.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_ACCOUNT_MANAGER (pidgin_account_manager_get_type())
@@ -54,7 +54,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountManager, pidgin_account_manager, PIDGIN,
  *
  * Returns: (transfer full): The dialog.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_manager_new(void);
@@ -66,7 +66,7 @@ GtkWidget *pidgin_account_manager_new(void);
  * Switches @manager to the overview page. This is useful as @manager might
  * already be visible but editing an account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_manager_show_overview(PidginAccountManager *manager);
@@ -78,7 +78,7 @@ void pidgin_account_manager_show_overview(PidginAccountManager *manager);
  *
  * Opens the account editor in @manager for the given account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_manager_edit_account(PidginAccountManager *manager, PurpleAccount *account);

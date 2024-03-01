@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * Is a subclass of [class@Purple.Ui] that identifies Pidgin to libpurple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_UI (pidgin_ui_get_type())
@@ -57,7 +57,7 @@ G_DECLARE_FINAL_TYPE(PidginUi, pidgin_ui, PIDGIN, UI, PurpleUi)
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleUi *pidgin_ui_new(void);

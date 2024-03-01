@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  * A class that's used by [class@Pidgin.DisplayWindow] to represent all of the
  * displays items.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_DISPLAY_ITEM (pidgin_display_item_get_type())
@@ -69,7 +69,7 @@ PidginDisplayItem *pidgin_display_item_new(GtkWidget *child, const char *id);
  *
  * Returns: (transfer none): The widget.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_display_item_get_widget(PidginDisplayItem *item);
@@ -82,7 +82,7 @@ GtkWidget *pidgin_display_item_get_widget(PidginDisplayItem *item);
  *
  * Returns: The unique identifier of @item.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const char *pidgin_display_item_get_id(PidginDisplayItem *item);
@@ -95,7 +95,7 @@ const char *pidgin_display_item_get_id(PidginDisplayItem *item);
  *
  * Returns: (nullable): The title of @item.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const char *pidgin_display_item_get_title(PidginDisplayItem *item);
@@ -107,7 +107,7 @@ const char *pidgin_display_item_get_title(PidginDisplayItem *item);
  *
  * Sets the title for @item to @title.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_title(PidginDisplayItem *item, const char *title);
@@ -120,7 +120,7 @@ void pidgin_display_item_set_title(PidginDisplayItem *item, const char *title);
  *
  * Returns: (nullable): The icon name to use.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const char *pidgin_display_item_get_icon_name(PidginDisplayItem *item);
@@ -132,7 +132,7 @@ const char *pidgin_display_item_get_icon_name(PidginDisplayItem *item);
  *
  * Sets the icon name that should be used when displaying @item.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_icon_name(PidginDisplayItem *item, const char *icon_name);
@@ -145,7 +145,7 @@ void pidgin_display_item_set_icon_name(PidginDisplayItem *item, const char *icon
  *
  * Returns: %TRUE if @item needs attention otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_display_item_get_needs_attention(PidginDisplayItem *item);
@@ -157,7 +157,7 @@ gboolean pidgin_display_item_get_needs_attention(PidginDisplayItem *item);
  *
  * Sets whether or not @item needs attention.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_needs_attention(PidginDisplayItem *item, gboolean needs_attention);
@@ -170,7 +170,7 @@ void pidgin_display_item_set_needs_attention(PidginDisplayItem *item, gboolean n
  *
  * Returns: The value to display or %0 to display nothing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 guint pidgin_display_item_get_badge_number(PidginDisplayItem *item);
@@ -183,7 +183,7 @@ guint pidgin_display_item_get_badge_number(PidginDisplayItem *item);
  * Sets the values to be displayed in the badge for @item to @badge_number. A
  * value of %0 indicates that the badge should not be displayed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_badge_number(PidginDisplayItem *item, guint badge_number);
@@ -196,7 +196,7 @@ void pidgin_display_item_set_badge_number(PidginDisplayItem *item, guint badge_n
  *
  * Returns: (transfer none) (nullable): The children of @item if there are any.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GListModel *pidgin_display_item_get_children(PidginDisplayItem *item);
@@ -209,7 +209,7 @@ GListModel *pidgin_display_item_get_children(PidginDisplayItem *item);
  * Sets the children of @item to @children. If @children is not %NULL then the
  * model must have an item type of [class@Pidgin.DisplayItem].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_children(PidginDisplayItem *item, GListModel *children);

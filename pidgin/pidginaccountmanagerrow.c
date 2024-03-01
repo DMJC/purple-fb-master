@@ -361,7 +361,7 @@ pidgin_account_manager_row_class_init(PidginAccountManagerRowClass *klass) {
 	 *
 	 * The account that this row will be representing.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "account",

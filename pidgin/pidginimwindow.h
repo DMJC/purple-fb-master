@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  *
  * A window used to start a new direct message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_IM_WINDOW (pidgin_im_window_get_type())

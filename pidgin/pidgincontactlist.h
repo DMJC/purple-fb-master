@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * #PidginContactList is a widget that displays the [iface@Gio.ListModel] of
  * [class@Purple.Person] from [class@Purple.ContactManager].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_CONTACT_LIST (pidgin_contact_list_get_type())
@@ -61,7 +61,7 @@ G_DECLARE_FINAL_TYPE(PidginContactList, pidgin_contact_list, PIDGIN,
  *
  * Returns: (transfer full): The new #PidginContactList instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_contact_list_new(void);

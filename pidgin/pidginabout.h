@@ -46,7 +46,7 @@ G_DECLARE_FINAL_TYPE(PidginAboutDialog, pidgin_about_dialog, PIDGIN,
  *
  * Returns: (transfer full): A new instance of the about dialog.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_about_dialog_new(void);

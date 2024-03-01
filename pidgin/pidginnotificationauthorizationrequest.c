@@ -285,7 +285,7 @@ pidgin_notification_authorization_request_class_init(PidginNotificationAuthoriza
 	 *
 	 * The [type@Purple.AuthorizationRequestInfo] that this notification is for.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NOTIFICATION] = g_param_spec_object(
 		"notification", "notification",

@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  *
  * A dialog for joining channels.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_CHANNEL_JOIN_DIALOG (pidgin_channel_join_dialog_get_type())
@@ -54,7 +54,7 @@ G_DECLARE_FINAL_TYPE(PidginChannelJoinDialog, pidgin_channel_join_dialog, PIDGIN
  *
  * Returns: (transfer full): The widget.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_channel_join_dialog_new(void);

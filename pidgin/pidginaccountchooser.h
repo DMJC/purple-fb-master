@@ -48,7 +48,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountChooser, pidgin_account_chooser, PIDGIN,
  *
  * Returns: (transfer full): The account chooser combo box.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_chooser_new(void);
@@ -62,7 +62,7 @@ GtkWidget *pidgin_account_chooser_new(void);
  * Returns: (transfer none): Returns the #GtkFilter that is currently
  *          displayed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkFilter *pidgin_account_chooser_get_filter(PidginAccountChooser *chooser);
@@ -74,7 +74,7 @@ GtkFilter *pidgin_account_chooser_get_filter(PidginAccountChooser *chooser);
  *
  * Sets the current list filter for the account chooser.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_chooser_set_filter(PidginAccountChooser *chooser, GtkFilter *filter);
@@ -88,7 +88,7 @@ void pidgin_account_chooser_set_filter(PidginAccountChooser *chooser, GtkFilter 
  * Returns: (transfer full): Returns the #PurpleAccount that is currently
  *          selected.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_chooser_get_selected(PidginAccountChooser *chooser);
@@ -100,7 +100,7 @@ PurpleAccount *pidgin_account_chooser_get_selected(PidginAccountChooser *chooser
  *
  * Sets the currently selected account for an account combo box.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_chooser_set_selected(PidginAccountChooser *chooser,

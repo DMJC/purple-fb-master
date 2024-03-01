@@ -253,7 +253,7 @@ pidgin_notification_add_contact_class_init(PidginNotificationAddContactClass *kl
 	 *
 	 * The [type@Purple.Notification] that is being displayed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NOTIFICATION] = g_param_spec_object(
 		"notification", "notification",

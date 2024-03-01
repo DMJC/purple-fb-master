@@ -45,7 +45,7 @@ G_BEGIN_DECLS
  *
  * Returns: The icon name to use for @primitive.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primitive, const gchar *fallback);
@@ -59,7 +59,7 @@ const gchar *pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primit
  *
  * Returns: The icon name to use for @type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_icon_name_from_status_type(PurpleStatusType *type, const gchar *fallback);
@@ -73,7 +73,7 @@ const gchar *pidgin_icon_name_from_status_type(PurpleStatusType *type, const gch
  *
  * Returns: The icon name to use for @status.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_icon_name_from_status(PurpleStatus *status, const gchar *fallback);
@@ -88,7 +88,7 @@ const gchar *pidgin_icon_name_from_status(PurpleStatus *status, const gchar *fal
  *
  * Returns: (nullable): The icon name to use or @fallback.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const char *pidgin_icon_name_from_presence_primitive(PurplePresencePrimitive primitive, const char *fallback);
@@ -103,7 +103,7 @@ const char *pidgin_icon_name_from_presence_primitive(PurplePresencePrimitive pri
  *
  * Returns: The icon name to represent @presence.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const char *pidgin_icon_name_from_presence(PurplePresence *presence, const char *fallback);

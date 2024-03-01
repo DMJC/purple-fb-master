@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  * #PidginNetworkPrefs is a widget for the preferences window to let users
  * choose and configure their network settings.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PIDGIN_TYPE_NETWORK_PREFS (pidgin_network_prefs_get_type())
 
@@ -57,7 +57,7 @@ G_DECLARE_FINAL_TYPE(PidginNetworkPrefs, pidgin_network_prefs,
  *
  * Returns: (transfer full): The new #PidginNetworkPrefs instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_network_prefs_new(void);

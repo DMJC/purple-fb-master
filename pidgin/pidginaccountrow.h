@@ -45,7 +45,7 @@ G_BEGIN_DECLS
  * A [class@Adw.ComboRow] subclass that allows the user to select an
  * [class@Purple.Account].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_ACCOUNT_ROW (pidgin_account_row_get_type())
@@ -61,7 +61,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountRow, pidgin_account_row, PIDGIN, ACCOUNT_ROW,
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_row_new(void);
@@ -75,7 +75,7 @@ GtkWidget *pidgin_account_row_new(void);
  * Returns: (transfer none): The account if one is selected otherwise %NULL if
  *          the model is empty.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleAccount *pidgin_account_row_get_account(PidginAccountRow *row);
@@ -88,7 +88,7 @@ PurpleAccount *pidgin_account_row_get_account(PidginAccountRow *row);
  * Sets the selected account in @row to @account. If @account is %NULL, then
  * the first item if one exists will be selected.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_row_set_account(PidginAccountRow *row, PurpleAccount *account);
@@ -102,7 +102,7 @@ void pidgin_account_row_set_account(PidginAccountRow *row, PurpleAccount *accoun
  *
  * Returns: (transfer none) (nullable): The filter being used or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkFilter *pidgin_account_row_get_filter(PidginAccountRow *row);
@@ -115,7 +115,7 @@ GtkFilter *pidgin_account_row_get_filter(PidginAccountRow *row);
  * Sets the filter for @row to @filter. If @filter is %NULL, any existing
  * filter will be removed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_account_row_set_filter(PidginAccountRow *row, GtkFilter *filter);

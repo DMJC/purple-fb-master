@@ -95,7 +95,7 @@ G_DEFINE_FINAL_TYPE(PidginApplication, pidgin_application,
  * The Pidgin account manager can get opened from multiple actions, so this
  * helper manages the singleton.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 static GtkWidget *
 pidgin_application_get_account_manager(void) {
@@ -117,7 +117,7 @@ pidgin_application_get_account_manager(void) {
  * Presents a window and makes sure its transient parent is set to the currently
  * active window of @application.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 static void
 pidgin_application_present_transient_window(PidginApplication *application,

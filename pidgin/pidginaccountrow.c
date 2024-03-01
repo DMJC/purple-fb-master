@@ -117,7 +117,7 @@ pidgin_account_row_class_init(PidginAccountRowClass *klass) {
 	 *
 	 * The [class@Purple.Account] that is selected.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "account",
@@ -130,7 +130,7 @@ pidgin_account_row_class_init(PidginAccountRowClass *klass) {
 	 *
 	 * The filter to use on the list of accounts.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_FILTER] = g_param_spec_object(
 	        "filter", "filter",

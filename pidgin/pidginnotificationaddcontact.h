@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  * notifications from [class@Purple.NotificationManager] for
  * [class@Purple.AddContactRequest].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_NOTIFICATION_ADD_CONTACT (pidgin_notification_add_contact_get_type())
@@ -65,7 +65,7 @@ G_DECLARE_FINAL_TYPE(PidginNotificationAddContact, pidgin_notification_add_conta
  * Returns: (transfer full): The new #PidginNotificationAddContact
  *          instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_add_contact_new(PurpleNotification *notification);
@@ -78,7 +78,7 @@ GtkWidget *pidgin_notification_add_contact_new(PurpleNotification *notification)
  *
  * Returns: (transfer none): The notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleNotification *pidgin_notification_add_contact_get_notification(PidginNotificationAddContact *request);

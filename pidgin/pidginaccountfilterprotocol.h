@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  * [class@Pidgin.AccountChooser] or a [iface@Gio.ListModel] that contains
  * [class@Purple.Account].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_ACCOUNT_FILTER_PROTOCOL pidgin_account_filter_protocol_get_type()
@@ -60,7 +60,7 @@ G_DECLARE_FINAL_TYPE(PidginAccountFilterProtocol,
  *
  * Returns: (transfer full): The new #PidginAccountFilterProtocol instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkFilter *pidgin_account_filter_protocol_new(const gchar *protocol_id);
@@ -73,7 +73,7 @@ GtkFilter *pidgin_account_filter_protocol_new(const gchar *protocol_id);
  *
  * Returns: The Protocol ID that @filter is filtering for.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 const gchar *pidgin_account_filter_protocol_get_protocol_id(PidginAccountFilterProtocol *filter);

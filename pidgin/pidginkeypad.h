@@ -39,7 +39,7 @@
  * #PidginKeypad is a widget that displays a DTMF keypad, with the digits 0-9,
  * an asterisk, and a number sign.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 G_BEGIN_DECLS
@@ -56,7 +56,7 @@ G_DECLARE_FINAL_TYPE(PidginKeypad, pidgin_keypad, PIDGIN, KEYPAD, GtkGrid)
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_keypad_new(void);
@@ -71,7 +71,7 @@ GtkWidget *pidgin_keypad_new(void);
  * If key events are handled by the keypad, the DTMF digits will be captured
  * and trigger the pressed signal on @keypad.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_keypad_set_key_capture_widget(PidginKeypad *keypad, GtkWidget *widget);

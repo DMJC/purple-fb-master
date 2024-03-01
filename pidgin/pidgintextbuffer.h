@@ -49,7 +49,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer full) (nullable): The HTML string, which could be empty.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 char *pidgin_text_buffer_get_html(GtkTextBuffer *buffer);
@@ -68,7 +68,7 @@ char *pidgin_text_buffer_get_html(GtkTextBuffer *buffer);
  *
  * Returns: (transfer full) (nullable): The HTML string, which could be empty.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 char *pidgin_text_buffer_get_html_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end);

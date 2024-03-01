@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  *
  * #PidginDisplayWindow is a widget that contains #PidginConversations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_DISPLAY_WINDOW (pidgin_display_window_get_type())
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PidginDisplayWindow, pidgin_display_window,
  *
  * Returns: (transfer full): The new #PidginDisplayWindow instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_display_window_new(void);
@@ -70,7 +70,7 @@ GtkWidget *pidgin_display_window_new(void);
  *
  * Returns: (transfer none): The default #PidginDisplayWindow.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_display_window_get_default(void);
@@ -83,7 +83,7 @@ GtkWidget *pidgin_display_window_get_default(void);
  * Adds @conversation to @window. If @conversation is already in @window, this
  * does nothing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_add(PidginDisplayWindow *window, PurpleConversation *conversation);
@@ -96,7 +96,7 @@ void pidgin_display_window_add(PidginDisplayWindow *window, PurpleConversation *
  * Removes @conversation from @window. If @conversation is not in @window, this
  * does nothing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_remove(PidginDisplayWindow *window, PurpleConversation *conversation);
@@ -109,7 +109,7 @@ void pidgin_display_window_remove(PidginDisplayWindow *window, PurpleConversatio
  *
  * Returns: The number of conversations that @window contains.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 guint pidgin_display_window_get_count(PidginDisplayWindow *window);
@@ -123,7 +123,7 @@ guint pidgin_display_window_get_count(PidginDisplayWindow *window);
  *
  * Returns: (transfer full): The selected PurpleConversation or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleConversation *pidgin_display_window_get_selected(PidginDisplayWindow *window);
@@ -135,7 +135,7 @@ PurpleConversation *pidgin_display_window_get_selected(PidginDisplayWindow *wind
  *
  * Selects @conversation, making it the active conversation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select(PidginDisplayWindow *window, PurpleConversation *conversation);
@@ -149,7 +149,7 @@ void pidgin_display_window_select(PidginDisplayWindow *window, PurpleConversatio
  *
  * If no conversation is selected, the last conversation will be selected.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_previous(PidginDisplayWindow *window);
@@ -162,7 +162,7 @@ void pidgin_display_window_select_previous(PidginDisplayWindow *window);
  *
  * If no conversation is selected, the first conversation will be selected.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_next(PidginDisplayWindow *window);
@@ -174,7 +174,7 @@ void pidgin_display_window_select_next(PidginDisplayWindow *window);
  * Selects the first conversation in @window. If there are no conversations in
  * @window this does nothing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_first(PidginDisplayWindow *window);
@@ -186,7 +186,7 @@ void pidgin_display_window_select_first(PidginDisplayWindow *window);
  * Selects the last conversation in @window. If there are no conversations in
  * @window this does nothing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_last(PidginDisplayWindow *window);
@@ -199,7 +199,7 @@ void pidgin_display_window_select_last(PidginDisplayWindow *window);
  * Switches to the @nth conversation. @nth is a 0 based index, so the first
  * conversation is at index 0.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_window_select_nth(PidginDisplayWindow *window, guint nth);
@@ -213,7 +213,7 @@ void pidgin_display_window_select_nth(PidginDisplayWindow *window, guint nth);
  *
  * Returns: %TRUE if @conversation is active.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_display_window_conversation_is_selected(PidginDisplayWindow *window, PurpleConversation *conversation);

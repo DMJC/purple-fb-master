@@ -45,7 +45,7 @@ G_BEGIN_DECLS
  * #PidginNotificationConnectionError is a widget that displays notifications from
  * [class@Purple.NotificationManager].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_NOTIFICATION_CONNECTION_ERROR (pidgin_notification_connection_error_get_type())
@@ -64,7 +64,7 @@ G_DECLARE_FINAL_TYPE(PidginNotificationConnectionError, pidgin_notification_conn
  * Returns: (transfer full): The new #PidginNotificationConnectionError
  *          instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_connection_error_new(PurpleNotification *notification);
@@ -77,7 +77,7 @@ GtkWidget *pidgin_notification_connection_error_new(PurpleNotification *notifica
  *
  * Returns: (transfer none): The notification.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleNotification *pidgin_notification_connection_error_get_notification(PidginNotificationConnectionError *error);

@@ -42,7 +42,7 @@ G_BEGIN_DECLS
  *
  * Get information about a user. Show immediate feedback.
  *
- * Since: 2.1.0
+ * Since: 2.1
  */
 PIDGIN_AVAILABLE_IN_2_1
 void pidgin_retrieve_user_info(PurpleConnection *conn, const char *name);
@@ -55,7 +55,7 @@ void pidgin_retrieve_user_info(PurpleConnection *conn, const char *name);
  *
  * Get information about a user in a chat. Show immediate feedback.
  *
- * Since: 2.1.0
+ * Since: 2.1
  */
 PIDGIN_AVAILABLE_IN_2_1
 void pidgin_retrieve_user_info_in_chat(PurpleConnection *conn, const char *name, int chatid);
@@ -68,7 +68,7 @@ void pidgin_retrieve_user_info_in_chat(PurpleConnection *conn, const char *name,
  * Sets an ATK name for a given widget.  Also sets the labelled-by
  * and label-for ATK relationships.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l);
@@ -81,7 +81,7 @@ void pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l);
  *
  * Returns: Whether the window was made transient or not.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PIDGIN_AVAILABLE_IN_2_4
 gboolean pidgin_auto_parent_window(GtkWidget *window);
@@ -99,7 +99,7 @@ gboolean pidgin_auto_parent_window(GtkWidget *window);
  *
  * Returns:  (transfer full): A GtkBox already added to the GtkBox containing the GtkLabel and the GtkWidget.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PIDGIN_AVAILABLE_IN_2_4
 GtkWidget *pidgin_add_widget_to_vbox(GtkBox *vbox, const char *widget_label, GtkSizeGroup *sg, GtkWidget *widget, gboolean expand, GtkWidget **p_label);

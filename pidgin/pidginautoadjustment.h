@@ -44,7 +44,7 @@ G_BEGIN_DECLS
  * max when new items are added if the widget was already scrolled all the
  * way to the bottom.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_AUTO_ADJUSTMENT (pidgin_auto_adjustment_get_type())
@@ -60,7 +60,7 @@ G_DECLARE_FINAL_TYPE(PidginAutoAdjustment, pidgin_auto_adjustment, PIDGIN,
  *
  * Returns: (transfer full): The new #PidginAutoAdjustment instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkAdjustment *pidgin_auto_adjustment_new(void);
@@ -71,7 +71,7 @@ GtkAdjustment *pidgin_auto_adjustment_new(void);
  *
  * Decrements the value of @auto_scroller by a page increment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_auto_adjustment_decrement(PidginAutoAdjustment *auto_scroller);
@@ -82,7 +82,7 @@ void pidgin_auto_adjustment_decrement(PidginAutoAdjustment *auto_scroller);
  *
  * Increments the value of @auto_scroller by a page increment.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_auto_adjustment_increment(PidginAutoAdjustment *auto_scroller);

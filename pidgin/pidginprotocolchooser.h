@@ -50,7 +50,7 @@ G_DECLARE_FINAL_TYPE(PidginProtocolChooser, pidgin_protocol_chooser, PIDGIN,
  *
  * Returns: (transfer full): The protocol chooser drop down.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_protocol_chooser_new(void);
@@ -64,7 +64,7 @@ GtkWidget *pidgin_protocol_chooser_new(void);
  * Returns: (transfer none): The selected [class@Purple.Protocol] or %NULL if
  *          nothing is selected.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 PurpleProtocol *pidgin_protocol_chooser_get_protocol(PidginProtocolChooser *chooser);
@@ -77,7 +77,7 @@ PurpleProtocol *pidgin_protocol_chooser_get_protocol(PidginProtocolChooser *choo
  * Sets the currently selected protocol of @chooser to the given
  * [class@Purple.Protocol].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_protocol_chooser_set_protocol(PidginProtocolChooser *chooser, PurpleProtocol *protocol);

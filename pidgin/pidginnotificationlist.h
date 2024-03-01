@@ -41,7 +41,7 @@ G_BEGIN_DECLS
  * #PidginNotificationList is a widget that displays notifications from
  * [class@Purple.NotificationManager].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 #define PIDGIN_TYPE_NOTIFICATION_LIST (pidgin_notification_list_get_type())
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PidginNotificationList, pidgin_notification_list, PIDGIN,
  *
  * Returns: (transfer full): The new #PidginNotificationList instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_list_new(void);
