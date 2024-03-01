@@ -39,7 +39,7 @@ G_DECLARE_FINAL_TYPE(PurpleBonjourConnection, purple_bonjour_connection,
  *
  * Registers the dynamic type using @plugin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_bonjour_connection_register(GPluginNativePlugin *plugin);
 

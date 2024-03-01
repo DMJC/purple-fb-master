@@ -39,7 +39,7 @@ G_DECLARE_FINAL_TYPE(PurpleXmppConnection, purple_xmpp_connection, PURPLE_XMPP,
  *
  * Registers the dynamic type using @plugin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_xmpp_connection_register(GPluginNativePlugin *plugin);
 
