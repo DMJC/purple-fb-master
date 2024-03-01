@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  *
  * Returns: %TRUE if successful, otherwise %FALSE with @error potentially set.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_core_init(PurpleUi *ui, GError **error);
@@ -57,7 +57,7 @@ gboolean purple_core_init(PurpleUi *ui, GError **error);
  * Quits the core of purple, which, depending on the UI, may quit the
  * application using the purple core.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_core_quit(void);
@@ -69,7 +69,7 @@ void purple_core_quit(void);
  *
  * Returns: The version of the core library.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_core_get_version(void);
@@ -82,7 +82,7 @@ const char *purple_core_get_version(void);
  *
  * Returns: (transfer none): A handle to the purple core.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleCore *purple_get_core(void);
@@ -99,7 +99,7 @@ PurpleCore *purple_get_core(void);
  *
  * Returns: (transfer none): The [class@Gio.SettingsBackend] to use.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gpointer purple_core_get_settings_backend(void);
@@ -111,7 +111,7 @@ gpointer purple_core_get_settings_backend(void);
  *
  * Returns: (transfer none): The ui.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleUi *purple_core_get_ui(void);
@@ -125,7 +125,7 @@ PurpleUi *purple_core_get_ui(void);
  *
  * Returns: The directory where translations should be searched for.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_get_locale_dir(void);

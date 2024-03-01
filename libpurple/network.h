@@ -47,7 +47,7 @@ G_BEGIN_DECLS
  * (file transfer, direct IM, etc.) and should therefore be
  * publicly accessible.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_network_set_public_ip(const char *ip);
@@ -61,7 +61,7 @@ void purple_network_set_public_ip(const char *ip);
  *
  * Returns: The local IP address set in preferences.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_network_get_public_ip(void);
@@ -76,7 +76,7 @@ const char *purple_network_get_public_ip(void);
  * is used.  Otherwise STUN, UPnP, and NAT-PMP will be attempted to discover
  * the local IP address depending on what's available.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_network_discover_my_ip(void);
@@ -94,7 +94,7 @@ void purple_network_discover_my_ip(void);
  *
  * Returns: The local IP address to be used.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gchar *purple_network_get_my_ip_from_gio(GSocketConnection *sockconn);
@@ -106,7 +106,7 @@ gchar *purple_network_get_my_ip_from_gio(GSocketConnection *sockconn);
  *
  * Returns: TRUE if the network is available
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_network_is_available(void);
@@ -120,7 +120,7 @@ gboolean purple_network_is_available(void);
  * for example.  This is useful for offline testing, especially when
  * combined with nullprotocol.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_network_force_online(void);
@@ -132,7 +132,7 @@ void purple_network_force_online(void);
  * Update the STUN server IP given the host name
  * Will result in a DNS query being executed asynchronous
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_network_set_stun_server(const gchar *stun_server);
@@ -144,7 +144,7 @@ void purple_network_set_stun_server(const gchar *stun_server);
  *
  * Returns: the IP address
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 const gchar *purple_network_get_stun_ip(void);
@@ -157,7 +157,7 @@ const gchar *purple_network_get_stun_ip(void);
  *
  * Returns: %TRUE if succeeded, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean _purple_network_set_common_socket_flags(int fd);
@@ -167,7 +167,7 @@ gboolean _purple_network_set_common_socket_flags(int fd);
  *
  * Initializes the network subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_network_init(void);
@@ -177,7 +177,7 @@ void purple_network_init(void);
  *
  * Shuts down the network subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_network_uninit(void);

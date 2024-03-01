@@ -57,7 +57,7 @@ typedef struct _PurpleBuddyList PurpleBuddyList;
  * locale. So, this function is mostly for libpurple2 compatibility. And for
  * improperly written prpls.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *
@@ -70,7 +70,7 @@ _purple_blist_get_localized_default_group_name(void);
  *
  * A callback function for purple_blist_walk.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleBlistWalkFunc)(PurpleBlistNode *node, gpointer data);
@@ -83,7 +83,7 @@ typedef void (*PurpleBlistWalkFunc)(PurpleBlistNode *node, gpointer data);
  *
  * The Buddy List
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 /**
  * PurpleBuddyListClass:
@@ -176,7 +176,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the #PurpleBuddyList object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleBuddyList, purple_buddy_list, PURPLE, BUDDY_LIST,
@@ -189,7 +189,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleBuddyList, purple_buddy_list, PURPLE, BUDDY_LIST,
  *
  * Returns: (transfer none): The default buddy list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleBuddyList *purple_blist_get_default(void);
@@ -201,7 +201,7 @@ PurpleBuddyList *purple_blist_get_default(void);
  *
  * Returns: (transfer none): The root node.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleBlistNode *purple_blist_get_default_root(void);
@@ -214,7 +214,7 @@ PurpleBlistNode *purple_blist_get_default_root(void);
  *
  * Returns: (transfer none): The root node.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleBlistNode *purple_blist_get_root(PurpleBuddyList *list);
@@ -231,7 +231,7 @@ PurpleBlistNode *purple_blist_get_root(PurpleBuddyList *list);
  * Returns: (element-type PurpleBlistNode) (transfer container): A list of every
  *          buddy in the list.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GSList *purple_blist_get_buddies(void);
@@ -241,7 +241,7 @@ GSList *purple_blist_get_buddies(void);
  *
  * Shows the buddy list, creating a new one if necessary.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_show(void);
@@ -252,7 +252,7 @@ void purple_blist_show(void);
  *
  * Hides or unhides the buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_set_visible(gboolean show);
@@ -266,7 +266,7 @@ void purple_blist_set_visible(gboolean show);
  * updates the cache, the caller is responsible for the actual renaming of
  * the buddy after updating the cache.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_update_buddies_cache(PurpleBuddy *buddy, const char *new_name);
@@ -280,7 +280,7 @@ void purple_blist_update_buddies_cache(PurpleBuddy *buddy, const char *new_name)
  * updates the cache, the caller is responsible for the actual renaming of
  * the group after updating the cache.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_update_groups_cache(PurpleGroup *group, const char *new_name);
@@ -297,7 +297,7 @@ void purple_blist_update_groups_cache(PurpleGroup *group, const char *new_name);
  * of group if node is NULL.  If both are NULL, the buddy will be added to
  * the "Chats" group.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_add_chat(PurpleChat *chat, PurpleGroup *group, PurpleBlistNode *node);
@@ -316,7 +316,7 @@ void purple_blist_add_chat(PurpleChat *chat, PurpleGroup *group, PurpleBlistNode
  * group if node is NULL.  If both are NULL, the buddy will be added to
  * the default group.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_add_buddy(PurpleBuddy *buddy, PurpleMetaContact *contact, PurpleGroup *group, PurpleBlistNode *node);
@@ -331,7 +331,7 @@ void purple_blist_add_buddy(PurpleBuddy *buddy, PurpleMetaContact *contact, Purp
  * The new group will be inserted after insert or prepended to the list if
  * node is NULL.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_add_group(PurpleGroup *group, PurpleBlistNode *node);
@@ -347,7 +347,7 @@ void purple_blist_add_group(PurpleGroup *group, PurpleBlistNode *node);
  * The new contact will be inserted after insert or prepended to the list if
  * node is NULL.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_add_contact(PurpleMetaContact *contact, PurpleGroup *group, PurpleBlistNode *node);
@@ -361,7 +361,7 @@ void purple_blist_add_contact(PurpleMetaContact *contact, PurpleGroup *group, Pu
  *
  * See purple_account_remove_buddy().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_remove_buddy(PurpleBuddy *buddy);
@@ -376,7 +376,7 @@ void purple_blist_remove_buddy(PurpleBuddy *buddy);
  *
  * See purple_blist_remove_buddy().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_remove_contact(PurpleMetaContact *contact);
@@ -387,7 +387,7 @@ void purple_blist_remove_contact(PurpleMetaContact *contact);
  *
  * Removes a chat from the buddy list and frees the memory allocated to it.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_remove_chat(PurpleChat *chat);
@@ -399,7 +399,7 @@ void purple_blist_remove_chat(PurpleChat *chat);
  * Removes a group from the buddy list and frees the memory allocated to it and to
  * its children
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_remove_group(PurpleGroup *group);
@@ -413,7 +413,7 @@ void purple_blist_remove_group(PurpleGroup *group);
  *
  * Returns: (transfer none): The buddy or %NULL if the buddy does not exist.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleBuddy *purple_blist_find_buddy(PurpleAccount *account, const char *name);
@@ -429,7 +429,7 @@ PurpleBuddy *purple_blist_find_buddy(PurpleAccount *account, const char *name);
  * Returns: (transfer none): The buddy or %NULL if the buddy does not exist in
  *          the group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleBuddy *purple_blist_find_buddy_in_group(PurpleAccount *account, const char *name,
@@ -445,7 +445,7 @@ PurpleBuddy *purple_blist_find_buddy_in_group(PurpleAccount *account, const char
  * Returns: (element-type PurpleBuddy) (transfer container): %NULL if the buddy
  *          doesn't exist, or a GSList of PurpleBuddy structs.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GSList *purple_blist_find_buddies(PurpleAccount *account, const char *name);
@@ -458,7 +458,7 @@ GSList *purple_blist_find_buddies(PurpleAccount *account, const char *name);
  *
  * Returns: (transfer none): The group or %NULL if the group does not exist.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleGroup *purple_blist_find_group(const char *name);
@@ -470,7 +470,7 @@ PurpleGroup *purple_blist_find_group(const char *name);
  *
  * Returns: (transfer none): The default group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleGroup *purple_blist_get_default_group(void);
@@ -484,7 +484,7 @@ PurpleGroup *purple_blist_get_default_group(void);
  *
  * Returns: (transfer none): The chat, or %NULL if the chat does not exist.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleChat *purple_blist_find_chat(PurpleAccount *account, const char *name);
@@ -496,7 +496,7 @@ PurpleChat *purple_blist_find_chat(PurpleAccount *account, const char *name);
  * Called when an account connects.  Tells the UI to update all the
  * buddies.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_add_account(PurpleAccount *account);
@@ -508,7 +508,7 @@ void purple_blist_add_account(PurpleAccount *account);
  * Called when an account disconnects.  Sets the presence of all the buddies to 0
  * and tells the UI to update them.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_remove_account(PurpleAccount *account);
@@ -524,7 +524,7 @@ void purple_blist_remove_account(PurpleAccount *account);
  * Walks the buddy list and calls the appropriate function for each node.  If
  * a callback function is omitted iteration will continue without it.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_walk(PurpleBlistWalkFunc group_func, PurpleBlistWalkFunc chat_func, PurpleBlistWalkFunc meta_contact_func, PurpleBlistWalkFunc contact_func, gpointer data);
@@ -536,7 +536,7 @@ void purple_blist_walk(PurpleBlistWalkFunc group_func, PurpleBlistWalkFunc chat_
  *
  * Returns: The name of the default group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_blist_get_default_group_name(void);
@@ -554,7 +554,7 @@ const gchar *purple_blist_get_default_group_name(void);
  * buddy list API, then the buddy list is saved automatically, so you should not
  * need to call this.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_schedule_save(void);
@@ -569,7 +569,7 @@ void purple_blist_schedule_save(void);
  * Requests from the user information needed to add a buddy to the
  * buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_request_add_buddy(PurpleAccount *account, const char *username,
@@ -585,7 +585,7 @@ void purple_blist_request_add_buddy(PurpleAccount *account, const char *username
  * Requests from the user information needed to add a chat to the
  * buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_request_add_chat(PurpleAccount *account, PurpleGroup *group,
@@ -597,7 +597,7 @@ void purple_blist_request_add_chat(PurpleAccount *account, PurpleGroup *group,
  * Requests from the user information needed to add a group to the
  * buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_request_add_group(void);
@@ -612,7 +612,7 @@ void purple_blist_request_add_group(void);
  * This should usually only be run when initializing a @PurpleBlistNode
  * instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_new_node(PurpleBuddyList *list, PurpleBlistNode *node);
@@ -624,7 +624,7 @@ void purple_blist_new_node(PurpleBuddyList *list, PurpleBlistNode *node);
  *
  * Update a node in the buddy list in the UI.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_update_node(PurpleBuddyList *list, PurpleBlistNode *node);
@@ -639,7 +639,7 @@ void purple_blist_update_node(PurpleBuddyList *list, PurpleBlistNode *node);
  * If the UI does not implement a more specific method, it will be set to save
  * data to <filename>blist.xml</filename> like in previous libpurple versions.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_save_node(PurpleBuddyList *list, PurpleBlistNode *node);
@@ -655,7 +655,7 @@ void purple_blist_save_node(PurpleBuddyList *list, PurpleBlistNode *node);
  * If the UI does not set a more specific method, it will be set to save data
  * to <filename>blist.xml</filename> like in previous libpurple versions.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_save_account(PurpleBuddyList *list, PurpleAccount *account);
@@ -673,7 +673,7 @@ void purple_blist_save_account(PurpleBuddyList *list, PurpleAccount *account);
  * This must be called before the buddy list is created or you will get the
  * default libpurple implementation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_set_ui(GType type);
@@ -685,7 +685,7 @@ void purple_blist_set_ui(GType type);
  *
  * Returns: The buddy list subsystem handle.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void *purple_blist_get_handle(void);
@@ -695,7 +695,7 @@ void *purple_blist_get_handle(void);
  *
  * Initializes the buddy list subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_init(void);
@@ -707,7 +707,7 @@ void purple_blist_init(void);
  *
  * You shouldn't call this. purple_core_init() will do it for you.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_boot(void);
@@ -717,7 +717,7 @@ void purple_blist_boot(void);
  *
  * Uninitializes the buddy list subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_uninit(void);

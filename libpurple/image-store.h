@@ -65,7 +65,7 @@ G_BEGIN_DECLS
  *
  * Returns: the unique identifier for the @image.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint
@@ -82,7 +82,7 @@ purple_image_store_add(PurpleImage *image);
  *
  * Returns: the unique identifier for the @image.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint
@@ -102,7 +102,7 @@ purple_image_store_add_weak(PurpleImage *image);
  *
  * Returns: the unique identifier for the @image.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint
@@ -117,7 +117,7 @@ purple_image_store_add_temporary(PurpleImage *image);
  * Returns: (transfer none): the image referenced by @id, or %NULL if it
  *          doesn't exists.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleImage *
@@ -136,7 +136,7 @@ purple_image_store_get(guint id);
  * Returns: (transfer none): the image referenced by @uri, or %NULL if it
  *          doesn't point to any valid image.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleImage *
@@ -152,7 +152,7 @@ purple_image_store_get_from_uri(const gchar *uri);
  * Returns: (transfer full): the URI for the @image. Should be #g_free'd when
  * you done using it.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gchar *
@@ -163,7 +163,7 @@ purple_image_store_get_uri(PurpleImage *image);
  *
  * Initializes the image store subsystem.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void
@@ -174,7 +174,7 @@ _purple_image_store_init(void);
  *
  * Uninitializes the image store subsystem.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void

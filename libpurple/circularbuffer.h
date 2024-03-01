@@ -66,7 +66,7 @@ struct _PurpleCircularBufferClass {
  *
  * Returns: The new PurpleCircularBuffer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleCircularBuffer *purple_circular_buffer_new(gsize growsize);
@@ -80,7 +80,7 @@ PurpleCircularBuffer *purple_circular_buffer_new(gsize growsize);
  * Append data to the PurpleCircularBuffer.  This will grow the internal
  * buffer to fit the added data, if needed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_circular_buffer_append(PurpleCircularBuffer *buffer, gconstpointer src, gsize len);
@@ -98,7 +98,7 @@ void purple_circular_buffer_append(PurpleCircularBuffer *buffer, gconstpointer s
  *
  * Returns: the number of bytes that can be read from the PurpleCircularBuffer
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gsize purple_circular_buffer_get_max_read(PurpleCircularBuffer *buffer);
@@ -113,7 +113,7 @@ gsize purple_circular_buffer_get_max_read(PurpleCircularBuffer *buffer);
  * Returns: TRUE if we successfully marked the bytes as having been read, FALSE
  *         otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_circular_buffer_mark_read(PurpleCircularBuffer *buffer, gsize len);
@@ -126,7 +126,7 @@ gboolean purple_circular_buffer_mark_read(PurpleCircularBuffer *buffer, gsize le
  * Increases the buffer size by a multiple of grow size, so that it can hold at
  * least 'len' bytes.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_circular_buffer_grow(PurpleCircularBuffer *buffer, gsize len);
@@ -140,7 +140,7 @@ void purple_circular_buffer_grow(PurpleCircularBuffer *buffer, gsize len);
  *
  * Returns: The grow size of the buffer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gsize purple_circular_buffer_get_grow_size(PurpleCircularBuffer *buffer);
@@ -153,7 +153,7 @@ gsize purple_circular_buffer_get_grow_size(PurpleCircularBuffer *buffer);
  *
  * Returns: The number of bytes that contain unread data.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gsize purple_circular_buffer_get_used(PurpleCircularBuffer *buffer);
@@ -169,7 +169,7 @@ gsize purple_circular_buffer_get_used(PurpleCircularBuffer *buffer);
  *
  * Returns: The output pointer for the buffer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_circular_buffer_get_output(PurpleCircularBuffer *buffer);
@@ -180,7 +180,7 @@ const gchar *purple_circular_buffer_get_output(PurpleCircularBuffer *buffer);
  *
  * Resets the buffer input and output pointers to the start of the buffer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_circular_buffer_reset(PurpleCircularBuffer *buffer);

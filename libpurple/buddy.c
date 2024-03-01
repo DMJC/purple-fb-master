@@ -249,7 +249,7 @@ static void purple_buddy_class_init(PurpleBuddyClass *klass) {
 	 * If an id is not passed during instantiation a uuid4 string is set as the
 	 * id.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",

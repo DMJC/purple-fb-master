@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  *
  * A placeholder to represent any media backend
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 typedef struct _PurpleMediaBackend PurpleMediaBackend;
 
@@ -55,7 +55,7 @@ typedef struct _PurpleMediaBackend PurpleMediaBackend;
  *
  * A structure to derive media backends from.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 typedef struct _PurpleMediaBackendInterface PurpleMediaBackendInterface;
 
@@ -111,7 +111,7 @@ struct _PurpleMediaBackendInterface
  *
  * Returns: The media backend's GType.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 GType purple_media_backend_get_type(void);
@@ -131,7 +131,7 @@ GType purple_media_backend_get_type(void);
  *
  * Returns: True if the stream was successfully created, otherwise False.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 gboolean purple_media_backend_add_stream(PurpleMediaBackend *self,
@@ -147,7 +147,7 @@ gboolean purple_media_backend_add_stream(PurpleMediaBackend *self,
  *
  * Add remote candidates to a stream.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 void purple_media_backend_add_remote_candidates(PurpleMediaBackend *self,
@@ -166,7 +166,7 @@ void purple_media_backend_add_remote_candidates(PurpleMediaBackend *self,
  *
  * Returns: True if the codecs are ready, otherwise False.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 gboolean purple_media_backend_codecs_ready(PurpleMediaBackend *self,
@@ -184,7 +184,7 @@ gboolean purple_media_backend_codecs_ready(PurpleMediaBackend *self,
  *
  * Returns: (transfer full) (element-type PurpleMediaCodec): The codec intersection list.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 GList *purple_media_backend_get_codecs(PurpleMediaBackend *self,
@@ -201,7 +201,7 @@ GList *purple_media_backend_get_codecs(PurpleMediaBackend *self,
  * Returns: (transfer full) (element-type PurpleMediaCandidate): The list of
  *          local candidates.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 GList *purple_media_backend_get_local_candidates(PurpleMediaBackend *self,
@@ -218,7 +218,7 @@ GList *purple_media_backend_get_local_candidates(PurpleMediaBackend *self,
  *
  * Returns: True if the remote codecs were set successfully, otherwise False.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 gboolean purple_media_backend_set_remote_codecs(PurpleMediaBackend *self,
@@ -235,7 +235,7 @@ gboolean purple_media_backend_set_remote_codecs(PurpleMediaBackend *self,
  *
  * Returns: True if set successfully, otherwise False.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 gboolean purple_media_backend_set_send_codec(PurpleMediaBackend *self,
@@ -253,7 +253,7 @@ gboolean purple_media_backend_set_send_codec(PurpleMediaBackend *self,
  *
  * Sets the encryption parameters of our media in the session.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_backend_set_encryption_parameters(PurpleMediaBackend *self,
@@ -274,7 +274,7 @@ gboolean purple_media_backend_set_encryption_parameters(PurpleMediaBackend *self
  *
  * Sets the decryption parameters for a session participant's media.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_backend_set_decryption_parameters(PurpleMediaBackend *self,
@@ -291,7 +291,7 @@ gboolean purple_media_backend_set_decryption_parameters(PurpleMediaBackend *self
  *
  * Sets whether a session participant's media requires encryption.
  *
- * Since: 2.14.0
+ * Since: 2.14
  */
 PURPLE_AVAILABLE_IN_2_14
 gboolean purple_media_backend_set_require_encryption(PurpleMediaBackend *self,
@@ -306,7 +306,7 @@ gboolean purple_media_backend_set_require_encryption(PurpleMediaBackend *self,
  *
  * Sets various optional parameters of the media backend.
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 void purple_media_backend_set_params(PurpleMediaBackend *self,
@@ -322,7 +322,7 @@ void purple_media_backend_set_params(PurpleMediaBackend *self,
  * Returns: (transfer none): NULL-terminated array of names of supported
  *          parameters.
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 const gchar **purple_media_backend_get_available_params(PurpleMediaBackend *self);
@@ -338,7 +338,7 @@ const gchar **purple_media_backend_get_available_params(PurpleMediaBackend *self
  *
  * Returns: True if set successfully, otherwise False.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_backend_set_send_rtcp_mux(PurpleMediaBackend *self,

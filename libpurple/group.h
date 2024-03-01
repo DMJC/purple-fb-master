@@ -54,7 +54,7 @@ typedef struct _PurpleGroupClass PurpleGroupClass;
  * A group is a counting node, which means it keeps track of the counts of the
  * chats and contacts under this group.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 struct _PurpleGroup {
 	PurpleCountingNode counting;
@@ -81,7 +81,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the #PurpleGroup object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_group_get_type(void);
@@ -97,7 +97,7 @@ GType purple_group_get_type(void);
  *
  * Returns: A new group struct
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleGroup *purple_group_new(const char *name);
@@ -111,7 +111,7 @@ PurpleGroup *purple_group_new(const char *name);
  * Returns: (element-type PurpleAccount) (transfer container): A list of
  *          accounts, or %NULL if the group has no accounts.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GSList *purple_group_get_accounts(PurpleGroup *g);
@@ -125,7 +125,7 @@ GSList *purple_group_get_accounts(PurpleGroup *g);
  *
  * Returns: TRUE if there are any buddies in the group, or FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_group_on_account(PurpleGroup *g, PurpleAccount *account);
@@ -137,7 +137,7 @@ gboolean purple_group_on_account(PurpleGroup *g, PurpleAccount *account);
  *
  * Sets the name of a group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_group_set_name(PurpleGroup *group, const char *name);
@@ -150,7 +150,7 @@ void purple_group_set_name(PurpleGroup *group, const char *name);
  *
  * Returns: The name of the group.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_group_get_name(PurpleGroup *group);

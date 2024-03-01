@@ -89,7 +89,7 @@ G_BEGIN_DECLS
  *
  * Returns: The media class's GType.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GType purple_media_get_type(void);
@@ -102,7 +102,7 @@ GType purple_media_get_type(void);
  *
  * Returns: (element-type utf8) (transfer container): List of session IDs.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GList *purple_media_get_session_ids(PurpleMedia *media);
@@ -115,7 +115,7 @@ GList *purple_media_get_session_ids(PurpleMedia *media);
  *
  * Returns: (transfer full): The account retrieved.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleAccount *purple_media_get_account(PurpleMedia *media);
@@ -128,7 +128,7 @@ PurpleAccount *purple_media_get_account(PurpleMedia *media);
  *
  * Returns: The protocol data retrieved.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gpointer purple_media_get_protocol_data(PurpleMedia *media);
@@ -140,7 +140,7 @@ gpointer purple_media_get_protocol_data(PurpleMedia *media);
  *
  * Sets the protocol data on the media session.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_media_set_protocol_data(PurpleMedia *media, gpointer protocol_data);
@@ -153,7 +153,7 @@ void purple_media_set_protocol_data(PurpleMedia *media, gpointer protocol_data);
  *
  * Signals an error in the media session.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_error(PurpleMedia *media, const gchar *error, ...) G_GNUC_PRINTF(2, 3);
@@ -166,7 +166,7 @@ void purple_media_error(PurpleMedia *media, const gchar *error, ...) G_GNUC_PRIN
  *
  * Ends all streams that match the given parameters
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_end(PurpleMedia *media, const gchar *session_id,
@@ -182,7 +182,7 @@ void purple_media_end(PurpleMedia *media, const gchar *session_id,
  *
  * Signals different information about the given stream.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
@@ -206,7 +206,7 @@ void purple_media_stream_info(PurpleMedia *media, PurpleMediaInfoType type,
  *   - "sdes-note"     : The NOTE to put in SDES messages
  *   - "sdes-phone"    : The PHONE to put in SDES messages
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 void purple_media_set_params(PurpleMedia *media, GHashTable *params);
@@ -222,7 +222,7 @@ void purple_media_set_params(PurpleMedia *media, GHashTable *params);
  * Returns: (array zero-terminated=1) (transfer none): Names of supported
  *          parameters.
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 const gchar **purple_media_get_available_params(PurpleMedia *media);
@@ -236,7 +236,7 @@ const gchar **purple_media_get_available_params(PurpleMedia *media);
  *
  * Returns: %TRUE if backend recognizes the parameter, %FALSE otherwise.
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 gboolean purple_media_param_is_supported(PurpleMedia *media, const gchar *param);
@@ -259,7 +259,7 @@ gboolean purple_media_param_is_supported(PurpleMedia *media, const gchar *param)
  *
  * Returns: %TRUE The stream was added successfully, %FALSE otherwise.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_add_stream(PurpleMedia *media, const gchar *sess_id,
@@ -275,7 +275,7 @@ gboolean purple_media_add_stream(PurpleMedia *media, const gchar *sess_id,
  *
  * Returns: The retrieved session type.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleMediaSessionType purple_media_get_session_type(PurpleMedia *media, const gchar *sess_id);
@@ -288,7 +288,7 @@ PurpleMediaSessionType purple_media_get_session_type(PurpleMedia *media, const g
  *
  * Returns: The PurpleMediaManager instance retrieved.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 struct _PurpleMediaManager *purple_media_get_manager(PurpleMedia *media);
@@ -303,7 +303,7 @@ struct _PurpleMediaManager *purple_media_get_manager(PurpleMedia *media);
  * Returns: (element-type PurpleMediaCodec) (transfer full): The retrieved
  *          codecs.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GList *purple_media_get_codecs(PurpleMedia *media, const gchar *sess_id);
@@ -318,7 +318,7 @@ GList *purple_media_get_codecs(PurpleMedia *media, const gchar *sess_id);
  *
  * Adds remote candidates to the stream.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_add_remote_candidates(PurpleMedia *media,
@@ -337,7 +337,7 @@ void purple_media_add_remote_candidates(PurpleMedia *media,
  * Returns: (element-type PurpleMediaCandidate) (transfer full): The local
  *          candidates.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GList *purple_media_get_local_candidates(PurpleMedia *media,
@@ -356,7 +356,7 @@ GList *purple_media_get_local_candidates(PurpleMedia *media,
  * Returns: (element-type PurpleMediaCandidate) (transfer full): The active
  *          candidates retrieved.
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 GList *purple_media_get_active_local_candidates(PurpleMedia *media,
@@ -374,7 +374,7 @@ GList *purple_media_get_active_local_candidates(PurpleMedia *media,
  * Returns: (element-type PurpleMediaCandidate) (transfer full): The remote
  *          candidates retrieved.
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 GList *purple_media_get_active_remote_candidates(PurpleMedia *media,
@@ -392,7 +392,7 @@ GList *purple_media_get_active_remote_candidates(PurpleMedia *media,
  *
  * Returns: %TRUE The codecs were set successfully, or %FALSE otherwise.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_set_remote_codecs(PurpleMedia *media, const gchar *sess_id,
@@ -408,7 +408,7 @@ gboolean purple_media_set_remote_codecs(PurpleMedia *media, const gchar *sess_id
  *
  * Returns: %TRUE All streams for the given session_id/participant combination have candidates prepared, %FALSE otherwise.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_candidates_prepared(PurpleMedia *media,
@@ -424,7 +424,7 @@ gboolean purple_media_candidates_prepared(PurpleMedia *media,
  *
  * Returns: %TRUE The codec was successfully changed, or %FALSE otherwise.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_set_send_codec(PurpleMedia *media, const gchar *sess_id, PurpleMediaCodec *codec);
@@ -441,7 +441,7 @@ gboolean purple_media_set_send_codec(PurpleMedia *media, const gchar *sess_id, P
  *
  * Sets the encryption parameters of our media in the session.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_set_encryption_parameters(PurpleMedia *media,
@@ -462,7 +462,7 @@ gboolean purple_media_set_encryption_parameters(PurpleMedia *media,
  *
  * Sets the decryption parameters for a session participant's media.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_set_decryption_parameters(PurpleMedia *media,
@@ -479,7 +479,7 @@ gboolean purple_media_set_decryption_parameters(PurpleMedia *media,
  *
  * Sets whether a session participant's media requires encryption.
  *
- * Since: 2.14.0
+ * Since: 2.14
  */
 PURPLE_AVAILABLE_IN_2_14
 gboolean purple_media_set_require_encryption(PurpleMedia *media,
@@ -495,7 +495,7 @@ gboolean purple_media_set_require_encryption(PurpleMedia *media,
  *
  * Returns: %TRUE The codecs are ready, or %FALSE otherwise.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_codecs_ready(PurpleMedia *media, const gchar *sess_id);
@@ -511,7 +511,7 @@ gboolean purple_media_codecs_ready(PurpleMedia *media, const gchar *sess_id);
  *
  * Returns: %TRUE RTCP-Mux was set successfully, or %FALSE otherwise.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_set_send_rtcp_mux(PurpleMedia *media,
@@ -526,7 +526,7 @@ gboolean purple_media_set_send_rtcp_mux(PurpleMedia *media,
  *
  * Returns: TRUE if the local user is the stream's initiator, else FALSE.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_is_initiator(PurpleMedia *media,
@@ -542,7 +542,7 @@ gboolean purple_media_is_initiator(PurpleMedia *media,
  *
  * Returns: %TRUE The selected streams have been accepted, or %FALSE otherwise.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_accepted(PurpleMedia *media, const gchar *sess_id,
@@ -556,7 +556,7 @@ gboolean purple_media_accepted(PurpleMedia *media, const gchar *sess_id,
  *
  * Sets the input volume of all the selected sessions.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_set_input_volume(PurpleMedia *media, const gchar *session_id, double level);
@@ -570,7 +570,7 @@ void purple_media_set_input_volume(PurpleMedia *media, const gchar *session_id, 
  *
  * Sets the output volume of all the selected streams.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_set_output_volume(PurpleMedia *media, const gchar *session_id,
@@ -586,7 +586,7 @@ void purple_media_set_output_volume(PurpleMedia *media, const gchar *session_id,
  *
  * Returns: An id to reference the output window.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gulong purple_media_set_output_window(PurpleMedia *media,
@@ -598,7 +598,7 @@ gulong purple_media_set_output_window(PurpleMedia *media,
  *
  * Removes all output windows from a given media session.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_remove_output_windows(PurpleMedia *media);
@@ -616,7 +616,7 @@ void purple_media_remove_output_windows(PurpleMedia *media);
  *
  * Returns: %TRUE DTMF sent successfully, or %FALSE otherwise.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 gboolean purple_media_send_dtmf(PurpleMedia *media, const gchar *session_id,

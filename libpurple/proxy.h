@@ -47,7 +47,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer none): The global proxy information.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleProxyInfo *purple_global_proxy_get_info(void);
@@ -58,7 +58,7 @@ PurpleProxyInfo *purple_global_proxy_get_info(void);
  *
  * Set purple's global proxy information.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_global_proxy_set_info(PurpleProxyInfo *info);
@@ -72,7 +72,7 @@ void purple_global_proxy_set_info(PurpleProxyInfo *info);
  *
  * Initializes the proxy subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_init(void);
@@ -82,7 +82,7 @@ void purple_proxy_init(void);
  *
  * Uninitializes the proxy subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_uninit(void);
@@ -95,7 +95,7 @@ void purple_proxy_uninit(void);
  *
  * Returns: (transfer none): The configuration of a proxy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleProxyInfo *purple_proxy_get_setup(PurpleAccount *account);
@@ -114,7 +114,7 @@ PurpleProxyInfo *purple_proxy_get_setup(PurpleAccount *account);
  *         account's (or system) proxy settings, or a reference to
  *         a #GProxyResolver on success.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GProxyResolver *purple_proxy_get_proxy_resolver(PurpleAccount *account,

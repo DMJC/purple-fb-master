@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  * 'active'.  The conversation code calls this when the
  * user sends an IM, for example.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_idle_touch(void);
@@ -58,7 +58,7 @@ void purple_idle_touch(void);
  * accounts purportedly became idle.  This is used by
  * the I'dle Mak'er plugin.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_idle_set(time_t time);
@@ -73,7 +73,7 @@ void purple_idle_set(time_t time);
  *
  * Sets the user interface idle reporter.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_idle_set_ui(PurpleIdleUi *ui);
@@ -86,7 +86,7 @@ void purple_idle_set_ui(PurpleIdleUi *ui);
  * Returns: (transfer none): The [iface@IdleUi] that is currently in use or
  *          %NULL if no idle reporter is available.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleIdleUi *purple_idle_get_ui(void);
@@ -96,7 +96,7 @@ PurpleIdleUi *purple_idle_get_ui(void);
  *
  * Initializes the idle system.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_idle_init(void);
@@ -106,7 +106,7 @@ void purple_idle_init(void);
  *
  * Uninitializes the idle system.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_idle_uninit(void);

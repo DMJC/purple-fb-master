@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  * account, buddy pounces that belong to this account, and will also
  * destroy @account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_delete(PurpleAccount *account);
@@ -62,7 +62,7 @@ void purple_accounts_delete(PurpleAccount *account);
  * You probably shouldn't call this unless you really know
  * what you're doing.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_restore_current_statuses(void);
@@ -78,7 +78,7 @@ void purple_accounts_restore_current_statuses(void);
  *
  * Returns: The accounts subsystem handle.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void *purple_accounts_get_handle(void);
@@ -88,7 +88,7 @@ void *purple_accounts_get_handle(void);
  *
  * Initializes the accounts subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_init(void);
@@ -98,7 +98,7 @@ void purple_accounts_init(void);
  *
  * Uninitializes the accounts subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_uninit(void);
@@ -108,7 +108,7 @@ void purple_accounts_uninit(void);
  *
  * Schedules saving of accounts
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_accounts_schedule_save(void);

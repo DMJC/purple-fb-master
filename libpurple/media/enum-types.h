@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  *
  * The standard _get_type macro for #PurpleMediaCandidateType.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_MEDIA_TYPE_CANDIDATE_TYPE (purple_media_candidate_type_get_type())
 
@@ -47,7 +47,7 @@ G_BEGIN_DECLS
  *
  * The standard _get_type macro for #PurpleMediaCaps.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 #define PURPLE_MEDIA_TYPE_CAPS (purple_media_caps_get_type())
 
@@ -56,7 +56,7 @@ G_BEGIN_DECLS
  *
  * The standard _get_type macro for #PurpleMediaInfoType.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 #define PURPLE_MEDIA_TYPE_INFO_TYPE (purple_media_info_type_get_type())
 
@@ -65,7 +65,7 @@ G_BEGIN_DECLS
  *
  * The standard _get_type macro for #PurpleMediaNetworkProtocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_MEDIA_TYPE_NETWORK_PROTOCOL (purple_media_network_protocol_get_type())
 
@@ -74,7 +74,7 @@ G_BEGIN_DECLS
  *
  * The standard _get_type macro for #PurpleMediaSessionType.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_MEDIA_TYPE_SESSION_TYPE (purple_media_session_type_get_type())
 
@@ -83,7 +83,7 @@ G_BEGIN_DECLS
  *
  * The standard _get_type macro for #PurpleMediaState.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_MEDIA_TYPE_STATE (purple_media_state_get_type())
 
@@ -97,7 +97,7 @@ G_BEGIN_DECLS
  *
  * Media candidate types
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
@@ -122,7 +122,7 @@ typedef enum {
  *
  * Media caps
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
@@ -145,7 +145,7 @@ typedef enum {
  *
  * Media component types
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
@@ -169,7 +169,7 @@ typedef enum {
  *
  * Media info types
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
@@ -199,7 +199,7 @@ typedef enum {
  *
  * Media network protocols
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
@@ -229,7 +229,7 @@ typedef enum {
  *
  * Media session types
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
@@ -255,7 +255,7 @@ typedef enum {
  *
  * Media state-changed types
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
@@ -271,7 +271,7 @@ typedef enum {
  *
  * Returns: The media candidate type's GType.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GType purple_media_candidate_type_get_type(void);
@@ -283,7 +283,7 @@ GType purple_media_candidate_type_get_type(void);
  *
  * Returns: The media caps flags' GType
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 GType purple_media_caps_get_type(void);
@@ -295,7 +295,7 @@ GType purple_media_caps_get_type(void);
  *
  * Returns: The info type enum's GType
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GType purple_media_info_type_get_type(void);
@@ -307,7 +307,7 @@ GType purple_media_info_type_get_type(void);
  *
  * Returns: The media network protocol's GType.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GType purple_media_network_protocol_get_type(void);
@@ -319,7 +319,7 @@ GType purple_media_network_protocol_get_type(void);
  *
  * Returns: The media session type's GType.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GType purple_media_session_type_get_type(void);
@@ -331,7 +331,7 @@ GType purple_media_session_type_get_type(void);
  *
  * Returns: The state enum's GType
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_media_state_get_type(void);

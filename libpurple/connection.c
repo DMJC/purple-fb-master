@@ -907,7 +907,7 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 	 * This can be passed function that require a cancellable for the
 	 * connection.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_CANCELLABLE] = g_param_spec_object(
 		"cancellable", "cancellable",

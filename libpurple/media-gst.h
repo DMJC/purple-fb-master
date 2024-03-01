@@ -42,7 +42,7 @@
  *
  * An opaque structure representing an audio/video source/sink.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef struct _PurpleMediaElementInfo PurpleMediaElementInfo;
@@ -73,7 +73,7 @@ typedef GstElement *(*PurpleMediaElementCreateCallback)(
  * @PURPLE_MEDIA_ELEMENT_SINK:         can be set as an active sink
  * @PURPLE_MEDIA_ELEMENT_APPLICATION:  supports application data
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef enum {
@@ -114,7 +114,7 @@ G_DECLARE_FINAL_TYPE(PurpleMediaElementInfo, purple_media_element_info, PURPLE,
  *
  * Returns: (transfer none): The source retrieved.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_get_src(PurpleMedia *media, const gchar *sess_id);
@@ -129,7 +129,7 @@ GstElement *purple_media_get_src(PurpleMedia *media, const gchar *sess_id);
  *
  * Returns: (transfer none): The GstTee element from the chosen session/stream.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_get_tee(PurpleMedia *media,
@@ -144,7 +144,7 @@ GstElement *purple_media_get_tee(PurpleMedia *media,
  *
  * Returns: (transfer none): The pipeline.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_manager_get_pipeline(PurpleMediaManager *manager);
@@ -159,7 +159,7 @@ GstElement *purple_media_manager_get_pipeline(PurpleMediaManager *manager);
  *
  * Returns: (transfer full): A GStreamer source or sink for audio or video.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_manager_get_element(PurpleMediaManager *manager,
@@ -174,7 +174,7 @@ GstElement *purple_media_manager_get_element(PurpleMediaManager *manager,
  * Returns: (transfer container) (element-type PurpleMediaElementInfo): A #GList of registered #PurpleMediaElementInfo instances that match
  * @type.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_media_manager_enumerate_elements(PurpleMediaManager *manager, PurpleMediaElementType type);
@@ -186,7 +186,7 @@ GList *purple_media_manager_enumerate_elements(PurpleMediaManager *manager, Purp
  *
  * Returns: (transfer full): The #PurpleMediaElementInfo for @name or NULL.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleMediaElementInfo *purple_media_manager_get_element_info(
@@ -211,7 +211,7 @@ gboolean purple_media_manager_set_active_element(PurpleMediaManager *manager,
  *
  * Returns: (transfer none): The #PurpleMediaElementInfo for @type.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleMediaElementInfo *purple_media_manager_get_active_element(
@@ -227,7 +227,7 @@ PurpleMediaElementInfo *purple_media_manager_get_active_element(
  * Useful to force negotiation of smaller picture resolution more suitable for
  * use with particular codec and communication protocol without rescaling.
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 void purple_media_manager_set_video_caps(PurpleMediaManager *manager,
@@ -241,7 +241,7 @@ void purple_media_manager_set_video_caps(PurpleMediaManager *manager,
  *
  * Returns: GstCaps limiting the video source's formats.
  *
- * Since: 2.8.0
+ * Since: 2.8
  */
 PURPLE_AVAILABLE_IN_2_8
 GstCaps *purple_media_manager_get_video_caps(PurpleMediaManager *manager);
@@ -265,7 +265,7 @@ PurpleMediaElementType purple_media_element_info_get_element_type(
  *
  * Returns: (transfer full): The new GstElement.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GstElement *purple_media_element_info_call_create(

@@ -43,7 +43,7 @@
  *
  * Preference data types.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef enum
 {
@@ -81,7 +81,7 @@ typedef void (*PurplePrefCallback) (const char *name, PurplePrefType type,
  *
  * Opaque type to carry callback information
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 typedef struct _PurplePrefCallbackData PurplePrefCallbackData;
 
@@ -100,7 +100,7 @@ G_BEGIN_DECLS
  *
  * Returns: The prefs subsystem handle.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void *purple_prefs_get_handle(void);
@@ -110,7 +110,7 @@ void *purple_prefs_get_handle(void);
  *
  * Initialize core prefs
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_init(void);
@@ -120,7 +120,7 @@ void purple_prefs_init(void);
  *
  * Uninitializes the prefs subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_uninit(void);
@@ -131,7 +131,7 @@ void purple_prefs_uninit(void);
  *
  * Add a new typeless pref.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_add_none(const char *name);
@@ -143,7 +143,7 @@ void purple_prefs_add_none(const char *name);
  *
  * Add a new boolean pref.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_add_bool(const char *name, gboolean value);
@@ -155,7 +155,7 @@ void purple_prefs_add_bool(const char *name, gboolean value);
  *
  * Add a new integer pref.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_add_int(const char *name, int value);
@@ -167,7 +167,7 @@ void purple_prefs_add_int(const char *name, int value);
  *
  * Add a new string pref.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_add_string(const char *name, const char *value);
@@ -183,7 +183,7 @@ void purple_prefs_add_string(const char *name, const char *value);
  *       itself and original copies of the strings are up to the caller to
  *       free.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_add_string_list(const char *name, GList *value);
@@ -195,7 +195,7 @@ void purple_prefs_add_string_list(const char *name, GList *value);
  *
  * Add a new path pref.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_add_path(const char *name, const char *value);
@@ -211,7 +211,7 @@ void purple_prefs_add_path(const char *name, const char *value);
  *       itself and original copies of the strings are up to the caller to
  *       free.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_add_path_list(const char *name, GList *value);
@@ -223,7 +223,7 @@ void purple_prefs_add_path_list(const char *name, GList *value);
  *
  * Remove a pref.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_remove(const char *name);
@@ -235,7 +235,7 @@ void purple_prefs_remove(const char *name);
  *
  * Rename a pref
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_rename(const char *oldname, const char *newname);
@@ -247,7 +247,7 @@ void purple_prefs_rename(const char *oldname, const char *newname);
  *
  * Rename a boolean pref, toggling it's value
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_rename_boolean_toggle(const char *oldname, const char *newname);
@@ -257,7 +257,7 @@ void purple_prefs_rename_boolean_toggle(const char *oldname, const char *newname
  *
  * Remove all prefs.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_destroy(void);
@@ -269,7 +269,7 @@ void purple_prefs_destroy(void);
  *
  * Set boolean pref value
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_set_bool(const char *name, gboolean value);
@@ -281,7 +281,7 @@ void purple_prefs_set_bool(const char *name, gboolean value);
  *
  * Set integer pref value
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_set_int(const char *name, int value);
@@ -293,7 +293,7 @@ void purple_prefs_set_int(const char *name, int value);
  *
  * Set string pref value
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_set_string(const char *name, const char *value);
@@ -305,7 +305,7 @@ void purple_prefs_set_string(const char *name, const char *value);
  *
  * Set string list pref value
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_set_string_list(const char *name, GList *value);
@@ -317,7 +317,7 @@ void purple_prefs_set_string_list(const char *name, GList *value);
  *
  * Set path pref value
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_set_path(const char *name, const char *value);
@@ -329,7 +329,7 @@ void purple_prefs_set_path(const char *name, const char *value);
  *
  * Set path list pref value
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_set_path_list(const char *name, GList *value);
@@ -343,7 +343,7 @@ void purple_prefs_set_path_list(const char *name, GList *value);
  *
  * Returns: TRUE if the pref exists.  Otherwise FALSE.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_prefs_exists(const char *name);
@@ -356,7 +356,7 @@ gboolean purple_prefs_exists(const char *name);
  *
  * Returns: The type of the pref
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePrefType purple_prefs_get_pref_type(const char *name);
@@ -369,7 +369,7 @@ PurplePrefType purple_prefs_get_pref_type(const char *name);
  *
  * Returns: The value of the pref
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_prefs_get_bool(const char *name);
@@ -382,7 +382,7 @@ gboolean purple_prefs_get_bool(const char *name);
  *
  * Returns: The value of the pref
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 int purple_prefs_get_int(const char *name);
@@ -395,7 +395,7 @@ int purple_prefs_get_int(const char *name);
  *
  * Returns: The value of the pref
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_prefs_get_string(const char *name);
@@ -408,7 +408,7 @@ const char *purple_prefs_get_string(const char *name);
  *
  * Returns: (transfer full) (element-type utf8): The value of the pref.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GList *purple_prefs_get_string_list(const char *name);
@@ -421,7 +421,7 @@ GList *purple_prefs_get_string_list(const char *name);
  *
  * Returns: The value of the pref
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_prefs_get_path(const char *name);
@@ -434,7 +434,7 @@ const char *purple_prefs_get_path(const char *name);
  *
  * Returns: (transfer full) (element-type utf8): The value of the pref.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GList *purple_prefs_get_path_list(const char *name);
@@ -450,7 +450,7 @@ GList *purple_prefs_get_path_list(const char *name);
  *          are no children or if pref doesn't exist. The caller must free all
  *          the strings and the list.
  *
- * Since: 2.1.0
+ * Since: 2.1
  */
 PURPLE_AVAILABLE_IN_2_1
 GList *purple_prefs_get_children_names(const char *name);
@@ -468,7 +468,7 @@ GList *purple_prefs_get_children_names(const char *name);
  *
  * Returns: An id to disconnect the callback
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 guint purple_prefs_connect_callback(void *handle, const char *name, PurplePrefCallback cb,
@@ -480,7 +480,7 @@ guint purple_prefs_connect_callback(void *handle, const char *name, PurplePrefCa
  *
  * Remove a callback to a pref
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_disconnect_callback(guint callback_id);
@@ -491,7 +491,7 @@ void purple_prefs_disconnect_callback(guint callback_id);
  *
  * Remove all pref callbacks by handle
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_disconnect_by_handle(void *handle);
@@ -502,7 +502,7 @@ void purple_prefs_disconnect_by_handle(void *handle);
  *
  * Trigger callbacks as if the pref changed
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_prefs_trigger_callback(const char *name);
@@ -514,7 +514,7 @@ void purple_prefs_trigger_callback(const char *name);
  * Trigger callbacks as if the pref changed, taking a #PurplePrefCallbackData
  * instead of a name
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 void purple_prefs_trigger_callback_object(PurplePrefCallbackData *data);
@@ -524,7 +524,7 @@ void purple_prefs_trigger_callback_object(PurplePrefCallbackData *data);
  *
  * Read preferences
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_prefs_load(void);

@@ -53,7 +53,7 @@ typedef struct _PurpleBlistNodeClass PurpleBlistNodeClass;
  * This is a base class for PurpleBuddy, PurpleContact, PurpleGroup, and for
  * anything else that wants to put itself in the buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 struct _PurpleBlistNode {
 	GObject gparent;
@@ -82,7 +82,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the #PurpleBlistNode object.
  *
- * Since: 2.1.0
+ * Since: 2.1
  */
 PURPLE_AVAILABLE_IN_2_1
 GType purple_blist_node_get_type(void);
@@ -100,7 +100,7 @@ GType purple_blist_node_get_type(void);
  *
  * Returns: (transfer none): The next node
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleBlistNode *purple_blist_node_next(PurpleBlistNode *node, gboolean offline);
@@ -116,7 +116,7 @@ PurpleBlistNode *purple_blist_node_next(PurpleBlistNode *node, gboolean offline)
  *
  * Returns: (transfer none): The parent node.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 PurpleBlistNode *purple_blist_node_get_parent(PurpleBlistNode *node);
@@ -132,7 +132,7 @@ PurpleBlistNode *purple_blist_node_get_parent(PurpleBlistNode *node);
  *
  * Returns: (transfer none): The child node.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 PurpleBlistNode *purple_blist_node_get_first_child(PurpleBlistNode *node);
@@ -148,7 +148,7 @@ PurpleBlistNode *purple_blist_node_get_first_child(PurpleBlistNode *node);
  *
  * Returns: (transfer none): The sibling node.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 PurpleBlistNode *purple_blist_node_get_sibling_next(PurpleBlistNode *node);
@@ -164,7 +164,7 @@ PurpleBlistNode *purple_blist_node_get_sibling_next(PurpleBlistNode *node);
  *
  * Returns: (transfer none): The sibling node.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 PurpleBlistNode *purple_blist_node_get_sibling_prev(PurpleBlistNode *node);
@@ -177,7 +177,7 @@ PurpleBlistNode *purple_blist_node_get_sibling_prev(PurpleBlistNode *node);
  *
  * Returns: (transfer none): The hash table with the node's settings.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GHashTable *purple_blist_node_get_settings(PurpleBlistNode *node);
@@ -191,7 +191,7 @@ GHashTable *purple_blist_node_get_settings(PurpleBlistNode *node);
  *
  * Returns: TRUE if a value exists, or FALSE if there is no setting
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_blist_node_has_setting(PurpleBlistNode *node, const char *key);
@@ -204,7 +204,7 @@ gboolean purple_blist_node_has_setting(PurpleBlistNode *node, const char *key);
  *
  * Associates a boolean with a node in the buddy list
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_node_set_bool(PurpleBlistNode *node, const char *key, gboolean value);
@@ -218,7 +218,7 @@ void purple_blist_node_set_bool(PurpleBlistNode *node, const char *key, gboolean
  *
  * Returns: The value, or FALSE if there is no setting
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_blist_node_get_bool(PurpleBlistNode *node, const char *key);
@@ -231,7 +231,7 @@ gboolean purple_blist_node_get_bool(PurpleBlistNode *node, const char *key);
  *
  * Associates an integer with a node in the buddy list
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_node_set_int(PurpleBlistNode *node, const char *key, int value);
@@ -245,7 +245,7 @@ void purple_blist_node_set_int(PurpleBlistNode *node, const char *key, int value
  *
  * Returns: The value, or 0 if there is no setting
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 int purple_blist_node_get_int(PurpleBlistNode *node, const char *key);
@@ -258,7 +258,7 @@ int purple_blist_node_get_int(PurpleBlistNode *node, const char *key);
  *
  * Associates a string with a node in the buddy list
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_node_set_string(PurpleBlistNode *node, const char *key, const char *value);
@@ -272,7 +272,7 @@ void purple_blist_node_set_string(PurpleBlistNode *node, const char *key, const 
  *
  * Returns: The value, or NULL if there is no setting
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_blist_node_get_string(PurpleBlistNode *node, const char *key);
@@ -284,7 +284,7 @@ const char *purple_blist_node_get_string(PurpleBlistNode *node, const char *key)
  *
  * Removes a named setting from a blist node
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_node_remove_setting(PurpleBlistNode *node, const char *key);
@@ -297,7 +297,7 @@ void purple_blist_node_remove_setting(PurpleBlistNode *node, const char *key);
  *
  * Sets whether the node should be saved with the buddy list or not
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_node_set_transient(PurpleBlistNode *node, gboolean transient);
@@ -310,7 +310,7 @@ void purple_blist_node_set_transient(PurpleBlistNode *node, gboolean transient);
  *
  * Returns: TRUE if the node should NOT be saved, FALSE if node should be saved
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_blist_node_is_transient(PurpleBlistNode *node);
@@ -323,7 +323,7 @@ gboolean purple_blist_node_is_transient(PurpleBlistNode *node);
  *          items for a buddy list node, as harvested by the
  *          blist-node-extended-menu signal.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GList *purple_blist_node_get_extended_menu(PurpleBlistNode *n);

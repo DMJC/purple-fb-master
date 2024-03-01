@@ -56,7 +56,7 @@ G_BEGIN_DECLS
  * filenames (not necessarily real filename for displaying); remote images
  * (which data is not yet loaded) or guessing file format from its header.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleImage, purple_image, PURPLE, IMAGE, GObject)
@@ -69,7 +69,7 @@ G_DECLARE_DERIVABLE_TYPE(PurpleImage, purple_image, PURPLE, IMAGE, GObject)
  *
  * Returns: the new #PurpleImage.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleImage *purple_image_new_from_bytes(GBytes *bytes);
@@ -86,7 +86,7 @@ PurpleImage *purple_image_new_from_bytes(GBytes *bytes);
  *
  * Returns: the new #PurpleImage.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleImage *purple_image_new_from_file(const gchar *path, GError **error);
@@ -103,7 +103,7 @@ PurpleImage *purple_image_new_from_file(const gchar *path, GError **error);
  *
  * Returns: the new #PurpleImage.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleImage *purple_image_new_from_data(const guint8 *data, gsize length);
@@ -120,7 +120,7 @@ PurpleImage *purple_image_new_from_data(const guint8 *data, gsize length);
  *
  * Returns: the new #PurpleImage.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleImage *purple_image_new_take_data(guint8 *data, gsize length);
@@ -134,7 +134,7 @@ PurpleImage *purple_image_new_take_data(guint8 *data, gsize length);
  *
  * Returns: %TRUE if succeeded, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_image_save(PurpleImage *image, const gchar *path);
@@ -147,7 +147,7 @@ gboolean purple_image_save(PurpleImage *image, const gchar *path);
  *
  * Returns: (transfer full): A #GBytes containing the image data.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GBytes *purple_image_get_contents(PurpleImage *image);
@@ -162,7 +162,7 @@ GBytes *purple_image_get_contents(PurpleImage *image);
  *
  * Returns: the physical path of the @image, or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_image_get_path(PurpleImage *image);
@@ -175,7 +175,7 @@ const gchar *purple_image_get_path(PurpleImage *image);
  *
  * Returns: the size of data, or 0 in case of failure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gsize purple_image_get_data_size(PurpleImage *image);
@@ -188,7 +188,7 @@ gsize purple_image_get_data_size(PurpleImage *image);
  *
  * Returns: (transfer none): the @image data.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gconstpointer purple_image_get_data(PurpleImage *image);
@@ -201,7 +201,7 @@ gconstpointer purple_image_get_data(PurpleImage *image);
  *
  * Returns: (transfer none): the file extension suitable for @image format.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_image_get_extension(PurpleImage *image);
@@ -214,7 +214,7 @@ const gchar *purple_image_get_extension(PurpleImage *image);
  *
  * Returns: (transfer none): the mime-type suitable for @image format.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_image_get_mimetype(PurpleImage *image);
@@ -229,7 +229,7 @@ const gchar *purple_image_get_mimetype(PurpleImage *image);
  *
  * Returns: (transfer none): the generated file name.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_image_generate_filename(PurpleImage *image);
@@ -246,7 +246,7 @@ const gchar *purple_image_generate_filename(PurpleImage *image);
  * The provided @filename may either be a full path, or contain
  * filesystem-unfriendly characters, because it will be reformatted.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_image_set_friendly_filename(PurpleImage *image, const gchar *filename);
@@ -264,7 +264,7 @@ void purple_image_set_friendly_filename(PurpleImage *image, const gchar *filenam
  *
  * Returns: (transfer none): the friendly filename.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_image_get_friendly_filename(PurpleImage *image);

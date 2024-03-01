@@ -56,7 +56,7 @@ G_BEGIN_DECLS
  *
  * This is meant to be called from protocols.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_user_idle(PurpleAccount *account, const char *name,
@@ -73,7 +73,7 @@ void purple_protocol_got_user_idle(PurpleAccount *account, const char *name,
  *
  * This is meant to be called from protocols.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_user_status(PurpleAccount *account, const char *name,
@@ -92,7 +92,7 @@ void purple_protocol_got_user_status(PurpleAccount *account, const char *name,
  *
  * This is meant to be called from protocols.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_user_status_with_attributes(PurpleAccount *account, const gchar *name, const gchar *status_id, GHashTable *attributes);
@@ -107,7 +107,7 @@ void purple_protocol_got_user_status_with_attributes(PurpleAccount *account, con
  *
  * This is meant to be called from protocols.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_user_status_deactive(PurpleAccount *account,
@@ -123,7 +123,7 @@ void purple_protocol_got_user_status_deactive(PurpleAccount *account,
  *
  * Informs the server that our account's status changed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_change_account_status(PurpleAccount *account,
@@ -139,7 +139,7 @@ void purple_protocol_change_account_status(PurpleAccount *account,
  *
  * Returns: (transfer full) (element-type PurpleStatus): List of statuses
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_statuses(PurpleAccount *account,
@@ -154,7 +154,7 @@ GList *purple_protocol_get_statuses(PurpleAccount *account,
  *
  * Returns: The media caps the contact supports.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleMediaCaps purple_protocol_get_media_caps(PurpleAccount *account,
@@ -171,7 +171,7 @@ PurpleMediaCaps purple_protocol_get_media_caps(PurpleAccount *account,
  * Returns: TRUE if the call succeeded else FALSE. (Doesn't imply the media
  *          session or stream will be successfully created)
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_initiate_media(PurpleAccount *account,
@@ -187,7 +187,7 @@ gboolean purple_protocol_initiate_media(PurpleAccount *account,
  *
  * This function is intended to be used only by protocols.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_got_media_caps(PurpleAccount *account, const char *who);

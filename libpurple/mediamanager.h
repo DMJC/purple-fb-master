@@ -43,7 +43,7 @@ typedef struct _PurpleMediaManager PurpleMediaManager;
  *
  * The media manager class.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 struct _PurpleMediaManagerClass
 {
@@ -71,7 +71,7 @@ struct _PurpleMediaManagerClass
  * stream changes. The @writable argument defines whether the stream has
  * become writable or stopped being writable.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_TYPE_IN_2_6
 typedef struct {
@@ -99,7 +99,7 @@ G_DECLARE_FINAL_TYPE(PurpleMediaManager, purple_media_manager, PURPLE,
  *
  * Returns: (transfer none): The "global" instance of the media manager object.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleMediaManager *purple_media_manager_get(void);
@@ -116,7 +116,7 @@ PurpleMediaManager *purple_media_manager_get(void);
  *
  * Returns: (transfer full): A newly created media session.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleMedia *purple_media_manager_create_media(PurpleMediaManager *manager,
@@ -133,7 +133,7 @@ PurpleMedia *purple_media_manager_create_media(PurpleMediaManager *manager,
  *
  * Returns: (transfer none) (element-type PurpleMedia): A list of all the media sessions.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GList *purple_media_manager_get_media(PurpleMediaManager *manager);
@@ -147,7 +147,7 @@ GList *purple_media_manager_get_media(PurpleMediaManager *manager);
  *
  * Returns: (transfer container) (element-type PurpleMedia): A list of the media sessions on the given account.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 GList *purple_media_manager_get_media_by_account(
@@ -160,7 +160,7 @@ GList *purple_media_manager_get_media_by_account(
  *
  * Removes a media session from the media manager.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void
@@ -183,7 +183,7 @@ purple_media_manager_remove_media(PurpleMediaManager *manager,
  *
  * Returns: (transfer full): A newly created media session.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleMedia *purple_media_manager_create_private_media(
@@ -201,7 +201,7 @@ PurpleMedia *purple_media_manager_create_private_media(
  *
  * Returns: (transfer none) (element-type PurpleMedia): A list of all the private media sessions.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 GList *purple_media_manager_get_private_media(PurpleMediaManager *manager);
@@ -215,7 +215,7 @@ GList *purple_media_manager_get_private_media(PurpleMediaManager *manager);
  *
  * Returns: (transfer container) (element-type PurpleMedia): A list of the private media sessions on the given account.
  *
- * Since: 2.11.0
+ * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
 GList *purple_media_manager_get_private_media_by_account(
@@ -234,7 +234,7 @@ GList *purple_media_manager_get_private_media_by_account(
  *
  * Returns: TRUE if it succeeded, FALSE if it failed.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_manager_create_output_window(
@@ -252,7 +252,7 @@ gboolean purple_media_manager_create_output_window(
  *
  * Returns: A unique ID to the registered output window, 0 if it failed.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gulong purple_media_manager_set_output_window(PurpleMediaManager *manager,
@@ -268,7 +268,7 @@ gulong purple_media_manager_set_output_window(PurpleMediaManager *manager,
  *
  * Returns: TRUE if it found the output window and was successful, else FALSE.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_media_manager_remove_output_window(
@@ -283,7 +283,7 @@ gboolean purple_media_manager_remove_output_window(
  *
  * Remove all output windows for a given conference/session/participant/stream.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_manager_remove_output_windows(
@@ -297,7 +297,7 @@ void purple_media_manager_remove_output_windows(
  *
  * Sets which media caps the UI supports.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_manager_set_ui_caps(PurpleMediaManager *manager,
@@ -311,7 +311,7 @@ void purple_media_manager_set_ui_caps(PurpleMediaManager *manager,
  *
  * Returns: caps The caps retrieved.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 PurpleMediaCaps purple_media_manager_get_ui_caps(PurpleMediaManager *manager);
@@ -323,7 +323,7 @@ PurpleMediaCaps purple_media_manager_get_ui_caps(PurpleMediaManager *manager);
  *
  * Sets which media backend type media objects will use.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 void purple_media_manager_set_backend_type(PurpleMediaManager *manager,
@@ -337,7 +337,7 @@ void purple_media_manager_set_backend_type(PurpleMediaManager *manager,
  *
  * Returns: The type of media backend type media objects will use.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 GType purple_media_manager_get_backend_type(PurpleMediaManager *manager);
@@ -355,7 +355,7 @@ GType purple_media_manager_get_backend_type(PurpleMediaManager *manager);
  * Set callbacks on a session to be called when the stream becomes writable
  * or readable for media sessions of type #PURPLE_MEDIA_APPLICATION
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_media_manager_set_application_data_callbacks(
@@ -384,7 +384,7 @@ void purple_media_manager_set_application_data_callbacks(
  *
  * Returns: Number of bytes sent or -1 in case of error.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gint purple_media_manager_send_application_data (
@@ -408,7 +408,7 @@ gint purple_media_manager_send_application_data (
  *
  * Returns: Number of bytes received or -1 in case of error.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gint purple_media_manager_receive_application_data (

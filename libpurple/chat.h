@@ -47,7 +47,7 @@ typedef struct _PurpleChatClass PurpleChatClass;
  *
  * A chat on the buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 struct _PurpleChat {
 	PurpleBlistNode node;
@@ -70,7 +70,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the #PurpleChat object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_chat_get_type(void);
@@ -87,7 +87,7 @@ GType purple_chat_get_type(void);
  *
  * Returns:           A newly allocated chat
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleChat *purple_chat_new(PurpleAccount *account, const char *alias, GHashTable *components);
@@ -100,7 +100,7 @@ PurpleChat *purple_chat_new(PurpleAccount *account, const char *alias, GHashTabl
  *
  * Returns:       The alias (if set), or first component value.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_chat_get_name(PurpleChat *chat);
@@ -113,7 +113,7 @@ const char *purple_chat_get_name(PurpleChat *chat);
  *
  * Returns:       The first component value.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_chat_get_name_only(PurpleChat *chat);
@@ -125,7 +125,7 @@ const char *purple_chat_get_name_only(PurpleChat *chat);
  *
  * Sets the alias for a blist chat.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_chat_set_alias(PurpleChat *chat, const char *alias);
@@ -139,7 +139,7 @@ void purple_chat_set_alias(PurpleChat *chat, const char *alias);
  * Returns: (transfer none): The parent group, or %NULL if the chat is not in a
  *          group.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleGroup *purple_chat_get_group(PurpleChat *chat);
@@ -152,7 +152,7 @@ PurpleGroup *purple_chat_get_group(PurpleChat *chat);
  *
  * Returns: (transfer none): The account the chat belongs to.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 PurpleAccount *purple_chat_get_account(PurpleChat *chat);
@@ -165,7 +165,7 @@ PurpleAccount *purple_chat_get_account(PurpleChat *chat);
  *
  * Returns: (transfer none):  The hashtable.
  *
- * Since: 2.4.0
+ * Since: 2.4
  */
 PURPLE_AVAILABLE_IN_2_4
 GHashTable *purple_chat_get_components(PurpleChat *chat);

@@ -47,7 +47,7 @@ G_BEGIN_DECLS
  *
  * Available debug levels.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef enum {
 	PURPLE_DEBUG_ALL = 0,
@@ -70,7 +70,7 @@ typedef enum {
  *
  * Outputs debug information.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_debug(PurpleDebugLevel level, const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(3, 4);
@@ -88,7 +88,7 @@ void purple_debug(PurpleDebugLevel level, const gchar *category, const gchar *fo
  *
  * See purple_debug().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_debug_misc(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
@@ -106,7 +106,7 @@ void purple_debug_misc(const gchar *category, const gchar *format, ...) G_GNUC_P
  *
  * See purple_debug().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_debug_info(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
@@ -124,7 +124,7 @@ void purple_debug_info(const gchar *category, const gchar *format, ...) G_GNUC_P
  *
  * See purple_debug().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_debug_warning(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
@@ -142,7 +142,7 @@ void purple_debug_warning(const gchar *category, const gchar *format, ...) G_GNU
  *
  * See purple_debug().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_debug_error(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
@@ -160,7 +160,7 @@ void purple_debug_error(const gchar *category, const gchar *format, ...) G_GNUC_
  *
  * See purple_debug().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_debug_fatal(const gchar *category, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
@@ -173,7 +173,7 @@ void purple_debug_fatal(const gchar *category, const gchar *format, ...) G_GNUC_
  * by purple_debug_init(), but there are cases where this can be useful for
  * plugins.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_debug_set_verbose(gboolean verbose);
@@ -185,7 +185,7 @@ void purple_debug_set_verbose(gboolean verbose);
  *
  * Returns: %TRUE if verbose debugging is enabled, %FALSE if it is not.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_debug_is_verbose(void);
@@ -200,7 +200,7 @@ gboolean purple_debug_is_verbose(void);
  * purple_debug_init(), but there are cases where this can be useful for
  * plugins.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_debug_set_unsafe(gboolean unsafe);
@@ -214,7 +214,7 @@ void purple_debug_set_unsafe(gboolean unsafe);
  *          messages that could potentially contain passwords and other
  *          sensitive information are not logged.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gboolean purple_debug_is_unsafe(void);
@@ -228,7 +228,7 @@ gboolean purple_debug_is_unsafe(void);
  *
  * Initializes the debug subsystem.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_debug_init(void);

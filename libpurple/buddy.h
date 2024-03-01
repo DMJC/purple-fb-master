@@ -77,7 +77,7 @@ typedef struct _PurpleBuddyClass PurpleBuddyClass;
  *
  * A buddy on the buddy list.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 struct _PurpleBuddy {
 	PurpleBlistNode node;
@@ -104,7 +104,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the #PurpleBuddy object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_buddy_get_type(void);
@@ -125,7 +125,7 @@ GType purple_buddy_get_type(void);
  *
  * Returns: A newly allocated buddy
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleBuddy *purple_buddy_new(PurpleAccount *account, const char *name, const char *alias);
@@ -138,7 +138,7 @@ PurpleBuddy *purple_buddy_new(PurpleAccount *account, const char *name, const ch
  *
  * Returns: The id of @buddy.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_buddy_get_id(PurpleBuddy *buddy);
@@ -155,7 +155,7 @@ const gchar *purple_buddy_get_id(PurpleBuddy *buddy);
  *
  * See purple_buddy_icon_set_data().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_buddy_set_icon(PurpleBuddy *buddy, PurpleBuddyIcon *icon);
@@ -168,7 +168,7 @@ void purple_buddy_set_icon(PurpleBuddy *buddy, PurpleBuddyIcon *icon);
  *
  * Returns: The buddy icon.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleBuddyIcon *purple_buddy_get_icon(PurpleBuddy *buddy);
@@ -181,7 +181,7 @@ PurpleBuddyIcon *purple_buddy_get_icon(PurpleBuddy *buddy);
  *
  * Returns: (transfer none): The account.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_buddy_get_account(PurpleBuddy *buddy);
@@ -193,7 +193,7 @@ PurpleAccount *purple_buddy_get_account(PurpleBuddy *buddy);
  *
  * Sets a buddy's name
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_set_name(PurpleBuddy *buddy, const char *name);
@@ -206,7 +206,7 @@ void purple_buddy_set_name(PurpleBuddy *buddy, const char *name);
  *
  * Returns: The name.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_name(PurpleBuddy *buddy);
@@ -223,7 +223,7 @@ const char *purple_buddy_get_name(PurpleBuddy *buddy);
  *
  * Returns:      The protocol data.
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 gpointer purple_buddy_get_protocol_data(PurpleBuddy *buddy);
@@ -239,7 +239,7 @@ gpointer purple_buddy_get_protocol_data(PurpleBuddy *buddy);
  *
  * See purple_buddy_get_protocol_data().
  *
- * Since: 2.6.0
+ * Since: 2.6
  */
 PURPLE_AVAILABLE_IN_2_6
 void purple_buddy_set_protocol_data(PurpleBuddy *buddy, gpointer data);
@@ -252,7 +252,7 @@ void purple_buddy_set_protocol_data(PurpleBuddy *buddy, gpointer data);
  *
  * Returns: (transfer none): The buddy's contact.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleMetaContact *purple_buddy_get_contact(PurpleBuddy *buddy);
@@ -265,7 +265,7 @@ PurpleMetaContact *purple_buddy_get_contact(PurpleBuddy *buddy);
  *
  * Returns: (transfer none): The buddy's presence.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurplePresence *purple_buddy_get_presence(PurpleBuddy *buddy);
@@ -279,7 +279,7 @@ PurplePresence *purple_buddy_get_presence(PurpleBuddy *buddy);
  *
  * This should only be called from within Purple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_update_status(PurpleBuddy *buddy, PurpleStatus *old_status);
@@ -292,7 +292,7 @@ void purple_buddy_update_status(PurpleBuddy *buddy, PurpleStatus *old_status);
  *
  * Returns:      The media caps.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 PurpleMediaCaps purple_buddy_get_media_caps(PurpleBuddy *buddy);
@@ -304,7 +304,7 @@ PurpleMediaCaps purple_buddy_get_media_caps(PurpleBuddy *buddy);
  *
  * Sets the media caps for a buddy.
  *
- * Since: 2.7.0
+ * Since: 2.7
  */
 PURPLE_AVAILABLE_IN_2_7
 void purple_buddy_set_media_caps(PurpleBuddy *buddy, PurpleMediaCaps media_caps);
@@ -318,7 +318,7 @@ void purple_buddy_set_media_caps(PurpleBuddy *buddy, PurpleMediaCaps media_caps)
  * Returns:        The alias (if set), server alias (if set),
  *                or NULL.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_alias_only(PurpleBuddy *buddy);
@@ -330,7 +330,7 @@ const char *purple_buddy_get_alias_only(PurpleBuddy *buddy);
  *
  * Sets the server alias for a buddy.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_set_server_alias(PurpleBuddy *buddy, const char *alias);
@@ -343,7 +343,7 @@ void purple_buddy_set_server_alias(PurpleBuddy *buddy, const char *alias);
  *
  * Returns:  The server alias, or NULL if it is not set.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_server_alias(PurpleBuddy *buddy);
@@ -358,7 +358,7 @@ const char *purple_buddy_get_server_alias(PurpleBuddy *buddy);
  *
  * Returns:       The appropriate name or alias, or NULL.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_contact_alias(PurpleBuddy *buddy);
@@ -373,7 +373,7 @@ const char *purple_buddy_get_contact_alias(PurpleBuddy *buddy);
  *
  * Returns:        The appropriate name or alias, or NULL
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_alias(PurpleBuddy *buddy);
@@ -385,7 +385,7 @@ const char *purple_buddy_get_alias(PurpleBuddy *buddy);
  *
  * Sets the local alias for the buddy.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_buddy_set_local_alias(PurpleBuddy *buddy, const char *alias);
@@ -398,7 +398,7 @@ void purple_buddy_set_local_alias(PurpleBuddy *buddy, const char *alias);
  *
  * Returns:       The local alias for the buddy
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const char *purple_buddy_get_local_alias(PurpleBuddy *buddy);
@@ -411,7 +411,7 @@ const char *purple_buddy_get_local_alias(PurpleBuddy *buddy);
  *
  * Returns: (transfer none): The group or %NULL if the buddy is not in a group.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleGroup *purple_buddy_get_group(PurpleBuddy *buddy);

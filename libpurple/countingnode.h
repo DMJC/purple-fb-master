@@ -60,7 +60,7 @@ typedef struct _PurpleCountingNodeClass PurpleCountingNodeClass;
  *
  * See #PurpleContact, #PurpleGroup
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleCountingNode {
 	PurpleBlistNode node;
@@ -83,7 +83,7 @@ G_BEGIN_DECLS
  *
  * Returns: The #GType for the #PurpleCountingNode object.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GType purple_counting_node_get_type(void);
@@ -96,7 +96,7 @@ GType purple_counting_node_get_type(void);
  *
  * Returns:  The total number of children of the node
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_counting_node_get_total_size(PurpleCountingNode *counter);
@@ -110,7 +110,7 @@ int purple_counting_node_get_total_size(PurpleCountingNode *counter);
  *
  * Returns:  The number of children with online accounts
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_counting_node_get_current_size(PurpleCountingNode *counter);
@@ -123,7 +123,7 @@ int purple_counting_node_get_current_size(PurpleCountingNode *counter);
  *
  * Returns:  The total number of online children
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 int purple_counting_node_get_online_count(PurpleCountingNode *counter);
@@ -137,7 +137,7 @@ int purple_counting_node_get_online_count(PurpleCountingNode *counter);
  * delta value is added to the count, or if it's negative, the count is
  * decreased.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_change_total_size(PurpleCountingNode *counter, int delta);
@@ -151,7 +151,7 @@ void purple_counting_node_change_total_size(PurpleCountingNode *counter, int del
  * accounts. The provided delta value is added to the count, or if it's
  * negative, the count is decreased.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_change_current_size(PurpleCountingNode *counter, int delta);
@@ -165,7 +165,7 @@ void purple_counting_node_change_current_size(PurpleCountingNode *counter, int d
  * provided delta value is added to the count, or if it's negative, the count is
  * decreased.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_change_online_count(PurpleCountingNode *counter, int delta);
@@ -177,7 +177,7 @@ void purple_counting_node_change_online_count(PurpleCountingNode *counter, int d
  *
  * Sets the total number of children of the counting node.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_set_total_size(PurpleCountingNode *counter, int totalsize);
@@ -190,7 +190,7 @@ void purple_counting_node_set_total_size(PurpleCountingNode *counter, int totals
  * Sets the number of children of the counting node corresponding to online
  * accounts.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_set_current_size(PurpleCountingNode *counter, int currentsize);
@@ -202,7 +202,7 @@ void purple_counting_node_set_current_size(PurpleCountingNode *counter, int curr
  *
  * Sets the number of children of the counting node that are online.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_counting_node_set_online_count(PurpleCountingNode *counter, int onlinecount);
