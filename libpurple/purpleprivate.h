@@ -142,7 +142,7 @@ void _purple_conversation_write_common(PurpleConversation *conv, PurpleMessage *
  *
  * Starts up the account manager by creating the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_account_manager_startup(void);
@@ -152,7 +152,7 @@ void purple_account_manager_startup(void);
  *
  * Shuts down the account manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_account_manager_shutdown(void);
@@ -162,7 +162,7 @@ void purple_account_manager_shutdown(void);
  *
  * Starts up the contact manager by creating the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_contact_manager_startup(void);
@@ -172,7 +172,7 @@ void purple_contact_manager_startup(void);
  *
  * Shuts down the contact manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_contact_manager_shutdown(void);
@@ -182,7 +182,7 @@ void purple_contact_manager_shutdown(void);
  *
  * Starts up the conversation manager by creating the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_conversation_manager_startup(void);
@@ -192,7 +192,7 @@ void purple_conversation_manager_startup(void);
  *
  * Shuts down the conversation manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_conversation_manager_shutdown(void);
@@ -202,7 +202,7 @@ void purple_conversation_manager_shutdown(void);
  *
  * Starts up the credential manager by creating the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_credential_manager_startup(void);
@@ -212,7 +212,7 @@ void purple_credential_manager_startup(void);
  *
  * Shuts down the credential manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_credential_manager_shutdown(void);
@@ -222,7 +222,7 @@ void purple_credential_manager_shutdown(void);
  *
  * Starts up the protocol manager by creating the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_protocol_manager_startup(void);
@@ -232,7 +232,7 @@ void purple_protocol_manager_startup(void);
  *
  * Shuts down the protocol manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_protocol_manager_shutdown(void);
@@ -243,7 +243,7 @@ void purple_protocol_manager_shutdown(void);
  *
  * Tells a @provider that it has become the active provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_credential_provider_activate(PurpleCredentialProvider *provider);
@@ -255,7 +255,7 @@ void purple_credential_provider_activate(PurpleCredentialProvider *provider);
  * Tells @provider that another #PurpleCredentialProvider has become the active
  * provider.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_credential_provider_deactivate(PurpleCredentialProvider *provider);
@@ -272,7 +272,7 @@ void purple_credential_provider_deactivate(PurpleCredentialProvider *provider);
  *
  * Returns: %TRUE on success otherwise %FALSE with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_activate(PurpleHistoryAdapter *adapter, GError **error);
@@ -289,7 +289,7 @@ gboolean purple_history_adapter_activate(PurpleHistoryAdapter *adapter, GError *
  *
  * Returns: %TRUE on success otherwise %FALSE with @error set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_deactivate(PurpleHistoryAdapter *adapter, GError **error);
@@ -299,7 +299,7 @@ gboolean purple_history_adapter_deactivate(PurpleHistoryAdapter *adapter, GError
  *
  * Starts up the notification manager by creating the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_notification_manager_startup(void);
@@ -309,7 +309,7 @@ void purple_notification_manager_startup(void);
  *
  * Shuts down the notification manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_notification_manager_shutdown(void);
@@ -319,7 +319,7 @@ void purple_notification_manager_shutdown(void);
  *
  * Starts up the whiteboard manager by creating the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_whiteboard_manager_startup(void);
@@ -329,7 +329,7 @@ void purple_whiteboard_manager_startup(void);
  *
  * Shuts down the whiteboard manager by destroying the default instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_whiteboard_manager_shutdown(void);
@@ -345,7 +345,7 @@ void purple_whiteboard_manager_shutdown(void);
  * Its primary usage is when loading accounts from disk, as without this, the
  * account attempts to connect immediately.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL
 void purple_account_set_enabled_plain(PurpleAccount *account, gboolean enabled);

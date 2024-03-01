@@ -48,7 +48,7 @@ G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
  * #PurpleProtocolClient interface defines the behavior of a typical chat
  * service's client interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -114,7 +114,7 @@ G_DECLARE_INTERFACE(PurpleProtocolClient, purple_protocol_client, PURPLE,
  *
  * This interface provides a gateway between purple and the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolClientInterface {
 	/*< private >*/
@@ -154,7 +154,7 @@ G_BEGIN_DECLS
  *
  * Returns: The icon name of the emblem or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_client_list_emblem(PurpleProtocolClient *client, PurpleBuddy *buddy);
@@ -170,7 +170,7 @@ const gchar *purple_protocol_client_list_emblem(PurpleProtocolClient *client, Pu
  * Returns: (transfer full) (element-type PurpleActionMenu): The list of
  *          #PurpleActionMenu structs to display for @node.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_client_blist_node_menu(PurpleProtocolClient *client, PurpleBlistNode *node);
@@ -182,7 +182,7 @@ GList *purple_protocol_client_blist_node_menu(PurpleProtocolClient *client, Purp
  *
  * Cleans up any protocol specific data for @buddy.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_client_buddy_free(PurpleProtocolClient *client, PurpleBuddy *buddy);
@@ -195,7 +195,7 @@ void purple_protocol_client_buddy_free(PurpleProtocolClient *client, PurpleBuddy
  *
  * Closes the conversation named @who on connection @connection.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_client_convo_closed(PurpleProtocolClient *client, PurpleConnection *connection, const gchar *who);
@@ -212,9 +212,9 @@ void purple_protocol_client_convo_closed(PurpleProtocolClient *client, PurpleCon
  *
  * Returns: The normalized version of @who for @account.
  *
- * Since: 3.0.0
+ * Since: 3.0
  *
- * Deprecated: 3.0.0: This should use purple_protocol_client_normalize_name when
+ * Deprecated: 3.0: This should use purple_protocol_client_normalize_name when
  *             it is created which will return an allocated value.
  */
 PURPLE_DEPRECATED
@@ -231,7 +231,7 @@ const gchar *purple_protocol_client_normalize(PurpleProtocolClient *client, Purp
  * Returns: (transfer none): The #PurpleChat instance or %NULL if no chat could
  *          be found.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleChat *purple_protocol_client_find_blist_chat(PurpleProtocolClient *client, PurpleAccount *account, const gchar *name);
@@ -245,7 +245,7 @@ PurpleChat *purple_protocol_client_find_blist_chat(PurpleProtocolClient *client,
  *
  * Returns: %TRUE if @buddy supports offline messages, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_client_offline_message(PurpleProtocolClient *client, PurpleBuddy *buddy);
@@ -262,9 +262,9 @@ gboolean purple_protocol_client_offline_message(PurpleProtocolClient *client, Pu
  *
  * Returns: (transfer full): The newly allocated text table.
  *
- * Since: 3.0.0
+ * Since: 3.0
  *
- * Deprecated: 3.0.0: This is a premature optimization. Right now this is only
+ * Deprecated: 3.0: This is a premature optimization. Right now this is only
  *             used by GaduGadu for a single item and should be replaced.
  */
 PURPLE_DEPRECATED
@@ -280,7 +280,7 @@ GHashTable *purple_protocol_client_get_account_text_table(PurpleProtocolClient *
  * Returns: The maximum number of characters per message for @conv or -1 for no
  *          limit.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gssize purple_protocol_client_get_max_message_size(PurpleProtocolClient *client, PurpleConversation *conv);

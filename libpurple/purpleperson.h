@@ -49,7 +49,7 @@ G_DECLARE_FINAL_TYPE(PurplePerson, purple_person, PURPLE, PERSON, GObject)
  * A collection of [class@Purple.ContactInfo] that contains a user selectable
  * custom avatar and alias.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -59,7 +59,7 @@ G_DECLARE_FINAL_TYPE(PurplePerson, purple_person, PURPLE, PERSON, GObject)
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePerson *purple_person_new(void);
@@ -72,7 +72,7 @@ PurplePerson *purple_person_new(void);
  *
  * Returns: The id of @person.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_id(PurplePerson *person);
@@ -87,7 +87,7 @@ const char *purple_person_get_id(PurplePerson *person);
  *
  * Returns: (nullable): The alias of @person or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_alias(PurplePerson *person);
@@ -105,7 +105,7 @@ const char *purple_person_get_alias(PurplePerson *person);
  *
  * If @alias is %NULL, then the previous alias is cleared.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_person_set_alias(PurplePerson *person, const char *alias);
@@ -121,7 +121,7 @@ void purple_person_set_alias(PurplePerson *person, const char *alias);
  *
  * Returns: (transfer none) (nullable): The avatar to display.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_person_get_avatar_for_display(PurplePerson *person);
@@ -134,7 +134,7 @@ PurpleAvatar *purple_person_get_avatar_for_display(PurplePerson *person);
  *
  * Returns: (transfer none) (nullable): The avatar for @person.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAvatar *purple_person_get_avatar(PurplePerson *person);
@@ -151,7 +151,7 @@ PurpleAvatar *purple_person_get_avatar(PurplePerson *person);
  * custom avatar. Protocol plugins should only be setting the avatars of
  * [class@Purple.Contact].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_person_set_avatar(PurplePerson *person, PurpleAvatar *avatar);
@@ -164,7 +164,7 @@ void purple_person_set_avatar(PurplePerson *person, PurpleAvatar *avatar);
  *
  * Returns: (nullable): The custom color or %NULL if one is not set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_color(PurplePerson *person);
@@ -177,7 +177,7 @@ const char *purple_person_get_color(PurplePerson *person);
  * Sets the custom color of @person to @color. If @color is %NULL the custom
  * color is removed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_person_set_color(PurplePerson *person, const char *color);
@@ -192,7 +192,7 @@ void purple_person_set_color(PurplePerson *person, const char *color);
  *
  * Returns: The color to display for @person.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_color_for_display(PurplePerson *person);
@@ -205,7 +205,7 @@ const char *purple_person_get_color_for_display(PurplePerson *person);
  *
  * Returns: (transfer none): The tags for @person.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_person_get_tags(PurplePerson *person);
@@ -219,7 +219,7 @@ PurpleTags *purple_person_get_tags(PurplePerson *person);
  *
  * Returns: (transfer none): The name to display for @person.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_name_for_display(PurplePerson *person);
@@ -234,7 +234,7 @@ const char *purple_person_get_name_for_display(PurplePerson *person);
  * Duplicate contacts are currently allowed, but that may change at a later
  * time.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_person_add_contact_info(PurplePerson *person, PurpleContactInfo *info);
@@ -248,7 +248,7 @@ void purple_person_add_contact_info(PurplePerson *person, PurpleContactInfo *inf
  *
  * Returns: %TRUE if @info was found and removed otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_person_remove_contact_info(PurplePerson *person, PurpleContactInfo *info);
@@ -262,7 +262,7 @@ gboolean purple_person_remove_contact_info(PurplePerson *person, PurpleContactIn
  * Returns: (transfer none) (nullable): The priority contact or %NULL if
  *          @person does not have any contacts.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_person_get_priority_contact_info(PurplePerson *person);
@@ -275,7 +275,7 @@ PurpleContactInfo *purple_person_get_priority_contact_info(PurplePerson *person)
  *
  * Returns: %TRUE if @person has at least one contact, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_person_has_contacts(PurplePerson *person);
@@ -293,7 +293,7 @@ gboolean purple_person_has_contacts(PurplePerson *person);
  *
  * Returns: %TRUE if @person matches @needle in any way.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_person_matches(PurplePerson *person, const char *needle);

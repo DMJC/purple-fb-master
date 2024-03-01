@@ -44,7 +44,7 @@
  *
  * A type of proxy connection.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 typedef enum {
     PURPLE_PROXY_TYPE_USE_GLOBAL = -1,
@@ -71,7 +71,7 @@ G_DECLARE_FINAL_TYPE(PurpleProxyInfo, purple_proxy_info, PURPLE, PROXY_INFO,
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleProxyInfo *purple_proxy_info_new(void);
@@ -83,7 +83,7 @@ PurpleProxyInfo *purple_proxy_info_new(void);
  *
  * Sets the type of @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_proxy_info_set_proxy_type(PurpleProxyInfo *info, PurpleProxyType proxy_type);
@@ -96,7 +96,7 @@ void purple_proxy_info_set_proxy_type(PurpleProxyInfo *info, PurpleProxyType pro
  *
  * Returns: The type of the proxy.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleProxyType purple_proxy_info_get_proxy_type(PurpleProxyInfo *info);
@@ -108,7 +108,7 @@ PurpleProxyType purple_proxy_info_get_proxy_type(PurpleProxyInfo *info);
  *
  * Sets the hostname for the proxy.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_proxy_info_set_hostname(PurpleProxyInfo *info, const gchar *hostname);
@@ -121,7 +121,7 @@ void purple_proxy_info_set_hostname(PurpleProxyInfo *info, const gchar *hostname
  *
  * Returns: The hostname.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_proxy_info_get_hostname(PurpleProxyInfo *info);
@@ -133,7 +133,7 @@ const gchar *purple_proxy_info_get_hostname(PurpleProxyInfo *info);
  *
  * Sets the port for the proxy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_info_set_port(PurpleProxyInfo *info, gint port);
@@ -146,7 +146,7 @@ void purple_proxy_info_set_port(PurpleProxyInfo *info, gint port);
  *
  * Returns: The port of the proxy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gint purple_proxy_info_get_port(PurpleProxyInfo *info);
@@ -158,7 +158,7 @@ gint purple_proxy_info_get_port(PurpleProxyInfo *info);
  *
  * Sets the username of the proxy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_info_set_username(PurpleProxyInfo *info, const gchar *username);
@@ -171,7 +171,7 @@ void purple_proxy_info_set_username(PurpleProxyInfo *info, const gchar *username
  *
  * Returns: The username of the proxy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_proxy_info_get_username(PurpleProxyInfo *info);
@@ -183,7 +183,7 @@ const gchar *purple_proxy_info_get_username(PurpleProxyInfo *info);
  *
  * Sets the password for the proxy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_proxy_info_set_password(PurpleProxyInfo *info, const gchar *password);
@@ -196,7 +196,7 @@ void purple_proxy_info_set_password(PurpleProxyInfo *info, const gchar *password
  *
  * Returns: The password of the proxy.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 const gchar *purple_proxy_info_get_password(PurpleProxyInfo *info);

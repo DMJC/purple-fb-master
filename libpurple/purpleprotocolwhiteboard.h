@@ -46,7 +46,7 @@ G_DECLARE_INTERFACE(PurpleProtocolWhiteboard, purple_protocol_whiteboard, PURPLE
  * The #PurpleProtocolWhiteboard interface defines the behavior of a protocol's
  * whiteboard interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -57,7 +57,7 @@ G_DECLARE_INTERFACE(PurpleProtocolWhiteboard, purple_protocol_whiteboard, PURPLE
  *
  * This interface provides a gateway between purple and the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolWhiteboardInterface {
 	/*< private >*/
@@ -83,7 +83,7 @@ G_BEGIN_DECLS
  *
  * Returns: (transfer full): The new whiteboard instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboard *purple_protocol_whiteboard_create(PurpleProtocolWhiteboard *whiteboard, PurpleAccount *account, const gchar *who, gint state);

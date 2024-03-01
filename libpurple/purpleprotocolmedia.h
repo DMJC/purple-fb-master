@@ -49,7 +49,7 @@ G_BEGIN_DECLS
  * #PurpleProtocolMedia describes the multimedia api that is available for
  * protocols.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -75,7 +75,7 @@ G_BEGIN_DECLS
  *
  * This interface provides callbacks for media sessions on the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolMediaInterface {
 	/*< private >*/
@@ -103,7 +103,7 @@ struct _PurpleProtocolMediaInterface {
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_media_initiate_session(PurpleProtocolMedia *media, PurpleAccount *account, const gchar *who, PurpleMediaSessionType type);
@@ -119,7 +119,7 @@ gboolean purple_protocol_media_initiate_session(PurpleProtocolMedia *media, Purp
  *
  * Returns: the media capabilities of @who.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleMediaCaps purple_protocol_media_get_caps(PurpleProtocolMedia *media, PurpleAccount *account, const gchar *who);
@@ -139,7 +139,7 @@ PurpleMediaCaps purple_protocol_media_get_caps(PurpleProtocolMedia *media, Purpl
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_media_send_dtmf(PurpleProtocolMedia *protocol_media, PurpleMedia *media, gchar dtmf, guint8 volume, guint8 duration);

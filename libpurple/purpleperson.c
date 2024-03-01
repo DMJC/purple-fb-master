@@ -375,7 +375,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 *
 	 * The protocol specific id for the contact.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -388,7 +388,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 *
 	 * The alias for this person. This is controlled by the libpurple user.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ALIAS] = g_param_spec_string(
 		"alias", "alias",
@@ -402,7 +402,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 * The avatar for this person. This is controlled by the libpurple user,
 	 * which they can use to set a custom avatar.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_AVATAR] = g_param_spec_object(
 		"avatar", "avatar",
@@ -418,7 +418,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 * [property@Purple.ContactInfo:avatar] for
 	 * [property@Purple.Person:priority-contact-info] will be returned.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_AVATAR_FOR_DISPLAY] = g_param_spec_object(
 		"avatar-for-display", "avatar-for-display",
@@ -435,7 +435,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 * This is an RGB hex code that user interfaces can use when rendering the
 	 * person.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_COLOR] = g_param_spec_string(
 		"color", "color",
@@ -452,7 +452,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 * otherwise it will return the value of [property@ContactInfo:color] of
 	 * the priority contact info.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_COLOR_FOR_DISPLAY] = g_param_spec_string(
 		"color-for-display", "color-for-display",
@@ -465,7 +465,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 *
 	 * The [class@Purple.Tags] for this person.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_TAGS] = g_param_spec_object(
 		"tags", "tags",
@@ -484,7 +484,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 * [property@Purple.Person:priority-contact-info] is %NULL, then %NULL will
 	 * be returned.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NAME_FOR_DISPLAY] = g_param_spec_string(
 		"name-for-display", "name-for-display",
@@ -500,7 +500,7 @@ purple_person_class_init(PurplePersonClass *klass) {
 	 * This is used by user interfaces to determine which
 	 * [class@Purple.ContactInfo] to use when messaging and so on.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PRIORITY_CONTACT_INFO] = g_param_spec_object(
 		"priority-contact-info", "priority-contact-info",

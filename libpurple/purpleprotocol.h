@@ -39,7 +39,7 @@
  *
  * #PurpleProtocol is the base type for all protocols in libpurple.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 PURPLE_AVAILABLE_IN_3_0
@@ -79,18 +79,18 @@ G_DECLARE_DERIVABLE_TYPE(PurpleProtocol, purple_protocol, PURPLE, PROTOCOL,
  *           to this protocol.<sbr/>
  *           Used as a hint that unknown commands should not be sent as
  *           messages.
- *           Since: 2.1.0
+ *           Since: 2.1
  * @OPT_PROTO_INVITE_MESSAGE: Indicates that this protocol supports sending a
  *           user-supplied message along with an invitation.
- *           Since: 2.8.0
+ *           Since: 2.8
  * @OPT_PROTO_AUTHORIZATION_GRANTED_MESSAGE: Indicates that this protocol
  *           supports sending a user-supplied message along with an
  *           authorization acceptance.
- *           Since: 3.0.0
+ *           Since: 3.0
  * @OPT_PROTO_AUTHORIZATION_DENIED_MESSAGE: Indicates that this protocol
  *           supports sending a user-supplied message along with an
  *           authorization denial.
- *           Since: 3.0.0
+ *           Since: 3.0
  *
  * Protocol options
  *
@@ -132,7 +132,7 @@ typedef enum  /*< flags >*/
  *
  * All protocol types must implement the methods in this class.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolClass {
 	GObjectClass parent_class;
@@ -166,7 +166,7 @@ struct _PurpleProtocolClass {
  * Returns: %TRUE if a protocol implements a function in an interface,
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_PROTOCOL_IMPLEMENTS(protocol, IFACE, func) \
 	(PURPLE_IS_PROTOCOL_##IFACE(protocol) && \
@@ -182,7 +182,7 @@ G_BEGIN_DECLS
  *
  * Returns: The ID of the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_id(PurpleProtocol *protocol);
@@ -195,7 +195,7 @@ const gchar *purple_protocol_get_id(PurpleProtocol *protocol);
  *
  * Returns: The translated name of the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_name(PurpleProtocol *protocol);
@@ -208,7 +208,7 @@ const gchar *purple_protocol_get_name(PurpleProtocol *protocol);
  *
  * Returns: The Description of the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_description(PurpleProtocol *protocol);
@@ -221,7 +221,7 @@ const gchar *purple_protocol_get_description(PurpleProtocol *protocol);
  *
  * Returns: The options of the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleProtocolOptions purple_protocol_get_options(PurpleProtocol *protocol);
@@ -235,7 +235,7 @@ PurpleProtocolOptions purple_protocol_get_options(PurpleProtocol *protocol);
  * Returns: (element-type PurpleAccountUserSplit) (transfer full): The user
  *          splits of the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_user_splits(PurpleProtocol *protocol);
@@ -249,7 +249,7 @@ GList *purple_protocol_get_user_splits(PurpleProtocol *protocol);
  * Returns: (element-type PurpleAccountOption) (transfer full): The account
  *          options for the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_account_options(PurpleProtocol *protocol);
@@ -262,7 +262,7 @@ GList *purple_protocol_get_account_options(PurpleProtocol *protocol);
  *
  * Returns: (transfer full): The icon spec of the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleBuddyIconSpec *purple_protocol_get_icon_spec(PurpleProtocol *protocol);
@@ -275,7 +275,7 @@ PurpleBuddyIconSpec *purple_protocol_get_icon_spec(PurpleProtocol *protocol);
  *
  * Returns: (transfer none): The whiteboard ops of the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboardOps *purple_protocol_get_whiteboard_ops(PurpleProtocol *protocol);
@@ -287,7 +287,7 @@ PurpleWhiteboardOps *purple_protocol_get_whiteboard_ops(PurpleProtocol *protocol
  *
  * Logs @account in to @protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_login(PurpleProtocol *protocol, PurpleAccount *account);
@@ -299,7 +299,7 @@ void purple_protocol_login(PurpleProtocol *protocol, PurpleAccount *account);
  *
  * Closes @connection using @protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *connection);
@@ -317,7 +317,7 @@ void purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *connectio
  * Most protocol plugins will call [method@Gio.NetworkMonitor.can_reach_async]
  * to determine if a connection is possible.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_can_connect_async(PurpleProtocol *protocol, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -333,7 +333,7 @@ void purple_protocol_can_connect_async(PurpleProtocol *protocol, PurpleAccount *
  *
  * Returns: %TRUE on success, otherwise %FALSE with @error optionally set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_can_connect_finish(PurpleProtocol *protocol, GAsyncResult *result, GError **error);
@@ -353,7 +353,7 @@ gboolean purple_protocol_can_connect_finish(PurpleProtocol *protocol, GAsyncResu
  * Returns: (transfer full): The new connection or %NULL with @error possibly
  *          set on error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConnection *purple_protocol_create_connection(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
@@ -368,7 +368,7 @@ PurpleConnection *purple_protocol_create_connection(PurpleProtocol *protocol, Pu
  * Returns: (transfer full) (element-type PurpleStatusType): A list of the
  *          available PurpleStatusType's for @account with @protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_status_types(PurpleProtocol *protocol, PurpleAccount *account);
@@ -383,7 +383,7 @@ GList *purple_protocol_get_status_types(PurpleProtocol *protocol, PurpleAccount 
  *
  * Returns: The name of the icon for @protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_icon_name(PurpleProtocol *protocol);
@@ -402,7 +402,7 @@ const gchar *purple_protocol_get_icon_name(PurpleProtocol *protocol);
  *
  * Returns: The file system path where the icons can be found.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_icon_search_path(PurpleProtocol *protocol);
@@ -421,7 +421,7 @@ const gchar *purple_protocol_get_icon_search_path(PurpleProtocol *protocol);
  *
  * Returns: The gresource path where the icons can be found.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_get_icon_resource_path(PurpleProtocol *protocol);

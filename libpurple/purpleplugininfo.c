@@ -214,7 +214,7 @@ purple_plugin_info_class_init(PurplePluginInfoClass *klass) {
 	 *
 	 * An [iface@Gio.ActionGroup] of actions that this plugin provides.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACTION_GROUP] = g_param_spec_object(
 		"action-group", "action-group",
@@ -227,7 +227,7 @@ purple_plugin_info_class_init(PurplePluginInfoClass *klass) {
 	 *
 	 * A [class@Gio.MenuModel] for activating actions.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACTION_MENU] = g_param_spec_object(
 		"action-menu", "action-menu",

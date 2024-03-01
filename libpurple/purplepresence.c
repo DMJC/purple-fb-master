@@ -211,7 +211,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * Whether or not the presence is in an idle state.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_IDLE] = g_param_spec_boolean("idle", "Idle",
 				"Whether the presence is in idle state.", FALSE,
@@ -222,7 +222,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * The time when the presence went idle.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_IDLE_TIME] = g_param_spec_boxed(
 				"idle-time", "Idle time",
@@ -235,7 +235,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * The login-time of the presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_LOGIN_TIME] = g_param_spec_boxed(
 		"login-time", "Login time",
@@ -248,7 +248,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * The currently active status of the presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACTIVE_STATUS] = g_param_spec_object("active-status",
 				"Active status",
@@ -260,7 +260,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * The [enum@Purple.StatusPrimitive] for this presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PRIMITIVE] = g_param_spec_enum(
 		"primitive", "primitive",
@@ -274,7 +274,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * The status message of the presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MESSAGE] = g_param_spec_string(
 		"message", "message",
@@ -287,7 +287,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * The emoji or mood of the presence.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_EMOJI] = g_param_spec_string(
 		"emoji", "emoji",
@@ -300,7 +300,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * Whether or not the presence is on a mobile device.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_MOBILE] = g_param_spec_boolean(
 		"mobile", "mobile",
@@ -317,7 +317,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * default it displays that the user has notifications turned off outside
 	 * of that schedule.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NOTIFICATIONS_DISABLED] = g_param_spec_boolean(
 		"notifications-disabled", "notifications-disabled",

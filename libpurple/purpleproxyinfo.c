@@ -134,7 +134,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
      *
      * The [enum@ProxyType] to use for this proxy.
      *
-     * Since: 3.0.0
+     * Since: 3.0
      */
     properties[PROP_PROXY_TYPE] = g_param_spec_enum(
         "proxy-type", "proxy-type",
@@ -148,7 +148,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
      *
      * The hostname to use for this proxy.
      *
-     * Since: 3.0.0
+     * Since: 3.0
      */
     properties[PROP_HOSTNAME] = g_param_spec_string(
         "hostname", "hostname",
@@ -161,7 +161,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
      *
      * The port to use for this proxy.
      *
-     * Since: 3.0.0
+     * Since: 3.0
      */
     properties[PROP_PORT] = g_param_spec_int(
         "port", "port",
@@ -174,7 +174,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
      *
      * The username to use for this proxy.
      *
-     * Since: 3.0.0
+     * Since: 3.0
      */
     properties[PROP_USERNAME] = g_param_spec_string(
         "username", "username",
@@ -187,7 +187,7 @@ purple_proxy_info_class_init(PurpleProxyInfoClass *klass) {
      *
      * The password to use for this proxy.
      *
-     * Since: 3.0.0
+     * Since: 3.0
      */
     properties[PROP_PASSWORD] = g_param_spec_string(
         "password", "password",

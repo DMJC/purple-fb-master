@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  *
  * Returns: The purple cache directory.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_cache_dir(void);
@@ -58,7 +58,7 @@ const gchar *purple_cache_dir(void);
  *
  * Returns: The purple configuration directory.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_config_dir(void);
@@ -73,7 +73,7 @@ const gchar *purple_config_dir(void);
  *
  * Returns: The purple data directory.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_data_dir(void);
@@ -84,7 +84,7 @@ const gchar *purple_data_dir(void);
  *
  * Define a custom purple settings directory, overriding the default (user's home directory/.purple)
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_util_set_user_dir(const gchar *dir);

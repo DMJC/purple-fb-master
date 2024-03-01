@@ -47,7 +47,7 @@
  * Note: When a presence is destroyed with the last g_object_unref(), all
  * statuses added to this list will be destroyed along with the presence.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 
 typedef struct _PurplePresence PurplePresence;
@@ -76,7 +76,7 @@ typedef struct _PurplePresence PurplePresence;
  *
  * An enum that is used to determine the type of a [class@Purple.Presence].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
@@ -98,7 +98,7 @@ G_BEGIN_DECLS
  *
  * The base class for all #PurplePresence's.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurplePresenceClass {
 	/*< private >*/
@@ -125,7 +125,7 @@ G_DECLARE_DERIVABLE_TYPE(PurplePresence, purple_presence, PURPLE, PRESENCE,
  *
  * Returns: (transfer full): The new instance.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurplePresence *purple_presence_new(void);
@@ -142,7 +142,7 @@ PurplePresence *purple_presence_new(void);
  * be set active, so if you wish to disable a status, set another
  * non-independent status to active, or use purple_presence_switch_status().
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_presence_set_status_active(PurplePresence *presence, const gchar *status_id, gboolean active);
@@ -157,7 +157,7 @@ void purple_presence_set_status_active(PurplePresence *presence, const gchar *st
  * This is similar to purple_presence_set_status_active(), except it won't
  * activate independent statuses.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_presence_switch_status(PurplePresence *presence, const gchar *status_id);
@@ -172,7 +172,7 @@ void purple_presence_switch_status(PurplePresence *presence, const gchar *status
  *
  * Sets the idle state and time of @presence.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_presence_set_idle(PurplePresence *presence, gboolean idle, GDateTime *idle_time);
@@ -184,7 +184,7 @@ void purple_presence_set_idle(PurplePresence *presence, gboolean idle, GDateTime
  *
  * Sets the login time on a presence.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_presence_set_login_time(PurplePresence *presence, GDateTime *login_time);
@@ -197,7 +197,7 @@ void purple_presence_set_login_time(PurplePresence *presence, GDateTime *login_t
  *
  * Returns: (element-type PurpleStatus) (transfer none): The statuses.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GList *purple_presence_get_statuses(PurplePresence *presence);
@@ -211,7 +211,7 @@ GList *purple_presence_get_statuses(PurplePresence *presence);
  *
  * Returns: (transfer none): The #PurpleStatus if found, or %NULL.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatus *purple_presence_get_status(PurplePresence *presence, const gchar *status_id);
@@ -224,7 +224,7 @@ PurpleStatus *purple_presence_get_status(PurplePresence *presence, const gchar *
  *
  * Returns: (transfer none): The active exclusive status.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleStatus *purple_presence_get_active_status(PurplePresence *presence);
@@ -239,7 +239,7 @@ PurpleStatus *purple_presence_get_active_status(PurplePresence *presence);
  *
  * Returns: %TRUE if the presence is available, or %FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_presence_is_available(PurplePresence *presence);
@@ -252,7 +252,7 @@ gboolean purple_presence_is_available(PurplePresence *presence);
  *
  * Returns: %TRUE if the presence is online, or %FALSE otherwise.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_presence_is_online(PurplePresence *presence);
@@ -268,7 +268,7 @@ gboolean purple_presence_is_online(PurplePresence *presence);
  *
  * Returns: %TRUE if the status is active, or %FALSE.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_presence_is_status_active(PurplePresence *presence, const gchar *status_id);
@@ -285,7 +285,7 @@ gboolean purple_presence_is_status_active(PurplePresence *presence, const gchar 
  *
  * Returns: %TRUE if the status is active, or %FALSE.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_presence_is_status_primitive_active(PurplePresence *presence, PurpleStatusPrimitive primitive);
@@ -300,7 +300,7 @@ gboolean purple_presence_is_status_primitive_active(PurplePresence *presence, Pu
  *          presence is offline (purple_presence_is_online() returns %FALSE)
  *          then %FALSE is returned.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_presence_is_idle(PurplePresence *presence);
@@ -314,7 +314,7 @@ gboolean purple_presence_is_idle(PurplePresence *presence);
  *
  * Returns: (nullable): The idle time of @presence or %NULL.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GDateTime *purple_presence_get_idle_time(PurplePresence *presence);
@@ -327,7 +327,7 @@ GDateTime *purple_presence_get_idle_time(PurplePresence *presence);
  *
  * Returns: (transfer none): The login time of @presence.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 GDateTime *purple_presence_get_login_time(PurplePresence *presence);
@@ -343,7 +343,7 @@ GDateTime *purple_presence_get_login_time(PurplePresence *presence);
  *           0 if @presence1 is equal to @presence2.
  *           1 if @presence1 is less available than @presence2.
  *
- * Since: 2.0.0
+ * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
 gint purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2);
@@ -356,7 +356,7 @@ gint purple_presence_compare(PurplePresence *presence1, PurplePresence *presence
  *
  * Returns: The current primitive.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePresencePrimitive purple_presence_get_primitive(PurplePresence *presence);
@@ -368,7 +368,7 @@ PurplePresencePrimitive purple_presence_get_primitive(PurplePresence *presence);
  *
  * Sets the [enum@Purple.StatusPrimitive] for @presence to @primitive.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_primitive(PurplePresence *presence, PurplePresencePrimitive primitive);
@@ -381,7 +381,7 @@ void purple_presence_set_primitive(PurplePresence *presence, PurplePresencePrimi
  *
  * Returns: (nullable): The status message of @presence.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_presence_get_message(PurplePresence *presence);
@@ -393,7 +393,7 @@ const char *purple_presence_get_message(PurplePresence *presence);
  *
  * Sets the status message of @presence to @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_message(PurplePresence *presence, const char *message);
@@ -406,7 +406,7 @@ void purple_presence_set_message(PurplePresence *presence, const char *message);
  *
  * Returns: The current emoji or %NULL if none is set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_presence_get_emoji(PurplePresence *presence);
@@ -419,7 +419,7 @@ const char *purple_presence_get_emoji(PurplePresence *presence);
  * Sets the current emoji, sometimes referred to as a mood, of @presence to
  * @emoji.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_emoji(PurplePresence *presence, const char *emoji);
@@ -432,7 +432,7 @@ void purple_presence_set_emoji(PurplePresence *presence, const char *emoji);
  *
  * Returns: %TRUE if @presence is on a mobile device, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_presence_get_mobile(PurplePresence *presence);
@@ -444,7 +444,7 @@ gboolean purple_presence_get_mobile(PurplePresence *presence);
  *
  * Sets whether or not @presence is on a mobile device.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_mobile(PurplePresence *presence, gboolean mobile);
@@ -457,7 +457,7 @@ void purple_presence_set_mobile(PurplePresence *presence, gboolean mobile);
  *
  * Returns: %TRUE if @presence has notifications disabled, otherwise %FALSE.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_presence_get_notifications_disabled(PurplePresence *presence);
@@ -469,7 +469,7 @@ gboolean purple_presence_get_notifications_disabled(PurplePresence *presence);
  *
  * Sets whether or not @presence has notifications disabled.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_presence_set_notifications_disabled(PurplePresence *presence, gboolean notifications_disabled);
@@ -483,7 +483,7 @@ void purple_presence_set_notifications_disabled(PurplePresence *presence, gboole
  *
  * Returns: The string representation.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_presence_primitive_to_string(PurplePresencePrimitive primitive);

@@ -44,7 +44,7 @@ G_BEGIN_DECLS
  * #PurpleProtocolRoomlist is an interface to abstract how to handle rooms
  * lists at the protocol level.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 PURPLE_AVAILABLE_IN_3_0
@@ -58,7 +58,7 @@ G_DECLARE_INTERFACE(PurpleProtocolRoomlist, purple_protocol_roomlist, PURPLE,
  *
  * This interface provides callbacks for room listing.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolRoomlistInterface {
 	/*< private >*/
@@ -86,7 +86,7 @@ struct _PurpleProtocolRoomlistInterface {
  *
  * Returns: (transfer full): The roomlist for @gc.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleRoomlist *purple_protocol_roomlist_get_list(PurpleProtocolRoomlist *protocol_roomlist, PurpleConnection *gc);
@@ -99,7 +99,7 @@ PurpleRoomlist *purple_protocol_roomlist_get_list(PurpleProtocolRoomlist *protoc
  * Requesting a roomlist can take a long time. This function cancels a request
  * that's already in progress.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roomlist_cancel(PurpleProtocolRoomlist *protocol_roomlist, PurpleRoomlist *list);
@@ -112,7 +112,7 @@ void purple_protocol_roomlist_cancel(PurpleProtocolRoomlist *protocol_roomlist, 
  *
  * Expands the given @category for @list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roomlist_expand_category(PurpleProtocolRoomlist *protocol_roomlist, PurpleRoomlist *list, PurpleRoomlistRoom *category);
@@ -126,7 +126,7 @@ void purple_protocol_roomlist_expand_category(PurpleProtocolRoomlist *protocol_r
  *
  * Returns: (transfer full): The serialized form of @room.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 char *purple_protocol_roomlist_room_serialize(PurpleProtocolRoomlist *protocol_roomlist, PurpleRoomlistRoom *room);

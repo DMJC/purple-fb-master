@@ -44,7 +44,7 @@
  * #PurplePluginInfo is a #GPluginPluginInfo subclass that adds additional
  * libpurple specific properties.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 PURPLE_AVAILABLE_IN_3_0
@@ -58,7 +58,7 @@ G_DECLARE_DERIVABLE_TYPE(PurplePluginInfo, purple_plugin_info, PURPLE,
  *
  * An opaque type representing the class of a #PurplePluginInfo.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurplePluginInfoClass {
 	/*< private >*/
@@ -74,7 +74,7 @@ struct _PurplePluginInfoClass {
  *
  * Flags that can be used to treat plugins differently.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum /*< flags >*/
@@ -206,7 +206,7 @@ G_BEGIN_DECLS
  *
  * Returns: A new #PurplePluginInfo instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GPluginPluginInfo *purple_plugin_info_new(const char *first_property, ...) G_GNUC_NULL_TERMINATED;
@@ -219,7 +219,7 @@ GPluginPluginInfo *purple_plugin_info_new(const char *first_property, ...) G_GNU
  *
  * Returns: The flags of the plugin.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurplePluginInfoFlags purple_plugin_info_get_flags(PurplePluginInfo *info);
@@ -233,7 +233,7 @@ PurplePluginInfoFlags purple_plugin_info_get_flags(PurplePluginInfo *info);
  *
  * Returns: The plugin info error, or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_plugin_info_get_error(PurplePluginInfo *info);
@@ -246,7 +246,7 @@ const gchar *purple_plugin_info_get_error(PurplePluginInfo *info);
  *
  * Returns: %TRUE if the plugin has been unloaded previously, or %FALSE if not.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_plugin_info_get_unloaded(PurplePluginInfo *info);
@@ -258,7 +258,7 @@ gboolean purple_plugin_info_get_unloaded(PurplePluginInfo *info);
  *
  * Sets the unloaded state of @info to @unloaded.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_plugin_info_set_unloaded(PurplePluginInfo *info, gboolean unloaded);
@@ -271,7 +271,7 @@ void purple_plugin_info_set_unloaded(PurplePluginInfo *info, gboolean unloaded);
  *
  * Returns: (transfer full): The action group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GActionGroup *purple_plugin_info_get_action_group(PurplePluginInfo *info);
@@ -284,7 +284,7 @@ GActionGroup *purple_plugin_info_get_action_group(PurplePluginInfo *info);
  *
  * Returns: (transfer full): The menu model.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GMenuModel *purple_plugin_info_get_action_menu(PurplePluginInfo *info);

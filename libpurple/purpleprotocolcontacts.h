@@ -46,7 +46,7 @@ G_DECLARE_INTERFACE(PurpleProtocolContacts,
  * #PurpleProtocolContacts provides methods for interacting with remote
  * contacts.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -54,7 +54,7 @@ G_DECLARE_INTERFACE(PurpleProtocolContacts,
  *
  * A domain for errors from the [class@ProtocolContacts] API.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_PROTOCOL_CONTACTS_DOMAIN \
 	g_quark_from_static_string("purple-protocol-contacts") \
@@ -67,7 +67,7 @@ G_DECLARE_INTERFACE(PurpleProtocolContacts,
  * protocol layer. These methods will primarily be called by the user
  * interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolContactsInterface {
 	/*< private >*/
@@ -104,7 +104,7 @@ G_BEGIN_DECLS
  *
  * Call [method@ProtocolContacts.search_finish] to get the results.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_contacts_search_async(PurpleProtocolContacts *protocol_contacts, PurpleAccount *account, const char *text, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -122,7 +122,7 @@ void purple_protocol_contacts_search_async(PurpleProtocolContacts *protocol_cont
  * Returns: (transfer full): A [iface@Gio.ListModel] of the matched contacts or
  *          %NULL with @error set on error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GListModel *purple_protocol_contacts_search_finish(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
@@ -140,7 +140,7 @@ GListModel *purple_protocol_contacts_search_finish(PurpleProtocolContacts *proto
  *
  * Call [method@ProtocolContacts.get_profile_finish] to get the results.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_contacts_get_profile_async(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -158,7 +158,7 @@ void purple_protocol_contacts_get_profile_async(PurpleProtocolContacts *protocol
  * Returns: (transfer full): A plain text or markdown formatted string of the
  *          contact info's profile, or %NULL with @error set on error.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 char *purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
@@ -173,7 +173,7 @@ char *purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *protoc
  *
  * Returns: (transfer full): The action group or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GActionGroup *purple_protocol_contacts_get_actions(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);
@@ -190,7 +190,7 @@ GActionGroup *purple_protocol_contacts_get_actions(PurpleProtocolContacts *proto
  *
  * Returns: (transfer full): The menu model or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GMenuModel *purple_protocol_contacts_get_menu(PurpleProtocolContacts *protocol_contacts, PurpleContactInfo *info);

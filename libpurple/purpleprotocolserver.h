@@ -52,7 +52,7 @@ G_BEGIN_DECLS
  * #PurpleProtocolServer describes the API for protocols that have a central
  * server.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -87,7 +87,7 @@ G_BEGIN_DECLS
  *
  * This interface provides a gateway between purple and the protocol's server.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolServerInterface {
 	/*< private >*/
@@ -133,7 +133,7 @@ struct _PurpleProtocolServerInterface {
  *
  * Sets the user info, sometimes referred to as a user profile to @info.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_set_info(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *info);
@@ -147,7 +147,7 @@ void purple_protocol_server_set_info(PurpleProtocolServer *protocol_server, Purp
  * Gets the user info or profile for @who and displays it in a protocol
  * specific way.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_get_info(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who);
@@ -160,7 +160,7 @@ void purple_protocol_server_get_info(PurpleProtocolServer *protocol_server, Purp
  *
  * Sets the status for account @account to @status.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_set_status(PurpleProtocolServer *protocol_server, PurpleAccount *account, PurpleStatus *status);
@@ -173,7 +173,7 @@ void purple_protocol_server_set_status(PurpleProtocolServer *protocol_server, Pu
  *
  * Tells @protocol_server to set the user's idle time to @idletime.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_set_idle(PurpleProtocolServer *protocol_server, PurpleConnection *connection, gint idletime);
@@ -187,7 +187,7 @@ void purple_protocol_server_set_idle(PurpleProtocolServer *protocol_server, Purp
  *
  * Changes the user's password from @old_pass to @new_pass.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_pass, const gchar *new_pass);
@@ -206,7 +206,7 @@ void purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server,
  * function will request authorization. If authorization is required, then
  * @message will be used as an invite message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_add_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group, const gchar *message);
@@ -220,7 +220,7 @@ void purple_protocol_server_add_buddy(PurpleProtocolServer *protocol_server, Pur
  *
  * Removes @buddy and potentially @group from the server side list of contacts.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_remove_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group);
@@ -240,7 +240,7 @@ void purple_protocol_server_remove_buddy(PurpleProtocolServer *protocol_server, 
  * purple_protocol_server_remove_buddy() will be called for each buddy/group
  * pair in @buddies/@groups.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_remove_buddies(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups);
@@ -252,7 +252,7 @@ void purple_protocol_server_remove_buddies(PurpleProtocolServer *protocol_server
  *
  * Tell @protocol_server to send its keep alive to the server.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_keepalive(PurpleProtocolServer *protocol_server, PurpleConnection *connection);
@@ -267,7 +267,7 @@ void purple_protocol_server_keepalive(PurpleProtocolServer *protocol_server, Pur
  * Returns: The interval, in seconds, that the keep-alive function should be
  *          called.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gint purple_protocol_server_get_keepalive_interval(PurpleProtocolServer *protocol_server);
@@ -281,7 +281,7 @@ gint purple_protocol_server_get_keepalive_interval(PurpleProtocolServer *protoco
  *
  * Sets the server side alias for @who to @alias.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_alias_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *alias);
@@ -296,7 +296,7 @@ void purple_protocol_server_alias_buddy(PurpleProtocolServer *protocol_server, P
  *
  * Moves @who from group @old_group to a new group of @new_group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_group_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *old_group, const gchar *new_group);
@@ -312,7 +312,7 @@ void purple_protocol_server_group_buddy(PurpleProtocolServer *protocol_server, P
  *
  * Renames the group named @old_name to the new @group.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_name, PurpleGroup *group, GList *moved_buddies);
@@ -325,7 +325,7 @@ void purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server, 
  *
  * Sets the user's buddy icon to @img.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_set_buddy_icon(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleImage *img);
@@ -338,7 +338,7 @@ void purple_protocol_server_set_buddy_icon(PurpleProtocolServer *protocol_server
  *
  * Removes @group from the server side contact list.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_remove_group(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleGroup *group);
@@ -355,7 +355,7 @@ void purple_protocol_server_remove_group(PurpleProtocolServer *protocol_server, 
  *
  * Returns: The number of bytes that was sent.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gint purple_protocol_server_send_raw(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *buf, gint len);

@@ -44,7 +44,7 @@ purple_protocol_actions_default_init(PurpleProtocolActionsInterface *iface) {
 	 * A signal that is emitted to tell interested parties that the actions
 	 * have changed.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACTIONS_CHANGED] = g_signal_new_class_handler(
 		"actions-changed",

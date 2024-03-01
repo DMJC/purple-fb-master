@@ -43,7 +43,7 @@
  * #PurpleProtocolIM describes the API that protocols need to implement for
  * handling one on one conversations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolIM, purple_protocol_im, PURPLE, PROTOCOL_IM,
@@ -68,7 +68,7 @@ G_DECLARE_INTERFACE(PurpleProtocolIM, purple_protocol_im, PURPLE, PROTOCOL_IM,
  * The protocol IM interface that needs to be implemented to send one to one
  * messages.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolIMInterface {
 	/*< private >*/
@@ -99,7 +99,7 @@ G_BEGIN_DECLS
  * Returns: >= 0 on success, or < 0 on error.  If 0 is returned the message
  *          should not be output locally.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gint purple_protocol_im_send(PurpleProtocolIM *im,
@@ -126,7 +126,7 @@ gint purple_protocol_im_send(PurpleProtocolIM *im,
  *          five seconds, and if the Purple user is still typing then Purple
  *          will send another #PURPLE_IM_TYPING message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 guint purple_protocol_im_send_typing(PurpleProtocolIM *im,

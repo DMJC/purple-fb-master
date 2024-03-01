@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * This will ask the UI what [class@PresenceManager] should be used and caches
  * it for use with [func@PresenceManager.get_default].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_presence_manager_startup(void);
 
@@ -46,7 +46,7 @@ G_GNUC_INTERNAL void purple_presence_manager_startup(void);
  *
  * Clears the references to the default manager if one exists.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 G_GNUC_INTERNAL void purple_presence_manager_shutdown(void);
 

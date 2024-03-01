@@ -44,7 +44,7 @@
  * #PurpleProtocolChat describes the API that protocols need to implement for
  * handling multiple user conversations.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolChat, purple_protocol_chat, PURPLE,
@@ -147,7 +147,7 @@ struct _PurpleProtocolChatInterface {
  * Returns: (transfer full) (element-type PurpleProtocolChatEntry): The list
  *          of #PurpleProtocolChatEntry's that are used to join a chat.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_chat_info(PurpleProtocolChat *protocol_chat, PurpleConnection *connection);
@@ -164,7 +164,7 @@ GList *purple_protocol_chat_info(PurpleProtocolChat *protocol_chat, PurpleConnec
  * Returns: (transfer full) (element-type utf8 utf8): The values that will be
  *          used to join the chat.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GHashTable *purple_protocol_chat_info_defaults(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, const gchar *chat_name);
@@ -178,7 +178,7 @@ GHashTable *purple_protocol_chat_info_defaults(PurpleProtocolChat *protocol_chat
  *
  * Joins the chat described in @components.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_join(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, GHashTable *components);
@@ -192,7 +192,7 @@ void purple_protocol_chat_join(PurpleProtocolChat *protocol_chat, PurpleConnecti
  *
  * Used to reject a chat invite.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_reject(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, GHashTable *components);
@@ -207,7 +207,7 @@ void purple_protocol_chat_reject(PurpleProtocolChat *protocol_chat, PurpleConnec
  *
  * Returns: (transfer full): The chat name from @components.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gchar *purple_protocol_chat_get_name(PurpleProtocolChat *protocol_chat, GHashTable *components);
@@ -222,7 +222,7 @@ gchar *purple_protocol_chat_get_name(PurpleProtocolChat *protocol_chat, GHashTab
  *
  * Sends an invite to @who with @message.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_invite(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, const gchar *message, const gchar *who);
@@ -235,7 +235,7 @@ void purple_protocol_chat_invite(PurpleProtocolChat *protocol_chat, PurpleConnec
  *
  * Leaves the chat identified by @id.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id);
@@ -252,7 +252,7 @@ void purple_protocol_chat_leave(PurpleProtocolChat *protocol_chat, PurpleConnect
  *
  * Returns: 0 on success, non-zero on failure.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gint purple_protocol_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, PurpleConversation *conversation, PurpleMessage *message);
@@ -268,7 +268,7 @@ gint purple_protocol_chat_send(PurpleProtocolChat *protocol_chat, PurpleConnecti
  *
  * Returns: (transfer full): The realname of @who.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gchar *purple_protocol_chat_get_user_real_name(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, const gchar *who);
@@ -282,7 +282,7 @@ gchar *purple_protocol_chat_get_user_real_name(PurpleProtocolChat *protocol_chat
  *
  * Sets the topic for the chat with id @id to @topic.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_chat_set_topic(PurpleProtocolChat *protocol_chat, PurpleConnection *connection, gint id, const gchar *topic);

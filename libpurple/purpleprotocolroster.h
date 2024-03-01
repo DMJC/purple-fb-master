@@ -47,7 +47,7 @@ G_DECLARE_INTERFACE(PurpleProtocolRoster, purple_protocol_roster, PURPLE,
  * The #PurpleProtocolRoster interface defines the behavior to tell a
  * protocol when the users wants to manage contacts on the server side roster.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -68,7 +68,7 @@ G_DECLARE_INTERFACE(PurpleProtocolRoster, purple_protocol_roster, PURPLE,
  * managing the server side roster. All of the functions are asynchronous to
  * make sure nothing blocks the rest of the program.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolRosterInterface {
 	/*< private >*/
@@ -104,7 +104,7 @@ G_BEGIN_DECLS
  * @callback is called, [method@ProtocolRoster.add_finish] should be called to
  * get the result.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roster_add_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -123,7 +123,7 @@ void purple_protocol_roster_add_async(PurpleProtocolRoster *roster, PurpleAccoun
  * Returns: %TRUE if the operation was successful, otherwise %FALSE with error
  *          optionally set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_roster_add_finish(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);
@@ -147,7 +147,7 @@ gboolean purple_protocol_roster_add_finish(PurpleProtocolRoster *roster, GAsyncR
  * [property@ContactInfo:permission], [property@ContactInfo:person], and
  * [property@ContactInfo:tags].
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roster_update_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -166,7 +166,7 @@ void purple_protocol_roster_update_async(PurpleProtocolRoster *roster, PurpleAcc
  * Returns: %TRUE if the operation was successful, otherwise %FALSE with error
  *          optionally set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_roster_update_finish(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);
@@ -185,7 +185,7 @@ gboolean purple_protocol_roster_update_finish(PurpleProtocolRoster *roster, GAsy
  * @callback is called, [method@ProtocolRoster.remove_finish] should be called
  * to get the result.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_roster_remove_async(PurpleProtocolRoster *roster, PurpleAccount *account, PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -204,7 +204,7 @@ void purple_protocol_roster_remove_async(PurpleProtocolRoster *roster, PurpleAcc
  * Returns: %TRUE if the operation was successful, otherwise %FALSE with error
  *          optionally set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_roster_remove_finish(PurpleProtocolRoster *roster, GAsyncResult *result, GError **error);

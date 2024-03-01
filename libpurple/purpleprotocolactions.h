@@ -46,7 +46,7 @@ G_DECLARE_INTERFACE(PurpleProtocolActions, purple_protocol_actions, PURPLE,
  * The #PurpleProtocolActions interface defines the behavior of a protocol's
  * actions interface.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -65,7 +65,7 @@ G_DECLARE_INTERFACE(PurpleProtocolActions, purple_protocol_actions, PURPLE,
  *
  * This interface provides a gateway between purple and the protocol.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolActionsInterface {
 	/*< private >*/
@@ -92,7 +92,7 @@ G_BEGIN_DECLS
  *
  * Returns: Gets the prefix for the name of the actions in @actions.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_protocol_actions_get_prefix(PurpleProtocolActions *actions);
@@ -106,7 +106,7 @@ const gchar *purple_protocol_actions_get_prefix(PurpleProtocolActions *actions);
  *
  * Returns: (transfer full): The group of actions for @connection.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GActionGroup *purple_protocol_actions_get_action_group(PurpleProtocolActions *actions, PurpleConnection *connection);
@@ -120,7 +120,7 @@ GActionGroup *purple_protocol_actions_get_action_group(PurpleProtocolActions *ac
  *
  * Returns: (transfer full): The menu to display or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GMenu *purple_protocol_actions_get_menu(PurpleProtocolActions *actions, PurpleConnection *connection);
@@ -134,7 +134,7 @@ GMenu *purple_protocol_actions_get_menu(PurpleProtocolActions *actions, PurpleCo
  * be called by [iface@ProtocolActions] implementations when actions have
  * changed.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_actions_changed(PurpleProtocolActions *actions, PurpleAccount *account);

@@ -443,7 +443,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	 * The directory path where settings should be stored. If this is %NULL
 	 * settings will not be saved to disk.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_PATH] = g_param_spec_string(
 		"path", "path",
@@ -456,7 +456,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	 *
 	 * The [class@SavedPresence] that is currently active.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ACTIVE] = g_param_spec_object(
 		"active-presence", "active-presence",
@@ -474,7 +474,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	 * Emitted when a [class@SavedPresence] is successfully added to the
 	 * manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ADDED] = g_signal_new_class_handler(
 		"added",
@@ -496,7 +496,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	 * Emitted when a [class@SavedPresence] is successfully removed from the
 	 * manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REMOVED] = g_signal_new_class_handler(
 		"removed",

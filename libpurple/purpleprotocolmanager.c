@@ -131,7 +131,7 @@ purple_protocol_manager_class_init(PurpleProtocolManagerClass *klass) {
 	 *
 	 * Emitted after @protocol has been registered in @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_REGISTERED] = g_signal_new_class_handler(
 		"registered",
@@ -152,7 +152,7 @@ purple_protocol_manager_class_init(PurpleProtocolManagerClass *klass) {
 	 *
 	 * Emitted after @protocol has been unregistered from @manager.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_UNREGISTERED] = g_signal_new_class_handler(
 		"unregistered",
@@ -176,7 +176,7 @@ purple_protocol_manager_class_init(PurpleProtocolManagerClass *klass) {
 	 * signal and will only be emitted for protocols that implement
 	 * [iface@ProtocolActions].
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	signals[SIG_ACCOUNT_ACTIONS_CHANGED] = g_signal_new_class_handler(
 		"account-actions-changed",

@@ -288,7 +288,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 	 *
 	 * The identifier for the protocol.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
@@ -301,7 +301,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 	 *
 	 * The name to show in user interface for the protocol.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "name",
@@ -314,7 +314,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 	 *
 	 * The description to show in user interface for the protocol.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_DESCRIPTION] = g_param_spec_string(
 		"description", "description",
@@ -329,7 +329,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 	 * via PurpleProtocol::icon-search-path or
 	 * PurpleProtocol::icon-resource-path.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ICON_NAME] = g_param_spec_string(
 		"icon-name", "icon-name",
@@ -344,7 +344,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 	 * protocol. See purple_protocol_get_icon_search_path() for more
 	 * information.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ICON_SEARCH_PATH] = g_param_spec_string(
 		"icon-search-path", "icon-search-path",
@@ -358,7 +358,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 	 * A #GResource path which contains the icons for the protocol. See
 	 * purple_protocol_get_icon_resource_path() for more information.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_ICON_RESOURCE_PATH] = g_param_spec_string(
 		"icon-resource-path", "icon-resource-path",
@@ -371,7 +371,7 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 	 *
 	 * The #PurpleProtocolOptions for the protocol.
 	 *
-	 * Since: 3.0.0
+	 * Since: 3.0
 	 */
 	properties[PROP_OPTIONS] = g_param_spec_flags(
 		"options", "options",

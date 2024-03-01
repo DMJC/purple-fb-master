@@ -40,7 +40,7 @@ G_BEGIN_DECLS
  *
  * A #GError domain for errors from #PurpleProtocolManager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 #define PURPLE_PROTOCOL_MANAGER_DOMAIN \
 	g_quark_from_static_string("purple-protocol-manager") \
@@ -58,7 +58,7 @@ G_DECLARE_FINAL_TYPE(PurpleProtocolManager, purple_protocol_manager, PURPLE,
  * #PurpleProtocolManager keeps track of all protocols and emits signals when
  * protocols are registered and unregistered.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -68,7 +68,7 @@ G_DECLARE_FINAL_TYPE(PurpleProtocolManager, purple_protocol_manager, PURPLE,
  *
  * A function to be used as a callback with purple_protocol_manager_foreach().
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleProtocolManagerForeachFunc)(PurpleProtocol *protocol, gpointer data);
@@ -80,7 +80,7 @@ typedef void (*PurpleProtocolManagerForeachFunc)(PurpleProtocol *protocol, gpoin
  *
  * Returns: (transfer none): The default #PurpleProtocolManager instance.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleProtocolManager *purple_protocol_manager_get_default(void);
@@ -96,7 +96,7 @@ PurpleProtocolManager *purple_protocol_manager_get_default(void);
  * Returns: %TRUE if @protocol was successfully registered with @manager,
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_manager_register(PurpleProtocolManager *manager, PurpleProtocol *protocol, GError **error);
@@ -112,7 +112,7 @@ gboolean purple_protocol_manager_register(PurpleProtocolManager *manager, Purple
  * Returns: %TRUE if @protocol was successfully unregistered from @manager,
  *          %FALSE otherwise.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_manager_unregister(PurpleProtocolManager *manager, PurpleProtocol *protocol, GError **error);
@@ -126,7 +126,7 @@ gboolean purple_protocol_manager_unregister(PurpleProtocolManager *manager, Purp
  *
  * Returns: (transfer none): The #PurpleProtocol identified by @id or %NULL.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleProtocol *purple_protocol_manager_find(PurpleProtocolManager *manager, const gchar *id);
@@ -139,7 +139,7 @@ PurpleProtocol *purple_protocol_manager_find(PurpleProtocolManager *manager, con
  *
  * Calls @func for each #PurpleProtocol that @manager knows about.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_manager_foreach(PurpleProtocolManager *manager, PurpleProtocolManagerForeachFunc func, gpointer data);
@@ -154,7 +154,7 @@ void purple_protocol_manager_foreach(PurpleProtocolManager *manager, PurpleProto
  * Returns: (transfer container) (element-type PurpleProtocol): The list
  *          containing all of the #PurpleProtocols registered with @manager.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_manager_get_all(PurpleProtocolManager *manager);

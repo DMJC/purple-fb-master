@@ -47,7 +47,7 @@ G_DECLARE_INTERFACE(PurpleProtocolFileTransfer,
  * #PurpleProtocolFileTransfer provides methods for sending and receiving
  * files.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 
 /**
@@ -55,7 +55,7 @@ G_DECLARE_INTERFACE(PurpleProtocolFileTransfer,
  *
  * This interface defines the behavior for sending and receiving files.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 struct _PurpleProtocolFileTransferInterface {
 	/*< private >*/
@@ -87,7 +87,7 @@ G_BEGIN_DECLS
  * > Note: This function does not take a cancellable as the protocol should be
  * using [property@FileTransfer:cancellable] from @transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_file_transfer_send_async(PurpleProtocolFileTransfer *protocol, PurpleFileTransfer *transfer, GAsyncReadyCallback callback, gpointer data);
@@ -105,7 +105,7 @@ void purple_protocol_file_transfer_send_async(PurpleProtocolFileTransfer *protoc
  * Returns: %TRUE if the transfer was started successfully, otherwise %FALSE
  *          with @error possibly set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_file_transfer_send_finish(PurpleProtocolFileTransfer *protocol, GAsyncResult *result, GError **error);
@@ -123,7 +123,7 @@ gboolean purple_protocol_file_transfer_send_finish(PurpleProtocolFileTransfer *p
  * > Note: This function does not take a cancellable as the protocol should be
  * using [property@FileTransfer:cancellable] from @transfer.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_file_transfer_receive_async(PurpleProtocolFileTransfer *protocol, PurpleFileTransfer *transfer, GAsyncReadyCallback callback, gpointer data);
@@ -141,7 +141,7 @@ void purple_protocol_file_transfer_receive_async(PurpleProtocolFileTransfer *pro
  * Returns: %TRUE if the transfer was started successfully, otherwise %FALSE
  *          with @error possibly set.
  *
- * Since: 3.0.0
+ * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_file_transfer_receive_finish(PurpleProtocolFileTransfer *protocol, GAsyncResult *result, GError **error);
