@@ -336,7 +336,7 @@ purple_contact_info_constructed(GObject *obj) {
 	info = PURPLE_CONTACT_INFO(obj);
 	priv = purple_contact_info_get_instance_private(info);
 
-	if(priv->id == NULL) {
+	if(purple_strempty(priv->id)) {
 		purple_contact_info_set_id(info, NULL);
 	}
 
@@ -378,7 +378,7 @@ purple_contact_info_class_init(PurpleContactInfoClass *klass) {
 		"id", "id",
 		"The id of the contact",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleContactInfo:username:

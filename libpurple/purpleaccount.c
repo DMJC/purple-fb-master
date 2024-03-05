@@ -719,7 +719,7 @@ purple_account_constructed(GObject *object) {
 
 	/* If we didn't get an id, checksum the protocol id and the username. */
 	id = purple_contact_info_get_id(PURPLE_CONTACT_INFO(object));
-	if(id == NULL) {
+	if(purple_strempty(id)) {
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		GChecksum *checksum = NULL;
 		const char *username = NULL;
