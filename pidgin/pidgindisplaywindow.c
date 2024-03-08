@@ -106,6 +106,18 @@ pidgin_display_window_find_conversation(gconstpointer a, gconstpointer b) {
 	return (conversation_a == conversation_b);
 }
 
+static gboolean
+pidgin_display_window_find_conversation_by_id(gconstpointer a,
+                                              G_GNUC_UNUSED gconstpointer b,
+                                              gpointer user_data)
+{
+	PidginDisplayItem *item_a = PIDGIN_DISPLAY_ITEM((gpointer)a);
+	const char *a_id = pidgin_display_item_get_id(item_a);
+	const char *id = user_data;
+
+	return purple_strequal(a_id, id);
+}
+
 /******************************************************************************
  * Actions
  *****************************************************************************/
@@ -486,6 +498,7 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		const char *account_id = NULL;
 		char *id = NULL;
+		gboolean item_exists = FALSE;
 
 		GtkWidget *parent = gtk_widget_get_parent(pidgin_conversation);
 
@@ -496,17 +509,24 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 
 		account_id = purple_contact_info_get_id(info);
 		id = g_strdup_printf("%s-%s", account_id, conversation_id);
-		item = pidgin_display_item_new(pidgin_conversation, id);
+		item_exists =
+			g_list_store_find_with_equal_func_full(window->conversation_model,
+			                                       NULL,
+			                                       pidgin_display_window_find_conversation_by_id,
+			                                       id,
+			                                       NULL);
+		if (!item_exists) {
+			item = pidgin_display_item_new(pidgin_conversation, id);
+			g_object_set_data(G_OBJECT(item), "conversation", purple_conversation);
+
+			g_object_bind_property(purple_conversation, "title",
+			                       item, "title",
+			                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+
+			g_list_store_append(window->conversation_model, item);
+			g_clear_object(&item);
+		}
 		g_free(id);
-		g_object_set_data(G_OBJECT(item), "conversation", purple_conversation);
-
-		g_object_bind_property(purple_conversation, "title",
-		                       item, "title",
-		                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-
-		g_list_store_append(window->conversation_model, item);
-		g_clear_object(&item);
-
 		if(GTK_IS_WIDGET(parent)) {
 			g_object_unref(pidgin_conversation);
 		}
