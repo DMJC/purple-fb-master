@@ -33,7 +33,7 @@
 struct _PidginNotificationList {
 	GtkBox parent;
 
-	GtkWidget *list_view;
+	GtkStack *stack;
 	GtkSingleSelection *selection_model;
 };
 
@@ -106,6 +106,22 @@ pidgin_notification_generic_new(PurpleNotification *notification) {
  * Callbacks
  *****************************************************************************/
 static void
+pidgin_notification_list_items_changed_cb(GListModel *model,
+                                          G_GNUC_UNUSED guint position,
+                                          G_GNUC_UNUSED guint added,
+                                          G_GNUC_UNUSED guint removed,
+                                          gpointer data)
+{
+	PidginNotificationList *list = data;
+
+	if(g_list_model_get_n_items(model) != 0) {
+		gtk_stack_set_visible_child_name(list->stack, "view");
+	} else {
+		gtk_stack_set_visible_child_name(list->stack, "placeholder");
+	}
+}
+
+static void
 pidgin_notification_list_bind_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
                                  GObject *object,
                                  G_GNUC_UNUSED gpointer data)
@@ -152,6 +168,10 @@ pidgin_notification_list_init(PidginNotificationList *list) {
 
 	model = purple_notification_manager_get_default_as_model();
 	gtk_single_selection_set_model(list->selection_model, model);
+	g_signal_connect(model, "items-changed",
+	                 G_CALLBACK(pidgin_notification_list_items_changed_cb),
+	                 list);
+	pidgin_notification_list_items_changed_cb(model, 0, 0, 0, list);
 }
 
 static void
@@ -164,7 +184,7 @@ pidgin_notification_list_class_init(PidginNotificationListClass *klass) {
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginNotificationList,
-	                                     list_view);
+	                                     stack);
 	gtk_widget_class_bind_template_child(widget_class, PidginNotificationList,
 	                                     selection_model);
 
