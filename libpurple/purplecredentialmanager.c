@@ -64,7 +64,7 @@ purple_credential_manager_read_password_callback(GObject *obj,
 	PurpleCredentialProvider *provider = PURPLE_CREDENTIAL_PROVIDER(obj);
 	GError *error = NULL;
 	GTask *task = G_TASK(data);
-	gchar *password = NULL;
+	char *password = NULL;
 
 	password = purple_credential_provider_read_password_finish(provider, res,
 	                                                           &error);
@@ -135,7 +135,7 @@ purple_credential_manager_core_init_cb(gpointer data) {
 	if(!PURPLE_IS_CREDENTIAL_PROVIDER(manager->active)) {
 		GSettings *settings = NULL;
 		GError *error = NULL;
-		gchar *id = NULL;
+		char *id = NULL;
 
 		settings = g_settings_new_with_backend("im.pidgin.Purple.Credentials",
 		                                       purple_core_get_settings_backend());
@@ -330,7 +330,7 @@ purple_credential_manager_register(PurpleCredentialManager *manager,
                                    PurpleCredentialProvider *provider,
                                    GError **error)
 {
-	const gchar *id = NULL;
+	const char *id = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_MANAGER(manager), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider), FALSE);
@@ -360,7 +360,7 @@ purple_credential_manager_register(PurpleCredentialManager *manager,
 	 */
 	if(!PURPLE_IS_CREDENTIAL_PROVIDER(manager->active)) {
 		GSettings *settings = NULL;
-		gchar *wanted = NULL;
+		char *wanted = NULL;
 
 		settings = g_settings_new_with_backend("im.pidgin.Purple.Credentials",
 		                                       purple_core_get_settings_backend());
@@ -382,7 +382,7 @@ purple_credential_manager_unregister(PurpleCredentialManager *manager,
                                      PurpleCredentialProvider *provider,
                                      GError **error)
 {
-	const gchar *id = NULL;
+	const char *id = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_MANAGER(manager), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider), FALSE);
@@ -411,7 +411,7 @@ purple_credential_manager_unregister(PurpleCredentialManager *manager,
 
 gboolean
 purple_credential_manager_set_active(PurpleCredentialManager *manager,
-                                     const gchar *id, GError **error)
+                                     const char *id, GError **error)
 {
 	PurpleCredentialProvider *previous = NULL, *provider = NULL;
 	GSettings *settings = NULL;
@@ -483,7 +483,6 @@ purple_credential_manager_read_password_async(PurpleCredentialManager *manager,
 	GTask *task = NULL;
 
 	g_return_if_fail(PURPLE_IS_CREDENTIAL_MANAGER(manager));
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
 	task = g_task_new(manager, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_credential_manager_read_password_async);
@@ -502,7 +501,7 @@ purple_credential_manager_read_password_async(PurpleCredentialManager *manager,
 	}
 }
 
-gchar *
+char *
 purple_credential_manager_read_password_finish(PurpleCredentialManager *manager,
                                                GAsyncResult *result,
                                                GError **error)
@@ -515,7 +514,7 @@ purple_credential_manager_read_password_finish(PurpleCredentialManager *manager,
 void
 purple_credential_manager_write_password_async(PurpleCredentialManager *manager,
                                                PurpleAccount *account,
-                                               const gchar *password,
+                                               const char *password,
                                                GCancellable *cancellable,
                                                GAsyncReadyCallback callback,
                                                gpointer data)
@@ -523,14 +522,13 @@ purple_credential_manager_write_password_async(PurpleCredentialManager *manager,
 	GTask *task = NULL;
 
 	g_return_if_fail(PURPLE_IS_CREDENTIAL_MANAGER(manager));
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
 	task = g_task_new(manager, cancellable, callback, data);
 	g_task_set_source_tag(task,
 	                      purple_credential_manager_write_password_async);
 
 	if(!purple_account_get_remember_password(account)) {
-		const gchar *name = NULL;
+		const char *name = NULL;
 
 		name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 

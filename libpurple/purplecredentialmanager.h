@@ -81,7 +81,7 @@ typedef void (*PurpleCredentialManagerForeachFunc)(PurpleCredentialProvider *pro
 /**
  * purple_credential_manager_get_default:
  *
- * Gets the default #PurpleCredentialManager instance.
+ * Gets the default [class@CredentialManager] instance.
  *
  * Returns: (transfer none): The default #PurpleCredentialManager instance.
  *
@@ -92,14 +92,14 @@ PurpleCredentialManager *purple_credential_manager_get_default(void);
 
 /**
  * purple_credential_manager_register:
- * @manager: The #PurpleCredentialManager instance.
- * @provider: The #PurpleCredentialProvider to register.
+ * @manager: The instance.
+ * @provider: The provider to register.
  * @error: Return address for a #GError, or %NULL.
  *
  * Registers @provider with @manager.
  *
- * Returns: %TRUE if @provider was successfully registered with @manager, %FALSE
- *          otherwise.
+ * Returns: %TRUE if @provider was successfully registered with @manager,
+ *          %FALSE otherwise.
  *
  * Since: 3.0
  */
@@ -108,8 +108,8 @@ gboolean purple_credential_manager_register(PurpleCredentialManager *manager, Pu
 
 /**
  * purple_credential_manager_unregister:
- * @manager: The #PurpleCredentialManager instance.
- * @provider: The #PurpleCredentialProvider to unregister.
+ * @manager: The instance.
+ * @provider: The provider to unregister.
  * @error: Return address for a #GError, or %NULL.
  *
  * Unregisters @provider from @manager.
@@ -124,13 +124,12 @@ gboolean purple_credential_manager_unregister(PurpleCredentialManager *manager, 
 
 /**
  * purple_credential_manager_set_active:
- * @manager: The #PurpleCredentialManager instance.
- * @id: The id of the #PurpleCredentialProvider to use or %NULL to disable the
+ * @manager: The instance.
+ * @id: (nullable): The id of the provider to use or %NULL to disable the
  *      active provider.
  * @error: Return address for a #GError, or %NULL.
  *
- * Changes the active #PurpleCredentialProvider of @manager to provider with an
- * id of @id.
+ * Changes the active provider of @manager to the provider with an id of @id.
  *
  * If @id is %NULL, it is assumed that the process is shutting down and that
  * the active provider setting will be left intact. If you want to disable the
@@ -142,16 +141,16 @@ gboolean purple_credential_manager_unregister(PurpleCredentialManager *manager, 
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-gboolean purple_credential_manager_set_active(PurpleCredentialManager *manager, const gchar *id, GError **error);
+gboolean purple_credential_manager_set_active(PurpleCredentialManager *manager, const char *id, GError **error);
 
 /**
  * purple_credential_manager_get_active:
- * @manager: The #PurpleCredentialManager instance.
+ * @manager: The instance.
  *
- * Gets the currently active #PurpleCredentialProvider or %NULL if there is no
+ * Gets the currently active [class@CredentialProvider] or %NULL if there is no
  * active provider.
  *
- * Returns: (transfer none): The active #PurpleCredentialProvider.
+ * Returns: (transfer none): The active provider.
  *
  * Since: 3.0
  */
@@ -160,15 +159,14 @@ PurpleCredentialProvider *purple_credential_manager_get_active(PurpleCredentialM
 
 /**
  * purple_credential_manager_read_password_async:
- * @manager: The #PurpleCredentialManager instance.
- * @account: The #PurpleAccount whose password to read.
- * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request is
+ * @manager: The instance.
+ * @account: The associated account.
+ * @cancellable: (nullable): An optional cancellable.
+ * @callback: (nullable) (scope async): A callback to call when the request is
  *            satisfied.
  * @data: User data to pass to @callback.
  *
- * Reads the password for @account using the active #PurpleCredentialProvider of
- * @manager.
+ * Reads the password for @account using the active provider of @manager.
  *
  * Since: 3.0
  */
@@ -177,12 +175,12 @@ void purple_credential_manager_read_password_async(PurpleCredentialManager *mana
 
 /**
  * purple_credential_manager_read_password_finish:
- * @manager: The #PurpleCredentialManager instance.
- * @result: The #GAsyncResult from the previous
- *          purple_credential_manager_read_password_async() call.
+ * @manager: The instance.
+ * @result: The result from the previous
+ *          [method@CredentialManager.read_password_async] call.
  * @error: Return address for a #GError, or %NULL.
  *
- * Finishes a previous call to purple_credential_manager_read_password_async().
+ * Finishes a previous call to [method@CredentialManager.read_password_async].
  *
  * Returns: (transfer full): The password or %NULL if successful, otherwise
  *                           %NULL with @error set on failure.
@@ -190,34 +188,33 @@ void purple_credential_manager_read_password_async(PurpleCredentialManager *mana
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-gchar *purple_credential_manager_read_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
+char *purple_credential_manager_read_password_finish(PurpleCredentialManager *manager, GAsyncResult *result, GError **error);
 
 /**
  * purple_credential_manager_write_password_async:
- * @manager: The #PurpleCredentialManager instance.
- * @account: The #PurpleAccount whose password to write.
+ * @manager: The instance.
+ * @account: The account whose password to write.
  * @password: The password to write.
- * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request is
- *            satisfied.
+ * @cancellable: (nullable): optional cancellable.
+ * @callback: (nullable) (scope async): The callback to call when the request
+ *            is satisfied.
  * @data: User data to pass to @callback.
  *
- * Writes @password for @account to the active #PurpleCredentialProvider of
- * @manager.
+ * Writes @password for @account to the active provider of @manager.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_credential_manager_write_password_async(PurpleCredentialManager *manager, PurpleAccount *account, const gchar *password, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+void purple_credential_manager_write_password_async(PurpleCredentialManager *manager, PurpleAccount *account, const char *password, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
  * purple_credential_manager_write_password_finish:
- * @manager: The #PurpleCredentialManager instance.
- * @result: The #GAsyncResult from the previous
- *          purple_credential_provider_write_password_async() call.
+ * @manager: The instance.
+ * @result: The result from the previous
+ *          [method@CredentialManager.write_password_async] call.
  * @error: Return address for a #GError, or %NULL.
  *
- * Finishes a previous call to purple_credential_manager_write_password_async().
+ * Finishes a previous call to [method@CredentialManager.write_password_async].
  *
  * Returns: %TRUE if the password was written successfully, otherwise %FALSE
  *          with @error set.
@@ -229,15 +226,13 @@ gboolean purple_credential_manager_write_password_finish(PurpleCredentialManager
 
 /**
  * purple_credential_manager_clear_password_async:
- * @manager: The #PurpleCredentialManager instance.
- * @account: The #PurpleAccount whose password to clear.
- * @cancellable: (nullable): optional #GCancellable object, or %NULL to ignore.
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request is
- *            satisfied.
+ * @manager: The instance.
+ * @account: The account whose password to clear.
+ * @cancellable: (nullable): An optional cancellable.
+ * @callback: (scope async): A callback to call when the request is satisfied.
  * @data: User data to pass to @callback.
  *
- * Clears the password for @account from the active #PurpleCredentialProvider
- * of @manager.
+ * Clears the password for @account from the active provider of @manager.
  *
  * Since: 3.0
  */
@@ -246,13 +241,12 @@ void purple_credential_manager_clear_password_async(PurpleCredentialManager *man
 
 /**
  * purple_credential_manager_clear_password_finish:
- * @manager: The #PurpleCredentialManager instance.
- * @result: The #GAsyncResult from the previous
- *          purple_credential_provider_clear_password_async() call.
+ * @manager: The instance.
+ * @result: The result from the previous
+ *          [method@CredentialManager.clear_password_async] call.
  * @error: Return address for a #GError, or %NULL.
  *
- * Finishes a previous call to
- * purple_credential_provider_clear_password_async().
+ * Finishes a previous call to [method@CredentialManager.clear_password_async].
  *
  * Returns: %TRUE if the password didn't exist or was cleared successfully,
  *          otherwise %FALSE with @error set.
@@ -264,8 +258,8 @@ gboolean purple_credential_manager_clear_password_finish(PurpleCredentialManager
 
 /**
  * purple_credential_manager_foreach:
- * @manager: The #PurpleCredentialManager instance.
- * @func: (scope call): The #PurpleCredentialManagerForeachFunc to call.
+ * @manager: The instance.
+ * @func: (scope call): The [type@CredentialManagerForeachFunc] to call.
  * @data: User data to pass to @func.
  *
  * Calls @func for each #PurpleCredentialProvider that @manager knows about.
