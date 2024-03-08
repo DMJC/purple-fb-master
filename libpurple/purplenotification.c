@@ -26,9 +26,7 @@
 
 #include "purpleenums.h"
 
-struct _PurpleNotification {
-	GObject parent;
-
+typedef struct {
 	gchar *id;
 	PurpleNotificationType type;
 	PurpleAccount *account;
@@ -43,7 +41,7 @@ struct _PurpleNotification {
 	GDestroyNotify data_destroy_func;
 
 	gboolean deleted;
-};
+} PurpleNotificationPrivate;
 
 enum {
 	SIG_DELETED,
@@ -67,19 +65,24 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_FINAL_TYPE(PurpleNotification, purple_notification, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleNotification, purple_notification,
+                                 G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers
  *****************************************************************************/
 static void
 purple_notification_set_id(PurpleNotification *notification, const gchar *id) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
+	priv = purple_notification_get_instance_private(notification);
+
 	if(id == NULL) {
-		notification->id = g_uuid_string_random();
+		priv->id = g_uuid_string_random();
 	} else {
-		notification->id = g_strdup(id);
+		priv->id = g_strdup(id);
 	}
 
 	g_object_notify_by_pspec(G_OBJECT(notification), properties[PROP_ID]);
@@ -89,9 +92,13 @@ static void
 purple_notification_set_notification_type(PurpleNotification *notification,
                                           PurpleNotificationType type)
 {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	notification->type = type;
+	priv = purple_notification_get_instance_private(notification);
+
+	priv->type = type;
 
 	g_object_notify_by_pspec(G_OBJECT(notification), properties[PROP_TYPE]);
 }
@@ -100,9 +107,13 @@ static void
 purple_notification_set_account(PurpleNotification *notification,
                                 PurpleAccount *account)
 {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	if(g_set_object(&notification->account, account)) {
+	priv = purple_notification_get_instance_private(notification);
+
+	if(g_set_object(&priv->account, account)) {
 		g_object_notify_by_pspec(G_OBJECT(notification),
 		                         properties[PROP_ACCOUNT]);
 	}
@@ -110,9 +121,13 @@ purple_notification_set_account(PurpleNotification *notification,
 
 static void
 purple_notification_set_data(PurpleNotification *notification, gpointer data) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	notification->data = data;
+	priv = purple_notification_get_instance_private(notification);
+
+	priv->data = data;
 
 	g_object_notify_by_pspec(G_OBJECT(notification), properties[PROP_DATA]);
 }
@@ -121,9 +136,13 @@ static void
 purple_notification_set_data_destroy_func(PurpleNotification *notification,
                                           GDestroyNotify data_destroy_func)
 {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	notification->data_destroy_func = data_destroy_func;
+	priv = purple_notification_get_instance_private(notification);
+
+	priv->data_destroy_func = data_destroy_func;
 
 	g_object_notify_by_pspec(G_OBJECT(notification),
 	                         properties[PROP_DATA_DESTROY_FUNC]);
@@ -237,16 +256,19 @@ purple_notification_set_property(GObject *obj, guint param_id,
 static void
 purple_notification_finalize(GObject *obj) {
 	PurpleNotification *notification = PURPLE_NOTIFICATION(obj);
+	PurpleNotificationPrivate *priv = NULL;
 
-	g_clear_pointer(&notification->id, g_free);
-	g_clear_object(&notification->account);
+	priv = purple_notification_get_instance_private(notification);
 
-	g_clear_pointer(&notification->created_timestamp, g_date_time_unref);
-	g_clear_pointer(&notification->title, g_free);
-	g_clear_pointer(&notification->icon_name, g_free);
+	g_clear_pointer(&priv->id, g_free);
+	g_clear_object(&priv->account);
 
-	if(notification->data_destroy_func != NULL) {
-		notification->data_destroy_func(notification->data);
+	g_clear_pointer(&priv->created_timestamp, g_date_time_unref);
+	g_clear_pointer(&priv->title, g_free);
+	g_clear_pointer(&priv->icon_name, g_free);
+
+	if(priv->data_destroy_func != NULL) {
+		priv->data_destroy_func(priv->data);
 	}
 
 	G_OBJECT_CLASS(purple_notification_parent_class)->finalize(obj);
@@ -254,9 +276,13 @@ purple_notification_finalize(GObject *obj) {
 
 static void
 purple_notification_init(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
+	priv = purple_notification_get_instance_private(notification);
+
 	purple_notification_set_id(notification, NULL);
 
-	if(notification->created_timestamp == NULL) {
+	if(priv->created_timestamp == NULL) {
 		purple_notification_set_created_timestamp(notification, NULL);
 	}
 }
@@ -558,45 +584,65 @@ purple_notification_new_from_connection_error(PurpleAccount *account,
 
 const gchar *
 purple_notification_get_id(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), NULL);
 
-	return notification->id;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->id;
 }
 
 PurpleNotificationType
 purple_notification_get_notification_type(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification),
 	                     PURPLE_NOTIFICATION_TYPE_UNKNOWN);
 
-	return notification->type;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->type;
 }
 
 PurpleAccount *
 purple_notification_get_account(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), NULL);
 
-	return notification->account;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->account;
 }
 
 GDateTime *
 purple_notification_get_created_timestamp(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), NULL);
 
-	return notification->created_timestamp;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->created_timestamp;
 }
 
 void
 purple_notification_set_created_timestamp(PurpleNotification *notification,
                                           GDateTime *timestamp)
 {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	g_clear_pointer(&notification->created_timestamp, g_date_time_unref);
+	priv = purple_notification_get_instance_private(notification);
+
+	g_clear_pointer(&priv->created_timestamp, g_date_time_unref);
 
 	if(timestamp == NULL) {
-		notification->created_timestamp = g_date_time_new_now_utc();
+		priv->created_timestamp = g_date_time_new_now_utc();
 	} else {
-		notification->created_timestamp = g_date_time_to_utc(timestamp);
+		priv->created_timestamp = g_date_time_to_utc(timestamp);
 	}
 
 	g_object_notify_by_pspec(G_OBJECT(notification),
@@ -605,56 +651,86 @@ purple_notification_set_created_timestamp(PurpleNotification *notification,
 
 const gchar *
 purple_notification_get_title(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), NULL);
 
-	return notification->title;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->title;
 }
 
 void
 purple_notification_set_title(PurpleNotification *notification,
                               const gchar *title)
 {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	g_free(notification->title);
-	notification->title = g_strdup(title);
+	priv = purple_notification_get_instance_private(notification);
 
-	g_object_notify_by_pspec(G_OBJECT(notification), properties[PROP_TITLE]);
+	if(!purple_strequal(priv->title, title)) {
+		g_free(priv->title);
+		priv->title = g_strdup(title);
+
+		g_object_notify_by_pspec(G_OBJECT(notification),
+		                         properties[PROP_TITLE]);
+	}
 }
 
 const gchar *
 purple_notification_get_icon_name(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), NULL);
 
-	return notification->icon_name;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->icon_name;
 }
 
 void
 purple_notification_set_icon_name(PurpleNotification *notification,
                                   const gchar *icon_name)
 {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	g_free(notification->icon_name);
-	notification->icon_name = g_strdup(icon_name);
+	priv = purple_notification_get_instance_private(notification);
 
-	g_object_notify_by_pspec(G_OBJECT(notification),
-	                         properties[PROP_ICON_NAME]);
+	if(!purple_strequal(priv->icon_name, icon_name)) {
+		g_free(priv->icon_name);
+		priv->icon_name = g_strdup(icon_name);
+
+		g_object_notify_by_pspec(G_OBJECT(notification),
+		                         properties[PROP_ICON_NAME]);
+	}
+
 }
 
 gboolean
 purple_notification_get_read(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), FALSE);
 
-	return notification->read;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->read;
 }
 
 void
 purple_notification_set_read(PurpleNotification *notification, gboolean read) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	if(notification->read != read) {
-		notification->read = read;
+	priv = purple_notification_get_instance_private(notification);
+
+	if(priv->read != read) {
+		priv->read = read;
 
 		g_object_notify_by_pspec(G_OBJECT(notification),
 		                         properties[PROP_READ]);
@@ -663,19 +739,27 @@ purple_notification_set_read(PurpleNotification *notification, gboolean read) {
 
 gboolean
 purple_notification_get_interactive(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), FALSE);
 
-	return notification->interactive;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->interactive;
 }
 
 void
 purple_notification_set_interactive(PurpleNotification *notification,
                                     gboolean interactive)
 {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	if(notification->interactive != interactive) {
-		notification->interactive = interactive;
+	priv = purple_notification_get_instance_private(notification);
+
+	if(priv->interactive != interactive) {
+		priv->interactive = interactive;
 
 		g_object_notify_by_pspec(G_OBJECT(notification),
 		                         properties[PROP_INTERACTIVE]);
@@ -684,14 +768,21 @@ purple_notification_set_interactive(PurpleNotification *notification,
 
 gpointer
 purple_notification_get_data(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), NULL);
 
-	return notification->data;
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->data;
 }
 
 gint
 purple_notification_compare(gconstpointer a, gconstpointer b) {
-	PurpleNotification *notification_a = NULL, *notification_b = NULL;
+	PurpleNotification *notification_a = NULL;
+	PurpleNotification *notification_b = NULL;
+	PurpleNotificationPrivate *priv_a = NULL;
+	PurpleNotificationPrivate *priv_b = NULL;
 
 	if(a == NULL && b == NULL) {
 		return 0;
@@ -708,18 +799,25 @@ purple_notification_compare(gconstpointer a, gconstpointer b) {
 	notification_a = (PurpleNotification *)a;
 	notification_b = (PurpleNotification *)b;
 
-	return g_date_time_compare(notification_a->created_timestamp,
-	                           notification_b->created_timestamp);
+	priv_a = purple_notification_get_instance_private(notification_a);
+	priv_b = purple_notification_get_instance_private(notification_b);
+
+	return g_date_time_compare(priv_a->created_timestamp,
+	                           priv_b->created_timestamp);
 }
 
 void
 purple_notification_delete(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
 
-	/* Calling this multiple times is a programming error. */
-	g_return_if_fail(notification->deleted == FALSE);
+	priv = purple_notification_get_instance_private(notification);
 
-	notification->deleted = TRUE;
+	/* Calling this multiple times is a programming error. */
+	g_return_if_fail(priv->deleted == FALSE);
+
+	priv->deleted = TRUE;
 
 	g_signal_emit(notification, signals[SIG_DELETED], 0);
 }

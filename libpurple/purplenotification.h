@@ -66,8 +66,16 @@ typedef enum {
 #define PURPLE_TYPE_NOTIFICATION (purple_notification_get_type())
 
 PURPLE_AVAILABLE_IN_3_0
-G_DECLARE_FINAL_TYPE(PurpleNotification, purple_notification, PURPLE,
-                     NOTIFICATION, GObject)
+G_DECLARE_DERIVABLE_TYPE(PurpleNotification, purple_notification, PURPLE,
+                         NOTIFICATION, GObject)
+
+struct _PurpleNotificationClass {
+    /*< private >*/
+    GObjectClass parent;
+
+    /*< private >*/
+    gpointer reserved[4];
+};
 
 /**
  * purple_notification_new:
