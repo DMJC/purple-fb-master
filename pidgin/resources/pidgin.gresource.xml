@@ -19,7 +19,6 @@
     <file compressed="true" preprocess="xml-stripblanks">Notifications/addcontact.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Notifications/authorizationrequest.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Notifications/connectionerror.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Notifications/list.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Plugins/dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Prefs/away.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Prefs/conversation.ui</file>
@@ -43,6 +42,7 @@
     <file compressed="true" preprocess="xml-stripblanks">conversationmemberlistitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">imwindow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">infopane.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">notificationlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
     <file>icons/16x16/status/pidgin-user-available.png</file>
     <file>icons/16x16/status/pidgin-user-away.png</file>

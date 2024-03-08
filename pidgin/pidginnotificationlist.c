@@ -33,7 +33,8 @@
 struct _PidginNotificationList {
 	GtkBox parent;
 
-	GtkWidget *list_box;
+	GtkWidget *list_view;
+	GtkSingleSelection *selection_model;
 };
 
 G_DEFINE_FINAL_TYPE(PidginNotificationList, pidgin_notification_list,
@@ -101,12 +102,19 @@ pidgin_notification_generic_new(PurpleNotification *notification) {
 	return row;
 }
 
-static GtkWidget *
-pidgin_notification_list_create_widget_func(gpointer item,
-                                            G_GNUC_UNUSED gpointer data)
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+pidgin_notification_list_bind_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
+                                 GObject *object,
+                                 G_GNUC_UNUSED gpointer data)
 {
-	PurpleNotification *notification = item;
+	PurpleNotification *notification = NULL;
+	GtkListItem *item = GTK_LIST_ITEM(object);
 	GtkWidget *widget = NULL;
+
+	notification = gtk_list_item_get_item(item);
 
 	switch(purple_notification_get_notification_type(notification)) {
 		case PURPLE_NOTIFICATION_TYPE_GENERIC:
@@ -130,7 +138,7 @@ pidgin_notification_list_create_widget_func(gpointer item,
 		widget = pidgin_notification_list_unknown_notification(notification);
 	}
 
-	return widget;
+	gtk_list_item_set_child(item, widget);
 }
 
 /******************************************************************************
@@ -138,12 +146,12 @@ pidgin_notification_list_create_widget_func(gpointer item,
  *****************************************************************************/
 static void
 pidgin_notification_list_init(PidginNotificationList *list) {
+	GListModel *model = NULL;
+
 	gtk_widget_init_template(GTK_WIDGET(list));
 
-	gtk_list_box_bind_model(GTK_LIST_BOX(list->list_box),
-	                        purple_notification_manager_get_default_as_model(),
-	                        pidgin_notification_list_create_widget_func,
-	                        list, NULL);
+	model = purple_notification_manager_get_default_as_model();
+	gtk_single_selection_set_model(list->selection_model, model);
 }
 
 static void
@@ -152,11 +160,16 @@ pidgin_notification_list_class_init(PidginNotificationListClass *klass) {
 
 	gtk_widget_class_set_template_from_resource(
 	    widget_class,
-	    "/im/pidgin/Pidgin3/Notifications/list.ui"
+	    "/im/pidgin/Pidgin3/notificationlist.ui"
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginNotificationList,
-	                                     list_box);
+	                                     list_view);
+	gtk_widget_class_bind_template_child(widget_class, PidginNotificationList,
+	                                     selection_model);
+
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_notification_list_bind_cb);
 }
 
 /******************************************************************************
