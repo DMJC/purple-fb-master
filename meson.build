@@ -314,7 +314,7 @@ DYNAMIC_PRPLS = []
 foreach prpl : dynamic_list
 	if prpl == ''
 		# The list was empty; do nothing.
-	elif prpl == 'bonjour' and not enable_avahi and not xeme.found()
+	elif prpl == 'bonjour' and not enable_avahi
 		# Do nothing.
 	elif prpl == 'gg' and not libgadu.found()
 		# Do nothing.
