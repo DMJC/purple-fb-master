@@ -223,6 +223,7 @@ notification_sound_query(G_GNUC_UNUSED GError **error) {
 	g_menu_append(section, _("Unmute"), "unmute");
 
 	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_clear_object(&section);
 
 	section = g_menu_new();
 	g_menu_append(section, _("Mute for 30 minutes"), "mute(30)");
@@ -231,6 +232,7 @@ notification_sound_query(G_GNUC_UNUSED GError **error) {
 	g_menu_append(section, _("Mute for 4 hours"), "mute(240)");
 
 	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_clear_object(&section);
 
 	/* Create our action group. */
 	group = g_simple_action_group_new();

@@ -269,7 +269,7 @@ void purple_plugin_info_set_unloaded(PurplePluginInfo *info, gboolean unloaded);
  *
  * Gets the [class:Gio.ActionGroup] from @info if one is set.
  *
- * Returns: (transfer full): The action group.
+ * Returns: (transfer none): The action group.
  *
  * Since: 3.0
  */
@@ -282,7 +282,7 @@ GActionGroup *purple_plugin_info_get_action_group(PurplePluginInfo *info);
  *
  * Gets the [class:Gio.MenuModel] from @info if one is set.
  *
- * Returns: (transfer full): The menu model.
+ * Returns: (transfer none): The menu model.
  *
  * Since: 3.0
  */

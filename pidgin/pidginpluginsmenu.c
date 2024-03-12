@@ -57,7 +57,6 @@ pidgin_plugins_menu_add_item(gpointer data, gpointer user_data) {
 			prefix = gplugin_plugin_info_get_id(info);
 			pidgin_application_add_action_group(PIDGIN_APPLICATION(application),
 			                                    prefix, group);
-			g_object_unref(group);
 
 			g_queue_push_tail(menu->plugins, g_object_ref(plugin));
 		}

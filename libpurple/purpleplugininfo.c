@@ -70,6 +70,9 @@ purple_plugin_info_set_action_group(PurplePluginInfo *info,
 
 	if(g_set_object(&priv->action_group, group)) {
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ACTION_GROUP]);
+		/* This is only passed as a construct-only property, so we want to
+		 * steal the reference. */
+		g_clear_object(&group);
 	}
 }
 
@@ -85,6 +88,9 @@ purple_plugin_info_set_action_menu(PurplePluginInfo *info,
 
 	if(g_set_object(&priv->menu_model, menu_model)) {
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ACTION_MENU]);
+		/* This is only passed as a construct-only property, so we want to
+		 * steal the reference. */
+		g_clear_object(&menu_model);
 	}
 }
 
@@ -133,12 +139,12 @@ purple_plugin_info_get_property(GObject *obj, guint param_id, GValue *value,
 			g_value_set_flags(value, purple_plugin_info_get_flags(info));
 			break;
 		case PROP_ACTION_GROUP:
-			g_value_take_object(value,
-			                    purple_plugin_info_get_action_group(info));
+			g_value_set_object(value,
+			                   purple_plugin_info_get_action_group(info));
 			break;
 		case PROP_ACTION_MENU:
-			g_value_take_object(value,
-			                    purple_plugin_info_get_action_menu(info));
+			g_value_set_object(value,
+			                   purple_plugin_info_get_action_menu(info));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -187,7 +193,9 @@ purple_plugin_info_finalize(GObject *object) {
 
 	priv = purple_plugin_info_get_instance_private(PURPLE_PLUGIN_INFO(object));
 
-	g_free(priv->error);
+	g_clear_pointer(&priv->error, g_free);
+	g_clear_object(&priv->action_group);
+	g_clear_object(&priv->menu_model);
 
 	G_OBJECT_CLASS(purple_plugin_info_parent_class)->finalize(object);
 }
@@ -312,7 +320,7 @@ purple_plugin_info_get_action_group(PurplePluginInfo *info) {
 	priv = purple_plugin_info_get_instance_private(info);
 
 	if(G_IS_ACTION_GROUP(priv->action_group)) {
-		return g_object_ref(priv->action_group);
+		return priv->action_group;
 	}
 
 	return NULL;
@@ -327,7 +335,7 @@ purple_plugin_info_get_action_menu(PurplePluginInfo *info) {
 	priv = purple_plugin_info_get_instance_private(info);
 
 	if(G_IS_MENU_MODEL(priv->menu_model)) {
-		return g_object_ref(priv->menu_model);
+		return priv->menu_model;
 	}
 
 	return NULL;
