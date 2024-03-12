@@ -744,6 +744,45 @@ purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
 	g_clear_object(&account);
 }
 
+static const char *puns[] = {
+	"Toucan play at that game!",
+	"As long as it's not too much of a birden...",
+	"Sounds like a bit of ostrich...",
+	"People can't stop raven!",
+	"Have you heard about the bird?",
+};
+
+static void
+purple_demo_protocol_generic_notification(G_GNUC_UNUSED GSimpleAction *action,
+                                          GVariant *parameter,
+                                          G_GNUC_UNUSED gpointer data)
+{
+	PurpleAccount *account = NULL;
+	PurpleAccountManager *account_manager = NULL;
+	PurpleNotification *notification = NULL;
+	PurpleNotificationManager *notification_manager = NULL;
+	const char *account_id = NULL;
+	static guint counter = 0;
+
+	account_id = g_variant_get_string(parameter, NULL);
+	account_manager = purple_account_manager_get_default();
+	account = purple_account_manager_find_by_id(account_manager, account_id);
+
+	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
+	                                       account, g_strdup(puns[counter]),
+	                                       g_free);
+
+	notification_manager = purple_notification_manager_get_default();
+	purple_notification_manager_add(notification_manager, notification);
+
+	counter++;
+	if(counter >= G_N_ELEMENTS(puns)) {
+		counter = 0;
+	}
+
+	g_clear_object(&account);
+}
+
 /******************************************************************************
  * PurpleProtocolActions Implementation
  *****************************************************************************/
@@ -765,6 +804,10 @@ purple_demo_protocol_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *actio
 		}, {
 			.name = "fatal-failure",
 			.activate = purple_demo_protocol_fatal_failure_action_activate,
+			.parameter_type = "s",
+		}, {
+			.name = "generic-notification",
+			.activate = purple_demo_protocol_generic_notification,
 			.parameter_type = "s",
 		}, {
 			.name = "remote-add",
@@ -828,6 +871,13 @@ purple_demo_protocol_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
 
 	item = g_menu_item_new(_("Trigger fatal connection failure..."),
 	                       "prpl-demo.fatal-failure");
+	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
+	                          "account");
+	g_menu_append_item(menu, item);
+	g_object_unref(item);
+
+	item = g_menu_item_new(_("Trigger a generic notification"),
+	                       "prpl-demo.generic-notification");
 	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
 	                          "account");
 	g_menu_append_item(menu, item);
