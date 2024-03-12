@@ -80,7 +80,7 @@ test_purple_notification_manager_add_remove(void) {
 	                 G_CALLBACK(test_purple_notification_manager_increment_cb),
 	                 &removed_called);
 
-	/* Create the notification and store it's id. */
+	/* Create the notification and store its id. */
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
 	                                       NULL, NULL, NULL);
 
@@ -102,6 +102,9 @@ test_purple_notification_manager_add_remove(void) {
 	unread_count = purple_notification_manager_get_unread_count(manager);
 	g_assert_cmpint(unread_count, ==, 0);
 
+	/* After removal from the manager, nothing else should know about this. */
+	g_assert_finalize_object(notification);
+
 	/* Clean up the manager. */
 	g_clear_object(&manager);
 }
@@ -120,10 +123,11 @@ test_purple_notification_manager_double_add(void) {
 		purple_notification_manager_add(manager, notification);
 		purple_notification_manager_add(manager, notification);
 
-		/* This will never get called as the double add outputs a g_warning()
-		 * that causes the test to fail. This is left to avoid a false positive
-		 * in static analysis.
+		/* These will never get called as the double add outputs a g_warning()
+		 * that causes the subprocess to exit. This is left to avoid a false
+		 * positive in static analysis.
 		 */
+		g_clear_object(&notification);
 		g_clear_object(&manager);
 	}
 
@@ -144,11 +148,6 @@ test_purple_notification_manager_double_remove(void) {
 
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
 	                                       NULL, NULL, NULL);
-	/* Add an additional reference because the manager takes one and the id
-	 * belongs to the notification. So without this, the first remove frees
-	 * the id which would cause an invalid read.
-	 */
-	g_object_ref(notification);
 
 	purple_notification_manager_add(manager, notification);
 
@@ -157,7 +156,7 @@ test_purple_notification_manager_double_remove(void) {
 
 	g_assert_cmpint(removed_called, ==, 1);
 
-	g_clear_object(&notification);
+	g_assert_finalize_object(notification);
 	g_clear_object(&manager);
 }
 
@@ -347,15 +346,11 @@ test_purple_notification_manager_read_propagation(void) {
 	                 G_CALLBACK(test_purple_notification_manager_unread_count_cb),
 	                 &unread_count_called);
 
-	/* Create the notification and add a reference to it before we give our
-	 * original reference to the manager.
-	 */
+	/* Create the notification. */
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
 	                                       NULL,
 	                                       NULL,
 	                                       NULL);
-
-	g_object_ref(notification);
 
 	purple_notification_manager_add(manager, notification);
 
@@ -383,8 +378,8 @@ test_purple_notification_manager_read_propagation(void) {
 	g_assert_cmpint(unread_count_called, ==, 3);
 
 	/* Cleanup. */
-	g_clear_object(&notification);
 	g_clear_object(&manager);
+	g_assert_finalize_object(notification);
 }
 
 /******************************************************************************

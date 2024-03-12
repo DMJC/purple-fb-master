@@ -469,6 +469,7 @@ purple_plugins_load_saved(const char *key)
 
 			manager = purple_notification_manager_get_default();
 			purple_notification_manager_add(manager, notification);
+			g_clear_object(&notification);
 		}
 
 		g_free(l->data);

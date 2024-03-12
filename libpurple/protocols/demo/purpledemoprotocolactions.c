@@ -741,6 +741,7 @@ purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
 		counter = 0;
 	}
 
+	g_clear_object(&notification);
 	g_clear_object(&account);
 }
 
@@ -780,6 +781,7 @@ purple_demo_protocol_generic_notification(G_GNUC_UNUSED GSimpleAction *action,
 		counter = 0;
 	}
 
+	g_clear_object(&notification);
 	g_clear_object(&account);
 }
 

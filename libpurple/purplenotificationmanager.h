@@ -78,7 +78,7 @@ GListModel *purple_notification_manager_get_default_as_model(void);
 /**
  * purple_notification_manager_add:
  * @manager: The instance.
- * @notification: (transfer full): The [class@Notification] to add.
+ * @notification: (transfer none): The [class@Notification] to add.
  *
  * Adds @notification into @manager.
  *
