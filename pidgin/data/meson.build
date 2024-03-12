@@ -20,6 +20,7 @@ if appstreamcli_exe.found()
 		'validate pidgin3 metainfo file',
 		appstreamcli_exe,
 		args: ['validate', '--no-net', '--pedantic', metainfo_file],
+		verbose: true,
 	)
 endif
 
@@ -57,5 +58,6 @@ if desktop_file_validate_exe.found()
 		'validate pidgin3 desktop file',
 		desktop_file_validate_exe,
 		args: [meson.current_build_dir() / PIDGIN_DESKTOP_FILE],
+		verbose: true,
 	)
 endif

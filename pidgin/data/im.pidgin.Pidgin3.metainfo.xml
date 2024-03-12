@@ -9,7 +9,9 @@
   <project_license>GPL-2.0-or-later</project_license>
 
   <project_group>Instant Messaging Freedom</project_group>
-  <developer id="pidgin.im">Pidgin Team</developer>
+  <developer id="pidgin.im">
+    <name>The Pidgin Team</name>
+  </developer>
 
   <supports>
     <control>pointing</control>
