@@ -743,7 +743,7 @@ purple_xmlnode_parser_error_libxml(void *user_data, const char *msg, ...)
 }
 
 static void
-purple_xmlnode_parser_structural_error_libxml(void *user_data, xmlErrorPtr error)
+purple_xmlnode_parser_structural_error_libxml(void *user_data, const xmlErrorPtr error)
 {
 	struct _xmlnode_parser_data *xpd = user_data;
 
@@ -797,7 +797,7 @@ static xmlSAXHandler purple_xmlnode_parser_libxml = {
 	NULL, /* _private */
 	purple_xmlnode_parser_element_start_libxml, /* startElementNs */
 	purple_xmlnode_parser_element_end_libxml,   /* endElementNs   */
-	purple_xmlnode_parser_structural_error_libxml, /* serror */
+	(xmlStructuredErrorFunc)purple_xmlnode_parser_structural_error_libxml, /* serror */
 };
 
 PurpleXmlNode *
