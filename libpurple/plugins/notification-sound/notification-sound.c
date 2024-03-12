@@ -293,8 +293,6 @@ notification_sound_unload(GPluginPlugin *plugin,
 {
 	purple_signals_disconnect_by_handle(plugin);
 
-	purple_notification_sound_save_prefs();
-
 	g_clear_pointer(&context, ca_context_destroy);
 	g_clear_pointer(&mute_until, g_date_time_unref);
 
