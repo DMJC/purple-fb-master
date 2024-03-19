@@ -181,8 +181,7 @@ init_libpurple(G_GNUC_UNUSED int argc, char **argv)
 	/* load plugins we had when we quit */
 	purple_plugins_load_saved("/finch/plugins/loaded");
 
-	if (opt_nologin)
-	{
+	if(opt_nologin) {
 		/* Set all accounts to "offline" */
 		PurpleSavedStatus *saved_status;
 
@@ -196,13 +195,16 @@ init_libpurple(G_GNUC_UNUSED int argc, char **argv)
 
 		/* Set the status for each account */
 		purple_savedstatus_activate(saved_status);
-	}
-	else
-	{
+	} else {
+		PurpleAccountManager *manager = NULL;
+
 		/* Everything is good to go--sign on already */
-		if (!purple_prefs_get_bool("/purple/savedstatus/startup_current_status"))
+		if(!purple_prefs_get_bool("/purple/savedstatus/startup_current_status")) {
 			purple_savedstatus_activate(purple_savedstatus_get_startup());
-		purple_accounts_restore_current_statuses();
+		}
+
+		manager = purple_account_manager_get_default();
+		purple_account_manager_set_online(manager, TRUE);
 	}
 
 	return 1;

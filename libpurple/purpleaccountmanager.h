@@ -222,6 +222,32 @@ PurpleAccount * purple_account_manager_find_custom(PurpleAccountManager *manager
 PURPLE_AVAILABLE_IN_3_0
 void purple_account_manager_foreach(PurpleAccountManager *manager, PurpleAccountManagerForeachFunc callback, gpointer data);
 
+/**
+ * purple_account_manager_get_online:
+ * @manager: The instance.
+ *
+ * Gets whether or not new accounts should automatically have
+ * [method@Account.connect] called for them.
+ *
+ * Returns: %TRUE if @manager is online, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_account_manager_get_online(PurpleAccountManager *manager);
+
+/**
+ * purple_account_manager_set_online:
+ * @manager: The instance.
+ *
+ * Sets whether or not new accounts should automatically have
+ * [method@Account.connect] called for them.
+ *
+ * Since: 3.0.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_account_manager_set_online(PurpleAccountManager *manager, gboolean online);
+
 G_END_DECLS
 
 #endif /* PURPLE_ACCOUNT_MANAGER_H */

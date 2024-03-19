@@ -342,6 +342,7 @@ version 3.0.0 (??/??/????):
 		* purple_accounts_get_ui_ops
 		* purple_accounts_remove
 		* purple_accounts_reorder
+		* purple_accounts_restore_current_statuses
 		* purple_accounts_set_ui_ops
 		* PurpleAttentionType
 		* purple_attention_type_set_name

@@ -863,6 +863,8 @@ pidgin_application_startup(GApplication *application) {
 		pidgin_debug_window_show();
 	}
 
+	manager = purple_account_manager_get_default();
+
 	if(opt_nologin) {
 		/* Set all accounts to "offline" */
 		PurpleSavedStatus *saved_status;
@@ -884,10 +886,9 @@ pidgin_application_startup(GApplication *application) {
 			purple_savedstatus_activate(purple_savedstatus_get_startup());
 		}
 
-		purple_accounts_restore_current_statuses();
+		purple_account_manager_set_online(manager, TRUE);
 	}
 
-	manager = purple_account_manager_get_default();
 	active_accounts = purple_account_manager_get_enabled(manager);
 	if(active_accounts == NULL) {
 		g_action_group_activate_action(G_ACTION_GROUP(application),

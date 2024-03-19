@@ -43,7 +43,10 @@ purple_accounts_network_changed_cb(G_GNUC_UNUSED GNetworkMonitor *m,
                                    G_GNUC_UNUSED gpointer data)
 {
 	if(available) {
-		purple_accounts_restore_current_statuses();
+		PurpleAccountManager *manager = NULL;
+
+		manager = purple_account_manager_get_default();
+		purple_account_manager_set_online(manager, TRUE);
 	}
 }
 
@@ -571,36 +574,6 @@ purple_accounts_delete(PurpleAccount *account)
 	purple_credential_manager_clear_password_async(cred_manager, account, NULL,
 	                                               purple_accounts_delete_set,
 	                                               g_object_ref(account));
-}
-
-static void
-purple_accounts_restore_current_status(PurpleAccount *account,
-                                       G_GNUC_UNUSED gpointer data) {
-	gboolean enabled = FALSE, online = FALSE;
-
-	enabled = purple_account_get_enabled(account);
-	online = purple_presence_is_online(purple_account_get_presence(account));
-
-	if(enabled && online) {
-		purple_account_connect(account);
-	}
-}
-
-void
-purple_accounts_restore_current_statuses(void) {
-	PurpleAccountManager *manager = NULL;
-
-	/* If we're not connected to the Internet right now, we bail on this */
-	if (!purple_network_is_available()) {
-		g_warning("Network not connected; skipping reconnect");
-
-		return;
-	}
-
-	manager = purple_account_manager_get_default();
-	purple_account_manager_foreach(manager,
-	                               purple_accounts_restore_current_status,
-	                               NULL);
 }
 
 void *

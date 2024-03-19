@@ -51,22 +51,6 @@ G_BEGIN_DECLS
 PURPLE_AVAILABLE_IN_ALL
 void purple_accounts_delete(PurpleAccount *account);
 
-/**
- * purple_accounts_restore_current_statuses:
- *
- * This is called by the core after all subsystems and what
- * not have been initialized.  It sets all enabled accounts
- * to their startup status by signing them on, setting them
- * away, etc.
- *
- * You probably shouldn't call this unless you really know
- * what you're doing.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_accounts_restore_current_statuses(void);
-
 /**************************************************************************/
 /* Accounts Subsystem                                                     */
 /**************************************************************************/

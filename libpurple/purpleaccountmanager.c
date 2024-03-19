@@ -28,6 +28,13 @@
 #include "purpleaccount.h"
 
 enum {
+	PROP_0,
+	PROP_ONLINE,
+	N_PROPERTIES,
+};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
+
+enum {
 	SIG_ADDED,
 	SIG_REMOVED,
 	SIG_ACCOUNT_CHANGED,
@@ -41,6 +48,7 @@ static guint signals[N_SIGNALS] = {0, };
 struct _PurpleAccountManager {
 	GObject parent;
 
+	gboolean online;
 	GPtrArray *accounts;
 };
 
@@ -142,7 +150,41 @@ purple_account_manager_finalize(GObject *obj) {
 }
 
 static void
+purple_account_manager_get_property(GObject *obj, guint param_id,
+                                    GValue *value, GParamSpec *pspec)
+{
+	PurpleAccountManager *manager = PURPLE_ACCOUNT_MANAGER(obj);
+
+	switch(param_id) {
+	case PROP_ONLINE:
+		g_value_set_boolean(value, purple_account_manager_get_online(manager));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
+	}
+}
+
+static void
+purple_account_manager_set_property(GObject *obj, guint param_id,
+                                    const GValue *value, GParamSpec *pspec)
+{
+	PurpleAccountManager *manager = PURPLE_ACCOUNT_MANAGER(obj);
+
+	switch(param_id) {
+	case PROP_ONLINE:
+		purple_account_manager_set_online(manager, g_value_get_boolean(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
+	}
+}
+
+static void
 purple_account_manager_init(PurpleAccountManager *manager) {
+	manager->online = FALSE;
+
 	manager->accounts = g_ptr_array_new_full(0, (GDestroyNotify)g_object_unref);
 }
 
@@ -151,6 +193,33 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
 	obj_class->finalize = purple_account_manager_finalize;
+	obj_class->get_property = purple_account_manager_get_property;
+	obj_class->set_property = purple_account_manager_set_property;
+
+	/**
+	 * PurpleAccountManager:online:
+	 *
+	 * Controls whether or not accounts that the manager knows about should be
+	 * online or offline.
+	 *
+	 * While this is set to %TRUE, any account added via
+	 * [method@AccountManager.add] that has [property@Account:enabled] set to
+	 * %TRUE, will automatically have [method@Account.connect] called on it.
+	 *
+	 * When this property changes, all accounts that the manager knows about
+	 * with [property@Account:enabled] set to %TRUE will have
+	 * [method@Account.connect] or [method@Account.disconnect] called on them
+	 * to keep their state synchronized.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ONLINE] = g_param_spec_boolean(
+		"online", "online",
+		"Whether or not known accounts are online or offline.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
 	 * PurpleAccountManager::added:
@@ -370,6 +439,10 @@ purple_account_manager_add(PurpleAccountManager *manager,
 
 	g_signal_emit(manager, signals[SIG_ADDED], 0, account);
 	g_list_model_items_changed(G_LIST_MODEL(manager), 0, 0, 1);
+
+	if(manager->online) {
+		purple_account_connect(account);
+	}
 }
 
 void
@@ -595,4 +668,57 @@ purple_account_manager_foreach(PurpleAccountManager *manager,
 		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
 		callback(account, data);
 	}
+}
+
+gboolean
+purple_account_manager_get_online(PurpleAccountManager *manager) {
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT_MANAGER(manager), FALSE);
+
+	return manager->online;
+}
+
+void
+purple_account_manager_set_online(PurpleAccountManager *manager,
+                                  gboolean online)
+{
+	g_return_if_fail(PURPLE_IS_ACCOUNT_MANAGER(manager));
+
+	if(manager->online == online) {
+		return;
+	}
+
+	manager->online = online;
+
+	for(guint index = 0; index < manager->accounts->len; index++) {
+		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
+		PurplePresence *presence = NULL;
+		gboolean enabled = FALSE;
+		gboolean online = FALSE;
+
+		enabled = purple_account_get_enabled(account);
+		if(!enabled) {
+			continue;
+		}
+
+		if(manager->online) {
+			if(!purple_account_is_connected(account) &&
+			   !purple_account_is_connecting(account))
+			{
+				presence = purple_account_get_presence(account);
+				online = purple_presence_is_online(presence);
+
+				if(online) {
+					purple_account_connect(account);
+				}
+			}
+		} else {
+			if(!purple_account_is_disconnected(account) &&
+			   !purple_account_is_disconnecting(account))
+			{
+				purple_account_disconnect(account);
+			}
+		}
+	}
+
+	g_object_notify_by_pspec(G_OBJECT(manager), properties[PROP_ONLINE]);
 }
