@@ -68,6 +68,14 @@ tasks:
     type: docker/export
     files: ${TARGET}:${TARGET}
 
+  girlint:
+    type: docker/run
+    image: docker.io/imfreedom/gir-tools:latest
+    script:
+      - cd ${CONVEY_WORKSPACE}
+      - xsltproc /gir-tools/girlint.xsl $(find build-${TARGET} -iname "*.gir" | grep -v subproject) | tee ${CONVEY_WORKSPACE}/log
+      - exit $(wc -l < ${CONVEY_WORKSPACE}/log)
+
 plans:
   alpine-edge-amd64:
     environment: [TARGET=alpine-edge-amd64]
@@ -122,6 +130,11 @@ plans:
       - tasks: [import, build]
       - tasks: [export]
         run: always
+
+  girlint:
+    environment: [TARGET=debian-trixie-amd64]
+    stages:
+      - tasks: [import, build, girlint]
 
   scanbuild:
     environment: [TARGET=scanbuild]
