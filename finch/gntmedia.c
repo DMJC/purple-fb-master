@@ -414,6 +414,9 @@ void finch_media_manager_init(void)
 	purple_debug_info("gntmedia", "Registering media element types\n");
 	purple_media_manager_set_active_element(manager, audio_src);
 	purple_media_manager_set_active_element(manager, audio_sink);
+
+	g_object_unref(audio_src);
+	g_object_unref(audio_sink);
 }
 
 void finch_media_manager_uninit(void)

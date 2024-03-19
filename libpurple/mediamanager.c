@@ -29,6 +29,7 @@
 #include "prefs.h"
 #include "purpleaccount.h"
 #include "purplepath.h"
+#include "purpleprivate.h"
 
 #include "media-gst.h"
 
@@ -121,6 +122,8 @@ enum {
 };
 static guint signals[N_SIGNALS] = {0, };
 
+static PurpleMediaManager *default_manager = NULL;
+
 G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleMediaManager, purple_media_manager,
                                  G_TYPE_OBJECT);
 
@@ -189,37 +192,44 @@ purple_media_manager_init (PurpleMediaManager *media)
 }
 
 static void
-purple_media_manager_finalize (GObject *media)
+purple_media_manager_finalize(GObject *obj)
 {
-	PurpleMediaManagerPrivate *priv =
-			purple_media_manager_get_instance_private(
-					PURPLE_MEDIA_MANAGER(media));
+	PurpleMediaManager *manager = PURPLE_MEDIA_MANAGER(obj);
+	PurpleMediaManagerPrivate *priv = NULL;
 
-	g_list_free_full(priv->medias, g_object_unref);
-	g_list_free_full(priv->private_medias, g_object_unref);
-	g_list_free_full(priv->elements, g_object_unref);
-	g_clear_pointer(&priv->video_caps, gst_caps_unref);
-	g_clear_list(&priv->appdata_info,
-	             (GDestroyNotify)free_appdata_info_locked);
-	g_mutex_clear (&priv->appdata_mutex);
+	priv = purple_media_manager_get_instance_private(manager);
+
 	if (priv->device_monitor) {
 		gst_device_monitor_stop(priv->device_monitor);
 		g_object_unref(priv->device_monitor);
 	}
 
-	G_OBJECT_CLASS(purple_media_manager_parent_class)->finalize(media);
+	g_clear_list(&priv->medias, g_object_unref);
+	g_clear_list(&priv->private_medias, g_object_unref);
+	g_clear_list(&priv->elements, g_object_unref);
+	g_clear_pointer(&priv->video_caps, gst_caps_unref);
+	g_clear_list(&priv->appdata_info,
+	             (GDestroyNotify)free_appdata_info_locked);
+	g_mutex_clear (&priv->appdata_mutex);
+
+	G_OBJECT_CLASS(purple_media_manager_parent_class)->finalize(obj);
 }
 
 PurpleMediaManager *
 purple_media_manager_get(void)
 {
-	static PurpleMediaManager *manager = NULL;
-
-	if (manager == NULL) {
-		manager = g_object_new(PURPLE_TYPE_MEDIA_MANAGER, NULL);
+	if(!PURPLE_IS_MEDIA_MANAGER(default_manager)) {
+		default_manager = g_object_new(PURPLE_TYPE_MEDIA_MANAGER, NULL);
+		g_object_add_weak_pointer(G_OBJECT(default_manager),
+		                          (gpointer *)&default_manager);
 	}
 
-	return manager;
+	return default_manager;
+}
+
+void
+purple_media_manager_shutdown(void) {
+	g_clear_object(&default_manager);
 }
 
 static gboolean
@@ -1188,6 +1198,7 @@ purple_media_manager_register_element(PurpleMediaManager *manager,
 
 	if (info2 != NULL) {
 		g_object_unref(info2);
+		g_object_unref(info);
 		return FALSE;
 	}
 
@@ -1213,7 +1224,6 @@ purple_media_manager_unregister_element(PurpleMediaManager *manager,
 	info = purple_media_manager_get_element_info(manager, id);
 
 	if (info == NULL) {
-		g_object_unref(info);
 		return FALSE;
 	}
 
@@ -1260,7 +1270,7 @@ purple_media_manager_set_active_element(PurpleMediaManager *manager,
 	g_free(id);
 
 	if (info2 == NULL) {
-		purple_media_manager_register_element(manager, info);
+		purple_media_manager_register_element(manager, g_object_ref(info));
 	} else {
 		g_object_unref(info2);
 	}

@@ -986,4 +986,9 @@ pidgin_medias_init(void)
 	purple_media_manager_set_active_element(manager, video_sink);
 	purple_media_manager_set_active_element(manager, audio_src);
 	purple_media_manager_set_active_element(manager, audio_sink);
+
+	g_object_unref(video_src);
+	g_object_unref(video_sink);
+	g_object_unref(audio_src);
+	g_object_unref(audio_sink);
 }

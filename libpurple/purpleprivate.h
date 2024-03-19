@@ -295,6 +295,16 @@ PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_deactivate(PurpleHistoryAdapter *adapter, GError **error);
 
 /**
+ * purple_media_manager_shutdown:
+ *
+ * Shuts down the media manager by destroying the default instance.
+ *
+ * Since: 3.0
+ */
+G_GNUC_INTERNAL
+void purple_media_manager_shutdown(void);
+
+/**
  * purple_notification_manager_startup:
  *
  * Starts up the notification manager by creating the default instance.

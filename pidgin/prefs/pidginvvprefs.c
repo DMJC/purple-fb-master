@@ -407,6 +407,7 @@ vv_device_changed_cb(const gchar *name, G_GNUC_UNUSED PurplePrefType type,
 	manager = purple_media_manager_get();
 	info = purple_media_manager_get_element_info(manager, value);
 	purple_media_manager_set_active_element(manager, info);
+	g_object_unref(info);
 
 	/* Refresh test viewers */
 	if (strstr(name, "audio") && prefs->voice.pipeline) {
