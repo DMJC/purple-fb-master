@@ -27,13 +27,15 @@
 #include "purpleenums.h"
 
 typedef struct {
-	gchar *id;
+	char *id;
 	PurpleNotificationType type;
 	PurpleAccount *account;
 
 	GDateTime *created_timestamp;
-	gchar *title;
-	gchar *icon_name;
+	char *title;
+	char *subtitle;
+
+	char *icon_name;
 	gboolean read;
 	gboolean interactive;
 
@@ -56,6 +58,7 @@ enum {
 	PROP_ACCOUNT,
 	PROP_CREATED_TIMESTAMP,
 	PROP_TITLE,
+	PROP_SUBTITLE,
 	PROP_ICON_NAME,
 	PROP_READ,
 	PROP_INTERACTIVE,
@@ -65,8 +68,8 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurpleNotification, purple_notification,
-                                 G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE(PurpleNotification, purple_notification,
+                           G_TYPE_OBJECT)
 
 /******************************************************************************
  * Helpers
@@ -178,6 +181,10 @@ purple_notification_get_property(GObject *obj, guint param_id, GValue *value,
 			g_value_set_string(value,
 			                   purple_notification_get_title(notification));
 			break;
+		case PROP_SUBTITLE:
+			g_value_set_string(value,
+			                   purple_notification_get_subtitle(notification));
+			break;
 		case PROP_ICON_NAME:
 			g_value_set_string(value,
 			                   purple_notification_get_icon_name(notification));
@@ -227,6 +234,10 @@ purple_notification_set_property(GObject *obj, guint param_id,
 			purple_notification_set_title(notification,
 			                              g_value_get_string(value));
 			break;
+		case PROP_SUBTITLE:
+			purple_notification_set_subtitle(notification,
+			                                 g_value_get_string(value));
+			break;
 		case PROP_ICON_NAME:
 			purple_notification_set_icon_name(notification,
 			                                  g_value_get_string(value));
@@ -265,6 +276,7 @@ purple_notification_finalize(GObject *obj) {
 
 	g_clear_pointer(&priv->created_timestamp, g_date_time_unref);
 	g_clear_pointer(&priv->title, g_free);
+	g_clear_pointer(&priv->subtitle, g_free);
 	g_clear_pointer(&priv->icon_name, g_free);
 
 	if(priv->data_destroy_func != NULL) {
@@ -327,8 +339,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 		"id", "id",
 		"The identifier of the notification.",
 		NULL,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS
-	);
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:type:
@@ -369,7 +380,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 		"created-timestamp", "created-timestamp",
 		"The timestamp when this notification was created.",
 		G_TYPE_DATE_TIME,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:title:
@@ -384,7 +395,22 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 		"title", "title",
 		"The title for the notification.",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:subtitle:
+	 *
+	 * An optional subtitle for this notification. A user interface may or may
+	 * not choose to use this when displaying the notification. Regardless,
+	 * this should be a translated string.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_SUBTITLE] = g_param_spec_string(
+		"subtitle", "subtitle",
+		"The subtitle for the notification.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:icon-name:
@@ -399,7 +425,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 		"icon-name", "icon-name",
 		"The icon name for the notification.",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:read:
@@ -412,7 +438,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 		"read", "read",
 		"Whether or not the notification has been read.",
 		FALSE,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:interactive:
@@ -425,7 +451,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 		"interactive", "interactive",
 		"Whether or not the notification can be interacted with.",
 		FALSE,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:data:
@@ -476,8 +502,9 @@ purple_notification_new_from_add_contact_request(PurpleAddContactRequest *reques
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *info = NULL;
 	PurpleNotification *notification = NULL;
-	gchar *title = NULL;
-	const gchar *alias = NULL, *username = NULL;
+	char *title = NULL;
+	const char *alias = NULL;
+	const char *username = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request), NULL);
 
@@ -511,8 +538,9 @@ purple_notification_new_from_authorization_request(PurpleAuthorizationRequest *a
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *info = NULL;
 	PurpleNotification *notification = NULL;
-	gchar *title = NULL;
-	const gchar *alias = NULL, *username = NULL;
+	char *title = NULL;
+	const char *alias = NULL;
+	const char *username = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(authorization_request),
 	                     NULL);
@@ -582,7 +610,7 @@ purple_notification_new_from_connection_error(PurpleAccount *account,
 	return notification;
 }
 
-const gchar *
+const char *
 purple_notification_get_id(PurpleNotification *notification) {
 	PurpleNotificationPrivate *priv = NULL;
 
@@ -649,7 +677,7 @@ purple_notification_set_created_timestamp(PurpleNotification *notification,
 	                         properties[PROP_CREATED_TIMESTAMP]);
 }
 
-const gchar *
+const char *
 purple_notification_get_title(PurpleNotification *notification) {
 	PurpleNotificationPrivate *priv = NULL;
 
@@ -662,7 +690,7 @@ purple_notification_get_title(PurpleNotification *notification) {
 
 void
 purple_notification_set_title(PurpleNotification *notification,
-                              const gchar *title)
+                              const char *title)
 {
 	PurpleNotificationPrivate *priv = NULL;
 
@@ -679,7 +707,37 @@ purple_notification_set_title(PurpleNotification *notification,
 	}
 }
 
-const gchar *
+const char *
+purple_notification_get_subtitle(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), NULL);
+
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->subtitle;
+}
+
+void
+purple_notification_set_subtitle(PurpleNotification *notification,
+                                 const char *subtitle)
+{
+	PurpleNotificationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
+
+	priv = purple_notification_get_instance_private(notification);
+
+	if(!purple_strequal(priv->subtitle, subtitle)) {
+		g_free(priv->subtitle);
+		priv->subtitle = g_strdup(subtitle);
+
+		g_object_notify_by_pspec(G_OBJECT(notification),
+		                         properties[PROP_SUBTITLE]);
+	}
+}
+
+const char *
 purple_notification_get_icon_name(PurpleNotification *notification) {
 	PurpleNotificationPrivate *priv = NULL;
 
@@ -692,7 +750,7 @@ purple_notification_get_icon_name(PurpleNotification *notification) {
 
 void
 purple_notification_set_icon_name(PurpleNotification *notification,
-                                  const gchar *icon_name)
+                                  const char *icon_name)
 {
 	PurpleNotificationPrivate *priv = NULL;
 
@@ -777,7 +835,7 @@ purple_notification_get_data(PurpleNotification *notification) {
 	return priv->data;
 }
 
-gint
+int
 purple_notification_compare(gconstpointer a, gconstpointer b) {
 	PurpleNotification *notification_a = NULL;
 	PurpleNotification *notification_b = NULL;

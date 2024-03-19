@@ -155,7 +155,7 @@ PurpleNotification *purple_notification_new_from_connection_error(PurpleAccount 
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_notification_get_id(PurpleNotification *notification);
+const char *purple_notification_get_id(PurpleNotification *notification);
 
 /**
  * purple_notification_get_notification_type:
@@ -219,12 +219,12 @@ void purple_notification_set_created_timestamp(PurpleNotification *notification,
  *
  * Gets the title of @notification.
  *
- * Returns: The title of @notification.
+ * Returns: (nullable): The title of @notification.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_notification_get_title(PurpleNotification *notification);
+const char *purple_notification_get_title(PurpleNotification *notification);
 
 /**
  * purple_notification_set_title:
@@ -236,7 +236,32 @@ const gchar *purple_notification_get_title(PurpleNotification *notification);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_notification_set_title(PurpleNotification *notification, const gchar *title);
+void purple_notification_set_title(PurpleNotification *notification, const char *title);
+
+/**
+ * purple_notification_get_subtitle:
+ * @notification: The instance.
+ *
+ * Gets the subtitle of @notification.
+ *
+ * Returns: (nullable): The subtitle of @notification.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+const char *purple_notification_get_subtitle(PurpleNotification *notification);
+
+/**
+ * purple_notification_set_subtitle:
+ * @notification: The instance.
+ * @subtitle: (nullable): The new subtitle.
+ *
+ * Sets the subtitle of @notification.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_notification_set_subtitle(PurpleNotification *notification, const char *subtitle);
 
 /**
  * purple_notification_get_icon_name:
@@ -249,7 +274,7 @@ void purple_notification_set_title(PurpleNotification *notification, const gchar
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_notification_get_icon_name(PurpleNotification *notification);
+const char *purple_notification_get_icon_name(PurpleNotification *notification);
 
 /**
  * purple_notification_set_icon_name:
@@ -261,7 +286,7 @@ const gchar *purple_notification_get_icon_name(PurpleNotification *notification)
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_notification_set_icon_name(PurpleNotification *notification, const gchar *icon_name);
+void purple_notification_set_icon_name(PurpleNotification *notification, const char *icon_name);
 
 /**
  * purple_notification_get_read:
@@ -340,7 +365,7 @@ gpointer purple_notification_get_data(PurpleNotification *notification);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-gint purple_notification_compare(gconstpointer a, gconstpointer b);
+int purple_notification_compare(gconstpointer a, gconstpointer b);
 
 /**
  * purple_notification_delete:

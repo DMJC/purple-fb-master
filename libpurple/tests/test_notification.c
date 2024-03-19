@@ -101,54 +101,67 @@ test_purple_notification_destroy_data_func(void) {
 static void
 test_purple_notification_properties(void) {
 	PurpleNotification *notification = NULL;
-	GDateTime *ts1 = NULL, *ts2 = NULL;
+	GDateTime *created_timestamp = NULL;
+	GDateTime *created_timestamp1 = NULL;
+	char *icon_name1 = NULL;
+	char *subtitle1 = NULL;
+	char *title1 = NULL;
+	gboolean interactive = FALSE;
+	gboolean read = FALSE;
 
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       NULL,
-	                                       NULL,
-	                                       NULL);
+	created_timestamp = g_date_time_new_now_utc();
+
+	notification = g_object_new(
+		PURPLE_TYPE_NOTIFICATION,
+		"created-timestamp", created_timestamp,
+		"icon-name", "icon-name",
+		"interactive", TRUE,
+		"read", TRUE,
+		"subtitle", "subtitle",
+		"title", "title",
+		"type", PURPLE_NOTIFICATION_TYPE_GENERIC,
+		NULL);
 
 	g_assert_true(PURPLE_IS_NOTIFICATION(notification));
 
-	/* Set the timestamp to current utc and verify it was set properly. */
-	ts1 = g_date_time_new_now_utc();
-	purple_notification_set_created_timestamp(notification, ts1);
-	ts2 = purple_notification_get_created_timestamp(notification);
-	g_assert_true(g_date_time_equal(ts1, ts2));
-	g_date_time_unref(ts1);
+	g_object_get(
+		notification,
+		"created-timestamp", &created_timestamp1,
+		"icon-name", &icon_name1,
+		"interactive", &interactive,
+		"read", &read,
+		"subtitle", &subtitle1,
+		"title", &title1,
+		NULL);
 
-	/* Set the title and verify it was set properly. */
-	purple_notification_set_title(notification, "title");
-	g_assert_true(purple_strequal(purple_notification_get_title(notification),
-	                              "title"));
+	g_assert_nonnull(created_timestamp1);
+	g_assert_true(g_date_time_equal(created_timestamp, created_timestamp1));
+	g_date_time_unref(created_timestamp1);
 
-	/* Set the title and verify it was set properly. */
-	purple_notification_set_icon_name(notification, "icon-name");
-	g_assert_true(purple_strequal(purple_notification_get_icon_name(notification),
-	                              "icon-name"));
+	g_assert_cmpstr(title1, ==, "title");
+	g_clear_pointer(&title1, g_free);
 
-	/* Set the read state and verify it. */
-	purple_notification_set_read(notification, TRUE);
-	g_assert_true(purple_notification_get_read(notification));
-	purple_notification_set_read(notification, FALSE);
-	g_assert_false(purple_notification_get_read(notification));
+	g_assert_cmpstr(subtitle1, ==, "subtitle");
+	g_clear_pointer(&subtitle1, g_free);
 
-	/* Set the interactive state and verify it. */
-	purple_notification_set_interactive(notification, TRUE);
-	g_assert_true(purple_notification_get_interactive(notification));
-	purple_notification_set_interactive(notification, FALSE);
-	g_assert_false(purple_notification_get_interactive(notification));
+	g_assert_cmpstr(icon_name1, ==, "icon-name");
+	g_clear_pointer(&icon_name1, g_free);
 
-	/* Cleanup. */
-	g_clear_object(&notification);
+	g_assert_true(read);
+
+	g_assert_true(interactive);
+
+	g_assert_finalize_object(notification);
+
+	g_date_time_unref(created_timestamp);
 }
 
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
+int
+main(int argc, char *argv[]) {
+	int ret = 0;
 
 	g_test_init(&argc, &argv, NULL);
 
