@@ -4,6 +4,7 @@ PROGS = [
     'authorization_request',
     'channel_join_details',
     'circular_buffer',
+    'create_conversation_details',
     'contact',
     'contact_info',
     'contact_manager',
