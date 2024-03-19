@@ -22,6 +22,7 @@
 
 #include "purplexmppconnection.h"
 #include "purplexmppconstants.h"
+#include "purplexmppcore.h"
 
 struct _PurpleXmppProtocol {
 	PurpleProtocol parent;
@@ -110,6 +111,43 @@ purple_xmpp_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 	return types;
 }
 
+static void
+purple_xmpp_protocol_can_connect_async(PurpleProtocol *protocol,
+                                       G_GNUC_UNUSED PurpleAccount *account,
+                                       GCancellable *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer data)
+{
+	GTask *task = NULL;
+	GNetworkMonitor *monitor = NULL;
+	GNetworkConnectivity connectivity = 0;
+
+	task = g_task_new(protocol, cancellable, callback, data);
+
+	/* Since we could be connecting to localhost, we only need to verify that
+	 * our connectivity is at least G_NETWORK_CONNECTIVITY_LOCAL.
+	 */
+	monitor = g_network_monitor_get_default();
+	connectivity = g_network_monitor_get_connectivity(monitor);
+
+	if(connectivity >= G_NETWORK_CONNECTIVITY_LOCAL) {
+		g_task_return_boolean(task, TRUE);
+	} else {
+		g_task_return_new_error(task, PURPLE_XMPP_DOMAIN, 0,
+		                        _("Network connection not detected."));
+	}
+
+	g_clear_object(&task);
+}
+
+static gboolean
+purple_xmpp_protocol_can_connect_finish(G_GNUC_UNUSED PurpleProtocol *protocol,
+                                        GAsyncResult *result,
+                                        GError **error)
+{
+	return g_task_propagate_boolean(G_TASK(result), error);
+}
+
 static PurpleConnection *
 purple_xmpp_protocol_create_connection(PurpleProtocol *protocol,
                                        PurpleAccount *account,
@@ -149,7 +187,8 @@ purple_xmpp_protocol_class_init(PurpleXmppProtocolClass *klass) {
 	protocol_class->get_user_splits = purple_xmpp_protocol_get_user_splits;
 	protocol_class->get_account_options = purple_xmpp_protocol_get_account_options;
 	protocol_class->status_types = purple_xmpp_protocol_status_types;
-
+	protocol_class->can_connect_async = purple_xmpp_protocol_can_connect_async;
+	protocol_class->can_connect_finish = purple_xmpp_protocol_can_connect_finish;
 	protocol_class->create_connection = purple_xmpp_protocol_create_connection;
 }
 

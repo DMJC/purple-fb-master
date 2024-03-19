@@ -429,6 +429,54 @@ purple_account_connection_state_cb(GObject *obj,
 	}
 }
 
+static void
+purple_account_can_connect_cb(GObject *source, GAsyncResult *result,
+                              gpointer data)
+{
+	PurpleAccount *account = data;
+	PurpleProtocol *protocol = PURPLE_PROTOCOL(source);
+	PurpleProtocolOptions options;
+	GError *error = NULL;
+	gboolean can_connect = FALSE;
+	gboolean require_password = TRUE;
+
+	can_connect = purple_protocol_can_connect_finish(protocol, result, &error);
+	if(!can_connect || error != NULL) {
+		PurpleConnectionErrorInfo *info = NULL;
+		const char *error_message = _("unknown error");
+
+		if(error != NULL) {
+			error_message = error->message;
+		}
+
+		info = purple_connection_error_info_new(PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
+		                                        error_message);
+		purple_account_set_error(account, info);
+
+		g_clear_error(&error);
+
+		return;
+	}
+
+	options = purple_protocol_get_options(protocol);
+	if(options & OPT_PROTO_PASSWORD_OPTIONAL) {
+		require_password = purple_account_get_require_password(account);
+	} else if(options & OPT_PROTO_NO_PASSWORD) {
+		require_password = FALSE;
+	}
+
+	if(require_password) {
+		PurpleCredentialManager *manager = NULL;
+
+		manager = purple_credential_manager_get_default();
+		purple_credential_manager_read_password_async(manager, account, NULL,
+		                                              purple_account_connect_got_password_cb,
+		                                              account);
+	} else {
+		g_timeout_add_seconds(0, no_password_cb, account);
+	}
+}
+
 /******************************************************************************
  * XmlNode Helpers
  *****************************************************************************/
@@ -1065,11 +1113,8 @@ purple_account_new(const gchar *username, const gchar *protocol_id) {
 void
 purple_account_connect(PurpleAccount *account)
 {
-	PurpleCredentialManager *manager = NULL;
 	PurpleProtocol *protocol = NULL;
-	PurpleProtocolOptions options;
 	const char *username = NULL;
-	gboolean require_password = TRUE;
 
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
@@ -1095,23 +1140,8 @@ purple_account_connect(PurpleAccount *account)
 		return;
 	}
 
-	purple_debug_info("account", "Connecting to account %s.\n", username);
-
-	options = purple_protocol_get_options(protocol);
-	if(options & OPT_PROTO_PASSWORD_OPTIONAL) {
-		require_password = purple_account_get_require_password(account);
-	} else if(options & OPT_PROTO_NO_PASSWORD) {
-		require_password = FALSE;
-	}
-
-	if(require_password) {
-		manager = purple_credential_manager_get_default();
-		purple_credential_manager_read_password_async(manager, account, NULL,
-		                                              purple_account_connect_got_password_cb,
-		                                              account);
-	} else {
-		g_timeout_add_seconds(0, no_password_cb, account);
-	}
+	purple_protocol_can_connect_async(protocol, account, NULL,
+	                                  purple_account_can_connect_cb, account);
 }
 
 void

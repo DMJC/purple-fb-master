@@ -317,6 +317,9 @@ void purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *connectio
  * Most protocol plugins will call [method@Gio.NetworkMonitor.can_reach_async]
  * to determine if a connection is possible.
  *
+ * If [vfunc@Protocol.can_connect_async] is not implemented, this function will
+ * create a [type@Gio.Task] that returns %TRUE.
+ *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0

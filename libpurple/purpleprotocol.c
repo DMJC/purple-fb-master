@@ -561,6 +561,13 @@ purple_protocol_can_connect_async(PurpleProtocol *protocol,
 	if(klass != NULL && klass->can_connect_async != NULL) {
 		klass->can_connect_async(protocol, account, cancellable, callback,
 		                         data);
+	} else {
+		GTask *task = g_task_new(protocol, cancellable, callback, data);
+
+		g_task_return_boolean(task, TRUE);
+		g_task_set_source_tag(task, purple_protocol_can_connect_async);
+
+		g_clear_object(&task);
 	}
 }
 
@@ -569,13 +576,19 @@ purple_protocol_can_connect_finish(PurpleProtocol *protocol,
                                    GAsyncResult *result,
                                    GError **error)
 {
-	PurpleProtocolClass *klass = NULL;
+	gpointer tag = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), FALSE);
 
-	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
-	if(klass != NULL && klass->can_connect_finish != NULL) {
-		return klass->can_connect_finish(protocol, result, error);
+	tag = g_task_get_source_tag(G_TASK(result));
+	if(tag == purple_protocol_can_connect_async) {
+		return g_task_propagate_boolean(G_TASK(result), error);
+	} else {
+		PurpleProtocolClass *klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
+
+		if(klass != NULL && klass->can_connect_finish != NULL) {
+			return klass->can_connect_finish(protocol, result, error);
+		}
 	}
 
 	return FALSE;

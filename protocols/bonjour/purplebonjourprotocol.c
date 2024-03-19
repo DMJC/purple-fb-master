@@ -22,6 +22,7 @@
 
 #include "purplebonjourconnection.h"
 #include "purplebonjourconstants.h"
+#include "purplebonjourcore.h"
 
 struct _PurpleBonjourProtocol {
 	PurpleProtocol parent;
@@ -58,6 +59,41 @@ purple_bonjour_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 	types = g_list_append(types, type);
 
 	return types;
+}
+
+static void
+purple_bonjour_protocol_can_connect_async(PurpleProtocol *protocol,
+                                          G_GNUC_UNUSED PurpleAccount *account,
+                                          GCancellable *cancellable,
+                                          GAsyncReadyCallback callback,
+                                          gpointer data)
+{
+	GTask *task = NULL;
+	GNetworkMonitor *monitor = NULL;
+	GNetworkConnectivity connectivity = 0;
+
+	task = g_task_new(protocol, cancellable, callback, data);
+
+	/* Bonjour runs on LANs so we just need local connectivity. */
+	monitor = g_network_monitor_get_default();
+	connectivity = g_network_monitor_get_connectivity(monitor);
+
+	if(connectivity >= G_NETWORK_CONNECTIVITY_LOCAL) {
+		g_task_return_boolean(task, TRUE);
+	} else {
+		g_task_return_new_error(task, PURPLE_BONJOUR_DOMAIN, 0,
+		                        _("Network connection not detected."));
+	}
+
+	g_clear_object(&task);
+}
+
+static gboolean
+purple_bonjour_protocol_can_connect_finish(G_GNUC_UNUSED PurpleProtocol *protocol,
+                                           GAsyncResult *result,
+                                           GError **error)
+{
+	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
 static PurpleConnection *
@@ -99,7 +135,8 @@ purple_bonjour_protocol_class_init(PurpleBonjourProtocolClass *klass) {
 
 	protocol_class->get_account_options = purple_bonjour_protocol_get_account_options;
 	protocol_class->status_types = purple_bonjour_protocol_status_types;
-
+	protocol_class->can_connect_async = purple_bonjour_protocol_can_connect_async;
+	protocol_class->can_connect_finish = purple_bonjour_protocol_can_connect_finish;
 	protocol_class->create_connection = purple_bonjour_protocol_create_connection;
 }
 

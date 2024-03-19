@@ -29,6 +29,39 @@
 #include "purpleircv3protocolconversation.h"
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+purple_ircv3_protocol_can_reach_cb(GObject *self, GAsyncResult *result,
+                                   gpointer data)
+{
+	GError *error = NULL;
+	GTask *task = data;
+	gboolean can_reach = FALSE;
+
+	/* task and result share a cancellable, so either can be used here. */
+	if(g_task_return_error_if_cancelled(task)) {
+		g_clear_object(&task);
+
+		return;
+	}
+
+	can_reach = g_network_monitor_can_reach_finish(G_NETWORK_MONITOR(self), result,
+	                                               &error);
+
+	if(error != NULL) {
+		g_task_return_error(task, error);
+	} else if(!can_reach) {
+		g_task_return_new_error(task, PURPLE_IRCV3_DOMAIN, 0,
+		                        _("Unknown network error."));
+	} else {
+		g_task_return_boolean(task, TRUE);
+	}
+
+	g_clear_object(&task);
+}
+
+/******************************************************************************
  * PurpleProtocol Implementation
  *****************************************************************************/
 static GList *
@@ -148,6 +181,46 @@ purple_ircv3_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
 	return types;
 }
 
+static void
+purple_ircv3_protocol_can_connect_async(PurpleProtocol *protocol,
+                                        PurpleAccount *account,
+                                        GCancellable *cancellable,
+                                        GAsyncReadyCallback callback,
+                                        gpointer data)
+{
+	GNetworkMonitor *monitor = NULL;
+	GSocketConnectable *connectable = NULL;
+	GStrv parts = NULL;
+	GTask *task = NULL;
+	const char *username = NULL;
+	gint port = 0;
+
+	task = g_task_new(protocol, cancellable, callback, data);
+
+	monitor = g_network_monitor_get_default();
+
+	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	parts = g_strsplit(username, "@", 2);
+	port = purple_account_get_int(account, "port",
+	                              PURPLE_IRCV3_DEFAULT_TLS_PORT);
+
+	connectable = g_network_address_new(parts[1], (guint16)port);
+	g_strfreev(parts);
+
+	g_network_monitor_can_reach_async(monitor, connectable, cancellable,
+	                                  purple_ircv3_protocol_can_reach_cb,
+	                                  task);
+	g_clear_object(&connectable);
+}
+
+static gboolean
+purple_ircv3_protocol_can_connect_finish(G_GNUC_UNUSED PurpleProtocol *protocol,
+                                         GAsyncResult *result,
+                                         GError **error)
+{
+	return g_task_propagate_boolean(G_TASK(result), error);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -177,6 +250,10 @@ purple_ircv3_protocol_class_init(PurpleIRCv3ProtocolClass *klass) {
 	protocol_class->create_connection =
 		purple_ircv3_protocol_create_connection;
 	protocol_class->status_types = purple_ircv3_protocol_status_types;
+	protocol_class->can_connect_async =
+		purple_ircv3_protocol_can_connect_async;
+	protocol_class->can_connect_finish =
+		purple_ircv3_protocol_can_connect_finish;
 }
 
 /******************************************************************************
