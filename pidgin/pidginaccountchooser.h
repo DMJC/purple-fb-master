@@ -35,6 +35,14 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PidginAccountChooser:
+ *
+ * A widget that allows the user to pick a [class@Purple.Account] from a list.
+ *
+ * Since: 3.0
+ */
+
 #define PIDGIN_TYPE_ACCOUNT_CHOOSER (pidgin_account_chooser_get_type())
 
 PIDGIN_AVAILABLE_IN_3_0

@@ -125,11 +125,15 @@ pidgin_SOURCES = [
 	'pidgin.c'
 ]
 
+libpidgin_built_sources = []
+
+libpidgin_built_headers = []
+
 pidgin_resource = gnome.compile_resources('pidginresources',
     'resources/pidgin.gresource.xml',
     source_dir : 'resources',
     c_name : 'pidgin')
-libpidgin_SOURCES += pidgin_resource
+libpidgin_built_sources += pidgin_resource
 
 pidgin_filebase = 'pidgin-3'
 pidgin_include_base = pidgin_filebase / 'pidgin'
@@ -197,10 +201,7 @@ pidgin_version_h = configure_file(input : 'pidginversionconsts.h.in',
 install_headers(libpidgin_headers, subdir : pidgin_include_base)
 install_headers(libpidgin_prefs_headers, subdir : pidgin_include_base / 'prefs')
 
-libpidgin_built_sources = [
-]
-
-libpidgin_built_headers = [
+libpidgin_built_headers += [
 	pidgin_h,
 	pidgin_version_h,
 ]

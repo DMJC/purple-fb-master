@@ -37,6 +37,14 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PidginProtocolChooser:
+ *
+ * A widget that lets the user choose a [class@Purple.Protocol].
+ *
+ * Since: 3.0
+ */
+
 #define PIDGIN_TYPE_PROTOCOL_CHOOSER (pidgin_protocol_chooser_get_type())
 
 PIDGIN_AVAILABLE_IN_3_0

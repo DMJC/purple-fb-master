@@ -35,6 +35,14 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PidginAccountDisplay:
+ *
+ * A widget that is used to display a [class@Purple.Account].
+ *
+ * Since: 3.0
+ */
+
 #define PIDGIN_TYPE_ACCOUNT_DISPLAY (pidgin_account_display_get_type())
 
 PIDGIN_AVAILABLE_IN_3_0

@@ -140,7 +140,7 @@ pidgin_account_display_class_init(PidginAccountDisplayClass *klass) {
 	obj_class->finalize = pidgin_account_display_finalize;
 
 	/**
-	 * PurpleAccountDisplay:account:
+	 * PidginAccountDisplay:account:
 	 *
 	 * The account that is currently displayed.
 	 *

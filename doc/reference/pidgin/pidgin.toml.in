@@ -56,3 +56,27 @@ content_files = [
 content_images = [
 ]
 urlmap_file = "urlmap.js"
+
+[[object]]
+pattern = "DEPRECATED_IN_*"
+hidden = true
+
+[[object]]
+name = "DEPRECATED_FOR"
+hidden = true
+
+[[object]]
+name = "UNAVAILABLE"
+hidden = true
+
+[[object]]
+name = "UNAVAILABLE_MACRO"
+hidden = true
+
+[[object]]
+name = "UNAVAILABLE_STATIC_INLINE"
+hidden = true
+
+[[object]]
+name = "UNAVAILABLE_TYPE"
+hidden = true

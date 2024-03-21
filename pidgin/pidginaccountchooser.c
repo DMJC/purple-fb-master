@@ -109,11 +109,26 @@ pidgin_account_chooser_class_init(PidginAccountChooserClass *klass)
 	obj_class->get_property = pidgin_account_chooser_get_property;
 	obj_class->set_property = pidgin_account_chooser_set_property;
 
+	/**
+	 * PidginAccountChooser:account:
+	 *
+	 * The account that is currently selected.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
-	        "account", "Account", "The account that is currently selected.",
+	        "account", "Account",
+	        "The account that is currently selected.",
 	        PURPLE_TYPE_ACCOUNT,
 	        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PidginAccountChooser:filter:
+	 *
+	 * A filter to be applied to the list of accounts.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_FILTER] = g_param_spec_object(
 	        "filter", "filter",
 	        "The filter to be applied on the list of accounts.",

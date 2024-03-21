@@ -67,6 +67,26 @@
 #endif
 
 /**
+ * PIDGIN_VERSION_MIN_REQUIRED:
+ *
+ * A macro that should be defined by the user prior to including the `pidgin.h`
+ * header.
+ *
+ * The definition should be one of the predefined Pidgin version macros:
+ * %PIDGIN_VERSION_3_0, %PIDGIN_VERSION_3_1, ...
+ *
+ * This macro defines the earliest version of Pidgin that the package is
+ * required to be able to compile against.
+ *
+ * If the compiler is configured to warn about the use of deprecated functions,
+ * then using functions that were deprecated in version
+ * %PIDGIN_VERSION_MIN_REQUIRED or earlier will cause warnings (but using
+ * functions deprecated in later releases will not).
+ *
+ * Since: 3.0
+ */
+
+/**
  * PIDGIN_VERSION_CUR_STABLE:
  *
  * A macro that evaluates to the current stable version of Pidgin, in a format

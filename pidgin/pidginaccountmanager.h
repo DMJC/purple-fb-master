@@ -60,7 +60,7 @@ PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_account_manager_new(void);
 
 /**
- * pidgin_account_managet_show_overview:
+ * pidgin_account_manager_show_overview:
  * @manager: The instance.
  *
  * Switches @manager to the overview page. This is useful as @manager might

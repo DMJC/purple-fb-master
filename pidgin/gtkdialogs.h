@@ -32,9 +32,25 @@
 
 G_BEGIN_DECLS
 
+/**
+ * pidgin_dialogs_im_with_user:
+ * @account: The account.
+ * @username: The username.
+ *
+ * Creates an IM conversation with @username on @account if necessary.
+ *
+ * Since: 2.0
+ */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_dialogs_im_with_user(PurpleAccount *account, const char *username);
 
+/**
+ * pidgin_dialogs_info:
+ *
+ * Creates a dialog to get another user's profile.
+ *
+ * Since: 2.0
+ */
 PIDGIN_AVAILABLE_IN_ALL
 void pidgin_dialogs_info(void);
 

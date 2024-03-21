@@ -146,6 +146,13 @@ pidgin_invite_dialog_class_init(PidginInviteDialogClass *klass) {
 	gtk_widget_class_bind_template_child(widget_class, PidginInviteDialog,
 	                                     message);
 
+	/**
+	 * PidginInviteDialog:contact:
+	 *
+	 * The [class@Purple.Contact] that is being invited.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_CONTACT] = g_param_spec_string(
 		"contact",
 		"contact",
@@ -153,6 +160,13 @@ pidgin_invite_dialog_class_init(PidginInviteDialogClass *klass) {
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
 
+	/**
+	 * PidginInviteDialog:message:
+	 *
+	 * A personalized message for the invite.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_MESSAGE] = g_param_spec_string(
 		"message",
 		"message",
@@ -160,6 +174,13 @@ pidgin_invite_dialog_class_init(PidginInviteDialogClass *klass) {
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
 
+	/**
+	 * PidginInviteDialog:conversation:
+	 *
+	 * The [class@Purple.Conversation] that the invite is for.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_CONVERSATION] = g_param_spec_object(
 		"conversation",
 		"conversation",

@@ -281,9 +281,9 @@ pidgin_notification_authorization_request_class_init(PidginNotificationAuthoriza
 	obj_class->dispose = pidgin_notification_authorization_request_dispose;
 
 	/**
-	 * PidginNotificationAuthorizationRequest:info:
+	 * PidginNotificationAuthorizationRequest:notification:
 	 *
-	 * The [type@Purple.AuthorizationRequestInfo] that this notification is for.
+	 * The [class@Purple.Notification] that this notification is for.
 	 *
 	 * Since: 3.0
 	 */

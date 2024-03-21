@@ -35,6 +35,14 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PidginPrefsWindow:
+ *
+ * The window that displays all of the preferences.
+ *
+ * Since: 3.0
+ */
+
 #define PIDGIN_TYPE_PREFS_WINDOW (pidgin_prefs_window_get_type())
 
 PIDGIN_AVAILABLE_IN_3_0

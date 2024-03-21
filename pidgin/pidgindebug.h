@@ -32,6 +32,14 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PidginDebugWindow:
+ *
+ * The debug window.
+ *
+ * Since: 3.0
+ */
+
 #define PIDGIN_TYPE_DEBUG_WINDOW (pidgin_debug_window_get_type())
 
 PIDGIN_AVAILABLE_IN_3_0
@@ -52,8 +60,10 @@ void pidgin_debug_init_handler(void);
 
 /**
  * pidgin_debug_set_print_enabled:
+ * @enable: Whether or not to use the default GLib logging handler.
  *
- * Set whether the debug logging messages are sent the default GLib logging handler.
+ * Set whether the debug logging messages are sent the default GLib logging
+ * handler.
  *
  * This will print to the console, if Pidgin is run from there.
  *

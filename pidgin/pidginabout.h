@@ -33,6 +33,14 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PidginAboutDialog:
+ *
+ * A dialog window that describes what Pidgin is all about.
+ *
+ * Since: 3.0
+ */
+
 #define PIDGIN_TYPE_ABOUT_DIALOG (pidgin_about_dialog_get_type())
 
 PIDGIN_AVAILABLE_IN_3_0

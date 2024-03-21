@@ -30,6 +30,13 @@
 
 G_BEGIN_DECLS
 
+/**
+ * pidgin_medias_init:
+ *
+ * Initializes the media API.
+ *
+ * Since: 2.6
+ */
 PIDGIN_AVAILABLE_IN_2_6
 void pidgin_medias_init(void);
 

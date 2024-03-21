@@ -36,6 +36,13 @@
 #  include "win32/gtkwin32dep.h"
 #endif
 
+/**
+ * PIDGIN_PREFS_ROOT:
+ *
+ * A constants for the root of the preferences tree.
+ *
+ * Since: 2.0
+ */
 /* change this only when we have a sane upgrade path for old prefs */
 #define PIDGIN_PREFS_ROOT "/pidgin"
 
@@ -60,6 +67,8 @@
  * @argv: The argv from main(), or %NULL.
  *
  * Start pidgin with the given command line arguments.
+ *
+ * Returns: The exit code for the program.
  *
  * Since: 3.0
  */

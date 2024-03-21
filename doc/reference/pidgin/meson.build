@@ -34,5 +34,19 @@ if get_option('doc')
 		install : true,
 		install_dir : docs_dir,
 	)
+
+	test('doc-check',
+		gidocgen,
+		args: [
+			'check',
+			'--config', pidgin_toml,
+			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/birb/birb'),
+			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/gplugin/gplugin'),
+			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/gplugin/gplugin-gtk4'),
+			'--add-include-path=@0@'.format(meson.project_build_root() / 'libpurple'),
+			pidgin_gir[0],
+		],
+		depends: [libpurple_gir[0], pidgin_gir[0]],
+	)
 endif
 

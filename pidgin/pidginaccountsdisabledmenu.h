@@ -36,6 +36,15 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PidginAccountsDisabledMenu:
+ *
+ * A [class@Gio.MenuModel] that contains all accounts from the default
+ * [class@Purple.AccountManager] that are not enabled.
+ *
+ * Since: 3.0
+ */
+
 #define PIDGIN_TYPE_ACCOUNTS_DISABLED_MENU (pidgin_accounts_disabled_menu_get_type())
 
 PIDGIN_AVAILABLE_IN_3_0
