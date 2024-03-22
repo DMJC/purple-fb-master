@@ -42,6 +42,11 @@ purple_media_backend_base_init(gpointer iface)
 		return;
 	}
 
+	/**
+	 * PurpleMediaBackend:conference-type:
+	 *
+	 * The type of the conference.
+	 */
 	g_object_interface_install_property(iface,
 		g_param_spec_string("conference-type",
 			"Conference Type",
@@ -50,6 +55,12 @@ purple_media_backend_base_init(gpointer iface)
 			NULL,
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * PurpleMediaBackend:media:
+	 *
+	 * The media object that this back end is bound to.
+	 */
 	g_object_interface_install_property(iface,
 		g_param_spec_object(
 			"media", "Purple Media",
@@ -57,24 +68,70 @@ purple_media_backend_base_init(gpointer iface)
 			PURPLE_TYPE_MEDIA,
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * PurpleMediaBackend::error:
+	 * @backend: The backend instance.
+	 * @message: The error message.
+	 *
+	 * Emitted when the backend has encountered an error.
+	 */
 	signals[SIG_ERROR] = g_signal_new("error",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 1, G_TYPE_STRING);
+
+	/**
+	 * PurpleMediaBackend::candidates-prepared:
+	 * @backend: The backend instance.
+	 * @session_id: The session id.
+	 * @name: The name.
+	 *
+	 * Emitted when the candidates have been prepared.
+	 */
 	signals[SIG_CANDIDATES_PREPARED] = g_signal_new("candidates-prepared",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 2, G_TYPE_STRING,
 			G_TYPE_STRING);
+
+	/**
+	 * PurpleMediaBackend::codecs-changed:
+	 * @backend: The backend instance.
+	 * @session_id: The session id.
+	 *
+	 * Emitted when the codecs have changed.
+	 */
 	signals[SIG_CODECS_CHANGED] = g_signal_new("codecs-changed",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 1, G_TYPE_STRING);
+
+	/**
+	 * PurpleMediaBackend::new-candidate:
+	 * @backend: The backend instance.
+	 * @session_id: The session id.
+	 * @participant: The participant.
+	 * @candidate: The new candidate.
+	 *
+	 * Emitted when a new media candidate is available.
+	 */
 	signals[SIG_NEW_CANDIDATE] = g_signal_new("new-candidate",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 			G_TYPE_NONE, 3, G_TYPE_POINTER,
 			G_TYPE_POINTER, PURPLE_MEDIA_TYPE_CANDIDATE);
+
+	/**
+	 * PurpleMediaBackend::active-candidate-pair:
+	 * @backend: The backend instance.
+	 * @session_id: The session id.
+	 * @participant: The participant.
+	 * @candidate1: The first candidate.
+	 * @candidate2: The second candidate.
+	 *
+	 * This is currently not emitted any, so I'd be guessing...
+	 */
 	signals[SIG_ACTIVE_CANDIDATE_PAIR] = g_signal_new("active-candidate-pair",
 			G_TYPE_FROM_CLASS(iface),
 			G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,

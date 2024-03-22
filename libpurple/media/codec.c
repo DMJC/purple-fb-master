@@ -156,6 +156,11 @@ purple_media_codec_class_init(PurpleMediaCodecClass *klass)
 	gobject_class->set_property = purple_media_codec_set_property;
 	gobject_class->get_property = purple_media_codec_get_property;
 
+	/**
+	 * PurpleMediaCodec:id:
+	 *
+	 * The numeric identifier of the codec.
+	 */
 	properties[PROP_ID] = g_param_spec_uint("id",
 			"ID",
 			"The numeric identifier of the codec.",
@@ -163,6 +168,11 @@ purple_media_codec_class_init(PurpleMediaCodecClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleMediaCodec:encoding-name:
+	 *
+	 * The name of the codec.
+	 */
 	properties[PROP_ENCODING_NAME] = g_param_spec_string("encoding-name",
 			"Encoding Name",
 			"The name of the codec.",
@@ -170,6 +180,11 @@ purple_media_codec_class_init(PurpleMediaCodecClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleMediaCodec:media-type:
+	 *
+	 * Whether this is an audio, video, or application codec.
+	 */
 	properties[PROP_MEDIA_TYPE] = g_param_spec_flags("media-type",
 			"Media Type",
 			"Whether this is an audio, video or application codec.",
@@ -178,18 +193,33 @@ purple_media_codec_class_init(PurpleMediaCodecClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleMediaCodec:clock-rate:
+	 *
+	 * The clock rate for the codec.
+	 */
 	properties[PROP_CLOCK_RATE] = g_param_spec_uint("clock-rate",
 			"Create Callback",
 			"The function called to create this element.",
 			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleMediaCodec:channels:
+	 *
+	 * The number of channels in the codec.
+	 */
 	properties[PROP_CHANNELS] = g_param_spec_uint("channels",
 			"Channels",
 			"The number of channels in this codec.",
 			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleMediaCodec:optional-params:
+	 *
+	 * A list of optional parameters for the codec.
+	 */
 	properties[PROP_OPTIONAL_PARAMS] = g_param_spec_pointer("optional-params",
 			"Optional Params",
 			"A list of optional parameters for the codec.",

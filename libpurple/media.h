@@ -441,6 +441,8 @@ gboolean purple_media_set_send_codec(PurpleMedia *media, const gchar *sess_id, P
  *
  * Sets the encryption parameters of our media in the session.
  *
+ * Returns: %TRUE if the encryption parameters were set successfully.
+ *
  * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
@@ -462,6 +464,8 @@ gboolean purple_media_set_encryption_parameters(PurpleMedia *media,
  *
  * Sets the decryption parameters for a session participant's media.
  *
+ * Returns: %TRUE if the decryption parameters were set successfully.
+ *
  * Since: 2.11
  */
 PURPLE_AVAILABLE_IN_2_11
@@ -478,6 +482,8 @@ gboolean purple_media_set_decryption_parameters(PurpleMedia *media,
  * @require_encryption: TRUE if the media requires encryption.
  *
  * Sets whether a session participant's media requires encryption.
+ *
+ * Returns: %TRUE if the encryption requirement was set successfully.
  *
  * Since: 2.14
  */

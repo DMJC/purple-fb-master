@@ -134,6 +134,17 @@ purple_media_manager_class_init (PurpleMediaManagerClass *klass)
 
 	gobject_class->finalize = purple_media_manager_finalize;
 
+	/**
+	 * PurpleMediaManager::init-media:
+	 * @manager: The instance.
+	 * @media: The media.
+	 * @account: The account.
+	 * @remote_user: The remote user.
+	 *
+	 * Emitted to initialize @media.
+	 *
+	 * Returns: %TRUE if @media was initialized.
+	 */
 	signals[SIG_INIT_MEDIA] = g_signal_new("init-media",
 		G_TYPE_FROM_CLASS (klass),
 		G_SIGNAL_RUN_LAST,
@@ -141,6 +152,17 @@ purple_media_manager_class_init (PurpleMediaManagerClass *klass)
 		G_TYPE_BOOLEAN, 3, PURPLE_TYPE_MEDIA,
 		G_TYPE_POINTER, G_TYPE_STRING);
 
+	/**
+	 * PurpleMediaManager::init-private-media:
+	 * @manager: The instance.
+	 * @media: The media.
+	 * @account: The account.
+	 * @remote_user: The remote user.
+	 *
+	 * Emitted to initialize @media but not tell the user interface about it.
+	 *
+	 * Returns: %TRUE if @media was initialized.
+	 */
 	signals[SIG_INIT_PRIVATE_MEDIA] = g_signal_new("init-private-media",
 			G_TYPE_FROM_CLASS (klass),
 			G_SIGNAL_RUN_LAST,
@@ -148,6 +170,14 @@ purple_media_manager_class_init (PurpleMediaManagerClass *klass)
 			G_TYPE_BOOLEAN, 3, PURPLE_TYPE_MEDIA,
 			G_TYPE_POINTER, G_TYPE_STRING);
 
+	/**
+	 * PurpleMediaManager::ui-caps-changed:
+	 * @manager: The instance.
+	 * @new_caps: The new capabilities.
+	 * @old_caps: The old capabilities.
+	 *
+	 * Emitted when the user interface capabilities have changed.
+	 */
 	signals[SIG_UI_CAPS_CHANGED] = g_signal_new("ui-caps-changed",
 		G_TYPE_FROM_CLASS (klass),
 		G_SIGNAL_RUN_LAST,
@@ -155,6 +185,12 @@ purple_media_manager_class_init (PurpleMediaManagerClass *klass)
 		G_TYPE_NONE, 2, PURPLE_MEDIA_TYPE_CAPS,
 		PURPLE_MEDIA_TYPE_CAPS);
 
+	/**
+	 * PurpleMediaManager::elements-changed:
+	 * @manager: The instance.
+	 *
+	 * Emitted when the elements have changed in @manager.
+	 */
 	signals[SIG_ELEMENTS_CHANGED] = g_signal_new("elements-changed",
 			G_TYPE_FROM_CLASS(klass),
 			G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
@@ -2339,6 +2375,11 @@ purple_media_element_info_class_init(PurpleMediaElementInfoClass *klass)
 	gobject_class->set_property = purple_media_element_info_set_property;
 	gobject_class->get_property = purple_media_element_info_get_property;
 
+	/**
+	 * PurpleMediaElementInfo:id:
+	 *
+	 * The identifier for the element info.
+	 */
 	g_object_class_install_property(gobject_class, PROP_ID,
 			g_param_spec_string("id",
 			"ID",
@@ -2347,6 +2388,11 @@ purple_media_element_info_class_init(PurpleMediaElementInfoClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaElementInfo:name:
+	 *
+	 * The name of the element info.
+	 */
 	g_object_class_install_property(gobject_class, PROP_NAME,
 			g_param_spec_string("name",
 			"Name",
@@ -2355,6 +2401,11 @@ purple_media_element_info_class_init(PurpleMediaElementInfoClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaElementInfo:type:
+	 *
+	 * The type of the element.
+	 */
 	g_object_class_install_property(gobject_class, PROP_TYPE,
 			g_param_spec_flags("type",
 			"Element Type",
@@ -2364,6 +2415,11 @@ purple_media_element_info_class_init(PurpleMediaElementInfoClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaElementInfo:create-cb:
+	 *
+	 * A call back that is called when the element is created.
+	 */
 	g_object_class_install_property(gobject_class, PROP_CREATE_CB,
 			g_param_spec_pointer("create-cb",
 			"Create Callback",

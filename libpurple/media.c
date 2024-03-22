@@ -128,6 +128,11 @@ purple_media_class_init (PurpleMediaClass *klass)
 	gobject_class->set_property = purple_media_set_property;
 	gobject_class->get_property = purple_media_get_property;
 
+	/**
+	 * PurpleMedia:manager:
+	 *
+	 * The manager that this media is tied to.
+	 */
 	g_object_class_install_property(gobject_class, PROP_MANAGER,
 			g_param_spec_object("manager",
 			"Purple Media Manager",
@@ -136,6 +141,11 @@ purple_media_class_init (PurpleMediaClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMedia:backend:
+	 *
+	 * The backend for this media.
+	 */
 	/*
 	 * This one should be PURPLE_TYPE_MEDIA_BACKEND, but it doesn't
 	 * like interfaces because they "aren't GObjects"
@@ -147,6 +157,11 @@ purple_media_class_init (PurpleMediaClass *klass)
 			G_TYPE_OBJECT,
 			G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMedia:account:
+	 *
+	 * The [class@Account] that this media belongs to.
+	 */
 	g_object_class_install_property(gobject_class, PROP_ACCOUNT,
 			g_param_spec_object("account", "PurpleAccount",
 			"The account this media session is on.",
@@ -154,6 +169,11 @@ purple_media_class_init (PurpleMediaClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMedia:conference-type:
+	 *
+	 * The conference type of this media.
+	 */
 	g_object_class_install_property(gobject_class, PROP_CONFERENCE_TYPE,
 			g_param_spec_string("conference-type",
 			"Conference Type",
@@ -163,6 +183,11 @@ purple_media_class_init (PurpleMediaClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMedia:initiator:
+	 *
+	 * Whether or not the local user initiated the conference.
+	 */
 	g_object_class_install_property(gobject_class, PROP_INITIATOR,
 			g_param_spec_boolean("initiator",
 			"initiator",
@@ -171,44 +196,126 @@ purple_media_class_init (PurpleMediaClass *klass)
 			G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMedia:protocol-data:
+	 *
+	 * Protocol specific data for the media.
+	 */
 	g_object_class_install_property(gobject_class, PROP_PROTOCOL_DATA,
 			g_param_spec_pointer("protocol-data",
 			"gpointer",
 			"Data the protocol set on the media session.",
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMedia::error:
+	 * @media: The instance.
+	 * @message: The error message.
+	 *
+	 * Emitted by [method@Media.error].
+	 */
 	signals[SIG_ERROR] = g_signal_new("error", G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 1, G_TYPE_STRING);
+
+	/**
+	 * PurpleMedia::candidates-prepared:
+	 * @media: The instance.
+	 * @session_id: The session id.
+	 * @name: The candidate element name.
+	 *
+	 * Emitted when a candidate element has been determined.
+	 */
 	signals[SIG_CANDIDATES_PREPARED] = g_signal_new("candidates-prepared",
 					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 2, G_TYPE_STRING,
 					 G_TYPE_STRING);
+
+	/**
+	 * PurpleMedia::codecs-changed:
+	 * @media: The instance.
+	 * @session_id: The session id.
+	 *
+	 * Emitted when the codecs have changed.
+	 */
 	signals[SIG_CODECS_CHANGED] = g_signal_new("codecs-changed",
 					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 1, G_TYPE_STRING);
+
+	/**
+	 * PurpleMedia::level:
+	 * @media: The instance.
+	 * @session_id: The session.
+	 * @participant: The participant.
+	 * @level: The new level.
+	 *
+	 * Emitted when the volume of a participant has changed. I think?
+	 */
 	signals[SIG_LEVEL] = g_signal_new("level",
 					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 3, G_TYPE_STRING,
 					 G_TYPE_STRING, G_TYPE_DOUBLE);
+
+
+	/**
+	 * PurpleMedia::new-candidate:
+	 * @media: The instance.
+	 * @session_id: The session id.
+	 * @participant: The participant.
+	 * @candidate: The new candidate.
+	 *
+	 * Emitted when a new media candidate is available.
+	 */
 	signals[SIG_NEW_CANDIDATE] = g_signal_new("new-candidate",
 					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 3, G_TYPE_POINTER,
 					 G_TYPE_POINTER, PURPLE_MEDIA_TYPE_CANDIDATE);
+
+	/**
+	 * PurpleMedia::state-changed:
+	 * @media: The instance.
+	 * @newstate: The new state.
+	 * @session_id: The session id.
+	 * @participant: The participant.
+	 *
+	 * Emitted when the media's state has changed.
+	 */
 	signals[SIG_STATE_CHANGED] = g_signal_new("state-changed",
 					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 3, PURPLE_MEDIA_TYPE_STATE,
 					 G_TYPE_STRING, G_TYPE_STRING);
+
+	/**
+	 * PurpleMedia::stream-info:
+	 * @media: The instance.
+	 * @type: The type of the media.
+	 * @session_id: The session id.
+	 * @participant: The participant.
+	 * @local: Whether this request originated from the libpurple user.
+	 *
+	 * Emitted when information about the stream is available.
+	 */
 	signals[SIG_STREAM_INFO] = g_signal_new("stream-info",
 					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
 					 G_TYPE_NONE, 4, PURPLE_MEDIA_TYPE_INFO_TYPE,
 					 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+
+	/**
+	 * PurpleMedia::candidate-pair-established:
+	 * @media: The instance.
+	 * @session_id: The session id.
+	 * @name: The element name.
+	 * @local_candidate: The local candidate.
+	 * @remote_candidate: The remote candidate.
+	 *
+	 * Emitted when candidates have been established for a session.
+	 */
 	signals[SIG_CANDIDATE_PAIR_ESTABLISHED] = g_signal_new("candidate-pair-established",
 					 G_TYPE_FROM_CLASS(klass),
 					 G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,

@@ -223,6 +223,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 	gobject_class->set_property = purple_media_candidate_set_property;
 	gobject_class->get_property = purple_media_candidate_get_property;
 
+	/**
+	 * PurpleMediaCandidate:foundation:
+	 *
+	 * The foundation of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_FOUNDATION,
 			g_param_spec_string("foundation",
 			"Foundation",
@@ -230,6 +235,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			NULL,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:component-id:
+	 *
+	 * The component id of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_COMPONENT_ID,
 			g_param_spec_uint("component-id",
 			"Component ID",
@@ -237,6 +247,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			0, G_MAXUINT, 0,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:ip:
+	 *
+	 * The IP address of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_IP,
 			g_param_spec_string("ip",
 			"IP Address",
@@ -244,6 +259,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			NULL,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:port:
+	 *
+	 * The port of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_PORT,
 			g_param_spec_uint("port",
 			"Port",
@@ -251,6 +271,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:base-ip:
+	 *
+	 * The internal IP address of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_BASE_IP,
 			g_param_spec_string("base-ip",
 			"Base IP",
@@ -258,6 +283,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			NULL,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:base-port:
+	 *
+	 * The internal port of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_BASE_PORT,
 			g_param_spec_uint("base-port",
 			"Base Port",
@@ -265,6 +295,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			0, G_MAXUINT16, 0,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:protocol:
+	 *
+	 * The protocol of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_PROTOCOL,
 			g_param_spec_enum("protocol",
 			"Protocol",
@@ -273,6 +308,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			PURPLE_MEDIA_NETWORK_PROTOCOL_UDP,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:priority:
+	 *
+	 * The priority of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_PRIORITY,
 			g_param_spec_uint("priority",
 			"Priority",
@@ -280,6 +320,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			0, G_MAXUINT32, 0,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:type:
+	 *
+	 * The type of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_TYPE,
 			g_param_spec_enum("type",
 			"Type",
@@ -288,6 +333,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			PURPLE_MEDIA_CANDIDATE_TYPE_HOST,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:username:
+	 *
+	 * The username used to connect to the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_USERNAME,
 			g_param_spec_string("username",
 			"Username",
@@ -295,6 +345,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			NULL,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:password:
+	 *
+	 * The password used to connect to the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_PASSWORD,
 			g_param_spec_string("password",
 			"Password",
@@ -302,6 +357,11 @@ purple_media_candidate_class_init(PurpleMediaCandidateClass *klass)
 			NULL,
 			G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * PurpleMediaCandidate:ttl:
+	 *
+	 * The TTL of the candidate.
+	 */
 	g_object_class_install_property(gobject_class, PROP_TTL,
 			g_param_spec_uint("ttl",
 			"TTL",
