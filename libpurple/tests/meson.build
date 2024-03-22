@@ -2,6 +2,7 @@ PROGS = [
     'account_option',
     'account_manager',
     'authorization_request',
+    'authorization_request_notification',
     'channel_join_details',
     'circular_buffer',
     'create_conversation_details',
