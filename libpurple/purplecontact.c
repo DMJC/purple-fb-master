@@ -168,7 +168,7 @@ purple_contact_find_dm(PurpleContact *contact, gboolean create) {
 			PURPLE_TYPE_CONVERSATION,
 			"account", contact->account,
 			"name", name,
-			"type", PurpleConversationTypeDM,
+			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 		purple_conversation_manager_register(manager, conversation);
 

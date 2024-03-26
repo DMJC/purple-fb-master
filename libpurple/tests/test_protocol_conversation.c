@@ -101,7 +101,7 @@ test_purple_protocol_conversation_empty_send_message_async(void) {
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
 			"name", "this is required at the moment",
-			"type", PurpleConversationTypeDM,
+			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 		message = g_object_new(PURPLE_TYPE_MESSAGE, NULL);
 
@@ -160,7 +160,7 @@ test_purple_protocol_conversation_empty_set_topic_async(void) {
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
 			"name", "this is required at the moment",
-			"type", PurpleConversationTypeDM,
+			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 
 		purple_protocol_conversation_set_topic_async(protocol, conversation,
@@ -293,7 +293,7 @@ test_purple_protocol_conversation_empty_set_avatar_async(void) {
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
 			"name", "this is required at the moment",
-			"type", PurpleConversationTypeDM,
+			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 
 		purple_protocol_conversation_set_avatar_async(protocol, conversation,
@@ -349,7 +349,7 @@ test_purple_protocol_conversation_empty_send_typing(void) {
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
 			"name", "this is required at the moment",
-			"type", PurpleConversationTypeDM,
+			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 
 		purple_protocol_conversation_send_typing(protocol, conversation,
@@ -681,7 +681,7 @@ test_purple_protocol_conversation_send_message_idle(gpointer data) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"name", "this is required at the moment",
-		"type", PurpleConversationTypeDM,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
 		NULL);
 	g_object_set_data_full(G_OBJECT(protocol), "conversation", conversation,
 	                       g_object_unref);
@@ -762,7 +762,7 @@ test_purple_protocol_conversation_set_topic_idle(gpointer data) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"name", "this is required at the moment",
-		"type", PurpleConversationTypeDM,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
 		NULL);
 	g_object_set_data_full(G_OBJECT(protocol), "conversation", conversation,
 	                       g_object_unref);
@@ -938,7 +938,7 @@ test_purple_protocol_conversation_set_avatar_idle(gpointer data) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"name", "this is required at the moment",
-		"type", PurpleConversationTypeDM,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
 		NULL);
 	g_object_set_data_full(G_OBJECT(protocol), "conversation", conversation,
 	                       g_object_unref);
@@ -991,7 +991,7 @@ test_purple_protocol_conversation_send_typing_normal(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"name", "this is required at the moment",
-		"type", PurpleConversationTypeDM,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
 		NULL);
 
 	test_purple_protocol_conversation_send_typing(protocol, conversation,

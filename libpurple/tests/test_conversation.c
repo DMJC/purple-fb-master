@@ -38,7 +38,7 @@ test_purple_conversation_properties(void) {
 	PurpleContactInfo *topic_author1 = NULL;
 	PurpleConversation *conversation = NULL;
 	PurpleConversationManager *conversation_manager = NULL;
-	PurpleConversationType type = PurpleConversationTypeUnset;
+	PurpleConversationType type = PURPLE_CONVERSATION_TYPE_UNSET;
 	PurpleTags *tags = NULL;
 	GDateTime *created_on = NULL;
 	GDateTime *created_on1 = NULL;
@@ -83,7 +83,7 @@ test_purple_conversation_properties(void) {
 		"topic", "the topic...",
 		"topic-author", topic_author,
 		"topic-updated", topic_updated,
-		"type", PurpleConversationTypeThread,
+		"type", PURPLE_CONVERSATION_TYPE_THREAD,
 		"user-nickname", "knick-knack",
 		NULL);
 
@@ -153,7 +153,7 @@ test_purple_conversation_properties(void) {
 	g_assert_true(g_date_time_equal(topic_updated1, topic_updated));
 	g_clear_pointer(&topic_updated1, g_date_time_unref);
 
-	g_assert_cmpuint(type, ==, PurpleConversationTypeThread);
+	g_assert_cmpuint(type, ==, PURPLE_CONVERSATION_TYPE_THREAD);
 
 	g_assert_cmpstr(user_nickname, ==, "knick-knack");
 	g_clear_pointer(&user_nickname, g_free);

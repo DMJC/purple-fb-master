@@ -142,7 +142,7 @@ purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation
 	conversation = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
-		"type", PurpleConversationTypeChannel,
+		"type", PURPLE_CONVERSATION_TYPE_CHANNEL,
 		"id", name,
 		"name", name,
 		NULL);

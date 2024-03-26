@@ -697,7 +697,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"type", "type",
 		"The type of the conversation.",
 		PURPLE_TYPE_CONVERSATION_TYPE,
-		PurpleConversationTypeUnset,
+		PURPLE_CONVERSATION_TYPE_UNSET,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	properties[PROP_ACCOUNT] = g_param_spec_object(
@@ -1106,7 +1106,7 @@ purple_conversation_get_conversation_type(PurpleConversation *conversation) {
 	PurpleConversationPrivate *priv = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation),
-	                     PurpleConversationTypeUnset);
+	                     PURPLE_CONVERSATION_TYPE_UNSET);
 
 	priv = purple_conversation_get_instance_private(conversation);
 

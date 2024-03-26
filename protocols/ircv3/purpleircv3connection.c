@@ -916,10 +916,10 @@ purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *conne
 	                                                        id);
 
 	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		PurpleConversationType type = PurpleConversationTypeDM;
+		PurpleConversationType type = PURPLE_CONVERSATION_TYPE_DM;
 
 		if(purple_ircv3_connection_is_channel(connection, id)) {
-			type = PurpleConversationTypeChannel;
+			type = PURPLE_CONVERSATION_TYPE_CHANNEL;
 		}
 
 		conversation = g_object_new(

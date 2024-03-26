@@ -96,16 +96,16 @@ typedef enum
 
 /**
  * PurpleConversationType:
- * @PurpleConversationTypeUnset: A value to specify that the property has not
- *                               been set.
- * @PurpleConversationTypeDM: A direct message between two contacts.
- * @PurpleConversationTypeGroupDM: A direct message between a protocol
- *                                 dependent number of contacts.
- * @PurpleConversationTypeChannel: A multi-user chat that is available to all
- *                                 users on the protocol and has features like
- *                                 moderation.
- * @PurpleConversationTypeThread: A thread is a subset of messages from a
- *                                conversation that are related.
+ * @PURPLE_CONVERSATION_TYPE_UNSET: A value to specify that the property has
+ *                                  not been set.
+ * @PURPLE_CONVERSATION_TYPE_DM: A direct message between two contacts.
+ * @PURPLE_CONVERSATION_TYPE_GROUP_DM: A direct message between a protocol
+ *                                     dependent number of contacts.
+ * @PURPLE_CONVERSATION_TYPE_CHANNEL: A multi-user chat that is available to
+ *                                    all users on the protocol and has
+ *                                    features like moderation.
+ * @PURPLE_CONVERSATION_TYPE_THREAD: A thread is a subset of messages from a
+ *                                   conversation that are related.
  *
  * The type of the conversation. This is mostly ignored, but could be useful in
  * ways we can't imagine right now. If you come up with one in the future,
@@ -115,11 +115,11 @@ typedef enum
  */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef enum {
-	PurpleConversationTypeUnset,
-	PurpleConversationTypeDM,
-	PurpleConversationTypeGroupDM,
-	PurpleConversationTypeChannel,
-	PurpleConversationTypeThread,
+	PURPLE_CONVERSATION_TYPE_UNSET,
+	PURPLE_CONVERSATION_TYPE_DM,
+	PURPLE_CONVERSATION_TYPE_GROUP_DM,
+	PURPLE_CONVERSATION_TYPE_CHANNEL,
+	PURPLE_CONVERSATION_TYPE_THREAD,
 } PurpleConversationType;
 
 /**
