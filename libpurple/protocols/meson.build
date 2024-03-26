@@ -1,5 +1,3 @@
 subdir('bonjour')
-subdir('demo')
 subdir('gg')
-subdir('ircv3')
 subdir('jabber')

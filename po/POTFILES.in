@@ -72,9 +72,6 @@ libpurple/protocols/bonjour/mdns_win32.c
 libpurple/protocols/bonjour/parser.c
 libpurple/protocols/bonjour/xmpp.c
 libpurple/protocols.c
-libpurple/protocols/demo/purpledemocontacts.c
-libpurple/protocols/demo/purpledemoplugin.c
-libpurple/protocols/demo/purpledemoprotocol.c
 libpurple/protocols/gg/avatar.c
 libpurple/protocols/gg/blist.c
 libpurple/protocols/gg/chat.c
@@ -316,6 +313,9 @@ pidgin/win32/gtkwin32dep.c
 pidgin/win32/winpidgin.c
 protocols/bonjour/purplebonjourcore.c
 protocols/bonjour/purplebonjourprotocol.c
+protocols/demo/purpledemocontacts.c
+protocols/demo/purpledemoplugin.c
+protocols/demo/purpledemoprotocol.c
 protocols/xmpp/purplexmppconnection.c
 protocols/xmpp/purplexmppcore.c
 protocols/xmpp/purplexmppprotocol.c
