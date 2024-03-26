@@ -573,7 +573,6 @@ purple_conversation_constructed(GObject *object) {
 	PurpleConversation *conv = PURPLE_CONVERSATION(object);
 	PurpleAccount *account;
 	PurpleConnection *gc;
-	PurpleConversationManager *manager;
 	PurpleConversationUiOps *ops;
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->constructed(object);
@@ -588,10 +587,6 @@ purple_conversation_constructed(GObject *object) {
 		purple_conversation_set_features(conv,
 		                                 purple_connection_get_flags(gc));
 	}
-
-	/* add the conversation to the appropriate lists */
-	manager = purple_conversation_manager_get_default();
-	purple_conversation_manager_register(manager, conv);
 
 	/* Auto-set the title. */
 	purple_conversation_autoset_title(conv);
@@ -620,18 +615,11 @@ purple_conversation_dispose(GObject *obj) {
 static void
 purple_conversation_finalize(GObject *object) {
 	PurpleConversation *conv = PURPLE_CONVERSATION(object);
-	PurpleConversationManager *manager;
 	PurpleConversationPrivate *priv =
 			purple_conversation_get_instance_private(conv);
 	PurpleConversationUiOps *ops  = purple_conversation_get_ui_ops(conv);
 
 	purple_request_close_with_handle(conv);
-
-	/* remove from conversations and im/chats lists prior to emit */
-	manager = purple_conversation_manager_get_default();
-	if(PURPLE_IS_CONVERSATION_MANAGER(manager)) {
-		purple_conversation_manager_unregister(manager, conv);
-	}
 
 	purple_signal_emit(purple_conversations_get_handle(),
 	                   "deleting-conversation", conv);

@@ -305,6 +305,9 @@ purple_conversation_manager_unregister(PurpleConversationManager *manager,
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
+	/* Make sure we have a reference in case we need to emit signals. */
+	g_object_ref(conversation);
+
 	unregistered = g_hash_table_remove(manager->conversations, conversation);
 	if(unregistered) {
 		/* Disconnect all the signals we added for propagation. */
@@ -315,6 +318,8 @@ purple_conversation_manager_unregister(PurpleConversationManager *manager,
 		/* Tell everyone about the unregistered conversation. */
 		g_signal_emit(manager, signals[SIG_UNREGISTERED], 0, conversation);
 	}
+
+	g_object_unref(conversation);
 
 	return unregistered;
 }

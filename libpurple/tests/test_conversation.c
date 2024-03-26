@@ -37,7 +37,6 @@ test_purple_conversation_properties(void) {
 	PurpleContactInfo *topic_author = NULL;
 	PurpleContactInfo *topic_author1 = NULL;
 	PurpleConversation *conversation = NULL;
-	PurpleConversationManager *conversation_manager = NULL;
 	PurpleConversationType type = PURPLE_CONVERSATION_TYPE_UNSET;
 	PurpleTags *tags = NULL;
 	GDateTime *created_on = NULL;
@@ -52,7 +51,6 @@ test_purple_conversation_properties(void) {
 	char *user_nickname = NULL;
 	gboolean age_restricted = FALSE;
 	gboolean favorite = FALSE;
-	gboolean unregistered = FALSE;
 
 	account = purple_account_new("test", "test");
 	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
@@ -157,14 +155,6 @@ test_purple_conversation_properties(void) {
 
 	g_assert_cmpstr(user_nickname, ==, "knick-knack");
 	g_clear_pointer(&user_nickname, g_free);
-
-	/* TODO: Conversations are automatically registered on construction for
-	 * legacy reasons, so we need to explicitly unregister to clean them up,
-	 * but this can go away once that stops happening. */
-	conversation_manager = purple_conversation_manager_get_default();
-	unregistered = purple_conversation_manager_unregister(conversation_manager,
-	                                                      conversation);
-	g_assert_true(unregistered);
 
 	g_clear_object(&avatar);
 	g_clear_object(&topic_author);
