@@ -1,4 +1,4 @@
-if host_machine.system() != 'windows'
+if host_machine.system() not in ['haiku', 'windows']
 	CANBERRA = dependency('libcanberra', version: '>= 0.30')
 
 	library('notification-sound', 'notification-sound.c',
