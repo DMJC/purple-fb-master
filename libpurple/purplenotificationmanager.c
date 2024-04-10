@@ -28,6 +28,8 @@
 
 enum {
 	PROP_0,
+	PROP_ITEM_TYPE,
+	PROP_N_ITEMS,
 	PROP_UNREAD_COUNT,
 	N_PROPERTIES,
 };
@@ -165,13 +167,21 @@ purple_notification_manager_get_property(GObject *obj, guint param_id,
 	PurpleNotificationManager *manager = PURPLE_NOTIFICATION_MANAGER(obj);
 
 	switch(param_id) {
-		case PROP_UNREAD_COUNT:
-			g_value_set_uint(value,
-			                 purple_notification_manager_get_unread_count(manager));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ITEM_TYPE:
+		g_value_set_gtype(value,
+		                  purple_notification_manager_get_item_type(G_LIST_MODEL(manager)));
+		break;
+	case PROP_N_ITEMS:
+		g_value_set_uint(value,
+		                 purple_notification_manager_get_n_items(G_LIST_MODEL(manager)));
+		break;
+	case PROP_UNREAD_COUNT:
+		g_value_set_uint(value,
+		                 purple_notification_manager_get_unread_count(manager));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -200,7 +210,31 @@ purple_notification_manager_class_init(PurpleNotificationManagerClass *klass) {
 	obj_class->get_property = purple_notification_manager_get_property;
 	obj_class->finalize = purple_notification_manager_finalize;
 
-	/* Properties */
+	/**
+	 * PurpleNotificationManager:item-type:
+	 *
+	 * The type of items. See [iface@Gio.ListModel.get_item_type].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ITEM_TYPE] = g_param_spec_gtype(
+		"item-type", "item-type",
+		"The type of the contained items.",
+		G_TYPE_OBJECT,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotificationManager:n-items:
+	 *
+	 * The number of items. See [iface@Gio.ListModel.get_n_items].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_N_ITEMS] = g_param_spec_uint(
+		"n-items", "n-items",
+		"The number of contained items.",
+		0, G_MAXUINT, 0,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotificationManager:unread-count:
@@ -216,8 +250,6 @@ purple_notification_manager_class_init(PurpleNotificationManagerClass *klass) {
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
-
-	/* Signals */
 
 	/**
 	 * PurpleNotificationManager::added:
