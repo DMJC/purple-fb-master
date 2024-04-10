@@ -26,6 +26,14 @@
 #include "purpleprivate.h"
 
 enum {
+	PROP_0,
+	PROP_ITEM_TYPE,
+	PROP_N_ITEMS,
+	N_PROPERTIES,
+};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
+
+enum {
 	SIG_REGISTERED,
 	SIG_UNREGISTERED,
 	N_SIGNALS,
@@ -97,6 +105,27 @@ purple_whiteboard_manager_finalize(GObject *obj) {
 }
 
 static void
+purple_whiteboard_manager_get_property(GObject *obj, guint param_id,
+                                       GValue *value, GParamSpec *pspec)
+{
+	PurpleWhiteboardManager *manager = PURPLE_WHITEBOARD_MANAGER(obj);
+
+	switch(param_id) {
+	case PROP_ITEM_TYPE:
+		g_value_set_gtype(value,
+		                  purple_whiteboard_manager_get_item_type(G_LIST_MODEL(manager)));
+		break;
+	case PROP_N_ITEMS:
+		g_value_set_uint(value,
+		                 purple_whiteboard_manager_get_n_items(G_LIST_MODEL(manager)));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
+	}
+}
+
+static void
 purple_whiteboard_manager_init(PurpleWhiteboardManager *manager) {
 	manager->whiteboards = g_ptr_array_new_full(0, g_object_unref);
 }
@@ -106,6 +135,35 @@ purple_whiteboard_manager_class_init(PurpleWhiteboardManagerClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
 	obj_class->finalize = purple_whiteboard_manager_finalize;
+	obj_class->get_property = purple_whiteboard_manager_get_property;
+
+	/**
+	 * PurpleWhiteboardManager:item-type:
+	 *
+	 * The type of items. See [iface@Gio.ListModel.get_item_type].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ITEM_TYPE] = g_param_spec_gtype(
+		"item-type", "item-type",
+		"The type of the contained items.",
+		G_TYPE_OBJECT,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleWhiteboardManager:n-items:
+	 *
+	 * The number of items. See [iface@Gio.ListModel.get_n_items].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_N_ITEMS] = g_param_spec_uint(
+		"n-items", "n-items",
+		"The number of contained items.",
+		0, G_MAXUINT, 0,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
 	 * PurpleWhiteboardManager::registered:
