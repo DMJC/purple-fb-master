@@ -29,6 +29,8 @@
 
 enum {
 	PROP_0,
+	PROP_ITEM_TYPE,
+	PROP_N_ITEMS,
 	PROP_ONLINE,
 	N_PROPERTIES,
 };
@@ -156,6 +158,14 @@ purple_account_manager_get_property(GObject *obj, guint param_id,
 	PurpleAccountManager *manager = PURPLE_ACCOUNT_MANAGER(obj);
 
 	switch(param_id) {
+	case PROP_ITEM_TYPE:
+		g_value_set_gtype(value,
+		                  purple_account_manager_get_item_type(G_LIST_MODEL(manager)));
+		break;
+	case PROP_N_ITEMS:
+		g_value_set_uint(value,
+		                 purple_account_manager_get_n_items(G_LIST_MODEL(manager)));
+		break;
 	case PROP_ONLINE:
 		g_value_set_boolean(value, purple_account_manager_get_online(manager));
 		break;
@@ -195,6 +205,32 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	obj_class->finalize = purple_account_manager_finalize;
 	obj_class->get_property = purple_account_manager_get_property;
 	obj_class->set_property = purple_account_manager_set_property;
+
+	/**
+	 * PurpleAccountManager:item-type:
+	 *
+	 * The type of items. See [iface@Gio.ListModel.get_item_type].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ITEM_TYPE] = g_param_spec_gtype(
+		"item-type", "item-type",
+		"The type of the contained items.",
+		G_TYPE_OBJECT,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAccountManager:n-items:
+	 *
+	 * The number of items. See [iface@Gio.ListModel.get_n_items].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_N_ITEMS] = g_param_spec_uint(
+		"n-items", "n-items",
+		"The number of contained items.",
+		0, G_MAXUINT, 0,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleAccountManager:online:
