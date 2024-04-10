@@ -36,6 +36,118 @@ purple_protocol_conversation_default_init(G_GNUC_UNUSED PurpleProtocolConversati
 /******************************************************************************
  * Public API
  *****************************************************************************/
+gboolean
+purple_protocol_conversation_implements_create_conversation(PurpleProtocolConversation *protocol)
+{
+	PurpleProtocolConversation *protocol_conversation = NULL;
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
+
+	protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol_conversation);
+
+	if(iface->get_create_conversation_details == NULL) {
+		return FALSE;
+	}
+
+	if(iface->create_conversation_async == NULL) {
+		return FALSE;
+	}
+
+	if(iface->create_conversation_finish == NULL) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+PurpleCreateConversationDetails *
+purple_protocol_conversation_get_create_conversation_details(PurpleProtocolConversation *protocol,
+                                                             PurpleAccount *account)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), NULL);
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface != NULL && iface->get_create_conversation_details != NULL) {
+		return iface->get_create_conversation_details(protocol, account);
+	}
+
+	g_warning("%s does not implement get_create_conversation_details",
+	          G_OBJECT_TYPE_NAME(protocol));
+
+	return NULL;
+}
+
+void
+purple_protocol_conversation_create_conversation_async(PurpleProtocolConversation *protocol,
+                                                       PurpleAccount *account,
+                                                       PurpleCreateConversationDetails *details,
+                                                       GCancellable *cancellable,
+                                                       GAsyncReadyCallback callback,
+                                                       gpointer data)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol));
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+	g_return_if_fail(PURPLE_IS_CREATE_CONVERSATION_DETAILS(details));
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface != NULL && iface->create_conversation_async != NULL) {
+		iface->create_conversation_async(protocol, account, details,
+		                                 cancellable, callback, data);
+	} else {
+		GTask *task = NULL;
+
+		task = g_task_new(protocol, cancellable, callback, data);
+		g_task_return_new_error(task, PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
+		                        "%s does not implement create_conversation_async",
+		                        G_OBJECT_TYPE_NAME(protocol));
+		g_task_set_source_tag(task,
+		                      purple_protocol_conversation_create_conversation_async);
+
+		/* details is transfer full and has already been null checked. */
+		g_object_unref(details);
+
+		g_clear_object(&task);
+	}
+}
+
+PurpleConversation *
+purple_protocol_conversation_create_conversation_finish(PurpleProtocolConversation *protocol,
+                                                        GAsyncResult *result,
+                                                        GError **error)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface != NULL && iface->create_conversation_finish != NULL) {
+		return iface->create_conversation_finish(protocol, result, error);
+	}
+
+	if(G_IS_TASK(result)) {
+		GTask *task = G_TASK(result);
+		gpointer source = NULL;
+
+		source = g_task_get_source_tag(task);
+		if(source == purple_protocol_conversation_create_conversation_async) {
+			return g_task_propagate_pointer(task, error);
+		} else {
+			g_warning("%s does not implement create_conversation_finish",
+			          G_OBJECT_TYPE_NAME(protocol));
+		}
+	}
+
+	return FALSE;
+}
+
 void
 purple_protocol_conversation_send_message_async(PurpleProtocolConversation *protocol,
                                                 PurpleConversation *conversation,

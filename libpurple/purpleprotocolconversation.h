@@ -34,12 +34,24 @@
 #include "purpleavatar.h"
 #include "purplechanneljoindetails.h"
 #include "purpleconversation.h"
+#include "purplecreateconversationdetails.h"
 #include "purplemessage.h"
 #include "purpleprotocol.h"
 #include "purpletyping.h"
 #include "purpleversion.h"
 
 G_BEGIN_DECLS
+
+/**
+ * PURPLE_PROTOCOL_CONVERSATION_DOMAIN:
+ *
+ * An error domain for [iface@ProtocolConversation] errors.
+ *
+ * Since: 3.0
+ */
+#define PURPLE_PROTOCOL_CONVERSATION_DOMAIN \
+	(g_quark_from_static_string("purple-protocol-conversation")) \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
 
 #define PURPLE_TYPE_PROTOCOL_CONVERSATION (purple_protocol_conversation_get_type())
 
@@ -61,6 +73,10 @@ struct _PurpleProtocolConversationInterface {
 	GTypeInterface parent;
 
 	/*< public >*/
+	PurpleCreateConversationDetails *(*get_create_conversation_details)(PurpleProtocolConversation *protocol, PurpleAccount *account);
+	void (*create_conversation_async)(PurpleProtocolConversation *protocol, PurpleAccount *account, PurpleCreateConversationDetails *details, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	PurpleConversation *(*create_conversation_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
 	void (*send_message_async)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleMessage *message, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*send_message_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
@@ -79,6 +95,81 @@ struct _PurpleProtocolConversationInterface {
 	/*< private >*/
 	gpointer reserved[8];
 };
+
+/**
+ * purple_protocol_conversation_implements_create_conversation:
+ * @protocol: The instance.
+ *
+ * Checks if @protocol implements
+ * [vfunc@ProtocolConversation.get_create_conversation_details],
+ * [vfunc@ProtocolConversation.create_conversation_async], and
+ * [vfunc@ProtocolConversation.create_conversation_finish].
+ *
+ * Returns: %TRUE if everything is implemented, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_protocol_conversation_implements_create_conversation(PurpleProtocolConversation *protocol);
+
+/**
+ * purple_protocol_conversation_get_create_conversation_details:
+ * @protocol: The instance.
+ * @account: The account.
+ *
+ * Gets a [class@CreateConversationDetails] from @protocol for @account.
+ *
+ * This can then be used in calls to
+ * [method@ProtocolConversation.create_conversation_async] to create the
+ * conversation.
+ *
+ * Returns: (transfer full): The details to create a conversation with
+ *          @account.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleCreateConversationDetails *purple_protocol_conversation_get_create_conversation_details(PurpleProtocolConversation *protocol, PurpleAccount *account);
+
+/**
+ * purple_protocol_conversation_create_conversation_async:
+ * @protocol: The instance.
+ * @account: The account.
+ * @details: (transfer full): The create conversation details.
+ * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
+ * @callback: (nullable) (scope async): The callback to call after the
+ *            conversation has been created.
+ * @data: (nullable): Optional user data to pass to @callback.
+ *
+ * Starts the process of creating a dm or group dm conversation on @account.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_protocol_conversation_create_conversation_async(PurpleProtocolConversation *protocol, PurpleAccount *account, PurpleCreateConversationDetails *details, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_protocol_conversation_create_conversation_finish:
+ * @protocol: The instance.
+ * @result: The [iface@Gio.AsyncResult] from the previous
+ *          [method@ProtocolConversation.create_conversation_async] call.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * Finishes a previous call to
+ * [method@ProtocolConversation.create_conversation_async]. This should be
+ * called from the callback of that function to get the result of whether or
+ * not the conversation was created successfully.
+ *
+ * It is the responsibility of the protocol to register the conversation with
+ * the default [class@ConversationManager].
+ *
+ * Returns: (transfer full): The new conversation if successful, otherwise
+ *          %NULL with @error possibly set.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleConversation *purple_protocol_conversation_create_conversation_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 /**
  * purple_protocol_conversation_send_message_async:
