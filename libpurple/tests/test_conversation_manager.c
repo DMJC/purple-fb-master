@@ -164,6 +164,131 @@ test_purple_conversation_manager_signal_conversation_changed(void) {
 }
 
 /******************************************************************************
+ * find-dm tests
+ *****************************************************************************/
+static void
+test_purple_conversation_manager_find_dm_empty(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *manager = NULL;
+
+	manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
+
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
+
+	conversation = purple_conversation_manager_find_dm(manager, contact);
+	g_assert_null(conversation);
+
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(manager);
+
+	g_clear_object(&account);
+}
+
+static void
+test_purple_conversation_manager_find_dm_exists(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleConversation *conversation1 = NULL;
+	PurpleConversation *conversation2 = NULL;
+	PurpleConversationManager *manager = NULL;
+
+	manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
+
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
+
+	conversation1 = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
+		"name", "this is required for some reason",
+		NULL);
+	purple_conversation_manager_register(manager, conversation1);
+	purple_conversation_add_member(conversation1, PURPLE_CONTACT_INFO(contact),
+	                               FALSE, NULL);
+
+	conversation2 = purple_conversation_manager_find_dm(manager, contact);
+	g_assert_nonnull(conversation2);
+	g_assert_true(conversation1 == conversation2);
+
+	purple_conversation_manager_unregister(manager, conversation1);
+
+	g_assert_finalize_object(conversation1);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(manager);
+
+	g_clear_object(&account);
+}
+
+/* This test makes sure we hit all of the conditional code. */
+static void
+test_purple_conversation_manager_find_dm_does_not_exist(void) {
+	PurpleAccount *account1 = NULL;
+	PurpleAccount *account2 = NULL;
+	PurpleContact *contact = NULL;
+	PurpleConversation *conversation1 = NULL;
+	PurpleConversation *conversation2 = NULL;
+	PurpleConversation *conversation3 = NULL;
+	PurpleConversation *conversation4 = NULL;
+	PurpleConversationManager *manager = NULL;
+
+	manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
+
+	account1 = purple_account_new("test1", "test1");
+	account2 = purple_account_new("test2", "test2");
+
+	contact = purple_contact_new(account1, NULL);
+
+	/* Create a conversation with the contact's account that's not a dm. */
+	conversation1 = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account1,
+		"type", PURPLE_CONVERSATION_TYPE_CHANNEL,
+		"name", "this is required for some reason",
+		NULL);
+	purple_conversation_manager_register(manager, conversation1);
+
+	/* Create a conversation with the contact's account that is a dm but not
+	 * with the contact.
+	 */
+	conversation2 = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account1,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
+		"name", "this is required for some reason",
+		NULL);
+	purple_conversation_manager_register(manager, conversation2);
+
+	/* Create a conversation with a different account. */
+	conversation3 = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account2,
+		"type", PURPLE_CONVERSATION_TYPE_CHANNEL,
+		"name", "this is required for some reason",
+		NULL);
+	purple_conversation_manager_register(manager, conversation2);
+
+	conversation4 = purple_conversation_manager_find_dm(manager, contact);
+	g_assert_null(conversation4);
+
+	purple_conversation_manager_unregister(manager, conversation1);
+	purple_conversation_manager_unregister(manager, conversation2);
+	purple_conversation_manager_unregister(manager, conversation3);
+
+	g_assert_finalize_object(conversation1);
+	g_assert_finalize_object(conversation2);
+	g_assert_finalize_object(conversation3);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(manager);
+
+	g_clear_object(&account1);
+	g_clear_object(&account2);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -179,6 +304,13 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/conversation-manager/signals/conversation-changed",
 	                test_purple_conversation_manager_signal_conversation_changed);
+
+	g_test_add_func("/conversation-manager/find-dm/empty",
+	                test_purple_conversation_manager_find_dm_empty);
+	g_test_add_func("/conversation-manager/find-dm/exists",
+	                test_purple_conversation_manager_find_dm_exists);
+	g_test_add_func("/conversation-manager/find-dm/does-not-exist",
+	                test_purple_conversation_manager_find_dm_does_not_exist);
 
 	ret = g_test_run();
 

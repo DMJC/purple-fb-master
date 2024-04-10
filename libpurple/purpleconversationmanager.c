@@ -20,8 +20,10 @@
  * this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "purplechatconversation.h"
 #include "purpleconversationmanager.h"
+
+#include "purplechatconversation.h"
+#include "purplecontact.h"
 #include "purpleimconversation.h"
 #include "purpleprivate.h"
 
@@ -382,6 +384,43 @@ purple_conversation_manager_find_im(PurpleConversationManager *manager,
 	return purple_conversation_manager_find_internal(manager, account, name,
 	                                                 purple_conversation_is_im,
 	                                                 NULL);
+}
+
+PurpleConversation *
+purple_conversation_manager_find_dm(PurpleConversationManager *manager,
+                                    PurpleContact *contact)
+{
+	PurpleAccount *contact_account = NULL;
+	PurpleContactInfo *info = NULL;
+	GHashTableIter iter;
+	gpointer key;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), NULL);
+	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
+
+	info = PURPLE_CONTACT_INFO(contact);
+	contact_account = purple_contact_get_account(contact);
+
+	g_hash_table_iter_init(&iter, manager->conversations);
+	while(g_hash_table_iter_next(&iter, &key, NULL)) {
+		PurpleAccount *conversation_account = NULL;
+		PurpleConversation *conversation = key;
+
+		conversation_account = purple_conversation_get_account(conversation);
+		if(conversation_account != contact_account) {
+			continue;
+		}
+
+		if(!purple_conversation_is_dm(conversation)) {
+			continue;
+		}
+
+		if(purple_conversation_has_member(conversation, info, NULL)) {
+			return conversation;
+		}
+	}
+
+	return NULL;
 }
 
 PurpleConversation *

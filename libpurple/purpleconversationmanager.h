@@ -29,6 +29,7 @@
 
 #include <glib.h>
 
+#include "purplecontact.h"
 #include "purpleconversation.h"
 #include "purpleversion.h"
 
@@ -175,8 +176,23 @@ PurpleConversation *purple_conversation_manager_find(PurpleConversationManager *
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_conversation_manager_find_dm)
 PurpleConversation *purple_conversation_manager_find_im(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
+
+/**
+ * purple_conversation_manager_find_dm:
+ * @manager: The instance.
+ * @contact: The contact.
+ *
+ * Looks for a direct message with @contact and returns it if found.
+ *
+ * Returns: (transfer none) (nullable): The conversation if found, otherwise
+ *          %NULL.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleConversation *purple_conversation_manager_find_dm(PurpleConversationManager *manager, PurpleContact *contact);
 
 /**
  * purple_conversation_manager_find_chat:
