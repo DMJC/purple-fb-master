@@ -276,35 +276,13 @@ else
 endif
 
 #######################################################################
-# Check for Gadu-Gadu protocol library (libgadu)
-#######################################################################
-
-libgadu = dependency('libgadu', version : '>= 1.12.0', required : get_option('libgadu'))
-
-if libgadu.found()
-	if not compiler.has_function('gg_is_gpl_compliant', dependencies : libgadu)
-		if get_option('libgadu').auto()
-			libgadu = disabler()
-		else
-			message('''
-libgadu is not compatible with the GPL when compiled with OpenSSL support.
-
-To link against libgadu, please recompile it using:
-./configure --with-openssl=no
-Then rerun this Meson build
-			''')
-		endif
-	endif
-endif
-
-#######################################################################
 # Check for Xeme XMPP Library
 #######################################################################
 xeme = dependency('xeme')
 
 dependency('shoes', required : false)
 
-DEFAULT_PRPLS = ['bonjour', 'demo', 'gg', 'ircv3', 'jabber', 'xmpp']
+DEFAULT_PRPLS = ['bonjour', 'demo', 'ircv3', 'jabber', 'xmpp']
 
 dynamic_list = get_option('dynamic-prpls').split(',')
 if dynamic_list == ['all']
@@ -316,8 +294,6 @@ foreach prpl : dynamic_list
 		# The list was empty; do nothing.
 	elif prpl == 'bonjour' and not enable_avahi
 		# Do nothing.
-	elif prpl == 'gg' and not libgadu.found()
-		# Do nothing.
 	elif prpl == 'xmpp' and not xeme.found()
 		# Do nothing.
 	else
@@ -327,7 +303,6 @@ endforeach
 
 DYNAMIC_BONJOUR = DYNAMIC_PRPLS.contains('bonjour')
 DYNAMIC_DEMO = DYNAMIC_PRPLS.contains('demo')
-DYNAMIC_GG  = DYNAMIC_PRPLS.contains('gg')
 DYNAMIC_IRCV3 = DYNAMIC_PRPLS.contains('ircv3')
 DYNAMIC_JABBER = DYNAMIC_PRPLS.contains('jabber')
 DYNAMIC_XMPP = DYNAMIC_PRPLS.contains('xmpp')
