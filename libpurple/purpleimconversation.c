@@ -192,6 +192,13 @@ purple_im_conversation_class_init(PurpleIMConversationClass *klass) {
 
 	conv_class->write_message = im_conversation_write_message;
 
+	/**
+	 * PurpleIMConversation:typing-state:
+	 *
+	 * The typing state of the remote user.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_TYPING_STATE] = g_param_spec_enum(
 		"typing-state", "Typing state",
 		"Status of the user's typing of a message.",

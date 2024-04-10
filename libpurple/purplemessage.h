@@ -399,7 +399,7 @@ GError *purple_message_get_error(PurpleMessage *message);
  *
  * Adds @attachment to @message.
  *
- * Returns %TRUE if an attachment with the same ID did not already exist.
+ * Returns: %TRUE if an attachment with the same ID did not already exist.
  *
  * Since: 3.0
  */

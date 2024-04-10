@@ -77,36 +77,6 @@ struct _PurpleProtocolChatEntry {
 
 G_BEGIN_DECLS
 
-/**
- * PurpleProtocolChatInterface:
- * @info: Returns a list of #PurpleProtocolChatEntry structs, which represent
- *        information required by the protocol to join a chat. libpurple will
- *        call join_chat along with the information filled by the user.
- * @info_defaults: Returns a hashtable which maps #PurpleProtocolChatEntry
- *                 struct identifiers to default options as strings based on
- *                 @chat_name. The resulting hashtable should be created with
- *                 #g_hash_table_new_full(#g_str_hash, #g_str_equal, %NULL,
- *                 #g_free). Use @get_name if you instead need to extract a chat
- *                 name from a hashtable.
- * @join: Called when the user requests joining a chat. Should arrange for
- *        purple_serv_got_joined_chat() to be called.
- * @reject: Called when the user refuses a chat invitation.
- * @get_name: Returns a chat name based on the information in components. Use
- *            @info_defaults if you instead need to generate a hashtable from a
- *            chat name.
- * @invite: Invite a user to join a chat.
- * @leave: Called when the user requests leaving a chat.
- * @send: Send a message to a chat.
- * @get_user_real_name: Gets the real name of a participant in a chat. For
- *                      example, on XMPP this turns a chat room nick
- *                      <literal>foo</literal> into
- *                      <literal>room\@server/foo</literal>.
- * @set_topic: Called to set the topic for the given chat.
- *
- * The protocol chat interface.
- *
- * This interface provides callbacks needed by protocols that implement chats.
- */
 struct _PurpleProtocolChatInterface {
 	/*< private >*/
 	GTypeInterface parent;

@@ -319,6 +319,8 @@ gboolean purple_blist_node_is_transient(PurpleBlistNode *node);
  * purple_blist_node_get_extended_menu:
  * @n: The blist node for which to obtain the extended menu items.
  *
+ * Emits the blist-node-extended-menu signal and returns the results.
+ *
  * Returns: (element-type PurpleActionMenu) (transfer full): The extended menu
  *          items for a buddy list node, as harvested by the
  *          blist-node-extended-menu signal.

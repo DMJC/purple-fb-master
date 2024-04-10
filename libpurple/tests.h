@@ -27,12 +27,40 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PurpleTestStringData:
+ *
+ * Test data for testing strings.
+ *
+ * Since: 2.0
+ */
 typedef struct {
 	const gchar *input;
 	const gchar *output;
 } PurpleTestStringData;
 
+/**
+ * PurpleTestStringFunc:
+ * @str: The string to test.
+ *
+ * A function to call with @str as the input.
+ *
+ * Returns: The output of the function.
+ *
+ * Since: 2.0
+ */
 typedef const gchar *(*PurpleTestStringFunc)(const gchar *str);
+
+/**
+ * PurpleTestStringFreeFunc:
+ * @str: The string to test.
+ *
+ * A function to call with @str as the input.
+ *
+ * Returns: (transfer full): The output of the function.
+ *
+ * Since: 2.0
+ */
 typedef gchar *(*PurpleTestStringFreeFunc)(const gchar *str);
 
 static inline void

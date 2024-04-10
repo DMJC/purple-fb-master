@@ -163,6 +163,9 @@ struct _PurpleProtocolClass {
  * @IFACE:    The interface name in caps. e.g. <literal>CLIENT</literal>
  * @func:     The function to check
  *
+ * Checks if a protocol plugin implements an interface and a specific function
+ * in the interface.
+ *
  * Returns: %TRUE if a protocol implements a function in an interface,
  *          %FALSE otherwise.
  *

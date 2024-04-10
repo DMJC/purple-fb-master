@@ -257,41 +257,92 @@ static void purple_buddy_class_init(PurpleBuddyClass *klass) {
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleBuddy:name:
+	 *
+	 * The name of the buddy.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "Name",
 		"The name of the buddy.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleBuddy:local-alias:
+	 *
+	 * An alias for the buddy created by the libpurple user.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_LOCAL_ALIAS] = g_param_spec_string(
 		"local-alias", "Local alias",
 		"Local alias of thee buddy.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleBuddy:server-alias:
+	 *
+	 * An alias that is created by the remote user.
+	 *
+	 * This is typically called a display name now.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_SERVER_ALIAS] = g_param_spec_string(
 		"server-alias", "Server alias",
 		"Server-side alias of the buddy.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleBuddy:icon:
+	 *
+	 * An avatar for the buddy.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ICON] = g_param_spec_pointer(
 		"icon", "Buddy icon",
 		"The icon for the buddy.",
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleBuddy:account:
+	 *
+	 * The [class@Account] that this buddy belongs to.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "Account",
 		"The account for the buddy.",
 		PURPLE_TYPE_ACCOUNT,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleBuddy:presence:
+	 *
+	 * The [class@Presence] for this buddy.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_PRESENCE] = g_param_spec_object(
 		"presence", "Presence",
 		"The status information for the buddy.",
 		PURPLE_TYPE_PRESENCE,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleBuddy:media-caps:
+	 *
+	 * The media caps for this buddy.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_MEDIA_CAPS] = g_param_spec_enum(
 		"media-caps", "Media capabilities",
 		"The media capabilities of the buddy.",

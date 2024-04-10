@@ -33,6 +33,15 @@
 #include "purpleui.h"
 #include "purpleversion.h"
 
+/**
+ * PurpleCore:
+ *
+ * The core instance for libpurple.
+ *
+ * This is primarily used for connecting to signals.
+ *
+ * Since: 2.0
+ */
 typedef struct PurpleCore PurpleCore;
 
 G_BEGIN_DECLS
@@ -117,7 +126,7 @@ PURPLE_AVAILABLE_IN_ALL
 PurpleUi *purple_core_get_ui(void);
 
 /**
- * purple_get_local_dir:
+ * purple_get_locale_dir:
  *
  * Gets the search directory for translations.
  *

@@ -210,6 +210,13 @@ purple_plugin_info_class_init(PurplePluginInfoClass *klass) {
 	obj_class->get_property = purple_plugin_info_get_property;
 	obj_class->set_property = purple_plugin_info_set_property;
 
+	/**
+	 * PurplePluginInfo:flags:
+	 *
+	 * Flags for the plugin.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_FLAGS] = g_param_spec_flags(
 		"flags", "Plugin flags",
 		"The flags for the plugin",

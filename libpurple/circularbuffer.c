@@ -315,19 +315,47 @@ purple_circular_buffer_class_init(PurpleCircularBufferClass *klass) {
 	buffer_class->max_read_size = purple_circular_buffer_real_max_read_size;
 	buffer_class->mark_read = purple_circular_buffer_real_mark_read;
 
+	/**
+	 * PurpleCircularBuffer:grow-size:
+	 *
+	 * The grow size of the buffer.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_GROW_SIZE] = g_param_spec_uint64(
 	        "grow-size", "grow-size", "The grow size of the buffer", 0,
 	        G_MAXSIZE, 0,
 	        G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleCircularBuffer:buffer-used:
+	 *
+	 * How much of the buffer that has been used.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_BUFFER_USED] = g_param_spec_uint64(
 	        "buffer-used", "buffer-used", "The amount of the buffer used", 0,
 	        G_MAXSIZE, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleCircularBuffer:input:
+	 *
+	 * The input pointer of the buffer.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_INPUT] = g_param_spec_pointer("input", "input",
 		                     "The input pointer of the buffer",
 		                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleCircularBuffer:output:
+	 *
+	 * The output pointer of the buffer.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_OUTPUT] = g_param_spec_pointer("output", "output",
 		                     "The output pointer of the buffer",
 		                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);

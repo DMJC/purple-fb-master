@@ -52,31 +52,6 @@ G_BEGIN_DECLS
  * Since: 3.0
  */
 
-/**
- * PurpleProtocolMediaInterface:
- * @initiate_session: Initiate a media session with the given contact.
- *                    <sbr/>@account: The account to initiate the media session
- *                                    on.
- *                    <sbr/>@who: The remote user to initiate the session with.
- *                    <sbr/>@type: The type of media session to initiate.
- *                    <sbr/>Returns: %TRUE if the call succeeded else %FALSE.
- *                                   (Doesn't imply the media session or stream
- *                                   will be successfully created)
- * @get_caps: Checks to see if the given contact supports the given type of
- *            media session.
- *            <sbr/>@account: The account the contact is on.
- *            <sbr/>@who: The remote user to check for media capability with.
- *            <sbr/>Returns: The media caps the contact supports.
- * @send_dtmf: Sends DTMF codes out-of-band in a protocol-specific way if the
- *             protocol supports it, or failing that in-band if the media backend
- *             can do so. See purple_media_send_dtmf().
- *
- * The protocol media interface.
- *
- * This interface provides callbacks for media sessions on the protocol.
- *
- * Since: 3.0
- */
 struct _PurpleProtocolMediaInterface {
 	/*< private >*/
 	GTypeInterface parent;

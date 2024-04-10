@@ -70,6 +70,8 @@ struct _PurpleRequestFieldClass {
  *             [method@Purple.RequestField.set_validator].
  *
  * A callback to check whether a field is valid.
+ *
+ * Returns: %TRUE if the field is valid, otherwise %FALSE.
  */
 typedef gboolean (*PurpleRequestFieldValidator)(PurpleRequestField *field, char **errmsg, gpointer user_data);
 

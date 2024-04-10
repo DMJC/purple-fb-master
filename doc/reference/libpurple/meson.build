@@ -44,5 +44,18 @@ if get_option('doc')
 		install : true,
 		install_dir : docs_dir,
 	)
+
+	test('doc-check',
+		gidocgen,
+		args: [
+			'check',
+			'--config', libpurple_toml,
+			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/birb/birb'),
+			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/gplugin/gplugin'),
+			libpurple_gir[0],
+		],
+		depends: libpurple_gir[0],
+		verbose: true,
+	)
 endif
 

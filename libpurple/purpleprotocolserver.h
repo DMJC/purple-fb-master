@@ -55,40 +55,6 @@ G_BEGIN_DECLS
  * Since: 3.0
  */
 
-/**
- * PurpleProtocolServerInterface:
- * @set_info: Sets the user's profile.
- * @get_info: Should arrange for purple_notify_userinfo() to be called with the
- *            requested user's profile.
- * @set_status: Sets the active status for the given account.
- * @set_idle: Set the idle time for the given account.
- * @change_passwd: Changes the users password.
- * @add_buddy: Add a buddy to a group on the server.
- * @add_buddies: Add multiple buddies on the server at once.
- * @remove_buddy: Removes the given buddy from the user's buddy list.
- * @remove_buddies: Removes multiple buddies from the user's buddy list.
- * @keepalive: If implemented, this will be called regularly for this
- *             protocol's active connections. You'd want to do this if you need
- *             to repeatedly send some kind of keepalive packet to the server
- *             to avoid being disconnected. ("Regularly" is defined to be 30
- *             unless @get_keepalive_interval is implemented to override it).
- * @get_keepalive_interval: If implemented, this will override the default
- *                          keepalive interval.
- * @alias_buddy: Save/store buddy's alias on server list/roster
- * @group_buddy: Change a buddy's group on a server list/roster
- * @rename_group: Rename a group on a server list/roster
- * @set_buddy_icon: Set the buddy icon for the given connection to @img. The
- *                  protocol does <emphasis>NOT</emphasis> own a reference to
- *                  @img; if it needs one, it must #g_object_ref(@img) itself.
- * @remove_group: Removes the given group from the users buddy list.
- * @send_raw: For use in plugins that may understand the underlying protocol.
- *
- * The protocol server interface.
- *
- * This interface provides a gateway between purple and the protocol's server.
- *
- * Since: 3.0
- */
 struct _PurpleProtocolServerInterface {
 	/*< private >*/
 	GTypeInterface parent;

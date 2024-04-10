@@ -1108,18 +1108,39 @@ purple_status_class_init(PurpleStatusClass *klass)
 	obj_class->get_property = purple_status_get_property;
 	obj_class->set_property = purple_status_set_property;
 
+	/**
+	 * PurpleStatus:status-type:
+	 *
+	 * The type of this status.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_STATUS_TYPE] = g_param_spec_pointer("status-type",
 				"Status type",
 				"The PurpleStatusType of the status.",
 				G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
 				G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleStatus:presence:
+	 *
+	 * The presence that the status belongs to.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_PRESENCE] = g_param_spec_object("presence", "Presence",
 				"The presence that the status belongs to.",
 				PURPLE_TYPE_PRESENCE,
 				G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
 				G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleStatus:active:
+	 *
+	 * Whether or not the status is active.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACTIVE] = g_param_spec_boolean("active", "Active",
 				"Whether the status is active or not.", FALSE,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);

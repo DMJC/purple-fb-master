@@ -49,24 +49,6 @@ G_DECLARE_INTERFACE(PurpleProtocolActions, purple_protocol_actions, PURPLE,
  * Since: 3.0
  */
 
-/**
- * PurpleProtocolActionsInterface:
- * @get_prefix: The prefix used for the actions in the group. If this isn't
- *              implemented, the id of the protocol will be used instead.
- * @get_action_group: Returns the actions the protocol can perform. If actions
- *                    depend on connectivity, connect to the relevant signals
- *                    on the @connection and signal the action has changed with
- *                    [iface@GLib.ActionGroup] signals.
- * @get_menu: Get the menu used to display protocol actions. In Pidgin, these
- *            will show up in the Accounts menu, under a submenu with the name
- *            of the account.
- *
- * The protocol actions interface.
- *
- * This interface provides a gateway between purple and the protocol.
- *
- * Since: 3.0
- */
 struct _PurpleProtocolActionsInterface {
 	/*< private >*/
 	GTypeInterface parent;

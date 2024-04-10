@@ -524,6 +524,8 @@ void purple_prefs_trigger_callback_object(PurplePrefCallbackData *data);
  *
  * Read preferences
  *
+ * Returns: %TRUE if the prefs loaded successfully, otherwise %FALSE.
+ *
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL

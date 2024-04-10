@@ -59,6 +59,8 @@ typedef struct _PurpleBuddyIconSpec PurpleBuddyIconSpec;
  * @PURPLE_ICON_SCALE_DISPLAY: We scale the icon when we display it
  * @PURPLE_ICON_SCALE_SEND:    We scale the icon before we send it to the server
  *
+ * Flags for when an icon should be scaled.
+ *
  * Since: 2.0
  */
 typedef enum  /*< flags >*/

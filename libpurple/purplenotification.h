@@ -39,6 +39,25 @@ G_BEGIN_DECLS
 
 /**
  * PurpleNotificationType:
+ * @PURPLE_NOTIFICATION_TYPE_UNKNOWN: This type is unknown.
+ * @PURPLE_NOTIFICATION_TYPE_GENERIC: A generic notification that is just text
+ *                                    that may have links.
+ * @PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR: A notification that is for a
+ *                                             connection error.
+ * @PURPLE_NOTIFICATION_TYPE_AUTHORIZATION_REQUEST: A notification for a
+ *                                                  contact authorization
+ *                                                  request.
+ * @PURPLE_NOTIFICATION_TYPE_ADD_CONTACT: A notification for when a contact add
+ *                                        you to their contact list.
+ * @PURPLE_NOTIFICATION_TYPE_FILE_TRANSFER: A notification for a file transfer.
+ * @PURPLE_NOTIFICATION_TYPE_CHAT_INVITE: A notification when the user has been
+ *                                        invited to a chat.
+ * @PURPLE_NOTIFICATION_TYPE_MENTION: A notification that the user has been
+ *                                    mentioned.
+ * @PURPLE_NOTIFICATION_TYPE_REACTION: A notification when a reaction has been
+ *                                     added to message.
+ *
+ * The different types of notifications.
  *
  * Since: 3.0
  */

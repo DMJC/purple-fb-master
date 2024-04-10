@@ -33,8 +33,22 @@
 
 #include "purpleversion.h"
 
+/**
+ * PurpleNotifyUserInfoEntry:
+ *
+ * A entry for the user information.
+ *
+ * Since: 2.0
+ */
 typedef struct _PurpleNotifyUserInfoEntry	PurpleNotifyUserInfoEntry;
 
+/**
+ * PurpleNotifyUserInfo:
+ *
+ * A collection of user information entries.
+ *
+ * Since: 2.0
+ */
 #define  PURPLE_TYPE_NOTIFY_USER_INFO  (purple_notify_user_info_get_type())
 typedef struct _PurpleNotifyUserInfo		PurpleNotifyUserInfo;
 
@@ -555,6 +569,8 @@ GQueue *purple_notify_user_info_get_entries(PurpleNotifyUserInfo *user_info);
  *
  * Create a textual representation of a PurpleNotifyUserInfo, separating
  * entries with newline
+ *
+ * Returns: (transfer full): The text.
  *
  * Since: 2.0
  */

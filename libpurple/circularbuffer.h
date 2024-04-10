@@ -34,6 +34,13 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PurpleCircularBuffer:
+ *
+ * A circular buffer implementation.
+ *
+ * Since: 3.0
+ */
 #define PURPLE_TYPE_CIRCULAR_BUFFER (purple_circular_buffer_get_type())
 
 PURPLE_AVAILABLE_IN_3_0

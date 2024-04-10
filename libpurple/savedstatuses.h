@@ -61,6 +61,13 @@
  */
 typedef struct _PurpleSavedStatus     PurpleSavedStatus;
 
+/**
+ * PurpleSavedStatusSub:
+ *
+ * A sub statuses of a saved status.
+ *
+ * Since: 2.0
+ */
 typedef struct _PurpleSavedStatusSub  PurpleSavedStatusSub;
 
 #include "status.h"

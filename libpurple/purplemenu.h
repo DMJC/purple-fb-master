@@ -34,6 +34,13 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET:
+ *
+ * A constant to help when defining actions that have a dynamic-target value.
+ *
+ * Since: 3.0
+ */
 #define PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET "dynamic-target"
 
 /**

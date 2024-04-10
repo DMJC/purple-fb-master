@@ -49,27 +49,6 @@ PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolIM, purple_protocol_im, PURPLE, PROTOCOL_IM,
                     PurpleProtocol)
 
-/**
- * PurpleProtocolIMInterface:
- * @send:        This protocol function should return a positive value on
- *               success. If the message is too big to be sent, return
- *               <literal>-E2BIG</literal>. If the account is not connected,
- *               return <literal>-ENOTCONN</literal>. If the protocol is unable
- *               to send the message for another reason, return some other
- *               negative value. You can use one of the valid #errno values, or
- *               just big something. If the message should not be echoed to the
- *               conversation window, return 0.
- * @send_typing: If this protocol requires the #PURPLE_IM_TYPING message to be
- *               sent repeatedly to signify that the user is still typing, then
- *               the protocol should return the number of seconds to wait before
- *               sending a subsequent notification. Otherwise the protocol
- *               should return 0.
- *
- * The protocol IM interface that needs to be implemented to send one to one
- * messages.
- *
- * Since: 3.0
- */
 struct _PurpleProtocolIMInterface {
 	/*< private >*/
 	GTypeInterface parent;

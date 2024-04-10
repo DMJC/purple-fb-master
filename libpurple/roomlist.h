@@ -32,6 +32,13 @@
 #define PURPLE_TYPE_ROOMLIST (purple_roomlist_get_type())
 typedef struct _PurpleRoomlist PurpleRoomlist;
 
+/**
+ * PurpleRoomlistField:
+ *
+ * A field for the room list.
+ *
+ * Since: 2.0
+ */
 #define PURPLE_TYPE_ROOMLIST_FIELD (purple_roomlist_field_get_type())
 typedef struct _PurpleRoomlistField PurpleRoomlistField;
 

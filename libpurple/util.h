@@ -410,6 +410,14 @@ gboolean purple_strmatches(const char *pattern, const char *str);
 /* URI/URL Functions                                                      */
 /**************************************************************************/
 
+/**
+ * purple_got_protocol_handler_uri:
+ * @uri: The uri.
+ *
+ * Parses @uri and emits the uri-handler core signal.
+ *
+ * Since: 2.0
+ */
 PURPLE_AVAILABLE_IN_ALL
 void purple_got_protocol_handler_uri(const char *uri);
 

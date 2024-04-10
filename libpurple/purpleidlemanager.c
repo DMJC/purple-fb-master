@@ -84,7 +84,7 @@ purple_idle_manager_class_init(PurpleIdleManagerClass *klass) {
 	obj_class->get_property = purple_idle_manager_get_property;
 
 	/**
-	 * PurpleIdleManager::timestamp:
+	 * PurpleIdleManager:timestamp:
 	 *
 	 * The aggregate of the oldest idle timestamp of all of the sources that
 	 * are known.

@@ -47,6 +47,8 @@ G_BEGIN_DECLS
  * @PURPLE_FILE_TRANSFER_STATE_FINISHED: The transfer has completed
  *                                       successfully.
  * @PURPLE_FILE_TRANSFER_STATE_FAILED: The transfer failed.
+ *
+ * The possible states that a file transfer can be in.
  */
 typedef enum {
 	PURPLE_FILE_TRANSFER_STATE_UNKNOWN,

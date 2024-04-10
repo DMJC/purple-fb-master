@@ -300,7 +300,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage:content:
+	 * PurpleMessage:contents:
 	 *
 	 * The contents of the message.
 	 *
@@ -401,7 +401,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessaged:edited:
+	 * PurpleMessage:edited:
 	 *
 	 * Whether or not this message has been edited.
 	 *
@@ -416,7 +416,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage:edit-at:
+	 * PurpleMessage:edited-at:
 	 *
 	 * The time that the message was last edited at. This is protocol dependent
 	 * and possibly client dependent as well. So if this is %NULL that doesn't

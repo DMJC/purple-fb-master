@@ -255,7 +255,7 @@ purple_chat_conversation_class_init(PurpleChatConversationClass *klass) {
 	conv_class->write_message = chat_conversation_write_message;
 
 	/**
-	 * PurpleChatConversation::chat-id:
+	 * PurpleChatConversation:chat-id:
 	 *
 	 * The identifier of the chat.
 	 */
@@ -266,7 +266,7 @@ purple_chat_conversation_class_init(PurpleChatConversationClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleChatConversation::left:
+	 * PurpleChatConversation:left:
 	 *
 	 * Whether the user has left the chat or not.
 	 */

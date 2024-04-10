@@ -175,6 +175,13 @@ purple_account_presence_class_init(PurpleAccountPresenceClass *klass) {
 	presence_class->update_idle = purple_account_presence_update_idle;
 	presence_class->get_statuses = purple_account_presence_get_statuses;
 
+	/**
+	 * PurpleAccountPresence:account:
+	 *
+	 * The account for this presence.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "Account",
 		"The account for this presence.",

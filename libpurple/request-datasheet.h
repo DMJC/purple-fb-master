@@ -36,13 +36,45 @@
  *
  * Request Datasheet is a UI abstracted table.
  */
-
 typedef struct _PurpleRequestDatasheet PurpleRequestDatasheet;
+
+/**
+ * PurpleRequestDatasheetRecord:
+ *
+ * A data sheet record.
+ */
 typedef struct _PurpleRequestDatasheetRecord PurpleRequestDatasheetRecord;
+
+/**
+ * PurpleRequestDatasheetAction:
+ *
+ * A data sheet action.
+ */
 typedef struct _PurpleRequestDatasheetAction PurpleRequestDatasheetAction;
 
+/**
+ * PurpleRequestDatasheetActionCb:
+ * @rec: The record.
+ * @user_data: User data.
+ *
+ * A callback function for actions in a data sheet.
+ *
+ * Since: 3.0
+ */
 typedef void (*PurpleRequestDatasheetActionCb)(
 	PurpleRequestDatasheetRecord *rec, gpointer user_data);
+
+/**
+ * PurpleRequestDatasheetActionCheckCb:
+ * @rec: The record.
+ * @user_data: User data.
+ *
+ * A callback function for checking if an action is enabled or not.
+ *
+ * Returns: %TRUE if the actions should be enabled, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
 typedef gboolean (*PurpleRequestDatasheetActionCheckCb)(
 	PurpleRequestDatasheetRecord *rec, gpointer user_data);
 

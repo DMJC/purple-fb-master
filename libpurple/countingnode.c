@@ -220,6 +220,13 @@ purple_counting_node_class_init(PurpleCountingNodeClass *klass)
 	obj_class->get_property = purple_counting_node_get_property;
 	obj_class->set_property = purple_counting_node_set_property;
 
+	/**
+	 * PurpleCountingNode:total-size:
+	 *
+	 * The number of children under this node.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_TOTAL_SIZE] = g_param_spec_int(
 		"total-size",
 		"Total size",
@@ -228,6 +235,13 @@ purple_counting_node_class_init(PurpleCountingNodeClass *klass)
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS
 	);
 
+	/**
+	 * PurpleCountingNode:current-size:
+	 *
+	 * The number of children with online accounts.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_CURRENT_SIZE] = g_param_spec_int(
 		"current-size",
 		"Current size",
@@ -236,6 +250,13 @@ purple_counting_node_class_init(PurpleCountingNodeClass *klass)
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS
 	);
 
+	/**
+	 * PurpleCountingNode:online-count:
+	 *
+	 * The number of children that are online.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ONLINE_COUNT] = g_param_spec_int(
 		"online-count",
 		"Online count",

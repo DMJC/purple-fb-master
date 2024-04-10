@@ -33,6 +33,12 @@
 #define PURPLE_PLUGINS_DOMAIN          (g_quark_from_static_string("plugins"))
 
 #define PURPLE_TYPE_PLUGIN             GPLUGIN_TYPE_PLUGIN
+/**
+ * PURPLE_PLUGIN:
+ * @obj: The instance.
+ *
+ * A typecast macro to cast @obj to PurplePlugin.
+ */
 #define PURPLE_PLUGIN(obj)             GPLUGIN_PLUGIN(obj)
 #define PURPLE_IS_PLUGIN(obj)          GPLUGIN_IS_PLUGIN(obj)
 #define PURPLE_PLUGIN_GET_IFACE(obj)   GPLUGIN_PLUGIN_GET_IFACE(obj)
@@ -47,6 +53,15 @@
  */
 typedef GPluginPlugin PurplePlugin;
 
+/**
+ * PurplePluginInterface:
+ *
+ * Represents the plugin interface.
+ *
+ * This type is an alias for GPluginPluginInterface.
+ *
+ * Since: 3.0
+ */
 typedef GPluginPluginInterface PurplePluginInterface;
 
 #include "purpleplugininfo.h"
@@ -124,6 +139,7 @@ PurplePluginInfo *purple_plugin_get_info(PurplePlugin *plugin);
 
 /**
  * purple_plugin_disable:
+ * @plugin: The plugin.
  *
  * Disable a plugin.
  *

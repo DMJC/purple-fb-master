@@ -274,12 +274,26 @@ purple_roomlist_class_init(PurpleRoomlistClass *klass)
 	obj_class->get_property = purple_roomlist_get_property;
 	obj_class->set_property = purple_roomlist_set_property;
 
+	/**
+	 * PurpleRoomlist:account:
+	 *
+	 * The account this room list belongs to.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object("account", "Account",
 				"The account for the room list.",
 				PURPLE_TYPE_ACCOUNT,
 				G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
 				G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleRoomlist:in-progress:
+	 *
+	 * Whether or not the room list is being fetched.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_IN_PROGRESS] = g_param_spec_boolean("in-progress",
 				"In progress",
 				"Whether the room list is being fetched.", FALSE,

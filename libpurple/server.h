@@ -241,6 +241,8 @@ void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
  * @data: The hash function should be g_str_hash() and the equal
  *             function should be g_str_equal().
  *
+ * Joins the chat described by the components in @data.
+ *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
@@ -248,9 +250,11 @@ void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data);
 
 /**
  * purple_serv_reject_chat:
- * @gc: The #PurpleConnection 
+ * @gc: The #PurpleConnection
  * @data: The hash function should be g_str_hash() and the equal
  *             function should be g_str_equal().
+ *
+ * Rejects a chat invite based on the components in @data.
  *
  * Since: 3.0
  */

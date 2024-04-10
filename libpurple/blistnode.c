@@ -373,6 +373,13 @@ purple_blist_node_class_init(PurpleBlistNodeClass *klass)
 	obj_class->get_property = purple_blist_node_get_property;
 	obj_class->set_property = purple_blist_node_set_property;
 
+	/**
+	 * PurpleBlistNode:transient:
+	 *
+	 * If %TRUE the node will not be saved to the contact list.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_TRANSIENT] = g_param_spec_boolean("transient",
 				"Transient",
 				"Whether node should not be saved with the buddy list.",

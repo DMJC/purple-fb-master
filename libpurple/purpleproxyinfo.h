@@ -60,6 +60,13 @@ G_BEGIN_DECLS
 
 #define PURPLE_TYPE_PROXY_INFO (purple_proxy_info_get_type())
 
+/**
+ * PurpleProxyInfo:
+ *
+ * A representation of a proxy.
+ *
+ * Since: 2.0
+ */
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PurpleProxyInfo, purple_proxy_info, PURPLE, PROXY_INFO,
                      GObject)

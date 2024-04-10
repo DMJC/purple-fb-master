@@ -747,6 +747,8 @@ void purple_account_change_password(PurpleAccount *account, const char *orig_pw,
  *
  * Whether the account supports sending offline messages to buddy.
  *
+ * Returns: %TRUE if offline messages are supported, otherwise %FALSE.
+ *
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL

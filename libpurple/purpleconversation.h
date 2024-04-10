@@ -403,6 +403,8 @@ void purple_conversation_set_features(PurpleConversation *conv, PurpleConnection
  *
  * Get the features supported by the given conversation.
  *
+ * Returns: The flags.
+ *
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL

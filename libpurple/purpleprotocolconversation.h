@@ -48,7 +48,7 @@ G_DECLARE_INTERFACE(PurpleProtocolConversation, purple_protocol_conversation,
                     PURPLE, PROTOCOL_CONVERSATION, PurpleProtocol)
 
 /**
- * PurpleProtocolConversationInterface:
+ * PurpleProtocolConversation:
  *
  * This interface defines the behavior for interacting with conversations at
  * the protocol layer. These methods will primarily be called by the user
@@ -255,7 +255,7 @@ PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 /**
- * purple_protocl_conversation_send_typing_state:
+ * purple_protocol_conversation_send_typing:
  * @protocol: The instance.
  * @conversation: The conversation.
  * @state: The new typing state.

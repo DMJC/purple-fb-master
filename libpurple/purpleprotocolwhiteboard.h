@@ -49,16 +49,6 @@ G_DECLARE_INTERFACE(PurpleProtocolWhiteboard, purple_protocol_whiteboard, PURPLE
  * Since: 3.0
  */
 
-/**
- * PurpleProtocolWhiteboardInterface:
- * @create: Creates a new whiteboard.
- *
- * The protocol whiteboard interface.
- *
- * This interface provides a gateway between purple and the protocol.
- *
- * Since: 3.0
- */
 struct _PurpleProtocolWhiteboardInterface {
 	/*< private >*/
 	GTypeInterface parent;

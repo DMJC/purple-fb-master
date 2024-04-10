@@ -239,6 +239,7 @@ gboolean purple_account_manager_get_online(PurpleAccountManager *manager);
 /**
  * purple_account_manager_set_online:
  * @manager: The instance.
+ * @online: The new online status.
  *
  * Sets whether or not new accounts should automatically have
  * [method@Account.connect] called for them.

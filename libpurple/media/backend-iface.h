@@ -50,13 +50,6 @@ G_BEGIN_DECLS
  */
 typedef struct _PurpleMediaBackend PurpleMediaBackend;
 
-/**
- * PurpleMediaBackendInterface:
- *
- * A structure to derive media backends from.
- *
- * Since: 3.0
- */
 typedef struct _PurpleMediaBackendInterface PurpleMediaBackendInterface;
 
 struct _PurpleMediaBackendInterface

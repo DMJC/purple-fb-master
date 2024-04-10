@@ -53,6 +53,7 @@ void purple_idle_touch(void);
 
 /**
  * purple_idle_set:
+ * @time: The time to set the idle time to.
  *
  * Fake our idle time by setting the time at which our
  * accounts purportedly became idle.  This is used by

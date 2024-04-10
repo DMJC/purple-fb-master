@@ -115,7 +115,7 @@ purple_request_field_list_class_init(PurpleRequestFieldListClass *klass) {
 	obj_class->set_property = purple_request_field_list_set_property;
 
 	/**
-	 * PurpleRequestFieldChoice:multi-select:
+	 * PurpleRequestFieldList:multi-select:
 	 *
 	 * Whether the field should allow multiple selections.
 	 *

@@ -893,9 +893,16 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 	klass->connect = purple_connection_default_connect;
 	klass->disconnect = purple_connection_default_disconnect;
 
+	/**
+	 * PurpleConnection:id:
+	 *
+	 * The unique identifier for the connection.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
-		"The identifier of the account",
+		"The identifier of the connection",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -915,34 +922,78 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 		G_TYPE_CANCELLABLE,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConnection:protocol:
+	 *
+	 * The protocol that this connection is for.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_PROTOCOL] = g_param_spec_object(
 		"protocol", "Protocol",
 		"The protocol that the connection is using.",
 		PURPLE_TYPE_PROTOCOL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConnection:flags:
+	 *
+	 * The flags for this connection.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_FLAGS] = g_param_spec_flags(
 		"flags", "Connection flags",
 		"The flags of the connection.",
 		PURPLE_TYPE_CONNECTION_FLAGS, 0,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConnection:state:
+	 *
+	 * The state of the connection.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_STATE] = g_param_spec_enum(
 		"state", "Connection state",
 		"The current state of the connection.",
 		PURPLE_TYPE_CONNECTION_STATE, PURPLE_CONNECTION_STATE_DISCONNECTED,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConnection:account:
+	 *
+	 * The account this connection belongs to.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "Account",
 		"The account using the connection.", PURPLE_TYPE_ACCOUNT,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConnection:password:
+	 *
+	 * The password for this connection.
+	 *
+	 * This is only stored for reconnections and may go away in the future.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_PASSWORD] = g_param_spec_string(
 		"password", "Password",
 		"The password used for connection.", NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConnection:display-name:
+	 *
+	 * The display name for the account.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_DISPLAY_NAME] = g_param_spec_string(
 		"display-name", "Display name",
 		"Your name that appears to other people.", NULL,

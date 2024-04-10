@@ -50,26 +50,6 @@ G_DECLARE_INTERFACE(PurpleProtocolRoster, purple_protocol_roster, PURPLE,
  * Since: 3.0
  */
 
-/**
- * PurpleProtocolRosterInterface:
- * @add_async: Called when the user is trying to add a contact to the server
- *             side roster.
- * @add_finish: Called when adding the contact has completed.
- * @update_async: Called when the user is trying to update a contact on the
- *                server side roster.
- * @update_finish: Called when updating the contact has completed.
- * @remove_async: Called when the user is trying to remove a contact from the
- *                server side roster.
- * @remove_finish: Called when removing the contact has completed.
- *
- * The interface for managing the server side roster.
- *
- * This interface provides a gateway between purple and the protocol for
- * managing the server side roster. All of the functions are asynchronous to
- * make sure nothing blocks the rest of the program.
- *
- * Since: 3.0
- */
 struct _PurpleProtocolRosterInterface {
 	/*< private >*/
 	GTypeInterface parent;

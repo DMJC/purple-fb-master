@@ -250,6 +250,13 @@ purple_buddy_presence_class_init(PurpleBuddyPresenceClass *klass) {
 	presence_class->update_idle = purple_buddy_presence_update_idle;
 	presence_class->get_statuses = purple_buddy_presence_get_statuses;
 
+	/**
+	 * PurpleBuddyPresence:buddy:
+	 *
+	 * The buddy for this presence.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_BUDDY] = g_param_spec_object(
 		"buddy", "Buddy",
 		"The buddy for this presence.",

@@ -167,24 +167,52 @@ purple_roomlist_room_class_init(PurpleRoomlistRoomClass *klass) {
 	obj_class->set_property = purple_roomlist_room_set_property;
 	obj_class->finalize = purple_roomlist_room_finalize;
 
+	/**
+	 * PurpleRoomlistRoom:name:
+	 *
+	 * The name of the room.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "name",
 		"The name of the room",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleRoomlistRoom:description:
+	 *
+	 * The description of the room.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_DESCRIPTION] = g_param_spec_string(
 		"description", "description",
 		"The description of the room",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleRoomlistRoom:category:
+	 *
+	 * The category of the room.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_CATEGORY] = g_param_spec_string(
 		"category", "category",
 		"The category of the room",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleRoomlistRoom:user-count:
+	 *
+	 * The number of users in the room.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_USER_COUNT] = g_param_spec_uint(
 		"user-count", "user-count",
 		"The user count of the room",

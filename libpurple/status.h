@@ -85,6 +85,14 @@ typedef struct _PurpleStatusType PurpleStatusType;
  *
  * Since: 2.0
  */
+
+/**
+ * PurpleStatusAttribute:
+ *
+ * An attribute that can be added to a status.
+ *
+ * Since: 2.0
+ */
 typedef struct _PurpleStatusAttribute PurpleStatusAttribute;
 
 /**

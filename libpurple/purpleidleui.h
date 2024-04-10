@@ -42,7 +42,7 @@ PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleIdleUi, purple_idle_ui, PURPLE, IDLE_UI, GObject)
 
 /**
- * PurpleIdleUiInterface:
+ * PurpleIdleUi:
  * @get_idle_time: vfunc to get the time that the user interface has been idle.
  *
  * An interface that a user interface can implement to let the core determine

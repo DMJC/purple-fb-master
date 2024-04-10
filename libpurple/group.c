@@ -331,6 +331,13 @@ purple_group_class_init(PurpleGroupClass *klass) {
 	obj_class->get_property = purple_group_get_property;
 	obj_class->set_property = purple_group_set_property;
 
+	/**
+	 * PurpleGroup:name:
+	 *
+	 * The name of the group.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name",
 		"Name",

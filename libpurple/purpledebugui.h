@@ -50,10 +50,7 @@ G_DECLARE_INTERFACE(PurpleDebugUi, purple_debug_ui, PURPLE, DEBUG_UI, GObject)
 #include "debug.h"
 
 /**
- * PurpleDebugUiInterface:
- * @print: Called to output a debug string to the UI.
- * @is_enabled: Returns if debug printing is enabled in the UI for a @level and
- *              @category.
+ * PurpleDebugUi:
  *
  * Debug UI operations.
  */

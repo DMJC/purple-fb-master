@@ -225,7 +225,7 @@ PURPLE_AVAILABLE_IN_3_0
 const char *purple_person_get_name_for_display(PurplePerson *person);
 
 /**
- * purple_person_add_contact:
+ * purple_person_add_contact_info:
  * @person: The instance.
  * @info: The [class@Purple.ContactInfo] to add.
  *
@@ -267,7 +267,7 @@ gboolean purple_person_remove_contact_info(PurplePerson *person, PurpleContactIn
 PURPLE_AVAILABLE_IN_3_0
 PurpleContactInfo *purple_person_get_priority_contact_info(PurplePerson *person);
 
-/*
+/**
  * purple_person_has_contacts:
  * @person: The instance.
  *

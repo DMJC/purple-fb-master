@@ -140,6 +140,13 @@ purple_image_class_init(PurpleImageClass *klass) {
 	gobj_class->get_property = purple_image_get_property;
 	gobj_class->set_property = purple_image_set_property;
 
+	/**
+	 * PurpleImage:path:
+	 *
+	 * The file path for the image if one was provided.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_PATH] = g_param_spec_string(
 		"path",
 		"path",
@@ -148,6 +155,13 @@ purple_image_class_init(PurpleImageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS
 	);
 
+	/**
+	 * PurpleImage:contents:
+	 *
+	 * The contents of the image.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_CONTENTS] = g_param_spec_boxed(
 		"contents",
 		"contents",
@@ -156,6 +170,13 @@ purple_image_class_init(PurpleImageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS
 	);
 
+	/**
+	 * PurpleImage:size:
+	 *
+	 * The size of the image in bytes.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_SIZE] = g_param_spec_uint64(
 		"size",
 		"size",

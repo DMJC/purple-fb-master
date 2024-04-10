@@ -60,15 +60,6 @@ G_DECLARE_INTERFACE(PurpleProtocolContacts,
 	g_quark_from_static_string("purple-protocol-contacts") \
 	PURPLE_AVAILABLE_MACRO_IN_3_0
 
-/**
- * PurpleProtocolContactsInterface:
- *
- * This interface defines the behavior for interacting with contacts at the
- * protocol layer. These methods will primarily be called by the user
- * interface.
- *
- * Since: 3.0
- */
 struct _PurpleProtocolContactsInterface {
 	/*< private >*/
 	GTypeInterface parent;

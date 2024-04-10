@@ -67,13 +67,6 @@ typedef enum {
 
 #include "purpleperson.h"
 
-/**
- * PurpleContactInfoClass:
- *
- * The class struct for [class@Purple.ContactInfo].
- *
- * Since: 3.0
- */
 struct _PurpleContactInfoClass {
 	/*< private >*/
 	GObjectClass parent;
@@ -316,7 +309,7 @@ PURPLE_AVAILABLE_IN_3_0
 GTimeZone *purple_contact_info_get_time_zone(PurpleContactInfo *info);
 
 /**
- * purple_contact_info-set_time_zone:
+ * purple_contact_info_set_time_zone:
  * @info: The instance.
  * @time_zone: (transfer none) (nullable): The new time zone.
  *
@@ -325,7 +318,7 @@ GTimeZone *purple_contact_info_get_time_zone(PurpleContactInfo *info);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_contact_info_set_time_zone(PurpleContactInfo *info, GTimeZone *timezone);
+void purple_contact_info_set_time_zone(PurpleContactInfo *info, GTimeZone *time_zone);
 
 /**
  * purple_contact_info_get_note:

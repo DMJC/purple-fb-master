@@ -64,6 +64,8 @@ typedef void (*PurpleAttachmentForeachFunc)(PurpleAttachment *attachment, gpoint
  *
  * Creates a new #PurpleAttachment with the given @id and @content_type.
  *
+ * Returns: (transfer full): The new attachment.
+ *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0

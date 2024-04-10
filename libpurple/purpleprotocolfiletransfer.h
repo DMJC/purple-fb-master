@@ -50,13 +50,6 @@ G_DECLARE_INTERFACE(PurpleProtocolFileTransfer,
  * Since: 3.0
  */
 
-/**
- * PurpleProtocolFileTransferInterface:
- *
- * This interface defines the behavior for sending and receiving files.
- *
- * Since: 3.0
- */
 struct _PurpleProtocolFileTransferInterface {
 	/*< private >*/
 	GTypeInterface parent;

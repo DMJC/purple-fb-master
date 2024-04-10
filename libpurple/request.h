@@ -51,6 +51,11 @@ typedef struct _PurpleRequestUiOps PurpleRequestUiOps;
 #include "request/purplerequestfield.h"
 #include "request-datasheet.h"
 
+/**
+ * PURPLE_DEFAULT_ACTION_NONE:
+ *
+ * A constant to set no default action.
+ */
 #define PURPLE_DEFAULT_ACTION_NONE	-1
 
 /**
@@ -188,6 +193,13 @@ struct _PurpleRequestUiOps
 	void (*_purple_reserved4)(void);
 };
 
+/**
+ * PurpleRequestInputCb:
+ * @data: User data.
+ * @value: The value that was input.
+ *
+ * The type of callback passed to purple_request_input().
+ */
 typedef void (*PurpleRequestInputCb)(void *data, const char *value);
 
 /**
@@ -211,8 +223,31 @@ typedef void (*PurpleRequestActionCb)(void *data, int action);
  * values of those choice.
  */
 typedef void (*PurpleRequestChoiceCb)(void *data, gpointer value);
+
+/**
+ * PurpleRequestFieldsCb:
+ * @data: User data.
+ * @page: The page.
+ *
+ * The type of callbacks passed to purple_request_fields().
+ */
 typedef void (*PurpleRequestFieldsCb)(void *data, PurpleRequestPage *page);
+
+/**
+ * PurpleRequestFileCb:
+ * @data: User data.
+ * @filename: The filename.
+ *
+ * The type of callbacks passed to purple_request_file().
+ */
 typedef void (*PurpleRequestFileCb)(void *data, const char *filename);
+
+/**
+ * PurpleRequestHelpCb:
+ * @data: User data.
+ *
+ * The type of callback passed to purple_request_cpar_set_help_cb().
+ */
 typedef void (*PurpleRequestHelpCb)(gpointer data);
 
 G_BEGIN_DECLS
@@ -698,6 +733,8 @@ void *purple_request_choice(void *handle, const char *title, const char *primary
  *
  * <literal>va_list</literal> version of purple_request_choice(); see its
  * documentation.
+ *
+ * Returns: A UI-specific handle.
  */
 PURPLE_AVAILABLE_IN_ALL
 void *purple_request_choice_varg(void *handle, const char *title,
@@ -774,6 +811,8 @@ purple_request_action(void *handle, const char *title, const char *primary,
  *
  * <literal>va_list</literal> version of purple_request_action(); see its
  * documentation.
+ *
+ * Returns: A UI-specific handle.
  */
 PURPLE_AVAILABLE_IN_ALL
 void *

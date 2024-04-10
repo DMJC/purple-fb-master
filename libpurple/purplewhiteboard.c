@@ -195,22 +195,50 @@ purple_whiteboard_class_init(PurpleWhiteboardClass *klass) {
 	obj_class->finalize = purple_whiteboard_finalize;
 	obj_class->constructed = purple_whiteboard_constructed;
 
+	/**
+	 * PurpleWhiteboard:state:
+	 *
+	 * The state of the whiteboard.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_STATE] = g_param_spec_int(
 		"state", "State",
 		"State of the whiteboard.",
 		G_MININT, G_MAXINT, 0,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleWhiteboard:account:
+	 *
+	 * The account this whiteboard belongs to.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "Account",
 		"The whiteboard's account.", PURPLE_TYPE_ACCOUNT,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleWhiteboard:id:
+	 *
+	 * The unique identifier of the whiteboard.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", "id",
 		"The ID of the whiteboard.", NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleWhiteboard:draw-list:
+	 *
+	 * The list of draw actions for the whiteboard.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_DRAW_LIST] = g_param_spec_pointer(
 		"draw-list", "Draw list",
 		"A list of points to draw to the buddy.",

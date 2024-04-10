@@ -38,25 +38,17 @@ G_BEGIN_DECLS
 
 #define PURPLE_TYPE_PROTOCOL_ROOMLIST (purple_protocol_roomlist_get_type())
 
-/**
- * PurpleProtocolRoomlist:
- *
- * #PurpleProtocolRoomlist is an interface to abstract how to handle rooms
- * lists at the protocol level.
- *
- * Since: 3.0
- */
-
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolRoomlist, purple_protocol_roomlist, PURPLE,
                     PROTOCOL_ROOMLIST, PurpleProtocol)
 
 /**
- * PurpleProtocolRoomlistInterface:
+ * PurpleProtocolRoomlist:
  *
  * The protocol roomlist interface.
  *
- * This interface provides callbacks for room listing.
+ * #PurpleProtocolRoomlist is an interface to abstract how to handle room
+ * lists at the protocol level.
  *
  * Since: 3.0
  */

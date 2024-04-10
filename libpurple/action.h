@@ -37,6 +37,14 @@
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef struct _PurpleProtocolAction PurpleProtocolAction;
 
+/**
+ * PurpleProtocolActionCallback:
+ * @action: The action that was activated.
+ *
+ * The callback function for [type@ProtocolAction].
+ *
+ * Since: 3.0
+ */
 PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleProtocolActionCallback)(PurpleProtocolAction *action);
 

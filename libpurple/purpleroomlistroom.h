@@ -72,6 +72,8 @@ struct _PurpleRoomlistRoomClass {
  *
  * Creates a new room to be added to a [class@Purple.Roomlist].
  *
+ * Returns: (transfer full): The new room.
+ *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
@@ -104,7 +106,7 @@ PURPLE_AVAILABLE_IN_3_0
 const gchar *purple_roomlist_room_get_description(PurpleRoomlistRoom *room);
 
 /**
- * purple_roomlist_get_category:
+ * purple_roomlist_room_get_category:
  * @room: The instance.
  *
  * Gets the category of @room. It is up to the user interface on whether or not

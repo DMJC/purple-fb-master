@@ -265,6 +265,13 @@ static void purple_chat_class_init(PurpleChatClass *klass)
 	obj_class->set_property = purple_chat_set_property;
 	obj_class->constructed = purple_chat_constructed;
 
+	/**
+	 * PurpleChat:alias:
+	 *
+	 * The alias of the chat.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ALIAS] = g_param_spec_string(
 		"alias",
 		"Alias",
@@ -273,6 +280,13 @@ static void purple_chat_class_init(PurpleChatClass *klass)
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS
 	);
 
+	/**
+	 * PurpleChat:account:
+	 *
+	 * The account that the chat belongs to.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account",
 		"Account",
@@ -281,6 +295,13 @@ static void purple_chat_class_init(PurpleChatClass *klass)
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS
 	);
 
+	/**
+	 * PurpleChat:components:
+	 *
+	 * The components for the chat.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_COMPONENTS] = g_param_spec_pointer(
 		"components",
 		"Components",

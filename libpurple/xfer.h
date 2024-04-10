@@ -991,17 +991,13 @@ G_DECLARE_INTERFACE(PurpleProtocolXfer, purple_protocol_xfer, PURPLE,
                     PROTOCOL_XFER, PurpleProtocol)
 
 /**
- * PurpleProtocolXferInterface:
- * @can_receive: A method to determine if we can receive a file.
- * @send_file: A method to determine if we can send a file.
- * @new_xfer: A method to create a new file transfer.
+ * PurpleProtocolXfer:
  *
  * The protocol file transfer interface.
  *
- * This interface provides file transfer callbacks for the protocol.
- *
  * Since: 3.0
  */
+
 struct _PurpleProtocolXferInterface {
 	/*< private >*/
 	GTypeInterface parent_iface;

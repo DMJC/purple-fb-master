@@ -171,24 +171,52 @@ purple_chat_user_class_init(PurpleChatUserClass *klass) {
 	obj_class->set_property = purple_chat_user_set_property;
 	obj_class->finalize = purple_chat_user_finalize;
 
+	/**
+	 * PurpleChatUser:chat:
+	 *
+	 * The chat the user is in.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_CHAT] = g_param_spec_object(
 		"chat", "Chat",
 		"The chat the buddy belongs to.",
 		PURPLE_TYPE_CHAT_CONVERSATION,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleChatUser:name:
+	 *
+	 * The name of the user.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "Name",
 		"Name of the chat user.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleChatUser:alias:
+	 *
+	 * The alias of the user.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ALIAS] = g_param_spec_string(
 		"alias", "Alias",
 		"Alias of the chat user.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleChatUser:flags:
+	 *
+	 * The flags for the user.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_FLAGS] = g_param_spec_flags(
 		"flags", "Buddy flags",
 		"The flags for the chat user.",

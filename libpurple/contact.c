@@ -328,6 +328,13 @@ static void purple_meta_contact_class_init(PurpleMetaContactClass *klass)
 	obj_class->get_property = purple_meta_contact_get_property;
 	obj_class->set_property = purple_meta_contact_set_property;
 
+	/**
+	 * PurpleMetaContact:alias:
+	 *
+	 * The alias for the contact.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ALIAS] = g_param_spec_string(
 		"alias",
 		"Alias",
@@ -336,6 +343,13 @@ static void purple_meta_contact_class_init(PurpleMetaContactClass *klass)
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS
 	);
 
+	/**
+	 * PurpleMetaContact:priority-buddy:
+	 *
+	 * The priority buddy of the contact.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_PRIORITY_BUDDY] = g_param_spec_object(
 		"priority-buddy",
 		"Priority buddy",

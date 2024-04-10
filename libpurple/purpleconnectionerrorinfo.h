@@ -75,6 +75,8 @@ G_BEGIN_DECLS
  *         self-signed.
  * @PURPLE_CONNECTION_ERROR_CERT_OTHER_ERROR: There was some other error
  *         validating the server's SSL certificate.
+ * @PURPLE_CONNECTION_ERROR_CUSTOM_TEMPORARY: A custom error that is temporary.
+ * @PURPLE_CONNECTION_ERROR_CUSTOM_FATAL: A custom error that is fatal.
  * @PURPLE_CONNECTION_ERROR_OTHER_ERROR: Some other error occurred which fits
  *         into none of the other categories.
  *

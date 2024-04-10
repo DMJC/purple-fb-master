@@ -2186,94 +2186,182 @@ purple_xfer_class_init(PurpleXferClass *klass)
 	klass->write_local = do_write_local;
 	klass->data_not_sent = do_data_not_sent;
 
-	/* Properties */
-
+	/**
+	 * PurpleXfer:type:
+	 *
+	 * The type of the transfer.
+	 */
 	properties[PROP_TYPE] = g_param_spec_enum("type", "Transfer type",
 				"The type of file transfer.", PURPLE_TYPE_XFER_TYPE,
 				PURPLE_XFER_TYPE_UNKNOWN,
 				G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
 				G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:account:
+	 *
+	 * The account that this transfer is for.
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object("account", "Account",
 				"The account sending or receiving the file.",
 				PURPLE_TYPE_ACCOUNT,
 				G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
 				G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:remote-user:
+	 *
+	 * The user on the other side of this transfer.
+	 */
 	properties[PROP_REMOTE_USER] = g_param_spec_string("remote-user",
 				"Remote user",
 				"The name of the remote user.", NULL,
 				G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:message:
+	 *
+	 * A message that was sent with the transfer.
+	 */
 	properties[PROP_MESSAGE] = g_param_spec_string("message", "Message",
 				"The message for the file transfer.", NULL,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:filename:
+	 *
+	 * The name of the file being transferred.
+	 */
 	properties[PROP_FILENAME] = g_param_spec_string("filename", "Filename",
 				"The filename for the file transfer.", NULL,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:local-filename:
+	 *
+	 * The local filename for this transfer.
+	 */
 	properties[PROP_LOCAL_FILENAME] = g_param_spec_string("local-filename",
 				"Local filename",
 				"The local filename for the file transfer.", NULL,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:file-size:
+	 *
+	 * The size of the file in bytes.
+	 */
 	properties[PROP_FILE_SIZE] = g_param_spec_int64("file-size", "File size",
 				"Size of the file in a file transfer.",
 				G_MININT64, G_MAXINT64, 0,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:remote-ip:
+	 *
+	 * The IP address of the remote user.
+	 */
 	properties[PROP_REMOTE_IP] = g_param_spec_string("remote-ip", "Remote IP",
 				"The remote IP address in the file transfer.", NULL,
 				G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:local-port:
+	 *
+	 * The port number on the local side.
+	 */
 	properties[PROP_LOCAL_PORT] = g_param_spec_int("local-port", "Local port",
 				"The local port number in the file transfer.",
 				G_MININT, G_MAXINT, 0,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:remote-port:
+	 *
+	 * The port number on the remote side.
+	 */
 	properties[PROP_REMOTE_PORT] = g_param_spec_int("remote-port",
 				"Remote port",
 				"The remote port number in the file transfer.",
 				G_MININT, G_MAXINT, 0,
 				G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:fd:
+	 *
+	 * The socket file descriptor for the transfer.
+	 */
 	properties[PROP_FD] = g_param_spec_int("fd", "Socket FD",
 				"The socket file descriptor.",
 				G_MININT, G_MAXINT, 0,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:watcher:
+	 *
+	 * The input watcher for this transfer.
+	 */
 	properties[PROP_WATCHER] = g_param_spec_int("watcher", "Watcher",
 				"The watcher for the file transfer.",
 				G_MININT, G_MAXINT, 0,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:bytes-sent:
+	 *
+	 * The number of bytes that have been sent.
+	 */
 	properties[PROP_BYTES_SENT] = g_param_spec_int64("bytes-sent", "Bytes sent",
 				"The number of bytes sent (or received) so far.",
 				G_MININT64, G_MAXINT64, 0,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:start-time:
+	 *
+	 * The time when the transfer started.
+	 */
 	properties[PROP_START_TIME] = g_param_spec_int64(
 	        "start-time", "Start time",
 	        "The monotonic time the transfer of a file started.",
 	        G_MININT64, G_MAXINT64, 0,
 	        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:end-time:
+	 *
+	 * The time when the transfer ended.
+	 */
 	properties[PROP_END_TIME] = g_param_spec_int64(
 	        "end-time", "End time",
 	        "The monotonic time the transfer of a file ended.", G_MININT64,
 	        G_MAXINT64, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:status:
+	 *
+	 * The status of the transfer.
+	 */
 	properties[PROP_STATUS] = g_param_spec_enum("status", "Status",
 				"The current status for the file transfer.",
 				PURPLE_TYPE_XFER_STATUS, PURPLE_XFER_STATUS_UNKNOWN,
 				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:progress:
+	 *
+	 * The current progress of the transfer.
+	 */
 	properties[PROP_PROGRESS] = g_param_spec_double(
 	        "progress", "Progress",
 	        "The current progress of the file transfer.", -1.0, 1.0, -1.0,
 	        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleXfer:visible:
+	 *
+	 * Whether or not user interfaces should display the transfer.
+	 */
 	properties[PROP_VISIBLE] = g_param_spec_boolean(
 	        "visible", "Visible",
 	        "Hint for UIs whether this transfer should be visible.", FALSE,

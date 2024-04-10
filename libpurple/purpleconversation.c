@@ -688,6 +688,13 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		PURPLE_CONVERSATION_TYPE_UNSET,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConversation:account:
+	 *
+	 * The account this conversation belongs to.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", "Account",
 		"The account for the conversation.",
@@ -710,18 +717,39 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		PURPLE_TYPE_AVATAR,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConversation:name:
+	 *
+	 * The name of the conversation.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_NAME] = g_param_spec_string(
 		"name", "Name",
 		"The name of the conversation.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConversation:title:
+	 *
+	 * The title of the conversation.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_TITLE] = g_param_spec_string(
 		"title", "Title",
 		"The title of the conversation.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConversation:features:
+	 *
+	 * The features that this conversation supports.
+	 *
+	 * Since: 3.0
+	 */
 	properties[PROP_FEATURES] = g_param_spec_flags(
 		"features", "Connection features",
 		"The connection features of the conversation.",

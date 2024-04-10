@@ -91,6 +91,8 @@ typedef enum {
  *
  * A function implementing a command, as passed to purple_cmd_register().
  *
+ * Returns: The result of the command.
+ *
  * Since: 2.0
  */
 typedef PurpleCmdRet (*PurpleCmdFunc)(PurpleConversation *conversation, const gchar *cmd,
