@@ -37,6 +37,8 @@ struct _PurpleRequestGroup {
 
 enum {
 	PROP_0,
+	PROP_ITEM_TYPE,
+	PROP_N_ITEMS,
 	PROP_TITLE,
 	PROP_VALID,
 	N_PROPERTIES,
@@ -128,15 +130,23 @@ purple_request_group_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleRequestGroup *group = PURPLE_REQUEST_GROUP(obj);
 
 	switch(param_id) {
-		case PROP_TITLE:
-			g_value_set_string(value, purple_request_group_get_title(group));
-			break;
-		case PROP_VALID:
-			g_value_set_boolean(value, purple_request_group_is_valid(group));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ITEM_TYPE:
+		g_value_set_gtype(value,
+		                  purple_request_group_get_item_type(G_LIST_MODEL(group)));
+		break;
+	case PROP_N_ITEMS:
+		g_value_set_uint(value,
+		                 purple_request_group_get_n_items(G_LIST_MODEL(group)));
+		break;
+	case PROP_TITLE:
+		g_value_set_string(value, purple_request_group_get_title(group));
+		break;
+	case PROP_VALID:
+		g_value_set_boolean(value, purple_request_group_is_valid(group));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -147,12 +157,12 @@ purple_request_group_set_property(GObject *obj, guint param_id,
 	PurpleRequestGroup *group = PURPLE_REQUEST_GROUP(obj);
 
 	switch(param_id) {
-		case PROP_TITLE:
-			purple_request_group_set_title(group, g_value_get_string(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_TITLE:
+		purple_request_group_set_title(group, g_value_get_string(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -181,6 +191,32 @@ purple_request_group_class_init(PurpleRequestGroupClass *klass) {
 	obj_class->finalize = purple_request_group_finalize;
 	obj_class->get_property = purple_request_group_get_property;
 	obj_class->set_property = purple_request_group_set_property;
+
+	/**
+	 * PurpleRequestGroup:item-type:
+	 *
+	 * The type of items. See [iface@Gio.ListModel.get_item_type].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ITEM_TYPE] = g_param_spec_gtype(
+		"item-type", "item-type",
+		"The type of the contained items.",
+		G_TYPE_OBJECT,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleRequestGroup:n-items:
+	 *
+	 * The number of items. See [iface@Gio.ListModel.get_n_items].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_N_ITEMS] = g_param_spec_uint(
+		"n-items", "n-items",
+		"The number of contained items.",
+		0, G_MAXUINT, 0,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleRequestGroup:title:
