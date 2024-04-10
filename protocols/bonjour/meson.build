@@ -11,10 +11,6 @@ BONJOUR_HEADERS = [
 	'purplebonjourprotocol.h',
 ]
 
-if not DYNAMIC_BONJOUR
-	subdir_done()
-endif
-
 bonjour_resources = gnome.compile_resources('bonjourresource',
 	'resources/bonjour.gresource.xml',
 	source_dir : 'resources',

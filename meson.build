@@ -260,29 +260,13 @@ gstreamer_app = dependency('gstreamer-app-1.0')
 birb_dep = dependency('birb')
 
 #######################################################################
-# Check for Native Avahi headers (for Bonjour)
-#######################################################################
-
-if IS_WIN32
-	# Just keep enabled.
-	enable_avahi = get_option('avahi').enabled() or get_option('avahi').auto()
-	avahi = []
-else
-	# Attempt to autodetect Avahi
-	avahi_client = dependency('avahi-client', required : get_option('avahi'))
-	avahi_glib = dependency('avahi-glib', required : get_option('avahi'))
-	avahi = [avahi_client, avahi_glib]
-	enable_avahi = avahi_client.found() and avahi_glib.found()
-endif
-
-#######################################################################
 # Check for Xeme XMPP Library
 #######################################################################
 xeme = dependency('xeme')
 
 dependency('shoes', required : false)
 
-DEFAULT_PRPLS = ['bonjour', 'demo', 'ircv3', 'jabber', 'xmpp']
+DEFAULT_PRPLS = ['demo', 'ircv3', 'jabber', 'xmpp']
 
 dynamic_list = get_option('dynamic-prpls').split(',')
 if dynamic_list == ['all']
@@ -292,8 +276,6 @@ DYNAMIC_PRPLS = []
 foreach prpl : dynamic_list
 	if prpl == ''
 		# The list was empty; do nothing.
-	elif prpl == 'bonjour' and not enable_avahi
-		# Do nothing.
 	elif prpl == 'xmpp' and not xeme.found()
 		# Do nothing.
 	else
@@ -301,7 +283,6 @@ foreach prpl : dynamic_list
 	endif
 endforeach
 
-DYNAMIC_BONJOUR = DYNAMIC_PRPLS.contains('bonjour')
 DYNAMIC_DEMO = DYNAMIC_PRPLS.contains('demo')
 DYNAMIC_IRCV3 = DYNAMIC_PRPLS.contains('ircv3')
 DYNAMIC_JABBER = DYNAMIC_PRPLS.contains('jabber')
