@@ -98,21 +98,16 @@ PurpleAccount *purple_contact_get_account(PurpleContact *contact);
 /**
  * purple_contact_find_dm:
  * @contact: The instance.
- * @create: Whether or not to create a new DM if one can't be found.
  *
- * Attempts to find a conversation for @contact in the default
- * [class@ContactManager] by using @contact's username.
- *
- * If no existing direct messages exists for @contact and @create is %TRUE,
- * then a new direct message will be created and registered in the default
- * [class@ConversationManager].
+ * This is a wrapper around [method@ConversationManager.find_dm] to make it
+ * easier to see if a direct message exists with @contact.
  *
  * Returns: (transfer none) (nullable): The conversation or %NULL.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleConversation *purple_contact_find_dm(PurpleContact *contact, gboolean create);
+PurpleConversation *purple_contact_find_dm(PurpleContact *contact);
 
 /**
  * purple_contact_create_dm_async:
@@ -128,6 +123,7 @@ PurpleConversation *purple_contact_find_dm(PurpleContact *contact, gboolean crea
  *
  * Since: 3.0
  */
+PURPLE_AVAILABLE_IN_3_0
 void purple_contact_create_dm_async(PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 
 /**
@@ -143,6 +139,7 @@ void purple_contact_create_dm_async(PurpleContact *contact, GCancellable *cancel
  *
  * Since: 3.0
  */
+PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_contact_create_dm_finish(PurpleContact *contact, GAsyncResult *result, GError **error);
 
 G_END_DECLS

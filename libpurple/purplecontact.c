@@ -67,7 +67,7 @@ purple_contact_create_dm_cb(GObject *obj, GAsyncResult *result, gpointer data)
 	/* task and result share a cancellable, so we just need to clear task to
 	 * make sure it's callback gets called.
 	 */
-	if(g_task_return_error_if_cancelled(G_TASK(result))) {
+	if(g_task_return_error_if_cancelled(G_TASK(task))) {
 		g_clear_object(&task);
 
 		return;
@@ -180,37 +180,14 @@ purple_contact_get_account(PurpleContact *contact) {
 }
 
 PurpleConversation *
-purple_contact_find_dm(PurpleContact *contact, gboolean create) {
-	PurpleConversation *conversation = NULL;
+purple_contact_find_dm(PurpleContact *contact) {
 	PurpleConversationManager *manager = NULL;
-	const char *name = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
 	manager = purple_conversation_manager_get_default();
-	name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact));
-	conversation = purple_conversation_manager_find_im(manager,
-	                                                   contact->account,
-	                                                   name);
 
-	if(PURPLE_IS_CONVERSATION(conversation)) {
-		return conversation;
-	}
-
-	if(create) {
-		conversation = g_object_new(
-			PURPLE_TYPE_CONVERSATION,
-			"account", contact->account,
-			"name", name,
-			"type", PURPLE_CONVERSATION_TYPE_DM,
-			NULL);
-		purple_conversation_manager_register(manager, conversation);
-
-		/* The manager holds a reference, so we're just returning that. */
-		g_object_unref(conversation);
-	}
-
-	return conversation;
+	return purple_conversation_manager_find_dm(manager, contact);
 }
 
 void
