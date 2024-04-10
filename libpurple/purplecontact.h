@@ -37,6 +37,17 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PURPLE_CONTACT_DOMAIN:
+ *
+ * An error domain for [class@Contact].
+ *
+ * Since: 3.0
+ */
+#define PURPLE_CONTACT_DOMAIN \
+    (g_quark_from_static_string("purple-contact")) \
+    PURPLE_AVAILABLE_MACRO_IN_3_0
+
 #define PURPLE_TYPE_CONTACT (purple_contact_get_type())
 
 PURPLE_AVAILABLE_IN_3_0
@@ -102,6 +113,37 @@ PurpleAccount *purple_contact_get_account(PurpleContact *contact);
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_contact_find_dm(PurpleContact *contact, gboolean create);
+
+/**
+ * purple_contact_create_dm_async:
+ * @contact: The instance.
+ * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request is
+ *            satisfied.
+ * @data: User data to pass to @callback.
+ *
+ * Asks the protocol to create a direct message with @contact.
+ *
+ * The protocol may return an existing conversation.
+ *
+ * Since: 3.0
+ */
+void purple_contact_create_dm_async(PurpleContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_contact_create_dm_finish:
+ * @contact: The instance.
+ * @result: The result.
+ * @error: The return address for a #GError.
+ *
+ * Finishes a previous call to [method@Contact.create_dm_async].
+ *
+ * Returns: (transfer full): The conversation if successful, otherwise %NULL
+ *          with @error set.
+ *
+ * Since: 3.0
+ */
+PurpleConversation *purple_contact_create_dm_finish(PurpleContact *contact, GAsyncResult *result, GError **error);
 
 G_END_DECLS
 

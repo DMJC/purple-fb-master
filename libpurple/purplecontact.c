@@ -23,6 +23,7 @@
 #include "purplecontact.h"
 
 #include "purpleconversationmanager.h"
+#include "purpleprotocolconversation.h"
 
 struct _PurpleContact {
 	PurpleContactInfo parent;
@@ -50,6 +51,39 @@ purple_contact_set_account(PurpleContact *contact, PurpleAccount *account) {
 	if(g_set_object(&contact->account, account)) {
 		g_object_notify_by_pspec(G_OBJECT(contact), properties[PROP_ACCOUNT]);
 	}
+}
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+purple_contact_create_dm_cb(GObject *obj, GAsyncResult *result, gpointer data)
+{
+	PurpleProtocolConversation *protocol = PURPLE_PROTOCOL_CONVERSATION(obj);
+	PurpleConversation *conversation = NULL;
+	GError *error = NULL;
+	GTask *task = data;
+
+	/* task and result share a cancellable, so we just need to clear task to
+	 * make sure it's callback gets called.
+	 */
+	if(g_task_return_error_if_cancelled(G_TASK(result))) {
+		g_clear_object(&task);
+
+		return;
+	}
+
+	conversation = purple_protocol_conversation_create_conversation_finish(protocol,
+	                                                                       result,
+	                                                                       &error);
+
+	if(error != NULL) {
+		g_task_return_error(task, error);
+	} else {
+		g_task_return_pointer(task, conversation, g_object_unref);
+	}
+
+	g_clear_object(&task);
 }
 
 /******************************************************************************
@@ -177,4 +211,77 @@ purple_contact_find_dm(PurpleContact *contact, gboolean create) {
 	}
 
 	return conversation;
+}
+
+void
+purple_contact_create_dm_async(PurpleContact *contact,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer data)
+{
+	PurpleProtocol *protocol = NULL;
+	PurpleProtocolConversation *protocol_conversation = NULL;
+	PurpleCreateConversationDetails *details = NULL;
+	GListStore *participants = NULL;
+	GTask *task = NULL;
+	gboolean implements = FALSE;
+
+	task = g_task_new(contact, cancellable, callback, data);
+	g_task_set_source_tag(task, purple_contact_create_dm_async);
+
+	protocol = purple_account_get_protocol(contact->account);
+	if(!PURPLE_IS_PROTOCOL_CONVERSATION(protocol)) {
+		g_task_return_new_error(task, PURPLE_CONTACT_DOMAIN, 0,
+		                        "protocol %s does not implement the "
+		                        "ProtocolConversation interface.",
+		                        purple_account_get_protocol_id(contact->account));
+		g_clear_object(&task);
+
+		return;
+	}
+
+	protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
+	implements = purple_protocol_conversation_implements_create_conversation(protocol_conversation);
+	if(!implements) {
+		g_task_return_new_error(task, PURPLE_CONTACT_DOMAIN, 0,
+		                        "protocol %s does not implement creating "
+		                        "conversations.",
+		                        purple_account_get_protocol_id(contact->account));
+		g_clear_object(&task);
+
+		return;
+	}
+
+	details = purple_protocol_conversation_get_create_conversation_details(protocol_conversation,
+	                                                                       contact->account);
+
+	participants = g_list_store_new(PURPLE_TYPE_CONTACT);
+	g_list_store_append(participants, contact);
+	purple_create_conversation_details_set_participants(details,
+	                                                    G_LIST_MODEL(participants));
+	g_clear_object(&participants);
+
+	purple_protocol_conversation_create_conversation_async(protocol_conversation,
+	                                                       contact->account,
+	                                                       details,
+	                                                       cancellable,
+	                                                       purple_contact_create_dm_cb,
+	                                                       task);
+}
+
+PurpleConversation *
+purple_contact_create_dm_finish(PurpleContact *contact, GAsyncResult *result,
+                                GError **error)
+{
+	GTask *task = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
+	g_return_val_if_fail(G_IS_TASK(result), NULL);
+
+	task = G_TASK(result);
+
+	g_return_val_if_fail(g_task_get_source_tag(task) == purple_contact_create_dm_async,
+	                     NULL);
+
+	return g_task_propagate_pointer(task, error);
 }
