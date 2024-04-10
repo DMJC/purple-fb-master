@@ -440,7 +440,6 @@ meson.override_dependency(purple_filebase, libpurple_dep)
 
 subdir('tests')
 subdir('plugins')
-subdir('protocols')
 
 test(
 	'purple_license_headers',

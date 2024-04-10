@@ -266,7 +266,7 @@ xeme = dependency('xeme')
 
 dependency('shoes', required : false)
 
-DEFAULT_PRPLS = ['demo', 'ircv3', 'jabber', 'xmpp']
+DEFAULT_PRPLS = ['demo', 'ircv3', 'xmpp']
 
 dynamic_list = get_option('dynamic-prpls').split(',')
 if dynamic_list == ['all']
@@ -285,7 +285,6 @@ endforeach
 
 DYNAMIC_DEMO = DYNAMIC_PRPLS.contains('demo')
 DYNAMIC_IRCV3 = DYNAMIC_PRPLS.contains('ircv3')
-DYNAMIC_JABBER = DYNAMIC_PRPLS.contains('jabber')
 DYNAMIC_XMPP = DYNAMIC_PRPLS.contains('xmpp')
 
 add_project_arguments(
