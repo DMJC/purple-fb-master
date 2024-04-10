@@ -32,6 +32,14 @@
 #include "util.h"
 
 enum {
+	PROP_0,
+	PROP_ITEM_TYPE,
+	PROP_N_ITEMS,
+	N_PROPERTIES,
+};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
+
+enum {
 	SIG_ADDED,
 	SIG_REMOVED,
 	SIG_PERSON_ADDED,
@@ -285,6 +293,27 @@ purple_contact_manager_finalize(GObject *obj) {
 }
 
 static void
+purple_contact_manager_get_property(GObject *obj, guint param_id,
+                                    GValue *value, GParamSpec *pspec)
+{
+	PurpleContactManager *manager = PURPLE_CONTACT_MANAGER(obj);
+
+	switch(param_id) {
+	case PROP_ITEM_TYPE:
+		g_value_set_gtype(value,
+		                  purple_contact_manager_get_item_type(G_LIST_MODEL(manager)));
+		break;
+	case PROP_N_ITEMS:
+		g_value_set_uint(value,
+		                 purple_contact_manager_get_n_items(G_LIST_MODEL(manager)));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
+	}
+}
+
+static void
 purple_contact_manager_init(PurpleContactManager *manager) {
 	manager->accounts = g_hash_table_new_full(g_direct_hash, g_direct_equal,
 	                                          g_object_unref, g_object_unref);
@@ -302,6 +331,35 @@ purple_contact_manager_class_init(PurpleContactManagerClass *klass) {
 
 	obj_class->dispose = purple_contact_manager_dispose;
 	obj_class->finalize = purple_contact_manager_finalize;
+	obj_class->get_property = purple_contact_manager_get_property;
+
+	/**
+	 * PurpleContactManager:item-type:
+	 *
+	 * The type of items. See [iface@Gio.ListModel.get_item_type].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ITEM_TYPE] = g_param_spec_gtype(
+		"item-type", "item-type",
+		"The type of the contained items.",
+		G_TYPE_OBJECT,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleContactManager:n-items:
+	 *
+	 * The number of items. See [iface@Gio.ListModel.get_n_items].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_N_ITEMS] = g_param_spec_uint(
+		"n-items", "n-items",
+		"The number of contained items.",
+		0, G_MAXUINT, 0,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
 	 * PurpleContactManager::added:
