@@ -1035,6 +1035,50 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
+gboolean
+purple_conversation_is_dm(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->type == PURPLE_CONVERSATION_TYPE_DM;
+}
+
+gboolean
+purple_conversation_is_group_dm(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->type == PURPLE_CONVERSATION_TYPE_GROUP_DM;
+}
+
+gboolean
+purple_conversation_is_channel(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->type == PURPLE_CONVERSATION_TYPE_CHANNEL;
+}
+
+gboolean
+purple_conversation_is_thread(PurpleConversation *conversation) {
+	PurpleConversationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	priv = purple_conversation_get_instance_private(conversation);
+
+	return priv->type == PURPLE_CONVERSATION_TYPE_THREAD;
+}
+
 void
 purple_conversation_present(PurpleConversation *conv) {
 	PurpleConversationUiOps *ops;

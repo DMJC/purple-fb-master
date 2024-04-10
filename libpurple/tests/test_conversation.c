@@ -203,6 +203,105 @@ test_purple_conversation_set_topic_full(void) {
 }
 
 /******************************************************************************
+ * "is" tests
+ *****************************************************************************/
+static void
+test_purple_conversation_is_dm(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
+		"name", "this is required for some reason",
+		NULL);
+
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+	g_assert_true(purple_conversation_is_dm(conversation));
+	g_assert_false(purple_conversation_is_group_dm(conversation));
+	g_assert_false(purple_conversation_is_channel(conversation));
+	g_assert_false(purple_conversation_is_thread(conversation));
+
+	g_assert_finalize_object(conversation);
+
+	g_clear_object(&account);
+}
+
+static void
+test_purple_conversation_is_group_dm(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_GROUP_DM,
+		"name", "this is required for some reason",
+		NULL);
+
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+	g_assert_false(purple_conversation_is_dm(conversation));
+	g_assert_true(purple_conversation_is_group_dm(conversation));
+	g_assert_false(purple_conversation_is_channel(conversation));
+	g_assert_false(purple_conversation_is_thread(conversation));
+
+	g_assert_finalize_object(conversation);
+
+	g_clear_object(&account);
+}
+
+static void
+test_purple_conversation_is_channel(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_CHANNEL,
+		"name", "this is required for some reason",
+		NULL);
+
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+	g_assert_false(purple_conversation_is_dm(conversation));
+	g_assert_false(purple_conversation_is_group_dm(conversation));
+	g_assert_true(purple_conversation_is_channel(conversation));
+	g_assert_false(purple_conversation_is_thread(conversation));
+
+	g_assert_finalize_object(conversation);
+
+	g_clear_object(&account);
+}
+
+static void
+test_purple_conversation_is_thread(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_THREAD,
+		"name", "this is required for some reason",
+		NULL);
+
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+	g_assert_false(purple_conversation_is_dm(conversation));
+	g_assert_false(purple_conversation_is_group_dm(conversation));
+	g_assert_false(purple_conversation_is_channel(conversation));
+	g_assert_true(purple_conversation_is_thread(conversation));
+
+	g_assert_finalize_object(conversation);
+
+	g_clear_object(&account);
+}
+
+/******************************************************************************
  * Membership tests and helpers
  *****************************************************************************/
 static void
@@ -363,6 +462,14 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_conversation_properties);
 	g_test_add_func("/conversation/set-topic-full",
 	                test_purple_conversation_set_topic_full);
+
+	g_test_add_func("/conversation/is-dm", test_purple_conversation_is_dm);
+	g_test_add_func("/conversation/is-group-dm",
+	                test_purple_conversation_is_group_dm);
+	g_test_add_func("/conversation/is-channel",
+	                test_purple_conversation_is_channel);
+	g_test_add_func("/conversation/is-thread",
+	                test_purple_conversation_is_thread);
 
 	g_test_add_func("/conversation/members/add-remove",
 	                test_purple_conversation_members_add_remove);

@@ -162,6 +162,70 @@ struct _PurpleConversationClass {
 G_BEGIN_DECLS
 
 /**
+ * purple_conversation_is_dm:
+ * @conversation: The instance.
+ *
+ * Checks if @conversation is a direct message or not.
+ *
+ * This is a quick helper around manually checking the results of
+ * [method@Conversation.get_conversation_type].
+ *
+ * Returns: %TRUE if @conversation is a direct message, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_conversation_is_dm(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_is_group_dm:
+ * @conversation: The instance.
+ *
+ * Checks if @conversation is a group direct message or not.
+ *
+ * This is a quick helper around manually checking the results of
+ * [method@Conversation.get_conversation_type].
+ *
+ * Returns: %TRUE if @conversation is a group direct message, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_conversation_is_group_dm(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_is_channel:
+ * @conversation: The instance.
+ *
+ * Checks if @conversation is a channel or not.
+ *
+ * This is a quick helper around manually checking the results of
+ * [method@Conversation.get_conversation_type].
+ *
+ * Returns: %TRUE if @conversation is a channel, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_conversation_is_channel(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_is_thread:
+ * @conversation: The instance.
+ *
+ * Checks if @conversation is a thread or not.
+ *
+ * This is a quick helper around manually checking the results of
+ * [method@Conversation.get_conversation_type].
+ *
+ * Returns: %TRUE if @conversation is a thread, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_conversation_is_thread(PurpleConversation *conversation);
+
+/**
  * purple_conversation_present:
  * @conv: The conversation to present
  *
