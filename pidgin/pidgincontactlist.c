@@ -240,6 +240,7 @@ pidgin_contact_list_activate_cb(GtkListView *self, guint position,
                                 G_GNUC_UNUSED gpointer data)
 {
 	PurpleContactInfo *info = NULL;
+	PurpleConversation *conversation = NULL;
 	PurplePerson *person = NULL;
 	GtkSelectionModel *model = NULL;
 
@@ -254,7 +255,10 @@ pidgin_contact_list_activate_cb(GtkListView *self, guint position,
 	}
 
 	info = purple_person_get_priority_contact_info(person);
-	purple_contact_find_dm(PURPLE_CONTACT(info), TRUE);
+	conversation = purple_contact_find_dm(PURPLE_CONTACT(info));
+	if(!PURPLE_IS_CONVERSATION(conversation)) {
+		purple_contact_create_dm_async(PURPLE_CONTACT(info), NULL, NULL, NULL);
+	}
 
 	g_clear_object(&person);
 }
