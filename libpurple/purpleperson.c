@@ -42,6 +42,8 @@ struct _PurplePerson {
 
 enum {
 	PROP_0,
+	PROP_ITEM_TYPE,
+	PROP_N_ITEMS,
 	PROP_ID,
 	PROP_ALIAS,
 	PROP_AVATAR,
@@ -255,39 +257,46 @@ purple_person_get_property(GObject *obj, guint param_id, GValue *value,
 	PurplePerson *person = PURPLE_PERSON(obj);
 
 	switch(param_id) {
-		case PROP_ID:
-			g_value_set_string(value, purple_person_get_id(person));
-			break;
-		case PROP_ALIAS:
-			g_value_set_string(value, purple_person_get_alias(person));
-			break;
-		case PROP_AVATAR:
-			g_value_set_object(value, purple_person_get_avatar(person));
-			break;
-		case PROP_AVATAR_FOR_DISPLAY:
-			g_value_set_object(value, purple_person_get_avatar_for_display(person));
-			break;
-		case PROP_COLOR:
-			g_value_set_string(value, purple_person_get_color(person));
-			break;
-		case PROP_COLOR_FOR_DISPLAY:
-			g_value_set_string(value,
-			                   purple_person_get_color_for_display(person));
-			break;
-		case PROP_TAGS:
-			g_value_set_object(value, purple_person_get_tags(person));
-			break;
-		case PROP_NAME_FOR_DISPLAY:
-			g_value_set_string(value,
-			                   purple_person_get_name_for_display(person));
-			break;
-		case PROP_PRIORITY_CONTACT_INFO:
-			g_value_set_object(value,
-			                   purple_person_get_priority_contact_info(person));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ITEM_TYPE:
+		g_value_set_gtype(value,
+		                  purple_person_get_item_type(G_LIST_MODEL(person)));
+		break;
+	case PROP_N_ITEMS:
+		g_value_set_uint(value,
+		                 purple_person_get_n_items(G_LIST_MODEL(person)));
+		break;
+	case PROP_ID:
+		g_value_set_string(value, purple_person_get_id(person));
+		break;
+	case PROP_ALIAS:
+		g_value_set_string(value, purple_person_get_alias(person));
+		break;
+	case PROP_AVATAR:
+		g_value_set_object(value, purple_person_get_avatar(person));
+		break;
+	case PROP_AVATAR_FOR_DISPLAY:
+		g_value_set_object(value,
+		                   purple_person_get_avatar_for_display(person));
+		break;
+	case PROP_COLOR:
+		g_value_set_string(value, purple_person_get_color(person));
+		break;
+	case PROP_COLOR_FOR_DISPLAY:
+		g_value_set_string(value, purple_person_get_color_for_display(person));
+		break;
+	case PROP_TAGS:
+		g_value_set_object(value, purple_person_get_tags(person));
+		break;
+	case PROP_NAME_FOR_DISPLAY:
+		g_value_set_string(value, purple_person_get_name_for_display(person));
+		break;
+	case PROP_PRIORITY_CONTACT_INFO:
+		g_value_set_object(value,
+		                   purple_person_get_priority_contact_info(person));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -298,21 +307,21 @@ purple_person_set_property(GObject *obj, guint param_id, const GValue *value,
 	PurplePerson *person = PURPLE_PERSON(obj);
 
 	switch(param_id) {
-		case PROP_ID:
-			purple_person_set_id(person, g_value_get_string(value));
-			break;
-		case PROP_ALIAS:
-			purple_person_set_alias(person, g_value_get_string(value));
-			break;
-		case PROP_AVATAR:
-			purple_person_set_avatar(person, g_value_get_object(value));
-			break;
-		case PROP_COLOR:
-			purple_person_set_color(person, g_value_get_string(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		purple_person_set_id(person, g_value_get_string(value));
+		break;
+	case PROP_ALIAS:
+		purple_person_set_alias(person, g_value_get_string(value));
+		break;
+	case PROP_AVATAR:
+		purple_person_set_avatar(person, g_value_get_object(value));
+		break;
+	case PROP_COLOR:
+		purple_person_set_color(person, g_value_get_string(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -369,6 +378,32 @@ purple_person_class_init(PurplePersonClass *klass) {
 	obj_class->constructed = purple_person_constructed;
 	obj_class->dispose = purple_person_dispose;
 	obj_class->finalize = purple_person_finalize;
+
+	/**
+	 * PurplePerson:item-type:
+	 *
+	 * The type of items. See [iface@Gio.ListModel.get_item_type].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ITEM_TYPE] = g_param_spec_gtype(
+		"item-type", "item-type",
+		"The type of the contained items.",
+		G_TYPE_OBJECT,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurplePerson:n-items:
+	 *
+	 * The number of items. See [iface@Gio.ListModel.get_n_items].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_N_ITEMS] = g_param_spec_uint(
+		"n-items", "n-items",
+		"The number of contained items.",
+		0, G_MAXUINT, 0,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurplePerson:id:
