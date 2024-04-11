@@ -49,11 +49,6 @@ G_DECLARE_INTERFACE(PurpleDebugUi, purple_debug_ui, PURPLE, DEBUG_UI, GObject)
 
 #include "debug.h"
 
-/**
- * PurpleDebugUi:
- *
- * Debug UI operations.
- */
 struct _PurpleDebugUiInterface {
 	/*< private >*/
 	GTypeInterface parent_iface;
