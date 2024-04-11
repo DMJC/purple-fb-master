@@ -35,7 +35,6 @@ PROGS = [
     'protocol_conversation',
     'protocol_file_transfer',
     'protocol_roster',
-    'protocol_xfer',
     'purplepath',
     'request_field',
     'request_group',

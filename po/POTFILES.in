@@ -120,7 +120,6 @@ libpurple/tests/test_image.c
 libpurple/tests/test_keyvaluepair.c
 libpurple/tests/test_markup.c
 libpurple/tests/test_protocol_action.c
-libpurple/tests/test_protocol_xfer.c
 libpurple/tests/test_purplepath.c
 libpurple/tests/test_ui.c
 libpurple/tests/test_util.c

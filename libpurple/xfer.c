@@ -2517,30 +2517,17 @@ PurpleXfer *
 purple_xfer_new(PurpleAccount *account, PurpleXferType type, const char *who)
 {
 	PurpleXfer *xfer;
-	PurpleProtocol *protocol;
 
 	g_return_val_if_fail(type != PURPLE_XFER_TYPE_UNKNOWN, NULL);
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 	g_return_val_if_fail(who != NULL, NULL);
 
-	protocol = purple_account_get_protocol(account);
-	if (PURPLE_IS_PROTOCOL_XFER(protocol)) {
-		PurpleConnection *connection = purple_account_get_connection(account);
-
-		xfer = purple_protocol_xfer_new_xfer(
-			PURPLE_PROTOCOL_XFER(protocol),
-			connection,
-			/* TODO: this should support the type */
-			who
-		);
-	} else {
-		xfer = g_object_new(PURPLE_TYPE_XFER,
-			"account",     account,
-			"type",        type,
-			"remote-user", who,
-			NULL
-		);
-	}
+	xfer = g_object_new(PURPLE_TYPE_XFER,
+		"account",     account,
+		"type",        type,
+		"remote-user", who,
+		NULL
+	);
 
 	return xfer;
 }
@@ -2618,71 +2605,4 @@ purple_xfer_ui_ops_get_type(void)
 	}
 
 	return type;
-}
-
-/**************************************************************************
- * PurpleXferProtocolInterface
- **************************************************************************/
-G_DEFINE_INTERFACE(PurpleProtocolXfer, purple_protocol_xfer,
-                   PURPLE_TYPE_PROTOCOL)
-
-static void
-purple_protocol_xfer_default_init(G_GNUC_UNUSED PurpleProtocolXferInterface *face)
-{
-}
-
-gboolean
-purple_protocol_xfer_can_receive(PurpleProtocolXfer *prplxfer,
-                                 PurpleConnection *connection,
-                                 const gchar *who
-) {
-	PurpleProtocolXferInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_XFER(prplxfer), FALSE);
-	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), FALSE);
-	g_return_val_if_fail(who, FALSE);
-
-	iface = PURPLE_PROTOCOL_XFER_GET_IFACE(prplxfer);
-	if(iface &&  iface->can_receive)
-		return iface->can_receive(prplxfer, connection, who);
-
-	/* If the PurpleProtocolXfer doesn't implement this function, we assume
-	 * there are no conditions where we can't send a file to the given user.
-	 */
-	return TRUE;
-}
-
-void
-purple_protocol_xfer_send_file(PurpleProtocolXfer *prplxfer,
-                               PurpleConnection *connection,
-                               const gchar *who,
-                               const gchar *filename
-) {
-	PurpleProtocolXferInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_XFER(prplxfer));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-	g_return_if_fail(who);
-
-	iface = PURPLE_PROTOCOL_XFER_GET_IFACE(prplxfer);
-	if(iface && iface->send_file)
-		iface->send_file(prplxfer, connection, who, filename);
-}
-
-PurpleXfer *
-purple_protocol_xfer_new_xfer(PurpleProtocolXfer *prplxfer,
-                              PurpleConnection *connection,
-                              const gchar *who
-) {
-	PurpleProtocolXferInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_XFER(prplxfer), FALSE);
-	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), FALSE);
-	g_return_val_if_fail(who, FALSE);
-
-	iface = PURPLE_PROTOCOL_XFER_GET_IFACE(prplxfer);
-	if(iface && iface->new_xfer)
-		return iface->new_xfer(prplxfer, connection, who);
-
-	return NULL;
 }
