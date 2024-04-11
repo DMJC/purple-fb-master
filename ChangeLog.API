@@ -674,6 +674,8 @@ version 3.0.0 (??/??/????):
 		* purple_serv_add_deny
 		* purple_serv_add_permit
 		* purple_serv_get_info
+		* purple_serv_got_join_chat_failed
+		* purple_serv_got_private_alias
 		* purple_serv_remove_deny
 		* purple_serv_remove_permit
 		* purple_serv_set_info

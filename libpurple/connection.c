@@ -389,19 +389,6 @@ purple_connection_get_protocol_data(PurpleConnection *connection) {
 }
 
 void
-_purple_connection_add_active_chat(PurpleConnection *connection,
-                                   PurpleChatConversation *chat)
-{
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	priv = purple_connection_get_instance_private(connection);
-
-	priv->active_chats = g_slist_append(priv->active_chats, chat);
-}
-
-void
 _purple_connection_remove_active_chat(PurpleConnection *connection,
                                       PurpleChatConversation *chat)
 {
