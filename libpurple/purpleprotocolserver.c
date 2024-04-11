@@ -180,53 +180,6 @@ purple_protocol_server_remove_buddies(PurpleProtocolServer *protocol_server,
 }
 
 void
-purple_protocol_server_keepalive(PurpleProtocolServer *protocol_server,
-                                 PurpleConnection *connection)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->keepalive != NULL) {
-		iface->keepalive(protocol_server, connection);
-	}
-}
-
-gint
-purple_protocol_server_get_keepalive_interval(PurpleProtocolServer *protocol_server)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server), -1);
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->get_keepalive_interval != NULL) {
-		return iface->get_keepalive_interval(protocol_server);
-	}
-
-	return -1;
-}
-
-void
-purple_protocol_server_alias_buddy(PurpleProtocolServer *protocol_server,
-                                   PurpleConnection *connection,
-                                   const gchar *who, const gchar *alias)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-	g_return_if_fail(who != NULL);
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->alias_buddy != NULL) {
-		iface->alias_buddy(protocol_server, connection, who, alias);
-	}
-}
-
-void
 purple_protocol_server_group_buddy(PurpleProtocolServer *protocol_server,
                                    PurpleConnection *connection,
                                    const gchar *who, const gchar *old_group,

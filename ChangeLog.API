@@ -393,11 +393,13 @@ version 3.0.0 (??/??/????):
 		* PURPLE_CMD_FUNC
 		* purple_connection_error_reason
 		* PURPLE_CONNECTION_FLAG_ALLOW_CUSTOM_SMILEY
+		* purple_connection_get_protocol_data
 		* purple_connection_new
 		* purple_connection_new_unregister
 		* purple_connection_notice
 		* purple_connection_destroy
 		* purple_connection_set_account
+		* purple_connection_set_protocol_data
 		* purple_connection_ssl_error
 		* PurpleConnectionUiOps->connect_progress
 		* PurpleConnectionUiOps->notice

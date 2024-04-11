@@ -60,11 +60,7 @@ typedef struct {
 	GSList *active_chats;         /* A list of active chats
 	                                  (#PurpleChatConversation structs). */
 
-	/* TODO Remove this and use protocol-specific subclasses. */
-	void *proto_data;             /* Protocol-specific data.           */
-
 	char *display_name;           /* How you appear to other people.   */
-	GSource *keepalive;           /* Keep-alive.                       */
 
 	/* Wants to Die state.  This is set when the user chooses to log out, or
 	 * when the protocol is disconnected and should not be automatically
@@ -107,49 +103,6 @@ G_DEFINE_TYPE_WITH_PRIVATE(PurpleConnection, purple_connection, G_TYPE_OBJECT)
 /**************************************************************************
  * Connection API
  **************************************************************************/
-static gboolean
-send_keepalive(gpointer data) {
-	PurpleConnection *connection = data;
-	PurpleConnectionPrivate *priv = NULL;
-
-	priv = purple_connection_get_instance_private(data);
-
-	purple_protocol_server_keepalive(PURPLE_PROTOCOL_SERVER(priv->protocol),
-	                                 connection);
-
-	return TRUE;
-}
-
-static void
-update_keepalive(PurpleConnection *connection, gboolean on) {
-	PurpleConnectionPrivate *priv = NULL;
-	PurpleProtocolServer *server = NULL;
-
-	priv = purple_connection_get_instance_private(connection);
-
-	if(!PURPLE_PROTOCOL_IMPLEMENTS(priv->protocol, SERVER, keepalive)) {
-		return;
-	}
-
-	server = PURPLE_PROTOCOL_SERVER(priv->protocol);
-
-	if(on && !priv->keepalive) {
-		int interval = purple_protocol_server_get_keepalive_interval(server);
-		int source = 0;
-
-		purple_debug_info("connection", "Activating keepalive to %d seconds.",
-		                  interval);
-
-		source = g_timeout_add_seconds(interval, send_keepalive, connection);
-		priv->keepalive = g_main_context_find_source_by_id(NULL, source);
-	} else if (!on && priv->keepalive) {
-		purple_debug_info("connection", "Deactivating keepalive.\n");
-
-		g_source_destroy(priv->keepalive);
-
-		priv->keepalive = NULL;
-	}
-}
 
 /*
  * d:)->-<
@@ -203,8 +156,6 @@ purple_connection_set_state(PurpleConnection *connection,
 		purple_signal_emit(handle, "signed-on", connection);
 		purple_signal_emit_return_1(handle, "autojoin", connection);
 
-		update_keepalive(connection, TRUE);
-
 		/* check if connections_connected is NULL, if so we need to emit the
 		 * online signal.
 		 */
@@ -257,19 +208,6 @@ purple_connection_set_display_name(PurpleConnection *connection,
 
 	g_object_notify_by_pspec(G_OBJECT(connection),
 	                         properties[PROP_DISPLAY_NAME]);
-}
-
-void
-purple_connection_set_protocol_data(PurpleConnection *connection,
-                                    void *proto_data)
-{
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	priv = purple_connection_get_instance_private(connection);
-
-	priv->proto_data = proto_data;
 }
 
 PurpleConnectionState
@@ -375,17 +313,6 @@ purple_connection_get_display_name(PurpleConnection *connection) {
 	priv = purple_connection_get_instance_private(connection);
 
 	return priv->display_name;
-}
-
-void *
-purple_connection_get_protocol_data(PurpleConnection *connection) {
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), NULL);
-
-	priv = purple_connection_get_instance_private(connection);
-
-	return priv->proto_data;
 }
 
 void
@@ -593,34 +520,6 @@ purple_connection_error_is_fatal(PurpleConnectionError reason) {
 			return TRUE;
 		default:
 			g_return_val_if_reached(TRUE);
-	}
-}
-
-void
-purple_connection_update_last_received(PurpleConnection *connection) {
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	priv = purple_connection_get_instance_private(connection);
-
-	/*
-	 * For safety, actually this function shouldn't be called when the
-	 * keepalive mechanism is inactive.
-	 */
-	if(priv->keepalive) {
-		/* The #GTimeoutSource API doesn't expose a function to reset when a
-		 * #GTimeoutSource will dispatch the next time, but because it works to
-		 * directly call g_source_set_ready_time() on a #GTimeoutSource, and since
-		 * it seems unlikely that the implementation will change, we just do that
-		 * for now as a workaround for this API shortcoming.
-		 */
-		gint64 seconds_from_now = purple_protocol_server_get_keepalive_interval(PURPLE_PROTOCOL_SERVER(priv->protocol));
-
-		g_source_set_ready_time(
-			priv->keepalive,
-			g_get_monotonic_time() + (seconds_from_now * G_USEC_PER_SEC)
-		);
 	}
 }
 
@@ -1031,8 +930,6 @@ purple_connection_disconnect(PurpleConnection *connection, GError **error) {
 	g_slist_free_full(priv->active_chats,
 	                  (GDestroyNotify)purple_chat_conversation_leave);
 
-	update_keepalive(connection, FALSE);
-
 	/* Dispatch to the connection's disconnect method. */
 	klass = PURPLE_CONNECTION_GET_CLASS(connection);
 	if(klass != NULL && klass->disconnect != NULL) {
@@ -1087,21 +984,6 @@ purple_connection_get_cancellable(PurpleConnection *connection) {
 /**************************************************************************
  * Connections API
  **************************************************************************/
-
-void
-_purple_assert_connection_is_valid(PurpleConnection *gc, const gchar *file,
-                                   int line)
-{
-	if(gc && g_list_find(purple_connections_get_all(), gc)) {
-		return;
-	}
-
-	purple_debug_fatal("connection", "PURPLE_ASSERT_CONNECTION_IS_VALID(%p)"
-		" failed at %s:%d", gc, file, line);
-
-	/* ugh - gk 2021-10-28 */
-	exit(-1);
-}
 
 void
 purple_connections_disconnect_all(void) {

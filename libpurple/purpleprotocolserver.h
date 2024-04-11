@@ -72,9 +72,6 @@ struct _PurpleProtocolServerInterface {
 	void (*remove_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group);
 	void (*remove_buddies)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups);
 
-	void (*keepalive)(PurpleProtocolServer *protocol_server, PurpleConnection *connection);
-	gint (*get_keepalive_interval)(PurpleProtocolServer *protocol_server);
-
 	void (*alias_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *alias);
 
 	void (*group_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *old_group, const gchar *new_group);
@@ -210,47 +207,6 @@ void purple_protocol_server_remove_buddy(PurpleProtocolServer *protocol_server, 
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_remove_buddies(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups);
-
-/**
- * purple_protocol_server_keepalive:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- *
- * Tell @protocol_server to send its keep alive to the server.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_keepalive(PurpleProtocolServer *protocol_server, PurpleConnection *connection);
-
-/**
- * purple_protocol_server_get_keepalive_interval:
- * @protocol_server: The #PurpleProtocolServer instance.
- *
- * Returns a custom interval, in seconds, that libpurple should tell
- * @protocol_server to send its keepalive.
- *
- * Returns: The interval, in seconds, that the keep-alive function should be
- *          called.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-gint purple_protocol_server_get_keepalive_interval(PurpleProtocolServer *protocol_server);
-
-/**
- * purple_protocol_server_alias_buddy:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- * @who: The name of the user to alias.
- * @alias: The new alias for @who.
- *
- * Sets the server side alias for @who to @alias.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_alias_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *alias);
 
 /**
  * purple_protocol_server_group_buddy:

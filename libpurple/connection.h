@@ -176,12 +176,6 @@ struct _PurpleConnectionUiOps
 	void (*_purple_reserved4)(void);
 };
 
-/******************************************************************************
- * To be deleted in the future
- *****************************************************************************/
-PURPLE_AVAILABLE_IN_3_0
-void _purple_assert_connection_is_valid(PurpleConnection *gc, const gchar *file, int line);
-
 /**************************************************************************/
 /* Connection API                                                         */
 /**************************************************************************/
@@ -263,18 +257,6 @@ void purple_connection_set_flags(PurpleConnection *gc, PurpleConnectionFlags fla
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_connection_set_display_name(PurpleConnection *gc, const char *name);
-
-/**
- * purple_connection_set_protocol_data:
- * @connection: The PurpleConnection.
- * @proto_data: The protocol data to set for the connection.
- *
- * Sets the protocol data for a connection.
- *
- * Since: 2.6
- */
-PURPLE_AVAILABLE_IN_2_6
-void purple_connection_set_protocol_data(PurpleConnection *connection, void *proto_data);
 
 /**
  * purple_connection_get_state:
@@ -425,19 +407,6 @@ PURPLE_AVAILABLE_IN_ALL
 const char *purple_connection_get_display_name(PurpleConnection *gc);
 
 /**
- * purple_connection_get_protocol_data:
- * @gc: The PurpleConnection.
- *
- * Gets the protocol data from a connection.
- *
- * Returns: The protocol data for the connection.
- *
- * Since: 2.6
- */
-PURPLE_AVAILABLE_IN_2_6
-void *purple_connection_get_protocol_data(PurpleConnection *gc);
-
-/**
  * purple_connection_error:
  * @gc:          the connection which is closing.
  * @reason:      why the connection is closing.
@@ -527,18 +496,6 @@ void purple_connection_take_error(PurpleConnection *pc, GError *error);
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_connection_error_is_fatal(PurpleConnectionError reason);
-
-/**
- * purple_connection_update_last_received:
- * @gc:   The connection.
- *
- * Indicate that a packet was received on the connection.
- * Set by the protocol to avoid sending unneeded keepalives.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_connection_update_last_received(PurpleConnection *gc);
 
 /**************************************************************************/
 /* Connections API                                                        */
