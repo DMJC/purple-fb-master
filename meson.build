@@ -5,11 +5,11 @@
 #
 # micro += 1
 #
-# If any functions have been added to libpurple, Pidgin, or Finch:
+# If any functions have been added to libpurple or Pidgin:
 #   micro = 0
 #   minor += 1
 #
-# If backwards compatibility has been broken in libpurple, Pidgin, or Finch:
+# If backwards compatibility has been broken in libpurple or Pidgin:
 #   micro = 0
 #   minor = 0
 #   major += 1
@@ -124,8 +124,6 @@ if IS_WIN32
 		 f'wpurple_lib_dir("purple-@purple_major_version@")')
 	conf.set('PIDGIN_LIBDIR',
 		 f'wpurple_lib_dir("pidgin-@purple_major_version@")')
-	conf.set('FINCH_LIBDIR',
-		 f'wpurple_lib_dir("finch-@purple_major_version@")')
 
 	conf.set('PURPLE_DATADIR', 'wpurple_data_dir()')
 	conf.set('PURPLE_SYSCONFDIR', 'wpurple_sysconf_dir()')
@@ -141,8 +139,6 @@ else
 	                common_libdir / f'purple-@purple_major_version@')
 	conf.set_quoted('PIDGIN_LIBDIR',
 	                common_libdir / f'pidgin-@purple_major_version@')
-	conf.set_quoted('FINCH_LIBDIR',
-	                common_libdir / f'finch-@purple_major_version@')
 endif
 
 abslibdir = get_option('prefix') / get_option('libdir')
@@ -150,8 +146,6 @@ PURPLE_PLUGINDIR = abslibdir / f'purple-@purple_major_version@'
 conf.set_quoted('PURPLE_PLUGINDIR', PURPLE_PLUGINDIR)
 PIDGIN_PLUGINDIR = abslibdir / f'pidgin-@purple_major_version@'
 conf.set_quoted('PIDGIN_PLUGINDIR', PIDGIN_PLUGINDIR)
-FINCH_PLUGINDIR = abslibdir / f'finch-@purple_major_version@'
-conf.set_quoted('FINCH_PLUGINDIR', FINCH_PLUGINDIR)
 
 # Windows and Haiku do not use libm for the math functions, they are part
 # of the C library
@@ -203,16 +197,6 @@ endif	# GTK
 
 ENABLE_GTK = get_option('gtkui')
 
-
-#######################################################################
-# Check if we should compile with X support
-#######################################################################
-if IS_WIN32
-	x11 = disabler()
-else
-	x11 = dependency('x11', required : get_option('x'))
-endif
-conf.set('HAVE_X11', x11.found())
 
 #######################################################################
 # Check for LibXML2 (required)
@@ -290,7 +274,6 @@ DYNAMIC_XMPP = DYNAMIC_PRPLS.contains('xmpp')
 add_project_arguments(
     '-DPURPLE_DISABLE_DEPRECATED',
     '-DPIDGIN_DISABLE_DEPRECATED',
-    '-DFINCH_DISABLE_DEPRECATED',
     '-DGNT_DISABLE_DEPRECATED',
     language : 'c')
 if get_option('buildtype') != 'plain' and compiler.get_id() == 'gcc'
@@ -434,7 +417,6 @@ check_license_header = find_program('./scripts/check_license_header.py', require
 
 subdir('libpurple')
 subdir('purple-history')
-subdir('finch')
 subdir('pidgin')
 subdir('protocols')
 subdir('doc')
@@ -466,8 +448,6 @@ summary({
 # is merged and in a release that we require.
 summary({
     'GTK': get_option('gtkui'),
-    'console': enable_consoleui,
-    'X11 support': x11.found(),
 }, section: 'User Interfaces', bool_yn: true)
 
 summary({

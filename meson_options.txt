@@ -49,10 +49,3 @@ option('gtkui', type : 'boolean', value : true,
 option('unity-integration', type : 'feature', value : 'disabled',
        description : 'compile with support for unity integration plugin')
 
-##############################################################################
-# Finch Options
-
-option('consoleui', type : 'boolean', value : false,
-       description : 'compile with console user interface')
-
-option('x', type : 'boolean', value : false)

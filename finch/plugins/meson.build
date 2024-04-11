@@ -1,5 +1,0 @@
-subdir('gntclipboard')
-subdir('gntgf')
-subdir('gnttinyurl')
-subdir('grouping')
-subdir('lastlog')

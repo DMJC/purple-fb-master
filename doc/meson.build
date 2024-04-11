@@ -9,11 +9,3 @@ if ENABLE_GTK
 	    install_dir : get_option('mandir') / 'man1')
 endif
 
-if enable_consoleui
-	configure_file(
-	    input : 'finch3.1.in',
-	    output : 'finch3.1',
-	    configuration : man_conf,
-	    install : true,
-	    install_dir : get_option('mandir') / 'man1')
-endif

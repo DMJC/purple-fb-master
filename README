@@ -1,6 +1,6 @@
 [![pidgin wordmark](img/wordmark.png)](https://pidgin.im/)
 
-# Purple, Pidgin and Finch
+# Purple and Pidgin
 
 libpurple is a library intended to be used by programmers seeking to write an
 IM client that connects to many IM networks. It comes with support for Bonjour,
@@ -8,9 +8,6 @@ IRC, and XMPP, among others and there are many more networks supported via
 [third party plugins](https://pidgin.im/plugins/).
 
 Pidgin is a graphical IM client written in C, which uses the GTK toolkit.
-
-Finch is a text-based IM client written in C, which uses
-[libgnt](https://keep.imfreedom.org/libgnt/libgnt).
 
 These programs are not endorsed by, nor affiliated with, any proprietary
 instant messaging company in any way.
@@ -61,13 +58,6 @@ cd build
 meson devenv pidgin3
 ```
 
-If you're working against Finch 3 you can use:
-
-```
-cd build
-meson devenv finch3
-```
-
 Obviously you're still free to install into your system directly, but then
 you'll most likely end up having orphaned files laying around that our build
 system doesn't know how to remove once they're removed from our code base. This
@@ -80,9 +70,8 @@ If you come across a bug, please report it at:
 
 ## Plugins
 
-libpurple, Pidgin, and Finch ship with a number of plugins, but you can find
-additional third party plugins at
-[pidgin.im/plugins](https://pidgin.im/plugins).
+libpurple and Pidgin ship with a number of plugins, but you can find additional
+third party plugins at [pidgin.im/plugins](https://pidgin.im/plugins).
 
 ## Developing
 
