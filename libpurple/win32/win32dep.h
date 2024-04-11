@@ -60,9 +60,6 @@ const char *wpurple_sysconf_dir(void);
  * The following API is private.
  */
 
-/* Simulate unix pipes by creating a pair of connected sockets */
-int wpurple_input_pipe(int pipefd[2]);
-
 /* init / cleanup */
 void wpurple_init(void);
 void wpurple_cleanup(void);

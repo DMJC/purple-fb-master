@@ -90,13 +90,3 @@ purple_input_add(int source, PurpleInputCondition condition, PurpleInputFunction
 	g_io_channel_unref(channel);
 	return closure->result;
 }
-
-int
-purple_input_pipe(int pipefd[2])
-{
-#ifdef _WIN32
-	return wpurple_input_pipe(pipefd);
-#else
-	return pipe(pipefd);
-#endif
-}

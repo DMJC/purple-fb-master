@@ -87,28 +87,6 @@ G_BEGIN_DECLS
 PURPLE_AVAILABLE_IN_ALL
 guint purple_input_add(int fd, PurpleInputCondition cond, PurpleInputFunction func, gpointer user_data);
 
-/**
- * purple_input_pipe:
- * @pipefd: Array used to return file descriptors for both ends of pipe.
- *
- * Creates a pipe - an unidirectional data channel that can be used for
- * interprocess communication.
- *
- * File descriptors for both ends of pipe will be written into provided array.
- * The first one (pipefd[0]) can be used for reading, the second one (pipefd[1])
- * for writing.
- *
- * On Windows it's simulated by creating a pair of connected sockets, on other
- * systems pipe() is used.
- *
- * Returns: 0 on success, -1 on error.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-int
-purple_input_pipe(int pipefd[2]);
-
 G_END_DECLS
 
 #endif /* PURPLE_EVENTLOOP_H */
