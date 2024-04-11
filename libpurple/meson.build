@@ -240,7 +240,6 @@ purple_coreheaders = [
 	'server.h',
 	'signals.h',
 	'status.h',
-	'tests.h',
 	'util.h',
 	'xfer.h',
 	'xmlnode.h',
