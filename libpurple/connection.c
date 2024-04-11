@@ -683,41 +683,6 @@ purple_connection_set_account(PurpleConnection *connection,
 }
 
 /**************************************************************************
- * PurpleConnection Implementation
- **************************************************************************/
-static gboolean
-purple_connection_default_connect(PurpleConnection *connection,
-                                  G_GNUC_UNUSED GError **error)
-{
-	PurpleConnectionPrivate *priv = NULL;
-
-	priv = purple_connection_get_instance_private(connection);
-
-	purple_protocol_login(priv->protocol, priv->account);
-
-	return TRUE;
-}
-
-static gboolean
-purple_connection_default_disconnect(PurpleConnection *connection,
-                                     G_GNUC_UNUSED GError **error)
-{
-	PurpleConnectionPrivate *priv = NULL;
-
-	priv = purple_connection_get_instance_private(connection);
-
-	/* Tell everyone we're shutting down. */
-	if(G_IS_CANCELLABLE(priv->cancellable)) {
-		g_cancellable_cancel(priv->cancellable);
-		g_clear_object(&priv->cancellable);
-	}
-
-	purple_protocol_close(priv->protocol, connection);
-
-	return TRUE;
-}
-
-/**************************************************************************
  * GObject Implementation
  **************************************************************************/
 static void
@@ -876,9 +841,6 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 	obj_class->dispose = purple_connection_dispose;
 	obj_class->finalize = purple_connection_finalize;
 	obj_class->constructed = purple_connection_constructed;
-
-	klass->connect = purple_connection_default_connect;
-	klass->disconnect = purple_connection_default_disconnect;
 
 	/**
 	 * PurpleConnection:id:

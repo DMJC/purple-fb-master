@@ -195,9 +195,6 @@ void _purple_assert_connection_is_valid(PurpleConnection *gc, const gchar *file,
  * [vfunc@Purple.Connection.connect] function. State is managed by this
  * function.
  *
- * The default [vfunc@Purple.Connection.connect] is to call
- * [vfunc@Purple.Protocol.login].
- *
  * Due to the asynchronous nature of network connections, the return value and
  * @error are to be used to do some initial validation before a connection is
  * actually attempted.
@@ -218,9 +215,6 @@ gboolean purple_connection_connect(PurpleConnection *connection, GError **error)
  * Tells the connection to disconnect. This is done by calling the
  * [vfunc@Purple.Connection.disconnect] function. State is managed by this
  * function.
- *
- * The default [vfunc@Purple.Connection.disconnect] is to call
- * [vfunc@Purple.Protocol.close].
  *
  * Returns: %TRUE if the account was disconnected gracefully, otherwise %FALSE
  *          with @error possibly set.

@@ -520,32 +520,6 @@ purple_protocol_get_whiteboard_ops(PurpleProtocol *protocol) {
 }
 
 void
-purple_protocol_login(PurpleProtocol *protocol, PurpleAccount *account) {
-	PurpleProtocolClass *klass = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL(protocol));
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
-	if(klass != NULL && klass->login != NULL) {
-		klass->login(protocol, account);
-	}
-}
-
-void
-purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *gc) {
-	PurpleProtocolClass *klass = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL(protocol));
-	g_return_if_fail(PURPLE_IS_CONNECTION(gc));
-
-	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
-	if(klass != NULL && klass->close != NULL) {
-		klass->close(protocol, gc);
-	}
-}
-
-void
 purple_protocol_can_connect_async(PurpleProtocol *protocol,
                                   PurpleAccount *account,
                                   GCancellable *cancellable,

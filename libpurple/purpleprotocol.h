@@ -142,10 +142,6 @@ struct _PurpleProtocolClass {
 	PurpleBuddyIconSpec *(*get_buddy_icon_spec)(PurpleProtocol *protocol);
 	PurpleWhiteboardOps *(*get_whiteboard_ops)(PurpleProtocol *protocol);
 
-	void (*login)(PurpleProtocol *protocol, PurpleAccount *account);
-
-	void (*close)(PurpleProtocol *protocol, PurpleConnection *connection);
-
 	void (*can_connect_async)(PurpleProtocol *protocol, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*can_connect_finish)(PurpleProtocol *protocol, GAsyncResult *result, GError **error);
 
@@ -282,30 +278,6 @@ PurpleBuddyIconSpec *purple_protocol_get_icon_spec(PurpleProtocol *protocol);
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleWhiteboardOps *purple_protocol_get_whiteboard_ops(PurpleProtocol *protocol);
-
-/**
- * purple_protocol_login:
- * @protocol: The instance.
- * @account: The [class@Purple.Account] to login.
- *
- * Logs @account in to @protocol.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_login(PurpleProtocol *protocol, PurpleAccount *account);
-
-/**
- * purple_protocol_close:
- * @protocol: The #PurpleProtocol instance.
- * @connection: The #PurpleConnection to close.
- *
- * Closes @connection using @protocol.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_close(PurpleProtocol *protocol, PurpleConnection *connection);
 
 /**
  * purple_protocol_can_connect_async:
