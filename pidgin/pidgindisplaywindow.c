@@ -163,25 +163,6 @@ pidgin_display_window_get_info(G_GNUC_UNUSED GSimpleAction *simple,
 	}
 }
 
-static void
-pidgin_display_window_send_file(G_GNUC_UNUSED GSimpleAction *simple,
-                                G_GNUC_UNUSED GVariant *parameter,
-                                gpointer data)
-{
-	PidginDisplayWindow *window = data;
-	PurpleConversation *selected = NULL;
-
-	selected = pidgin_display_window_get_selected(window);
-	if(PURPLE_IS_IM_CONVERSATION(selected)) {
-		PurpleConnection *connection = NULL;
-
-		connection = purple_conversation_get_connection(selected);
-		purple_serv_send_file(connection,
-		                      purple_conversation_get_name(selected),
-		                      NULL);
-	}
-}
-
 static GActionEntry win_entries[] = {
 	{
 		.name = "close",
@@ -189,9 +170,6 @@ static GActionEntry win_entries[] = {
 	}, {
 		.name = "get-info",
 		.activate = pidgin_display_window_get_info
-	}, {
-		.name = "send-file",
-		.activate = pidgin_display_window_send_file
 	}
 };
 
