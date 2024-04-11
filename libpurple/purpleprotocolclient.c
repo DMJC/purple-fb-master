@@ -38,40 +38,6 @@ purple_protocol_client_default_init(G_GNUC_UNUSED PurpleProtocolClientInterface 
 /******************************************************************************
  * Public API
  *****************************************************************************/
-const gchar *
-purple_protocol_client_list_emblem(PurpleProtocolClient *client,
-                                   PurpleBuddy *buddy)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client), NULL);
-	g_return_val_if_fail(PURPLE_IS_BUDDY(buddy), NULL);
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->list_emblem != NULL) {
-		return iface->list_emblem(client, buddy);
-	}
-
-	return NULL;
-}
-
-GList *
-purple_protocol_client_blist_node_menu(PurpleProtocolClient *client,
-                                       PurpleBlistNode *node)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client), NULL);
-	g_return_val_if_fail(PURPLE_IS_BLIST_NODE(node), NULL);
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->blist_node_menu != NULL) {
-		return iface->blist_node_menu(client, node);
-	}
-
-	return NULL;
-}
-
 void
 purple_protocol_client_buddy_free(PurpleProtocolClient *client,
                                   PurpleBuddy *buddy)
@@ -155,37 +121,4 @@ purple_protocol_client_offline_message(PurpleProtocolClient *client,
 	}
 
 	return FALSE;
-}
-
-GHashTable *
-purple_protocol_client_get_account_text_table(PurpleProtocolClient *client,
-                                              PurpleAccount *account)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client), NULL);
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->get_account_text_table != NULL) {
-		return iface->get_account_text_table(client, account);
-	}
-
-	return NULL;
-}
-
-gssize
-purple_protocol_client_get_max_message_size(PurpleProtocolClient *client,
-                                            PurpleConversation *conv)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client), 0);
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), 0);
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->get_max_message_size != NULL) {
-		return iface->get_max_message_size(client, conv);
-	}
-
-	return 0;
 }

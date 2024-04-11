@@ -56,10 +56,6 @@ struct _PurpleProtocolClientInterface {
 	GTypeInterface parent;
 
 	/*< public >*/
-	const gchar *(*list_emblem)(PurpleProtocolClient *client, PurpleBuddy *buddy);
-
-	GList *(*blist_node_menu)(PurpleProtocolClient *client, PurpleBlistNode *node);
-
 	void (*buddy_free)(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 	void (*convo_closed)(PurpleProtocolClient *client, PurpleConnection *connection, const gchar *who);
@@ -70,45 +66,11 @@ struct _PurpleProtocolClientInterface {
 
 	gboolean (*offline_message)(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
-	GHashTable *(*get_account_text_table)(PurpleProtocolClient *client, PurpleAccount *account);
-
-	gssize (*get_max_message_size)(PurpleProtocolClient *client, PurpleConversation *conv);
-
 	/*< private >*/
 	gpointer reserved[4];
 };
 
 G_BEGIN_DECLS
-
-/**
- * purple_protocol_client_list_emblem:
- * @client: The #PurpleProtocolClient instance.
- * @buddy: The #PurpleBuddy instance.
- *
- * Gets the icon name of the emblem that should be used for @buddy.
- *
- * Returns: The icon name of the emblem or %NULL.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_protocol_client_list_emblem(PurpleProtocolClient *client, PurpleBuddy *buddy);
-
-/**
- * purple_protocol_client_blist_node_menu:
- * @client: The #PurpleProtocolClient instance.
- * @node: The #PurpleBlistNode instance.
- *
- * Gets a list of #PurpleActionMenu structs, which represent extra actions to
- * be shown in (for example) the right-click menu for @node.
- *
- * Returns: (transfer full) (element-type PurpleActionMenu): The list of
- *          #PurpleActionMenu structs to display for @node.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-GList *purple_protocol_client_blist_node_menu(PurpleProtocolClient *client, PurpleBlistNode *node);
 
 /**
  * purple_protocol_client_buddy_free:
@@ -184,41 +146,6 @@ PurpleChat *purple_protocol_client_find_blist_chat(PurpleProtocolClient *client,
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_client_offline_message(PurpleProtocolClient *client, PurpleBuddy *buddy);
-
-/**
- * purple_protocol_client_get_account_text_table:
- * @client: The #PurpleProtocolClient instance.
- * @account: (nullable): A #PurpleAccount instance.
- *
- * Gets the account text table which allows protocols to specify additional
- * strings to be used for various purposes. The idea is to stuff a bunch of
- * strings in this hash table instead of expanding the struct for every
- * addition.
- *
- * Returns: (transfer full): The newly allocated text table.
- *
- * Since: 3.0
- *
- * Deprecated: 3.0: This is a premature optimization. Right now this is only
- *             used by GaduGadu for a single item and should be replaced.
- */
-PURPLE_DEPRECATED
-GHashTable *purple_protocol_client_get_account_text_table(PurpleProtocolClient *client, PurpleAccount *account);
-
-/**
- * purple_protocol_client_get_max_message_size:
- * @client: The #PurpleProtocolClient instance.
- * @conv: A #PurpleConversation instance.
- *
- * Gets the maximum number of characters per message for @conv.
- *
- * Returns: The maximum number of characters per message for @conv or -1 for no
- *          limit.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-gssize purple_protocol_client_get_max_message_size(PurpleProtocolClient *client, PurpleConversation *conv);
 
 G_END_DECLS
 
