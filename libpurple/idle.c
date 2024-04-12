@@ -25,7 +25,6 @@
 #include "connection.h"
 #include "conversations.h"
 #include "debug.h"
-#include "eventloop.h"
 #include "prefs.h"
 #include "purpleaccountmanager.h"
 #include "savedstatuses.h"
