@@ -866,26 +866,8 @@ pidgin_application_startup(GApplication *application) {
 	manager = purple_account_manager_get_default();
 
 	if(opt_nologin) {
-		/* Set all accounts to "offline" */
-		PurpleSavedStatus *saved_status;
-
-		/* If we've used this type+message before, lookup the transient status */
-		saved_status = purple_savedstatus_find_transient_by_type_and_message(
-							PURPLE_STATUS_OFFLINE, NULL);
-
-		/* If this type+message is unique then create a new transient saved status */
-		if(saved_status == NULL) {
-			saved_status = purple_savedstatus_new(NULL, PURPLE_STATUS_OFFLINE);
-		}
-
-		/* Set the status for each account */
-		purple_savedstatus_activate(saved_status);
+		purple_account_manager_set_online(manager, FALSE);
 	} else {
-		/* Everything is good to go--sign on already */
-		if (!purple_prefs_get_bool("/purple/savedstatus/startup_current_status")) {
-			purple_savedstatus_activate(purple_savedstatus_get_startup());
-		}
-
 		purple_account_manager_set_online(manager, TRUE);
 	}
 
