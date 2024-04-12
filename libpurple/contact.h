@@ -93,19 +93,6 @@ PURPLE_AVAILABLE_IN_3_0
 PurpleMetaContact *purple_meta_contact_new(void);
 
 /**
- * purple_meta_contact_get_group:
- * @contact:  The contact
- *
- * Gets the PurpleGroup from a PurpleMetaContact
- *
- * Returns: (transfer none): The group.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleGroup *purple_meta_contact_get_group(const PurpleMetaContact *contact);
-
-/**
  * purple_meta_contact_get_priority_buddy:
  * @contact:  The contact
  *
@@ -168,21 +155,6 @@ gboolean purple_meta_contact_on_account(PurpleMetaContact *contact, PurpleAccoun
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_meta_contact_invalidate_priority_buddy(PurpleMetaContact *contact);
-
-/**
- * purple_meta_contact_merge:
- * @source:  The contact to merge
- * @node:    The place to merge to (a buddy or contact)
- *
- * Merges two contacts
- *
- * All of the buddies from source will be moved to target
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_meta_contact_merge(PurpleMetaContact *source, PurpleBlistNode *node);
-
 
 G_END_DECLS
 

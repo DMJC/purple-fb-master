@@ -100,14 +100,6 @@ purple_meta_contact_compute_priority_buddy(PurpleMetaContact *contact) {
 			properties[PROP_PRIORITY_BUDDY]);
 }
 
-PurpleGroup *
-purple_meta_contact_get_group(const PurpleMetaContact *contact)
-{
-	g_return_val_if_fail(PURPLE_IS_META_CONTACT(contact), NULL);
-
-	return PURPLE_GROUP(PURPLE_BLIST_NODE(contact)->parent);
-}
-
 void
 purple_meta_contact_set_alias(PurpleMetaContact *contact, const char *alias)
 {
@@ -218,40 +210,6 @@ PurpleBuddy *purple_meta_contact_get_priority_buddy(PurpleMetaContact *contact)
 		purple_meta_contact_compute_priority_buddy(contact);
 
 	return priv->priority_buddy;
-}
-
-void purple_meta_contact_merge(PurpleMetaContact *source, PurpleBlistNode *node)
-{
-	PurpleBlistNode *sourcenode = (PurpleBlistNode*)source;
-	PurpleBlistNode *prev, *cur, *next;
-	PurpleMetaContact *target;
-
-	g_return_if_fail(PURPLE_IS_META_CONTACT(source));
-	g_return_if_fail(PURPLE_IS_BLIST_NODE(node));
-
-	if (PURPLE_IS_META_CONTACT(node)) {
-		target = (PurpleMetaContact *)node;
-		prev = _purple_blist_get_last_child(node);
-	} else if (PURPLE_IS_BUDDY(node)) {
-		target = (PurpleMetaContact *)node->parent;
-		prev = node;
-	} else {
-		return;
-	}
-
-	if (source == target || !target)
-		return;
-
-	next = sourcenode->child;
-
-	while (next) {
-		cur = next;
-		next = cur->next;
-		if (PURPLE_IS_BUDDY(cur)) {
-			purple_blist_add_buddy((PurpleBuddy *)cur, target, NULL, prev);
-			prev = cur;
-		}
-	}
 }
 
 /**************************************************************************
