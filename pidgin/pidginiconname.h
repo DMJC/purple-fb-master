@@ -36,49 +36,6 @@
 G_BEGIN_DECLS
 
 /**
- * pidgin_icon_name_from_status_primitive:
- * @primitive: The #PurpleStatusPrimitive.
- * @fallback: The icon name to return if an icon name can not be found.
- *
- * Gets the icon name to use for @primitive if found, otherwise returns
- * @fallback.
- *
- * Returns: The icon name to use for @primitive.
- *
- * Since: 3.0
- */
-PIDGIN_AVAILABLE_IN_3_0
-const gchar *pidgin_icon_name_from_status_primitive(PurpleStatusPrimitive primitive, const gchar *fallback);
-
-/**
- * pidgin_icon_name_from_status_type:
- * @type: The #PurpleStatusType.
- * @fallback: The icon name to return if an icon name can not be found.
- *
- * Gets the icon name to use for @type if found, otherwise returns @fallback.
- *
- * Returns: The icon name to use for @type.
- *
- * Since: 3.0
- */
-PIDGIN_AVAILABLE_IN_3_0
-const gchar *pidgin_icon_name_from_status_type(PurpleStatusType *type, const gchar *fallback);
-
-/**
- * pidgin_icon_name_from_status:
- * @status: The #PurpleStatus instance.
- * @fallback: The icon name to return if an icon name can not be found.
- *
- * Gets the icon name to use for @status if found, otherwise returns @fallback.
- *
- * Returns: The icon name to use for @status.
- *
- * Since: 3.0
- */
-PIDGIN_AVAILABLE_IN_3_0
-const gchar *pidgin_icon_name_from_status(PurpleStatus *status, const gchar *fallback);
-
-/**
  * pidgin_icon_name_from_presence_primitive:
  * @primitive: The [enum@Purple.PresencePrimitive].
  * @fallback: The icon name to fall back to.

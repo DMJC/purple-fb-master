@@ -1331,22 +1331,14 @@ pidgin_account_editor_save(PidginAccountEditor *editor) {
 	pidgin_account_editor_save_advanced_options(editor);
 	pidgin_account_editor_save_proxy(editor, new_account);
 
-	/* If this is a new account, add it to the account manager and bring it
-	 * online.
+	/* If this is a new account, enable it, and add it to the account manager.
 	 */
 	if(new_account) {
 		PurpleAccountManager *manager = NULL;
-		const PurpleSavedStatus *saved_status;
+
+		purple_account_set_enabled(editor->account, TRUE);
 
 		manager = purple_account_manager_get_default();
-
 		purple_account_manager_add(manager, editor->account);
-
-		saved_status = purple_savedstatus_get_current();
-		if(saved_status != NULL) {
-			purple_savedstatus_activate_for_account(saved_status,
-			                                        editor->account);
-			purple_account_set_enabled(editor->account, TRUE);
-		}
 	}
 }

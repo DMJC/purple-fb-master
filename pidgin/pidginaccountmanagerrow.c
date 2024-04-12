@@ -160,16 +160,6 @@ pidgin_account_manager_row_enable_state_set_cb(G_GNUC_UNUSED GtkSwitch *sw,
 	PidginAccountManagerRow *row = data;
 	PurpleAccount *account = row->account;
 
-	if(purple_account_get_enabled(account) == state) {
-		return;
-	}
-
-	/* The account was just enabled, so set its status. */
-	if(state) {
-		PurpleSavedStatus *status = purple_savedstatus_get_current();
-		purple_savedstatus_activate_for_account(status, account);
-	}
-
 	purple_account_set_enabled(account, state);
 }
 
