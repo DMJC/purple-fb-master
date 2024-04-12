@@ -59,6 +59,29 @@ static PurpleAccountManager *default_manager = NULL;
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
+
+/* We monitor the enabled property for all accounts in the manager, to
+ * automatically connect or disconnect them.
+ */
+static void
+purple_account_manager_account_enabled_cb(GObject *source,
+                                          G_GNUC_UNUSED GParamSpec *pspec,
+                                          gpointer data)
+{
+	PurpleAccount *account = PURPLE_ACCOUNT(source);
+	gboolean online = FALSE;
+
+	online = purple_account_manager_get_online(data);
+
+	if(purple_account_get_enabled(account) && online) {
+		purple_account_connect(account);
+	} else {
+		if(purple_account_is_connected(account)) {
+			purple_account_disconnect(account);
+		}
+	}
+}
+
 /* This is the callback for the notify signal on accounts. It re-emits the
  * signal as coming from the manager and passes the account as a parameter to
  * the callback. It supports details as well so you can use
@@ -457,6 +480,10 @@ purple_account_manager_add(PurpleAccountManager *manager,
 	 */
 	g_ptr_array_insert(manager->accounts, 0, g_object_ref(account));
 
+	g_signal_connect_object(account, "notify::enabled",
+	                        G_CALLBACK(purple_account_manager_account_enabled_cb),
+	                        manager, 0);
+
 	/* Connect to the signals of the account that we want to propagate. */
 	g_signal_connect_object(account, "notify",
 	                        G_CALLBACK(purple_account_manager_account_notify_cb),
@@ -476,7 +503,7 @@ purple_account_manager_add(PurpleAccountManager *manager,
 	g_signal_emit(manager, signals[SIG_ADDED], 0, account);
 	g_list_model_items_changed(G_LIST_MODEL(manager), 0, 0, 1);
 
-	if(manager->online) {
+	if(manager->online && purple_account_get_enabled(account)) {
 		purple_account_connect(account);
 	}
 }
@@ -496,6 +523,9 @@ purple_account_manager_remove(PurpleAccountManager *manager,
 	}
 
 	/* Disconnect all the signals we added for the account. */
+	g_signal_handlers_disconnect_by_func(account,
+	                                     purple_account_manager_account_enabled_cb,
+	                                     manager);
 	g_signal_handlers_disconnect_by_func(account,
 	                                     purple_account_manager_account_notify_cb,
 	                                     manager);
