@@ -31,7 +31,6 @@
 #include "conversations.h"
 #include "core.h"
 #include "debug.h"
-#include "idle.h"
 #include "network.h"
 #include "notify.h"
 #include "plugins.h"
@@ -176,7 +175,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 
 	purple_network_init();
 	purple_proxy_init();
-	purple_idle_init();
 	purple_idle_manager_startup();
 
 	/*
@@ -234,7 +232,6 @@ purple_core_quit(void)
 	purple_history_manager_set_active(history_manager, NULL, NULL);
 
 	/* Save .xml files, remove signals, etc. */
-	purple_idle_uninit();
 	purple_idle_manager_shutdown();
 	purple_whiteboard_manager_shutdown();
 	purple_conversation_manager_shutdown();

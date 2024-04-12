@@ -14,7 +14,6 @@ libpurple/core.c
 libpurple/countingnode.c
 libpurple/debug.c
 libpurple/group.c
-libpurple/idle.c
 libpurple/image.c
 libpurple/media/backend-iface.c
 libpurple/media.c
@@ -57,7 +56,6 @@ libpurple/purplegdkpixbuf.c
 libpurple/purplegio.c
 libpurple/purplehistoryadapter.c
 libpurple/purplehistorymanager.c
-libpurple/purpleidleui.c
 libpurple/purpleimconversation.c
 libpurple/purplekeyvaluepair.c
 libpurple/purplemarkup.c
