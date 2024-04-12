@@ -81,8 +81,6 @@ version 3.0.0 (??/??/????):
 		* purple_circ_buffer_* functions are now purple_circular_buffer_*
 		* purple_connection_error now takes a PurpleConnectionError
 		  as the second parameter
-		* PurpleConnection is now a GObject. Please see the documentation for
-		  details.
 		* PURPLE_CONNECTION_* prefix of PurpleConnectionFlag enum names changed
 		  to PURPLE_CONNECTION_FLAG_*
 		* PURPLE_* prefix of PurpleConnectionState enum names changed to
@@ -386,10 +384,11 @@ version 3.0.0 (??/??/????):
 		* purple_connection_set_account
 		* purple_connection_set_protocol_data
 		* purple_connection_ssl_error
-		* PurpleConnectionUiOps->connect_progress
-		* PurpleConnectionUiOps->notice
+		* PurpleConnectionUiOps
 		* purple_connection_update_progress
 		* purple_connections_get_connecting
+		* purple_connections_get_ui_ops
+		* purple_connections_set_ui_ops
 		* purple_contact_set_alias
 		* purple_conv_chat_set_users
 		* purple_conv_custom_smiley_add

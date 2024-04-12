@@ -40,9 +40,6 @@ PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleConnection, purple_connection, PURPLE,
                          CONNECTION, GObject)
 
-#define PURPLE_TYPE_CONNECTION_UI_OPS  (purple_connection_ui_ops_get_type())
-typedef struct _PurpleConnectionUiOps PurpleConnectionUiOps;
-
 /* This is meant to track use-after-free errors.
  * TODO: it should be disabled in released code. */
 #define PURPLE_ASSERT_CONNECTION_IS_VALID(gc) \
@@ -126,54 +123,6 @@ struct _PurpleConnectionClass {
 
 	/*< private >*/
 	gpointer reserved[8];
-};
-
-/**
- * PurpleConnectionUiOps:
- * @connected: Called when a connection is established (just before the
- *   <link linkend="connections-signed-on"><literal>"signed-on"</literal></link>
- *             signal).
- * @disconnected: Called when a connection is ended (between the
- *   <link linkend="connections-signing-off"><literal>"signing-off"</literal></link>
- *   and <link linkend="connections-signed-off"><literal>"signed-off"</literal></link>
- *                signals).
- * @network_connected: Called when libpurple discovers that the computer's
- *                     network connection is active.  On Linux, this uses
- *                     Network Manager if available; on Windows, it uses
- *                     Win32's network change notification infrastructure.
- * @network_disconnected: Called when libpurple discovers that the computer's
- *                        network connection has gone away.
- * @report_disconnect: Called when an error causes a connection to be
- *                     disconnected. Called before @disconnected.
- *                     <sbr/>See purple_connection_error().
- *                     <sbr/>@reason: why the connection ended, if known, or
- *                                 #PURPLE_CONNECTION_ERROR_OTHER_ERROR, if not.
- *                     <sbr/>@text:   a localized message describing the
- *                                 disconnection in more detail to the user.
- *
- * Connection UI operations.  Used to notify the user of changes to
- * connections, such as being disconnected, and to respond to the
- * underlying network connection appearing and disappearing.  UIs should
- * call #purple_connections_set_ui_ops() with an instance of this struct.
- *
- * See <link linkend="chapter-ui-ops">List of <literal>UiOps</literal> Structures</link>
- *
- * Since: 2.0
- */
-struct _PurpleConnectionUiOps
-{
-	void (*connected)(PurpleConnection *gc);
-	void (*disconnected)(PurpleConnection *gc);
-
-	void (*report_disconnect)(PurpleConnection *gc,
-	                          PurpleConnectionError reason,
-	                          const char *text);
-
-	/*< private >*/
-	void (*_purple_reserved1)(void);
-	void (*_purple_reserved2)(void);
-	void (*_purple_reserved3)(void);
-	void (*_purple_reserved4)(void);
 };
 
 /**************************************************************************/
@@ -536,43 +485,6 @@ GList *purple_connections_get_all(void);
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_connections_is_online(void);
-
-/**************************************************************************/
-/* UI Registration Functions                                              */
-/**************************************************************************/
-
-/**
- * purple_connection_ui_ops_get_type:
- *
- * Returns: The #GType for the #PurpleConnectionUiOps boxed structure.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-GType purple_connection_ui_ops_get_type(void);
-
-/**
- * purple_connections_set_ui_ops:
- * @ops: The UI operations structure.
- *
- * Sets the UI operations structure to be used for connections.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_connections_set_ui_ops(PurpleConnectionUiOps *ops);
-
-/**
- * purple_connections_get_ui_ops:
- *
- * Returns the UI operations structure used for connections.
- *
- * Returns: The UI operations structure in use.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleConnectionUiOps *purple_connections_get_ui_ops(void);
 
 /**************************************************************************/
 /* Connections Subsystem                                                  */

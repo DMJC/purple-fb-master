@@ -94,7 +94,6 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 static GList *connections = NULL;
 static GList *connections_connected = NULL;
-static PurpleConnectionUiOps *connection_ui_ops = NULL;
 
 static int connections_handle;
 
@@ -119,7 +118,6 @@ purple_connection_set_state(PurpleConnection *connection,
                             PurpleConnectionState state)
 {
 	PurpleConnectionPrivate *priv = NULL;
-	PurpleConnectionUiOps *ops = NULL;
 
 	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
 
@@ -130,8 +128,6 @@ purple_connection_set_state(PurpleConnection *connection,
 	}
 
 	priv->state = state;
-
-	ops = purple_connections_get_ui_ops();
 
 	if(priv->state == PURPLE_CONNECTION_STATE_CONNECTED) {
 		PurplePresence *presence;
@@ -145,10 +141,6 @@ purple_connection_set_state(PurpleConnection *connection,
 		timestamp = g_date_time_new_now_utc();
 		purple_presence_set_login_time(presence, timestamp);
 		g_date_time_unref(timestamp);
-
-		if(ops != NULL && ops->connected != NULL) {
-			ops->connected(connection);
-		}
 
 		purple_blist_add_account(priv->account);
 
@@ -168,10 +160,6 @@ purple_connection_set_state(PurpleConnection *connection,
 
 		if(emit_online) {
 			purple_signal_emit(handle, "online");
-		}
-	} else if(priv->state == PURPLE_CONNECTION_STATE_DISCONNECTED) {
-		if(ops != NULL && ops->disconnected != NULL) {
-			ops->disconnected(connection);
 		}
 	}
 
@@ -390,7 +378,6 @@ purple_connection_error(PurpleConnection *connection,
                         const char *description)
 {
 	PurpleConnectionPrivate *priv = NULL;
-	PurpleConnectionUiOps *ops;
 
 	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
 
@@ -423,12 +410,6 @@ purple_connection_error(PurpleConnection *connection,
 	purple_debug_info("connection",
 	                  "Connection error on %p (reason: %u description: %s)\n",
 	                  connection, reason, description);
-
-	ops = purple_connections_get_ui_ops();
-
-	if(ops && ops->report_disconnect) {
-		ops->report_disconnect(connection, reason, description);
-	}
 
 	priv->error_info = purple_connection_error_info_new(reason, description);
 
@@ -521,35 +502,6 @@ purple_connection_error_is_fatal(PurpleConnectionError reason) {
 		default:
 			g_return_val_if_reached(TRUE);
 	}
-}
-
-/**************************************************************************
- * GBoxed code
- **************************************************************************/
-static PurpleConnectionUiOps *
-purple_connection_ui_ops_copy(PurpleConnectionUiOps *ops)
-{
-	PurpleConnectionUiOps *ops_new;
-
-	g_return_val_if_fail(ops != NULL, NULL);
-
-	ops_new = g_new(PurpleConnectionUiOps, 1);
-	*ops_new = *ops;
-
-	return ops_new;
-}
-
-GType
-purple_connection_ui_ops_get_type(void) {
-	static GType type = 0;
-
-	if(type == 0) {
-		type = g_boxed_type_register_static("PurpleConnectionUiOps",
-				(GBoxedCopyFunc)purple_connection_ui_ops_copy,
-				(GBoxedFreeFunc)g_free);
-	}
-
-	return type;
 }
 
 /**************************************************************************
@@ -1009,16 +961,6 @@ purple_connections_get_all(void) {
 gboolean
 purple_connections_is_online(void) {
 	return (connections_connected != NULL);
-}
-
-void
-purple_connections_set_ui_ops(PurpleConnectionUiOps *ops) {
-	connection_ui_ops = ops;
-}
-
-PurpleConnectionUiOps *
-purple_connections_get_ui_ops(void) {
-	return connection_ui_ops;
 }
 
 void
