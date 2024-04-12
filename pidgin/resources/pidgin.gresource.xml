@@ -32,7 +32,6 @@
     <file compressed="true" preprocess="xml-stripblanks">Protocols/detailed-view.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Roomlist/roomlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Whiteboard/whiteboard.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Xfer/xfer.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">account-row.ui</file>
