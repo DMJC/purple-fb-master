@@ -36,7 +36,6 @@ libpurple/plugins/purple-toast/purple-toast.c
 libpurple/plugins/statenotify/statenotify.c
 libpurple/plugins/wincred/wincred.c
 libpurple/prefs.c
-libpurple/protocols.c
 libpurple/proxy.c
 libpurple/purpleaccount.c
 libpurple/purpleaccountmanager.c

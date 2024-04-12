@@ -29,7 +29,6 @@
 #include "debug.h"
 #include "notify.h"
 #include "prefs.h"
-#include "protocols.h"
 #include "status.h"
 
 /*

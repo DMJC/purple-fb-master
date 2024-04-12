@@ -590,20 +590,3 @@ purple_protocol_create_connection(PurpleProtocol *protocol,
 
 	return NULL;
 }
-
-GList *
-purple_protocol_get_status_types(PurpleProtocol *protocol,
-                                 PurpleAccount *account)
-{
-	PurpleProtocolClass *klass = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), NULL);
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
-	if(klass != NULL && klass->status_types != NULL) {
-		return klass->status_types(protocol, account);
-	}
-
-	return NULL;
-}

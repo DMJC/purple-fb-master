@@ -147,8 +147,6 @@ struct _PurpleProtocolClass {
 
 	PurpleConnection *(*create_connection)(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
 
-	GList *(*status_types)(PurpleProtocol *protocol, PurpleAccount *account);
-
 	/*< private >*/
 	gpointer reserved[4];
 };
@@ -335,21 +333,6 @@ gboolean purple_protocol_can_connect_finish(PurpleProtocol *protocol, GAsyncResu
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConnection *purple_protocol_create_connection(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
-
-/**
- * purple_protocol_get_status_types:
- * @protocol: The #PurpleProtocol instance.
- * @account: The #PurpleAccount instance.
- *
- * Gets all of the #PurpleStatusType's for @account which uses @protocol.
- *
- * Returns: (transfer full) (element-type PurpleStatusType): A list of the
- *          available PurpleStatusType's for @account with @protocol.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-GList *purple_protocol_get_status_types(PurpleProtocol *protocol, PurpleAccount *account);
 
 /**
  * purple_protocol_get_icon_name:
