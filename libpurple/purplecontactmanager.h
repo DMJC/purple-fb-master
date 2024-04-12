@@ -156,23 +156,6 @@ PURPLE_AVAILABLE_IN_3_0
 PurpleContact *purple_contact_manager_find_with_id(PurpleContactManager *manager, PurpleAccount *account, const gchar *id);
 
 /**
- * purple_contact_manager_add_buddy:
- * @manager: The instance.
- * @buddy: A [class@Purple.Buddy] instance.
- *
- * Creates a new [class@Purple.Contact] and binds its properties to @buddy and
- * then adds the new [class@Purple.Contact] via
- * [method@Purple.ContactManager.add].
- *
- * This method is meant to help us transition to the new API and this method
- * shouldn't be used elsewhere.
- *
- * Since: 3.0
- */
-PURPLE_DEPRECATED
-void purple_contact_manager_add_buddy(PurpleContactManager *manager, PurpleBuddy *buddy);
-
-/**
  * purple_contact_manager_add_person:
  * @manager: The instance.
  * @person: The [class@Purple.Person to add].

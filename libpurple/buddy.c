@@ -359,7 +359,6 @@ PurpleBuddy *
 purple_buddy_new(PurpleAccount *account, const gchar *name, const gchar *alias)
 {
 	PurpleBuddy *buddy = NULL;
-	PurpleContactManager *manager = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 	g_return_val_if_fail(name != NULL, NULL);
@@ -370,11 +369,6 @@ purple_buddy_new(PurpleAccount *account, const gchar *name, const gchar *alias)
 		"name", name,
 		"local-alias", alias,
 		NULL);
-
-	manager = purple_contact_manager_get_default();
-	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	purple_contact_manager_add_buddy(manager, buddy);
-	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	return buddy;
 }
