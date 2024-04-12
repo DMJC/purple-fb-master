@@ -69,22 +69,6 @@ purple_protocol_server_get_info(PurpleProtocolServer *protocol_server,
 }
 
 void
-purple_protocol_server_set_status(PurpleProtocolServer *protocol_server,
-                                  PurpleAccount *account, PurpleStatus *status)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-	g_return_if_fail(PURPLE_IS_STATUS(status));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->set_status != NULL) {
-		iface->set_status(protocol_server, account, status);
-	}
-}
-
-void
 purple_protocol_server_set_idle(PurpleProtocolServer *protocol_server,
                                 PurpleConnection *connection, gint idletime)
 {

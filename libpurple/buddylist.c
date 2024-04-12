@@ -1912,7 +1912,8 @@ void purple_blist_remove_account(PurpleAccount *account)
 
 	for (iter = list; iter; iter = iter->next)
 	{
-		purple_presence_set_status_active(iter->data, "offline", TRUE);
+		purple_presence_set_primitive(iter->data,
+		                              PURPLE_PRESENCE_PRIMITIVE_OFFLINE);
 	}
 	g_list_free(list);
 }
@@ -2084,10 +2085,6 @@ purple_blist_init(void)
 	/* Set a default, which can't be done as a static initializer. */
 	buddy_list_type = PURPLE_TYPE_BUDDY_LIST;
 
-	purple_signal_register(handle, "buddy-status-changed",
-	                     purple_marshal_VOID__POINTER_POINTER_POINTER,
-	                     G_TYPE_NONE, 3, PURPLE_TYPE_BUDDY, PURPLE_TYPE_STATUS, 
-	                     PURPLE_TYPE_STATUS);
 	purple_signal_register(handle, "buddy-privacy-changed",
 	                     purple_marshal_VOID__POINTER, G_TYPE_NONE,
 	                     1, PURPLE_TYPE_BUDDY);

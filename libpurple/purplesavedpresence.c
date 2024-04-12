@@ -395,7 +395,7 @@ purple_saved_presence_class_init(PurpleSavedPresenceClass *klass) {
 	/**
 	 * PurpleSavedPresence:primitive:
 	 *
-	 * The [enum@Purple.StatusPrimitive] for this saved presence.
+	 * The [enum@Purple.PresencePrimitive] for this saved presence.
 	 *
 	 * Since: 3.0
 	 */

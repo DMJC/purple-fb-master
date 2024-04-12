@@ -63,7 +63,6 @@ struct _PurpleProtocolServerInterface {
 	void (*set_info)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *info);
 	void (*get_info)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who);
 
-	void (*set_status)(PurpleProtocolServer *protocol_server, PurpleAccount *account, PurpleStatus *status);
 	void (*set_idle)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, gint idletime);
 
 	void (*change_passwd)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_pass, const gchar *new_pass);
@@ -114,19 +113,6 @@ void purple_protocol_server_set_info(PurpleProtocolServer *protocol_server, Purp
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_get_info(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who);
-
-/**
- * purple_protocol_server_set_status:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @account: The #PurpleAccount instance.
- * @status: The #PurpleStatus instance.
- *
- * Sets the status for account @account to @status.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_set_status(PurpleProtocolServer *protocol_server, PurpleAccount *account, PurpleStatus *status);
 
 /**
  * purple_protocol_server_set_idle:

@@ -97,10 +97,8 @@ libpurple/request/purplerequestfieldstring.c
 libpurple/request/purplerequestgroup.c
 libpurple/request/purplerequestpage.c
 libpurple/roomlist.c
-libpurple/savedstatuses.c
 libpurple/server.c
 libpurple/signals.c
-libpurple/status.c
 libpurple/tests/test_account_manager.c
 libpurple/tests/test_account_option.c
 libpurple/tests/test_circular_buffer.c

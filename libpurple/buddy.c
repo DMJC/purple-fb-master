@@ -191,7 +191,8 @@ purple_buddy_constructed(GObject *object) {
 	}
 
 	priv->presence = purple_presence_new();
-	purple_presence_set_status_active(priv->presence, "offline", TRUE);
+	purple_presence_set_primitive(priv->presence,
+	                              PURPLE_PRESENCE_PRIMITIVE_OFFLINE);
 
 	purple_blist_new_node(purple_blist_get_default(),
 	                      PURPLE_BLIST_NODE(buddy));
@@ -702,78 +703,6 @@ purple_buddy_get_presence(PurpleBuddy *buddy) {
 	priv = purple_buddy_get_instance_private(buddy);
 
 	return priv->presence;
-}
-
-void
-purple_buddy_update_status(PurpleBuddy *buddy, PurpleStatus *old_status) {
-	PurpleBuddyList *blist = NULL;
-	PurpleBuddyPrivate *priv = NULL;
-	PurpleStatus *status = NULL;
-	gpointer handle = NULL;
-
-	gboolean old_online = FALSE, new_online = FALSE;
-
-	g_return_if_fail(PURPLE_IS_BUDDY(buddy));
-
-	priv = purple_buddy_get_instance_private(buddy);
-	status = purple_presence_get_active_status(priv->presence);
-	blist = purple_blist_get_default();
-	handle = purple_blist_get_handle();
-
-	purple_debug_info("blistnodetypes", "Updating buddy status for %s (%s)\n",
-	                  priv->name,
-	                  purple_account_get_protocol_name(priv->account));
-
-	old_online = purple_status_is_online(old_status);
-	new_online = purple_status_is_online(status);
-
-	if(old_online != new_online) {
-		PurpleBlistNode *cnode = NULL, *gnode = NULL;
-		PurpleMetaContact *contact = NULL;
-		PurpleCountingNode *contact_counter = NULL, *group_counter = NULL;
-		gint delta = 0, limit = 0;
-
-		if(new_online) {
-			purple_signal_emit(handle, "buddy-signed-on", buddy);
-			delta = 1;
-			limit = 1;
-		} else {
-			purple_blist_node_set_int(PURPLE_BLIST_NODE(buddy), "last_seen",
-			                          time(NULL));
-
-			purple_signal_emit(handle, "buddy-signed-off", buddy);
-			delta = -1;
-			limit = 0;
-		}
-
-		cnode = purple_blist_node_get_parent(PURPLE_BLIST_NODE(buddy));
-		contact = PURPLE_META_CONTACT(cnode);
-		contact_counter = PURPLE_COUNTING_NODE(contact);
-		gnode = purple_blist_node_get_parent(cnode);
-		group_counter = PURPLE_COUNTING_NODE(gnode);
-
-		purple_counting_node_change_online_count(contact_counter, delta);
-		if(purple_counting_node_get_online_count(contact_counter) == limit) {
-			purple_counting_node_change_online_count(group_counter, delta);
-		}
-	} else {
-		purple_signal_emit(handle, "buddy-status-changed", buddy, old_status,
-		                   status);
-	}
-
-	/*
-	 * This function used to only call the following two functions if one of
-	 * the above signals had been triggered, but that's not good, because
-	 * if someone's away message changes and they don't go from away to back
-	 * to away then no signal is triggered.
-	 *
-	 * It's a safe assumption that SOMETHING called this function.  PROBABLY
-	 * because something, somewhere changed.  Calling the stuff below
-	 * certainly won't hurt anything.  Unless you're on a K6-2 300.
-	 */
-	purple_meta_contact_invalidate_priority_buddy(purple_buddy_get_contact(buddy));
-
-	purple_blist_update_node(blist, PURPLE_BLIST_NODE(buddy));
 }
 
 PurpleMediaCaps

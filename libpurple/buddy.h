@@ -46,7 +46,6 @@ typedef struct _PurpleBuddyClass PurpleBuddyClass;
 #include "purpleaccount.h"
 #include "purplepresence.h"
 #include "purpleversion.h"
-#include "status.h"
 
 /**
  * PURPLE_BUDDY_IS_ONLINE:
@@ -269,20 +268,6 @@ PurpleMetaContact *purple_buddy_get_contact(PurpleBuddy *buddy);
  */
 PURPLE_AVAILABLE_IN_ALL
 PurplePresence *purple_buddy_get_presence(PurpleBuddy *buddy);
-
-/**
- * purple_buddy_update_status:
- * @buddy:      The buddy whose status has changed.
- * @old_status: The status from which we are changing.
- *
- * Updates a buddy's status.
- *
- * This should only be called from within Purple.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_buddy_update_status(PurpleBuddy *buddy, PurpleStatus *old_status);
 
 /**
  * purple_buddy_get_media_caps:

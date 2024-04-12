@@ -52,8 +52,6 @@
 
 typedef struct _PurplePresence PurplePresence;
 
-#include "status.h"
-
 /**
  * PurplePresencePrimitive:
  * @PURPLE_PRESENCE_PRIMITIVE_OFFLINE: The presence is offline or otherwise
@@ -131,38 +129,6 @@ PURPLE_AVAILABLE_IN_ALL
 PurplePresence *purple_presence_new(void);
 
 /**
- * purple_presence_set_status_active:
- * @presence: The #PurplePresence instance.
- * @status_id: The ID of the status.
- * @active: The active state.
- *
- * Sets the active state of a status in a presence.
- *
- * Only independent statuses can be set inactive. Normal statuses can only
- * be set active, so if you wish to disable a status, set another
- * non-independent status to active, or use purple_presence_switch_status().
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_presence_set_status_active(PurplePresence *presence, const gchar *status_id, gboolean active);
-
-/**
- * purple_presence_switch_status:
- * @presence: The #PurplePresence instance.
- * @status_id: The status ID to switch to.
- *
- * Switches the active status in a presence.
- *
- * This is similar to purple_presence_set_status_active(), except it won't
- * activate independent statuses.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_presence_switch_status(PurplePresence *presence, const gchar *status_id);
-
-/**
  * purple_presence_set_idle:
  * @presence: The #PurplePresence instance.
  * @idle: The idle state.
@@ -188,46 +154,6 @@ void purple_presence_set_idle(PurplePresence *presence, gboolean idle, GDateTime
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_presence_set_login_time(PurplePresence *presence, GDateTime *login_time);
-
-/**
- * purple_presence_get_statuses:
- * @presence: The #PurplePresence instance.
- *
- * Gets a list of all the statuses in @presence.
- *
- * Returns: (element-type PurpleStatus) (transfer none): The statuses.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-GList *purple_presence_get_statuses(PurplePresence *presence);
-
-/**
- * purple_presence_get_status:
- * @presence: The #PurplePresence instance.
- * @status_id: The ID of the status.
- *
- * Gets the status with the specified ID from @presence.
- *
- * Returns: (transfer none): The #PurpleStatus if found, or %NULL.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleStatus *purple_presence_get_status(PurplePresence *presence, const gchar *status_id);
-
-/**
- * purple_presence_get_active_status:
- * @presence: The #PurplePresence instance.
- *
- * Gets the active exclusive status from @presence.
- *
- * Returns: (transfer none): The active exclusive status.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleStatus *purple_presence_get_active_status(PurplePresence *presence);
 
 /**
  * purple_presence_is_available:
@@ -256,39 +182,6 @@ gboolean purple_presence_is_available(PurplePresence *presence);
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_presence_is_online(PurplePresence *presence);
-
-/**
- * purple_presence_is_status_active:
- * @presence: The #PurplePresence instance.
- * @status_id: The ID of the status.
- *
- * Gets whether or not a status in @presence is active.
- *
- * A status is active if itself or any of its sub-statuses are active.
- *
- * Returns: %TRUE if the status is active, or %FALSE.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-gboolean purple_presence_is_status_active(PurplePresence *presence, const gchar *status_id);
-
-/**
- * purple_presence_is_status_primitive_active:
- * @presence: The #PurplePresence instance.
- * @primitive: The status primitive.
- *
- * Gets whether or not a status with the specified primitive type in @presence
- * is active.
- *
- * A status is active if itself or any of its sub-statuses are active.
- *
- * Returns: %TRUE if the status is active, or %FALSE.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-gboolean purple_presence_is_status_primitive_active(PurplePresence *presence, PurpleStatusPrimitive primitive);
 
 /**
  * purple_presence_is_idle:
@@ -366,7 +259,7 @@ PurplePresencePrimitive purple_presence_get_primitive(PurplePresence *presence);
  * @presence: The instance.
  * @primitive: The new primitive.
  *
- * Sets the [enum@Purple.StatusPrimitive] for @presence to @primitive.
+ * Sets the [enum@Purple.PresencePrimitive] for @presence to @primitive.
  *
  * Since: 3.0
  */

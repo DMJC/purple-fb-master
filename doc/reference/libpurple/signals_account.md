@@ -5,7 +5,6 @@ Slug: account-signals
 
 ### Signal List
 
-* [account-status-changed](#account-status-changed)
 * [account-signed-on](#account-signed-on)
 * [account-signed-off](#account-signed-off)
 
@@ -41,33 +40,6 @@ Emitted when an account is about to be destroyed.
 
 **account**
 : The account.
-
-**user_data**
-: User data set when the signal handler was connected.
-
-----
-
-#### account-status-changed
-
-```c
-void user_function(PurpleAccount *account,
-                   PurpleStatus *old,
-                   PurpleStatus *new,
-                   gpointer user_data);
-```
-
-Emitted when the status of an account changes (after the change).
-
-**Parameters:**
-
-**account**
-: The account that changed status.
-
-**old**
-: The status before change.
-
-**new**
-: The status after change.
 
 **user_data**
 : User data set when the signal handler was connected.

@@ -112,7 +112,6 @@ typedef enum {
 #include "purpleaccount.h"
 #include "purpleconnectionerrorinfo.h"
 #include "purpleprotocol.h"
-#include "status.h"
 
 struct _PurpleConnectionClass {
 	/*< private >*/

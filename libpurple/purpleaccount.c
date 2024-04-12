@@ -74,8 +74,6 @@ struct _PurpleAccount {
 
 	PurpleProxyInfo *proxy_info;
 
-	GList *status_types;
-
 	PurplePresence *presence;
 
 	PurpleConnectionErrorInfo *error;
@@ -807,8 +805,6 @@ purple_account_finalize(GObject *object) {
 
 	purple_account_free_notify_settings(account);
 
-	purple_account_set_status_types(account, NULL);
-
 	g_clear_object(&account->proxy_info);
 
 	g_clear_pointer(&account->error, purple_connection_error_info_free);
@@ -1419,65 +1415,6 @@ purple_account_set_proxy_info(PurpleAccount *account, PurpleProxyInfo *info) {
 }
 
 void
-purple_account_set_status_types(PurpleAccount *account, GList *status_types) {
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	/* Out with the old... */
-	g_list_free_full(account->status_types,
-	                 (GDestroyNotify)purple_status_type_destroy);
-
-	/* In with the new... */
-	account->status_types = status_types;
-}
-
-void
-purple_account_set_status(PurpleAccount *account, const char *status_id,
-                          gboolean active, ...)
-{
-	GHashTable *attrs;
-	va_list args;
-
-	va_start(args, active);
-	attrs = purple_attrs_from_vargs(args);
-	purple_account_set_status_attrs(account, status_id, active, attrs);
-	g_hash_table_destroy(attrs);
-	va_end(args);
-}
-
-void
-purple_account_set_status_attrs(PurpleAccount *account, const char *status_id,
-                                gboolean active, GHashTable *attrs)
-{
-	PurpleStatus *status;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-	g_return_if_fail(status_id != NULL);
-
-	status = purple_account_get_status(account, status_id);
-	if(status == NULL) {
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
-
-		purple_debug_error("account",
-		                   "Invalid status ID '%s' for account %s (%s)\n",
-		                   status_id,
-		                   purple_contact_info_get_username(info),
-		                   purple_account_get_protocol_id(account));
-
-		return;
-	}
-
-	if(active || purple_status_is_independent(status)) {
-		purple_status_set_active_with_attributes(status, active, attrs);
-	}
-
-	/*
-	 * Our current statuses are saved to accounts.xml (so that when we
-	 * reconnect, we go back to the previous status).
-	 */
-	purple_accounts_schedule_save();
-}
-
-void
 purple_account_set_int(PurpleAccount *account, const char *name, int value) {
 	PurpleAccountSetting *setting;
 
@@ -1631,81 +1568,11 @@ purple_account_get_proxy_info(PurpleAccount *account) {
 	return account->proxy_info;
 }
 
-PurpleStatus *
-purple_account_get_active_status(PurpleAccount *account) {
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return purple_presence_get_active_status(account->presence);
-}
-
-PurpleStatus *
-purple_account_get_status(PurpleAccount *account, const char *status_id) {
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-	g_return_val_if_fail(status_id != NULL, NULL);
-
-	return purple_presence_get_status(account->presence, status_id);
-}
-
-PurpleStatusType *
-purple_account_get_status_type(PurpleAccount *account, const char *id) {
-	GList *l;
-
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-	g_return_val_if_fail(id != NULL, NULL);
-
-	for (l = purple_account_get_status_types(account); l != NULL; l = l->next)
-	{
-		PurpleStatusType *status_type = (PurpleStatusType *)l->data;
-
-		if(purple_strequal(purple_status_type_get_id(status_type), id)) {
-			return status_type;
-		}
-	}
-
-	return NULL;
-}
-
-PurpleStatusType *
-purple_account_get_status_type_with_primitive(PurpleAccount *account,
-                                              PurpleStatusPrimitive primitive)
-{
-	GList *l;
-
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	for(l = purple_account_get_status_types(account); l != NULL; l = l->next) {
-		PurpleStatusType *status_type = (PurpleStatusType *)l->data;
-
-		if(purple_status_type_get_primitive(status_type) == primitive) {
-			return status_type;
-		}
-	}
-
-	return NULL;
-}
-
 PurplePresence *
 purple_account_get_presence(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
 	return account->presence;
-}
-
-gboolean
-purple_account_is_status_active(PurpleAccount *account,
-                                const char *status_id)
-{
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
-	g_return_val_if_fail(status_id != NULL, FALSE);
-
-	return purple_presence_is_status_active(account->presence, status_id);
-}
-
-GList *
-purple_account_get_status_types(PurpleAccount *account) {
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return account->status_types;
 }
 
 int

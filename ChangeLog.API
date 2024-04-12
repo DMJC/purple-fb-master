@@ -248,6 +248,7 @@ version 3.0.0 (??/??/????):
 		  instead.
 		* account-setting-info, account-set-info signals
 		* account-status-changing signal.
+		* buddy-status-changed signal.
 		* chat-topic-changed signal.
 		* file-recv-accept, file-recv-cancel, file-recv-complete,
 		  file-recv-start, file-send-accept, file-send-cancel,
@@ -273,6 +274,7 @@ version 3.0.0 (??/??/????):
 		* purple_account_add_buddies_with_invite
 		* purple_account_add_buddy_with_invite
 		* purple_account_destroy_log
+		* purple_account_get_active_status
 		* purple_account_get_check_mail
 		* purple_account_get_log
 		* purple_account_get_name_for_display. Use
@@ -284,11 +286,16 @@ version 3.0.0 (??/??/????):
 		* purple_account_get_private_alias. Use purple_contact_get_alias
 		  instead.
 		* purple_account_get_silence_suppression
+		* purple_account_get_status
+		* purple_account_get_status_type
+		* purple_account_get_status_type_with_primitive
+		* purple_account_get_status_types
 		* purple_account_get_ui_int
 		* purple_account_get_ui_string
 		* purple_account_get_ui_bool
 		* purple_account_get_username. Use purple_contact_info_get_username
 		  instead.
+		* purple_account_is_status_active
 		* purple_account_notify_added
 		* purple_account_privacy_allow
 		* purple_account_privacy_check
@@ -313,11 +320,15 @@ version 3.0.0 (??/??/????):
 		  instead.
 		* purple_account_set_public_alias
 		* purple_account_set_silence_suppression
+		* purple_account_set_status
+		* purple_account_set_status_attrs
+		* purple_account_set_status_types
 		* purple_account_set_ui_int
 		* purple_account_set_ui_string
 		* purple_account_set_ui_bool
 		* purple_account_set_username. Use purple_contact_info_set_username
 		  instead.
+		* account-status-changed signal
 		* purple_accounts_add
 		* purple_accounts_find
 		* purple_accounts_get_all
@@ -605,6 +616,12 @@ version 3.0.0 (??/??/????):
 		* PurplePounceEvent
 		* PurplePounceOption
 		* PurplePrefsUiOps
+		* purple_presence_get_status
+		* purple_presence_get_statuses
+		* purple_presence_is_status_active
+		* purple_presence_is_status_primitive_active
+		* purple_presence_set_status_active
+		* purple_presence_switch_status
 		* purple_protocol_got_account_actions
 		* purple_protocol_got_account_idle
 		* purple_protocol_got_account_status

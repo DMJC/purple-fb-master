@@ -112,10 +112,8 @@ purple_coresources = [
 	'request/purplerequestpage.c',
 	'request-datasheet.c',
 	'roomlist.c',
-	'savedstatuses.c',
 	'server.c',
 	'signals.c',
-	'status.c',
 	'util.c',
 	'xmlnode.c'
 ]
@@ -221,10 +219,8 @@ purple_coreheaders = [
 	'request.h',
 	'request-datasheet.h',
 	'roomlist.h',
-	'savedstatuses.h',
 	'server.h',
 	'signals.h',
-	'status.h',
 	'util.h',
 	'xmlnode.h',
 ]
@@ -312,7 +308,6 @@ purple_enumheaders = [
 	'purpleproxyinfo.h',
 	'purpletyping.h',
 	'roomlist.h',
-	'status.h',
 	'xmlnode.h'
 ]
 

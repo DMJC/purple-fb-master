@@ -41,7 +41,6 @@ typedef struct _PurpleAccount PurpleAccount;
 #include "purpleprotocol.h"
 #include "purpleproxyinfo.h"
 #include "purpleversion.h"
-#include "status.h"
 
 G_BEGIN_DECLS
 
@@ -253,71 +252,6 @@ PURPLE_AVAILABLE_IN_ALL
 void purple_account_set_proxy_info(PurpleAccount *account, PurpleProxyInfo *info);
 
 /**
- * purple_account_set_status_types:
- * @account: The account.
- * @status_types: (element-type PurpleStatusType): The list of status types.
- *
- * Sets the account's status types.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_set_status_types(PurpleAccount *account, GList *status_types);
-
-/**
- * purple_account_set_status:
- * @account: The account.
- * @status_id: The ID of the status.
- * @active: Whether @status_id is to be activated (%TRUE) or deactivated
- *          (%FALSE).
- * @...: A %NULL-terminated list of pairs of `const char *` attribute name
- *       followed by `const char *` attribute value for the status. (For
- *       example, one pair might be `"message"` followed by `"hello, talk to
- *       me!"`.)
- *
- * Activates or deactivates a status.
- *
- * All changes to the statuses of an account go through this function or
- * [method@Purple.Account.set_status_attrs].
- *
- * You can only deactivate an exclusive status by activating another exclusive
- * status. So, if @status_id is an exclusive status and @active is %FALSE, this
- * function does nothing.
- *
- * Variadic version of [method@Purple.Account.set_status_attrs].
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_set_status(PurpleAccount *account, const char *status_id, gboolean active, ...) G_GNUC_NULL_TERMINATED;
-
-
-/**
- * purple_account_set_status_attrs: (rename-to purple_account_set_status):
- * @account: The account.
- * @status_id: The ID of the status.
- * @active: Whether @status_id is to be activated (%TRUE) or deactivated
- *          (%FALSE).
- * @attrs: (element-type utf8 utf8): A hash table with keys of attribute
- *         names and values of attributes for the status. (For example, one
- *         pair might be a key of `"message"` with a value of `"hello, talk to
- *         me!"`.)
- *
- * Activates or deactivates a status.
- *
- * All changes to the statuses of an account go through this function or
- * [method@Purple.Account.set_status].
- *
- * You can only deactivate an exclusive status by activating another exclusive
- * status. So, if @status_id is an exclusive status and @active is %FALSE, this
- * function does nothing.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_account_set_status_attrs(PurpleAccount *account, const char *status_id, gboolean active, GHashTable *attrs);
-
-/**
  * purple_account_set_int:
  * @account: The account.
  * @name: The name of the setting.
@@ -514,67 +448,6 @@ PURPLE_AVAILABLE_IN_ALL
 PurpleProxyInfo *purple_account_get_proxy_info(PurpleAccount *account);
 
 /**
- * purple_account_get_active_status:
- * @account: The account.
- *
- * Returns the active status for this account.  This looks through
- * the PurplePresence associated with this account and returns the
- * PurpleStatus that has its active flag set to "TRUE."  There can be
- * only one active PurpleStatus in a PurplePresence.
- *
- * Returns: (transfer none): The active status.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleStatus *purple_account_get_active_status(PurpleAccount *account);
-
-/**
- * purple_account_get_status:
- * @account: The account.
- * @status_id: The status ID.
- *
- * Returns the account status with the specified ID.
- *
- * Returns: (transfer none): The status, or %NULL if it was never registered.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleStatus *purple_account_get_status(PurpleAccount *account, const char *status_id);
-
-/**
- * purple_account_get_status_type:
- * @account: The account.
- * @id: The ID of the status type to find.
- *
- * Returns the account status type with the specified ID.
- *
- * Returns: The status type if found, or %NULL.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleStatusType *purple_account_get_status_type(PurpleAccount *account, const char *id);
-
-/**
- * purple_account_get_status_type_with_primitive:
- * @account: The account.
- * @primitive: The type of the status type to find.
- *
- * Returns the account status type with the specified primitive.
- * Note: It is possible for an account to have more than one
- * PurpleStatusType with the same primitive.  In this case, the
- * first PurpleStatusType is returned.
- *
- * Returns: The status if found, or %NULL.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleStatusType *purple_account_get_status_type_with_primitive(PurpleAccount *account, PurpleStatusPrimitive primitive);
-
-/**
  * purple_account_get_presence:
  * @account: The account.
  *
@@ -586,33 +459,6 @@ PurpleStatusType *purple_account_get_status_type_with_primitive(PurpleAccount *a
  */
 PURPLE_AVAILABLE_IN_ALL
 PurplePresence *purple_account_get_presence(PurpleAccount *account);
-
-/**
- * purple_account_is_status_active:
- * @account: The account.
- * @status_id: The status ID.
- *
- * Returns whether or not an account status is active.
- *
- * Returns: TRUE if active, or FALSE if not.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-gboolean purple_account_is_status_active(PurpleAccount *account, const char *status_id);
-
-/**
- * purple_account_get_status_types:
- * @account: The account.
- *
- * Returns the account's status types.
- *
- * Returns: (transfer none) (element-type PurpleStatusType): The account's status types.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-GList *purple_account_get_status_types(PurpleAccount *account);
 
 /**
  * purple_account_get_int:

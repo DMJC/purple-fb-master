@@ -5,7 +5,6 @@ Slug: buddy-list-signals
 
 ### Signal List
 
-* [buddy-status-changed](#buddy-status-changed)
 * [buddy-idle-changed](#buddy-idle-changed)
 * [buddy-signed-on](#buddy-signed-on)
 * [buddy-signed-off](#buddy-signed-off)
@@ -17,33 +16,6 @@ Slug: buddy-list-signals
 * [ui-caps-changed](#ui-caps-changed)
 
 ### Signal Details
-
-#### buddy-status-changed
-
-```c
-void user_function(PurpleBuddy *buddy,
-                   PurpleStatus *old_status,
-                   PurpleStatus *status,
-                   gpointer user_data);
-```
-
-Emitted when a buddy on your buddy list goes away.
-
-**Parameters:**
-
-**buddy**
-: The buddy whose status changed.
-
-**old_status**
-: The status that the buddy just changed from.
-
-**status**
-: The status that the buddy just changed to.
-
-**user_data**
-: user data set when the signal handler was connected.
-
-----
 
 #### buddy-idle-changed
 

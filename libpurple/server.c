@@ -39,7 +39,6 @@
 #include "request.h"
 #include "signals.h"
 #include "server.h"
-#include "status.h"
 #include "util.h"
 
 unsigned int
