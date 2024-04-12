@@ -206,7 +206,6 @@ pidgin/resources/Protocols/chooser.ui
 pidgin/resources/Protocols/detailed-view.ui
 pidgin/resources/Roomlist/roomlist.ui
 pidgin/resources/Whiteboard/whiteboard.ui
-pidgin/resources/Xfer/xfer.ui
 pidgin/resources/gtk/menus.ui
 pidgin/resources/account-row.ui
 pidgin/resources/contactlist.ui

@@ -124,7 +124,6 @@ purple_coresources = [
 	'signals.c',
 	'status.c',
 	'util.c',
-	'xfer.c',
 	'xmlnode.c'
 ]
 
@@ -241,7 +240,6 @@ purple_coreheaders = [
 	'signals.h',
 	'status.h',
 	'util.h',
-	'xfer.h',
 	'xmlnode.h',
 ]
 
@@ -330,7 +328,6 @@ purple_enumheaders = [
 	'purpletyping.h',
 	'roomlist.h',
 	'status.h',
-	'xfer.h',
 	'xmlnode.h'
 ]
 

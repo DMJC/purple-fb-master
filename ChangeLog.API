@@ -205,26 +205,11 @@ version 3.0.0 (??/??/????):
 		* Signal registration now uses GTypes instead of PurpleValues.  See
 		  SIGNAL-HOWTO for more information.
 		* purple_whiteboard_create renamed to purple_whiteboard_new
-		* purple_xfer_get_bytes_remaining now returns a goffset
-		* purple_xfer_get_bytes_sent now returns a goffset
-		* purple_xfer_get_size now returns a goffset
-		* purple_xfer_is_canceled renamed to purple_xfer_is_cancelled
-		* PurpleXfer is now a GObject. Please see the documentation for details.
-		* purple_xfer_get_type renamed to purple_xfer_get_xfer_type
-		* PurpleXferStatusType renamed to PurpleXferStatus
-		* PURPLE_XFER_* prefix of PurpleXferType enums changed to
-		  PURPLE_XFER_TYPE_*
-		* purple_xfer_set_bytes_sent now takes a goffset as the bytes_sent
-		  parameter
-		* purple_xfer_set_size now takes a goffset as the size parameter
 		* PurpleCertificateVerificationStatus enumeration is now merged with
 		  internal flags, thus removing PURPLE_CERTIFICATE_INVALID and
 		  replacing it with more precise errors.
 		* PurpleConnectionUiOps.report_disconnect now passes a
 		  PurpleConnectionError as the second parameter
-		* PurpleXfer.bytes_remaining is now a goffset
-		* PurpleXfer.bytes_sent is now a goffset
-		* PurpleXfer.size is now a goffset
 		* PurpleCertificateScheme.get_times now uses gint64 instead of
 		  time_t to represent times
 		* purple_certificate_get_times now uses gint64 instead of
@@ -829,20 +814,55 @@ version 3.0.0 (??/??/????):
 		* PurpleValue, use GValue instead.
 		* purple_whiteboard_get_ui_data and purple_whiteboard_set_ui_data, use
 		  g_object_set_data instead.
-		* PurpleXferUiOps.add_thumbnail. Use PurpleXfer::add-thumbnail
-		  instead.
-		* PurpleXferUiOps.add_xfer. Use notify::visible on #PurpleXfer
-		  objects instead.
-		* PurpleXferUiOps.cancel_local and
-		  PurpleXferUiOps.cancel_remote. Use notify::status on
-		  #PurpleXfer objects instead.
-		* PurpleXferUiOps.data_not_sent. Use PurpleXfer::data-not-sent
-		  instead.
-		* PurpleXferUiOps.destroy
-		* PurpleXferUiOps.ui_read. Use PurpleXfer::read-local instead.
-		* PurpleXferUiOps.ui_write. Use PurpleXfer::write-local instead.
-		* PurpleXferUiOps.update_progress. Use notify::progress on
-		  #PurpleXfer objects instead.
+		* PurpleXfer
+		* PurpleXferUiOps
+		* purple_xfer_cancel_local
+		* purple_xfer_cancel_remote
+		* purple_xfer_conversation_write
+		* purple_xfer_end
+		* purple_xfer_error
+		* purple_xfer_get_account
+		* purple_xfer_get_bytes_remaining
+		* purple_xfer_get_bytes_sent
+		* purple_xfer_get_end_time
+		* purple_xfer_get_filename
+		* purple_xfer_get_local_filename
+		* purple_xfer_get_local_port
+		* purple_xfer_get_progress
+		* purple_xfer_get_remote_ip
+		* purple_xfer_get_remote_port
+		* purple_xfer_get_remote_user
+		* purple_xfer_get_size
+		* purple_xfer_get_start_time
+		* purple_xfer_get_status
+		* purple_xfer_get_thumbnail
+		* purple_xfer_get_thumbnail_mimetype
+		* purple_xfer_get_ui_ops
+		* purple_xfer_is_completed
+		* purple_xfer_new
+		* purple_xfer_prepare_thumbnail
+		* purple_xfer_read
+		* purple_xfer_read_file
+		* purple_xfer_request
+		* purple_xfer_request_accepted
+		* purple_xfer_request_denied
+		* purple_xfer_set_bytes_sent
+		* purple_xfer_set_completed
+		* purple_xfer_set_filename
+		* purple_xfer_set_local_filename
+		* purple_xfer_set_message
+		* purple_xfer_set_size
+		* purple_xfer_set_thumbnail
+		* purple_xfer_start
+		* purple_xfer_ui_ready
+		* purple_xfer_write
+		* purple_xfer_write_file
+		* purple_xfers_get_all
+		* purple_xfers_get_handle
+		* purple_xfers_get_ui_ops
+		* purple_xfers_init
+		* purple_xfers_set_ui_ops
+		* purple_xfers_uninit
 		* quitting signal
 		* serv_got_attention
 		* serv_send_attention

@@ -41,7 +41,6 @@
 #include "server.h"
 #include "status.h"
 #include "util.h"
-#include "xfer.h"
 
 unsigned int
 purple_serv_send_typing(PurpleConnection *gc, const char *name, PurpleIMTypingState state)

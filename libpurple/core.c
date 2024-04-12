@@ -31,7 +31,6 @@
 #include "conversations.h"
 #include "core.h"
 #include "debug.h"
-#include "xfer.h"
 #include "idle.h"
 #include "image-store.h"
 #include "network.h"
@@ -181,7 +180,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 
 	purple_network_init();
 	purple_proxy_init();
-	purple_xfers_init();
 	purple_idle_init();
 	purple_idle_manager_startup();
 
@@ -253,7 +251,6 @@ purple_core_quit(void)
 	purple_savedstatuses_uninit();
 	purple_statuses_uninit();
 	purple_accounts_uninit();
-	purple_xfers_uninit();
 	purple_proxy_uninit();
 	_purple_image_store_uninit();
 	purple_network_uninit();

@@ -10,7 +10,6 @@ libpurple_doc_content_files = [
 	'signals_core.md',
 	'signals_jabber.md',
 	'signals_savedstatus.md',
-	'signals_xfer.md',
 	'tut_c_plugins.md',
 ]
 
