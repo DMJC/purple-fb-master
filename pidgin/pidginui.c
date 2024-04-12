@@ -30,7 +30,6 @@
 
 #include "pidginui.h"
 
-#include "gtkidle.h"
 #include "gtkmedia.h"
 #include "gtknotify.h"
 #include "gtkroomlist.h"
@@ -129,7 +128,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	purple_notify_set_ui_ops(pidgin_notify_get_ui_ops());
 	purple_request_set_ui_ops(pidgin_request_get_ui_ops());
 	purple_whiteboard_set_ui_ops(pidgin_whiteboard_get_ui_ops());
-	purple_idle_set_ui(pidgin_idle_new());
 
 	pidgin_request_init();
 	pidgin_commands_init();

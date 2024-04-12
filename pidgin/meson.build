@@ -4,7 +4,6 @@ endif
 
 libpidgin_SOURCES = [
 	'gtkdialogs.c',
-	'gtkidle.c',
 	'gtkmedia.c',
 	'gtknotify.c',
 	'gtkrequest.c',
@@ -62,7 +61,6 @@ libpidgin_SOURCES = [
 
 libpidgin_headers = [
 	'gtkdialogs.h',
-	'gtkidle.h',
 	'gtkmedia.h',
 	'gtknotify.h',
 	'gtkrequest.h',
