@@ -23,7 +23,6 @@
 #include "buddy.h"
 
 #include "debug.h"
-#include "purplebuddypresence.h"
 #include "purplecontactmanager.h"
 #include "purpleconversationmanager.h"
 #include "purpleprotocolclient.h"
@@ -191,7 +190,7 @@ purple_buddy_constructed(GObject *object) {
 		g_checksum_free(sum);
 	}
 
-	priv->presence = PURPLE_PRESENCE(purple_buddy_presence_new(buddy));
+	priv->presence = purple_presence_new();
 	purple_presence_set_status_active(priv->presence, "offline", TRUE);
 
 	purple_blist_new_node(purple_blist_get_default(),

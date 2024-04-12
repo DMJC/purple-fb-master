@@ -48,7 +48,6 @@ libpurple/purpleaccountusersplit.c
 libpurple/purpleaddcontactrequest.c
 libpurple/purpleattachment.c
 libpurple/purpleavatar.c
-libpurple/purplebuddypresence.c
 libpurple/purplechatconversation.c
 libpurple/purplechatuser.c
 libpurple/purplecontact.c

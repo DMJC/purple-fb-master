@@ -22,7 +22,6 @@
 
 #include "contact.h"
 #include "prefs.h"
-#include "purplebuddypresence.h"
 #include "purpleconversationmanager.h"
 #include "purpleprivate.h"
 #include "util.h"
@@ -82,9 +81,9 @@ purple_meta_contact_compute_priority_buddy(PurpleMetaContact *contact) {
 		{
 			int cmp = 1;
 			if (purple_account_is_connected(purple_buddy_get_account(new_priority)))
-				cmp = purple_buddy_presence_compare(
-						PURPLE_BUDDY_PRESENCE(purple_buddy_get_presence(new_priority)),
-						PURPLE_BUDDY_PRESENCE(purple_buddy_get_presence(buddy)));
+				cmp = purple_presence_compare(
+						purple_buddy_get_presence(new_priority),
+						purple_buddy_get_presence(buddy));
 
 			if (cmp > 0 || (cmp == 0 &&
 			                purple_prefs_get_bool("/purple/contact/last_match")))
