@@ -32,7 +32,6 @@
 #include "core.h"
 #include "debug.h"
 #include "idle.h"
-#include "image-store.h"
 #include "network.h"
 #include "notify.h"
 #include "plugins.h"
@@ -151,9 +150,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 	 */
 	purple_plugins_init();
 
-	/* The buddy icon code uses the image store, so init it early. */
-	_purple_image_store_init();
-
 	/* Accounts use status, buddy icons and connection signals, so
 	 * initialize these before accounts
 	 */
@@ -252,7 +248,6 @@ purple_core_quit(void)
 	purple_statuses_uninit();
 	purple_accounts_uninit();
 	purple_proxy_uninit();
-	_purple_image_store_uninit();
 	purple_network_uninit();
 
 	purple_ui_stop(core->ui);

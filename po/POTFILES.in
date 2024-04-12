@@ -16,7 +16,6 @@ libpurple/debug.c
 libpurple/group.c
 libpurple/idle.c
 libpurple/image.c
-libpurple/image-store.c
 libpurple/media/backend-iface.c
 libpurple/media.c
 libpurple/media/candidate.c
