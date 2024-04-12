@@ -94,23 +94,6 @@ purple_xmpp_protocol_get_account_options(G_GNUC_UNUSED PurpleProtocol *protocol)
 	return options;
 }
 
-
-static GList *
-purple_xmpp_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
-                                  G_GNUC_UNUSED PurpleAccount *account)
-{
-	PurpleStatusType *type = NULL;
-	GList *types = NULL;
-
-	type = purple_status_type_new(PURPLE_STATUS_AVAILABLE, NULL, NULL, TRUE);
-	types = g_list_append(types, type);
-
-	type = purple_status_type_new(PURPLE_STATUS_OFFLINE, NULL, NULL, TRUE);
-	types = g_list_append(types, type);
-
-	return types;
-}
-
 static void
 purple_xmpp_protocol_can_connect_async(PurpleProtocol *protocol,
                                        G_GNUC_UNUSED PurpleAccount *account,
@@ -186,7 +169,6 @@ purple_xmpp_protocol_class_init(PurpleXmppProtocolClass *klass) {
 
 	protocol_class->get_user_splits = purple_xmpp_protocol_get_user_splits;
 	protocol_class->get_account_options = purple_xmpp_protocol_get_account_options;
-	protocol_class->status_types = purple_xmpp_protocol_status_types;
 	protocol_class->can_connect_async = purple_xmpp_protocol_can_connect_async;
 	protocol_class->can_connect_finish = purple_xmpp_protocol_can_connect_finish;
 	protocol_class->create_connection = purple_xmpp_protocol_create_connection;

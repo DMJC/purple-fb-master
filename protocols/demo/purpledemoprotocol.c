@@ -52,42 +52,6 @@ purple_demo_protocol_create_connection(PurpleProtocol *protocol,
 
 }
 
-static GList *
-purple_demo_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
-                                  G_GNUC_UNUSED PurpleAccount *account)
-{
-	PurpleStatusType *type = NULL;
-	GList *status_types = NULL;
-
-	type = purple_status_type_new_with_attrs(
-		PURPLE_STATUS_AVAILABLE, "available", NULL,
-		TRUE, TRUE, FALSE,
-		"message", _("Message"), purple_value_new(G_TYPE_STRING),
-		NULL);
-	status_types = g_list_append(status_types, type);
-
-	type = purple_status_type_new_with_attrs(
-		PURPLE_STATUS_AWAY, "away", NULL,
-		TRUE, TRUE, FALSE,
-		"message", _("Message"), purple_value_new(G_TYPE_STRING),
-		NULL);
-	status_types = g_list_append(status_types, type);
-
-	type = purple_status_type_new_with_attrs(
-		PURPLE_STATUS_EXTENDED_AWAY, "extended_away", NULL,
-		TRUE, TRUE, FALSE,
-		"message", _("Message"), purple_value_new(G_TYPE_STRING),
-		NULL);
-	status_types = g_list_append(status_types, type);
-
-	type = purple_status_type_new_full(
-		PURPLE_STATUS_OFFLINE, NULL, NULL,
-		TRUE, TRUE, FALSE);
-	status_types = g_list_append(status_types, type);
-
-	return status_types;
-}
-
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -119,7 +83,6 @@ static void
 purple_demo_protocol_class_init(PurpleDemoProtocolClass *klass) {
 	PurpleProtocolClass *protocol_class = PURPLE_PROTOCOL_CLASS(klass);
 
-	protocol_class->status_types = purple_demo_protocol_status_types;
 	protocol_class->create_connection = purple_demo_protocol_create_connection;
 }
 

@@ -159,28 +159,6 @@ purple_ircv3_protocol_create_connection(PurpleProtocol *protocol,
 		NULL);
 }
 
-static GList *
-purple_ircv3_protocol_status_types(G_GNUC_UNUSED PurpleProtocol *protocol,
-                                   G_GNUC_UNUSED PurpleAccount *account)
-{
-	PurpleStatusType *type = NULL;
-	GList *types = NULL;
-
-	type = purple_status_type_new(PURPLE_STATUS_AVAILABLE, NULL, NULL, TRUE);
-	types = g_list_append(types, type);
-
-	type = purple_status_type_new_with_attrs(
-		PURPLE_STATUS_AWAY, NULL, NULL, TRUE, TRUE, FALSE,
-		"message", _("Message"), purple_value_new(G_TYPE_STRING),
-		NULL);
-	types = g_list_append(types, type);
-
-	type = purple_status_type_new(PURPLE_STATUS_OFFLINE, NULL, NULL, TRUE);
-	types = g_list_append(types, type);
-
-	return types;
-}
-
 static void
 purple_ircv3_protocol_can_connect_async(PurpleProtocol *protocol,
                                         PurpleAccount *account,
@@ -249,7 +227,6 @@ purple_ircv3_protocol_class_init(PurpleIRCv3ProtocolClass *klass) {
 		purple_ircv3_protocol_get_account_options;
 	protocol_class->create_connection =
 		purple_ircv3_protocol_create_connection;
-	protocol_class->status_types = purple_ircv3_protocol_status_types;
 	protocol_class->can_connect_async =
 		purple_ircv3_protocol_can_connect_async;
 	protocol_class->can_connect_finish =
