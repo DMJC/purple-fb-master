@@ -30,7 +30,6 @@
 #include "notify.h"
 #include "prefs.h"
 #include "protocols.h"
-#include "purpleaccountpresence.h"
 #include "status.h"
 
 /*
@@ -524,20 +523,6 @@ purple_status_attribute_get_value(const PurpleStatusAttribute *attr)
 * PurpleStatus API
 **************************************************************************/
 static void
-notify_status_update(PurplePresence *presence, PurpleStatus *old_status,
-					 PurpleStatus *new_status)
-{
-	if (PURPLE_IS_ACCOUNT_PRESENCE(presence))
-	{
-		PurpleAccount *account = purple_account_presence_get_account(
-				PURPLE_ACCOUNT_PRESENCE(presence));
-
-		if (purple_account_get_enabled(account))
-			purple_protocol_change_account_status(account, old_status, new_status);
-	}
-}
-
-static void
 status_has_changed(PurpleStatus *status)
 {
 	PurplePresence *presence;
@@ -564,8 +549,6 @@ status_has_changed(PurpleStatus *status)
 
 	g_object_set(presence, "active-status", status, NULL);
 	g_object_notify_by_pspec(G_OBJECT(status), properties[PROP_ACTIVE]);
-
-	notify_status_update(presence, old_status, status);
 }
 
 static void

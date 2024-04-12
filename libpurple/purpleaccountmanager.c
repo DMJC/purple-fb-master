@@ -743,7 +743,7 @@ purple_account_manager_set_online(PurpleAccountManager *manager,
 				presence = purple_account_get_presence(account);
 				online = purple_presence_is_online(presence);
 
-				if(online) {
+				if(!online) {
 					purple_account_connect(account);
 				}
 			}

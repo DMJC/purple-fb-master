@@ -30,7 +30,6 @@
 #include "network.h"
 #include "notify.h"
 #include "prefs.h"
-#include "purpleaccountpresence.h"
 #include "purpleaddcontactrequest.h"
 #include "purpleconversationmanager.h"
 #include "purplecredentialmanager.h"
@@ -757,11 +756,7 @@ purple_account_init(PurpleAccount *account) {
 static void
 purple_account_constructed(GObject *object) {
 	PurpleAccount *account = PURPLE_ACCOUNT(object);
-	gchar *username, *protocol_id;
 	const char *id = NULL;
-	PurpleProtocol *protocol = NULL;
-	PurpleProtocolManager *manager = NULL;
-	PurpleStatusType *status_type;
 
 	G_OBJECT_CLASS(purple_account_parent_class)->constructed(object);
 
@@ -783,38 +778,7 @@ purple_account_constructed(GObject *object) {
 		g_checksum_free(checksum);
 	}
 
-	g_object_get(object,
-	             "username", &username,
-	             "protocol-id", &protocol_id,
-	             NULL);
-
-	manager = purple_protocol_manager_get_default();
-	protocol = purple_protocol_manager_find(manager, protocol_id);
-	if(protocol == NULL) {
-		g_free(username);
-		g_free(protocol_id);
-		return;
-	}
-
-	purple_account_set_status_types(account,
-	                                purple_protocol_get_status_types(protocol, account));
-
-	account->presence = PURPLE_PRESENCE(purple_account_presence_new(account));
-
-	status_type = purple_account_get_status_type_with_primitive(account,
-	                                                            PURPLE_STATUS_AVAILABLE);
-	if(status_type != NULL) {
-		purple_presence_set_status_active(account->presence,
-		                                  purple_status_type_get_id(status_type),
-		                                  TRUE);
-	} else {
-		purple_presence_set_status_active(account->presence,
-		                                  "offline",
-		                                  TRUE);
-	}
-
-	g_free(username);
-	g_free(protocol_id);
+	account->presence = purple_presence_new();
 
 	/* Connect to our own notify signal so we can update accounts.xml. */
 	g_signal_connect(object, "notify",

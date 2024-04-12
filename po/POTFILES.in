@@ -41,7 +41,6 @@ libpurple/proxy.c
 libpurple/purpleaccount.c
 libpurple/purpleaccountmanager.c
 libpurple/purpleaccountoption.c
-libpurple/purpleaccountpresence.c
 libpurple/purpleaccountusersplit.c
 libpurple/purpleaddcontactrequest.c
 libpurple/purpleattachment.c
