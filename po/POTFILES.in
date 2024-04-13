@@ -148,7 +148,6 @@ pidgin/pidgindebug.c
 pidgin/pidgindisplaywindow.c
 pidgin/pidginiconname.c
 pidgin/pidgininfopane.c
-pidgin/pidgininvitedialog.c
 pidgin/pidginkeypad.c
 pidgin/pidginpluginsdialog.c
 pidgin/pidginpluginsmenu.c
@@ -178,7 +177,6 @@ pidgin/resources/Accounts/editor.ui
 pidgin/resources/Accounts/manager.ui
 pidgin/resources/Accounts/manager-row.ui
 pidgin/resources/avatar.ui
-pidgin/resources/Conversations/invite_dialog.ui
 pidgin/resources/Debug/debug.ui
 pidgin/resources/Display/window.ui
 pidgin/resources/Keypad/keypad.ui

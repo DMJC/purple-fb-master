@@ -33,7 +33,6 @@
 #include "gtkutils.h"
 #include "pidginconversation.h"
 #include "pidgindisplayitem.h"
-#include "pidgininvitedialog.h"
 
 enum {
 	SIG_CONVERSATION_SWITCHED,
@@ -190,11 +189,6 @@ static const gchar *pidgin_display_window_im_conversation_actions[] = {
 	NULL
 };
 
-static const gchar *pidgin_display_window_chat_conversation_actions[] = {
-	"invite",
-	NULL
-};
-
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -255,7 +249,6 @@ pidgin_display_window_selected_item_changed_cb(GObject *self,
 	GtkWidget *widget = NULL;
 	gboolean is_conversation = FALSE;
 	gboolean is_im_conversation = FALSE;
-	gboolean is_chat_conversation = FALSE;
 
 	row = gtk_single_selection_get_selected_item(selection);
 
@@ -266,7 +259,6 @@ pidgin_display_window_selected_item_changed_cb(GObject *self,
 	if(PURPLE_IS_CONVERSATION(conversation)) {
 		is_conversation = PURPLE_IS_CONVERSATION(conversation);
 		is_im_conversation = PURPLE_IS_IM_CONVERSATION(conversation);
-		is_chat_conversation = PURPLE_IS_CHAT_CONVERSATION(conversation);
 	}
 
 	pidgin_display_window_actions_set_enabled(G_ACTION_MAP(window),
@@ -275,9 +267,6 @@ pidgin_display_window_selected_item_changed_cb(GObject *self,
 	pidgin_display_window_actions_set_enabled(G_ACTION_MAP(window),
 	                                          pidgin_display_window_im_conversation_actions,
 	                                          is_im_conversation);
-	pidgin_display_window_actions_set_enabled(G_ACTION_MAP(window),
-	                                          pidgin_display_window_chat_conversation_actions,
-	                                          is_chat_conversation);
 
 	widget = pidgin_display_item_get_widget(item);
 	if(GTK_IS_WIDGET(widget)) {
