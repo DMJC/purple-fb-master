@@ -226,14 +226,6 @@ purple_chat_conversation_finalize(GObject *obj) {
 		if(!purple_chat_conversation_has_left(chat)) {
 			purple_serv_chat_leave(gc, chat_id);
 		}
-
-		/*
-		 * If they didn't call purple_serv_got_chat_left by now, it's too late.
-		 * So we better do it for them before we destroy the thing.
-		 */
-		if(!purple_chat_conversation_has_left(chat)) {
-			purple_serv_got_chat_left(gc, chat_id);
-		}
 	}
 
 	g_clear_pointer(&priv->users, g_hash_table_destroy);
@@ -478,7 +470,6 @@ purple_chat_conversation_add_users(PurpleChatConversation *chat, GList *users,
                                    gboolean new_arrivals)
 {
 	PurpleConversation *conv;
-	PurpleConversationUiOps *ops;
 	PurpleChatUser *chatuser;
 	PurpleChatConversationPrivate *priv;
 	PurpleAccount *account;
@@ -492,7 +483,6 @@ purple_chat_conversation_add_users(PurpleChatConversation *chat, GList *users,
 
 	priv = purple_chat_conversation_get_instance_private(chat);
 	conv = PURPLE_CONVERSATION(chat);
-	ops = purple_conversation_get_ui_ops(conv);
 
 	account = purple_conversation_get_account(conv);
 	gc = purple_conversation_get_connection(conv);
@@ -578,10 +568,6 @@ purple_chat_conversation_add_users(PurpleChatConversation *chat, GList *users,
 
 	cbuddies = g_list_sort(cbuddies, (GCompareFunc)purple_chat_user_compare);
 
-	if(ops != NULL && ops->chat_add_users != NULL) {
-		ops->chat_add_users(chat, cbuddies, new_arrivals);
-	}
-
 	g_list_free(cbuddies);
 }
 
@@ -591,7 +577,6 @@ purple_chat_conversation_rename_user(PurpleChatConversation *chat,
                                      const gchar *new_user)
 {
 	PurpleConversation *conv;
-	PurpleConversationUiOps *ops;
 	PurpleAccount *account;
 	PurpleConnection *gc;
 	PurpleProtocol *protocol;
@@ -609,7 +594,6 @@ purple_chat_conversation_rename_user(PurpleChatConversation *chat,
 
 	priv = purple_chat_conversation_get_instance_private(chat);
 	conv = PURPLE_CONVERSATION(chat);
-	ops = purple_conversation_get_ui_ops(conv);
 	account = purple_conversation_get_account(conv);
 
 	gc = purple_conversation_get_connection(conv);
@@ -647,10 +631,6 @@ purple_chat_conversation_rename_user(PurpleChatConversation *chat,
 
 	g_hash_table_replace(priv->users,
 		g_strdup(purple_chat_user_get_name(cb)), cb);
-
-	if(ops != NULL && ops->chat_rename_user != NULL) {
-		ops->chat_rename_user(chat, old_user, new_user, new_alias);
-	}
 
 	cb = purple_chat_conversation_find_user(chat, old_user);
 	if(cb) {
@@ -716,7 +696,6 @@ purple_chat_conversation_remove_users(PurpleChatConversation *chat,
 	PurpleConversation *conv;
 	PurpleConnection *gc;
 	PurpleProtocol *protocol;
-	PurpleConversationUiOps *ops;
 	PurpleChatUser *cb;
 	PurpleChatConversationPrivate *priv;
 	GList *l;
@@ -735,7 +714,6 @@ purple_chat_conversation_remove_users(PurpleChatConversation *chat,
 	protocol = purple_connection_get_protocol(gc);
 	g_return_if_fail(PURPLE_IS_PROTOCOL(protocol));
 
-	ops = purple_conversation_get_ui_ops(conv);
 	handle = purple_conversations_get_handle();
 
 	for(l = users; l != NULL; l = l->next) {
@@ -784,27 +762,17 @@ purple_chat_conversation_remove_users(PurpleChatConversation *chat,
 
 		g_signal_emit(chat, signals[SIG_USER_LEFT], 0, user, reason);
 	}
-
-	if(ops != NULL && ops->chat_remove_users != NULL) {
-		ops->chat_remove_users(chat, users);
-	}
 }
 
 void
 purple_chat_conversation_clear_users(PurpleChatConversation *chat) {
 	PurpleChatConversationPrivate *priv = NULL;
-	PurpleConversationUiOps *ops = NULL;
 	GList *names = NULL;
 
 	g_return_if_fail(PURPLE_IS_CHAT_CONVERSATION(chat));
 
 	priv = purple_chat_conversation_get_instance_private(chat);
-	ops = purple_conversation_get_ui_ops(PURPLE_CONVERSATION(chat));
 	names = g_hash_table_get_keys(priv->users);
-
-	if(ops != NULL && ops->chat_remove_users != NULL) {
-		ops->chat_remove_users(chat, names);
-	}
 
 	g_list_foreach(names, purple_chat_conversation_clear_users_helper, chat);
 

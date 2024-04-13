@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "image.h"
 #include "purpleaccountmanager.h"
+#include "purplechatconversation.h"
 #include "purpleconversation.h"
 #include "purpleconversationmanager.h"
 #include "purplepath.h"

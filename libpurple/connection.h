@@ -328,20 +328,6 @@ PURPLE_AVAILABLE_IN_3_0
 GCancellable *purple_connection_get_cancellable(PurpleConnection *connection);
 
 /**
- * purple_connection_get_active_chats:
- * @gc: The connection.
- *
- * Returns a list of active chat conversations on a connection.
- *
- * Returns: (element-type PurpleChatConversation) (transfer none): The active
- *          chats on the connection.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-GSList *purple_connection_get_active_chats(PurpleConnection *gc);
-
-/**
  * purple_connection_get_display_name:
  * @gc: The connection.
  *

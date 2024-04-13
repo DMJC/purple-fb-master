@@ -83,19 +83,6 @@ G_GNUC_INTERNAL
 gboolean _purple_connection_wants_to_die(PurpleConnection *gc);
 
 /**
- * _purple_connection_remove_active_chat:
- * @gc:    The connection
- * @chat:  The chat conversation to remove
- *
- * Removes a chat from the active chats list of a connection
- *
- * Note: This function should only be called by purple_serv_got_chat_left()
- *       in server.c.
- */
-G_GNUC_INTERNAL
-void _purple_connection_remove_active_chat(PurpleConnection *gc, PurpleChatConversation *chat);
-
-/**
  * _purple_statuses_get_primitive_scores:
  *
  * Note: This function should only be called by

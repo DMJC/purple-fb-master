@@ -40,25 +40,6 @@
 
 #include "test_ui.h"
 
-/*** Conversation uiops ***/
-static void
-test_write_conv(PurpleConversation *conv, PurpleMessage *msg)
-{
-	gchar *timestamp = purple_message_format_timestamp(msg, "(%H:%M:%S)");
-
-	printf("(%s) %s %s: %s\n",
-		purple_conversation_get_name(conv),
-		timestamp,
-		purple_message_get_author_alias(msg),
-		purple_message_get_contents(msg));
-
-	g_free(timestamp);
-}
-
-static PurpleConversationUiOps test_conv_uiops = {
-	.write_conv = test_write_conv
-};
-
 /******************************************************************************
  * PurpleUi Implementation
  *****************************************************************************/
@@ -72,8 +53,6 @@ G_DEFINE_FINAL_TYPE(TestPurpleUi, test_purple_ui, PURPLE_TYPE_UI)
 
 static gboolean
 test_purple_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
-	purple_conversations_set_ui_ops(&test_conv_uiops);
-
 	return TRUE;
 }
 

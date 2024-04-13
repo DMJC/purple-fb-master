@@ -268,7 +268,6 @@ void
 purple_chat_user_set_flags(PurpleChatUser *chat_user,
                            PurpleChatUserFlags flags)
 {
-	PurpleConversationUiOps *ops;
 	PurpleChatUserFlags oldflags;
 
 	g_return_if_fail(PURPLE_IS_CHAT_USER(chat_user));
@@ -281,17 +280,6 @@ purple_chat_user_set_flags(PurpleChatUser *chat_user,
 	chat_user->flags = flags;
 
 	g_object_notify_by_pspec(G_OBJECT(chat_user), properties[PROP_FLAGS]);
-
-	/* Only update the UI once the object is fully constructed.  This avoids an
-	 * issue where at least with XMPP, user names will be duplicated in the
-	 * chat user list.
-	 */
-	if(chat_user->constructed) {
-		ops = purple_conversation_get_ui_ops(PURPLE_CONVERSATION(chat_user->chat));
-		if(ops != NULL && ops->chat_update_user != NULL) {
-			ops->chat_update_user(chat_user);
-		}
-	}
 
 	purple_signal_emit(purple_conversations_get_handle(),
 	                   "chat-user-flags", chat_user, oldflags, flags);

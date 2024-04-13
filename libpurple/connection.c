@@ -57,9 +57,6 @@ typedef struct {
 	PurpleAccount *account;       /* The account being connected to.   */
 	char *password;               /* The password used.                */
 
-	GSList *active_chats;         /* A list of active chats
-	                                  (#PurpleChatConversation structs). */
-
 	char *display_name;           /* How you appear to other people.   */
 
 	/* Wants to Die state.  This is set when the user chooses to log out, or
@@ -281,17 +278,6 @@ purple_connection_set_password(PurpleConnection *connection,
 	g_object_notify_by_pspec(G_OBJECT(connection), properties[PROP_PASSWORD]);
 }
 
-GSList *
-purple_connection_get_active_chats(PurpleConnection *connection) {
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), NULL);
-
-	priv = purple_connection_get_instance_private(connection);
-
-	return priv->active_chats;
-}
-
 const char *
 purple_connection_get_display_name(PurpleConnection *connection) {
 	PurpleConnectionPrivate *priv = NULL;
@@ -301,19 +287,6 @@ purple_connection_get_display_name(PurpleConnection *connection) {
 	priv = purple_connection_get_instance_private(connection);
 
 	return priv->display_name;
-}
-
-void
-_purple_connection_remove_active_chat(PurpleConnection *connection,
-                                      PurpleChatConversation *chat)
-{
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	priv = purple_connection_get_instance_private(connection);
-
-	priv->active_chats = g_slist_remove(priv->active_chats, chat);
 }
 
 gboolean
@@ -878,9 +851,6 @@ purple_connection_disconnect(PurpleConnection *connection, GError **error) {
 	purple_connection_set_state(connection,
 	                            PURPLE_CONNECTION_STATE_DISCONNECTING);
 	purple_signal_emit(handle, "signing-off", connection);
-
-	g_slist_free_full(priv->active_chats,
-	                  (GDestroyNotify)purple_chat_conversation_leave);
 
 	/* Dispatch to the connection's disconnect method. */
 	klass = PURPLE_CONNECTION_GET_CLASS(connection);

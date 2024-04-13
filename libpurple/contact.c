@@ -23,6 +23,7 @@
 #include "contact.h"
 #include "prefs.h"
 #include "purpleconversationmanager.h"
+#include "purpleimconversation.h"
 #include "purpleprivate.h"
 #include "util.h"
 

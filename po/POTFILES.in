@@ -48,7 +48,6 @@ libpurple/purplechatuser.c
 libpurple/purplecontact.c
 libpurple/purpleconversation.c
 libpurple/purpleconversationmanager.c
-libpurple/purpleconversationuiops.c
 libpurple/purplecredentialmanager.c
 libpurple/purplecredentialprovider.c
 libpurple/purpledebugui.c

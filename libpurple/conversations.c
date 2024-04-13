@@ -24,21 +24,9 @@
 
 #include "prefs.h"
 #include "purpleprivate.h"
+#include "purplechatconversation.h"
+#include "purpleimconversation.h"
 #include "purpleconversationmanager.h"
-
-static PurpleConversationUiOps *default_ops = NULL;
-
-void
-purple_conversations_set_ui_ops(PurpleConversationUiOps *ops)
-{
-	default_ops = ops;
-}
-
-PurpleConversationUiOps *
-purple_conversations_get_ui_ops(void)
-{
-	return default_ops;
-}
 
 void *
 purple_conversations_get_handle(void)

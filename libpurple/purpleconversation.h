@@ -157,7 +157,6 @@ struct _PurpleConversationClass {
 
 #include "buddyicon.h"
 #include "purpleaccount.h"
-#include "purpleconversationuiops.h"
 
 G_BEGIN_DECLS
 
@@ -236,31 +235,6 @@ gboolean purple_conversation_is_thread(PurpleConversation *conversation);
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_conversation_present(PurpleConversation *conv);
-
-/**
- * purple_conversation_set_ui_ops:
- * @conv: The conversation.
- * @ops:  The UI conversation operations structure.
- *
- * Sets the specified conversation's UI operations structure.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_set_ui_ops(PurpleConversation *conv, PurpleConversationUiOps *ops);
-
-/**
- * purple_conversation_get_ui_ops:
- * @conv: The conversation.
- *
- * Returns the specified conversation's UI operations structure.
- *
- * Returns: The operations structure.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleConversationUiOps *purple_conversation_get_ui_ops(PurpleConversation *conv);
 
 /**
  * purple_conversation_get_id:

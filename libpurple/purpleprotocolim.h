@@ -30,8 +30,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "connection.h"
-#include "purpleconversation.h"
 #include "purpleprotocol.h"
 #include "purpleversion.h"
 
@@ -48,6 +46,10 @@
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolIM, purple_protocol_im, PURPLE, PROTOCOL_IM,
                     PurpleProtocol)
+
+#include "connection.h"
+#include "purpleconversation.h"
+#include "purpleimconversation.h"
 
 struct _PurpleProtocolIMInterface {
 	/*< private >*/

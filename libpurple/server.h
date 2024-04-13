@@ -171,18 +171,6 @@ void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data);
 
-/**
- * purple_serv_got_chat_left:
- * @g:  The connection on which the chat was left.
- * @id: The id of the chat, as assigned by the protocol.
- *
- * Called by a protocol when an account has left a chat.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_serv_got_chat_left(PurpleConnection *g, int id);
-
 G_END_DECLS
 
 #endif /* PURPLE_SERVER_H */

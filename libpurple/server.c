@@ -282,29 +282,3 @@ void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
 
 	g_free(name);
 }
-
-void purple_serv_got_chat_left(PurpleConnection *g, int id)
-{
-	GSList *bcs;
-	PurpleChatConversation *chat = NULL;
-
-	for (bcs = purple_connection_get_active_chats(g); bcs != NULL; bcs = bcs->next) {
-		if (purple_chat_conversation_get_id(
-				PURPLE_CHAT_CONVERSATION(bcs->data)) == id) {
-			chat = (PurpleChatConversation *)bcs->data;
-			break;
-		}
-	}
-
-	if (!chat)
-		return;
-
-	purple_debug_info("server", "Leaving room: %s",
-	                  purple_conversation_get_name(PURPLE_CONVERSATION(chat)));
-
-	_purple_connection_remove_active_chat(g, chat);
-
-	purple_chat_conversation_leave(chat);
-
-	purple_signal_emit(purple_conversations_get_handle(), "chat-left", chat);
-}

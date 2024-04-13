@@ -25,6 +25,7 @@
 #include "debug.h"
 #include "purplecontactmanager.h"
 #include "purpleconversationmanager.h"
+#include "purpleimconversation.h"
 #include "purpleprotocolclient.h"
 #include "util.h"
 

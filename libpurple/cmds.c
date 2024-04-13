@@ -22,6 +22,8 @@
 
 #include "cmds.h"
 #include "purpleaccount.h"
+#include "purplechatconversation.h"
+#include "purpleimconversation.h"
 #include "purplemarkup.h"
 
 static GList *cmds = NULL;

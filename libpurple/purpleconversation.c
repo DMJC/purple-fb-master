@@ -27,6 +27,7 @@
 #include "conversations.h"
 #include "debug.h"
 #include "notify.h"
+#include "purplechatconversation.h"
 #include "purpleconversationmanager.h"
 #include "purpleconversationmember.h"
 #include "purpleenums.h"
@@ -45,8 +46,6 @@ typedef struct {
 	PurpleAvatar *avatar;
 	char *name;
 	char *title;
-
-	PurpleConversationUiOps *ui_ops;
 
 	PurpleConnectionFlags features;
 
@@ -573,7 +572,6 @@ purple_conversation_constructed(GObject *object) {
 	PurpleConversation *conv = PURPLE_CONVERSATION(object);
 	PurpleAccount *account;
 	PurpleConnection *gc;
-	PurpleConversationUiOps *ops;
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->constructed(object);
 
@@ -591,16 +589,6 @@ purple_conversation_constructed(GObject *object) {
 	/* Auto-set the title. */
 	purple_conversation_autoset_title(conv);
 
-	/* Don't move this.. it needs to be one of the last things done otherwise
-	 * it causes mysterious crashes on my system.
-	 *  -- Gary
-	 */
-	ops  = purple_conversations_get_ui_ops();
-	purple_conversation_set_ui_ops(conv, ops);
-	if(ops != NULL && ops->create_conversation != NULL) {
-		ops->create_conversation(conv);
-	}
-
 	purple_signal_emit(purple_conversations_get_handle(),
 	                   "conversation-created", conv);
 
@@ -617,16 +605,11 @@ purple_conversation_finalize(GObject *object) {
 	PurpleConversation *conv = PURPLE_CONVERSATION(object);
 	PurpleConversationPrivate *priv =
 			purple_conversation_get_instance_private(conv);
-	PurpleConversationUiOps *ops  = purple_conversation_get_ui_ops(conv);
 
 	purple_request_close_with_handle(conv);
 
 	purple_signal_emit(purple_conversations_get_handle(),
 	                   "deleting-conversation", conv);
-
-	if(ops != NULL && ops->destroy_conversation != NULL) {
-		ops->destroy_conversation(conv);
-	}
 
 	g_clear_pointer(&priv->id, g_free);
 	g_clear_object(&priv->avatar);
@@ -1080,15 +1063,7 @@ purple_conversation_is_thread(PurpleConversation *conversation) {
 }
 
 void
-purple_conversation_present(PurpleConversation *conv) {
-	PurpleConversationUiOps *ops;
-
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-
-	ops = purple_conversation_get_ui_ops(conv);
-	if(ops && ops->present) {
-		ops->present(conv);
-	}
+purple_conversation_present(G_GNUC_UNUSED PurpleConversation *conv) {
 }
 
 void
@@ -1116,38 +1091,6 @@ purple_conversation_get_features(PurpleConversation *conv) {
 	priv = purple_conversation_get_instance_private(conv);
 
 	return priv->features;
-}
-
-void
-purple_conversation_set_ui_ops(PurpleConversation *conv,
-                               PurpleConversationUiOps *ops)
-{
-	PurpleConversationPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-
-	priv = purple_conversation_get_instance_private(conv);
-
-	if(priv->ui_ops == ops) {
-		return;
-	}
-
-	if(priv->ui_ops != NULL && priv->ui_ops->destroy_conversation != NULL) {
-		priv->ui_ops->destroy_conversation(conv);
-	}
-
-	priv->ui_ops = ops;
-}
-
-PurpleConversationUiOps *
-purple_conversation_get_ui_ops(PurpleConversation *conv) {
-	PurpleConversationPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
-
-	priv = purple_conversation_get_instance_private(conv);
-
-	return priv->ui_ops;
 }
 
 const char *
@@ -1310,7 +1253,6 @@ _purple_conversation_write_common(PurpleConversation *conv,
 	PurpleConnection *gc = NULL;
 	PurpleConversationPrivate *priv = NULL;
 	PurpleAccount *account;
-	PurpleConversationUiOps *ops;
 	PurpleBuddy *b;
 	gint plugin_return;
 	/* int logging_font_options = 0; */
@@ -1320,19 +1262,13 @@ _purple_conversation_write_common(PurpleConversation *conv,
 
 	priv = purple_conversation_get_instance_private(conv);
 
-	ops = purple_conversation_get_ui_ops(conv);
-
 	account = purple_conversation_get_account(conv);
 
 	if(account != NULL) {
 		gc = purple_account_get_connection(account);
 	}
 
-	if(PURPLE_IS_CHAT_CONVERSATION(conv) && gc != NULL) {
-		if(!g_slist_find(purple_connection_get_active_chats(gc), conv)) {
-			return;
-		}
-	} else if(PURPLE_IS_IM_CONVERSATION(conv)) {
+	if(PURPLE_IS_IM_CONVERSATION(conv)) {
 		PurpleConversationManager *manager = NULL;
 
 		manager = purple_conversation_manager_get_default();
@@ -1398,16 +1334,6 @@ _purple_conversation_write_common(PurpleConversation *conv,
 
 	g_list_store_append(priv->messages, pmsg);
 
-	if(ops) {
-		if (PURPLE_IS_CHAT_CONVERSATION(conv) && ops->write_chat) {
-			ops->write_chat(PURPLE_CHAT_CONVERSATION(conv), pmsg);
-		} else if (PURPLE_IS_IM_CONVERSATION(conv) && ops->write_im) {
-			ops->write_im(PURPLE_IM_CONVERSATION(conv), pmsg);
-		} else if (ops->write_conv) {
-			ops->write_conv(conv, pmsg);
-		}
-	}
-
 	purple_signal_emit(purple_conversations_get_handle(),
 		(PURPLE_IS_IM_CONVERSATION(conv) ? "wrote-im-msg" : "wrote-chat-msg"),
 		conv, pmsg);
@@ -1459,15 +1385,8 @@ purple_conversation_send_with_flags(PurpleConversation *conv,
 gboolean
 purple_conversation_has_focus(PurpleConversation *conv) {
 	gboolean ret = FALSE;
-	PurpleConversationUiOps *ops;
 
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), FALSE);
-
-	ops = purple_conversation_get_ui_ops(conv);
-
-	if(ops != NULL && ops->has_focus != NULL) {
-		ret = ops->has_focus(conv);
-	}
 
 	return ret;
 }
@@ -1514,18 +1433,11 @@ void
 purple_conversation_send_confirm(PurpleConversation *conv,
                                  const gchar *message)
 {
-	PurpleConversationPrivate *priv = NULL;
 	gchar *text;
 	gpointer *data;
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 	g_return_if_fail(message != NULL);
-
-	priv = purple_conversation_get_instance_private(conv);
-	if(priv->ui_ops != NULL && priv->ui_ops->send_confirm != NULL) {
-		priv->ui_ops->send_confirm(conv, message);
-		return;
-	}
 
 	text = g_strdup_printf("You are about to send the following message:\n%s",
 	                       message);
