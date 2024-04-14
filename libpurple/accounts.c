@@ -540,12 +540,6 @@ purple_accounts_delete(PurpleAccount *account)
 					}
 					bnode = bnode_next;
 				}
-			} else if(PURPLE_IS_CHAT(cnode)) {
-				PurpleChat *c = (PurpleChat *)cnode;
-
-				if(purple_chat_get_account(c) == account) {
-					purple_blist_remove_chat(c);
-				}
 			}
 			cnode = cnode_next;
 		}

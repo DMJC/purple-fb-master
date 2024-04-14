@@ -62,8 +62,6 @@ struct _PurpleProtocolClientInterface {
 
 	const gchar *(*normalize)(PurpleProtocolClient *client, PurpleAccount *account, const gchar *who);
 
-	PurpleChat *(*find_blist_chat)(PurpleProtocolClient *client, PurpleAccount *account, const gchar *name);
-
 	gboolean (*offline_message)(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 	/*< private >*/
@@ -116,22 +114,6 @@ void purple_protocol_client_convo_closed(PurpleProtocolClient *client, PurpleCon
  */
 PURPLE_DEPRECATED
 const gchar *purple_protocol_client_normalize(PurpleProtocolClient *client, PurpleAccount *account, const gchar *who);
-
-/**
- * purple_protocol_client_find_blist_chat:
- * @client: The #PurpleProtocolClient instance.
- * @account: A #PurpleAccount instance.
- * @name: The name of the chat to find.
- *
- * Looks for a chat named @name in the contact list of @account.
- *
- * Returns: (transfer none): The #PurpleChat instance or %NULL if no chat could
- *          be found.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleChat *purple_protocol_client_find_blist_chat(PurpleProtocolClient *client, PurpleAccount *account, const gchar *name);
 
 /**
  * purple_protocol_client_offline_message:

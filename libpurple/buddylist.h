@@ -43,7 +43,6 @@ typedef struct _PurpleBuddyList PurpleBuddyList;
  */
 #define PURPLE_BLIST_DEFAULT_GROUP_NAME (purple_blist_get_default_group_name())
 
-#include "chat.h"
 #include "contact.h"
 
 /**
@@ -95,8 +94,6 @@ typedef void (*PurpleBlistWalkFunc)(PurpleBlistNode *node, gpointer data);
  * @set_visible:  Hides or unhides the buddy list.
  * @request_add_buddy: Called when information is needed to add a buddy to the
  *                     buddy list. See purple_blist_request_add_buddy().
- * @request_add_chat: Called when information is needed to add a chat to the
- *                    buddy list. See purple_blist_request_add_chat().
  * @request_add_group: Called when information is needed to add a group to the
  *                     buddy list. See purple_blist_request_add_group().
  * @save_node:    This is called when a node has been modified and should be
@@ -149,10 +146,6 @@ struct _PurpleBuddyListClass {
 	void (*request_add_buddy)(PurpleBuddyList *list, PurpleAccount *account,
 	                          const char *username, const char *group,
 	                          const char *alias);
-
-	void (*request_add_chat)(PurpleBuddyList *list, PurpleAccount *account,
-	                         PurpleGroup *group, const char *alias,
-	                         const char *name);
 
 	void (*request_add_group)(PurpleBuddyList *list);
 
@@ -286,23 +279,6 @@ PURPLE_AVAILABLE_IN_3_0
 void purple_blist_update_groups_cache(PurpleGroup *group, const char *new_name);
 
 /**
- * purple_blist_add_chat:
- * @chat:  The new chat who gets added
- * @group:  The group to add the new chat to.
- * @node:   The insertion point
- *
- * Adds a new chat to the buddy list.
- *
- * The chat will be inserted right after node or appended to the end
- * of group if node is NULL.  If both are NULL, the buddy will be added to
- * the "Chats" group.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_blist_add_chat(PurpleChat *chat, PurpleGroup *group, PurpleBlistNode *node);
-
-/**
  * purple_blist_add_buddy:
  * @buddy:   The new buddy who gets added
  * @contact: The optional contact to place the buddy in.
@@ -380,17 +356,6 @@ void purple_blist_remove_buddy(PurpleBuddy *buddy);
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_remove_contact(PurpleMetaContact *contact);
-
-/**
- * purple_blist_remove_chat:
- * @chat:   The chat to be removed
- *
- * Removes a chat from the buddy list and frees the memory allocated to it.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_blist_remove_chat(PurpleChat *chat);
 
 /**
  * purple_blist_remove_group:
@@ -502,7 +467,6 @@ void purple_blist_remove_account(PurpleAccount *account);
 /**
  * purple_blist_walk:
  * @group_func: (scope call): The callback for groups
- * @chat_func: (scope call): The callback for chats
  * @meta_contact_func: (scope call): The callback for meta-contacts
  * @contact_func: (scope call): The callback for contacts
  * @data: User supplied data.
@@ -513,7 +477,7 @@ void purple_blist_remove_account(PurpleAccount *account);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_blist_walk(PurpleBlistWalkFunc group_func, PurpleBlistWalkFunc chat_func, PurpleBlistWalkFunc meta_contact_func, PurpleBlistWalkFunc contact_func, gpointer data);
+void purple_blist_walk(PurpleBlistWalkFunc group_func, PurpleBlistWalkFunc meta_contact_func, PurpleBlistWalkFunc contact_func, gpointer data);
 
 /**
  * purple_blist_get_default_group_name:
@@ -560,22 +524,6 @@ void purple_blist_schedule_save(void);
 PURPLE_AVAILABLE_IN_ALL
 void purple_blist_request_add_buddy(PurpleAccount *account, const char *username,
 								  const char *group, const char *alias);
-
-/**
- * purple_blist_request_add_chat:
- * @account: The account the buddy is added to.
- * @group:   The optional group to add the chat to.
- * @alias:   The optional alias for the chat.
- * @name:    The required chat name.
- *
- * Requests from the user information needed to add a chat to the
- * buddy list.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_blist_request_add_chat(PurpleAccount *account, PurpleGroup *group,
-								 const char *alias, const char *name);
 
 /**
  * purple_blist_request_add_group:

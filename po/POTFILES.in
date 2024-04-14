@@ -4,7 +4,6 @@ libpurple/blistnode.c
 libpurple/buddy.c
 libpurple/buddyicon.c
 libpurple/buddylist.c
-libpurple/chat.c
 libpurple/circularbuffer.c
 libpurple/cmds.c
 libpurple/connection.c

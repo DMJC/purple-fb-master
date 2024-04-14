@@ -39,7 +39,6 @@ typedef struct _PurpleBuddyClass PurpleBuddyClass;
 
 #include "blistnode.h"
 #include "buddyicon.h"
-#include "chat.h"
 #include "contact.h"
 #include "group.h"
 #include "media.h"
@@ -65,8 +64,7 @@ typedef struct _PurpleBuddyClass PurpleBuddyClass;
  * Gets the name of @n.
  */
 #define PURPLE_BLIST_NODE_NAME(n) \
-	(PURPLE_IS_CHAT(n) ? purple_chat_get_name(PURPLE_CHAT(n)) : \
-	PURPLE_IS_BUDDY(n) ? purple_buddy_get_name(PURPLE_BUDDY(n)) : NULL)
+	(PURPLE_IS_BUDDY(n) ? purple_buddy_get_name(PURPLE_BUDDY(n)) : NULL)
 
 /**************************************************************************/
 /* Data Structures                                                        */

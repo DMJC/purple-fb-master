@@ -63,10 +63,7 @@ GSList *purple_group_get_accounts(PurpleGroup *group) {
 	gnode = (PurpleBlistNode *)group;
 
 	for (cnode = gnode->child;  cnode; cnode = cnode->next) {
-		if (PURPLE_IS_CHAT(cnode)) {
-			if (!g_slist_find(l, purple_chat_get_account(PURPLE_CHAT(cnode))))
-				l = g_slist_append(l, purple_chat_get_account(PURPLE_CHAT(cnode)));
-		} else if (PURPLE_IS_META_CONTACT(cnode)) {
+		if (PURPLE_IS_META_CONTACT(cnode)) {
 			for (bnode = cnode->child; bnode; bnode = bnode->next) {
 				if (PURPLE_IS_BUDDY(bnode)) {
 					if (!g_slist_find(l, purple_buddy_get_account(PURPLE_BUDDY(bnode))))
@@ -84,11 +81,6 @@ gboolean purple_group_on_account(PurpleGroup *g, PurpleAccount *account) {
 	for (cnode = ((PurpleBlistNode *)g)->child; cnode; cnode = cnode->next) {
 		if (PURPLE_IS_META_CONTACT(cnode)) {
 			if(purple_meta_contact_on_account((PurpleMetaContact *) cnode, account))
-				return TRUE;
-		} else if (PURPLE_IS_CHAT(cnode)) {
-			PurpleChat *chat = (PurpleChat *)cnode;
-			if ((!account && purple_account_is_connected(purple_chat_get_account(chat)))
-					|| purple_chat_get_account(chat) == account)
 				return TRUE;
 		}
 	}
@@ -144,9 +136,6 @@ void purple_group_set_name(PurpleGroup *source, const char *name) {
 							NULL, bnode->prev);
 					moved_buddies = g_list_append(moved_buddies, bnode);
 				}
-				prev = child;
-			} else if (PURPLE_IS_CHAT(child)) {
-				purple_blist_add_chat((PurpleChat *)child, dest, prev);
 				prev = child;
 			} else {
 				purple_debug_error("blistnodetypes", "Unknown child type in group %s", priv->name);

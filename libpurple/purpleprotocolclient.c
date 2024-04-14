@@ -87,25 +87,6 @@ purple_protocol_client_normalize(PurpleProtocolClient *client,
 	return NULL;
 }
 
-PurpleChat *
-purple_protocol_client_find_blist_chat(PurpleProtocolClient *client,
-                                       PurpleAccount *account,
-                                       const gchar *name)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client), NULL);
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-	g_return_val_if_fail(name != NULL, NULL);
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->find_blist_chat != NULL) {
-		return iface->find_blist_chat(client, account, name);
-	}
-
-	return NULL;
-}
-
 gboolean
 purple_protocol_client_offline_message(PurpleProtocolClient *client,
                                        PurpleBuddy *buddy)
