@@ -35,6 +35,8 @@
 #include "purpleprivate.h"
 #include "purpleprotocolconversation.h"
 #include "purpletags.h"
+#include "signals.h"
+#include "util.h"
 
 typedef struct {
 	char *id;

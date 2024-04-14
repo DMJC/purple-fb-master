@@ -30,6 +30,7 @@
 #include "prefs.h"
 #include "purplenoopcredentialprovider.h"
 #include "purpleprivate.h"
+#include "signals.h"
 #include "util.h"
 
 enum {

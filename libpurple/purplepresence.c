@@ -27,6 +27,7 @@
 #include "debug.h"
 #include "purpleenums.h"
 #include "purpleprivate.h"
+#include "util.h"
 
 typedef struct {
 	gboolean idle;

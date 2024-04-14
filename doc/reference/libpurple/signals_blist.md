@@ -5,80 +5,12 @@ Slug: buddy-list-signals
 
 ### Signal List
 
-* [buddy-idle-changed](#buddy-idle-changed)
-* [buddy-signed-on](#buddy-signed-on)
-* [buddy-signed-off](#buddy-signed-off)
 * [update-idle](#update-idle)
 * [blist-node-extended-menu](#blist-node-extended-menu)
-* [buddy-icon-changed](#buddy-icon-changed)
 * [blist-node-aliased](#blist-node-aliased)
-* [buddy-caps-changed](#buddy-caps-changed)
 * [ui-caps-changed](#ui-caps-changed)
 
 ### Signal Details
-
-#### buddy-idle-changed
-
-```c
-void user_function(PurpleBuddy *buddy,
-                   gboolean old_idle,
-                   gboolean idle,
-                   gpointer user_data);
-```
-
-Emitted when a buddy on your buddy list becomes idle.
-
-**Parameters:**
-
-**buddy**
-: The buddy whose idle status changed.
-
-**old_idle**
-: Whether the buddy was idle.
-
-**idle**
-: Whether the buddy is currently idle.
-
-**user_data**
-: user data set when the signal handler was connected.
-
-----
-
-#### buddy-signed-on
-
-```c
-void user_function(PurpleBuddy *buddy, gpointer user_data);
-```
-
-Emitted when a buddy on your buddy list signs on.
-
-**Parameters:**
-
-**buddy**
-: The buddy that signed on.
-
-**user_data**
-: user data set when the signal handler was connected.
-
-----
-
-#### buddy-signed-off
-
-```c
-void user_function(PurpleBuddy *buddy, gpointer user_data);
-```
-
-Emitted when a buddy on your buddy list signs off.
-
-**Parameters:**
-
-**buddy**
-: The buddy that signed off.
-
-**user_data**
-: user data set when the signal handler was connected.
-
-----
 
 #### update-idle
 
@@ -126,16 +58,6 @@ Emitted when a blist node is removed from the buddy list.
 
 ----
 
-#### buddy-icon-changed
-
-```c
-void user_function(PurpleBuddy *buddy, gpointer user_data);
-```
-
-Emitted when a buddy's icon is set.
-
-----
-
 #### blist-node-aliased
 
 ```c
@@ -145,33 +67,6 @@ void user_function(PurpleBlistNode *node,
 ```
 
 Emitted when a blist node (buddy, chat, or contact) is aliased.
-
-----
-
-#### buddy-caps-changed
-
-```c
-void user_function(PurpleBuddy *buddy,
-                   PurpleMediaCaps newcaps,
-                   PurpleMediaCaps oldcaps,
-                   gpointer user_data);
-```
-
-Emitted when updating a buddy's media capabilities.
-
-**Parameters:**
-
-**buddy**
-: The buddy.
-
-**newcaps**
-: .
-
-**oldcaps**
-: .
-
-**user_data**
-: user data set when the signal handler was connected.
 
 ----
 

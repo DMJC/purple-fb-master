@@ -506,62 +506,6 @@ PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_get_bool(PurpleAccount *account, const char *name, gboolean default_value);
 
 /**
- * purple_account_add_buddy:
- * @account: The account.
- * @buddy: The buddy to add.
- * @message: The invite message.  This may be ignored by a protocol.
- *
- * Adds a buddy to the server-side buddy list for the specified account.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_add_buddy(PurpleAccount *account, PurpleBuddy *buddy, const char *message);
-
-/**
- * purple_account_add_buddies:
- * @account: The account.
- * @buddies: (element-type PurpleBuddy): The list of PurpleBlistNodes representing the buddies to add.
- * @message: The invite message.  This may be ignored by a protocol.
- *
- * Adds a list of buddies to the server-side buddy list.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_add_buddies(PurpleAccount *account, GList *buddies, const char *message);
-
-/**
- * purple_account_remove_buddy:
- * @account: The account.
- * @buddy: The buddy to remove.
- * @group: The group to remove the buddy from.
- *
- * Removes a buddy from the server-side buddy list.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_remove_buddy(PurpleAccount *account, PurpleBuddy *buddy, PurpleGroup *group);
-
-/**
- * purple_account_remove_buddies:
- * @account: The account.
- * @buddies: (element-type PurpleBuddy): The list of buddies to remove.
- * @groups: (element-type PurpleGroup): The list of groups to remove buddies from.  Each node of this
- *               list should match the corresponding node of buddies.
- *
- * Removes a list of buddies from the server-side buddy list.
- *
- * Note: The lists buddies and groups are parallel lists.  Be sure that node n of
- *       groups matches node n of buddies.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_remove_buddies(PurpleAccount *account, GList *buddies, GList *groups);
-
-/**
  * purple_account_remove_group:
  * @account: The account.
  * @group: The group to remove.
@@ -585,20 +529,6 @@ void purple_account_remove_group(PurpleAccount *account, PurpleGroup *group);
  */
 PURPLE_AVAILABLE_IN_ALL
 void purple_account_change_password(PurpleAccount *account, const char *orig_pw, const char *new_pw);
-
-/**
- * purple_account_supports_offline_message:
- * @account: The account
- * @buddy: The buddy
- *
- * Whether the account supports sending offline messages to buddy.
- *
- * Returns: %TRUE if offline messages are supported, otherwise %FALSE.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-gboolean purple_account_supports_offline_message(PurpleAccount *account, PurpleBuddy *buddy);
 
 /**
  * purple_account_get_error:

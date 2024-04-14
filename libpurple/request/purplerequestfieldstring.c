@@ -24,6 +24,7 @@
 
 #include "purplerequestfield.h"
 #include "purplerequestfieldstring.h"
+#include "util.h"
 
 struct _PurpleRequestFieldString {
 	PurpleRequestField parent;

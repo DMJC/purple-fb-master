@@ -37,6 +37,7 @@
 #include "purplepath.h"
 #include "purpleprotocol.h"
 #include "purpleprotocolclient.h"
+#include "signals.h"
 #include "util.h"
 
 #ifdef _WIN32

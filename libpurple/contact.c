@@ -21,24 +21,24 @@
  */
 
 #include "contact.h"
+
+#include "buddylist.h"
 #include "prefs.h"
 #include "purpleconversationmanager.h"
 #include "purpleprivate.h"
+#include "signals.h"
 #include "util.h"
 
 typedef struct _PurpleMetaContactPrivate    PurpleMetaContactPrivate;
 
 struct _PurpleMetaContactPrivate {
 	char *alias;                  /* The user-set alias of the contact  */
-	PurpleBuddy *priority_buddy;  /* The "top" buddy for this contact   */
-	gboolean priority_valid;      /* Is priority valid?                 */
 };
 
 enum
 {
 	PROP_0,
 	PROP_ALIAS,
-	PROP_PRIORITY_BUDDY,
 	N_PROPERTIES,
 };
 
@@ -53,53 +53,6 @@ G_DEFINE_TYPE_WITH_PRIVATE(PurpleMetaContact, purple_meta_contact,
 /******************************************************************************
  * API
  *****************************************************************************/
-static void
-purple_meta_contact_compute_priority_buddy(PurpleMetaContact *contact) {
-	PurpleBlistNode *bnode;
-	PurpleBuddy *new_priority = NULL;
-	PurpleMetaContactPrivate *priv =
-			purple_meta_contact_get_instance_private(contact);
-
-	priv->priority_buddy = NULL;
-	for (bnode = PURPLE_BLIST_NODE(contact)->child;
-			bnode != NULL;
-			bnode = bnode->next)
-	{
-		PurpleBuddy *buddy;
-
-		if (!PURPLE_IS_BUDDY(bnode))
-			continue;
-
-		buddy = PURPLE_BUDDY(bnode);
-		if (new_priority == NULL)
-		{
-			new_priority = buddy;
-			continue;
-		}
-
-		if (purple_account_is_connected(purple_buddy_get_account(buddy)))
-		{
-			int cmp = 1;
-			if (purple_account_is_connected(purple_buddy_get_account(new_priority)))
-				cmp = purple_presence_compare(
-						purple_buddy_get_presence(new_priority),
-						purple_buddy_get_presence(buddy));
-
-			if (cmp > 0 || (cmp == 0 &&
-			                purple_prefs_get_bool("/purple/contact/last_match")))
-			{
-				new_priority = buddy;
-			}
-		}
-	}
-
-	priv->priority_buddy = new_priority;
-	priv->priority_valid = TRUE;
-
-	g_object_notify_by_pspec(G_OBJECT(contact),
-			properties[PROP_PRIORITY_BUDDY]);
-}
-
 void
 purple_meta_contact_set_alias(PurpleMetaContact *contact, const char *alias)
 {
@@ -149,50 +102,7 @@ const char *purple_meta_contact_get_alias(PurpleMetaContact* contact)
 	if (priv->alias)
 		return priv->alias;
 
-	return purple_buddy_get_alias(purple_meta_contact_get_priority_buddy(contact));
-}
-
-gboolean purple_meta_contact_on_account(PurpleMetaContact *c, PurpleAccount *account)
-{
-	PurpleBlistNode *bnode, *cnode = (PurpleBlistNode *) c;
-
-	g_return_val_if_fail(PURPLE_IS_META_CONTACT(c), FALSE);
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
-
-	for (bnode = cnode->child; bnode; bnode = bnode->next) {
-		PurpleBuddy *buddy;
-
-		if (! PURPLE_IS_BUDDY(bnode))
-			continue;
-
-		buddy = (PurpleBuddy *)bnode;
-		if (purple_buddy_get_account(buddy) == account)
-			return TRUE;
-	}
-	return FALSE;
-}
-
-void purple_meta_contact_invalidate_priority_buddy(PurpleMetaContact *contact)
-{
-	PurpleMetaContactPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_META_CONTACT(contact));
-
-	priv = purple_meta_contact_get_instance_private(contact);
-	priv->priority_valid = FALSE;
-}
-
-PurpleBuddy *purple_meta_contact_get_priority_buddy(PurpleMetaContact *contact)
-{
-	PurpleMetaContactPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_META_CONTACT(contact), NULL);
-
-	priv = purple_meta_contact_get_instance_private(contact);
-	if (!priv->priority_valid)
-		purple_meta_contact_compute_priority_buddy(contact);
-
-	return priv->priority_buddy;
+	return NULL;
 }
 
 /**************************************************************************
@@ -227,9 +137,6 @@ purple_meta_contact_get_property(GObject *obj, guint param_id, GValue *value,
 	switch (param_id) {
 		case PROP_ALIAS:
 			g_value_set_string(value, priv->alias);
-			break;
-		case PROP_PRIORITY_BUDDY:
-			g_value_set_object(value, purple_meta_contact_get_priority_buddy(contact));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -281,21 +188,6 @@ static void purple_meta_contact_class_init(PurpleMetaContactClass *klass)
 		"The alias for the contact.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS
-	);
-
-	/**
-	 * PurpleMetaContact:priority-buddy:
-	 *
-	 * The priority buddy of the contact.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_PRIORITY_BUDDY] = g_param_spec_object(
-		"priority-buddy",
-		"Priority buddy",
-		"The priority buddy of the contact.",
-		PURPLE_TYPE_BUDDY,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS
 	);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);

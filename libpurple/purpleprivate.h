@@ -35,6 +35,7 @@
 #include "purplecredentialprovider.h"
 #include "purplehistoryadapter.h"
 #include "purpleversion.h"
+#include "xmlnode.h"
 
 G_BEGIN_DECLS
 
@@ -59,16 +60,6 @@ PurpleXmlNode *_purple_account_to_xmlnode(PurpleAccount *account);
  */
 G_GNUC_INTERNAL
 PurpleBlistNode *_purple_blist_get_last_child(PurpleBlistNode *node);
-
-/* This is for the accounts code to notify the buddy icon code that
- * it's done loading.  We may want to replace this with a signal. */
-G_GNUC_INTERNAL
-void _purple_buddy_icons_account_loaded_cb(void);
-
-/* This is for the buddy list to notify the buddy icon code that
- * it's done loading.  We may want to replace this with a signal. */
-G_GNUC_INTERNAL
-void _purple_buddy_icons_blist_loaded_cb(void);
 
 /**
  * _purple_connection_wants_to_die:

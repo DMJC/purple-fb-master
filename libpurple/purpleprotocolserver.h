@@ -30,7 +30,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "buddy.h"
 #include "connection.h"
 #include "group.h"
 #include "purpleaccount.h"
@@ -67,17 +66,7 @@ struct _PurpleProtocolServerInterface {
 
 	void (*change_passwd)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_pass, const gchar *new_pass);
 
-	void (*add_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group, const gchar *message);
-	void (*remove_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group);
-	void (*remove_buddies)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups);
-
-	void (*alias_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *alias);
-
-	void (*group_buddy)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *old_group, const gchar *new_group);
-
 	void (*rename_group)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_name, PurpleGroup *group, GList *moved_buddies);
-
-	void (*set_buddy_icon)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleImage *img);
 
 	void (*remove_group)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleGroup *group);
 
@@ -142,80 +131,12 @@ PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_pass, const gchar *new_pass);
 
 /**
- * purple_protocol_server_add_buddy:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- * @buddy: The #PurpleBuddy to add.
- * @group: The #PurpleGroup for @buddy.
- * @message: An optional invite message.
- *
- * This protocol function may be called in situations in which the buddy is
- * already in the specified group. If the protocol supports authorization and
- * the user is not already authorized to see the status of @buddy, this
- * function will request authorization. If authorization is required, then
- * @message will be used as an invite message.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_add_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group, const gchar *message);
-
-/**
- * purple_protocol_server_remove_buddy:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- * @buddy: The #PurpleBuddy instance.
- * @group: (nullable): The #PurpleGroup instance.
- *
- * Removes @buddy and potentially @group from the server side list of contacts.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_remove_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleBuddy *buddy, PurpleGroup *group);
-
-/**
- * purple_protocol_server_remove_buddies:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- * @buddies: (element-type PurpleBuddy): A #GList of #PurpleBuddy's to remove.
- * @groups: (element-type PurpleGroup): A #GList of #PurpleGroup's
- *          corresponding to @buddies.
- *
- * Similar to purple_protocol_server_remove_buddy() but allows you to remove
- * multiple at a time.
- *
- * If @protocol_server doesn't implement this function directly,
- * purple_protocol_server_remove_buddy() will be called for each buddy/group
- * pair in @buddies/@groups.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_remove_buddies(PurpleProtocolServer *protocol_server, PurpleConnection *connection, GList *buddies, GList *groups);
-
-/**
- * purple_protocol_server_group_buddy:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- * @who: The name of the user whose group to switch.
- * @old_group: The name of @who's old group.
- * @new_group: The name of the new group to add @who to.
- *
- * Moves @who from group @old_group to a new group of @new_group.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_group_buddy(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *who, const gchar *old_group, const gchar *new_group);
-
-/**
  * purple_protocol_server_rename_group:
  * @protocol_server: The #PurpleProtocolServer instance.
  * @connection:  The #PurpleConnection instance.
  * @old_name: The old name of the group.
  * @group: The new #PurpleGroup instance.
- * @moved_buddies: (element-type PurpleBuddy): A list of #PurpleBuddy's being
+ * @moved_buddies: (element-type GObject): A list of #PurpleBuddy's being
  *                 moved as part of this rename.
  *
  * Renames the group named @old_name to the new @group.
@@ -224,19 +145,6 @@ void purple_protocol_server_group_buddy(PurpleProtocolServer *protocol_server, P
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_name, PurpleGroup *group, GList *moved_buddies);
-
-/**
- * purple_protocol_server_set_buddy_icon:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- * @img: (nullable): The #PurpleImage instance, or %NULL to unset the icon.
- *
- * Sets the user's buddy icon to @img.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_set_buddy_icon(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleImage *img);
 
 /**
  * purple_protocol_server_remove_group:

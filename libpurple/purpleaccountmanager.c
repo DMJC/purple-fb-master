@@ -26,6 +26,7 @@
 #include "accounts.h"
 #include "core.h"
 #include "purpleaccount.h"
+#include "util.h"
 
 enum {
 	PROP_0,

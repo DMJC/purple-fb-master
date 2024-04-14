@@ -249,6 +249,14 @@ version 3.0.0 (??/??/????):
 		* account-setting-info, account-set-info signals
 		* account-status-changing signal.
 		* blocked-img-msg signal.
+		* buddy-caps-changed signal.
+		* buddy-got-login-time signal.
+		* buddy-icon-changed signal.
+		* buddy-idle-changed signal.
+		* buddy-privacy-changed signal.
+		* buddy-removed-from-group signal.
+		* buddy-signed-off signal.
+		* buddy-signed-on signal.
 		* buddy-status-changed signal.
 		* buddy-typed signal.
 		* buddy-typing signal.
@@ -287,6 +295,8 @@ version 3.0.0 (??/??/????):
 		* PURPLE_ACCOUNT_RESPONSE_IGNORE
 		* PURPLE_ACCOUNT_RESPONSE_PASS
 		* PurpleAccountUiOps
+		* purple_account_add_buddy
+		* purple_account_add_buddies
 		* purple_account_add_buddies_with_invite
 		* purple_account_add_buddy_with_invite
 		* purple_account_destroy_log
@@ -322,6 +332,8 @@ version 3.0.0 (??/??/????):
 		* purple_account_privacy_get_permitted
 		* purple_account_privacy_permit_add
 		* purple_account_privacy_permit_remove
+		* purple_account_remove_buddy
+		* purple_account_remove_buddies
 		* purple_account_remove_setting
 		* purple_account_request_add. Use purple_add_contact_request_new
 		  instead.
@@ -344,6 +356,7 @@ version 3.0.0 (??/??/????):
 		* purple_account_set_ui_bool
 		* purple_account_set_username. Use purple_contact_info_set_username
 		  instead.
+		* purple_account_supports_offline_message
 		* account-status-changed signal
 		* purple_accounts_add
 		* purple_accounts_find
@@ -367,6 +380,8 @@ version 3.0.0 (??/??/????):
 		* purple_attention_type_get_unlocalized_name
 		* purple_base16_*
 		* purple_base64_*. Use g_base64_* instead
+		* purple_blist_add_account
+		* purple_blist_add_buddy
 		* purple_blist_add_chat
 		* purple_blist_find_chat
 		* purple_blist_get_ui_data
@@ -374,6 +389,8 @@ version 3.0.0 (??/??/????):
 		* purple_blist_new
 		* purple_blist_node_get_ui_data
 		* purple_blist_node_set_ui_data
+		* purple_blist_remove_account
+		* purple_blist_remove_buddy
 		* purple_blist_remove_chat
 		* purple_blist_request_add_chat
 		* purple_blist_set_ui_data

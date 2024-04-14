@@ -23,6 +23,8 @@
 #include "cmds.h"
 #include "purpleaccount.h"
 #include "purplemarkup.h"
+#include "signals.h"
+#include "util.h"
 
 static GList *cmds = NULL;
 static guint next_id = 1;

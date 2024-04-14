@@ -33,6 +33,8 @@
 #include "purplecredentialmanager.h"
 #include "purpleenums.h"
 #include "purpleprivate.h"
+#include "signals.h"
+#include "util.h"
 
 static guint    save_timer = 0;
 static gboolean accounts_loaded = FALSE;
@@ -395,24 +397,6 @@ parse_account(PurpleXmlNode *node)
 		g_free(data);
 	}
 
-	/* Read an old buddyicon */
-	child = purple_xmlnode_get_child(node, "buddyicon");
-	if ((child != NULL) && ((data = purple_xmlnode_get_data(child)) != NULL))
-	{
-		const char *dirname = purple_buddy_icons_get_cache_dir();
-		char *filename = g_build_filename(dirname, data, NULL);
-		gchar *contents;
-		gsize len;
-
-		if (g_file_get_contents(filename, &contents, &len, NULL))
-		{
-			purple_buddy_icons_set_account_icon(ret, (guchar *)contents, len);
-		}
-
-		g_free(filename);
-		g_free(data);
-	}
-
 	/* Read settings (both core and UI) */
 	for (child = purple_xmlnode_get_child(node, "settings"); child != NULL;
 			child = purple_xmlnode_get_next_twin(child))
@@ -463,8 +447,6 @@ load_accounts(void) {
 	}
 
 	purple_xmlnode_free(node);
-
-	_purple_buddy_icons_account_loaded_cb();
 }
 
 static void
@@ -493,7 +475,6 @@ void
 purple_accounts_delete(PurpleAccount *account)
 {
 	PurpleAccountManager *manager = NULL;
-	PurpleBlistNode *gnode = NULL, *cnode = NULL, *bnode = NULL;
 	PurpleConversationManager *conv_manager = NULL;
 	PurpleCredentialManager *cred_manager = NULL;
 	GList *iter = NULL;
@@ -514,37 +495,6 @@ purple_accounts_delete(PurpleAccount *account)
 	manager = purple_account_manager_get_default();
 	purple_account_manager_remove(manager, account);
 
-	/* Remove this account's buddies */
-	for(gnode = purple_blist_get_default_root(); gnode != NULL;
-	    gnode = purple_blist_node_get_sibling_next(gnode))
-	{
-		if(!PURPLE_IS_GROUP(gnode)) {
-			continue;
-		}
-
-		cnode = purple_blist_node_get_first_child(gnode);
-		while(cnode) {
-			PurpleBlistNode *cnode_next = purple_blist_node_get_sibling_next(cnode);
-
-			if(PURPLE_IS_META_CONTACT(cnode)) {
-				bnode = purple_blist_node_get_first_child(cnode);
-				while(bnode) {
-					PurpleBlistNode *bnode_next = purple_blist_node_get_sibling_next(bnode);
-
-					if (PURPLE_IS_BUDDY(bnode)) {
-						PurpleBuddy *b = (PurpleBuddy *)bnode;
-
-						if(purple_buddy_get_account(b) == account) {
-							purple_blist_remove_buddy(b);
-						}
-					}
-					bnode = bnode_next;
-				}
-			}
-			cnode = cnode_next;
-		}
-	}
-
 	/* Remove any open conversation for this account */
 	conv_manager = purple_conversation_manager_get_default();
 	iter = purple_conversation_manager_get_all(conv_manager);
@@ -557,9 +507,6 @@ purple_accounts_delete(PurpleAccount *account)
 
 		iter = g_list_delete_link(iter, iter);
 	}
-
-	/* This will cause the deletion of an old buddy icon. */
-	purple_buddy_icons_set_account_icon(account, NULL, 0);
 
 	/* This is async because we do not want the
 	 * account being overwritten before we are done.

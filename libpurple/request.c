@@ -29,6 +29,7 @@
 #include "debug.h"
 #include "purplekeyvaluepair.h"
 #include "purpleprivate.h"
+#include "util.h"
 
 static PurpleRequestUiOps *request_ui_ops = NULL;
 static GList *handles = NULL;

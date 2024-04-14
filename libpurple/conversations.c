@@ -25,6 +25,7 @@
 #include "prefs.h"
 #include "purpleprivate.h"
 #include "purpleconversationmanager.h"
+#include "signals.h"
 
 void *
 purple_conversations_get_handle(void)

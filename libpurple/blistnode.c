@@ -21,7 +21,10 @@
  */
 
 #include "blistnode.h"
-#include "buddy.h"
+
+#include "buddylist.h"
+#include "signals.h"
+#include "util.h"
 
 typedef struct _PurpleBlistNodePrivate  PurpleBlistNodePrivate;
 
@@ -48,33 +51,11 @@ G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(PurpleBlistNode, purple_blist_node,
 /* Buddy list node API                                                    */
 /**************************************************************************/
 
-static PurpleBlistNode *get_next_node(PurpleBlistNode *node, gboolean godeep)
+PurpleBlistNode *
+purple_blist_node_next(G_GNUC_UNUSED PurpleBlistNode *node,
+                       G_GNUC_UNUSED gboolean offline)
 {
-	if (node == NULL)
-		return NULL;
-
-	if (godeep && node->child)
-		return node->child;
-
-	if (node->next)
-		return node->next;
-
-	return get_next_node(node->parent, FALSE);
-}
-
-PurpleBlistNode *purple_blist_node_next(PurpleBlistNode *node, gboolean offline)
-{
-	PurpleBlistNode *ret = node;
-
-	if (offline)
-		return get_next_node(ret, TRUE);
-	do
-	{
-		ret = get_next_node(ret, TRUE);
-	} while (ret && PURPLE_IS_BUDDY(ret) &&
-			!purple_account_is_connected(purple_buddy_get_account((PurpleBuddy *)ret)));
-
-	return ret;
+	return NULL;
 }
 
 PurpleBlistNode *purple_blist_node_get_parent(PurpleBlistNode *node)

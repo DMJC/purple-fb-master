@@ -56,31 +56,15 @@ struct _PurpleProtocolClientInterface {
 	GTypeInterface parent;
 
 	/*< public >*/
-	void (*buddy_free)(PurpleProtocolClient *client, PurpleBuddy *buddy);
-
 	void (*convo_closed)(PurpleProtocolClient *client, PurpleConnection *connection, const gchar *who);
 
 	const gchar *(*normalize)(PurpleProtocolClient *client, PurpleAccount *account, const gchar *who);
-
-	gboolean (*offline_message)(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 	/*< private >*/
 	gpointer reserved[4];
 };
 
 G_BEGIN_DECLS
-
-/**
- * purple_protocol_client_buddy_free:
- * @client: The #PurpleProtocolClient instance.
- * @buddy: A #PurpleBuddy instance.
- *
- * Cleans up any protocol specific data for @buddy.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_client_buddy_free(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 /**
  * purple_protocol_client_convo_closed:
@@ -114,20 +98,6 @@ void purple_protocol_client_convo_closed(PurpleProtocolClient *client, PurpleCon
  */
 PURPLE_DEPRECATED
 const gchar *purple_protocol_client_normalize(PurpleProtocolClient *client, PurpleAccount *account, const gchar *who);
-
-/**
- * purple_protocol_client_offline_message:
- * @client: The #PurpleProtocolClient instance.
- * @buddy: A #PurpleBuddy instance.
- *
- * Checks whether offline messages to @buddy are supported.
- *
- * Returns: %TRUE if @buddy supports offline messages, otherwise %FALSE.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-gboolean purple_protocol_client_offline_message(PurpleProtocolClient *client, PurpleBuddy *buddy);
 
 G_END_DECLS
 

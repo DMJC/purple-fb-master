@@ -22,9 +22,12 @@
 
 #include "group.h"
 
+#include "buddylist.h"
+#include "contact.h"
 #include "debug.h"
 #include "purpleprivate.h"
 #include "purpleprotocolserver.h"
+#include "util.h"
 
 typedef struct _PurpleGroupPrivate      PurpleGroupPrivate;
 
@@ -56,34 +59,15 @@ G_DEFINE_TYPE_WITH_PRIVATE(PurpleGroup, purple_group,
 /******************************************************************************
  * Group API
  *****************************************************************************/
-GSList *purple_group_get_accounts(PurpleGroup *group) {
-	GSList *l = NULL;
-	PurpleBlistNode *gnode, *cnode, *bnode;
-
-	gnode = (PurpleBlistNode *)group;
-
-	for (cnode = gnode->child;  cnode; cnode = cnode->next) {
-		if (PURPLE_IS_META_CONTACT(cnode)) {
-			for (bnode = cnode->child; bnode; bnode = bnode->next) {
-				if (PURPLE_IS_BUDDY(bnode)) {
-					if (!g_slist_find(l, purple_buddy_get_account(PURPLE_BUDDY(bnode))))
-						l = g_slist_append(l, purple_buddy_get_account(PURPLE_BUDDY(bnode)));
-				}
-			}
-		}
-	}
-
-	return l;
+GSList *
+purple_group_get_accounts(G_GNUC_UNUSED PurpleGroup *group) {
+	return NULL;
 }
 
-gboolean purple_group_on_account(PurpleGroup *g, PurpleAccount *account) {
-	PurpleBlistNode *cnode;
-	for (cnode = ((PurpleBlistNode *)g)->child; cnode; cnode = cnode->next) {
-		if (PURPLE_IS_META_CONTACT(cnode)) {
-			if(purple_meta_contact_on_account((PurpleMetaContact *) cnode, account))
-				return TRUE;
-		}
-	}
+gboolean
+purple_group_on_account(G_GNUC_UNUSED PurpleGroup *g,
+                        G_GNUC_UNUSED PurpleAccount *account)
+{
 	return FALSE;
 }
 
@@ -129,13 +113,7 @@ void purple_group_set_name(PurpleGroup *source, const char *name) {
 		{
 			next = child->next;
 			if (PURPLE_IS_META_CONTACT(child)) {
-				PurpleBlistNode *bnode;
 				purple_blist_add_contact((PurpleMetaContact *)child, dest, prev);
-				for (bnode = child->child; bnode != NULL; bnode = bnode->next) {
-					purple_blist_add_buddy((PurpleBuddy *)bnode, (PurpleMetaContact *)child,
-							NULL, bnode->prev);
-					moved_buddies = g_list_append(moved_buddies, bnode);
-				}
 				prev = child;
 			} else {
 				purple_debug_error("blistnodetypes", "Unknown child type in group %s", priv->name);
@@ -183,7 +161,7 @@ void purple_group_set_name(PurpleGroup *source, const char *name) {
 			PurpleAccount *account = accts->data;
 			PurpleConnection *gc = NULL;
 			PurpleProtocol *protocol = NULL;
-			GList *l = NULL, *buddies = NULL;
+			GList *buddies = NULL;
 
 			gc = purple_account_get_connection(account);
 
@@ -192,13 +170,6 @@ void purple_group_set_name(PurpleGroup *source, const char *name) {
 
 			if(!protocol)
 				continue;
-
-			for(l = moved_buddies; l; l = l->next) {
-				PurpleBuddy *buddy = PURPLE_BUDDY(l->data);
-
-				if(buddy && purple_buddy_get_account(buddy) == account)
-					buddies = g_list_append(buddies, (PurpleBlistNode *)buddy);
-			}
 
 			if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, SERVER, rename_group)) {
 				purple_protocol_server_rename_group(PURPLE_PROTOCOL_SERVER(protocol),
@@ -213,9 +184,7 @@ void purple_group_set_name(PurpleGroup *source, const char *name) {
 					groups = g_list_prepend(groups, node->parent->parent);
 				}
 
-				purple_account_remove_buddies(account, buddies, groups);
 				g_list_free(groups);
-				purple_account_add_buddies(account, buddies, NULL);
 			}
 
 			g_list_free(buddies);
@@ -345,8 +314,6 @@ purple_group_new(const char *name) {
 	if (name == NULL || name[0] == '\0')
 		name = PURPLE_BLIST_DEFAULT_GROUP_NAME;
 	if (g_strcmp0(name, "Buddies") == 0)
-		name = PURPLE_BLIST_DEFAULT_GROUP_NAME;
-	if (g_strcmp0(name, _purple_blist_get_localized_default_group_name()) == 0)
 		name = PURPLE_BLIST_DEFAULT_GROUP_NAME;
 
 	group = purple_blist_find_group(name);

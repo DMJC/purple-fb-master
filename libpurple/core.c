@@ -26,6 +26,7 @@
 #define G_SETTINGS_ENABLE_BACKEND
 #include <gio/gsettingsbackend.h>
 
+#include "buddylist.h"
 #include "cmds.h"
 #include "connection.h"
 #include "conversations.h"
@@ -147,10 +148,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 	 */
 	purple_plugins_init();
 
-	/* Accounts buddy icons and connection signals, so initialize these before
-	 * accounts.
-	 */
-	purple_buddy_icons_init();
 	purple_connections_init();
 
 	purple_account_manager_startup();
@@ -235,7 +232,6 @@ purple_core_quit(void)
 	purple_blist_uninit();
 	purple_notify_uninit();
 	purple_connections_uninit();
-	purple_buddy_icons_uninit();
 	purple_presence_manager_shutdown();
 	purple_accounts_uninit();
 	purple_proxy_uninit();

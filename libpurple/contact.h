@@ -93,19 +93,6 @@ PURPLE_AVAILABLE_IN_3_0
 PurpleMetaContact *purple_meta_contact_new(void);
 
 /**
- * purple_meta_contact_get_priority_buddy:
- * @contact:  The contact
- *
- * Returns the highest priority buddy for a given contact.
- *
- * Returns: (transfer none): The highest priority buddy.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleBuddy *purple_meta_contact_get_priority_buddy(PurpleMetaContact *contact);
-
-/**
  * purple_meta_contact_set_alias:
  * @contact:  The contact
  * @alias:    The alias
@@ -129,32 +116,6 @@ void purple_meta_contact_set_alias(PurpleMetaContact *contact, const char *alias
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_meta_contact_get_alias(PurpleMetaContact *contact);
-
-/**
- * purple_meta_contact_on_account:
- * @contact:  The contact to search through.
- * @account:  The account.
- *
- * Determines whether an account owns any buddies in a given contact
- *
- * Returns: TRUE if there are any buddies from account in the contact, or FALSE otherwise.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-gboolean purple_meta_contact_on_account(PurpleMetaContact *contact, PurpleAccount *account);
-
-/**
- * purple_meta_contact_invalidate_priority_buddy:
- * @contact:  The contact
- *
- * Invalidates the priority buddy so that the next call to
- * purple_meta_contact_get_priority_buddy recomputes it.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_meta_contact_invalidate_priority_buddy(PurpleMetaContact *contact);
 
 G_END_DECLS
 

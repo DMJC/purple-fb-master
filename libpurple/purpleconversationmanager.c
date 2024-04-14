@@ -24,6 +24,7 @@
 
 #include "purplecontact.h"
 #include "purpleprivate.h"
+#include "util.h"
 
 enum {
 	SIG_REGISTERED,

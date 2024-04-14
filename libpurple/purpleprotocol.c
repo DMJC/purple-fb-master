@@ -26,6 +26,7 @@
 #include "prefs.h"
 #include "purpleaccountmanager.h"
 #include "purpleenums.h"
+#include "signals.h"
 
 enum {
 	PROP_0,
@@ -486,20 +487,6 @@ purple_protocol_get_account_options(PurpleProtocol *protocol) {
 	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
 	if(klass != NULL && klass->get_account_options != NULL) {
 		return klass->get_account_options(protocol);
-	}
-
-	return NULL;
-}
-
-PurpleBuddyIconSpec *
-purple_protocol_get_icon_spec(PurpleProtocol *protocol) {
-	PurpleProtocolClass *klass = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), NULL);
-
-	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
-	if(klass != NULL && klass->get_buddy_icon_spec != NULL) {
-		return klass->get_buddy_icon_spec(protocol);
 	}
 
 	return NULL;

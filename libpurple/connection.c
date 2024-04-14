@@ -138,8 +138,6 @@ purple_connection_set_state(PurpleConnection *connection,
 		purple_presence_set_login_time(presence, timestamp);
 		g_date_time_unref(timestamp);
 
-		purple_blist_add_account(priv->account);
-
 		handle = purple_connections_get_handle();
 		purple_signal_emit(handle, "signed-on", connection);
 		purple_signal_emit_return_1(handle, "autojoin", connection);
@@ -824,8 +822,6 @@ gboolean
 purple_connection_disconnect(PurpleConnection *connection, GError **error) {
 	PurpleConnectionClass *klass = NULL;
 	PurpleConnectionPrivate *priv = NULL;
-	GSList *buddies = NULL;
-	gboolean remove = FALSE;
 	gboolean ret = TRUE;
 	gpointer handle = NULL;
 
@@ -836,13 +832,6 @@ purple_connection_disconnect(PurpleConnection *connection, GError **error) {
 	 */
 
 	priv = purple_connection_get_instance_private(connection);
-
-	/* If we're not connecting, we'll need to remove stuff from our contacts
-	 * from the buddy list.
-	 */
-	if(priv->state != PURPLE_CONNECTION_STATE_CONNECTING) {
-		remove = TRUE;
-	}
 
 	handle = purple_connections_get_handle();
 
@@ -857,23 +846,11 @@ purple_connection_disconnect(PurpleConnection *connection, GError **error) {
 		ret = klass->disconnect(connection, error);
 	}
 
-	/* Clear out the proto data that was freed in the protocol's close method */
-	buddies = purple_blist_find_buddies(priv->account, NULL);
-	while (buddies != NULL) {
-		PurpleBuddy *buddy = buddies->data;
-		purple_buddy_set_protocol_data(buddy, NULL);
-		buddies = g_slist_delete_link(buddies, buddies);
-	}
-
 	/* Do the rest of our cleanup. */
 	connections = g_list_remove(connections, connection);
 
 	purple_connection_set_state(connection,
 	                            PURPLE_CONNECTION_STATE_DISCONNECTED);
-
-	if(remove) {
-		purple_blist_remove_account(priv->account);
-	}
 
 	purple_signal_emit(handle, "signed-off", connection);
 

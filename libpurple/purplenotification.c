@@ -25,6 +25,7 @@
 #include "purplenotification.h"
 
 #include "purpleenums.h"
+#include "util.h"
 
 typedef struct {
 	char *id;

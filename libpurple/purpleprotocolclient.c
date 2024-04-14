@@ -39,21 +39,6 @@ purple_protocol_client_default_init(G_GNUC_UNUSED PurpleProtocolClientInterface 
  * Public API
  *****************************************************************************/
 void
-purple_protocol_client_buddy_free(PurpleProtocolClient *client,
-                                  PurpleBuddy *buddy)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client));
-	g_return_if_fail(PURPLE_IS_BUDDY(buddy));
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->buddy_free != NULL) {
-		iface->buddy_free(client, buddy);
-	}
-}
-
-void
 purple_protocol_client_convo_closed(PurpleProtocolClient *client,
                                     PurpleConnection *connection,
                                     const gchar *who)
@@ -85,21 +70,4 @@ purple_protocol_client_normalize(PurpleProtocolClient *client,
 	}
 
 	return NULL;
-}
-
-gboolean
-purple_protocol_client_offline_message(PurpleProtocolClient *client,
-                                       PurpleBuddy *buddy)
-{
-	PurpleProtocolClientInterface *iface = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CLIENT(client), FALSE);
-	g_return_val_if_fail(PURPLE_IS_BUDDY(buddy), FALSE);
-
-	iface = PURPLE_PROTOCOL_CLIENT_GET_IFACE(client);
-	if(iface != NULL && iface->offline_message != NULL) {
-		return iface->offline_message(client, buddy);
-	}
-
-	return FALSE;
 }

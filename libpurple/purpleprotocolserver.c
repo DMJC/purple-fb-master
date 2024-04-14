@@ -103,86 +103,6 @@ purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server,
 }
 
 void
-purple_protocol_server_add_buddy(PurpleProtocolServer *protocol_server,
-                                 PurpleConnection *connection,
-                                 PurpleBuddy *buddy, PurpleGroup *group,
-                                 const gchar *message)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-	g_return_if_fail(PURPLE_IS_BUDDY(buddy));
-	g_return_if_fail(PURPLE_IS_GROUP(group));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->add_buddy != NULL) {
-		iface->add_buddy(protocol_server, connection, buddy, group, message);
-	}
-}
-
-void
-purple_protocol_server_remove_buddy(PurpleProtocolServer *protocol_server,
-                                    PurpleConnection *connection,
-                                    PurpleBuddy *buddy, PurpleGroup *group)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-	g_return_if_fail(PURPLE_IS_BUDDY(buddy));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->remove_buddy != NULL) {
-		iface->remove_buddy(protocol_server, connection, buddy, group);
-	}
-}
-
-void
-purple_protocol_server_remove_buddies(PurpleProtocolServer *protocol_server,
-                                      PurpleConnection *connection,
-                                      GList *buddies, GList *groups)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->remove_buddies != NULL) {
-		iface->remove_buddies(protocol_server, connection, buddies, groups);
-	} else {
-		while(buddies != NULL && groups != NULL) {
-			purple_protocol_server_remove_buddy(protocol_server, connection,
-			                                    PURPLE_BUDDY(buddies->data),
-			                                    PURPLE_GROUP(groups->data));
-
-			buddies = g_list_next(buddies);
-			groups = g_list_next(groups);
-		}
-	}
-}
-
-void
-purple_protocol_server_group_buddy(PurpleProtocolServer *protocol_server,
-                                   PurpleConnection *connection,
-                                   const gchar *who, const gchar *old_group,
-                                   const gchar *new_group)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-	g_return_if_fail(who != NULL);
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->group_buddy != NULL) {
-		iface->group_buddy(protocol_server, connection, who, old_group,
-		                   new_group);
-	}
-}
-
-void
 purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server,
                                     PurpleConnection *connection,
                                     const gchar *old_name, PurpleGroup *group,
@@ -198,22 +118,6 @@ purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server,
 	if(iface != NULL && iface->rename_group != NULL) {
 		iface->rename_group(protocol_server, connection, old_name, group,
 		                    moved_buddies);
-	}
-}
-
-void
-purple_protocol_server_set_buddy_icon(PurpleProtocolServer *protocol_server,
-                                      PurpleConnection *connection,
-                                      PurpleImage *img)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->set_buddy_icon != NULL) {
-		iface->set_buddy_icon(protocol_server, connection, img);
 	}
 }
 

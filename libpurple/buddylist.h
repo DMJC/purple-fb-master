@@ -29,7 +29,6 @@
 
 /* I can't believe I let ChipX86 inspire me to write good code. -Sean */
 
-#include "buddy.h"
 #include "purpleaccount.h"
 #include "purpleversion.h"
 
@@ -251,20 +250,6 @@ PURPLE_AVAILABLE_IN_ALL
 void purple_blist_set_visible(gboolean show);
 
 /**
- * purple_blist_update_buddies_cache:
- * @buddy:    The buddy whose name will be changed.
- * @new_name: The new name of the buddy.
- *
- * Updates the buddies hash table when a buddy has been renamed. This only
- * updates the cache, the caller is responsible for the actual renaming of
- * the buddy after updating the cache.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_blist_update_buddies_cache(PurpleBuddy *buddy, const char *new_name);
-
-/**
  * purple_blist_update_groups_cache:
  * @group:    The group whose name will be changed.
  * @new_name: The new name of the group.
@@ -277,25 +262,6 @@ void purple_blist_update_buddies_cache(PurpleBuddy *buddy, const char *new_name)
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_blist_update_groups_cache(PurpleGroup *group, const char *new_name);
-
-/**
- * purple_blist_add_buddy:
- * @buddy:   The new buddy who gets added
- * @contact: The optional contact to place the buddy in.
- * @group:   The group to add the new buddy to.
- * @node:    The insertion point.  Pass in NULL to add the node as
- *                the first child in the given group.
- *
- * Adds a new buddy to the buddy list.
- *
- * The buddy will be inserted right after node or prepended to the
- * group if node is NULL.  If both are NULL, the buddy will be added to
- * the default group.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_blist_add_buddy(PurpleBuddy *buddy, PurpleMetaContact *contact, PurpleGroup *group, PurpleBlistNode *node);
 
 /**
  * purple_blist_add_group:
@@ -329,20 +295,6 @@ PURPLE_AVAILABLE_IN_ALL
 void purple_blist_add_contact(PurpleMetaContact *contact, PurpleGroup *group, PurpleBlistNode *node);
 
 /**
- * purple_blist_remove_buddy:
- * @buddy:   The buddy to be removed
- *
- * Removes a buddy from the buddy list and frees the memory allocated to it.
- * This doesn't actually try to remove the buddy from the server list.
- *
- * See purple_account_remove_buddy().
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_blist_remove_buddy(PurpleBuddy *buddy);
-
-/**
  * purple_blist_remove_contact:
  * @contact: The contact to be removed
  *
@@ -370,52 +322,6 @@ PURPLE_AVAILABLE_IN_ALL
 void purple_blist_remove_group(PurpleGroup *group);
 
 /**
- * purple_blist_find_buddy:
- * @account: The account this buddy belongs to
- * @name:    The buddy's name
- *
- * Finds the buddy struct given a name and an account
- *
- * Returns: (transfer none): The buddy or %NULL if the buddy does not exist.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleBuddy *purple_blist_find_buddy(PurpleAccount *account, const char *name);
-
-/**
- * purple_blist_find_buddy_in_group:
- * @account: The account this buddy belongs to
- * @name:    The buddy's name
- * @group:   The group to look in
- *
- * Finds the buddy struct given a name, an account, and a group
- *
- * Returns: (transfer none): The buddy or %NULL if the buddy does not exist in
- *          the group.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleBuddy *purple_blist_find_buddy_in_group(PurpleAccount *account, const char *name,
-		PurpleGroup *group);
-
-/**
- * purple_blist_find_buddies:
- * @account: The account this buddy belongs to
- * @name:    The buddy's name (or NULL to return all buddies for the account)
- *
- * Finds all PurpleBuddy structs given a name and an account
- *
- * Returns: (element-type PurpleBuddy) (transfer container): %NULL if the buddy
- *          doesn't exist, or a GSList of PurpleBuddy structs.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-GSList *purple_blist_find_buddies(PurpleAccount *account, const char *name);
-
-/**
  * purple_blist_find_group:
  * @name:    The group's name
  *
@@ -439,30 +345,6 @@ PurpleGroup *purple_blist_find_group(const char *name);
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleGroup *purple_blist_get_default_group(void);
-
-/**
- * purple_blist_add_account:
- * @account:   The account
- *
- * Called when an account connects.  Tells the UI to update all the
- * buddies.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_blist_add_account(PurpleAccount *account);
-
-/**
- * purple_blist_remove_account:
- * @account:   The account
- *
- * Called when an account disconnects.  Sets the presence of all the buddies to 0
- * and tells the UI to update them.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_blist_remove_account(PurpleAccount *account);
 
 /**
  * purple_blist_walk:

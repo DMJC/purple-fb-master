@@ -24,6 +24,8 @@
 
 #include "purpleauthorizationrequestnotification.h"
 
+#include "util.h"
+
 enum {
 	PROP_0,
 	PROP_AUTHORIZATION_REQUEST,

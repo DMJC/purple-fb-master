@@ -30,6 +30,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gio/gio.h>
+
 #include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL (purple_protocol_get_type())
@@ -46,7 +48,6 @@ PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_DERIVABLE_TYPE(PurpleProtocol, purple_protocol, PURPLE, PROTOCOL,
                          GObject)
 
-#include "buddyicon.h"
 #include "connection.h"
 #include "purpleaccount.h"
 #include "purplewhiteboardops.h"
@@ -117,7 +118,6 @@ typedef enum  /*< flags >*/
  *                   procotol provides.
  * @get_account_options: Returns a list of all #PurpleAccountOption's for the
  *                       protocol.
- * @get_buddy_icon_spec: Returns a #PurpleBuddyIconSpec that should be used.
  * @get_whiteboard_ops: Return the #PurpleWhiteboardOps that should be used.
  * @login: Logs into the server.
  * @close: Close sconnection with the server.
@@ -139,7 +139,6 @@ struct _PurpleProtocolClass {
 
 	GList *(*get_user_splits)(PurpleProtocol *protocol);
 	GList *(*get_account_options)(PurpleProtocol *protocol);
-	PurpleBuddyIconSpec *(*get_buddy_icon_spec)(PurpleProtocol *protocol);
 	PurpleWhiteboardOps *(*get_whiteboard_ops)(PurpleProtocol *protocol);
 
 	void (*can_connect_async)(PurpleProtocol *protocol, PurpleAccount *account, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
@@ -250,19 +249,6 @@ GList *purple_protocol_get_user_splits(PurpleProtocol *protocol);
  */
 PURPLE_AVAILABLE_IN_3_0
 GList *purple_protocol_get_account_options(PurpleProtocol *protocol);
-
-/**
- * purple_protocol_get_icon_spec:
- * @protocol: The #PurpleProtocol instance.
- *
- * Gets the icon spec of a protocol.
- *
- * Returns: (transfer full): The icon spec of the protocol.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleBuddyIconSpec *purple_protocol_get_icon_spec(PurpleProtocol *protocol);
 
 /**
  * purple_protocol_get_whiteboard_ops:

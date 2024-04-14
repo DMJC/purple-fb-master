@@ -2,9 +2,7 @@ purple_coresources = [
 	'accounts.c',
 	'action.c',
 	'blistnode.c',
-	'buddy.c',
 	'buddylist.c',
-	'buddyicon.c',
 	'circularbuffer.c',
 	'cmds.c',
 	'connection.c',
@@ -111,9 +109,7 @@ purple_coreheaders = [
 	'accounts.h',
 	'action.h',
 	'blistnode.h',
-	'buddy.h',
 	'buddylist.h',
-	'buddyicon.h',
 	'circularbuffer.h',
 	'cmds.h',
 	'connection.h',
@@ -266,7 +262,6 @@ purple_mediaheaders = [
 ]
 
 purple_enumheaders = [
-	'buddyicon.h',
 	'connection.h',
 	'debug.h',
 	'notify.h',

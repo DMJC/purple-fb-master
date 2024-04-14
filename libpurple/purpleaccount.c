@@ -391,24 +391,6 @@ purple_account_get_state(PurpleAccount *account) {
 }
 
 static void
-purple_account_changed_cb(GObject *obj, GParamSpec *pspec,
-                          G_GNUC_UNUSED gpointer data)
-{
-	const char *name = NULL;
-
-	purple_accounts_schedule_save();
-
-	name = g_param_spec_get_name(pspec);
-	if(purple_strequal(name, "username")) {
-		/* if the username changes, we should re-write the buddy list to disk
-		 * with the new name.
-		  */
-		purple_blist_save_account(purple_blist_get_default(),
-		                          PURPLE_ACCOUNT(obj));
-	}
-}
-
-static void
 purple_account_connection_state_cb(GObject *obj,
                                    G_GNUC_UNUSED GParamSpec *pspec,
                                    gpointer data)
@@ -776,10 +758,6 @@ purple_account_constructed(GObject *object) {
 	}
 
 	account->presence = purple_presence_new();
-
-	/* Connect to our own notify signal so we can update accounts.xml. */
-	g_signal_connect(object, "notify",
-	                 G_CALLBACK(purple_account_changed_cb), NULL);
 }
 
 static void
@@ -1635,87 +1613,6 @@ purple_account_get_bool(PurpleAccount *account, const char *name,
 }
 
 void
-purple_account_add_buddy(PurpleAccount *account, PurpleBuddy *buddy,
-                         const char *message)
-{
-	PurpleProtocol *protocol = NULL;
-	PurpleConnection *gc;
-
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-	g_return_if_fail(PURPLE_IS_BUDDY(buddy));
-
-	gc = purple_account_get_connection(account);
-	if(gc != NULL) {
-		protocol = purple_connection_get_protocol(gc);
-	}
-
-	if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-		PurpleGroup *group = purple_buddy_get_group(buddy);
-
-		purple_protocol_server_add_buddy(PURPLE_PROTOCOL_SERVER(protocol), gc,
-		                                 buddy, group, message);
-	}
-}
-
-void
-purple_account_add_buddies(PurpleAccount *account, GList *buddies,
-                           const char *message)
-{
-	PurpleProtocol *protocol = NULL;
-	PurpleConnection *gc = purple_account_get_connection(account);
-
-	if(gc != NULL) {
-		protocol = purple_connection_get_protocol(gc);
-	}
-
-	if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-		PurpleProtocolServer *server = PURPLE_PROTOCOL_SERVER(protocol);
-
-		for(GList *b = buddies; b != NULL; b = b->next) {
-			PurpleBuddy *buddy = b->data;
-
-			purple_protocol_server_add_buddy(server, gc, buddy,
-			                                 purple_buddy_get_group(buddy),
-			                                 message);
-		}
-	}
-}
-
-void
-purple_account_remove_buddy(PurpleAccount *account, PurpleBuddy *buddy,
-                            PurpleGroup *group)
-{
-	PurpleProtocol *protocol = NULL;
-	PurpleConnection *gc = purple_account_get_connection(account);
-
-	if(gc != NULL) {
-		protocol = purple_connection_get_protocol(gc);
-	}
-
-	if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-		purple_protocol_server_remove_buddy(PURPLE_PROTOCOL_SERVER(protocol),
-		                                    gc, buddy, group);
-	}
-}
-
-void
-purple_account_remove_buddies(PurpleAccount *account, GList *buddies,
-                              GList *groups)
-{
-	PurpleProtocol *protocol = NULL;
-	PurpleConnection *gc = purple_account_get_connection(account);
-
-	if(gc != NULL) {
-		protocol = purple_connection_get_protocol(gc);
-	}
-
-	if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-		purple_protocol_server_remove_buddies(PURPLE_PROTOCOL_SERVER(protocol),
-		                                      gc, buddies, groups);
-	}
-}
-
-void
 purple_account_remove_group(PurpleAccount *account, PurpleGroup *group) {
 	PurpleProtocol *protocol = NULL;
 	PurpleConnection *gc = purple_account_get_connection(account);
@@ -1753,30 +1650,6 @@ purple_account_change_password(PurpleAccount *account, const char *orig_pw,
 		purple_protocol_server_change_passwd(PURPLE_PROTOCOL_SERVER(protocol),
 		                                     gc, orig_pw, new_pw);
 	}
-}
-
-gboolean
-purple_account_supports_offline_message(PurpleAccount *account,
-                                        PurpleBuddy *buddy)
-{
-	PurpleConnection *gc;
-	PurpleProtocol *protocol = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
-	g_return_val_if_fail(PURPLE_IS_BUDDY(buddy), FALSE);
-
-	gc = purple_account_get_connection(account);
-	if(gc == NULL) {
-		return FALSE;
-	}
-
-	protocol = purple_connection_get_protocol(gc);
-	if(!protocol) {
-		return FALSE;
-	}
-
-	return purple_protocol_client_offline_message(PURPLE_PROTOCOL_CLIENT(protocol),
-	                                              buddy);
 }
 
 const PurpleConnectionErrorInfo *
