@@ -36,31 +36,6 @@
 G_BEGIN_DECLS
 
 /**
- * pidgin_retrieve_user_info:
- * @conn:   The connection to get information from.
- * @name:   The user to get information about.
- *
- * Get information about a user. Show immediate feedback.
- *
- * Since: 2.1
- */
-PIDGIN_AVAILABLE_IN_2_1
-void pidgin_retrieve_user_info(PurpleConnection *conn, const char *name);
-
-/**
- * pidgin_retrieve_user_info_in_chat:
- * @conn:   The connection to get information from.
- * @name:   The user to get information about.
- * @chatid: The chat id.
- *
- * Get information about a user in a chat. Show immediate feedback.
- *
- * Since: 2.1
- */
-PIDGIN_AVAILABLE_IN_2_1
-void pidgin_retrieve_user_info_in_chat(PurpleConnection *conn, const char *name, int chatid);
-
-/**
  * pidgin_set_accessible_label:
  * @w: The widget that we want to name.
  * @l: A GtkLabel that we want to use as the ATK name for the widget.
@@ -85,24 +60,6 @@ void pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l);
  */
 PIDGIN_AVAILABLE_IN_2_4
 gboolean pidgin_auto_parent_window(GtkWidget *window);
-
-/**
- * pidgin_add_widget_to_vbox:
- * @vbox:         The vertically-oriented GtkBox to add the widget to.
- * @widget_label: The label to give the widget, can be %NULL.
- * @sg:           The GtkSizeGroup to add the label to, can be %NULL.
- * @widget:       The GtkWidget to add.
- * @expand:       Whether to expand the widget horizontally.
- * @p_label:      Place to store a pointer to the GtkLabel, or %NULL if you don't care.
- *
- * Add a labelled widget to a GtkBox
- *
- * Returns:  (transfer full): A GtkBox already added to the GtkBox containing the GtkLabel and the GtkWidget.
- *
- * Since: 2.4
- */
-PIDGIN_AVAILABLE_IN_2_4
-GtkWidget *pidgin_add_widget_to_vbox(GtkBox *vbox, const char *widget_label, GtkSizeGroup *sg, GtkWidget *widget, gboolean expand, GtkWidget **p_label);
 
 G_END_DECLS
 

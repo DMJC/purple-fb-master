@@ -986,6 +986,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_accounts_get_ui_ops
 		* pidgin_accounts_window_hide
 		* pidgin_accounts_window_show, use pidgin_account_manager_new instead.
+		* pidgin_add_widget_to_vbox
 		* pidgin_append_blist_node_extended_menu
 		* pidgin_append_blist_node_privacy_menu
 		* pidgin_append_blist_node_proto_menu
@@ -1226,6 +1227,8 @@ version 3.0.0 (??/??/????):
 		* pidgin_privacy_dialog_show
 		* pidgin_privacy_init
 		* pidgin_protocol_option_menu_get_selected
+		* pidgin_retrieve_user_info
+		* pidgin_retrieve_user_info_in_chat
 		* pidgin_request_add_permit
 		* pidgin_request_add_block
 		* pidgin_save_accels

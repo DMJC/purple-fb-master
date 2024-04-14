@@ -38,44 +38,6 @@
  *****************************************************************************/
 
 void
-pidgin_retrieve_user_info(PurpleConnection *conn, const char *name) {
-	PurpleNotifyUserInfo *info = NULL;
-	PurpleProtocol *protocol = NULL;
-
-	protocol = purple_connection_get_protocol(conn);
-	if(!PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-		return;
-	}
-
-	purple_protocol_server_get_info(PURPLE_PROTOCOL_SERVER(protocol), conn,
-	                                name);
-
-	info = purple_notify_user_info_new();
-	purple_notify_user_info_add_pair_plaintext(info, _("Information"),
-	                                           _("Retrieving..."));
-	purple_notify_userinfo(conn, name, info, NULL, NULL);
-	purple_notify_user_info_destroy(info);
-}
-
-void pidgin_retrieve_user_info_in_chat(PurpleConnection *conn, const char *name, int chat)
-{
-	char *who = NULL;
-	PurpleProtocol *protocol = NULL;
-
-	if (chat < 0) {
-		pidgin_retrieve_user_info(conn, name);
-		return;
-	}
-
-	protocol = purple_connection_get_protocol(conn);
-	if (protocol != NULL)
-		who = purple_protocol_chat_get_user_real_name(PURPLE_PROTOCOL_CHAT(protocol), conn, chat, name);
-
-	pidgin_retrieve_user_info(conn, who ? who : name);
-	g_free(who);
-}
-
-void
 pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l)
 {
 	GtkAccessible *acc, *label;
@@ -89,42 +51,6 @@ pidgin_set_accessible_label(GtkWidget *w, GtkLabel *l)
 	/* Create the labeled-by relation */
 	gtk_accessible_update_relation(acc, GTK_ACCESSIBLE_RELATION_LABELLED_BY,
 	                               label, NULL, -1);
-}
-
-GtkWidget *
-pidgin_add_widget_to_vbox(GtkBox *vbox, const char *widget_label, GtkSizeGroup *sg, GtkWidget *widget, gboolean expand, GtkWidget **p_label)
-{
-	GtkWidget *hbox;
-	GtkWidget *label = NULL;
-
-	if (widget_label) {
-		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		gtk_box_append(vbox, hbox);
-
-		label = gtk_label_new_with_mnemonic(widget_label);
-		if (sg) {
-			gtk_label_set_xalign(GTK_LABEL(label), 0);
-			gtk_size_group_add_widget(sg, label);
-		}
-		gtk_box_append(GTK_BOX(hbox), label);
-
-		gtk_widget_set_hexpand(widget, expand);
-		gtk_box_append(GTK_BOX(hbox), widget);
-	} else {
-		gtk_widget_set_vexpand(widget, expand);
-		gtk_box_append(vbox, widget);
-
-		hbox = GTK_WIDGET(vbox);
-	}
-
-	if (label) {
-		gtk_label_set_mnemonic_widget(GTK_LABEL(label), widget);
-		pidgin_set_accessible_label(widget, GTK_LABEL(label));
-	}
-
-	if (p_label)
-		(*p_label) = label;
-	return hbox;
 }
 
 gboolean pidgin_auto_parent_window(GtkWidget *widget)
