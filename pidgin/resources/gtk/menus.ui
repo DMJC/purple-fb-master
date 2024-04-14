@@ -29,10 +29,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
 
       <section>
         <item>
-          <attribute name="label" translatable="yes">New Instant _Message</attribute>
-          <attribute name="action">app.new-message</attribute>
-        </item>
-        <item>
           <attribute name="label" translatable="yes">Join Channel</attribute>
           <attribute name="action">app.join-channel</attribute>
         </item>
