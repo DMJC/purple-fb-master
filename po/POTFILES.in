@@ -3,7 +3,6 @@ libpurple/action.c
 libpurple/circularbuffer.c
 libpurple/cmds.c
 libpurple/connection.c
-libpurple/conversations.c
 libpurple/core.c
 libpurple/debug.c
 libpurple/image.c

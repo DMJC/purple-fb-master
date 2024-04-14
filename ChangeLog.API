@@ -278,6 +278,11 @@ version 3.0.0 (??/??/????):
 		* chat-user-joining signal.
 		* chat-user-left signal.
 		* chat-user-leaving signal.
+		* cleared-message-history signal.
+		* conversation-created signal.
+		* conversation-extended-menu signal.
+		* conversation-updated signal.
+		* deleting-conversation signal.
 		* file-recv-accept, file-recv-cancel, file-recv-complete,
 		  file-recv-start, file-send-accept, file-send-cancel,
 		  file-send-complete, file-send-start signals. Use
@@ -483,6 +488,7 @@ version 3.0.0 (??/??/????):
 		* purple_conversation_clear_message_history
 		* purple_conversation_close_logs
 		* purple_conversation_do_command
+		* purple_conversation_get_extended_menu
 		* purple_conversation_get_max_message_size
 		* purple_conversation_get_message_history
 		* purple_conversation_get_remote_smileys
@@ -492,15 +498,18 @@ version 3.0.0 (??/??/????):
 		* purple_conversation_set_account
 		* purple_conversation_set_logging
 		* purple_conversation_set_ui_ops
+		* purple_conversation_update
 		* purple_conversations_add.
-		* purple_conversations_get_all.
 		* purple_conversations_find_with_account.
 		* purple_conversations_find_im_with_account.
 		* purple_conversations_find_chat_with_account.
 		* purple_conversations_find_chat.
+		* purple_conversations_get_all.
+		* purple_conversations_get_handle.
 		* purple_conversations_get_ui_ops.
 		* purple_conversations_remove.
 		* purple_conversations_set_ui_ops.
+		* purple_conversations_uninit.
 		* purple_core_get_ui, use purple_core_get_ui_info instead.
 		* purple_core_ensure_single_instance. Check via GApplication
 		  or whatever is appropriate for your UI.

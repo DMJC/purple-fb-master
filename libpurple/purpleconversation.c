@@ -24,7 +24,6 @@
 
 #include "purpleconversation.h"
 
-#include "conversations.h"
 #include "debug.h"
 #include "notify.h"
 #include "purpleconversationmanager.h"
@@ -154,8 +153,6 @@ purple_conversation_set_account(PurpleConversation *conv,
 			                        G_CALLBACK(purple_conversation_account_connected_cb),
 			                        conv, 0);
 		}
-
-		purple_conversation_update(conv, PURPLE_CONVERSATION_UPDATE_ACCOUNT);
 
 		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_ACCOUNT]);
 	}
@@ -549,9 +546,6 @@ purple_conversation_constructed(GObject *object) {
 	/* Auto-set the title. */
 	purple_conversation_autoset_title(conv);
 
-	purple_signal_emit(purple_conversations_get_handle(),
-	                   "conversation-created", conv);
-
 	g_object_unref(account);
 }
 
@@ -567,9 +561,6 @@ purple_conversation_finalize(GObject *object) {
 			purple_conversation_get_instance_private(conv);
 
 	purple_request_close_with_handle(conv);
-
-	purple_signal_emit(purple_conversations_get_handle(),
-	                   "deleting-conversation", conv);
 
 	g_clear_pointer(&priv->id, g_free);
 	g_clear_object(&priv->avatar);
@@ -1038,8 +1029,6 @@ purple_conversation_set_features(PurpleConversation *conv,
 	priv->features = features;
 
 	g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_FEATURES]);
-
-	purple_conversation_update(conv, PURPLE_CONVERSATION_UPDATE_FEATURES);
 }
 
 PurpleConnectionFlags
@@ -1134,8 +1123,6 @@ purple_conversation_set_title(PurpleConversation *conv, const gchar *title) {
 	if(!g_object_get_data(G_OBJECT(conv), "is-finalizing")) {
 		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_TITLE]);
 	}
-
-	purple_conversation_update(conv, PURPLE_CONVERSATION_UPDATE_TITLE);
 }
 
 const gchar *
@@ -1173,7 +1160,6 @@ purple_conversation_set_name(PurpleConversation *conv, const gchar *name) {
 	g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_NAME]);
 
 	purple_conversation_autoset_title(conv);
-	purple_conversation_update(conv, PURPLE_CONVERSATION_UPDATE_NAME);
 }
 
 const gchar *
@@ -1273,22 +1259,6 @@ purple_conversation_has_focus(PurpleConversation *conv) {
 	return ret;
 }
 
-/*
- * TODO: Need to make sure calls to this function happen in the core
- * instead of the UI.  That way UIs have less work to do, and the
- * core/UI split is cleaner.  Also need to make sure this is called
- * when chats are added/removed from the blist.
- */
-void
-purple_conversation_update(PurpleConversation *conv,
-                           PurpleConversationUpdateType type)
-{
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-
-	purple_signal_emit(purple_conversations_get_handle(),
-	                   "conversation-updated", conv, type);
-}
-
 gboolean
 purple_conversation_present_error(const gchar *who, PurpleAccount *account,
                                   const gchar *what)
@@ -1332,18 +1302,6 @@ purple_conversation_send_confirm(PurpleConversation *conv,
 			purple_conversation_get_account(conv)),
 		data, 2, _("_Send Message"),
 		G_CALLBACK(purple_conversation_send_confirm_cb), _("Cancel"), NULL);
-}
-
-GList *
-purple_conversation_get_extended_menu(PurpleConversation *conv) {
-	GList *menu = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
-
-	purple_signal_emit(purple_conversations_get_handle(),
-	                   "conversation-extended-menu", conv, &menu);
-
-	return menu;
 }
 
 gboolean

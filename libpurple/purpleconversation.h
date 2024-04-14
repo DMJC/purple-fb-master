@@ -462,18 +462,6 @@ PURPLE_AVAILABLE_IN_ALL
 gboolean purple_conversation_has_focus(PurpleConversation *conv);
 
 /**
- * purple_conversation_update:
- * @conv: The conversation.
- * @type: The update type.
- *
- * Updates the visual status and UI of a conversation.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_update(PurpleConversation *conv, PurpleConversationUpdateType type);
-
-/**
  * purple_conversation_send_confirm:
  * @conv:    The conversation.
  * @message: The message to send.
@@ -490,21 +478,6 @@ void purple_conversation_update(PurpleConversation *conv, PurpleConversationUpda
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_send_confirm(PurpleConversation *conv, const gchar *message);
-
-/**
- * purple_conversation_get_extended_menu:
- * @conv: The conversation.
- *
- * Retrieves the extended menu items for the conversation.
- *
- * Returns: (element-type PurpleActionMenu) (transfer full): The extended menu
- *          items for a conversation, as harvested by the chat-extended-menu
- *          signal.
- *
- * Since: 2.1
- */
-PURPLE_AVAILABLE_IN_2_1
-GList * purple_conversation_get_extended_menu(PurpleConversation *conv);
 
 /**
  * purple_conversation_present_error:

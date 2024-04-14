@@ -6,7 +6,9 @@ if host_machine.system() not in ['haiku', 'windows']
 		gnu_symbol_visibility : 'hidden',
 		dependencies : [libpurple_dep, glib, CANBERRA],
 		name_prefix : '',
-		install : true, install_dir : PURPLE_PLUGINDIR)
+		install : true,
+		install_dir : PURPLE_PLUGINDIR,
+		build_by_default : false)
 
 	devenv.append('PURPLE_PLUGIN_PATH', meson.current_build_dir())
 

@@ -28,7 +28,6 @@
 
 #include "cmds.h"
 #include "connection.h"
-#include "conversations.h"
 #include "core.h"
 #include "debug.h"
 #include "network.h"
@@ -154,7 +153,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 	purple_contact_manager_startup();
 	purple_presence_manager_startup();
 	purple_notify_init();
-	purple_conversations_init();
 	purple_conversation_manager_startup();
 	purple_whiteboard_manager_startup();
 
@@ -223,7 +221,6 @@ purple_core_quit(void)
 	purple_idle_manager_shutdown();
 	purple_whiteboard_manager_shutdown();
 	purple_conversation_manager_shutdown();
-	purple_conversations_uninit();
 	purple_notify_uninit();
 	purple_connections_uninit();
 	purple_presence_manager_shutdown();
