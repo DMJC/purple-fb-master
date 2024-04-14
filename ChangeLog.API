@@ -247,6 +247,8 @@ version 3.0.0 (??/??/????):
 		* account-removed signal. Use PurpleAccountManager::removed
 		  instead.
 		* account-setting-info, account-set-info signals
+		* account-signed-off signal.
+		* account-signed-on signal.
 		* account-status-changing signal.
 		* blist-node-aliased signal.
 		* blist-node-extended-menu signal.

@@ -526,24 +526,6 @@ purple_accounts_get_handle(void)
 }
 
 static void
-signed_on_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer unused)
-{
-	PurpleAccount *account = purple_connection_get_account(gc);
-
-	purple_signal_emit(purple_accounts_get_handle(), "account-signed-on",
-	                   account);
-}
-
-static void
-signed_off_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer unused)
-{
-	PurpleAccount *account = purple_connection_get_account(gc);
-
-	purple_signal_emit(purple_accounts_get_handle(), "account-signed-off",
-	                   account);
-}
-
-static void
 connection_error_cb(PurpleConnection *gc,
                     PurpleConnectionError type,
                     const gchar *description,
@@ -566,18 +548,6 @@ purple_accounts_init(void)
 	void *handle = purple_accounts_get_handle();
 	void *conn_handle = purple_connections_get_handle();
 
-	purple_signal_register(handle, "account-signed-on",
-	                       purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
-	                       PURPLE_TYPE_ACCOUNT);
-
-	purple_signal_register(handle, "account-signed-off",
-	                       purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
-	                       PURPLE_TYPE_ACCOUNT);
-
-	purple_signal_connect(conn_handle, "signed-on", handle,
-	                      G_CALLBACK(signed_on_cb), NULL);
-	purple_signal_connect(conn_handle, "signed-off", handle,
-	                      G_CALLBACK(signed_off_cb), NULL);
 	purple_signal_connect(conn_handle, "connection-error", handle,
 	                      G_CALLBACK(connection_error_cb), NULL);
 
@@ -598,5 +568,4 @@ purple_accounts_uninit(void)
 	}
 
 	purple_signals_disconnect_by_handle(handle);
-	purple_signals_unregister_by_instance(handle);
 }
