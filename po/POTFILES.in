@@ -67,13 +67,11 @@ libpurple/purplewhiteboard.c
 libpurple/purplewhiteboardmanager.c
 libpurple/purplewhiteboarduiops.c
 libpurple/request.c
-libpurple/request-datasheet.c
 libpurple/request/purplerequestfield.c
 libpurple/request/purplerequestfieldaccount.c
 libpurple/request/purplerequestfieldbool.c
 libpurple/request/purplerequestfield.c
 libpurple/request/purplerequestfieldchoice.c
-libpurple/request/purplerequestfielddatasheet.c
 libpurple/request/purplerequestfieldimage.c
 libpurple/request/purplerequestfieldint.c
 libpurple/request/purplerequestfieldlabel.c
