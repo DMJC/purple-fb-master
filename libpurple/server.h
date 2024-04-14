@@ -29,7 +29,6 @@
 
 #include "buddy.h"
 #include "group.h"
-#include "purplemessage.h"
 #include "purpleversion.h"
 
 G_BEGIN_DECLS
@@ -46,23 +45,6 @@ G_BEGIN_DECLS
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_serv_move_buddy(PurpleBuddy *buddy, PurpleGroup *orig, PurpleGroup *dest);
-
-/******************************************************************************
- * Server Interface
- *****************************************************************************/
-
-/**
- * purple_serv_join_chat:
- * @gc:   The #PurpleConnection
- * @data: The hash function should be g_str_hash() and the equal
- *             function should be g_str_equal().
- *
- * Joins the chat described by the components in @data.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data);
 
 G_END_DECLS
 

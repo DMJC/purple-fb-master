@@ -367,6 +367,7 @@ version 3.0.0 (??/??/????):
 		* purple_attention_type_get_unlocalized_name
 		* purple_base16_*
 		* purple_base64_*. Use g_base64_* instead
+		* purple_blist_find_chat
 		* purple_blist_get_ui_data
 		* purple_blist_load
 		* purple_blist_new

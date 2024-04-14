@@ -33,7 +33,6 @@
 #include "purpleconversationmanager.h"
 #include "purpleprivate.h"
 #include "purpleprotocol.h"
-#include "purpleprotocolchat.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
 #include "signals.h"
@@ -66,15 +65,5 @@ void purple_serv_move_buddy(PurpleBuddy *buddy, PurpleGroup *orig, PurpleGroup *
 		                                   gc, purple_buddy_get_name(buddy),
 		                                   purple_group_get_name(orig),
 		                                   purple_group_get_name(dest));
-	}
-}
-
-void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data)
-{
-	PurpleProtocol *protocol;
-
-	if (gc) {
-		protocol = purple_connection_get_protocol(gc);
-		purple_protocol_chat_join(PURPLE_PROTOCOL_CHAT(protocol), gc, data);
 	}
 }

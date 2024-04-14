@@ -106,19 +106,6 @@ PURPLE_AVAILABLE_IN_ALL
 const char *purple_chat_get_name(PurpleChat *chat);
 
 /**
- * purple_chat_get_name_only:
- * @chat:   The chat whose name will be returned.
- *
- * Returns the name of the chat
- *
- * Returns:       The first component value.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-const char *purple_chat_get_name_only(PurpleChat *chat);
-
-/**
  * purple_chat_set_alias:
  * @chat:   The chat
  * @alias:  The alias

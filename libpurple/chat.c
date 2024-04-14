@@ -21,7 +21,6 @@
  */
 
 #include "chat.h"
-#include "purpleprotocolchat.h"
 #include "util.h"
 
 typedef struct _PurpleChatPrivate       PurpleChatPrivate;
@@ -69,31 +68,7 @@ const char *purple_chat_get_name(PurpleChat *chat)
 	if ((priv->alias != NULL) && (*priv->alias != '\0'))
 		return priv->alias;
 
-	return purple_chat_get_name_only(chat);
-}
-
-const char *purple_chat_get_name_only(PurpleChat *chat)
-{
-	PurpleChatPrivate *priv = NULL;
-	char *ret = NULL;
-	PurpleProtocol *protocol = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CHAT(chat), NULL);
-
-	priv = purple_chat_get_instance_private(chat);
-
-	protocol = purple_account_get_protocol(priv->account);
-
-	if (PURPLE_PROTOCOL_IMPLEMENTS(protocol, CHAT, info)) {
-		PurpleProtocolChatEntry *pce;
-		GList *parts = purple_protocol_chat_info(PURPLE_PROTOCOL_CHAT(protocol),
-		                                         purple_account_get_connection(priv->account));
-		pce = parts->data;
-		ret = g_hash_table_lookup(priv->components, pce->identifier);
-		g_list_free_full(parts, g_free);
-	}
-
-	return ret;
+	return NULL;
 }
 
 void

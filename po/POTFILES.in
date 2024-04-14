@@ -64,7 +64,6 @@ libpurple/purplepath.c
 libpurple/purpleplugininfo.c
 libpurple/purplepresence.c
 libpurple/purpleprotocol.c
-libpurple/purpleprotocolchat.c
 libpurple/purpleprotocolclient.c
 libpurple/purpleprotocolmanager.c
 libpurple/purpleprotocolmedia.c

@@ -476,20 +476,6 @@ PURPLE_AVAILABLE_IN_3_0
 PurpleGroup *purple_blist_get_default_group(void);
 
 /**
- * purple_blist_find_chat:
- * @account: The chat's account.
- * @name:    The chat's name.
- *
- * Finds a chat by name.
- *
- * Returns: (transfer none): The chat, or %NULL if the chat does not exist.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleChat *purple_blist_find_chat(PurpleAccount *account, const char *name);
-
-/**
  * purple_blist_add_account:
  * @account:   The account
  *

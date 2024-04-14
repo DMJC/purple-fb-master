@@ -30,7 +30,6 @@
 #include "purpleaccountmanager.h"
 #include "purpleprivate.h"
 #include "purpleprotocol.h"
-#include "purpleprotocolchat.h"
 #include "purpleprotocolclient.h"
 #include "purpleconversation.h"
 #include "server.h"
@@ -1703,66 +1702,6 @@ purple_blist_get_default_group(void)
 	}
 
 	return group;
-}
-
-PurpleChat *
-purple_blist_find_chat(PurpleAccount *account, const char *name)
-{
-	char *chat_name;
-	PurpleChat *chat;
-	PurpleProtocol *protocol = NULL;
-	PurpleProtocolChatEntry *pce;
-	PurpleBlistNode *node, *group;
-	GList *parts;
-	char *normname;
-
-	g_return_val_if_fail(PURPLE_IS_BUDDY_LIST(purplebuddylist), NULL);
-	g_return_val_if_fail((name != NULL) && (*name != '\0'), NULL);
-
-	if (!purple_account_is_connected(account))
-		return NULL;
-
-	protocol = purple_account_get_protocol(account);
-
-	if(PURPLE_IS_PROTOCOL_CLIENT(protocol)) {
-		chat = purple_protocol_client_find_blist_chat(PURPLE_PROTOCOL_CLIENT(protocol),
-		                                              account, name);
-
-		if(PURPLE_IS_CHAT(chat)) {
-			return chat;
-		}
-	}
-
-	normname = g_strdup(purple_normalize(account, name));
-	for (group = purple_blist_get_default_root(); group != NULL;
-	     group = group->next) {
-		for (node = group->child; node != NULL; node = node->next) {
-			if (PURPLE_IS_CHAT(node)) {
-
-				chat = (PurpleChat*)node;
-
-				if (account != purple_chat_get_account(chat))
-					continue;
-
-				parts = purple_protocol_chat_info(PURPLE_PROTOCOL_CHAT(protocol),
-					purple_account_get_connection(purple_chat_get_account(chat)));
-
-				pce = parts->data;
-				chat_name = g_hash_table_lookup(purple_chat_get_components(chat),
-												pce->identifier);
-				g_list_free_full(parts, g_free);
-
-				if (purple_chat_get_account(chat) == account && chat_name != NULL &&
-					purple_strequal(purple_normalize(account, chat_name), normname)) {
-					g_free(normname);
-					return chat;
-				}
-			}
-		}
-	}
-
-	g_free(normname);
-	return NULL;
 }
 
 void purple_blist_add_account(PurpleAccount *account)

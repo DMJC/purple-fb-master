@@ -178,7 +178,7 @@ purple_roomlist_join_room(PurpleRoomlist *list, PurpleRoomlistRoom *room) {
 	name = purple_roomlist_room_get_name(room);
 	g_hash_table_replace(adjusted, "name", (gpointer)name);
 
-	purple_serv_join_chat(connection, adjusted);
+	/* purple_serv_join_chat(connection, adjusted); */
 
 	g_hash_table_destroy(adjusted);
 }
