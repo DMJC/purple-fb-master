@@ -118,7 +118,6 @@ pidgin/data/im.pidgin.Pidgin3.metainfo.xml
 pidgin/gtkmedia.c
 pidgin/gtknotify.c
 pidgin/gtkrequest.c
-pidgin/gtkroomlist.c
 pidgin/gtkutils.c
 pidgin/gtkwhiteboard.c
 pidgin/libpidgin.c
@@ -185,7 +184,6 @@ pidgin/resources/Prefs/proxy.ui
 pidgin/resources/Prefs/vv.ui
 pidgin/resources/Protocols/chooser.ui
 pidgin/resources/Protocols/detailed-view.ui
-pidgin/resources/Roomlist/roomlist.ui
 pidgin/resources/Whiteboard/whiteboard.ui
 pidgin/resources/gtk/menus.ui
 pidgin/resources/account-row.ui

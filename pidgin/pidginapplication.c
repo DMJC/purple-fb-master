@@ -33,7 +33,6 @@
 
 #include "pidginapplication.h"
 
-#include "gtkroomlist.h"
 #include "pidginabout.h"
 #include "pidginaccounteditor.h"
 #include "pidginaccountmanager.h"
@@ -219,16 +218,6 @@ static const gchar *pidgin_application_online_actions[] = {
  */
 static const gchar *pidgin_application_channel_actions[] = {
 	"join-channel",
-};
-
-/*< private >
- * pidgin_application_room_list_actions:
- *
- * This list keeps track of which actions should only be enabled if an online
- * account supports room lists.
- */
-static const gchar *pidgin_application_room_list_actions[] = {
-	"room-list",
 };
 
 /**
@@ -494,14 +483,6 @@ pidgin_application_quit(G_GNUC_UNUSED GSimpleAction *simple,
 	purple_core_quit();
 }
 
-static void
-pidgin_application_room_list(G_GNUC_UNUSED GSimpleAction *simple,
-                             G_GNUC_UNUSED GVariant *parameter,
-                             G_GNUC_UNUSED gpointer data)
-{
-	pidgin_roomlist_dialog_show();
-}
-
 static GActionEntry app_entries[] = {
 	{
 		.name = "about",
@@ -549,9 +530,6 @@ static GActionEntry app_entries[] = {
 	}, {
 		.name = "quit",
 		.activate = pidgin_application_quit,
-	}, {
-		.name = "room-list",
-		.activate = pidgin_application_room_list,
 	}
 };
 
@@ -597,7 +575,6 @@ pidgin_application_connected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
 	PidginApplication *application = data;
 	PurpleProtocol *protocol = NULL;
 	gboolean should_enable_channel = FALSE;
-	gboolean should_enable_room_list = FALSE;
 	guint n_actions = 0;
 
 	n_actions = G_N_ELEMENTS(pidgin_application_online_actions);
@@ -622,19 +599,6 @@ pidgin_application_connected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
 		                                       n_actions,
 		                                       TRUE);
 	}
-
-	/* likewise, for the room list, we only care about enabling in this
-	 * handler.
-	 */
-	should_enable_room_list = PURPLE_PROTOCOL_IMPLEMENTS(protocol, ROOMLIST,
-	                                                     get_list);
-	if(should_enable_room_list) {
-		n_actions = G_N_ELEMENTS(pidgin_application_room_list_actions);
-		pidgin_application_actions_set_enabled(application,
-		                                       pidgin_application_room_list_actions,
-		                                       n_actions,
-		                                       TRUE);
-	}
 }
 
 static void
@@ -646,7 +610,6 @@ pidgin_application_disconnected_cb(PurpleAccountManager *manager,
 	GList *connected = NULL;
 	gboolean should_disable_actions = TRUE;
 	gboolean should_disable_channel = TRUE;
-	gboolean should_disable_room_list = TRUE;
 	guint n_actions = 0;
 
 	connected = purple_account_manager_get_connected(manager);
@@ -667,13 +630,8 @@ pidgin_application_disconnected_cb(PurpleAccountManager *manager,
 			should_disable_channel = FALSE;
 		}
 
-		/* Check if the protocol implements the room list interface. */
-		if(PURPLE_PROTOCOL_IMPLEMENTS(protocol, ROOMLIST, get_list)) {
-			should_disable_room_list = FALSE;
-		}
-
 		/* If we can't disable anything we can exit the loop early. */
-		if(!should_disable_channel && !should_disable_room_list) {
+		if(!should_disable_channel) {
 			g_clear_list(&connected, NULL);
 
 			break;
@@ -694,14 +652,6 @@ pidgin_application_disconnected_cb(PurpleAccountManager *manager,
 		n_actions = G_N_ELEMENTS(pidgin_application_channel_actions);
 		pidgin_application_actions_set_enabled(application,
 		                                       pidgin_application_channel_actions,
-		                                       n_actions,
-		                                       FALSE);
-	}
-
-	if(should_disable_room_list) {
-		n_actions = G_N_ELEMENTS(pidgin_application_room_list_actions);
-		pidgin_application_actions_set_enabled(application,
-		                                       pidgin_application_room_list_actions,
 		                                       n_actions,
 		                                       FALSE);
 	}
@@ -947,12 +897,6 @@ pidgin_application_init(PidginApplication *application) {
 	n_actions = G_N_ELEMENTS(pidgin_application_channel_actions);
 	pidgin_application_actions_set_enabled(application,
 	                                       pidgin_application_channel_actions,
-	                                       n_actions,
-	                                       online);
-
-	n_actions = G_N_ELEMENTS(pidgin_application_room_list_actions);
-	pidgin_application_actions_set_enabled(application,
-	                                       pidgin_application_room_list_actions,
 	                                       n_actions,
 	                                       online);
 }

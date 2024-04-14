@@ -32,7 +32,6 @@
 
 #include "gtkmedia.h"
 #include "gtknotify.h"
-#include "gtkroomlist.h"
 #include "gtkrequest.h"
 #include "gtkwhiteboard.h"
 #include "pidgincore.h"
@@ -131,7 +130,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 
 	pidgin_request_init();
 	pidgin_commands_init();
-	pidgin_roomlist_init();
 	pidgin_medias_init();
 	pidgin_notify_init();
 

@@ -72,10 +72,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
           <attribute name="label" translatable="yes">_File Transfers</attribute>
           <attribute name="action">app.file-transfers</attribute>
         </item>
-        <item>
-          <attribute name="label" translatable="yes">R_oom List</attribute>
-          <attribute name="action">app.room-list</attribute>
-        </item>
       </section>
 
       <section>
