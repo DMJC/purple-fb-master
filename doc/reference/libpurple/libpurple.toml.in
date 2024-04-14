@@ -38,13 +38,9 @@ base_url = "https://keep.imfreedom.org/pidgin/pidgin/file/default/"
 # The same order will be used when generating the index
 content_files = [
 	"contributing.md",
-	"plugin_i18n.md",
-	"plugin_ids.md",
 	"signals_cmd.md",
 	"signals_connection.md",
-	"signals_conversation.md",
 	"signals_core.md",
-	"signals_jabber.md",
 	"tut_c_plugins.md",
 ]
 content_images = [
