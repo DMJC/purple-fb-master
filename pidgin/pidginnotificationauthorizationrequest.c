@@ -152,6 +152,7 @@ pidgin_notification_authorization_request_accept_cb(G_GNUC_UNUSED GtkButton *but
 
 	purple_authorization_request_accept(request);
 
+#if 0
 	if(purple_authorization_request_get_add(request)) {
 		PurpleAccount *account = NULL;
 		const gchar *username = NULL, *alias = NULL;
@@ -159,9 +160,8 @@ pidgin_notification_authorization_request_accept_cb(G_GNUC_UNUSED GtkButton *but
 		account = purple_authorization_request_get_account(request);
 		username = purple_authorization_request_get_username(request);
 		alias = purple_authorization_request_get_alias(request);
-
-		purple_blist_request_add_buddy(account, username, NULL, alias);
 	}
+#endif
 
 	pidgin_notification_authorization_request_close(pidgin_request);
 }

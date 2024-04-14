@@ -768,12 +768,6 @@ pidgin_application_startup(GApplication *application) {
 	g_free(opt_config_dir_arg);
 	opt_config_dir_arg = NULL;
 
-	/*
-	 * We want to show the blist early in the init process so the
-	 * user feels warm and fuzzy.
-	 */
-	purple_blist_show();
-
 	if(purple_prefs_get_bool(PIDGIN_PREFS_ROOT "/debug/enabled")) {
 		pidgin_debug_window_show();
 	}
