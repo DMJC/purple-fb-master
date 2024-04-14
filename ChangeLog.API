@@ -681,15 +681,30 @@ version 3.0.0 (??/??/????):
 		* purple_request_fields_get_autosensitive
 		* purple_request_fields_get_ui_data
 		* purple_request_fields_set_ui_data
+		* PurpleRoomlist
+		* PurpleRoomlistField
+		* PurpleRoomlistFieldType
 		* PurpleRoomlistRoomType
+		* PurpleRoomlistUiOps
+		* purple_roomlist_cancel_get_list
 		* purple_roomlist_expand_category
 		* purple_roomlist_field_get_field_type
 		* purple_roomlist_field_get_hidden
 		* purple_roomlist_field_get_label
 		* purple_roomlist_field_new
 		* purple_roomlist_get_fields
+		* purple_roomlist_get_in_progress
+		* purple_roomlist_get_list
 		* purple_roomlist_get_protocol_data
+		* purple_roomlist_get_ui_ops
+		* purple_roomlist_new
+		* purple_roomlist_room_add
+		* purple_roomlist_room_get_name
+		* purple_roomlist_set_fields
+		* purple_roomlist_set_in_progress
 		* purple_roomlist_set_protocol_data
+		* purple_roomlist_set_ui_ops
+		* purple_roomlist_show_with_account
 		* purple_running_osx
 		* purple_serv_add_deny
 		* purple_serv_add_permit
