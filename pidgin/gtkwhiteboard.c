@@ -473,7 +473,6 @@ static void
 pidgin_whiteboard_create(PurpleWhiteboard *wb)
 {
 	PidginWhiteboard *gtkwb;
-	PurpleBuddy *buddy;
 	GdkRGBA color;
 
 	gtkwb = g_object_new(PIDGIN_TYPE_WHITEBOARD, NULL);
@@ -495,16 +494,10 @@ pidgin_whiteboard_create(PurpleWhiteboard *wb)
 		gtkwb->brush_color = 0xff0000;
 	}
 
-	/* Try and set window title as the name of the buddy, else just use
-	 * their username
+	/* Set the window title to the id of the whiteboard as we can't test
+	 * anything right now.
 	 */
-	buddy = purple_blist_find_buddy(purple_whiteboard_get_account(wb),
-	                                purple_whiteboard_get_id(wb));
-
-	gtk_window_set_title(GTK_WINDOW(gtkwb),
-	                     buddy != NULL
-	                             ? purple_buddy_get_contact_alias(buddy)
-	                             : purple_whiteboard_get_id(wb));
+	gtk_window_set_title(GTK_WINDOW(gtkwb), purple_whiteboard_get_id(wb));
 	gtk_widget_set_name(GTK_WIDGET(gtkwb), purple_whiteboard_get_id(wb));
 
 	gtk_widget_set_size_request(GTK_WIDGET(gtkwb->drawing_area),

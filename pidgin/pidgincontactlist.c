@@ -179,9 +179,6 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 {
 	PurpleAvatar *avatar = NULL;
 	PurpleContactInfo *info = NULL;
-	PurpleContact *contact = NULL;
-	PurpleBuddyIcon *icon = NULL;
-	GdkTexture *texture = NULL;
 
 	/* When filtering we get called for rows that have been filtered out. We
 	 * also get called during finalization. I'm not sure why either of these
@@ -205,34 +202,7 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 		}
 	}
 
-	/* All of the contact info in the manager are PurpleContact's so this cast
-	 * is fine.
-	 */
-	contact = PURPLE_CONTACT(info);
-
-	icon = purple_buddy_icons_find(purple_contact_get_account(contact),
-	                               purple_contact_info_get_username(info));
-
-	if(icon != NULL) {
-		GBytes *bytes = NULL;
-		GError *error = NULL;
-		gsize size;
-		gconstpointer data = NULL;
-
-		data = purple_buddy_icon_get_data(icon, &size);
-		bytes = g_bytes_new(data, size);
-
-		texture = gdk_texture_new_from_bytes(bytes, &error);
-		g_bytes_unref(bytes);
-
-		if(error != NULL) {
-			g_warning("Failed to create texture: %s", error->message);
-
-			g_clear_error(&error);
-		}
-	}
-
-	return texture;
+	return NULL;
 }
 
 static void

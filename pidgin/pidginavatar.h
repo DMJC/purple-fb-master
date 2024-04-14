@@ -91,37 +91,38 @@ PIDGIN_AVAILABLE_IN_3_0
 gboolean pidgin_avatar_get_animate(PidginAvatar *avatar);
 
 /**
- * pidgin_avatar_set_buddy:
+ * pidgin_avatar_set_contact_info:
  * @avatar: The #PidginAvatar instance.
- * @buddy: (nullable): The #PurpleBuddy to set or %NULL to unset.
+ * @info: (nullable): A contact info or %NULL to unset.
  *
- * Sets or unsets the #PurpleBuddy that @avatar should use for display.
+ * Sets or unsets the [class@Purple.ContactInfo] that @avatar should use for
+ * display.
  *
  * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
-void pidgin_avatar_set_buddy(PidginAvatar *avatar, PurpleBuddy *buddy);
+void pidgin_avatar_set_contact_info(PidginAvatar *avatar, PurpleContactInfo *info);
 
 /**
- * pidgin_avatar_get_buddy:
+ * pidgin_avatar_get_contact_info:
  * @avatar: The #PidginAvatar instance.
  *
- * Gets the #PurpleBuddy that @avatar is using for display.
+ * Gets the [class@Purple.ContactInfo] that @avatar is using for display.
  *
- * Returns: (transfer none): The #PurpleBuddy that @avatar is using for display.
+ * Returns: (transfer none): The contact info if set, otherwise %NULL.
  *
  * Since: 3.0
  */
 PIDGIN_AVAILABLE_IN_3_0
-PurpleBuddy *pidgin_avatar_get_buddy(PidginAvatar *avatar);
+PurpleContactInfo *pidgin_avatar_get_contact_info(PidginAvatar *avatar);
 
 /**
  * pidgin_avatar_set_conversation:
  * @avatar: The #PidginAvatar instance.
- * @conversation: (nullable): The #PurpleConversation to set or %NULL to unset.
+ * @conversation: (nullable): The conversation to set or %NULL to unset.
  *
- * Sets or unsets the #PurpleConversation that @avatar uses to find the
- * #PurpleBuddy whose icon to display.
+ * Sets or unsets the conversation that @avatar uses to find the
+ * [class@Purple.Avatar] to display.
  *
  * Since: 3.0
  */
@@ -134,8 +135,8 @@ void pidgin_avatar_set_conversation(PidginAvatar *avatar, PurpleConversation *co
  *
  * Gets the #PurpleConversation that @avatar is using for display.
  *
- * Returns: (transfer none): The #PurpleConversation that @avatar is using to
- *          find the #PurpleBuddy whose icon to display.
+ * Returns: (transfer none): The conversation that @avatar is using to
+ *          find the [class@Purple.Avatar] to display.
  *
  * Since: 3.0
  */

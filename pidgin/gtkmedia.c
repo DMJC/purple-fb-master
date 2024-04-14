@@ -470,18 +470,12 @@ static gboolean
 pidgin_request_timeout_cb(PidginMedia *gtkmedia)
 {
 	PurpleAccount *account;
-	PurpleBuddy *buddy;
 	const gchar *alias;
 	PurpleMediaSessionType type;
 	gchar *message = NULL;
 
 	account = purple_media_get_account(gtkmedia->priv->media);
-	buddy = purple_blist_find_buddy(account, gtkmedia->priv->screenname);
-	if(buddy != NULL) {
-		alias = purple_buddy_get_contact_alias(buddy);
-	} else {
-		alias = gtkmedia->priv->screenname;
-	}
+	alias = gtkmedia->priv->screenname;
 	type = gtkmedia->priv->request_type;
 	gtkmedia->priv->timeout_id = 0;
 
@@ -887,20 +881,15 @@ pidgin_media_set_state(PidginMedia *gtkmedia, PidginMediaState state)
 
 static gboolean
 pidgin_media_new_cb(G_GNUC_UNUSED PurpleMediaManager *manager,
-                    PurpleMedia *media, PurpleAccount *account,
+                    PurpleMedia *media,
+                    G_GNUC_UNUSED PurpleAccount *account,
                     char *screenname, G_GNUC_UNUSED gpointer data)
 {
 	PidginMedia *gtkmedia = NULL;
-	PurpleBuddy *buddy = NULL;
 	const gchar *alias = NULL;
 
 	gtkmedia = PIDGIN_MEDIA(pidgin_media_new(media, screenname));
-	buddy = purple_blist_find_buddy(account, screenname);
-	if(buddy != NULL) {
-		alias = purple_buddy_get_contact_alias(buddy);
-	} else {
-		alias = screenname;
-	}
+	alias = screenname;
 	gtk_window_set_title(GTK_WINDOW(gtkmedia), alias);
 
 	gtk_widget_set_visible(GTK_WIDGET(gtkmedia),

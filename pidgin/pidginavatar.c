@@ -33,14 +33,14 @@ struct _PidginAvatar {
 	GdkPixbufAnimation *animation;
 	gboolean animate;
 
-	PurpleBuddy *buddy;
+	PurpleContactInfo *info;
 	PurpleConversation *conversation;
 };
 
 enum {
 	PROP_0,
 	PROP_ANIMATE,
-	PROP_BUDDY,
+	PROP_CONTACT_INFO,
 	PROP_CONVERSATION,
 	N_PROPERTIES,
 };
@@ -51,72 +51,20 @@ G_DEFINE_FINAL_TYPE(PidginAvatar, pidgin_avatar, GTK_TYPE_BOX)
 /******************************************************************************
  * Helpers
  *****************************************************************************/
-static PurpleBuddy *
-pidgin_avatar_get_effective_buddy(PidginAvatar *avatar) {
-	PurpleBuddy *buddy = NULL;
-
-	if(PURPLE_IS_BUDDY(avatar->buddy)) {
-		buddy = PURPLE_BUDDY(avatar->buddy);
-	}
-
-	return buddy;
-}
-
-static GdkPixbufAnimation *
-pidgin_avatar_find_buddy_icon(PurpleBuddy *buddy,
-                              G_GNUC_UNUSED PurpleConversation *conversation)
-{
-	GdkPixbufAnimation *ret = NULL;
-	GInputStream *stream = NULL;
-	PurpleMetaContact *contact = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_BUDDY(buddy), NULL);
-
-	/* First check if our user has set a custom icon for this buddy. */
-	contact = purple_buddy_get_contact(buddy);
-	if(PURPLE_IS_META_CONTACT(contact)) {
-		PurpleBlistNode *node = PURPLE_BLIST_NODE(contact);
-		PurpleImage *custom_image = NULL;
-
-		custom_image = purple_buddy_icons_node_find_custom_icon(node);
-		if(PURPLE_IS_IMAGE(custom_image)) {
-			gconstpointer data = purple_image_get_data(custom_image);
-			gsize length = purple_image_get_data_size(custom_image);
-
-			stream = g_memory_input_stream_new_from_data(data, (gssize)length,
-			                                             NULL);
-		}
-	}
-
-	/* If there is no custom icon, fall back to checking if the buddy has an
-	 * icon set.
-	 */
-	if(!G_IS_INPUT_STREAM(stream)) {
-		PurpleBuddyIcon *icon = purple_buddy_get_icon(buddy);
-
-		if(icon != NULL) {
-			stream = purple_buddy_icon_get_stream(icon);
-		}
-	}
-
-	if(G_IS_INPUT_STREAM(stream)) {
-		ret = gdk_pixbuf_animation_new_from_stream(stream, NULL, NULL);
-		g_clear_object(&stream);
-	}
-
-	return ret;
-}
-
 static void
 pidgin_avatar_update(PidginAvatar *avatar) {
-	PurpleBuddy *buddy = NULL;
+	PurpleAvatar *purple_avatar = NULL;
 	GdkPixbufAnimation *animation = NULL;
 	GdkPixbuf *pixbuf = NULL;
 
-	buddy = pidgin_avatar_get_effective_buddy(avatar);
-	if(PURPLE_IS_BUDDY(buddy)) {
-		animation = pidgin_avatar_find_buddy_icon(buddy,
-		                                          avatar->conversation);
+	if(PURPLE_IS_CONTACT_INFO(avatar->info)) {
+		purple_avatar = purple_contact_info_get_avatar(avatar->info);
+	} else if(PURPLE_IS_CONVERSATION(avatar->conversation)) {
+		purple_avatar = purple_conversation_get_avatar(avatar->conversation);
+	}
+
+	if(PURPLE_IS_AVATAR(purple_avatar)) {
+		animation = purple_avatar_get_animation(purple_avatar);
 	}
 
 	g_set_object(&avatar->animation, animation);
@@ -138,187 +86,7 @@ pidgin_avatar_update(PidginAvatar *avatar) {
 /******************************************************************************
  * Actions
  *****************************************************************************/
-static void
-pidgin_avatar_save_dialog_cb(GObject *source, GAsyncResult *result,
-                             gpointer data)
-{
-	PidginAvatar *avatar = data;
-	PurpleBuddy *buddy = NULL;
-	PurpleBuddyIcon *icon = NULL;
-	GtkFileDialog *dialog = GTK_FILE_DIALOG(source);
-	GError *error = NULL;
-	GFile *file = NULL;
-
-	file = gtk_file_dialog_save_finish(dialog, result, &error);
-	if(error != NULL) {
-		g_warning("failed to select custom avatar destination: %s",
-		          error->message);
-
-		g_clear_error(&error);
-		g_clear_object(&file);
-
-		return;
-	}
-
-	buddy = pidgin_avatar_get_effective_buddy(avatar);
-	if(!PURPLE_IS_BUDDY(buddy)) {
-		g_clear_object(&file);
-
-		return;
-	}
-
-	icon = purple_buddy_get_icon(buddy);
-	if(icon != NULL) {
-		char *filename = NULL;
-
-		filename = g_file_get_path(file);
-
-		purple_buddy_icon_save_to_filename(icon, filename, NULL);
-
-		g_free(filename);
-	}
-
-	g_clear_object(&file);
-}
-
-static void
-pidgin_avatar_save_cb(G_GNUC_UNUSED GSimpleAction *action,
-                      G_GNUC_UNUSED GVariant *parameter, gpointer data)
-{
-	PidginAvatar *avatar = PIDGIN_AVATAR(data);
-	PurpleBuddy *buddy = NULL;
-	PurpleBuddyIcon *icon = NULL;
-	PurpleAccount *account = NULL;
-	GtkFileDialog *dialog = NULL;
-	GtkWindow *window = NULL;
-	const gchar *ext = NULL, *name = NULL;
-	gchar *filename = NULL;
-
-	buddy = pidgin_avatar_get_effective_buddy(avatar);
-	if(buddy == NULL) {
-		g_return_if_reached();
-	}
-
-	icon = purple_buddy_get_icon(buddy);
-	if(icon != NULL) {
-		ext = purple_buddy_icon_get_extension(icon);
-	}
-
-	account = purple_buddy_get_account(buddy);
-	name = purple_buddy_get_name(buddy);
-	if(ext != NULL) {
-		filename = g_strdup_printf("%s.%s", purple_normalize(account, name),
-		                           ext);
-	} else {
-		filename = g_strdup(purple_normalize(account, name));
-	}
-
-	window = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(avatar)));
-
-	dialog = gtk_file_dialog_new();
-	gtk_file_dialog_set_title(dialog, _("Save Avatar"));
-	gtk_file_dialog_set_modal(dialog, TRUE);
-	gtk_file_dialog_set_initial_name(dialog, filename);
-
-	g_free(filename);
-
-	gtk_file_dialog_save(dialog, window, NULL, pidgin_avatar_save_dialog_cb,
-	                     avatar);
-	g_clear_object(&dialog);
-}
-
-static void
-pidgin_avatar_set_custom_dialog_cb(GObject *source, GAsyncResult *result,
-                                   gpointer data)
-{
-	PidginAvatar *avatar = data;
-	PurpleBuddy *buddy = NULL;
-	GtkFileDialog *dialog = GTK_FILE_DIALOG(source);
-	GError *error = NULL;
-	GFile *file = NULL;
-	gchar *filename = NULL;
-
-	file = gtk_file_dialog_open_finish(dialog, result, &error);
-	if(error != NULL) {
-		g_message("failed to select custom avatar: %s", error->message);
-
-		g_clear_error(&error);
-		g_clear_object(&file);
-
-		return;
-	}
-
-	buddy = pidgin_avatar_get_effective_buddy(avatar);
-	if(!PURPLE_IS_BUDDY(buddy)) {
-		g_clear_object(&file);
-
-		return;
-	}
-
-	filename = g_file_get_path(file);
-	if(filename != NULL) {
-		PurpleMetaContact *contact = purple_buddy_get_contact(buddy);
-		PurpleBlistNode *node = PURPLE_BLIST_NODE(contact);
-
-		purple_buddy_icons_node_set_custom_icon_from_file(node, filename);
-
-		pidgin_avatar_update(avatar);
-	}
-
-	g_clear_pointer(&filename, g_free);
-	g_clear_object(&file);
-}
-
-static void
-pidgin_avatar_set_custom_cb(G_GNUC_UNUSED GSimpleAction *action,
-                            G_GNUC_UNUSED GVariant *parameter, gpointer data)
-{
-	PidginAvatar *avatar = PIDGIN_AVATAR(data);
-	GtkFileDialog *dialog = NULL;
-	GtkWindow *window = NULL;
-
-	window = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(avatar)));
-
-	dialog = gtk_file_dialog_new();
-	gtk_file_dialog_set_title(dialog, _("Set Custom Avatar"));
-	gtk_file_dialog_set_accept_label(dialog, _("Set Custom"));
-	gtk_file_dialog_set_modal(dialog, TRUE);
-
-	gtk_file_dialog_open(dialog, window, NULL,
-	                     pidgin_avatar_set_custom_dialog_cb, avatar);
-	g_clear_object(&dialog);
-}
-
-static void
-pidgin_avatar_clear_custom_cb(G_GNUC_UNUSED GSimpleAction *action,
-                              G_GNUC_UNUSED GVariant *parameter, gpointer data)
-{
-	PidginAvatar *avatar = PIDGIN_AVATAR(data);
-	PurpleBuddy *buddy = NULL;
-
-	buddy = pidgin_avatar_get_effective_buddy(avatar);
-	if(PURPLE_IS_BUDDY(buddy)) {
-		PurpleMetaContact *contact = purple_buddy_get_contact(buddy);
-		PurpleBlistNode *node = PURPLE_BLIST_NODE(contact);
-
-		purple_buddy_icons_node_set_custom_icon_from_file(node, NULL);
-
-		pidgin_avatar_update(avatar);
-	}
-}
-
-static GActionEntry actions[] = {
-	{
-		.name = "save-avatar",
-		.activate = pidgin_avatar_save_cb,
-	}, {
-		.name = "set-custom-avatar",
-		.activate = pidgin_avatar_set_custom_cb,
-	}, {
-		.name = "clear-custom-avatar",
-		.activate = pidgin_avatar_clear_custom_cb,
-	},
-};
+static GActionEntry actions[] = {};
 
 /******************************************************************************
  * Callbacks
@@ -344,14 +112,16 @@ pidgin_avatar_button_press_handler(G_GNUC_UNUSED GtkGestureClick *event,
 }
 
 /*
- * This function is a callback for when properties change on the buddy we're
- * tracking.  It should not be reused for the conversation we're tracking
+ * This function is a callback for when properties change on the contact info
+ * we're tracking. It should not be reused for the conversation we're tracking
  * because we have to disconnect old handlers and reuse of this function will
- * cause issues if a buddy is changed but a conversation is not and vice versa.
+ * cause issues if a contact info is changed but a conversation is not and vice
+ * versa.
  */
 static void
-pidgin_avatar_buddy_icon_updated(G_GNUC_UNUSED GObject *obj,
-                                 G_GNUC_UNUSED GParamSpec *pspec, gpointer d)
+pidgin_avatar_contact_info_updated(G_GNUC_UNUSED GObject *obj,
+                                   G_GNUC_UNUSED GParamSpec *pspec,
+                                   gpointer d)
 {
 	PidginAvatar *avatar = PIDGIN_AVATAR(d);
 
@@ -410,8 +180,8 @@ pidgin_avatar_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_ANIMATE:
 			g_value_set_boolean(value, pidgin_avatar_get_animate(avatar));
 			break;
-		case PROP_BUDDY:
-			g_value_set_object(value, pidgin_avatar_get_buddy(avatar));
+		case PROP_CONTACT_INFO:
+			g_value_set_object(value, pidgin_avatar_get_contact_info(avatar));
 			break;
 		case PROP_CONVERSATION:
 			g_value_set_object(value, pidgin_avatar_get_conversation(avatar));
@@ -432,8 +202,8 @@ pidgin_avatar_set_property(GObject *obj, guint param_id, const GValue *value,
 		case PROP_ANIMATE:
 			pidgin_avatar_set_animate(avatar, g_value_get_boolean(value));
 			break;
-		case PROP_BUDDY:
-			pidgin_avatar_set_buddy(avatar, g_value_get_object(value));
+		case PROP_CONTACT_INFO:
+			pidgin_avatar_set_contact_info(avatar, g_value_get_object(value));
 			break;
 		case PROP_CONVERSATION:
 			pidgin_avatar_set_conversation(avatar, g_value_get_object(value));
@@ -448,8 +218,8 @@ static void
 pidgin_avatar_dispose(GObject *obj) {
 	PidginAvatar *avatar = PIDGIN_AVATAR(obj);
 
-	pidgin_avatar_set_buddy(avatar, NULL);
-	pidgin_avatar_set_conversation(avatar, NULL);
+	g_clear_object(&avatar->info);
+	g_clear_object(&avatar->conversation);
 
 	g_clear_object(&avatar->animation);
 
@@ -495,26 +265,26 @@ pidgin_avatar_class_init(PidginAvatarClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PidginAvatar:buddy:
+	 * PidginAvatar:contact-info:
 	 *
-	 * The buddy whose avatar will be displayed.
+	 * The contact info whose avatar will be displayed.
 	 */
-	properties[PROP_BUDDY] = g_param_spec_object(
-		"buddy", "buddy",
-		"The buddy whose avatar to display",
-		PURPLE_TYPE_BUDDY,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+	properties[PROP_CONTACT_INFO] = g_param_spec_object(
+		"contact-info", "contact-info",
+		"The contact info whose avatar to display",
+		PURPLE_TYPE_CONTACT_INFO,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PidginAvatar:conversation:
 	 *
-	 * The conversation which will be used to find the correct buddy.
+	 * The conversation which will be used to find the correct avatar.
 	 */
 	properties[PROP_CONVERSATION] = g_param_spec_object(
 		"conversation", "conversation",
-		"The conversation used to find the correct buddy.",
+		"The conversation used to find the correct avatar.",
 		PURPLE_TYPE_CONVERSATION,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
@@ -571,34 +341,36 @@ pidgin_avatar_get_animate(PidginAvatar *avatar) {
 }
 
 void
-pidgin_avatar_set_buddy(PidginAvatar *avatar, PurpleBuddy *buddy) {
+pidgin_avatar_set_contact_info(PidginAvatar *avatar, PurpleContactInfo *info) {
 	g_return_if_fail(PIDGIN_IS_AVATAR(avatar));
 
 	/* Remove our old signal handler. */
-	if(PURPLE_IS_BUDDY(avatar->buddy)) {
-		g_signal_handlers_disconnect_by_func(avatar->buddy,
-		                                     pidgin_avatar_buddy_icon_updated,
+	if(PURPLE_IS_CONTACT_INFO(avatar->info)) {
+		g_signal_handlers_disconnect_by_func(avatar->info,
+		                                     pidgin_avatar_contact_info_updated,
 		                                     avatar);
 	}
 
-	if(g_set_object(&avatar->buddy, buddy)) {
+	if(g_set_object(&avatar->info, info)) {
 		pidgin_avatar_update(avatar);
 
-		g_object_notify_by_pspec(G_OBJECT(avatar), properties[PROP_BUDDY]);
+		g_object_notify_by_pspec(G_OBJECT(avatar),
+		                         properties[PROP_CONTACT_INFO]);
 	}
 
 	/* Add the notify signal so we can update when the icon changes. */
-	if(PURPLE_IS_BUDDY(avatar->buddy)) {
-		g_signal_connect(G_OBJECT(avatar->buddy), "notify::icon",
-		                 G_CALLBACK(pidgin_avatar_buddy_icon_updated), avatar);
+	if(PURPLE_IS_CONTACT_INFO(avatar->info)) {
+		g_signal_connect_object(G_OBJECT(avatar->info), "notify::avatar",
+		                        G_CALLBACK(pidgin_avatar_contact_info_updated),
+		                        avatar, 0);
 	}
 }
 
-PurpleBuddy *
-pidgin_avatar_get_buddy(PidginAvatar *avatar) {
+PurpleContactInfo *
+pidgin_avatar_get_contact_info(PidginAvatar *avatar) {
 	g_return_val_if_fail(PIDGIN_IS_AVATAR(avatar), NULL);
 
-	return avatar->buddy;
+	return avatar->info;
 }
 
 void
@@ -621,8 +393,9 @@ pidgin_avatar_set_conversation(PidginAvatar *avatar,
 
 	/* Add the notify signal so we can update when the icon changes. */
 	if(PURPLE_IS_CONVERSATION(avatar->conversation)) {
-		g_signal_connect(G_OBJECT(avatar->conversation), "notify",
-		                 G_CALLBACK(pidgin_avatar_conversation_updated), avatar);
+		g_signal_connect_object(G_OBJECT(avatar->conversation), "notify",
+		                        G_CALLBACK(pidgin_avatar_conversation_updated),
+		                        avatar, 0);
 	}
 }
 

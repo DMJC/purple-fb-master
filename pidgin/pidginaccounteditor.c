@@ -243,18 +243,15 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 
 static void
 pidgin_account_editor_update_user_options(PidginAccountEditor *editor,
-                                          PurpleProtocol *protocol)
+                                          G_GNUC_UNUSED PurpleProtocol *protocol)
 {
-	PurpleBuddyIconSpec *icon_spec = NULL;
 	PurpleImage *image = NULL;
 	gboolean show_avatar_opts = TRUE;
 	const gchar *svalue = "";
 	gboolean use_global = TRUE;
 
 	/* Check if the protocol supports avatars. */
-	icon_spec = purple_protocol_get_icon_spec(protocol);
-	show_avatar_opts = (icon_spec != NULL && icon_spec->format != NULL);
-	purple_buddy_icon_spec_free(icon_spec);
+	show_avatar_opts = FALSE;
 
 	gtk_widget_set_visible(editor->avatar_row, show_avatar_opts);
 
