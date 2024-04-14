@@ -201,16 +201,12 @@ pidgin_contact_info_menu_message_activate(G_GNUC_UNUSED GSimpleAction *action,
                                           GVariant *parameter,
                                           G_GNUC_UNUSED gpointer data)
 {
-	PurpleAccount *account = NULL;
 	PurpleContact *contact = NULL;
 	PurpleConversation *conversation = NULL;
-	PurpleConversationManager *manager = NULL;
-	const char *contact_id = NULL;
 
 	g_return_if_fail(g_variant_is_of_type(parameter, (GVariantType*)"(ss)"));
 
-	if(!pidgin_contact_info_menu_parse_parameter(parameter, &account, &contact)) {
-		g_clear_object(&account);
+	if(!pidgin_contact_info_menu_parse_parameter(parameter, NULL, &contact)) {
 		g_clear_object(&contact);
 
 		g_warning("failed to parse parameter");
@@ -218,18 +214,19 @@ pidgin_contact_info_menu_message_activate(G_GNUC_UNUSED GSimpleAction *action,
 		return;
 	}
 
-	contact_id = purple_contact_info_get_username(PURPLE_CONTACT_INFO(contact));
+	if(!PURPLE_IS_CONTACT(contact)) {
+		g_warning("failed to find contact");
 
-	manager = purple_conversation_manager_get_default();
-	conversation = purple_conversation_manager_find_im(manager, account,
-	                                                   contact_id);
-	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		conversation = purple_im_conversation_new(account, contact_id);
-		purple_conversation_manager_register(manager, conversation);
-		g_clear_object(&conversation);
+		return;
 	}
 
-	g_clear_object(&account);
+	conversation = purple_contact_find_dm(contact);
+	if(PURPLE_IS_CONVERSATION(conversation)) {
+		purple_conversation_present(conversation);
+	} else {
+		purple_contact_create_dm_async(contact, NULL, NULL, NULL);
+	}
+
 	g_clear_object(&contact);
 }
 
