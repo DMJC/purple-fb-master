@@ -260,7 +260,6 @@ pidgin_account_editor_update_user_options(PidginAccountEditor *editor,
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
 
 		svalue = purple_contact_info_get_alias(info);
-		image = purple_buddy_icons_find_account_icon(editor->account);
 		use_global = purple_account_get_bool(editor->account,
 		                                     "use-global-buddyicon", TRUE);
 	}
@@ -813,15 +812,7 @@ pidgin_account_editor_save_user_options(PidginAccountEditor *editor) {
 	bvalue = gtk_switch_get_active(GTK_SWITCH(editor->use_custom_avatar));
 	purple_account_set_bool(editor->account, "use-global-buddyicon", !bvalue);
 
-	if(bvalue) {
-		if(GDK_IS_PIXBUF(editor->avatar_pixbuf)) {
-			#pragma message("implement this when buddy icons do not suck so bad.")
-		} else {
-			purple_buddy_icons_set_account_icon(editor->account, NULL, 0);
-		}
-	} else {
-		#pragma message("set the global buddy icon when buddy icons do not suck so bad.")
-	}
+	#pragma message("implement this when buddy icons do not suck so bad.")
 
 	purple_account_thaw_notify_settings(editor->account);
 }

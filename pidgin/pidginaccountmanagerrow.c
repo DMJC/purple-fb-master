@@ -48,28 +48,8 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
  * Helpers
  *****************************************************************************/
 static void
-pidgin_account_manager_row_refresh_buddy_icon(PidginAccountManagerRow *row) {
-	PurpleImage *image = NULL;
-
+pidgin_account_manager_row_refresh_buddy_icon(G_GNUC_UNUSED PidginAccountManagerRow *row) {
 #pragma message("FIX call this in the right place when buddy icons are better and can autorefresh")
-	if(!PURPLE_IS_ACCOUNT(row->account)) {
-		return;
-	}
-
-	image = purple_buddy_icons_find_account_icon(row->account);
-	if(PURPLE_IS_IMAGE(image)) {
-		GdkTexture *texture = NULL;
-		GBytes *bytes = NULL;
-
-		bytes = purple_image_get_contents(image);
-		texture = gdk_texture_new_from_bytes(bytes, NULL);
-		g_bytes_unref(bytes);
-
-		if(GDK_IS_TEXTURE(texture)) {
-			adw_avatar_set_custom_image(row->avatar, GDK_PAINTABLE(texture));
-			g_object_unref(texture);
-		}
-	}
 }
 
 static void
