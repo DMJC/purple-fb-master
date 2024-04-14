@@ -1128,6 +1128,7 @@ version 3.0.0 (??/??/????):
 		* pidgin_dialogs_destroy_all
 		* pidgin_dialogs_im
 		* pidgin_dialogs_im_with_user
+		* pidgin_dialogs_info
 		* pidgin_dialogs_log
 		* pidgin_dialogs_merge_groups
 		* pidgin_dialogs_remove_buddy

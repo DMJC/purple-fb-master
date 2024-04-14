@@ -39,12 +39,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
       </section>
       <section>
         <item>
-          <attribute name="label" translatable="yes">Get User _Info...</attribute>
-          <attribute name="action">app.get-user-info</attribute>
-        </item>
-      </section>
-      <section>
-        <item>
           <attribute name="label" translatable="yes">_Quit</attribute>
           <attribute name="action">app.quit</attribute>
         </item>

@@ -26,8 +26,6 @@
 
 #include "pidgin/pidginnotificationauthorizationrequest.h"
 
-#include "pidgin/gtkdialogs.h"
-
 struct _PidginNotificationAuthorizationRequest {
 	AdwActionRow parent;
 

@@ -33,7 +33,6 @@
 
 #include "pidginapplication.h"
 
-#include "gtkdialogs.h"
 #include "gtkroomlist.h"
 #include "pidginabout.h"
 #include "pidginaccounteditor.h"
@@ -211,7 +210,6 @@ pidgin_application_populate_dynamic_menus(PidginApplication *application) {
  * This list keeps track of which actions should only be enabled while online.
  */
 static const gchar *pidgin_application_online_actions[] = {
-	"get-user-info",
 	"new-message",
 };
 
@@ -422,14 +420,6 @@ pidgin_application_file_transfers(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_application_get_user_info(G_GNUC_UNUSED GSimpleAction *simple,
-                                 G_GNUC_UNUSED GVariant *parameter,
-                                 G_GNUC_UNUSED gpointer data)
-{
-	pidgin_dialogs_info();
-}
-
-static void
 pidgin_application_join_channel(G_GNUC_UNUSED GSimpleAction *simple,
                                 G_GNUC_UNUSED GVariant *parameter,
                                 gpointer data)
@@ -560,9 +550,6 @@ static GActionEntry app_entries[] = {
 	}, {
 		.name = "file-transfers",
 		.activate = pidgin_application_file_transfers,
-	}, {
-		.name = "get-user-info",
-		.activate = pidgin_application_get_user_info,
 	}, {
 		.name = "join-channel",
 		.activate = pidgin_application_join_channel,

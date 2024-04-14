@@ -26,8 +26,6 @@
 
 #include "pidgin/pidginnotificationaddcontact.h"
 
-#include "pidgin/gtkdialogs.h"
-
 struct _PidginNotificationAddContact {
 	AdwActionRow parent;
 
