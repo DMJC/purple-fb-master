@@ -22,7 +22,6 @@
 
 #include "purpleconversationmanager.h"
 
-#include "purplechatconversation.h"
 #include "purplecontact.h"
 #include "purpleimconversation.h"
 #include "purpleprivate.h"
@@ -56,30 +55,6 @@ purple_conversation_is_im(PurpleConversation *conversation,
                           G_GNUC_UNUSED gpointer userdata)
 {
 	return PURPLE_IS_IM_CONVERSATION(conversation);
-}
-
-static gboolean
-purple_conversation_is_chat(PurpleConversation *conversation,
-                            G_GNUC_UNUSED gpointer userdata)
-{
-	return PURPLE_IS_CHAT_CONVERSATION(conversation);
-}
-
-static gboolean
-purple_conversation_chat_has_id(PurpleConversation *conversation,
-                                gpointer userdata)
-{
-	PurpleChatConversation *chat = NULL;
-	gint id = GPOINTER_TO_INT(userdata);
-
-
-	if(!PURPLE_IS_CHAT_CONVERSATION(conversation)) {
-		return FALSE;
-	}
-
-	chat = PURPLE_CHAT_CONVERSATION(conversation);
-
-	return (purple_chat_conversation_get_id(chat) == id);
 }
 
 static gboolean
@@ -421,32 +396,6 @@ purple_conversation_manager_find_dm(PurpleConversationManager *manager,
 	}
 
 	return NULL;
-}
-
-PurpleConversation *
-purple_conversation_manager_find_chat(PurpleConversationManager *manager,
-                                      PurpleAccount *account,
-                                      const gchar *name)
-{
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), NULL);
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-	g_return_val_if_fail(name != NULL, NULL);
-
-	return purple_conversation_manager_find_internal(manager, account, name,
-	                                                 purple_conversation_is_chat,
-	                                                 NULL);
-}
-
-PurpleConversation *
-purple_conversation_manager_find_chat_by_id(PurpleConversationManager *manager,
-                                            PurpleAccount *account, gint id)
-{
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), NULL);
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-
-	return purple_conversation_manager_find_internal(manager, account, NULL,
-	                                                 purple_conversation_chat_has_id,
-	                                                 GINT_TO_POINTER(id));
 }
 
 PurpleConversation *

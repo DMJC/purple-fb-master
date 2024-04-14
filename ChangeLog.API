@@ -249,7 +249,19 @@ version 3.0.0 (??/??/????):
 		* account-setting-info, account-set-info signals
 		* account-status-changing signal.
 		* buddy-status-changed signal.
+		* chat-invite-blocked signal.
+		* chat-invited signal.
+		* chat-invited-user signal.
+		* chat-inviting-user signal.
+		* chat-join-failed signal.
+		* chat-joined signal.
+		* chat-left signal.
 		* chat-topic-changed signal.
+		* chat-user-flags signal.
+		* chat-user-joined signal.
+		* chat-user-joining signal.
+		* chat-user-left signal.
+		* chat-user-leaving signal.
 		* file-recv-accept, file-recv-cancel, file-recv-complete,
 		  file-recv-start, file-send-accept, file-send-cancel,
 		  file-send-complete, file-send-start signals. Use
@@ -880,6 +892,10 @@ version 3.0.0 (??/??/????):
 		* purple_xfers_set_ui_ops
 		* purple_xfers_uninit
 		* quitting signal
+		* received-chat-msg signal
+		* receiving-chat-msg signal
+		* sending-chat-msg signal
+		* sent-chat-msg signal
 		* serv_got_attention
 		* serv_send_attention
 		* struct _PurpleAttentionType
@@ -901,6 +917,8 @@ version 3.0.0 (??/??/????):
 		* struct PurpleAccountUserSplit
 		* struct PurpleNotifySearchColumn
 		* wpurple_g_access
+		* writing-chat-msg signal
+		* wrote-chat-msg signal
 		* xmlnode_set_attrib_with_namespace
 		* xmlnode_set_attrib_with_prefix
 

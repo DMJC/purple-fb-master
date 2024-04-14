@@ -22,7 +22,6 @@
 
 #include "cmds.h"
 #include "purpleaccount.h"
-#include "purplechatconversation.h"
 #include "purpleimconversation.h"
 #include "purplemarkup.h"
 
@@ -200,8 +199,7 @@ static void purple_cmd_strip_cmd_from_markup(char *markup)
 static gboolean
 is_right_type(PurpleCmd *cmd, PurpleConversation *conv)
 {
-	return (PURPLE_IS_IM_CONVERSATION(conv) && (cmd->flags & PURPLE_CMD_FLAG_IM))
-	    || (PURPLE_IS_CHAT_CONVERSATION(conv) && (cmd->flags & PURPLE_CMD_FLAG_CHAT));
+	return (PURPLE_IS_IM_CONVERSATION(conv) && (cmd->flags & PURPLE_CMD_FLAG_IM));
 }
 
 static gboolean

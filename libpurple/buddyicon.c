@@ -24,9 +24,9 @@
 #include "debug.h"
 #include "image.h"
 #include "purpleaccountmanager.h"
-#include "purplechatconversation.h"
 #include "purpleconversation.h"
 #include "purpleconversationmanager.h"
+#include "purpleimconversation.h"
 #include "purplepath.h"
 #include "purpleprivate.h"
 #include "purpleprotocolserver.h"
@@ -937,15 +937,6 @@ purple_buddy_icons_node_set_custom_icon(PurpleBlistNode *node,
 			 * themselves need updating when the custom buddy
 			 * icon changes? */
 			purple_blist_update_node(purple_blist_get_default(), child);
-		}
-	} else if (PURPLE_IS_CHAT(node)) {
-		PurpleAccount *account = purple_chat_get_account(PURPLE_CHAT(node));
-		PurpleConversation *chat = NULL;
-		const gchar *name = purple_chat_get_name(PURPLE_CHAT(node));
-
-		chat = purple_conversation_manager_find_chat(manager, account, name);
-		if(PURPLE_IS_CHAT_CONVERSATION(chat)) {
-			purple_conversation_update(chat, PURPLE_CONVERSATION_UPDATE_ICON);
 		}
 	}
 

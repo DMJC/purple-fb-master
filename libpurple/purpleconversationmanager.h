@@ -152,9 +152,7 @@ GList *purple_conversation_manager_get_all(PurpleConversationManager *manager);
  * @name: The name of the conversation.
  *
  * Looks for a registered conversation belonging to @account and named @named.
- * This function will return the first one matching the given criteria. If you
- * specifically need an im or chat see purple_conversation_manager_find_im()
- * or purple_conversation_manager_find_chat().
+ * This function will return the first one matching the given criteria.
  *
  * Returns: (transfer none): The #PurpleConversation if found, otherwise %NULL.
  *
@@ -193,40 +191,6 @@ PurpleConversation *purple_conversation_manager_find_im(PurpleConversationManage
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find_dm(PurpleConversationManager *manager, PurpleContact *contact);
-
-/**
- * purple_conversation_manager_find_chat:
- * @manager: The #PurpleConversationManager instance.
- * @account: The #PurpleAccount instance whose conversation to find.
- * @name: The name of the conversation.
- *
- * Looks for a registered chat conversation belonging to @account and named
- * @name.
- *
- * Returns: (transfer none): The #PurpleConversation if found, otherwise %NULL.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleConversation *purple_conversation_manager_find_chat(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
-
-/**
- * purple_conversation_manager_find_chat_by_id:
- * @manager: The #PurpleConversationManager instance.
- * @account: The #PurpleAccount instance whose conversation to find.
- * @id: The id of the conversation.
- *
- * Looks for a registered chat conversation belonging to @account with an id of
- * @id.
- *
- * This is typically only called by protocols.
- *
- * Returns: (transfer none): The #PurpleConversation if found, otherwise %NULL.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleConversation *purple_conversation_manager_find_chat_by_id(PurpleConversationManager *manager, PurpleAccount *account, gint id);
 
 /**
  * purple_conversation_manager_find_with_id:

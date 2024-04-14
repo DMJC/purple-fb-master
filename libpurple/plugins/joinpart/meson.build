@@ -3,7 +3,9 @@ library('joinpart', 'joinpart.c',
     gnu_symbol_visibility : 'hidden',
     dependencies : [libpurple_dep],
     name_prefix : '',
-    install : true, install_dir : PURPLE_PLUGINDIR)
+    install : true,
+    install_dir : PURPLE_PLUGINDIR,
+    build_by_default : false)
 
 settings_schemas = [
   'im.pidgin.Purple.plugin.JoinPart.gschema.xml',

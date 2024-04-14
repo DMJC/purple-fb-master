@@ -85,60 +85,6 @@ PURPLE_AVAILABLE_IN_3_0
 int  purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg);
 
 /******************************************************************************
- * Chat Interface
- *****************************************************************************/
-
-/**
- * purple_serv_chat_invite
- * @gc:     The connection over which to send the typing notification.
- * @id:     The id of the chat to invite the user to.
- * @message:A message displayed to the user when the invitation.
- * @name:   The name of the remote user to send the invitation to.
- *
- * Invite a user to join a chat.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_serv_chat_invite(PurpleConnection *gc, int id, const char *message, const char *name);
-
-/**
- * purple_serv_chat_leave:
- * @gc:     The connection over which to send the typing notification.
- * @id:     The id of the chat to leave.
- *
- * Called when the user requests leaving a chat.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_serv_chat_leave(PurpleConnection *gc, int id);
-
-/**
- * purple_serv_chat_send:
- * @gc:     The connection over which to send the typing notification.
- * @id:     The id of the chat to send the message to.
- * @msg:    The message to send to the chat.
- *
- * Send a message to a chat.
- *
- * This protocol function should return a positive value on
- * success. If the message is too big to be sent, return
- * <literal>-E2BIG</literal>. If the account is not connected,
- * return <literal>-ENOTCONN</literal>. If the protocol is unable
- * to send the message for another reason, return some other
- * negative value. You can use one of the valid #errno values, or
- * just big something.
- *
- * Returns:  A positive number or 0 in case of success, a
- *           negative error number in case of failure.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-int  purple_serv_chat_send(PurpleConnection *gc, int id, PurpleMessage *msg);
-
-/******************************************************************************
  * Server Interface
  *****************************************************************************/
 

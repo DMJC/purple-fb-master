@@ -27,7 +27,6 @@
 #include "conversations.h"
 #include "debug.h"
 #include "notify.h"
-#include "purplechatconversation.h"
 #include "purpleconversationmanager.h"
 #include "purpleconversationmember.h"
 #include "purpleenums.h"
@@ -296,21 +295,6 @@ common_send(PurpleConversation *conv, const gchar *message,
 			}
 
 			purple_signal_emit(handle, "sent-im-msg", account, msg);
-		}
-
-		g_object_unref(msg);
-	} else if(PURPLE_IS_CHAT_CONVERSATION(conv)) {
-		PurpleMessage *msg;
-		gint id = purple_chat_conversation_get_id(PURPLE_CHAT_CONVERSATION(conv));
-
-		msg = purple_message_new_outgoing(me, NULL, sent, msgflags);
-
-		purple_signal_emit(handle, "sending-chat-msg", account, msg, id);
-
-		if(!purple_message_is_empty(msg)) {
-			err = purple_serv_chat_send(gc, id, msg);
-
-			purple_signal_emit(handle, "sent-chat-msg", account, msg, id);
 		}
 
 		g_object_unref(msg);
@@ -1193,7 +1177,6 @@ void
 purple_conversation_autoset_title(PurpleConversation *conv) {
 	PurpleAccount *account;
 	PurpleBuddy *b;
-	PurpleChat *chat;
 	const gchar *text = NULL, *name;
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
@@ -1204,10 +1187,6 @@ purple_conversation_autoset_title(PurpleConversation *conv) {
 	if(PURPLE_IS_IM_CONVERSATION(conv)) {
 		if(account && ((b = purple_blist_find_buddy(account, name)) != NULL)) {
 			text = purple_buddy_get_contact_alias(b);
-		}
-	} else if(PURPLE_IS_CHAT_CONVERSATION(conv)) {
-		if(account && ((chat = purple_blist_find_chat(account, name)) != NULL)) {
-			text = purple_chat_get_name(chat);
 		}
 	}
 
@@ -1250,7 +1229,6 @@ _purple_conversation_write_common(PurpleConversation *conv,
                                   PurpleMessage *pmsg)
 {
 	PurpleProtocol *protocol = NULL;
-	PurpleConnection *gc = NULL;
 	PurpleConversationPrivate *priv = NULL;
 	PurpleAccount *account;
 	PurpleBuddy *b;
@@ -1264,10 +1242,6 @@ _purple_conversation_write_common(PurpleConversation *conv,
 
 	account = purple_conversation_get_account(conv);
 
-	if(account != NULL) {
-		gc = purple_account_get_connection(account);
-	}
-
 	if(PURPLE_IS_IM_CONVERSATION(conv)) {
 		PurpleConversationManager *manager = NULL;
 
@@ -1279,7 +1253,7 @@ _purple_conversation_write_common(PurpleConversation *conv,
 
 	plugin_return = GPOINTER_TO_INT(purple_signal_emit_return_1(
 		purple_conversations_get_handle(),
-		(PURPLE_IS_IM_CONVERSATION(conv) ? "writing-im-msg" : "writing-chat-msg"),
+		"writing-im-msg",
 		conv, pmsg));
 
 	if(purple_message_is_empty(pmsg)) {
@@ -1335,7 +1309,7 @@ _purple_conversation_write_common(PurpleConversation *conv,
 	g_list_store_append(priv->messages, pmsg);
 
 	purple_signal_emit(purple_conversations_get_handle(),
-		(PURPLE_IS_IM_CONVERSATION(conv) ? "wrote-im-msg" : "wrote-chat-msg"),
+		"wrote-im-msg",
 		conv, pmsg);
 }
 
