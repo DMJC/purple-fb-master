@@ -26,7 +26,6 @@
 #include "purpleaccountmanager.h"
 #include "purpleconversation.h"
 #include "purpleconversationmanager.h"
-#include "purpleimconversation.h"
 #include "purplepath.h"
 #include "purpleprivate.h"
 #include "purpleprotocolserver.h"
@@ -873,7 +872,6 @@ purple_buddy_icons_node_set_custom_icon(PurpleBlistNode *node,
                                         guchar *icon_data, size_t icon_len)
 {
 	char *old_icon;
-	PurpleConversationManager *manager = NULL;
 	PurpleImage *old_img;
 	PurpleImage *img = NULL;
 
@@ -909,30 +907,12 @@ purple_buddy_icons_node_set_custom_icon(PurpleBlistNode *node,
 	else
 		g_hash_table_remove(pointer_icon_cache, node);
 
-	manager = purple_conversation_manager_get_default();
-
 	if (PURPLE_IS_META_CONTACT(node)) {
 		PurpleBlistNode *child;
 		for (child = purple_blist_node_get_first_child(node);
 		     child;
 			 child = purple_blist_node_get_sibling_next(child))
 		{
-			PurpleBuddy *buddy;
-			PurpleConversation *im;
-
-			if(!PURPLE_IS_BUDDY(child)) {
-				continue;
-			}
-
-			buddy = PURPLE_BUDDY(child);
-
-			im = purple_conversation_manager_find_im(manager,
-			                                         purple_buddy_get_account(buddy),
-			                                         purple_buddy_get_name(buddy));
-			if(PURPLE_IS_IM_CONVERSATION(im)) {
-				purple_conversation_update(im, PURPLE_CONVERSATION_UPDATE_ICON);
-			}
-
 			/* Is this call necessary anymore? Can the buddies
 			 * themselves need updating when the custom buddy
 			 * icon changes? */

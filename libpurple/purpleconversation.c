@@ -223,7 +223,6 @@ common_send(PurpleConversation *conv, const gchar *message,
 	gchar *displayed = NULL;
 	const gchar *sent, *me;
 	gint err = 0;
-	gpointer handle = NULL;
 
 	if(*message == '\0') {
 		return;
@@ -261,8 +260,6 @@ common_send(PurpleConversation *conv, const gchar *message,
 
 	msgflags |= PURPLE_MESSAGE_SEND;
 
-	handle = purple_conversations_get_handle();
-
 	if(PURPLE_IS_PROTOCOL_CONVERSATION(protocol)) {
 		PurpleMessage *msg = NULL;
 		PurpleProtocolConversation *protocol_conversation = NULL;
@@ -276,28 +273,6 @@ common_send(PurpleConversation *conv, const gchar *message,
 		                                                msg);
 
 		g_clear_pointer(&displayed, g_free);
-	} else if(PURPLE_IS_IM_CONVERSATION(conv)) {
-		const gchar *name = NULL;
-		PurpleMessage *msg = NULL;
-
-		name = purple_conversation_get_name(conv);
-		msg = purple_message_new_outgoing(me, name, sent, msgflags);
-
-		purple_signal_emit(handle, "sending-im-msg", account, msg);
-
-		if(!purple_message_is_empty(msg)) {
-			err = purple_serv_send_im(gc, msg);
-
-			if((err > 0) && (displayed != NULL)) {
-				/* revert the contents in case sending-im-msg changed it */
-				purple_message_set_contents(msg, displayed);
-				purple_conversation_write_message(conv, msg);
-			}
-
-			purple_signal_emit(handle, "sent-im-msg", account, msg);
-		}
-
-		g_object_unref(msg);
 	}
 
 	if(err < 0) {
@@ -1175,26 +1150,13 @@ purple_conversation_get_title(PurpleConversation *conv) {
 
 void
 purple_conversation_autoset_title(PurpleConversation *conv) {
-	PurpleAccount *account;
-	PurpleBuddy *b;
-	const gchar *text = NULL, *name;
+	const gchar *name = NULL;
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 
-	account = purple_conversation_get_account(conv);
 	name = purple_conversation_get_name(conv);
 
-	if(PURPLE_IS_IM_CONVERSATION(conv)) {
-		if(account && ((b = purple_blist_find_buddy(account, name)) != NULL)) {
-			text = purple_buddy_get_contact_alias(b);
-		}
-	}
-
-	if(text == NULL) {
-		text = name;
-	}
-
-	purple_conversation_set_title(conv, text);
+	purple_conversation_set_title(conv, name);
 }
 
 void
@@ -1228,66 +1190,15 @@ void
 _purple_conversation_write_common(PurpleConversation *conv,
                                   PurpleMessage *pmsg)
 {
-	PurpleProtocol *protocol = NULL;
 	PurpleConversationPrivate *priv = NULL;
-	PurpleAccount *account;
-	PurpleBuddy *b;
-	gint plugin_return;
-	/* int logging_font_options = 0; */
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 	g_return_if_fail(pmsg != NULL);
 
 	priv = purple_conversation_get_instance_private(conv);
 
-	account = purple_conversation_get_account(conv);
-
-	if(PURPLE_IS_IM_CONVERSATION(conv)) {
-		PurpleConversationManager *manager = NULL;
-
-		manager = purple_conversation_manager_get_default();
-		if(!purple_conversation_manager_is_registered(manager, conv)) {
-			return;
-		}
-	}
-
-	plugin_return = GPOINTER_TO_INT(purple_signal_emit_return_1(
-		purple_conversations_get_handle(),
-		"writing-im-msg",
-		conv, pmsg));
-
 	if(purple_message_is_empty(pmsg)) {
 		return;
-	}
-
-	if(plugin_return) {
-		return;
-	}
-
-	if(account != NULL) {
-		protocol = purple_account_get_protocol(account);
-
-		if(PURPLE_IS_IM_CONVERSATION(conv) ||
-		   !(protocol != NULL && purple_protocol_get_options(protocol) & OPT_PROTO_UNIQUE_CHATNAME))
-		{
-			if(purple_message_get_flags(pmsg) & PURPLE_MESSAGE_SEND) {
-				PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
-				const gchar *alias;
-
-				alias = purple_contact_info_get_name_for_display(info);
-
-				purple_message_set_author_alias(pmsg, alias);
-			} else if (purple_message_get_flags(pmsg) & PURPLE_MESSAGE_RECV) {
-				/* TODO: PurpleDude - folks not on the buddy list */
-				b = purple_blist_find_buddy(account,
-					purple_message_get_author(pmsg));
-
-				if(b != NULL) {
-					purple_message_set_author_alias(pmsg,
-					                                purple_buddy_get_contact_alias(b));
-				}
-			}
-		}
 	}
 
 	if(!(purple_message_get_flags(pmsg) & PURPLE_MESSAGE_NO_LOG))
@@ -1307,10 +1218,6 @@ _purple_conversation_write_common(PurpleConversation *conv,
 	}
 
 	g_list_store_append(priv->messages, pmsg);
-
-	purple_signal_emit(purple_conversations_get_handle(),
-		"wrote-im-msg",
-		conv, pmsg);
 }
 
 void

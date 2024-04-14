@@ -53,7 +53,6 @@ libpurple/purplegdkpixbuf.c
 libpurple/purplegio.c
 libpurple/purplehistoryadapter.c
 libpurple/purplehistorymanager.c
-libpurple/purpleimconversation.c
 libpurple/purplekeyvaluepair.c
 libpurple/purplemarkup.c
 libpurple/purplemessage.c
@@ -67,7 +66,6 @@ libpurple/purplepresence.c
 libpurple/purpleprotocol.c
 libpurple/purpleprotocolchat.c
 libpurple/purpleprotocolclient.c
-libpurple/purpleprotocolim.c
 libpurple/purpleprotocolmanager.c
 libpurple/purpleprotocolmedia.c
 libpurple/purpleprotocolroomlist.c

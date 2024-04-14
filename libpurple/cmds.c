@@ -22,7 +22,6 @@
 
 #include "cmds.h"
 #include "purpleaccount.h"
-#include "purpleimconversation.h"
 #include "purplemarkup.h"
 
 static GList *cmds = NULL;
@@ -197,9 +196,10 @@ static void purple_cmd_strip_cmd_from_markup(char *markup)
 }
 
 static gboolean
-is_right_type(PurpleCmd *cmd, PurpleConversation *conv)
+is_right_type(G_GNUC_UNUSED PurpleCmd *cmd,
+              G_GNUC_UNUSED PurpleConversation *conv)
 {
-	return (PURPLE_IS_IM_CONVERSATION(conv) && (cmd->flags & PURPLE_CMD_FLAG_IM));
+	return FALSE;
 }
 
 static gboolean

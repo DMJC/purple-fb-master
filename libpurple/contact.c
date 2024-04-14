@@ -23,7 +23,6 @@
 #include "contact.h"
 #include "prefs.h"
 #include "purpleconversationmanager.h"
-#include "purpleimconversation.h"
 #include "purpleprivate.h"
 #include "util.h"
 
@@ -105,8 +104,6 @@ void
 purple_meta_contact_set_alias(PurpleMetaContact *contact, const char *alias)
 {
 	PurpleMetaContactPrivate *priv = NULL;
-	PurpleConversationManager *manager = NULL;
-	PurpleBlistNode *bnode;
 	char *old_alias;
 	char *new_alias = NULL;
 
@@ -136,21 +133,6 @@ purple_meta_contact_set_alias(PurpleMetaContact *contact, const char *alias)
 	                       PURPLE_BLIST_NODE(contact));
 	purple_blist_update_node(purple_blist_get_default(),
 	                         PURPLE_BLIST_NODE(contact));
-
-	manager = purple_conversation_manager_get_default();
-
-	for(bnode = PURPLE_BLIST_NODE(contact)->child; bnode != NULL; bnode = bnode->next)
-	{
-		PurpleBuddy *buddy = PURPLE_BUDDY(bnode);
-		PurpleConversation *im;
-
-		im = purple_conversation_manager_find_im(manager,
-		                                         purple_buddy_get_account(buddy),
-		                                         purple_buddy_get_name(buddy));
-		if(PURPLE_IS_IM_CONVERSATION(im)) {
-			purple_conversation_autoset_title(im);
-		}
-	}
 
 	purple_signal_emit(purple_blist_get_handle(), "blist-node-aliased",
 	                   contact, old_alias);

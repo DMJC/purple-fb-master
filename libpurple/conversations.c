@@ -24,7 +24,6 @@
 
 #include "prefs.h"
 #include "purpleprivate.h"
-#include "purpleimconversation.h"
 #include "purpleconversationmanager.h"
 
 void *
@@ -59,40 +58,6 @@ purple_conversations_init(void)
 	/**********************************************************************
 	 * Register signals
 	 **********************************************************************/
-	purple_signal_register(handle, "writing-im-msg",
-		purple_marshal_BOOLEAN__POINTER_POINTER, G_TYPE_BOOLEAN, 2,
-		PURPLE_TYPE_IM_CONVERSATION, PURPLE_TYPE_MESSAGE);
-
-	purple_signal_register(handle, "wrote-im-msg",
-		purple_marshal_VOID__POINTER_POINTER, G_TYPE_NONE, 2,
-		PURPLE_TYPE_IM_CONVERSATION, PURPLE_TYPE_MESSAGE);
-
-	purple_signal_register(handle, "sending-im-msg",
-		purple_marshal_VOID__POINTER_POINTER, G_TYPE_NONE,
-		2, PURPLE_TYPE_ACCOUNT, PURPLE_TYPE_MESSAGE);
-
-	purple_signal_register(handle, "sent-im-msg",
-		purple_marshal_VOID__POINTER_POINTER, G_TYPE_NONE,
-		2, PURPLE_TYPE_ACCOUNT, PURPLE_TYPE_MESSAGE);
-
-	purple_signal_register(handle, "receiving-im-msg",
-						 purple_marshal_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER,
-						 G_TYPE_BOOLEAN, 5, PURPLE_TYPE_ACCOUNT,
-						 G_TYPE_POINTER, /* pointer to a string */
-						 G_TYPE_POINTER, /* pointer to a string */
-						 PURPLE_TYPE_IM_CONVERSATION,
-						 G_TYPE_POINTER); /* pointer to a string */
-
-	purple_signal_register(handle, "received-im-msg",
-						 purple_marshal_VOID__POINTER_POINTER_POINTER_POINTER_UINT,
-						 G_TYPE_NONE, 5, PURPLE_TYPE_ACCOUNT, G_TYPE_STRING,
-						 G_TYPE_STRING, PURPLE_TYPE_IM_CONVERSATION, G_TYPE_UINT);
-
-	purple_signal_register(handle, "blocked-im-msg",
-						 purple_marshal_VOID__POINTER_POINTER_POINTER_UINT_UINT,
-						 G_TYPE_NONE, 5, PURPLE_TYPE_ACCOUNT, G_TYPE_STRING,
-						 G_TYPE_STRING, G_TYPE_UINT, G_TYPE_UINT);
-
 	purple_signal_register(handle, "conversation-created",
 						 purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
 						 PURPLE_TYPE_CONVERSATION);
@@ -104,18 +69,6 @@ purple_conversations_init(void)
 	purple_signal_register(handle, "deleting-conversation",
 						 purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,
 						 PURPLE_TYPE_CONVERSATION);
-
-	purple_signal_register(handle, "buddy-typing",
-						 purple_marshal_VOID__POINTER_POINTER, G_TYPE_NONE, 2,
-						 PURPLE_TYPE_ACCOUNT, G_TYPE_STRING);
-
-	purple_signal_register(handle, "buddy-typed",
-						 purple_marshal_VOID__POINTER_POINTER, G_TYPE_NONE, 2,
-						 PURPLE_TYPE_ACCOUNT, G_TYPE_STRING);
-
-	purple_signal_register(handle, "buddy-typing-stopped",
-						 purple_marshal_VOID__POINTER_POINTER, G_TYPE_NONE, 2,
-						 PURPLE_TYPE_ACCOUNT, G_TYPE_STRING);
 
 	purple_signal_register(handle, "cleared-message-history",
 	                       purple_marshal_VOID__POINTER, G_TYPE_NONE, 1,

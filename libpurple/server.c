@@ -34,64 +34,11 @@
 #include "purpleprivate.h"
 #include "purpleprotocol.h"
 #include "purpleprotocolchat.h"
-#include "purpleprotocolim.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
 #include "signals.h"
 #include "server.h"
 #include "util.h"
-
-unsigned int
-purple_serv_send_typing(PurpleConnection *gc, const char *name, PurpleIMTypingState state)
-{
-	if(gc) {
-		PurpleProtocol *protocol = purple_connection_get_protocol(gc);
-		PurpleProtocolIM *im = PURPLE_PROTOCOL_IM(protocol);
-
-		return purple_protocol_im_send_typing(im, gc, name, state);
-	}
-
-	return 0;
-}
-
-int purple_serv_send_im(PurpleConnection *gc, PurpleMessage *msg)
-{
-	PurpleAccount *account = NULL;
-	PurpleConversation *im = NULL;
-	PurpleConversationManager *manager = NULL;
-	PurpleProtocol *protocol = NULL;
-	int val = -EINVAL;
-	const gchar *recipient;
-
-	g_return_val_if_fail(gc != NULL, val);
-	g_return_val_if_fail(msg != NULL, val);
-
-	protocol = purple_connection_get_protocol(gc);
-
-	g_return_val_if_fail(protocol != NULL, val);
-	g_return_val_if_fail(PURPLE_IS_PROTOCOL_IM(protocol), val);
-
-	account  = purple_connection_get_account(gc);
-	recipient = purple_message_get_recipient(msg);
-
-	manager = purple_conversation_manager_get_default();
-	im = purple_conversation_manager_find_im(manager, account, recipient);
-
-	/* we probably shouldn't be here if the protocol doesn't know how to send
-	 * im's... but there was a similar check here before so I just reproduced
-	 * it until we can reevaluate this function.
-	 */
-	if(PURPLE_IS_PROTOCOL_IM(protocol)) {
-		PurpleProtocolIM *pim = PURPLE_PROTOCOL_IM(protocol);
-
-		val = purple_protocol_im_send(pim, gc, im, msg);
-	}
-
-	if(im && purple_im_conversation_get_send_typed_timeout(PURPLE_IM_CONVERSATION(im)))
-		purple_im_conversation_stop_send_typed_timeout(PURPLE_IM_CONVERSATION(im));
-
-	return val;
-}
 
 /*
  * Move a buddy from one group to another on server.
@@ -130,85 +77,4 @@ void purple_serv_join_chat(PurpleConnection *gc, GHashTable *data)
 		protocol = purple_connection_get_protocol(gc);
 		purple_protocol_chat_join(PURPLE_PROTOCOL_CHAT(protocol), gc, data);
 	}
-}
-
-/*
- * woo. i'm actually going to comment this function. isn't that fun. make
- * sure to follow along, kids
- */
-void purple_serv_got_im(PurpleConnection *gc, const char *who, const char *msg,
-				 PurpleMessageFlags flags, time_t mtime)
-{
-	PurpleAccount *account;
-	PurpleConversation *im;
-	PurpleConversationManager *manager;
-	char *message, *name;
-	char *angel, *buffy;
-	int plugin_return;
-	PurpleMessage *pmsg;
-
-	g_return_if_fail(msg != NULL);
-
-	account = purple_connection_get_account(gc);
-
-	if (mtime < 0) {
-		purple_debug_error("server",
-				"purple_serv_got_im ignoring negative timestamp\n");
-		/* TODO: Would be more appropriate to use a value that indicates
-		   that the timestamp is unknown, and surface that in the UI. */
-		mtime = time(NULL);
-	}
-
-	/*
-	 * XXX: Should we be setting this here, or relying on protocols to set it?
-	 */
-	flags |= PURPLE_MESSAGE_RECV;
-
-	manager = purple_conversation_manager_get_default();
-
-	/*
-	 * We should update the conversation window buttons and menu,
-	 * if it exists.
-	 */
-	im = purple_conversation_manager_find_im(manager, account, who);
-
-	/*
-	 * Make copies of the message and the sender in case plugins want
-	 * to free these strings and replace them with a modified version.
-	 */
-	buffy = g_strdup(msg);
-	angel = g_strdup(who);
-
-	plugin_return = GPOINTER_TO_INT(
-		purple_signal_emit_return_1(purple_conversations_get_handle(),
-								  "receiving-im-msg", account,
-								  &angel, &buffy, im, &flags));
-
-	if (!buffy || !angel || plugin_return) {
-		g_free(buffy);
-		g_free(angel);
-		return;
-	}
-
-	name = angel;
-	message = buffy;
-
-	purple_signal_emit(purple_conversations_get_handle(), "received-im-msg",
-	                   account, name, message, im, flags);
-
-	/* search for conversation again in case it was created by received-im-msg handler */
-	if(im == NULL) {
-		im = purple_conversation_manager_find_im(manager, account, name);
-	}
-
-	if(im == NULL) {
-		im = purple_im_conversation_new(account, name);
-	}
-
-	pmsg = purple_message_new_incoming(name, message, flags, mtime);
-	purple_conversation_write_message(im, pmsg);
-	g_free(message);
-	g_object_unref(pmsg);
-
-	g_free(name);
 }

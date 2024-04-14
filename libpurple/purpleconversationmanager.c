@@ -23,7 +23,6 @@
 #include "purpleconversationmanager.h"
 
 #include "purplecontact.h"
-#include "purpleimconversation.h"
 #include "purpleprivate.h"
 
 enum {
@@ -50,13 +49,6 @@ typedef gboolean (*PurpleConversationManagerCompareFunc)(PurpleConversation *con
 /******************************************************************************
  * Helpers
  *****************************************************************************/
-static gboolean
-purple_conversation_is_im(PurpleConversation *conversation,
-                          G_GNUC_UNUSED gpointer userdata)
-{
-	return PURPLE_IS_IM_CONVERSATION(conversation);
-}
-
 static gboolean
 purple_conversation_has_id(PurpleConversation *conversation, gpointer data) {
 	const char *needle = data;
@@ -346,19 +338,6 @@ purple_conversation_manager_find(PurpleConversationManager *manager,
 
 	return purple_conversation_manager_find_internal(manager, account, name,
 	                                                 NULL, NULL);
-}
-
-PurpleConversation *
-purple_conversation_manager_find_im(PurpleConversationManager *manager,
-                                    PurpleAccount *account, const gchar *name)
-{
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), NULL);
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-	g_return_val_if_fail(name != NULL, NULL);
-
-	return purple_conversation_manager_find_internal(manager, account, name,
-	                                                 purple_conversation_is_im,
-	                                                 NULL);
 }
 
 PurpleConversation *

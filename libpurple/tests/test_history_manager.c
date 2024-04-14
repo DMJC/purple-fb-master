@@ -325,9 +325,10 @@ test_purple_history_manager_no_adapter_write(void) {
 
 	message = g_object_new(PURPLE_TYPE_MESSAGE, NULL);
 	account = purple_account_new("test", "test");
-	conversation = g_object_new(PURPLE_TYPE_IM_CONVERSATION,
+	conversation = g_object_new(PURPLE_TYPE_CONVERSATION,
 	                            "account", account,
 	                            "name", "pidgy",
+	                            "type", PURPLE_CONVERSATION_TYPE_DM,
 	                            NULL);
 
 	result = purple_history_manager_write(manager, conversation, message,
@@ -456,9 +457,10 @@ test_purple_history_manager_adapter_write(void) {
 
 	message = g_object_new(PURPLE_TYPE_MESSAGE, NULL);
 	account = purple_account_new("test", "test");
-	conversation = g_object_new(PURPLE_TYPE_IM_CONVERSATION,
+	conversation = g_object_new(PURPLE_TYPE_CONVERSATION,
 	                            "account", account,
 	                            "name", "pidgy",
+	                            "type", PURPLE_CONVERSATION_TYPE_DM,
 	                            NULL);
 	result = purple_history_manager_write(manager, conversation, message,
 	                                      &error);

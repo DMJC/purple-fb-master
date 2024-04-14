@@ -162,22 +162,6 @@ PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_conversation_manager_find(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
 
 /**
- * purple_conversation_manager_find_im:
- * @manager: The #PurpleConversationManager instance.
- * @account: The #PurpleAccount instance whose conversation to find.
- * @name: The name of the conversation.
- *
- * Looks for a registered im conversation belonging to @account and named
- * @name.
- *
- * Returns: (transfer none): The #PurpleConversation if found, otherwise %NULL.
- *
- * Since: 3.0
- */
-PURPLE_DEPRECATED_FOR(purple_conversation_manager_find_dm)
-PurpleConversation *purple_conversation_manager_find_im(PurpleConversationManager *manager, PurpleAccount *account, const gchar *name);
-
-/**
  * purple_conversation_manager_find_dm:
  * @manager: The instance.
  * @contact: The contact.
