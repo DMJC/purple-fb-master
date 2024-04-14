@@ -27,6 +27,8 @@ library('xmppdisco', xmppdisco_SOURCES, xmppdisco_HEADERS,
     gnu_symbol_visibility : 'hidden',
     dependencies : [libpurple_dep, libpidgin_dep, glib],
     name_prefix : '',
-    install : true, install_dir : PIDGIN_PLUGINDIR)
+    install : true,
+    install_dir : PIDGIN_PLUGINDIR,
+    build_by_default : false)
 
 devenv.append('PIDGIN_PLUGIN_PATH', meson.current_build_dir())
