@@ -31,26 +31,6 @@
 #include "gtkutils.h"
 #include "pidgincore.h"
 
-void
-pidgin_dialogs_im_with_user(PurpleAccount *account, const char *username)
-{
-	PurpleConversation *im;
-	PurpleConversationManager *manager;
-
-	g_return_if_fail(account != NULL);
-	g_return_if_fail(username != NULL);
-
-	manager = purple_conversation_manager_get_default();
-	im = purple_conversation_manager_find_im(manager, account, username);
-
-	if(!PURPLE_IS_IM_CONVERSATION(im)) {
-		/* This constructor automagically registers the conversation with the
-		 * manager.
-		 */
-		purple_im_conversation_new(account, username);
-	}
-}
-
 static void
 pidgin_dialogs_info_cb(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	char *username;

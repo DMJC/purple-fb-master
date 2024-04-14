@@ -161,14 +161,34 @@ pidgin_notification_add_contact_message_cb(G_GNUC_UNUSED GtkButton *button,
 	PidginNotificationAddContact *pidgin_request = data;
 	PurpleAddContactRequest *request = NULL;
 	PurpleAccount *account = NULL;
-	const gchar *username = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *manager = NULL;
+	PurpleConversation *conversation = NULL;
+	const char *username = NULL;
 
 	request = purple_notification_get_data(pidgin_request->notification);
 
 	account = purple_add_contact_request_get_account(request);
 	username = purple_add_contact_request_get_username(request);
 
-	pidgin_dialogs_im_with_user(account, username);
+	manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_username(manager, account,
+	                                                    username);
+
+	if(!PURPLE_IS_CONTACT(contact)) {
+		g_warning("failed to find a user named '%s' on account %s",
+		          username,
+		          purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)));
+
+		return;
+	}
+
+	conversation = purple_contact_find_dm(contact);
+	if(PURPLE_IS_CONVERSATION(conversation)) {
+		purple_conversation_present(conversation);
+	} else {
+		purple_contact_create_dm_async(contact, NULL, NULL, NULL);
+	}
 }
 
 static void
