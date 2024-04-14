@@ -141,33 +141,10 @@ pidgin_display_window_close_conversation(G_GNUC_UNUSED GSimpleAction *simple,
 	}
 }
 
-static void
-pidgin_display_window_get_info(G_GNUC_UNUSED GSimpleAction *simple,
-                               G_GNUC_UNUSED GVariant *parameter,
-                               gpointer data)
-{
-	PidginDisplayWindow *window = data;
-	PurpleConversation *selected = NULL;
-
-	selected = pidgin_display_window_get_selected(window);
-	if(PURPLE_IS_CONVERSATION(selected)) {
-		if(PURPLE_IS_IM_CONVERSATION(selected)) {
-			PurpleConnection *connection = NULL;
-
-			connection = purple_conversation_get_connection(selected);
-			pidgin_retrieve_user_info(connection,
-			                          purple_conversation_get_name(selected));
-		}
-	}
-}
-
 static GActionEntry win_entries[] = {
 	{
 		.name = "close",
 		.activate = pidgin_display_window_close_conversation
-	}, {
-		.name = "get-info",
-		.activate = pidgin_display_window_get_info
 	}
 };
 
@@ -177,14 +154,7 @@ static GActionEntry win_entries[] = {
  * A list of action names that are only valid if a conversation is selected.
  */
 static const gchar *pidgin_display_window_conversation_actions[] = {
-	"alias",
 	"close",
-	"get-info",
-	NULL
-};
-
-static const gchar *pidgin_display_window_im_conversation_actions[] = {
-	"send-file",
 	NULL
 };
 
@@ -247,7 +217,6 @@ pidgin_display_window_selected_item_changed_cb(GObject *self,
 	GtkTreeListRow *row = NULL;
 	GtkWidget *widget = NULL;
 	gboolean is_conversation = FALSE;
-	gboolean is_im_conversation = FALSE;
 
 	row = gtk_single_selection_get_selected_item(selection);
 
@@ -255,17 +224,11 @@ pidgin_display_window_selected_item_changed_cb(GObject *self,
 
 	/* Toggle whether actions should be enabled or disabled. */
 	conversation = g_object_get_data(G_OBJECT(item), "conversation");
-	if(PURPLE_IS_CONVERSATION(conversation)) {
-		is_conversation = PURPLE_IS_CONVERSATION(conversation);
-		is_im_conversation = PURPLE_IS_IM_CONVERSATION(conversation);
-	}
+	is_conversation = PURPLE_IS_CONVERSATION(conversation);
 
 	pidgin_display_window_actions_set_enabled(G_ACTION_MAP(window),
 	                                          pidgin_display_window_conversation_actions,
 	                                          is_conversation);
-	pidgin_display_window_actions_set_enabled(G_ACTION_MAP(window),
-	                                          pidgin_display_window_im_conversation_actions,
-	                                          is_im_conversation);
 
 	widget = pidgin_display_item_get_widget(item);
 	if(GTK_IS_WIDGET(widget)) {

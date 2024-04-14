@@ -57,15 +57,6 @@ pidgin_avatar_get_effective_buddy(PidginAvatar *avatar) {
 
 	if(PURPLE_IS_BUDDY(avatar->buddy)) {
 		buddy = PURPLE_BUDDY(avatar->buddy);
-
-	} else if(PURPLE_IS_IM_CONVERSATION(avatar->conversation)) {
-		PurpleAccount *account = NULL;
-		const gchar *name = NULL;
-
-		account = purple_conversation_get_account(avatar->conversation);
-
-		name = purple_conversation_get_name(avatar->conversation);
-		buddy = purple_blist_find_buddy(account, name);
 	}
 
 	return buddy;
