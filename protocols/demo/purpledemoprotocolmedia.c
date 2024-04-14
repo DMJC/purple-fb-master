@@ -39,28 +39,14 @@ purple_demo_protocol_media_get_caps(G_GNUC_UNUSED PurpleProtocolMedia *media,
 
 static gboolean
 purple_demo_protocol_media_initiate_session(G_GNUC_UNUSED PurpleProtocolMedia *media,
-                                            PurpleAccount *account,
-                                            const gchar *who,
+                                            G_GNUC_UNUSED PurpleAccount *account,
+                                            const char *who,
                                             PurpleMediaSessionType type)
 {
-	PurpleConnection *connection = NULL;
 	gchar *session_name = NULL;
-	gchar *message = NULL;
-	GDateTime *timestamp = NULL;
-
-	connection = purple_account_get_connection(account);
 
 	session_name = g_flags_to_string(PURPLE_MEDIA_TYPE_SESSION_TYPE, type);
-	message = g_strdup_printf(_("Initiated demo %s session with %s"),
-	                          session_name, who);
-	timestamp = g_date_time_new_now_utc();
-
-	purple_serv_got_im(connection, "Echo",
-	                   message, PURPLE_MESSAGE_RECV,
-	                   g_date_time_to_unix(timestamp));
-
-	g_date_time_unref(timestamp);
-	g_free(message);
+	g_warning(_("Initiated demo %s session with %s"), session_name, who);
 	g_free(session_name);
 
 	/* TODO: When libpurple gets a backend, we can implement more of this. */
@@ -69,27 +55,12 @@ purple_demo_protocol_media_initiate_session(G_GNUC_UNUSED PurpleProtocolMedia *m
 
 static gboolean
 purple_demo_protocol_media_send_dtmf(G_GNUC_UNUSED PurpleProtocolMedia *protocol_media,
-                                     PurpleMedia *media, gchar dtmf,
+                                     G_GNUC_UNUSED PurpleMedia *media,
+                                     char dtmf,
                                      guint8 volume, guint8 duration)
 {
-	PurpleAccount *account = NULL;
-	PurpleConnection *connection = NULL;
-	gchar *message = NULL;
-	GDateTime *timestamp = NULL;
-
-	account = purple_media_get_account(media);
-	connection = purple_account_get_connection(account);
-
-	message = g_strdup_printf(_("Received DTMF %c at volume %d for %d seconds"),
-	                          dtmf, volume, duration);
-	timestamp = g_date_time_new_now_utc();
-
-	purple_serv_got_im(connection, "Echo",
-	                   message, PURPLE_MESSAGE_RECV,
-	                   g_date_time_to_unix(timestamp));
-
-	g_date_time_unref(timestamp);
-	g_free(message);
+	g_warning(_("Received DTMF %c at volume %d for %d seconds"),
+	          dtmf, volume, duration);
 
 	return TRUE;
 }
