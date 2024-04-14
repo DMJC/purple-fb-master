@@ -31,7 +31,6 @@
 #include <glib-object.h>
 
 #include "connection.h"
-#include "group.h"
 #include "purpleaccount.h"
 #include "purplemessage.h"
 #include "purpleprotocol.h"
@@ -65,10 +64,6 @@ struct _PurpleProtocolServerInterface {
 	void (*set_idle)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, gint idletime);
 
 	void (*change_passwd)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_pass, const gchar *new_pass);
-
-	void (*rename_group)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_name, PurpleGroup *group, GList *moved_buddies);
-
-	void (*remove_group)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleGroup *group);
 
 	gint (*send_raw)(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *buf, gint len);
 
@@ -129,35 +124,6 @@ void purple_protocol_server_set_idle(PurpleProtocolServer *protocol_server, Purp
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_pass, const gchar *new_pass);
-
-/**
- * purple_protocol_server_rename_group:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection:  The #PurpleConnection instance.
- * @old_name: The old name of the group.
- * @group: The new #PurpleGroup instance.
- * @moved_buddies: (element-type GObject): A list of #PurpleBuddy's being
- *                 moved as part of this rename.
- *
- * Renames the group named @old_name to the new @group.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server, PurpleConnection *connection, const gchar *old_name, PurpleGroup *group, GList *moved_buddies);
-
-/**
- * purple_protocol_server_remove_group:
- * @protocol_server: The #PurpleProtocolServer instance.
- * @connection: The #PurpleConnection instance.
- * @group: The #PurpleGroup instance.
- *
- * Removes @group from the server side contact list.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_protocol_server_remove_group(PurpleProtocolServer *protocol_server, PurpleConnection *connection, PurpleGroup *group);
 
 /**
  * purple_protocol_server_send_raw:

@@ -248,6 +248,8 @@ version 3.0.0 (??/??/????):
 		  instead.
 		* account-setting-info, account-set-info signals
 		* account-status-changing signal.
+		* blist-node-aliased signal.
+		* blist-node-extended-menu signal.
 		* blocked-img-msg signal.
 		* buddy-caps-changed signal.
 		* buddy-got-login-time signal.
@@ -334,6 +336,7 @@ version 3.0.0 (??/??/????):
 		* purple_account_privacy_permit_remove
 		* purple_account_remove_buddy
 		* purple_account_remove_buddies
+		* purple_account_remove_group
 		* purple_account_remove_setting
 		* purple_account_request_add. Use purple_add_contact_request_new
 		  instead.
@@ -380,20 +383,50 @@ version 3.0.0 (??/??/????):
 		* purple_attention_type_get_unlocalized_name
 		* purple_base16_*
 		* purple_base64_*. Use g_base64_* instead
+		* PurpleBuddyList
 		* purple_blist_add_account
 		* purple_blist_add_buddy
 		* purple_blist_add_chat
+		* purple_blist_add_contact
+		* purple_blist_add_group
 		* purple_blist_find_chat
+		* purple_blist_get_buddies
+		* purple_blist_get_handle
+		* purple_blist_get_root
 		* purple_blist_get_ui_data
+		* purple_blist_init
 		* purple_blist_load
 		* purple_blist_new
+		* PurpleBlistNode
+		* purple_blist_node_get_bool
+		* purple_blist_node_get_extended_menu
+		* purple_blist_node_get_first_child
+		* purple_blist_node_get_int
+		* purple_blist_node_get_parent
+		* purple_blist_node_get_sibling_next
+		* purple_blist_node_get_sibling_prev
+		* purple_blist_node_get_string
+		* purple_blist_node_get_type
 		* purple_blist_node_get_ui_data
+		* purple_blist_node_next
+		* purple_blist_node_remove_setting
+		* purple_blist_node_set_bool
+		* purple_blist_node_set_int
+		* purple_blist_node_set_string
 		* purple_blist_node_set_ui_data
 		* purple_blist_remove_account
 		* purple_blist_remove_buddy
 		* purple_blist_remove_chat
+		* purple_blist_remove_contact
+		* purple_blist_remove_group
+		* purple_blist_request_add_buddy
 		* purple_blist_request_add_chat
+		* purple_blist_request_add_group
+		* purple_blist_schedule_save
 		* purple_blist_set_ui_data
+		* purple_blist_set_visible
+		* purple_blist_show
+		* purple_blist_uninit
 		* purple_set_blist
 		* purple_blist_update_buddy_icon
 		* purple_buddy_get_local_alias
@@ -492,6 +525,11 @@ version 3.0.0 (??/??/????):
 		* purple_get_attention_type_from_code
 		* purple_get_host_name. Use g_get_host_name, instead.
 		* purple_get_tzoff_str(). Use g_date_time_format, instead.
+		* PurpleGroup
+		* purple_group_get_accounts
+		* purple_group_get_name
+		* purple_group_new
+		* purple_group_on_account
 		* purple_home_dir
 		* PurpleIdleUiOps
 		* purple_idle_get_ui_ops
@@ -960,6 +998,8 @@ version 3.0.0 (??/??/????):
 		* struct PurpleAccountOption
 		* struct PurpleAccountUserSplit
 		* struct PurpleNotifySearchColumn
+		* ui-caps-changed signal
+		* update-idle signal
 		* wpurple_g_access
 		* writing-chat-msg signal
 		* writing-im-msg signal

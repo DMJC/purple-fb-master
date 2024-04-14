@@ -22,7 +22,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "buddylist.h"
 #include "connection.h"
 #include "debug.h"
 #include "notify.h"

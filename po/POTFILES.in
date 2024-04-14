@@ -1,16 +1,11 @@
 libpurple/accounts.c
 libpurple/action.c
-libpurple/blistnode.c
-libpurple/buddylist.c
 libpurple/circularbuffer.c
 libpurple/cmds.c
 libpurple/connection.c
-libpurple/contact.c
 libpurple/conversations.c
 libpurple/core.c
-libpurple/countingnode.c
 libpurple/debug.c
-libpurple/group.c
 libpurple/image.c
 libpurple/media/backend-iface.c
 libpurple/media.c

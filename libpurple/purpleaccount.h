@@ -35,7 +35,6 @@
 typedef struct _PurpleAccount PurpleAccount;
 
 #include "connection.h"
-#include "group.h"
 #include "purpleconnectionerrorinfo.h"
 #include "purplecontactinfo.h"
 #include "purpleprotocol.h"
@@ -504,18 +503,6 @@ const char *purple_account_get_string(PurpleAccount *account, const char *name, 
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_account_get_bool(PurpleAccount *account, const char *name, gboolean default_value);
-
-/**
- * purple_account_remove_group:
- * @account: The account.
- * @group: The group to remove.
- *
- * Removes a group from the server-side buddy list.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_remove_group(PurpleAccount *account, PurpleGroup *group);
 
 /**
  * purple_account_change_password:

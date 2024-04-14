@@ -1613,21 +1613,6 @@ purple_account_get_bool(PurpleAccount *account, const char *name,
 }
 
 void
-purple_account_remove_group(PurpleAccount *account, PurpleGroup *group) {
-	PurpleProtocol *protocol = NULL;
-	PurpleConnection *gc = purple_account_get_connection(account);
-
-	if(gc != NULL) {
-		protocol = purple_connection_get_protocol(gc);
-	}
-
-	if(PURPLE_IS_PROTOCOL_SERVER(protocol)) {
-		purple_protocol_server_remove_group(PURPLE_PROTOCOL_SERVER(protocol),
-		                                    gc, group);
-	}
-}
-
-void
 purple_account_change_password(PurpleAccount *account, const char *orig_pw,
                                const char *new_pw)
 {

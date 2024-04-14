@@ -3,7 +3,6 @@ libpurple_doc_content_files = [
 	'plugin_i18n.md',
 	'plugin_ids.md',
 	'signals_account.md',
-	'signals_blist.md',
 	'signals_cmd.md',
 	'signals_connection.md',
 	'signals_conversation.md',

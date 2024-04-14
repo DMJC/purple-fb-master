@@ -51,17 +51,6 @@ G_GNUC_INTERNAL
 PurpleXmlNode *_purple_account_to_xmlnode(PurpleAccount *account);
 
 /**
- * _purple_blist_get_last_child:
- * @node:  The node whose last child is to be retrieved.
- *
- * Returns the last child of a particular node.
- *
- * Returns: The last child of the node.
- */
-G_GNUC_INTERNAL
-PurpleBlistNode *_purple_blist_get_last_child(PurpleBlistNode *node);
-
-/**
  * _purple_connection_wants_to_die:
  * @gc:  The connection to check
  *

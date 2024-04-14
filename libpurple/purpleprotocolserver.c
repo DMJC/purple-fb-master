@@ -102,42 +102,6 @@ purple_protocol_server_change_passwd(PurpleProtocolServer *protocol_server,
 	}
 }
 
-void
-purple_protocol_server_rename_group(PurpleProtocolServer *protocol_server,
-                                    PurpleConnection *connection,
-                                    const gchar *old_name, PurpleGroup *group,
-                                    GList *moved_buddies)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-	g_return_if_fail(PURPLE_IS_GROUP(group));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->rename_group != NULL) {
-		iface->rename_group(protocol_server, connection, old_name, group,
-		                    moved_buddies);
-	}
-}
-
-void
-purple_protocol_server_remove_group(PurpleProtocolServer *protocol_server,
-                                    PurpleConnection *connection,
-                                    PurpleGroup *group)
-{
-	PurpleProtocolServerInterface *iface = NULL;
-
-	g_return_if_fail(PURPLE_IS_PROTOCOL_SERVER(protocol_server));
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-	g_return_if_fail(PURPLE_IS_GROUP(group));
-
-	iface = PURPLE_PROTOCOL_SERVER_GET_IFACE(protocol_server);
-	if(iface != NULL && iface->remove_group != NULL) {
-		iface->remove_group(protocol_server, connection, group);
-	}
-}
-
 gint
 purple_protocol_server_send_raw(PurpleProtocolServer *protocol_server,
                                 PurpleConnection *connection,

@@ -26,7 +26,6 @@
 #define G_SETTINGS_ENABLE_BACKEND
 #include <gio/gsettingsbackend.h>
 
-#include "buddylist.h"
 #include "cmds.h"
 #include "connection.h"
 #include "conversations.h"
@@ -158,7 +157,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 	purple_conversations_init();
 	purple_conversation_manager_startup();
 	purple_whiteboard_manager_startup();
-	purple_blist_init();
 
 	/* Setup the history adapter. */
 	adapter = purple_ui_get_history_adapter(ui);
@@ -196,9 +194,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 		return FALSE;
 	}
 
-	/* Load the buddy list after UI init */
-	purple_blist_boot();
-
 	purple_signal_emit(purple_get_core(), "core-initialized");
 
 	return TRUE;
@@ -229,7 +224,6 @@ purple_core_quit(void)
 	purple_whiteboard_manager_shutdown();
 	purple_conversation_manager_shutdown();
 	purple_conversations_uninit();
-	purple_blist_uninit();
 	purple_notify_uninit();
 	purple_connections_uninit();
 	purple_presence_manager_shutdown();
