@@ -42,7 +42,6 @@
 #include "request.h"
 #include "request/purplerequestfieldbool.h"
 #include "request/purplerequestfieldstring.h"
-#include "server.h"
 #include "signals.h"
 #include "util.h"
 

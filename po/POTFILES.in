@@ -89,7 +89,6 @@ libpurple/request/purplerequestfieldlist.c
 libpurple/request/purplerequestfieldstring.c
 libpurple/request/purplerequestgroup.c
 libpurple/request/purplerequestpage.c
-libpurple/server.c
 libpurple/signals.c
 libpurple/tests/test_account_manager.c
 libpurple/tests/test_account_option.c

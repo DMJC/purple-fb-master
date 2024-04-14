@@ -32,7 +32,6 @@
 #include "purpleprotocol.h"
 #include "purpleprotocolclient.h"
 #include "purpleconversation.h"
-#include "server.h"
 #include "signals.h"
 #include "util.h"
 #include "xmlnode.h"
@@ -989,7 +988,6 @@ void purple_blist_add_buddy(PurpleBuddy *buddy, PurpleMetaContact *contact, Purp
 
 		if (bnode->parent->parent != (PurpleBlistNode*)g) {
 			purple_signal_emit(purple_blist_get_handle(), "buddy-removed-from-group", buddy);
-			purple_serv_move_buddy(buddy, (PurpleGroup *)bnode->parent->parent, g);
 		}
 
 		if (bnode->next)
@@ -1157,9 +1155,6 @@ void purple_blist_add_contact(PurpleMetaContact *contact, PurpleGroup *group, Pu
 					hb2->group = gnode;
 
 					g_hash_table_replace(account_buddies, hb2, b);
-
-					if (purple_account_get_connection(account))
-						purple_serv_move_buddy(b, (PurpleGroup *)cnode->parent, g);
 				} else {
 					gboolean empty_contact = FALSE;
 

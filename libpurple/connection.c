@@ -33,7 +33,6 @@
 #include "purpleprivate.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
-#include "server.h"
 #include "signals.h"
 #include "util.h"
 

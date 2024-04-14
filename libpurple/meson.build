@@ -103,7 +103,6 @@ purple_coresources = [
 	'request/purplerequestgroup.c',
 	'request/purplerequestpage.c',
 	'request-datasheet.c',
-	'server.c',
 	'signals.c',
 	'util.c',
 	'xmlnode.c'
@@ -201,7 +200,6 @@ purple_coreheaders = [
 	'purplewhiteboarduiops.h',
 	'request.h',
 	'request-datasheet.h',
-	'server.h',
 	'signals.h',
 	'util.h',
 	'xmlnode.h',
