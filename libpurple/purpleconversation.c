@@ -37,7 +37,9 @@
 #include "signals.h"
 #include "util.h"
 
-typedef struct {
+struct _PurpleConversation {
+	GObject parent;
+
 	char *id;
 	PurpleConversationType type;
 	PurpleAccount *account;
@@ -63,7 +65,7 @@ typedef struct {
 	GListStore *members;
 
 	GListStore *messages;
-} PurpleConversationPrivate;
+};
 
 enum {
 	PROP_0,
@@ -99,8 +101,7 @@ enum {
 };
 static guint signals[N_SIGNALS] = {0, };
 
-G_DEFINE_TYPE_WITH_PRIVATE(PurpleConversation, purple_conversation,
-                           G_TYPE_OBJECT);
+G_DEFINE_FINAL_TYPE(PurpleConversation, purple_conversation, G_TYPE_OBJECT)
 
 static void purple_conversation_account_connected_cb(GObject *obj,
                                                      GParamSpec *pspec,
@@ -111,15 +112,11 @@ static void purple_conversation_account_connected_cb(GObject *obj,
  **************************************************************************/
 static void
 purple_conversation_set_id(PurpleConversation *conversation, const char *id) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(!purple_strequal(id, priv->id)) {
-		g_free(priv->id);
-		priv->id = g_strdup(id);
+	if(!purple_strequal(id, conversation->id)) {
+		g_free(conversation->id);
+		conversation->id = g_strdup(id);
 
 		g_object_notify_by_pspec(G_OBJECT(conversation), properties[PROP_ID]);
 	}
@@ -130,22 +127,20 @@ purple_conversation_set_account(PurpleConversation *conv,
                                 PurpleAccount *account)
 {
 	PurpleConversationMember *member = NULL;
-	PurpleConversationPrivate *priv = NULL;
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-	priv = purple_conversation_get_instance_private(conv);
 
 	/* Remove the account from the conversation if it's a member. */
-	if(PURPLE_IS_ACCOUNT(priv->account)) {
+	if(PURPLE_IS_ACCOUNT(conv->account)) {
 		if(PURPLE_IS_CONVERSATION_MEMBER(member)) {
 			purple_conversation_remove_member(conv,
-			                                  PURPLE_CONTACT_INFO(priv->account),
+			                                  PURPLE_CONTACT_INFO(conv->account),
 			                                  FALSE, NULL);
 		}
 	}
 
-	if(g_set_object(&priv->account, account)) {
-		if(PURPLE_IS_ACCOUNT(priv->account)) {
+	if(g_set_object(&conv->account, account)) {
+		if(PURPLE_IS_ACCOUNT(conv->account)) {
 			purple_conversation_add_member(conv, PURPLE_CONTACT_INFO(account),
 			                               FALSE, NULL);
 
@@ -162,13 +157,10 @@ static void
 purple_conversation_set_federated(PurpleConversation *conversation,
                                   gboolean federated)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-	if(priv->federated != federated) {
-		priv->federated = federated;
+	if(conversation->federated != federated) {
+		conversation->federated = federated;
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_FEDERATED]);
@@ -216,7 +208,6 @@ common_send(PurpleConversation *conv, const gchar *message,
 {
 	PurpleAccount *account;
 	PurpleConnection *gc;
-	PurpleConversationPrivate *priv = NULL;
 	PurpleProtocol *protocol = NULL;
 	gchar *displayed = NULL;
 	const gchar *sent, *me;
@@ -225,8 +216,6 @@ common_send(PurpleConversation *conv, const gchar *message,
 	if(*message == '\0') {
 		return;
 	}
-
-	priv = purple_conversation_get_instance_private(conv);
 
 	account = purple_conversation_get_account(conv);
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
@@ -248,7 +237,7 @@ common_send(PurpleConversation *conv, const gchar *message,
 		}
 	}
 
-	if(displayed && (priv->features & PURPLE_CONNECTION_FLAG_HTML) &&
+	if(displayed && (conv->features & PURPLE_CONNECTION_FLAG_HTML) &&
 	   !(msgflags & PURPLE_MESSAGE_RAW))
 	{
 		sent = displayed;
@@ -332,12 +321,9 @@ purple_conversation_account_connected_cb(GObject *obj,
                                          gpointer data)
 {
 	PurpleConversation *conversation = data;
-	PurpleConversationPrivate *priv = NULL;
 	gboolean connected = purple_account_is_connected(PURPLE_ACCOUNT(obj));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(priv->federated) {
+	if(conversation->federated) {
 		/* If the account changed to connected and the conversation is
 		 * federated we do nothing. But if the account went offline, we can
 		 * safely set the conversation to offline.
@@ -358,9 +344,6 @@ purple_conversation_set_property(GObject *obj, guint param_id,
                                  const GValue *value, GParamSpec *pspec)
 {
 	PurpleConversation *conv = PURPLE_CONVERSATION(obj);
-	PurpleConversationPrivate *priv = NULL;
-
-	priv = purple_conversation_get_instance_private(conv);
 
 	switch (param_id) {
 		case PROP_ID:
@@ -376,8 +359,8 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 			purple_conversation_set_avatar(conv, g_value_get_object(value));
 			break;
 		case PROP_NAME:
-			g_free(priv->name);
-			priv->name = g_value_dup_string(value);
+			g_free(conv->name);
+			conv->name = g_value_dup_string(value);
 			break;
 		case PROP_TITLE:
 			purple_conversation_set_title(conv, g_value_get_string(value));
@@ -515,13 +498,9 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 
 static void
 purple_conversation_init(PurpleConversation *conv) {
-	PurpleConversationPrivate *priv = NULL;
-
-	priv = purple_conversation_get_instance_private(conv);
-
-	priv->tags = purple_tags_new();
-	priv->members = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
-	priv->messages = g_list_store_new(PURPLE_TYPE_MESSAGE);
+	conv->tags = purple_tags_new();
+	conv->members = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
+	conv->messages = g_list_store_new(PURPLE_TYPE_MESSAGE);
 }
 
 static void
@@ -557,26 +536,24 @@ purple_conversation_dispose(GObject *obj) {
 static void
 purple_conversation_finalize(GObject *object) {
 	PurpleConversation *conv = PURPLE_CONVERSATION(object);
-	PurpleConversationPrivate *priv =
-			purple_conversation_get_instance_private(conv);
 
 	purple_request_close_with_handle(conv);
 
-	g_clear_pointer(&priv->id, g_free);
-	g_clear_object(&priv->avatar);
-	g_clear_pointer(&priv->name, g_free);
-	g_clear_pointer(&priv->title, g_free);
+	g_clear_pointer(&conv->id, g_free);
+	g_clear_object(&conv->avatar);
+	g_clear_pointer(&conv->name, g_free);
+	g_clear_pointer(&conv->title, g_free);
 
-	g_clear_pointer(&priv->description, g_free);
-	g_clear_pointer(&priv->topic, g_free);
-	g_clear_object(&priv->topic_author);
-	g_clear_pointer(&priv->topic_updated, g_date_time_unref);
-	g_clear_pointer(&priv->user_nickname, g_free);
-	g_clear_pointer(&priv->created_on, g_date_time_unref);
-	g_clear_object(&priv->creator);
-	g_clear_object(&priv->tags);
-	g_clear_object(&priv->members);
-	g_clear_object(&priv->messages);
+	g_clear_pointer(&conv->description, g_free);
+	g_clear_pointer(&conv->topic, g_free);
+	g_clear_object(&conv->topic_author);
+	g_clear_pointer(&conv->topic_updated, g_date_time_unref);
+	g_clear_pointer(&conv->user_nickname, g_free);
+	g_clear_pointer(&conv->created_on, g_date_time_unref);
+	g_clear_object(&conv->creator);
+	g_clear_object(&conv->tags);
+	g_clear_object(&conv->members);
+	g_clear_object(&conv->messages);
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->finalize(object);
 }
@@ -584,8 +561,6 @@ purple_conversation_finalize(GObject *object) {
 static void
 purple_conversation_class_init(PurpleConversationClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
-
-	klass->write_message = _purple_conversation_write_common;
 
 	obj_class->constructed = purple_conversation_constructed;
 	obj_class->dispose = purple_conversation_dispose;
@@ -971,46 +946,30 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
  *****************************************************************************/
 gboolean
 purple_conversation_is_dm(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->type == PURPLE_CONVERSATION_TYPE_DM;
+	return conversation->type == PURPLE_CONVERSATION_TYPE_DM;
 }
 
 gboolean
 purple_conversation_is_group_dm(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->type == PURPLE_CONVERSATION_TYPE_GROUP_DM;
+	return conversation->type == PURPLE_CONVERSATION_TYPE_GROUP_DM;
 }
 
 gboolean
 purple_conversation_is_channel(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->type == PURPLE_CONVERSATION_TYPE_CHANNEL;
+	return conversation->type == PURPLE_CONVERSATION_TYPE_CHANNEL;
 }
 
 gboolean
 purple_conversation_is_thread(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->type == PURPLE_CONVERSATION_TYPE_THREAD;
+	return conversation->type == PURPLE_CONVERSATION_TYPE_THREAD;
 }
 
 void
@@ -1021,62 +980,45 @@ void
 purple_conversation_set_features(PurpleConversation *conv,
                                  PurpleConnectionFlags features)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 
-	priv = purple_conversation_get_instance_private(conv);
-	priv->features = features;
+	if(conv->features != features) {
+		conv->features = features;
 
-	g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_FEATURES]);
+		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_FEATURES]);
+	}
 }
 
 PurpleConnectionFlags
 purple_conversation_get_features(PurpleConversation *conv) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), 0);
 
-	priv = purple_conversation_get_instance_private(conv);
-
-	return priv->features;
+	return conv->features;
 }
 
 const char *
 purple_conversation_get_id(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->id;
+	return conversation->id;
 }
 
 PurpleConversationType
 purple_conversation_get_conversation_type(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation),
 	                     PURPLE_CONVERSATION_TYPE_UNSET);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->type;
+	return conversation->type;
 }
 
 void
 purple_conversation_set_conversation_type(PurpleConversation *conversation,
                                           PurpleConversationType type)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(type != priv->type) {
-		priv->type = type;
+	if(type != conversation->type) {
+		conversation->type = type;
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_TYPE]);
@@ -1085,13 +1027,9 @@ purple_conversation_set_conversation_type(PurpleConversation *conversation,
 
 PurpleAccount *
 purple_conversation_get_account(PurpleConversation *conv) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
 
-	priv = purple_conversation_get_instance_private(conv);
-
-	return priv->account;
+	return conv->account;
 }
 
 PurpleConnection *
@@ -1111,29 +1049,22 @@ purple_conversation_get_connection(PurpleConversation *conv) {
 
 void
 purple_conversation_set_title(PurpleConversation *conv, const gchar *title) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 	g_return_if_fail(title != NULL);
 
-	priv = purple_conversation_get_instance_private(conv);
-	g_free(priv->title);
-	priv->title = g_strdup(title);
+	if(!purple_strequal(conv->title, title)) {
+		g_free(conv->title);
+		conv->title = g_strdup(title);
 
-	if(!g_object_get_data(G_OBJECT(conv), "is-finalizing")) {
 		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_TITLE]);
 	}
 }
 
 const gchar *
 purple_conversation_get_title(PurpleConversation *conv) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
 
-	priv = purple_conversation_get_instance_private(conv);
-
-	return priv->title;
+	return conv->title;
 }
 
 void
@@ -1149,46 +1080,37 @@ purple_conversation_autoset_title(PurpleConversation *conv) {
 
 void
 purple_conversation_set_name(PurpleConversation *conv, const gchar *name) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-	priv = purple_conversation_get_instance_private(conv);
 
-	g_free(priv->name);
-	priv->name = g_strdup(name);
+	if(!purple_strequal(conv->name, name)) {
+		g_free(conv->name);
+		conv->name = g_strdup(name);
 
-	g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_NAME]);
+		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_NAME]);
 
-	purple_conversation_autoset_title(conv);
+		purple_conversation_autoset_title(conv);
+	}
 }
 
 const gchar *
 purple_conversation_get_name(PurpleConversation *conv) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
 
-	priv = purple_conversation_get_instance_private(conv);
-
-	return priv->name;
+	return conv->name;
 }
 
 void
-_purple_conversation_write_common(PurpleConversation *conv,
-                                  PurpleMessage *pmsg)
+purple_conversation_write_message(PurpleConversation *conv,
+                                  PurpleMessage *msg)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-	g_return_if_fail(pmsg != NULL);
+	g_return_if_fail(msg != NULL);
 
-	priv = purple_conversation_get_instance_private(conv);
-
-	if(purple_message_is_empty(pmsg)) {
+	if(purple_message_is_empty(msg)) {
 		return;
 	}
 
-	if(!(purple_message_get_flags(pmsg) & PURPLE_MESSAGE_NO_LOG))
+	if(!(purple_message_get_flags(msg) & PURPLE_MESSAGE_NO_LOG))
 	{
 		GError *error = NULL;
 		PurpleHistoryManager *manager = NULL;
@@ -1197,29 +1119,14 @@ _purple_conversation_write_common(PurpleConversation *conv,
 		/* We should probably handle this error somehow, but I don't think that
 		 * spamming purple_debug_warning is necessarily the right call.
 		 */
-		if(!purple_history_manager_write(manager, conv, pmsg, &error)){
+		if(!purple_history_manager_write(manager, conv, msg, &error)){
 			purple_debug_info("conversation", "history manager write returned error: %s", error->message);
 
 			g_clear_error(&error);
 		}
 	}
 
-	g_list_store_append(priv->messages, pmsg);
-}
-
-void
-purple_conversation_write_message(PurpleConversation *conv,
-                                  PurpleMessage *msg)
-{
-	PurpleConversationClass *klass = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-
-	klass = PURPLE_CONVERSATION_GET_CLASS(conv);
-
-	if(klass && klass->write_message) {
-		klass->write_message(conv, msg);
-	}
+	g_list_store_append(conv->messages, msg);
 }
 
 void
@@ -1227,11 +1134,13 @@ purple_conversation_write_system_message(PurpleConversation *conv,
                                          const gchar *message,
                                          PurpleMessageFlags flags)
 {
+	PurpleMessage *pmsg = NULL;
+
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
 
-	_purple_conversation_write_common(conv,
-	                                  purple_message_new_system(message,
-	                                                            flags));
+	pmsg = purple_message_new_system(message, flags);
+	purple_conversation_write_message(conv, pmsg);
+	g_clear_object(&pmsg);
 }
 
 void
@@ -1306,27 +1215,19 @@ purple_conversation_send_confirm(PurpleConversation *conv,
 
 gboolean
 purple_conversation_get_age_restricted(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->age_restricted;
+	return conversation->age_restricted;
 }
 
 void
 purple_conversation_set_age_restricted(PurpleConversation *conversation,
                                        gboolean age_restricted)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(priv->age_restricted != age_restricted) {
-		priv->age_restricted = age_restricted;
+	if(conversation->age_restricted != age_restricted) {
+		conversation->age_restricted = age_restricted;
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_AGE_RESTRICTED]);
@@ -1335,28 +1236,20 @@ purple_conversation_set_age_restricted(PurpleConversation *conversation,
 
 const char *
 purple_conversation_get_description(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->description;
+	return conversation->description;
 }
 
 void
 purple_conversation_set_description(PurpleConversation *conversation,
                                     const char *description)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(!purple_strequal(priv->description, description)) {
-		g_free(priv->description);
-		priv->description = g_strdup(description);
+	if(!purple_strequal(conversation->description, description)) {
+		g_free(conversation->description);
+		conversation->description = g_strdup(description);
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_DESCRIPTION]);
@@ -1365,28 +1258,20 @@ purple_conversation_set_description(PurpleConversation *conversation,
 
 const char *
 purple_conversation_get_topic(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->topic;
+	return conversation->topic;
 }
 
 void
 purple_conversation_set_topic(PurpleConversation *conversation,
                               const char *topic)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(!purple_strequal(priv->topic, topic)) {
-		g_free(priv->topic);
-		priv->topic = g_strdup(topic);
+	if(!purple_strequal(conversation->topic, topic)) {
+		g_free(conversation->topic);
+		conversation->topic = g_strdup(topic);
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_TOPIC]);
@@ -1416,26 +1301,18 @@ purple_conversation_set_topic_full(PurpleConversation *conversation,
 
 PurpleContactInfo *
 purple_conversation_get_topic_author(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->topic_author;
+	return conversation->topic_author;
 }
 
 void
 purple_conversation_set_topic_author(PurpleConversation *conversation,
                                      PurpleContactInfo *author)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(g_set_object(&priv->topic_author, author)) {
+	if(g_set_object(&conversation->topic_author, author)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_TOPIC_AUTHOR]);
 	}
@@ -1443,32 +1320,18 @@ purple_conversation_set_topic_author(PurpleConversation *conversation,
 
 GDateTime *
 purple_conversation_get_topic_updated(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->topic_updated;
+	return conversation->topic_updated;
 }
 
 void
 purple_conversation_set_topic_updated(PurpleConversation *conversation,
                                       GDateTime *updated)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(priv->topic_updated != updated) {
-		g_clear_pointer(&priv->topic_updated, g_date_time_unref);
-
-		if(updated != NULL) {
-			priv->topic_updated = g_date_time_ref(updated);
-		}
-
+	if(birb_date_time_set(&conversation->topic_updated, updated)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_TOPIC_UPDATED]);
 	}
@@ -1476,28 +1339,20 @@ purple_conversation_set_topic_updated(PurpleConversation *conversation,
 
 const char *
 purple_conversation_get_user_nickname(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->user_nickname;
+	return conversation->user_nickname;
 }
 
 void
 purple_conversation_set_user_nickname(PurpleConversation *conversation,
                                       const char *nickname)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(!purple_strequal(priv->user_nickname, nickname)) {
-		g_free(priv->user_nickname);
-		priv->user_nickname = g_strdup(nickname);
+	if(!purple_strequal(conversation->user_nickname, nickname)) {
+		g_free(conversation->user_nickname);
+		conversation->user_nickname = g_strdup(nickname);
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_USER_NICKNAME]);
@@ -1506,27 +1361,19 @@ purple_conversation_set_user_nickname(PurpleConversation *conversation,
 
 gboolean
 purple_conversation_get_favorite(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->favorite;
+	return conversation->favorite;
 }
 
 void
 purple_conversation_set_favorite(PurpleConversation *conversation,
                                  gboolean favorite)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(priv->favorite != favorite) {
-		priv->favorite = favorite;
+	if(conversation->favorite != favorite) {
+		conversation->favorite = favorite;
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_FAVORITE]);
@@ -1535,32 +1382,18 @@ purple_conversation_set_favorite(PurpleConversation *conversation,
 
 GDateTime *
 purple_conversation_get_created_on(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->created_on;
+	return conversation->created_on;
 }
 
 void
 purple_conversation_set_created_on(PurpleConversation *conversation,
                                    GDateTime *created_on)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(priv->created_on != created_on) {
-		g_clear_pointer(&priv->created_on, g_date_time_unref);
-
-		if(created_on != NULL) {
-			priv->created_on = g_date_time_ref(created_on);
-		}
-
+	if(birb_date_time_set(&conversation->created_on, created_on)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_CREATED_ON]);
 	}
@@ -1568,25 +1401,18 @@ purple_conversation_set_created_on(PurpleConversation *conversation,
 
 PurpleContactInfo *
 purple_conversation_get_creator(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->creator;
+	return conversation->creator;
 }
 
 void
 purple_conversation_set_creator(PurpleConversation *conversation,
                                 PurpleContactInfo *creator)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-	if(g_set_object(&priv->creator, creator)) {
+	if(g_set_object(&conversation->creator, creator)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_CREATOR]);
 	}
@@ -1594,26 +1420,19 @@ purple_conversation_set_creator(PurpleConversation *conversation,
 
 gboolean
 purple_conversation_get_online(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->online;
+	return conversation->online;
 }
 
 void
 purple_conversation_set_online(PurpleConversation *conversation,
                                gboolean online)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-	if(priv->online != online) {
-		priv->online = online;
+	if(conversation->online != online) {
+		conversation->online = online;
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_ONLINE]);
@@ -1622,52 +1441,38 @@ purple_conversation_set_online(PurpleConversation *conversation,
 
 gboolean
 purple_conversation_get_federated(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->federated;
+	return conversation->federated;
 }
 
 PurpleTags *
 purple_conversation_get_tags(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->tags;
+	return conversation->tags;
 }
 
 GListModel *
 purple_conversation_get_members(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return G_LIST_MODEL(priv->members);
+	return G_LIST_MODEL(conversation->members);
 }
 
 gboolean
 purple_conversation_has_member(PurpleConversation *conversation,
                                PurpleContactInfo *info, guint *position)
 {
-	PurpleConversationPrivate *priv = NULL;
 	PurpleConversationMember *needle = NULL;
 	gboolean found = FALSE;
 
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), FALSE);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
 	needle = purple_conversation_member_new(info);
-	found = g_list_store_find_with_equal_func(priv->members, needle,
+	found = g_list_store_find_with_equal_func(conversation->members,
+	                                          needle,
 	                                          purple_conversation_check_member_equal,
 	                                          position);
 
@@ -1687,11 +1492,8 @@ purple_conversation_find_member(PurpleConversation *conversation,
 	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
 
 	if(purple_conversation_has_member(conversation, info, &position)) {
-		PurpleConversationPrivate *priv = NULL;
-
-		priv = purple_conversation_get_instance_private(conversation);
-
-		member = g_list_model_get_item(G_LIST_MODEL(priv->members), position);
+		member = g_list_model_get_item(G_LIST_MODEL(conversation->members),
+		                               position);
 
 		/* We don't return a reference, but get_item does, so we need to get
 		 * rid of that.
@@ -1708,12 +1510,9 @@ purple_conversation_add_member(PurpleConversation *conversation,
                                const char *message)
 {
 	PurpleConversationMember *member = NULL;
-	PurpleConversationPrivate *priv = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
-
-	priv = purple_conversation_get_instance_private(conversation);
 
 	member = purple_conversation_find_member(conversation, info);
 	if(PURPLE_IS_CONVERSATION_MEMBER(member)) {
@@ -1721,7 +1520,7 @@ purple_conversation_add_member(PurpleConversation *conversation,
 	}
 
 	member = purple_conversation_member_new(info);
-	g_list_store_append(priv->members, member);
+	g_list_store_append(conversation->members, member);
 
 	g_signal_emit(conversation, signals[SIG_MEMBER_ADDED], 0, member, announce,
 	              message);
@@ -1737,7 +1536,6 @@ purple_conversation_remove_member(PurpleConversation *conversation,
                                   const char *message)
 {
 	PurpleConversationMember *member = NULL;
-	PurpleConversationPrivate *priv = NULL;
 	guint position = 0;
 
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
@@ -1747,10 +1545,10 @@ purple_conversation_remove_member(PurpleConversation *conversation,
 		return FALSE;
 	}
 
-	priv = purple_conversation_get_instance_private(conversation);
-	member = g_list_model_get_item(G_LIST_MODEL(priv->members), position);
+	member = g_list_model_get_item(G_LIST_MODEL(conversation->members),
+	                               position);
 
-	g_list_store_remove(priv->members, position);
+	g_list_store_remove(conversation->members, position);
 
 	g_signal_emit(conversation, signals[SIG_MEMBER_REMOVED], 0, member,
 	              announce, message);
@@ -1762,14 +1560,10 @@ purple_conversation_remove_member(PurpleConversation *conversation,
 
 GListModel *
 purple_conversation_get_messages(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	if(G_IS_LIST_MODEL(priv->messages)) {
-		return G_LIST_MODEL(priv->messages);
+	if(G_IS_LIST_MODEL(conversation->messages)) {
+		return G_LIST_MODEL(conversation->messages);
 	}
 
 	return NULL;
@@ -1777,25 +1571,18 @@ purple_conversation_get_messages(PurpleConversation *conversation) {
 
 PurpleAvatar *
 purple_conversation_get_avatar(PurpleConversation *conversation) {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	priv = purple_conversation_get_instance_private(conversation);
-
-	return priv->avatar;
+	return conversation->avatar;
 }
 
 void
 purple_conversation_set_avatar(PurpleConversation *conversation,
                                PurpleAvatar *avatar)
 {
-	PurpleConversationPrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	priv = purple_conversation_get_instance_private(conversation);
-	if(g_set_object(&priv->avatar, avatar)) {
+	if(g_set_object(&conversation->avatar, avatar)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_AVATAR]);
 	}

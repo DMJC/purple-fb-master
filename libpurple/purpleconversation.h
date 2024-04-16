@@ -35,64 +35,13 @@
 #define PURPLE_TYPE_CONVERSATION (purple_conversation_get_type())
 
 PURPLE_AVAILABLE_IN_ALL
-G_DECLARE_DERIVABLE_TYPE(PurpleConversation, purple_conversation, PURPLE,
-                         CONVERSATION, GObject)
+G_DECLARE_FINAL_TYPE(PurpleConversation, purple_conversation, PURPLE,
+                     CONVERSATION, GObject)
 
 #include "purpleavatar.h"
 #include "purplecontactinfo.h"
 #include "purpleconversationmember.h"
 #include "purplemessage.h"
-
-/**
- * PurpleConversationUpdateType:
- * @PURPLE_CONVERSATION_UPDATE_ADD: The buddy associated with the conversation
- *                                  was added.
- * @PURPLE_CONVERSATION_UPDATE_REMOVE: The buddy associated with the
- *                                     conversation was removed.
- * @PURPLE_CONVERSATION_UPDATE_ACCOUNT: The purple_account was changed.
- * @PURPLE_CONVERSATION_UPDATE_TYPING: The typing state was updated.
- * @PURPLE_CONVERSATION_UPDATE_UNSEEN: The unseen state was updated.
- * @PURPLE_CONVERSATION_UPDATE_LOGGING: Logging for this conversation was
- *                                      enabled or disabled.
- * @PURPLE_CONVERSATION_UPDATE_TOPIC: The topic for a chat was updated.
- * @PURPLE_CONVERSATION_ACCOUNT_ONLINE: One of the user's accounts went online.
- * @PURPLE_CONVERSATION_ACCOUNT_OFFLINE: One of the user's accounts went
- *                                       offline.
- * @PURPLE_CONVERSATION_UPDATE_AWAY: The other user went away.
- * @PURPLE_CONVERSATION_UPDATE_ICON: The other user's buddy icon changed.
- * @PURPLE_CONVERSATION_UPDATE_NAME: The name of the conversation was changed.
- * @PURPLE_CONVERSATION_UPDATE_TITLE: The title of the conversation was
- *                                    updated.
- * @PURPLE_CONVERSATION_UPDATE_CHATLEFT: The user left a chat.
- * @PURPLE_CONVERSATION_UPDATE_FEATURES: The features for a chat have changed.
- *
- * Conversation update type.
- */
-typedef enum
-{
-	PURPLE_CONVERSATION_UPDATE_ADD = 0,
-	PURPLE_CONVERSATION_UPDATE_REMOVE,
-	PURPLE_CONVERSATION_UPDATE_ACCOUNT,
-	PURPLE_CONVERSATION_UPDATE_TYPING,
-	PURPLE_CONVERSATION_UPDATE_UNSEEN,
-	PURPLE_CONVERSATION_UPDATE_LOGGING,
-	PURPLE_CONVERSATION_UPDATE_TOPIC,
-
-	/*
-	 * XXX These need to go when we implement a more generic core/UI event
-	 * system.
-	 */
-	PURPLE_CONVERSATION_ACCOUNT_ONLINE,
-	PURPLE_CONVERSATION_ACCOUNT_OFFLINE,
-	PURPLE_CONVERSATION_UPDATE_AWAY,
-	PURPLE_CONVERSATION_UPDATE_ICON,
-	PURPLE_CONVERSATION_UPDATE_NAME,
-	PURPLE_CONVERSATION_UPDATE_TITLE,
-	PURPLE_CONVERSATION_UPDATE_CHATLEFT,
-
-	PURPLE_CONVERSATION_UPDATE_FEATURES
-
-} PurpleConversationUpdateType;
 
 /**
  * PurpleConversationType:
@@ -136,24 +85,6 @@ typedef enum {
  *
  * Since: 2.0
  */
-
-/**
- * PurpleConversationClass:
- * @write_message: Writes a message to a chat or IM conversation. See
- *                 purple_conversation_write_message().
- *
- * Base class for all #PurpleConversation's
- */
-struct _PurpleConversationClass {
-	/*< private >*/
-	GObjectClass parent_class;
-
-	/*< public >*/
-	void (*write_message)(PurpleConversation *conv, PurpleMessage *msg);
-
-	/*< private >*/
-	gpointer reserved[4];
-};
 
 #include "purpleaccount.h"
 
