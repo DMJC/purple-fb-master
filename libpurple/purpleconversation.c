@@ -123,33 +123,35 @@ purple_conversation_set_id(PurpleConversation *conversation, const char *id) {
 }
 
 static void
-purple_conversation_set_account(PurpleConversation *conv,
+purple_conversation_set_account(PurpleConversation *conversation,
                                 PurpleAccount *account)
 {
 	PurpleConversationMember *member = NULL;
 
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
 	/* Remove the account from the conversation if it's a member. */
-	if(PURPLE_IS_ACCOUNT(conv->account)) {
+	if(PURPLE_IS_ACCOUNT(conversation->account)) {
 		if(PURPLE_IS_CONVERSATION_MEMBER(member)) {
-			purple_conversation_remove_member(conv,
-			                                  PURPLE_CONTACT_INFO(conv->account),
+			purple_conversation_remove_member(conversation,
+			                                  PURPLE_CONTACT_INFO(conversation->account),
 			                                  FALSE, NULL);
 		}
 	}
 
-	if(g_set_object(&conv->account, account)) {
-		if(PURPLE_IS_ACCOUNT(conv->account)) {
-			purple_conversation_add_member(conv, PURPLE_CONTACT_INFO(account),
+	if(g_set_object(&conversation->account, account)) {
+		if(PURPLE_IS_ACCOUNT(conversation->account)) {
+			purple_conversation_add_member(conversation,
+			                               PURPLE_CONTACT_INFO(account),
 			                               FALSE, NULL);
 
 			g_signal_connect_object(account, "notify::connected",
 			                        G_CALLBACK(purple_conversation_account_connected_cb),
-			                        conv, 0);
+			                        conversation, 0);
 		}
 
-		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_ACCOUNT]);
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_ACCOUNT]);
 	}
 }
 
@@ -203,21 +205,21 @@ purple_conversation_send_message_async_cb(GObject *protocol,
 }
 
 static void
-common_send(PurpleConversation *conv, const gchar *message,
+common_send(PurpleConversation *conversation, const char *message,
             PurpleMessageFlags msgflags)
 {
 	PurpleAccount *account;
 	PurpleConnection *gc;
 	PurpleProtocol *protocol = NULL;
-	gchar *displayed = NULL;
-	const gchar *sent, *me;
+	char *displayed = NULL;
+	const char *sent, *me;
 	gint err = 0;
 
 	if(*message == '\0') {
 		return;
 	}
 
-	account = purple_conversation_get_account(conv);
+	account = purple_conversation_get_account(conversation);
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
 	gc = purple_account_get_connection(account);
@@ -237,7 +239,7 @@ common_send(PurpleConversation *conv, const gchar *message,
 		}
 	}
 
-	if(displayed && (conv->features & PURPLE_CONNECTION_FLAG_HTML) &&
+	if(displayed && (conversation->features & PURPLE_CONNECTION_FLAG_HTML) &&
 	   !(msgflags & PURPLE_MESSAGE_RAW))
 	{
 		sent = displayed;
@@ -255,7 +257,8 @@ common_send(PurpleConversation *conv, const gchar *message,
 
 		protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
 		purple_protocol_conversation_send_message_async(protocol_conversation,
-		                                                conv, msg, NULL,
+		                                                conversation, msg,
+		                                                NULL,
 		                                                purple_conversation_send_message_async_cb,
 		                                                msg);
 
@@ -263,17 +266,17 @@ common_send(PurpleConversation *conv, const gchar *message,
 	}
 
 	if(err < 0) {
-		const gchar *who;
-		const gchar *msg;
+		const char *who;
+		const char *msg;
 
-		who = purple_conversation_get_name(conv);
+		who = purple_conversation_get_name(conversation);
 
 		if(err == -E2BIG) {
 			msg = _("Unable to send message: The message is too large.");
 
 			if(!purple_conversation_present_error(who, account, msg)) {
-				gchar *msg2 = g_strdup_printf(_("Unable to send message to %s."),
-				                              who);
+				char *msg2 = g_strdup_printf(_("Unable to send message to %s."),
+				                             who);
 				purple_notify_error(gc, NULL, msg2,
 				                    _("The message is too large."),
 				                    purple_request_cpar_from_connection(gc));
@@ -285,8 +288,8 @@ common_send(PurpleConversation *conv, const gchar *message,
 			msg = _("Unable to send message.");
 
 			if(!purple_conversation_present_error(who, account, msg)) {
-				gchar *msg2 = g_strdup_printf(_("Unable to send message to %s."),
-				                              who);
+				char *msg2 = g_strdup_printf(_("Unable to send message to %s."),
+				                             who);
 				purple_notify_error(gc, NULL, msg2, NULL,
 				                    purple_request_cpar_from_connection(gc));
 				g_free(msg2);
@@ -299,17 +302,17 @@ common_send(PurpleConversation *conv, const gchar *message,
 
 static void
 purple_conversation_send_confirm_cb(gpointer *data) {
-	PurpleConversation *conv = data[0];
-	gchar *message = data[1];
+	PurpleConversation *conversation = data[0];
+	char *message = data[1];
 
 	g_free(data);
 
-	if(!PURPLE_IS_CONVERSATION(conv)) {
+	if(!PURPLE_IS_CONVERSATION(conversation)) {
 		/* Maybe it was closed before this callback was called. */
 		return;
 	}
 
-	common_send(conv, message, 0);
+	common_send(conversation, message, 0);
 }
 
 /**************************************************************************
@@ -343,73 +346,80 @@ static void
 purple_conversation_set_property(GObject *obj, guint param_id,
                                  const GValue *value, GParamSpec *pspec)
 {
-	PurpleConversation *conv = PURPLE_CONVERSATION(obj);
+	PurpleConversation *conversation = PURPLE_CONVERSATION(obj);
 
 	switch (param_id) {
-		case PROP_ID:
-			purple_conversation_set_id(conv, g_value_get_string(value));
-			break;
-		case PROP_TYPE:
-			purple_conversation_set_conversation_type(conv, g_value_get_enum(value));
-			break;
-		case PROP_ACCOUNT:
-			purple_conversation_set_account(conv, g_value_get_object(value));
-			break;
-		case PROP_AVATAR:
-			purple_conversation_set_avatar(conv, g_value_get_object(value));
-			break;
-		case PROP_NAME:
-			g_free(conv->name);
-			conv->name = g_value_dup_string(value);
-			break;
-		case PROP_TITLE:
-			purple_conversation_set_title(conv, g_value_get_string(value));
-			break;
-		case PROP_FEATURES:
-			purple_conversation_set_features(conv, g_value_get_flags(value));
-			break;
-		case PROP_AGE_RESTRICTED:
-			purple_conversation_set_age_restricted(conv,
-			                                       g_value_get_boolean(value));
-			break;
-		case PROP_DESCRIPTION:
-			purple_conversation_set_description(conv,
-			                                    g_value_get_string(value));
-			break;
-		case PROP_TOPIC:
-			purple_conversation_set_topic(conv, g_value_get_string(value));
-			break;
-		case PROP_TOPIC_AUTHOR:
-			purple_conversation_set_topic_author(conv,
-			                                     g_value_get_object(value));
-			break;
-		case PROP_TOPIC_UPDATED:
-			purple_conversation_set_topic_updated(conv,
-			                                      g_value_get_boxed(value));
-			break;
-		case PROP_USER_NICKNAME:
-			purple_conversation_set_user_nickname(conv,
-			                                      g_value_get_string(value));
-			break;
-		case PROP_FAVORITE:
-			purple_conversation_set_favorite(conv, g_value_get_boolean(value));
-			break;
-		case PROP_CREATED_ON:
-			purple_conversation_set_created_on(conv, g_value_get_boxed(value));
-			break;
-		case PROP_CREATOR:
-			purple_conversation_set_creator(conv, g_value_get_object(value));
-			break;
-		case PROP_ONLINE:
-			purple_conversation_set_online(conv, g_value_get_boolean(value));
-			break;
-		case PROP_FEDERATED:
-			purple_conversation_set_federated(conv,
-			                                  g_value_get_boolean(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		purple_conversation_set_id(conversation, g_value_get_string(value));
+		break;
+	case PROP_TYPE:
+		purple_conversation_set_conversation_type(conversation,
+		                                          g_value_get_enum(value));
+		break;
+	case PROP_ACCOUNT:
+		purple_conversation_set_account(conversation,
+		                                g_value_get_object(value));
+		break;
+	case PROP_AVATAR:
+		purple_conversation_set_avatar(conversation,
+		                               g_value_get_object(value));
+		break;
+	case PROP_NAME:
+		purple_conversation_set_name(conversation, g_value_get_string(value));
+		break;
+	case PROP_TITLE:
+		purple_conversation_set_title(conversation, g_value_get_string(value));
+		break;
+	case PROP_FEATURES:
+		purple_conversation_set_features(conversation,
+		                                 g_value_get_flags(value));
+		break;
+	case PROP_AGE_RESTRICTED:
+		purple_conversation_set_age_restricted(conversation,
+		                                       g_value_get_boolean(value));
+		break;
+	case PROP_DESCRIPTION:
+		purple_conversation_set_description(conversation,
+		                                    g_value_get_string(value));
+		break;
+	case PROP_TOPIC:
+		purple_conversation_set_topic(conversation, g_value_get_string(value));
+		break;
+	case PROP_TOPIC_AUTHOR:
+		purple_conversation_set_topic_author(conversation,
+		                                     g_value_get_object(value));
+		break;
+	case PROP_TOPIC_UPDATED:
+		purple_conversation_set_topic_updated(conversation,
+		                                      g_value_get_boxed(value));
+		break;
+	case PROP_USER_NICKNAME:
+		purple_conversation_set_user_nickname(conversation,
+		                                      g_value_get_string(value));
+		break;
+	case PROP_FAVORITE:
+		purple_conversation_set_favorite(conversation,
+		                                 g_value_get_boolean(value));
+		break;
+	case PROP_CREATED_ON:
+		purple_conversation_set_created_on(conversation,
+		                                   g_value_get_boxed(value));
+		break;
+	case PROP_CREATOR:
+		purple_conversation_set_creator(conversation,
+		                                g_value_get_object(value));
+		break;
+	case PROP_ONLINE:
+		purple_conversation_set_online(conversation,
+		                               g_value_get_boolean(value));
+		break;
+	case PROP_FEDERATED:
+		purple_conversation_set_federated(conversation,
+		                                  g_value_get_boolean(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -417,95 +427,104 @@ static void
 purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
                                  GParamSpec *pspec)
 {
-	PurpleConversation *conv = PURPLE_CONVERSATION(obj);
+	PurpleConversation *conversation = PURPLE_CONVERSATION(obj);
 
 	switch(param_id) {
-		case PROP_ID:
-			g_value_set_string(value, purple_conversation_get_id(conv));
-			break;
-		case PROP_TYPE:
-			g_value_set_enum(value,
-			                 purple_conversation_get_conversation_type(conv));
-			break;
-		case PROP_ACCOUNT:
-			g_value_set_object(value, purple_conversation_get_account(conv));
-			break;
-		case PROP_AVATAR:
-			g_value_set_object(value, purple_conversation_get_avatar(conv));
-			break;
-		case PROP_NAME:
-			g_value_set_string(value, purple_conversation_get_name(conv));
-			break;
-		case PROP_TITLE:
-			g_value_set_string(value, purple_conversation_get_title(conv));
-			break;
-		case PROP_FEATURES:
-			g_value_set_flags(value, purple_conversation_get_features(conv));
-			break;
-		case PROP_AGE_RESTRICTED:
-			g_value_set_boolean(value,
-			                    purple_conversation_get_age_restricted(conv));
-			break;
-		case PROP_DESCRIPTION:
-			g_value_set_string(value,
-			                   purple_conversation_get_description(conv));
-			break;
-		case PROP_TOPIC:
-			g_value_set_string(value, purple_conversation_get_topic(conv));
-			break;
-		case PROP_TOPIC_AUTHOR:
-			g_value_set_object(value,
-			                   purple_conversation_get_topic_author(conv));
-			break;
-		case PROP_TOPIC_UPDATED:
-			g_value_set_boxed(value,
-			                  purple_conversation_get_topic_updated(conv));
-			break;
-		case PROP_USER_NICKNAME:
-			g_value_set_string(value,
-			                   purple_conversation_get_user_nickname(conv));
-			break;
-		case PROP_FAVORITE:
-			g_value_set_boolean(value, purple_conversation_get_favorite(conv));
-			break;
-		case PROP_CREATED_ON:
-			g_value_set_boxed(value, purple_conversation_get_created_on(conv));
-			break;
-		case PROP_CREATOR:
-			g_value_set_object(value, purple_conversation_get_creator(conv));
-			break;
-		case PROP_ONLINE:
-			g_value_set_boolean(value, purple_conversation_get_online(conv));
-			break;
-		case PROP_FEDERATED:
-			g_value_set_boolean(value,
-			                    purple_conversation_get_federated(conv));
-			break;
-		case PROP_TAGS:
-			g_value_set_object(value, purple_conversation_get_tags(conv));
-			break;
-		case PROP_MEMBERS:
-			g_value_set_object(value, purple_conversation_get_members(conv));
-			break;
-		case PROP_MESSAGES:
-			g_value_set_object(value, purple_conversation_get_messages(conv));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		g_value_set_string(value, purple_conversation_get_id(conversation));
+		break;
+	case PROP_TYPE:
+		g_value_set_enum(value,
+		                 purple_conversation_get_conversation_type(conversation));
+		break;
+	case PROP_ACCOUNT:
+		g_value_set_object(value,
+		                   purple_conversation_get_account(conversation));
+		break;
+	case PROP_AVATAR:
+		g_value_set_object(value,
+		                   purple_conversation_get_avatar(conversation));
+		break;
+	case PROP_NAME:
+		g_value_set_string(value, purple_conversation_get_name(conversation));
+		break;
+	case PROP_TITLE:
+		g_value_set_string(value, purple_conversation_get_title(conversation));
+		break;
+	case PROP_FEATURES:
+		g_value_set_flags(value,
+		                  purple_conversation_get_features(conversation));
+		break;
+	case PROP_AGE_RESTRICTED:
+		g_value_set_boolean(value,
+		                    purple_conversation_get_age_restricted(conversation));
+		break;
+	case PROP_DESCRIPTION:
+		g_value_set_string(value,
+		                   purple_conversation_get_description(conversation));
+		break;
+	case PROP_TOPIC:
+		g_value_set_string(value, purple_conversation_get_topic(conversation));
+		break;
+	case PROP_TOPIC_AUTHOR:
+		g_value_set_object(value,
+		                   purple_conversation_get_topic_author(conversation));
+		break;
+	case PROP_TOPIC_UPDATED:
+		g_value_set_boxed(value,
+		                  purple_conversation_get_topic_updated(conversation));
+		break;
+	case PROP_USER_NICKNAME:
+		g_value_set_string(value,
+		                   purple_conversation_get_user_nickname(conversation));
+		break;
+	case PROP_FAVORITE:
+		g_value_set_boolean(value,
+		                    purple_conversation_get_favorite(conversation));
+		break;
+	case PROP_CREATED_ON:
+		g_value_set_boxed(value,
+		                  purple_conversation_get_created_on(conversation));
+		break;
+	case PROP_CREATOR:
+		g_value_set_object(value,
+		                   purple_conversation_get_creator(conversation));
+		break;
+	case PROP_ONLINE:
+		g_value_set_boolean(value,
+		                    purple_conversation_get_online(conversation));
+		break;
+	case PROP_FEDERATED:
+		g_value_set_boolean(value,
+		                    purple_conversation_get_federated(conversation));
+		break;
+	case PROP_TAGS:
+		g_value_set_object(value, purple_conversation_get_tags(conversation));
+		break;
+	case PROP_MEMBERS:
+		g_value_set_object(value,
+		                   purple_conversation_get_members(conversation));
+		break;
+	case PROP_MESSAGES:
+		g_value_set_object(value,
+		                   purple_conversation_get_messages(conversation));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
 static void
-purple_conversation_init(PurpleConversation *conv) {
-	conv->tags = purple_tags_new();
-	conv->members = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
-	conv->messages = g_list_store_new(PURPLE_TYPE_MESSAGE);
+purple_conversation_init(PurpleConversation *conversation) {
+	conversation->tags = purple_tags_new();
+	conversation->members = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
+	conversation->messages = g_list_store_new(PURPLE_TYPE_MESSAGE);
 }
 
 static void
 purple_conversation_constructed(GObject *object) {
-	PurpleConversation *conv = PURPLE_CONVERSATION(object);
+	PurpleConversation *conversation = PURPLE_CONVERSATION(object);
 	PurpleAccount *account;
 	PurpleConnection *gc;
 
@@ -518,12 +537,12 @@ purple_conversation_constructed(GObject *object) {
 	 * case where we will not have a connection.
 	 */
 	if(PURPLE_IS_CONNECTION(gc)) {
-		purple_conversation_set_features(conv,
+		purple_conversation_set_features(conversation,
 		                                 purple_connection_get_flags(gc));
 	}
 
 	/* Auto-set the title. */
-	purple_conversation_autoset_title(conv);
+	purple_conversation_autoset_title(conversation);
 
 	g_object_unref(account);
 }
@@ -535,25 +554,25 @@ purple_conversation_dispose(GObject *obj) {
 
 static void
 purple_conversation_finalize(GObject *object) {
-	PurpleConversation *conv = PURPLE_CONVERSATION(object);
+	PurpleConversation *conversation = PURPLE_CONVERSATION(object);
 
-	purple_request_close_with_handle(conv);
+	purple_request_close_with_handle(conversation);
 
-	g_clear_pointer(&conv->id, g_free);
-	g_clear_object(&conv->avatar);
-	g_clear_pointer(&conv->name, g_free);
-	g_clear_pointer(&conv->title, g_free);
+	g_clear_pointer(&conversation->id, g_free);
+	g_clear_object(&conversation->avatar);
+	g_clear_pointer(&conversation->name, g_free);
+	g_clear_pointer(&conversation->title, g_free);
 
-	g_clear_pointer(&conv->description, g_free);
-	g_clear_pointer(&conv->topic, g_free);
-	g_clear_object(&conv->topic_author);
-	g_clear_pointer(&conv->topic_updated, g_date_time_unref);
-	g_clear_pointer(&conv->user_nickname, g_free);
-	g_clear_pointer(&conv->created_on, g_date_time_unref);
-	g_clear_object(&conv->creator);
-	g_clear_object(&conv->tags);
-	g_clear_object(&conv->members);
-	g_clear_object(&conv->messages);
+	g_clear_pointer(&conversation->description, g_free);
+	g_clear_pointer(&conversation->topic, g_free);
+	g_clear_object(&conversation->topic_author);
+	g_clear_pointer(&conversation->topic_updated, g_date_time_unref);
+	g_clear_pointer(&conversation->user_nickname, g_free);
+	g_clear_pointer(&conversation->created_on, g_date_time_unref);
+	g_clear_object(&conversation->creator);
+	g_clear_object(&conversation->tags);
+	g_clear_object(&conversation->members);
+	g_clear_object(&conversation->messages);
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->finalize(object);
 }
@@ -973,27 +992,28 @@ purple_conversation_is_thread(PurpleConversation *conversation) {
 }
 
 void
-purple_conversation_present(G_GNUC_UNUSED PurpleConversation *conv) {
+purple_conversation_present(G_GNUC_UNUSED PurpleConversation *conversation) {
 }
 
 void
-purple_conversation_set_features(PurpleConversation *conv,
+purple_conversation_set_features(PurpleConversation *conversation,
                                  PurpleConnectionFlags features)
 {
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	if(conv->features != features) {
-		conv->features = features;
+	if(conversation->features != features) {
+		conversation->features = features;
 
-		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_FEATURES]);
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_FEATURES]);
 	}
 }
 
 PurpleConnectionFlags
-purple_conversation_get_features(PurpleConversation *conv) {
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), 0);
+purple_conversation_get_features(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), 0);
 
-	return conv->features;
+	return conversation->features;
 }
 
 const char *
@@ -1026,19 +1046,19 @@ purple_conversation_set_conversation_type(PurpleConversation *conversation,
 }
 
 PurpleAccount *
-purple_conversation_get_account(PurpleConversation *conv) {
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
+purple_conversation_get_account(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	return conv->account;
+	return conversation->account;
 }
 
 PurpleConnection *
-purple_conversation_get_connection(PurpleConversation *conv) {
+purple_conversation_get_connection(PurpleConversation *conversation) {
 	PurpleAccount *account;
 
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	account = purple_conversation_get_account(conv);
+	account = purple_conversation_get_account(conversation);
 
 	if(account == NULL) {
 		return NULL;
@@ -1048,141 +1068,151 @@ purple_conversation_get_connection(PurpleConversation *conv) {
 }
 
 void
-purple_conversation_set_title(PurpleConversation *conv, const gchar *title) {
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+purple_conversation_set_title(PurpleConversation *conversation,
+                              const char *title)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 	g_return_if_fail(title != NULL);
 
-	if(!purple_strequal(conv->title, title)) {
-		g_free(conv->title);
-		conv->title = g_strdup(title);
+	if(!purple_strequal(conversation->title, title)) {
+		g_free(conversation->title);
+		conversation->title = g_strdup(title);
 
-		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_TITLE]);
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_TITLE]);
 	}
 }
 
-const gchar *
-purple_conversation_get_title(PurpleConversation *conv) {
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
+const char *
+purple_conversation_get_title(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	return conv->title;
+	return conversation->title;
 }
 
 void
-purple_conversation_autoset_title(PurpleConversation *conv) {
-	const gchar *name = NULL;
+purple_conversation_autoset_title(PurpleConversation *conversation) {
+	const char *name = NULL;
 
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	name = purple_conversation_get_name(conv);
+	name = purple_conversation_get_name(conversation);
 
-	purple_conversation_set_title(conv, name);
+	purple_conversation_set_title(conversation, name);
 }
 
 void
-purple_conversation_set_name(PurpleConversation *conv, const gchar *name) {
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-
-	if(!purple_strequal(conv->name, name)) {
-		g_free(conv->name);
-		conv->name = g_strdup(name);
-
-		g_object_notify_by_pspec(G_OBJECT(conv), properties[PROP_NAME]);
-
-		purple_conversation_autoset_title(conv);
-	}
-}
-
-const gchar *
-purple_conversation_get_name(PurpleConversation *conv) {
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), NULL);
-
-	return conv->name;
-}
-
-void
-purple_conversation_write_message(PurpleConversation *conv,
-                                  PurpleMessage *msg)
+purple_conversation_set_name(PurpleConversation *conversation,
+                             const char *name)
 {
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
-	g_return_if_fail(msg != NULL);
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	if(purple_message_is_empty(msg)) {
+	if(!purple_strequal(conversation->name, name)) {
+		g_free(conversation->name);
+		conversation->name = g_strdup(name);
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_NAME]);
+	}
+}
+
+const char *
+purple_conversation_get_name(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	return conversation->name;
+}
+
+void
+purple_conversation_write_message(PurpleConversation *conversation,
+                                  PurpleMessage *message)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+	g_return_if_fail(message != NULL);
+
+	if(purple_message_is_empty(message)) {
 		return;
 	}
 
-	if(!(purple_message_get_flags(msg) & PURPLE_MESSAGE_NO_LOG))
-	{
+	if(!(purple_message_get_flags(message) & PURPLE_MESSAGE_NO_LOG)) {
 		GError *error = NULL;
 		PurpleHistoryManager *manager = NULL;
+		gboolean success = FALSE;
 
 		manager = purple_history_manager_get_default();
 		/* We should probably handle this error somehow, but I don't think that
 		 * spamming purple_debug_warning is necessarily the right call.
 		 */
-		if(!purple_history_manager_write(manager, conv, msg, &error)){
-			purple_debug_info("conversation", "history manager write returned error: %s", error->message);
+		success = purple_history_manager_write(manager, conversation, message,
+		                                     &error);
+		if(!success){
+			purple_debug_info("conversation",
+			                  "history manager write returned error: %s",
+			                  error->message);
 
 			g_clear_error(&error);
 		}
 	}
 
-	g_list_store_append(conv->messages, msg);
+	g_list_store_append(conversation->messages, message);
 }
 
 void
-purple_conversation_write_system_message(PurpleConversation *conv,
-                                         const gchar *message,
+purple_conversation_write_system_message(PurpleConversation *conversation,
+                                         const char *message,
                                          PurpleMessageFlags flags)
 {
 	PurpleMessage *pmsg = NULL;
 
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
 	pmsg = purple_message_new_system(message, flags);
-	purple_conversation_write_message(conv, pmsg);
+	purple_conversation_write_message(conversation, pmsg);
 	g_clear_object(&pmsg);
 }
 
 void
-purple_conversation_send(PurpleConversation *conv, const gchar *message) {
-	purple_conversation_send_with_flags(conv, message, 0);
+purple_conversation_send(PurpleConversation *conversation,
+                         const char *message)
+{
+	purple_conversation_send_with_flags(conversation, message, 0);
 }
 
 void
-purple_conversation_send_with_flags(PurpleConversation *conv,
-                                    const gchar *message,
+purple_conversation_send_with_flags(PurpleConversation *conversation,
+                                    const char *message,
                                     PurpleMessageFlags flags)
 {
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 	g_return_if_fail(message != NULL);
 
-	common_send(conv, message, flags);
+	common_send(conversation, message, flags);
 }
 
 gboolean
-purple_conversation_has_focus(PurpleConversation *conv) {
+purple_conversation_has_focus(PurpleConversation *conversation) {
 	gboolean ret = FALSE;
 
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conv), FALSE);
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
 	return ret;
 }
 
 gboolean
-purple_conversation_present_error(const gchar *who, PurpleAccount *account,
-                                  const gchar *what)
+purple_conversation_present_error(const char *who, PurpleAccount *account,
+                                  const char *what)
 {
-	PurpleConversation *conv;
-	PurpleConversationManager *manager;
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *manager = NULL;
 
 	g_return_val_if_fail(who != NULL, FALSE);
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
 	g_return_val_if_fail(what != NULL, FALSE);
 
 	manager = purple_conversation_manager_get_default();
-	conv = purple_conversation_manager_find(manager, account, who);
-	if(PURPLE_IS_CONVERSATION(conv)) {
-		purple_conversation_write_system_message(conv, what,
+	conversation = purple_conversation_manager_find(manager, account, who);
+	if(PURPLE_IS_CONVERSATION(conversation)) {
+		purple_conversation_write_system_message(conversation, what,
 		                                         PURPLE_MESSAGE_ERROR);
 		return TRUE;
 	}
@@ -1191,24 +1221,24 @@ purple_conversation_present_error(const gchar *who, PurpleAccount *account,
 }
 
 void
-purple_conversation_send_confirm(PurpleConversation *conv,
-                                 const gchar *message)
+purple_conversation_send_confirm(PurpleConversation *conversation,
+                                 const char *message)
 {
-	gchar *text;
+	char *text;
 	gpointer *data;
 
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conv));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 	g_return_if_fail(message != NULL);
 
 	text = g_strdup_printf("You are about to send the following message:\n%s",
 	                       message);
 	data = g_new0(gpointer, 2);
-	data[0] = conv;
+	data[0] = conversation;
 	data[1] = (gpointer)message;
 
-	purple_request_action(conv, NULL, _("Send Message"), text, 0,
+	purple_request_action(conversation, NULL, _("Send Message"), text, 0,
 		purple_request_cpar_from_account(
-			purple_conversation_get_account(conv)),
+			purple_conversation_get_account(conversation)),
 		data, 2, _("_Send Message"),
 		G_CALLBACK(purple_conversation_send_confirm_cb), _("Cancel"), NULL);
 }

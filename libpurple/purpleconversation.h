@@ -156,7 +156,7 @@ gboolean purple_conversation_is_thread(PurpleConversation *conversation);
 
 /**
  * purple_conversation_present:
- * @conv: The conversation to present
+ * @conversation: The conversation to present
  *
  * Present a conversation to the user. This allows core code to initiate a
  * conversation by displaying the IM dialog.
@@ -164,7 +164,7 @@ gboolean purple_conversation_is_thread(PurpleConversation *conversation);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_present(PurpleConversation *conv);
+void purple_conversation_present(PurpleConversation *conversation);
 
 /**
  * purple_conversation_get_id:
@@ -209,7 +209,7 @@ void purple_conversation_set_conversation_type(PurpleConversation *conversation,
 
 /**
  * purple_conversation_get_account:
- * @conv: The conversation.
+ * @conversation: The conversation.
  *
  * Returns the specified conversation's purple_account.
  *
@@ -221,11 +221,11 @@ void purple_conversation_set_conversation_type(PurpleConversation *conversation,
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-PurpleAccount *purple_conversation_get_account(PurpleConversation *conv);
+PurpleAccount *purple_conversation_get_account(PurpleConversation *conversation);
 
 /**
  * purple_conversation_get_connection:
- * @conv: The conversation.
+ * @conversation: The conversation.
  *
  * Returns the specified conversation's purple_connection.
  *
@@ -234,11 +234,11 @@ PurpleAccount *purple_conversation_get_account(PurpleConversation *conv);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleConnection *purple_conversation_get_connection(PurpleConversation *conv);
+PurpleConnection *purple_conversation_get_connection(PurpleConversation *conversation);
 
 /**
  * purple_conversation_set_title:
- * @conv:  The conversation.
+ * @conversation: The conversation.
  * @title: The title.
  *
  * Sets the specified conversation's title.
@@ -246,11 +246,11 @@ PurpleConnection *purple_conversation_get_connection(PurpleConversation *conv);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_set_title(PurpleConversation *conv, const gchar *title);
+void purple_conversation_set_title(PurpleConversation *conversation, const char *title);
 
 /**
  * purple_conversation_get_title:
- * @conv: The conversation.
+ * @conversation: The conversation.
  *
  * Returns the specified conversation's title.
  *
@@ -259,11 +259,11 @@ void purple_conversation_set_title(PurpleConversation *conv, const gchar *title)
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-const char *purple_conversation_get_title(PurpleConversation *conv);
+const char *purple_conversation_get_title(PurpleConversation *conversation);
 
 /**
  * purple_conversation_autoset_title:
- * @conv: The conversation.
+ * @conversation: The conversation.
  *
  * Automatically sets the specified conversation's title.
  *
@@ -273,11 +273,11 @@ const char *purple_conversation_get_title(PurpleConversation *conv);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_autoset_title(PurpleConversation *conv);
+void purple_conversation_autoset_title(PurpleConversation *conversation);
 
 /**
  * purple_conversation_set_name:
- * @conv: The conversation.
+ * @conversation: The conversation.
  * @name: The conversation's name.
  *
  * Sets the specified conversation's name.
@@ -285,11 +285,11 @@ void purple_conversation_autoset_title(PurpleConversation *conv);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_set_name(PurpleConversation *conv, const gchar *name);
+void purple_conversation_set_name(PurpleConversation *conversation, const char *name);
 
 /**
  * purple_conversation_get_name:
- * @conv: The conversation.
+ * @conversation: The conversation.
  *
  * Returns the specified conversation's name.
  *
@@ -299,36 +299,36 @@ void purple_conversation_set_name(PurpleConversation *conv, const gchar *name);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-const char *purple_conversation_get_name(PurpleConversation *conv);
+const char *purple_conversation_get_name(PurpleConversation *conversation);
 
 /**
  * purple_conversation_write_message:
- * @conv: The conversation.
- * @msg:  The message to write.
+ * @conversation: The conversation.
+ * @message: The message to write.
  *
  * Writes to a chat or an IM.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_write_message(PurpleConversation *conv, PurpleMessage *msg);
+void purple_conversation_write_message(PurpleConversation *conv, PurpleMessage *message);
 
 /**
  * purple_conversation_write_system_message:
- * @conv:    The conversation.
+ * @conversation: The conversation.
  * @message: The message to write.
- * @flags:   The message flags (you don't need to set %PURPLE_MESSAGE_SYSTEM.
+ * @flags: The message flags (you don't need to set %PURPLE_MESSAGE_SYSTEM.
  *
  * Writes a system message to a chat or an IM.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_write_system_message(PurpleConversation *conv, const gchar *message, PurpleMessageFlags flags);
+void purple_conversation_write_system_message(PurpleConversation *conversation, const char *message, PurpleMessageFlags flags);
 
 /**
  * purple_conversation_send:
- * @conv:    The conversation.
+ * @conversation: The conversation.
  * @message: The message to send.
  *
  * Sends a message to this conversation. This function calls
@@ -337,37 +337,36 @@ void purple_conversation_write_system_message(PurpleConversation *conv, const gc
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_send(PurpleConversation *conv, const gchar *message);
+void purple_conversation_send(PurpleConversation *conversation, const char *message);
 
 /**
  * purple_conversation_send_with_flags:
- * @conv:    The conversation.
+ * @conversation: The conversation.
  * @message: The message to send.
- * @flags:   The PurpleMessageFlags flags to use in addition to
- *           PURPLE_MESSAGE_SEND.
+ * @flags: The [flags@MessageFlags] to use in addition to %PURPLE_MESSAGE_SEND.
  *
  * Sends a message to this conversation with specified flags.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_send_with_flags(PurpleConversation *conv, const gchar *message, PurpleMessageFlags flags);
+void purple_conversation_send_with_flags(PurpleConversation *conversation, const char *message, PurpleMessageFlags flags);
 
 /**
  * purple_conversation_set_features:
- * @conv:      The conversation
- * @features:  Bitset defining supported features
+ * @conversation: The conversation
+ * @features: Bitset defining supported features
  *
  * Set the features as supported for the given conversation.
  *
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_set_features(PurpleConversation *conv, PurpleConnectionFlags features);
+void purple_conversation_set_features(PurpleConversation *conversation, PurpleConnectionFlags features);
 
 /**
  * purple_conversation_get_features:
- * @conv:  The conversation
+ * @conversation: The conversation
  *
  * Get the features supported by the given conversation.
  *
@@ -376,11 +375,11 @@ void purple_conversation_set_features(PurpleConversation *conv, PurpleConnection
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conv);
+PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conversation);
 
 /**
  * purple_conversation_has_focus:
- * @conv:    The conversation.
+ * @conversation: The conversation.
  *
  * Determines if a conversation has focus
  *
@@ -394,7 +393,7 @@ gboolean purple_conversation_has_focus(PurpleConversation *conv);
 
 /**
  * purple_conversation_send_confirm:
- * @conv:    The conversation.
+ * @conversation: The conversation.
  * @message: The message to send.
  *
  * Sends a message to a conversation after confirming with
@@ -408,7 +407,7 @@ gboolean purple_conversation_has_focus(PurpleConversation *conv);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_send_confirm(PurpleConversation *conv, const gchar *message);
+void purple_conversation_send_confirm(PurpleConversation *conversation, const char *message);
 
 /**
  * purple_conversation_present_error:
@@ -428,7 +427,7 @@ void purple_conversation_send_confirm(PurpleConversation *conv, const gchar *mes
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-gboolean purple_conversation_present_error(const gchar *who, PurpleAccount *account, const gchar *what);
+gboolean purple_conversation_present_error(const char *who, PurpleAccount *account, const char *what);
 
 /**
  * purple_conversation_get_age_restricted:
