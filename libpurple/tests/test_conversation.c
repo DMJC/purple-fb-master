@@ -448,6 +448,46 @@ test_purple_conversation_message_write_one(void) {
 }
 
 /******************************************************************************
+ * Signal tests
+ *****************************************************************************/
+static void
+test_purple_conversation_present_cb(PurpleConversation *conversation,
+                                    gpointer data)
+{
+	guint *counter = data;
+
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
+
+	*counter = *counter + 1;
+}
+
+static void
+test_purple_conversation_signals_present(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	guint counter = 0;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
+		"name", "bleh",
+		NULL);
+
+	g_signal_connect(conversation, "present",
+	                 G_CALLBACK(test_purple_conversation_present_cb),
+	                 &counter);
+
+	g_assert_cmpuint(counter, ==, 0);
+	purple_conversation_present(conversation);
+	g_assert_cmpuint(counter, ==, 1);
+
+	g_assert_finalize_object(conversation);
+	g_clear_object(&account);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -476,6 +516,9 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/conversation/message/write-one",
 	                test_purple_conversation_message_write_one);
+
+	g_test_add_func("/conversation/signals/present",
+	                test_purple_conversation_signals_present);
 
 	ret = g_test_run();
 

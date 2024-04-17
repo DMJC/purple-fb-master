@@ -158,8 +158,7 @@ gboolean purple_conversation_is_thread(PurpleConversation *conversation);
  * purple_conversation_present:
  * @conversation: The conversation to present
  *
- * Present a conversation to the user. This allows core code to initiate a
- * conversation by displaying the IM dialog.
+ * Emits [signal@Conversation::present].
  *
  * Since: 2.0
  */

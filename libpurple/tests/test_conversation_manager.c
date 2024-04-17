@@ -26,11 +26,14 @@
  * Callbacks
  *****************************************************************************/
 static void
-test_purple_conversation_manager_counter_cb(G_GNUC_UNUSED PurpleConversationManager *manager,
-                                            G_GNUC_UNUSED PurpleConversation *conversation,
+test_purple_conversation_manager_counter_cb(PurpleConversationManager *manager,
+                                            PurpleConversation *conversation,
                                             gpointer data)
 {
 	guint *counter = data;
+
+	g_assert_true(PURPLE_IS_CONVERSATION_MANAGER(manager));
+	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
 
 	*counter = *counter + 1;
 }
@@ -161,6 +164,43 @@ test_purple_conversation_manager_signal_conversation_changed(void) {
 	g_clear_object(&conversation);
 	g_clear_object(&account);
 	g_clear_object(&manager);
+}
+
+static void
+test_purple_conversation_manager_signal_present_conversation(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *manager = NULL;
+	guint counter = 0;
+	gboolean ret = FALSE;
+
+	account = purple_account_new("test", "test");
+
+	manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
+	g_signal_connect(manager, "present-conversation",
+	                 G_CALLBACK(test_purple_conversation_manager_counter_cb),
+	                 &counter);
+
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
+		"name", "bleh",
+		NULL);
+
+	ret = purple_conversation_manager_register(manager, conversation);
+	g_assert_true(ret);
+
+	g_assert_cmpuint(counter, ==, 0);
+	purple_conversation_present(conversation);
+	g_assert_cmpuint(counter, ==, 1);
+
+	ret = purple_conversation_manager_unregister(manager, conversation);
+	g_assert_true(ret);
+
+	g_assert_finalize_object(manager);
+	g_assert_finalize_object(conversation);
+	g_clear_object(&account);
 }
 
 /******************************************************************************
@@ -304,6 +344,8 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/conversation-manager/signals/conversation-changed",
 	                test_purple_conversation_manager_signal_conversation_changed);
+	g_test_add_func("/conversation-manager/signals/present-conversation",
+	                test_purple_conversation_manager_signal_present_conversation);
 
 	g_test_add_func("/conversation-manager/find-dm/empty",
 	                test_purple_conversation_manager_find_dm_empty);

@@ -95,6 +95,7 @@ enum {
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 enum {
+	SIG_PRESENT,
 	SIG_MEMBER_ADDED,
 	SIG_MEMBER_REMOVED,
 	N_SIGNALS,
@@ -910,6 +911,26 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
+	 * PurpleConversation::present:
+	 * @conversation: The instance.
+	 *
+	 * Emitted by [method@Conversation.present] when something wants the
+	 * conversation presented to the user.
+	 *
+	 * Since: 3.0
+	 */
+	signals[SIG_PRESENT] = g_signal_new_class_handler(
+		"present",
+		G_OBJECT_CLASS_TYPE(klass),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		G_TYPE_NONE,
+		0);
+
+	/**
 	 * PurpleConversation::member-added:
 	 * @conversation: The instance.
 	 * @member: The [class@Purple.ConversationMember] instance.
@@ -992,7 +1013,10 @@ purple_conversation_is_thread(PurpleConversation *conversation) {
 }
 
 void
-purple_conversation_present(G_GNUC_UNUSED PurpleConversation *conversation) {
+purple_conversation_present(PurpleConversation *conversation) {
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	g_signal_emit(conversation, signals[SIG_PRESENT], 0);
 }
 
 void
