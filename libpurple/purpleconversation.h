@@ -310,7 +310,7 @@ const char *purple_conversation_get_name(PurpleConversation *conversation);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_write_message(PurpleConversation *conv, PurpleMessage *message);
+void purple_conversation_write_message(PurpleConversation *conversation, PurpleMessage *message);
 
 /**
  * purple_conversation_write_system_message:
@@ -388,7 +388,7 @@ PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conve
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-gboolean purple_conversation_has_focus(PurpleConversation *conv);
+gboolean purple_conversation_has_focus(PurpleConversation *conversation);
 
 /**
  * purple_conversation_send_confirm:
