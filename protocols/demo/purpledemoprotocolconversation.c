@@ -97,23 +97,8 @@ purple_demo_protocol_generate_conversation_id(PurpleAccount *account,
 static gboolean
 purple_demo_protocol_echo_im_cb(gpointer data) {
 	PurpleDemoProtocolIMInfo *info = data;
-	PurpleMessage *message = NULL;
-	PurpleMessageFlags flags;
-	const char *who = NULL;
 
-	/* Turn outgoing message back incoming. */
-	who = purple_conversation_get_name(info->conversation);
-
-	flags = purple_message_get_flags(info->message);
-	flags &= ~PURPLE_MESSAGE_SEND;
-	flags |= PURPLE_MESSAGE_RECV;
-
-	message = purple_message_new_incoming(who,
-	                                      purple_message_get_contents(info->message),
-	                                      flags, 0);
-
-	purple_conversation_write_message(info->conversation, message);
-	g_clear_object(&message);
+	purple_conversation_write_message(info->conversation, info->message);
 
 	return G_SOURCE_REMOVE;
 }
@@ -159,7 +144,6 @@ purple_demo_protocol_create_conversation_async(PurpleProtocolConversation *proto
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"id", id,
-		"name", "this is required for some reason",
 		"type", type,
 		NULL);
 	g_clear_pointer(&id, g_free);
@@ -209,41 +193,72 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
                                         gpointer data)
 {
 	GTask *task = NULL;
-	const char *who = NULL;
 
-	who = purple_conversation_get_name(conversation);
-	if(purple_strempty(who)) {
-		who = purple_message_get_recipient(message);
-	}
+	if(purple_conversation_is_dm(conversation)) {
+		PurpleAccount *account = NULL;
+		PurpleContact *contact = NULL;
+		PurpleContactManager *manager = NULL;
 
-	if(purple_strequal(who, "Echo")) {
-		PurpleDemoProtocolIMInfo *info = g_new(PurpleDemoProtocolIMInfo, 1);
+		account = purple_conversation_get_account(conversation);
 
-		info->conversation = g_object_ref(conversation);
-		info->message = g_object_ref(message);
+		manager = purple_contact_manager_get_default();
 
-		g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
-		                purple_demo_protocol_echo_im_cb, info,
-		                (GDestroyNotify)purple_demo_protocol_im_info_free);
-	} else if(purple_strequal(who, "Aegina")) {
-		PurpleDemoProtocolIMInfo *info = g_new(PurpleDemoProtocolIMInfo, 1);
-		const char *author = purple_message_get_author(message);
-		const char *contents = NULL;
+		/* Check if this dm is with echo. */
+		contact = purple_contact_manager_find_with_username(manager, account,
+		                                                    "Echo");
+		if(purple_conversation_has_member(conversation,
+		                                  PURPLE_CONTACT_INFO(contact), NULL))
+		{
+			PurpleDemoProtocolIMInfo *info = NULL;
+			PurpleMessageFlags flags;
 
-		if(purple_strequal(author, "Hades")) {
-			contents = "🫥️";
-		} else {
-			/* TRANSLATORS: This is a reference to the Cap of Invisibility owned by
-			 * various Greek gods, such as Hades, as mentioned. */
-			contents = _("Don't tell Hades I have his Cap");
+			flags = purple_message_get_flags(message);
+			flags &= ~PURPLE_MESSAGE_SEND;
+			flags |= PURPLE_MESSAGE_RECV;
+
+			info = g_new(PurpleDemoProtocolIMInfo, 1);
+			info->conversation = g_object_ref(conversation);
+			info->message = g_object_new(
+				PURPLE_TYPE_MESSAGE,
+				"author", "Echo",
+				"flags", flags,
+				"contents", purple_message_get_contents(message),
+				NULL);
+
+			g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
+			                purple_demo_protocol_echo_im_cb, info,
+			                (GDestroyNotify)purple_demo_protocol_im_info_free);
 		}
 
-		info->conversation = g_object_ref(conversation);
-		info->message = purple_message_new_outgoing(author, who, contents,
-		                                            PURPLE_MESSAGE_SEND);
+		/* Check if this dm is with aegina. */
+		contact = purple_contact_manager_find_with_username(manager, account,
+		                                                    "Aegina");
+		if(purple_conversation_has_member(conversation,
+		                                  PURPLE_CONTACT_INFO(contact), NULL))
+		{
+			PurpleDemoProtocolIMInfo *info = g_new(PurpleDemoProtocolIMInfo, 1);
+			const char *author = purple_message_get_author(message);
+			const char *contents = NULL;
 
-		g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, purple_demo_protocol_echo_im_cb,
-		                info, (GDestroyNotify)purple_demo_protocol_im_info_free);
+			if(purple_strequal(author, "Hades")) {
+				contents = "🫥️";
+			} else {
+				/* TRANSLATORS: This is a reference to the Cap of Invisibility owned by
+				 * various Greek gods, such as Hades, as mentioned. */
+				contents = _("Don't tell Hades I have his Cap");
+			}
+
+			info->conversation = g_object_ref(conversation);
+			info->message = g_object_new(
+				PURPLE_TYPE_MESSAGE,
+				"author", author,
+				"contents", contents,
+				"flags", PURPLE_MESSAGE_SEND,
+				NULL);
+
+			g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, purple_demo_protocol_echo_im_cb,
+			                info, (GDestroyNotify)purple_demo_protocol_im_info_free);
+		}
 	}
 
 	purple_conversation_write_message(conversation, message);
