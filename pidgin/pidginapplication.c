@@ -42,7 +42,6 @@
 #include "pidgincore.h"
 #include "pidgindebug.h"
 #include "pidgindisplaywindow.h"
-#include "pidginpluginsdialog.h"
 #include "pidginpluginsmenu.h"
 #include "pidginprefs.h"
 #include "pidginui.h"
@@ -432,22 +431,6 @@ pidgin_application_online_help(G_GNUC_UNUSED GSimpleAction *simple,
 }
 
 static void
-pidgin_application_plugins(G_GNUC_UNUSED GSimpleAction *simple,
-                           G_GNUC_UNUSED GVariant *parameter, gpointer data)
-{
-	PidginApplication *application = data;
-	static GtkWidget *dialog = NULL;
-
-	if(!GTK_IS_WIDGET(dialog)) {
-		dialog = pidgin_plugins_dialog_new();
-		g_object_add_weak_pointer(G_OBJECT(dialog), (gpointer)&dialog);
-	}
-
-	pidgin_application_present_transient_window(application,
-	                                            GTK_WINDOW(dialog));
-}
-
-static void
 pidgin_application_preferences(G_GNUC_UNUSED GSimpleAction *simple,
                                G_GNUC_UNUSED GVariant *parameter,
                                gpointer data)
@@ -518,9 +501,6 @@ static GActionEntry app_entries[] = {
 	}, {
 		.name = "manage-accounts",
 		.activate = pidgin_application_accounts,
-	}, {
-		.name = "manage-plugins",
-		.activate = pidgin_application_plugins,
 	}, {
 		.name = "online-help",
 		.activate = pidgin_application_online_help,

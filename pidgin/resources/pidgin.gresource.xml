@@ -18,7 +18,6 @@
     <file compressed="true" preprocess="xml-stripblanks">Notifications/addcontact.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Notifications/authorizationrequest.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Notifications/connectionerror.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Plugins/dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Prefs/away.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Prefs/conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Prefs/credentials.ui</file>

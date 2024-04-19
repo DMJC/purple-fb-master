@@ -128,7 +128,6 @@ pidgin/pidgindisplaywindow.c
 pidgin/pidginiconname.c
 pidgin/pidgininfopane.c
 pidgin/pidginkeypad.c
-pidgin/pidginpluginsdialog.c
 pidgin/pidginpluginsmenu.c
 pidgin/pidginpresenceicon.c
 pidgin/pidginprotocolchooser.c
@@ -160,7 +159,6 @@ pidgin/resources/Debug/debug.ui
 pidgin/resources/Display/window.ui
 pidgin/resources/Keypad/keypad.ui
 pidgin/resources/Media/window.ui
-pidgin/resources/Plugins/dialog.ui
 pidgin/resources/Prefs/away.ui
 pidgin/resources/Prefs/credentialprovider.ui
 pidgin/resources/Prefs/credentials.ui

@@ -84,12 +84,6 @@ along with this program; if not, see <https://www.gnu.org/licenses/>.
     <submenu>
       <attribute name="label" translatable="yes">_Plugins</attribute>
 
-      <section>
-        <item>
-          <attribute name="label" translatable="yes">Manage Plu_gins</attribute>
-          <attribute name="action">app.manage-plugins</attribute>
-        </item>
-      </section>
       <section id="plugins-menu"/>
     </submenu>
     <submenu>
