@@ -391,24 +391,6 @@ PURPLE_AVAILABLE_IN_ALL
 gboolean purple_conversation_has_focus(PurpleConversation *conversation);
 
 /**
- * purple_conversation_send_confirm:
- * @conversation: The conversation.
- * @message: The message to send.
- *
- * Sends a message to a conversation after confirming with
- * the user.
- *
- * This function is intended for use in cases where the user
- * hasn't explicitly and knowingly caused a message to be sent.
- * The confirmation ensures that the user isn't sending a
- * message by mistake.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_send_confirm(PurpleConversation *conversation, const char *message);
-
-/**
  * purple_conversation_present_error:
  * @who:     The user this error is about
  * @account: The account this error is on

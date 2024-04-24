@@ -301,21 +301,6 @@ common_send(PurpleConversation *conversation, const char *message,
 	g_free(displayed);
 }
 
-static void
-purple_conversation_send_confirm_cb(gpointer *data) {
-	PurpleConversation *conversation = data[0];
-	char *message = data[1];
-
-	g_free(data);
-
-	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		/* Maybe it was closed before this callback was called. */
-		return;
-	}
-
-	common_send(conversation, message, 0);
-}
-
 /**************************************************************************
  * Callbacks
  **************************************************************************/
@@ -1242,29 +1227,6 @@ purple_conversation_present_error(const char *who, PurpleAccount *account,
 	}
 
 	return FALSE;
-}
-
-void
-purple_conversation_send_confirm(PurpleConversation *conversation,
-                                 const char *message)
-{
-	char *text;
-	gpointer *data;
-
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
-	g_return_if_fail(message != NULL);
-
-	text = g_strdup_printf("You are about to send the following message:\n%s",
-	                       message);
-	data = g_new0(gpointer, 2);
-	data[0] = conversation;
-	data[1] = (gpointer)message;
-
-	purple_request_action(conversation, NULL, _("Send Message"), text, 0,
-		purple_request_cpar_from_account(
-			purple_conversation_get_account(conversation)),
-		data, 2, _("_Send Message"),
-		G_CALLBACK(purple_conversation_send_confirm_cb), _("Cancel"), NULL);
 }
 
 gboolean
