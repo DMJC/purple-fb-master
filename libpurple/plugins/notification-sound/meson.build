@@ -1,3 +1,5 @@
+subdir_done()
+
 if host_machine.system() not in ['haiku', 'windows']
 	CANBERRA = dependency('libcanberra', version: '>= 0.30')
 
@@ -7,8 +9,7 @@ if host_machine.system() not in ['haiku', 'windows']
 		dependencies : [libpurple_dep, glib, CANBERRA],
 		name_prefix : '',
 		install : true,
-		install_dir : PURPLE_PLUGINDIR,
-		build_by_default : false)
+		install_dir : PURPLE_PLUGINDIR)
 
 	devenv.append('PURPLE_PLUGIN_PATH', meson.current_build_dir())
 
