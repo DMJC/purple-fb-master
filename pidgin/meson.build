@@ -25,7 +25,6 @@ libpidgin_SOURCES = [
 	'pidginavatar.c',
 	'pidginchanneljoindialog.c',
 	'pidgincolor.c',
-	'pidgincommands.c',
 	'pidgincontactinfomenu.c',
 	'pidgincontactlist.c',
 	'pidginconversation.c',
@@ -196,7 +195,7 @@ libpidgin_built_headers += [
 
 libpidgin_inc = include_directories('.')
 libpidgin = shared_library('pidgin3',
-    libpidgin_SOURCES + libpidgin_built_sources + libpidgin_built_headers + ['pidginprivate.h'],
+    libpidgin_SOURCES + libpidgin_built_sources + libpidgin_built_headers,
     package_revision,
     c_args : ['-DPIDGIN_COMPILATION', '-DG_LOG_USE_STRUCTURED', '-DG_LOG_DOMAIN="Pidgin"'],
     gnu_symbol_visibility : 'hidden',

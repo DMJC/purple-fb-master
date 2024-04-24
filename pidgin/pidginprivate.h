@@ -35,30 +35,6 @@
 
 G_BEGIN_DECLS
 
-/*
- * pidgin_commands_init:
- *
- * Initializes the default conversation commands for Pidgin.
- *
- * This should only be called internally from Pidgin.
- *
- * Since: 3.0
- */
-PIDGIN_AVAILABLE_IN_3_0
-void pidgin_commands_init(void);
-
-/*
- * pidgin_commands_uninit:
- *
- * Uninitializes the default conversation commands for Pidgin.
- *
- * This should only be called internally from Pidgin.
- *
- * Since: 3.0
- */
-PIDGIN_AVAILABLE_IN_3_0
-void pidgin_commands_uninit(void);
-
 G_END_DECLS
 
 #endif /* PIDGIN_PRIVATE_H */

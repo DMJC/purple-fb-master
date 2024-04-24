@@ -129,7 +129,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	purple_whiteboard_set_ui_ops(pidgin_whiteboard_get_ui_ops());
 
 	pidgin_request_init();
-	pidgin_commands_init();
 	pidgin_medias_init();
 	pidgin_notify_init();
 
@@ -142,7 +141,6 @@ pidgin_ui_stop(G_GNUC_UNUSED PurpleUi *ui) {
 	 * (e.g., the debug window), or they may access things after they are
 	 * shut down. */
 	pidgin_notify_uninit();
-	pidgin_commands_uninit();
 	pidgin_request_uninit();
 	pidgin_debug_window_hide();
 	pidgin_debug_uninit();
