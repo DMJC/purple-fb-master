@@ -169,6 +169,22 @@ purple_tags_new(void) {
 	return g_object_new(PURPLE_TYPE_TAGS, NULL);
 }
 
+gboolean
+purple_tags_exists(PurpleTags *tags, const char *tag) {
+	g_return_val_if_fail(PURPLE_IS_TAGS(tags), FALSE);
+	g_return_val_if_fail(!purple_strempty(tag), FALSE);
+
+	for(GList *l = tags->tags; l != NULL; l = l->next) {
+		const char *existing = l->data;
+
+		if(purple_strequal(existing, tag)) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 const gchar *
 purple_tags_lookup(PurpleTags *tags, const gchar *name, gboolean *found) {
 	size_t name_len = 0;
@@ -381,4 +397,20 @@ purple_tag_parse(const char *tag, char **name, char **value) {
 			*value = g_strdup(colon + 1);
 		}
 	}
+}
+
+gboolean
+purple_tags_contains(PurpleTags *tags, PurpleTags *needle) {
+	g_return_val_if_fail(PURPLE_IS_TAGS(tags), FALSE);
+	g_return_val_if_fail(PURPLE_IS_TAGS(needle), FALSE);
+
+	for(GList *tag = needle->tags; tag != NULL; tag = tag->next) {
+		const char *needle_tag = tag->data;
+
+		if(!purple_tags_exists(tags, needle_tag)) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
 }

@@ -43,8 +43,11 @@ G_DECLARE_FINAL_TYPE(PurpleTags, purple_tags, PURPLE, TAGS, GObject)
  * Tags is an object that can be used to keep track of arbitrary tags on
  * objects. Tags are simple strings that use the first ':' to delimit a value.
  * For example: `foo` is a tag with just a name and no value, but `foo:bar` is
- * a tag with a name and value. Please note this distinction when the API calls
- * for a name versus a tag which would be the name and the value.
+ * a tag with a name and value. Also, `foo:` is still considered a name and
+ * value, but the value is an empty string.
+ *
+ * Please note this distinction when the API calls for a name versus a tag
+ * which would be the name and the value.
  *
  * Since: 3.0
  */
@@ -62,6 +65,22 @@ G_BEGIN_DECLS
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleTags *purple_tags_new(void);
+
+/**
+ * purple_tags_exists:
+ * @tags: The instance.
+ * @tag: The tag data.
+ *
+ * Checks if @tag exists in @tags.
+ *
+ * This checks both the tag name and value.
+ *
+ * Returns: %TRUE if @tag is in @tags, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_tags_exists(PurpleTags *tags, const char *tag);
 
 /**
  * purple_tags_lookup:
@@ -235,6 +254,25 @@ gchar *purple_tags_to_string(PurpleTags *tags, const gchar *separator);
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_tag_parse(const char *tag, char **name, char **value);
+
+/**
+ * purple_tags_contains:
+ * @tags: The instance.
+ * @needle: The tags to find.
+ *
+ * Checks if all of the tags in @needle can be found in @tags.
+ *
+ * This checks tags, which means names and values, and not just tag names.
+ *
+ * For example, if @tags contains `foo:bar, baz`, and @needle contains
+ * `foo:bar, baz:1` this will return %FALSE because `baz:1` is not in @tags.
+ *
+ * Returns: %TRUE if all tags in @needle can be found in @tags.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_tags_contains(PurpleTags *tags, PurpleTags *needle);
 
 G_END_DECLS
 

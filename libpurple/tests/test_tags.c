@@ -44,6 +44,25 @@ test_purple_tags_counter_cb(G_GNUC_UNUSED PurpleTags *tags,
  * Tests
  *****************************************************************************/
 static void
+test_purple_tags_exists(void) {
+	PurpleTags *tags = NULL;
+
+	tags = purple_tags_new();
+
+	purple_tags_add(tags, "foo");
+	purple_tags_add(tags, "bar:1");
+	purple_tags_add(tags, "baz");
+
+	g_assert_true(purple_tags_exists(tags, "foo"));
+	g_assert_true(purple_tags_exists(tags, "bar:1"));
+
+	g_assert_false(purple_tags_exists(tags, "baz:"));
+	g_assert_false(purple_tags_exists(tags, "qux"));
+
+	g_assert_finalize_object(tags);
+}
+
+static void
 test_purple_tags_lookup_exists(void) {
 	PurpleTags *tags = NULL;
 	gboolean found = FALSE;
@@ -560,12 +579,73 @@ test_purple_tag_parse(void) {
 	purple_tag_parse("", NULL, NULL);
 }
 
+static void
+test_purple_tag_contains_full(void) {
+	PurpleTags *tags = NULL;
+	PurpleTags *needle = NULL;
+
+	tags = purple_tags_new();
+	purple_tags_add(tags, "foo");
+	purple_tags_add(tags, "bar:");
+	purple_tags_add(tags, "baz:1");
+
+	needle = purple_tags_new();
+	purple_tags_add(needle, "foo");
+	purple_tags_add(needle, "bar:");
+	purple_tags_add(needle, "baz:1");
+
+	g_assert_true(purple_tags_contains(tags, needle));
+
+	g_assert_finalize_object(tags);
+	g_assert_finalize_object(needle);
+}
+
+static void
+test_purple_tag_contains_partial(void) {
+	PurpleTags *tags = NULL;
+	PurpleTags *needle = NULL;
+
+	tags = purple_tags_new();
+	purple_tags_add(tags, "foo");
+	purple_tags_add(tags, "bar:");
+	purple_tags_add(tags, "baz:1");
+
+	needle = purple_tags_new();
+	purple_tags_add(needle, "foo");
+	purple_tags_add(needle, "baz:1");
+
+	g_assert_true(purple_tags_contains(tags, needle));
+
+	g_assert_finalize_object(tags);
+	g_assert_finalize_object(needle);
+}
+
+static void
+test_purple_tag_contains_none(void) {
+	PurpleTags *tags = NULL;
+	PurpleTags *needle = NULL;
+
+	tags = purple_tags_new();
+	purple_tags_add(tags, "foo");
+	purple_tags_add(tags, "bar:1");
+
+	needle = purple_tags_new();
+	purple_tags_add(needle, "baz:qux");
+
+	g_assert_false(purple_tags_contains(tags, needle));
+
+	g_assert_finalize_object(tags);
+	g_assert_finalize_object(needle);
+}
+
 /******************************************************************************
  * Public API
  *****************************************************************************/
 gint
 main(gint argc, gchar **argv) {
 	g_test_init(&argc, &argv, NULL);
+
+	g_test_add_func("/tags/exists", test_purple_tags_exists);
 
 	g_test_add_func("/tags/lookup-exists", test_purple_tags_lookup_exists);
 	g_test_add_func("/tags/lookup-non-existent",
@@ -615,6 +695,10 @@ main(gint argc, gchar **argv) {
 	                test_purple_tags_to_string_multiple_with_null_separator);
 
 	g_test_add_func("/tag/parse", test_purple_tag_parse);
+
+	g_test_add_func("/tag/contains/full", test_purple_tag_contains_full);
+	g_test_add_func("/tag/contains/partial", test_purple_tag_contains_partial);
+	g_test_add_func("/tag/contains/none", test_purple_tag_contains_none);
 
 	return g_test_run();
 }
