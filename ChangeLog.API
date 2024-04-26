@@ -458,9 +458,24 @@ version 3.0.0 (??/??/????):
 		* purple_chat_conversation_unignore
 		* Purple Cipher API (PurpleCipherContext and friends).
 		  Use GLib's GHmac or GChecksum instead.
+		* PurpleCmdFlag
+		* PurpleCmdFunc
+		* PurpleCmdId
+		* PurpleCmdPriority
+		* PurpleCmdRet
+		* PurpleCmdStatus
 		* PurpleCommandsUiOps
+		* purple_cmd_do_command
+		* purple_cmd_execute
+		* purple_cmd_help
+		* purple_cmd_list
+		* purple_cmd_register
+		* purple_cmd_unregister
+		* purple_cmds_get_handle
 		* purple_cmds_get_ui_ops
+		* purple_cmds_init
 		* purple_cmds_set_ui_ops
+		* purple_cmds_uninit
 		* PURPLE_CMD_FUNC
 		* purple_connection_error_reason
 		* PURPLE_CONNECTION_FLAG_ALLOW_CUSTOM_SMILEY

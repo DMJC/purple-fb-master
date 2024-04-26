@@ -26,7 +26,6 @@
 #define G_SETTINGS_ENABLE_BACKEND
 #include <gio/gsettingsbackend.h>
 
-#include "cmds.h"
 #include "connection.h"
 #include "core.h"
 #include "debug.h"
@@ -136,7 +135,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 
 	purple_notification_manager_startup();
 
-	purple_cmds_init();
 	purple_protocol_manager_startup();
 
 	purple_credential_manager_startup(); /* before accounts */
@@ -241,7 +239,6 @@ purple_core_quit(void)
 	purple_account_manager_shutdown();
 	purple_credential_manager_shutdown();
 	purple_protocol_manager_shutdown();
-	purple_cmds_uninit();
 
 	purple_notification_manager_shutdown();
 	purple_history_manager_shutdown();
