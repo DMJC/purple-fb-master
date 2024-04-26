@@ -184,9 +184,9 @@ purple_conversation_check_member_equal(gconstpointer a, gconstpointer b) {
 }
 
 static void
-purple_conversation_send_message_async_cb(GObject *protocol,
-                                          GAsyncResult *result,
-                                          gpointer data)
+purple_conversation_send_message_async_old_cb(GObject *protocol,
+                                              GAsyncResult *result,
+                                              gpointer data)
 {
 	PurpleProtocolConversation *protocol_conversation = NULL;
 	PurpleMessage *message = data;
@@ -203,6 +203,54 @@ purple_conversation_send_message_async_cb(GObject *protocol,
 	}
 
 	g_clear_object(&message);
+}
+
+static void
+purple_conversation_send_message_async_cb(GObject *source,
+                                          GAsyncResult *result,
+                                          gpointer data)
+{
+	PurpleMessage *message = NULL;
+	PurpleProtocolConversation *protocol = NULL;
+	GError *error = NULL;
+	GTask *task = data;
+	gboolean success = FALSE;
+
+	/* task and result share a cancellable, so we just need to clear task to
+	 * make sure its callback gets called.
+	 */
+	if(g_task_return_error_if_cancelled(G_TASK(task))) {
+		g_clear_object(&task);
+
+		return;
+	}
+
+	protocol = PURPLE_PROTOCOL_CONVERSATION(source);
+	message = g_task_get_task_data(G_TASK(task));
+
+	success = purple_protocol_conversation_send_message_finish(protocol,
+	                                                           result, &error);
+
+	if(!success) {
+		if(error == NULL) {
+			error = g_error_new(PURPLE_CONVERSATION_DOMAIN, 0,
+			                    "unknown error");
+		}
+
+		purple_message_set_error(message, error);
+		g_task_return_error(task, error);
+
+		g_clear_error(&error);
+	} else {
+		/* If the protocol didn't set delivered, set it now. */
+		if(!purple_message_get_delivered(message)) {
+			purple_message_set_delivered(message, TRUE);
+		}
+
+		g_task_return_boolean(task, TRUE);
+	}
+
+	g_clear_object(&task);
 }
 
 static void
@@ -260,7 +308,7 @@ common_send(PurpleConversation *conversation, const char *message,
 		purple_protocol_conversation_send_message_async(protocol_conversation,
 		                                                conversation, msg,
 		                                                NULL,
-		                                                purple_conversation_send_message_async_cb,
+		                                                purple_conversation_send_message_async_old_cb,
 		                                                msg);
 
 		g_clear_pointer(&displayed, g_free);
@@ -1178,6 +1226,59 @@ purple_conversation_write_system_message(PurpleConversation *conversation,
 	pmsg = purple_message_new_system(message, flags);
 	purple_conversation_write_message(conversation, pmsg);
 	g_clear_object(&pmsg);
+}
+
+void
+purple_conversation_send_message_async(PurpleConversation *conversation,
+                                       PurpleMessage *message,
+                                       GCancellable *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer data)
+{
+	PurpleAccount *account = NULL;
+	PurpleProtocol *protocol = NULL;
+	GTask *task = NULL;
+
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	task = g_task_new(conversation, cancellable, callback, data);
+	g_task_set_source_tag(task, purple_conversation_send_message_async);
+	g_task_set_task_data(task, g_object_ref(message), g_object_unref);
+
+	account = purple_conversation_get_account(conversation);
+	protocol = purple_account_get_protocol(account);
+
+	if(!PURPLE_IS_PROTOCOL_CONVERSATION(protocol)) {
+		g_task_return_new_error(task, PURPLE_CONVERSATION_DOMAIN, 0,
+		                        "protocol does not implement "
+		                        "PurpleProtocolConversation");
+
+		g_clear_object(&task);
+
+		return;
+	}
+
+	purple_protocol_conversation_send_message_async(PURPLE_PROTOCOL_CONVERSATION(protocol),
+	                                                conversation,
+	                                                message,
+	                                                cancellable,
+	                                                purple_conversation_send_message_async_cb,
+	                                                task);
+}
+
+gboolean
+purple_conversation_send_message_finish(PurpleConversation *conversation,
+                                        GAsyncResult *result,
+                                        GError **error)
+{
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	g_return_val_if_fail(g_task_get_source_tag(G_TASK(result)) !=
+	                     purple_conversation_send_message_async, FALSE);
+
+	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
 void

@@ -369,7 +369,7 @@ PurpleMessageFlags purple_message_get_flags(PurpleMessage *message);
 /**
  * purple_message_set_error:
  * @message: The instance.
- * @error: (nullable) (transfer full): The error to set.
+ * @error: (nullable) (transfer none): The error to set.
  *
  * Sets the error of @message to @error. Primarily this will be used for
  * delivery failure.

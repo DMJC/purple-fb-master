@@ -32,6 +32,17 @@
 
 #include "purpleversion.h"
 
+/**
+ * PURPLE_CONVERSATION_DOMAIN:
+ *
+ * A GError domain for PurpleConversation.
+ *
+ * Since: 3.0
+ */
+#define PURPLE_CONVERSATION_DOMAIN \
+	(g_quark_from_static_string("purple-conversatin")) \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
+
 #define PURPLE_TYPE_CONVERSATION (purple_conversation_get_type())
 
 PURPLE_AVAILABLE_IN_ALL
@@ -324,6 +335,42 @@ void purple_conversation_write_message(PurpleConversation *conversation, PurpleM
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_write_system_message(PurpleConversation *conversation, const char *message, PurpleMessageFlags flags);
+
+/**
+ * purple_conversation_send_message_async:
+ * @conversation: The conversation.
+ * @message: The message to send.
+ * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
+ * @callback: (nullable) (scope async): The callback to call after the
+ *            conversation has been created.
+ * @data: (nullable): Optional user data to pass to @callback.
+ *
+ * Sends @message to @conversation.
+ *
+ * This will lookup the account and protocol plugin that @conversation belongs
+ * to and call [method@ProtocolConversation.send_message_async] for @message.
+ *
+ * You will need to call [method@Conversation.send_message_finish] from
+ * @callback.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_conversation_send_message_async(PurpleConversation *conversation, PurpleMessage *message, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_conversation_send_message_finish:
+ * @conversation: The instance.
+ * @result: The result.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * Finishes a previous call to [method@Conversation.send_message_async].
+ *
+ * Returns: %TRUE on success, otherwise %FALSE with error set.
+ *
+ * Since: 3.0
+ */
+gboolean purple_conversation_send_message_finish(PurpleConversation *conversation, GAsyncResult *result, GError **error);
 
 /**
  * purple_conversation_send:

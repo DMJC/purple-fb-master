@@ -683,7 +683,7 @@ purple_message_set_error(PurpleMessage *message, GError *error) {
 
 	g_clear_error(&message->error);
 	if(error != NULL) {
-		g_propagate_error(&message->error, error);
+		message->error = g_error_copy(error);
 	}
 
 	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ERROR]);
