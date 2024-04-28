@@ -33,9 +33,7 @@
 
 struct _PurplePresence {
 	GObject parent;
-};
 
-typedef struct {
 	GDateTime *idle_time;
 	GDateTime *login_time;
 
@@ -44,7 +42,7 @@ typedef struct {
 	char *emoji;
 	gboolean mobile;
 	gboolean notifications_disabled;
-} PurplePresencePrivate;
+};
 
 enum {
 	PROP_0,
@@ -60,8 +58,7 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurplePresence, purple_presence,
-                                 G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE(PurplePresence, purple_presence, G_TYPE_OBJECT)
 
 /******************************************************************************
  * GObject Implementation
@@ -148,15 +145,13 @@ purple_presence_init(G_GNUC_UNUSED PurplePresence *presence) {
 
 static void
 purple_presence_finalize(GObject *obj) {
-	PurplePresencePrivate *priv = NULL;
+	PurplePresence *presence = PURPLE_PRESENCE(obj);
 
-	priv = purple_presence_get_instance_private(PURPLE_PRESENCE(obj));
+	g_clear_pointer(&presence->idle_time, g_date_time_unref);
+	g_clear_pointer(&presence->login_time, g_date_time_unref);
 
-	g_clear_pointer(&priv->idle_time, g_date_time_unref);
-	g_clear_pointer(&priv->login_time, g_date_time_unref);
-
-	g_clear_pointer(&priv->message, g_free);
-	g_clear_pointer(&priv->emoji, g_free);
+	g_clear_pointer(&presence->message, g_free);
+	g_clear_pointer(&presence->emoji, g_free);
 
 	G_OBJECT_CLASS(purple_presence_parent_class)->finalize(obj);
 }
@@ -291,13 +286,9 @@ purple_presence_new(void) {
 
 void
 purple_presence_set_idle_time(PurplePresence *presence, GDateTime *idle_time) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	priv = purple_presence_get_instance_private(presence);
-
-	if(birb_date_time_set(&priv->idle_time, idle_time)) {
+	if(birb_date_time_set(&presence->idle_time, idle_time)) {
 		GObject *obj = G_OBJECT(presence);
 
 		g_object_freeze_notify(obj);
@@ -323,13 +314,9 @@ purple_presence_set_idle(PurplePresence *presence, gboolean idle) {
 void
 purple_presence_set_login_time(PurplePresence *presence, GDateTime *login_time)
 {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	priv = purple_presence_get_instance_private(presence);
-
-	if(birb_date_time_set(&priv->login_time, login_time)) {
+	if(birb_date_time_set(&presence->login_time, login_time)) {
 		g_object_notify_by_pspec(G_OBJECT(presence),
 		                         properties[PROP_LOGIN_TIME]);
 	}
@@ -337,24 +324,16 @@ purple_presence_set_login_time(PurplePresence *presence, GDateTime *login_time)
 
 gboolean
 purple_presence_is_available(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), FALSE);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return priv->primitive == PURPLE_PRESENCE_PRIMITIVE_AVAILABLE;
+	return (presence->primitive == PURPLE_PRESENCE_PRIMITIVE_AVAILABLE);
 }
 
 gboolean
 purple_presence_is_online(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), FALSE);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	switch(priv->primitive) {
+	switch(presence->primitive) {
 	case PURPLE_PRESENCE_PRIMITIVE_AVAILABLE:
 	case PURPLE_PRESENCE_PRIMITIVE_IDLE:
 	case PURPLE_PRESENCE_PRIMITIVE_INVISIBLE:
@@ -370,39 +349,27 @@ purple_presence_is_online(PurplePresence *presence) {
 
 gboolean
 purple_presence_is_idle(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), FALSE);
 
 	if(!purple_presence_is_online(presence)) {
 		return FALSE;
 	}
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return (priv->idle_time != NULL);
+	return (presence->idle_time != NULL);
 }
 
 GDateTime *
 purple_presence_get_idle_time(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), NULL);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return priv->idle_time;
+	return presence->idle_time;
 }
 
 GDateTime *
 purple_presence_get_login_time(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), 0);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return priv->login_time;
+	return presence->login_time;
 }
 
 gint
@@ -463,28 +430,20 @@ purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
 
 PurplePresencePrimitive
 purple_presence_get_primitive(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence),
 	                     PURPLE_PRESENCE_PRIMITIVE_OFFLINE);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return priv->primitive;
+	return presence->primitive;
 }
 
 void
 purple_presence_set_primitive(PurplePresence *presence,
                               PurplePresencePrimitive primitive)
 {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	priv = purple_presence_get_instance_private(presence);
-
-	if(priv->primitive != primitive) {
-		priv->primitive = primitive;
+	if(presence->primitive != primitive) {
+		presence->primitive = primitive;
 
 		g_object_notify_by_pspec(G_OBJECT(presence),
 		                         properties[PROP_PRIMITIVE]);
@@ -493,26 +452,18 @@ purple_presence_set_primitive(PurplePresence *presence,
 
 const char *
 purple_presence_get_message(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), NULL);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return priv->message;
+	return presence->message;
 }
 
 void
 purple_presence_set_message(PurplePresence *presence, const char *message) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	priv = purple_presence_get_instance_private(presence);
-
-	if(!purple_strequal(priv->message, message)) {
-		g_free(priv->message);
-		priv->message = g_strdup(message);
+	if(!purple_strequal(presence->message, message)) {
+		g_free(presence->message);
+		presence->message = g_strdup(message);
 
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_MESSAGE]);
 	}
@@ -520,26 +471,18 @@ purple_presence_set_message(PurplePresence *presence, const char *message) {
 
 const char *
 purple_presence_get_emoji(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), NULL);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return priv->emoji;
+	return presence->emoji;
 }
 
 void
 purple_presence_set_emoji(PurplePresence *presence, const char *emoji) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	priv = purple_presence_get_instance_private(presence);
-
-	if(!purple_strequal(priv->emoji, emoji)) {
-		g_free(priv->emoji);
-		priv->emoji = g_strdup(emoji);
+	if(!purple_strequal(presence->emoji, emoji)) {
+		g_free(presence->emoji);
+		presence->emoji = g_strdup(emoji);
 
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_EMOJI]);
 	}
@@ -547,25 +490,17 @@ purple_presence_set_emoji(PurplePresence *presence, const char *emoji) {
 
 gboolean
 purple_presence_get_mobile(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), FALSE);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return priv->mobile;
+	return presence->mobile;
 }
 
 void
 purple_presence_set_mobile(PurplePresence *presence, gboolean mobile) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	priv = purple_presence_get_instance_private(presence);
-
-	if(priv->mobile != mobile) {
-		priv->mobile = mobile;
+	if(presence->mobile != mobile) {
+		presence->mobile = mobile;
 
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_MOBILE]);
 	}
@@ -573,27 +508,19 @@ purple_presence_set_mobile(PurplePresence *presence, gboolean mobile) {
 
 gboolean
 purple_presence_get_notifications_disabled(PurplePresence *presence) {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_PRESENCE(presence), FALSE);
 
-	priv = purple_presence_get_instance_private(presence);
-
-	return priv->notifications_disabled;
+	return presence->notifications_disabled;
 }
 
 void
 purple_presence_set_notifications_disabled(PurplePresence *presence,
                                            gboolean notifications_disabled)
 {
-	PurplePresencePrivate *priv = NULL;
-
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	priv = purple_presence_get_instance_private(presence);
-
-	if(priv->notifications_disabled != notifications_disabled) {
-		priv->notifications_disabled = notifications_disabled;
+	if(presence->notifications_disabled != notifications_disabled) {
+		presence->notifications_disabled = notifications_disabled;
 
 		g_object_notify_by_pspec(G_OBJECT(presence),
 		                         properties[PROP_NOTIFICATIONS_DISABLED]);
