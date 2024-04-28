@@ -336,7 +336,11 @@ pidgin_application_donate(G_GNUC_UNUSED GSimpleAction *simple,
                           G_GNUC_UNUSED GVariant *parameter,
                           G_GNUC_UNUSED gpointer data)
 {
-	purple_notify_uri(NULL, "https://www.imfreedom.org/donate/");
+	GtkUriLauncher *launcher = NULL;
+
+	launcher = gtk_uri_launcher_new("https://www.imfreedom.org/donate/");
+	gtk_uri_launcher_launch(launcher, NULL, NULL, NULL, NULL);
+	g_clear_object(&launcher);
 }
 
 static void
@@ -427,7 +431,11 @@ pidgin_application_online_help(G_GNUC_UNUSED GSimpleAction *simple,
                                G_GNUC_UNUSED GVariant *parameter,
                                G_GNUC_UNUSED gpointer data)
 {
-	purple_notify_uri(NULL, PURPLE_WEBSITE "help");
+	GtkUriLauncher *launcher = NULL;
+
+	launcher = gtk_uri_launcher_new(PURPLE_WEBSITE "help");
+	gtk_uri_launcher_launch(launcher, NULL, NULL, NULL, NULL);
+	g_clear_object(&launcher);
 }
 
 static void
