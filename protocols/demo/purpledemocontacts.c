@@ -137,7 +137,7 @@ purple_demo_contacts_load_contact_presence(JsonObject *presence_object,
 		now = g_date_time_new_now_local();
 		idle_since = g_date_time_add_minutes(now, -1 * ivalue);
 
-		purple_presence_set_idle(presence, TRUE, idle_since);
+		purple_presence_set_idle_time(presence, idle_since);
 
 		g_date_time_unref(idle_since);
 		g_date_time_unref(now);

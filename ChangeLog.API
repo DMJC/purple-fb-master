@@ -135,6 +135,7 @@ version 3.0.0 (??/??/????):
 		* purple_plugin_pref_set_type renamed to
 		  purple_plugin_pref_set_pref_type
 		* purple_prefs_get_type renamed to purple_prefs_get_pref_type
+		* purple_presence_set_idle no longer takes timestamp.
 		* proto_chat_entry has been renamed to PurpleProtocolChatEntry
 		* PurpleProxyType members are now name spaced under PURPLE_PROXY_TYPE_*
 		* purple_proxy_info_get_host renamed to purple_proxy_info_get_hostname

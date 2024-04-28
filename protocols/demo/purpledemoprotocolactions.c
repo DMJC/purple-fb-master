@@ -151,7 +151,7 @@ purple_demo_protocol_failure_action_activate(G_GNUC_UNUSED GSimpleAction *action
 		format = ngettext(tick_str, tick_plural_str, DEFAULT_REAP_TIME);
 		message = g_strdup_printf(format, DEFAULT_REAP_TIME);
 
-		purple_presence_set_idle(presence, FALSE, NULL);
+		purple_presence_set_idle(presence, FALSE);
 		purple_presence_set_message(presence, message);
 		g_free(message);
 	}

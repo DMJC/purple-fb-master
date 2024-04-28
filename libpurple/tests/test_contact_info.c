@@ -460,7 +460,7 @@ test_purple_contact_info_presence_changed_signal(void) {
 	 * detailed callback.
 	 */
 	g_assert_cmpint(counter, ==, 0);
-	purple_presence_set_idle(presence, TRUE, NULL);
+	purple_presence_set_idle(presence, TRUE);
 	g_assert_cmpint(counter, ==, 3);
 
 	/* Cleanup. */

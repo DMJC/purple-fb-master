@@ -22,6 +22,8 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <birb.h>
+
 #include "purplepresence.h"
 
 #include "debug.h"
@@ -29,8 +31,11 @@
 #include "purpleprivate.h"
 #include "util.h"
 
+struct _PurplePresence {
+	GObject parent;
+};
+
 typedef struct {
-	gboolean idle;
 	GDateTime *idle_time;
 	GDateTime *login_time;
 
@@ -55,7 +60,8 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_TYPE_WITH_PRIVATE(PurplePresence, purple_presence, G_TYPE_OBJECT)
+G_DEFINE_FINAL_TYPE_WITH_PRIVATE(PurplePresence, purple_presence,
+                                 G_TYPE_OBJECT)
 
 /******************************************************************************
  * GObject Implementation
@@ -68,11 +74,10 @@ purple_presence_set_property(GObject *obj, guint param_id, const GValue *value,
 
 	switch (param_id) {
 		case PROP_IDLE:
-			purple_presence_set_idle(presence, g_value_get_boolean(value),
-			                         NULL);
+			purple_presence_set_idle(presence, g_value_get_boolean(value));
 			break;
 		case PROP_IDLE_TIME:
-			purple_presence_set_idle(presence, TRUE, g_value_get_boxed(value));
+			purple_presence_set_idle_time(presence, g_value_get_boxed(value));
 			break;
 		case PROP_LOGIN_TIME:
 			purple_presence_set_login_time(presence, g_value_get_boxed(value));
@@ -171,9 +176,11 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 *
 	 * Since: 3.0
 	 */
-	properties[PROP_IDLE] = g_param_spec_boolean("idle", "Idle",
-				"Whether the presence is in idle state.", FALSE,
-				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+	properties[PROP_IDLE] = g_param_spec_boolean(
+		"idle", "idle",
+		"Whether the presence is in idle state.",
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurplePresence:idle-time:
@@ -183,10 +190,10 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_IDLE_TIME] = g_param_spec_boxed(
-				"idle-time", "Idle time",
-				"The idle time of the presence",
-				G_TYPE_DATE_TIME,
-				G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+		"idle-time", "idle-time",
+		"The idle time of the presence",
+		G_TYPE_DATE_TIME,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurplePresence:login-time:
@@ -196,7 +203,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_LOGIN_TIME] = g_param_spec_boxed(
-		"login-time", "Login time",
+		"login-time", "login-time",
 		"The login time of the presence.",
 		G_TYPE_DATE_TIME,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -283,40 +290,34 @@ purple_presence_new(void) {
 }
 
 void
-purple_presence_set_idle(PurplePresence *presence, gboolean idle,
-                         GDateTime *idle_time)
-{
+purple_presence_set_idle_time(PurplePresence *presence, GDateTime *idle_time) {
 	PurplePresencePrivate *priv = NULL;
-	PurplePresenceClass *klass = NULL;
-	gboolean old_idle;
-	GObject *obj = NULL;
 
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
 	priv = purple_presence_get_instance_private(presence);
-	klass = PURPLE_PRESENCE_GET_CLASS(presence);
 
-	if (priv->idle == idle && priv->idle_time == idle_time) {
-		return;
+	if(birb_date_time_set(&priv->idle_time, idle_time)) {
+		GObject *obj = G_OBJECT(presence);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_IDLE]);
+		g_object_notify_by_pspec(obj, properties[PROP_IDLE_TIME]);
+		g_object_thaw_notify(obj);
+	}
+}
+
+void
+purple_presence_set_idle(PurplePresence *presence, gboolean idle) {
+	GDateTime *idle_time = NULL;
+
+	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
+
+	if(idle) {
+		idle_time = g_date_time_new_now_local();
 	}
 
-	old_idle = priv->idle;
-	priv->idle = idle;
-
-	g_clear_pointer(&priv->idle_time, g_date_time_unref);
-	if(idle && idle_time != NULL) {
-		priv->idle_time = g_date_time_ref(idle_time);
-	}
-
-	obj = G_OBJECT(presence);
-	g_object_freeze_notify(obj);
-	g_object_notify_by_pspec(obj, properties[PROP_IDLE]);
-	g_object_notify_by_pspec(obj, properties[PROP_IDLE_TIME]);
-	g_object_thaw_notify(obj);
-
-	if(klass->update_idle) {
-		klass->update_idle(presence, old_idle);
-	}
+	purple_presence_set_idle_time(presence, idle_time);
 }
 
 void
@@ -328,23 +329,10 @@ purple_presence_set_login_time(PurplePresence *presence, GDateTime *login_time)
 
 	priv = purple_presence_get_instance_private(presence);
 
-	if(priv->login_time != NULL && login_time != NULL) {
-		if(g_date_time_equal(priv->login_time, login_time)) {
-			return;
-		}
+	if(birb_date_time_set(&priv->login_time, login_time)) {
+		g_object_notify_by_pspec(G_OBJECT(presence),
+		                         properties[PROP_LOGIN_TIME]);
 	}
-
-	if(priv->login_time != NULL) {
-		g_date_time_unref(priv->login_time);
-	}
-
-	if(login_time != NULL) {
-		priv->login_time = g_date_time_ref(login_time);
-	} else {
-		priv->login_time = NULL;
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_LOGIN_TIME]);
 }
 
 gboolean
@@ -392,7 +380,7 @@ purple_presence_is_idle(PurplePresence *presence) {
 
 	priv = purple_presence_get_instance_private(presence);
 
-	return priv->idle;
+	return (priv->idle_time != NULL);
 }
 
 GDateTime *

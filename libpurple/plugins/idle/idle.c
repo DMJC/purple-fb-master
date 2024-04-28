@@ -55,31 +55,33 @@ idleable_filter(PurpleAccount *account, G_GNUC_UNUSED gpointer data)
 }
 
 static void
-set_idle_time(PurpleAccount *acct, int mins_idle)
-{
+set_idle_time(PurpleAccount *acct, int mins_idle) {
 	PurpleConnection *gc = purple_account_get_connection(acct);
 	PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
 	PurplePresence *presence = purple_account_get_presence(acct);
 	GDateTime *idle_since = NULL;
-	gboolean idle = FALSE;
 
-	if (!gc)
+	if(!gc) {
 		return;
+	}
 
 	purple_debug_info("idle", "setting idle time for %s to %d\n",
 	                  purple_contact_info_get_username(info), mins_idle);
 
-	idle = mins_idle > 0;
-
-	if(idle) {
+	if(mins_idle > 0) {
 		GDateTime *now = g_date_time_new_now_local();
 		idle_since = g_date_time_add_minutes(now, -1 * mins_idle);
 		g_date_time_unref(now);
 	}
 
-	purple_presence_set_idle(presence, idle, idle_since);
+	purple_presence_set_idle_time(presence, idle_since);
 
 	g_clear_pointer(&idle_since, g_date_time_unref);
+}
+
+static void
+set_idle_time_cb(gpointer data, gpointer user_data) {
+	set_idle_time(data, GPOINTER_TO_INT(user_data));
 }
 
 static void
@@ -255,7 +257,7 @@ purple_idle_unset_all_accounts_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 {
 	/* freeing the list here will cause segfaults if the user idles an account
 	 * after the list is freed */
-	g_list_foreach(idled_accts, (GFunc)set_idle_time, GINT_TO_POINTER(0));
+	g_list_foreach(idled_accts, set_idle_time_cb, GINT_TO_POINTER(0));
 	g_clear_list(&idled_accts, NULL);
 }
 

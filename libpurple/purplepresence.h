@@ -89,32 +89,11 @@ typedef enum {
 
 G_BEGIN_DECLS
 
-/**
- * PurplePresenceClass:
- * @update_idle: Updates the logs and the UI when the idle state or time of the
- *               presence changes.
- *
- * The base class for all #PurplePresence's.
- *
- * Since: 3.0
- */
-struct _PurplePresenceClass {
-	/*< private >*/
-	GObjectClass parent;
-
-	/*< public >*/
-	void (*update_idle)(PurplePresence *presence, gboolean old_idle);
-	GList *(*get_statuses)(PurplePresence *presence);
-
-	/*< private >*/
-	gpointer reserved[4];
-};
-
 #define PURPLE_TYPE_PRESENCE purple_presence_get_type()
 
 PURPLE_AVAILABLE_IN_3_0
-G_DECLARE_DERIVABLE_TYPE(PurplePresence, purple_presence, PURPLE, PRESENCE,
-                         GObject)
+G_DECLARE_FINAL_TYPE(PurplePresence, purple_presence, PURPLE, PRESENCE,
+                     GObject)
 
 /**
  * purple_presence_new:
@@ -141,7 +120,20 @@ PurplePresence *purple_presence_new(void);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_presence_set_idle(PurplePresence *presence, gboolean idle, GDateTime *idle_time);
+void purple_presence_set_idle(PurplePresence *presence, gboolean idle);
+
+/**
+ * purple_presence_set_idle_time:
+ * @presence: The instance.
+ * @idle_time: (transfer none) (nullable): The time when the presence went
+ *             idle, or %NULL to clear the idle state.
+ *
+ * Sets the time that @presence went idle to @idle_time.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_presence_set_idle_time(PurplePresence *presence, GDateTime *idle_time);
 
 /**
  * purple_presence_set_login_time:
