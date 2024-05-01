@@ -144,29 +144,6 @@ PURPLE_AVAILABLE_IN_ALL
 void purple_account_request_password(PurpleAccount *account, GCallback ok_cb, GCallback cancel_cb, void *user_data);
 
 /**
- * purple_account_request_change_password:
- * @account: The account to change the password on.
- *
- * Requests information from the user to change the account's password.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_request_change_password(PurpleAccount *account);
-
-/**
- * purple_account_request_change_user_info:
- * @account: The account to change the user information on.
- *
- * Requests information from the user to change the account's
- * user information.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_account_request_change_user_info(PurpleAccount *account);
-
-/**
  * purple_account_set_user_info:
  * @account: The account.
  * @user_info: The user information.

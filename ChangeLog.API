@@ -349,6 +349,8 @@ version 3.0.0 (??/??/????):
 		* purple_account_request_add. Use purple_add_contact_request_new
 		  instead.
 		* purple_account_request_authorization
+		* purple_account_request_change_password
+		* purple_account_request_change_user_info
 		* purple_account_request_close
 		* purple_account_set_check_mail
 		* purple_account_set_current_error
