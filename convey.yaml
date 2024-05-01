@@ -22,10 +22,10 @@ tasks:
       - debian-trixie-amd64
       - debian-trixie-arm64
       - debian-trixie-riscv64
-      - fedora-39-amd64
+      - fedora-40-amd64
       - fedora-rawhide-amd64
       - scanbuild
-      - ubuntu-mantic-amd64
+      - ubuntu-noble-amd64
 
   docs-clean:
     type: convey/clean
@@ -114,8 +114,8 @@ plans:
     stages:
       - tasks: [docs-clean, import, docs-build, docs-export]
 
-  fedora-39-amd64:
-    environment: [TARGET=fedora-39-amd64]
+  fedora-40-amd64:
+    environment: [TARGET=fedora-40-amd64]
     stages:
       - tasks: [import, build]
       - tasks: [export]
@@ -139,8 +139,8 @@ plans:
       - tasks: [export]
         run: always
 
-  ubuntu-mantic-amd64:
-    environment: [TARGET=ubuntu-mantic-amd64]
+  ubuntu-noble-amd64:
+    environment: [TARGET=ubuntu-noble-amd64]
     stages:
       - tasks: [import, build]
       - tasks: [export]
