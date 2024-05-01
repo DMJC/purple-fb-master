@@ -111,9 +111,6 @@ PurplePresence *purple_presence_new(void);
  * purple_presence_set_idle:
  * @presence: The #PurplePresence instance.
  * @idle: The idle state.
- * @idle_time: (transfer none): The idle time, if @idle is %TRUE.  This is the
- *             time at which the user became idle. If this value is unknown
- *             then %NULL should be used.
  *
  * Sets the idle state and time of @presence.
  *
