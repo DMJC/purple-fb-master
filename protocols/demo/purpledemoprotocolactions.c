@@ -190,217 +190,6 @@ purple_demo_protocol_fatal_failure_action_activate(GSimpleAction *action,
  *****************************************************************************/
 
 static void
-purple_demo_protocol_request_input_ok_cb(G_GNUC_UNUSED gpointer data,
-                                         const char *value)
-{
-	g_message(_("Successfully requested input from UI: %s"), value);
-}
-
-static void
-purple_demo_protocol_request_input_cancel_cb(G_GNUC_UNUSED gpointer data,
-                                             G_GNUC_UNUSED const char *value)
-{
-	g_message(_("UI cancelled input request"));
-}
-
-static void
-purple_demo_protocol_request_input_activate(G_GNUC_UNUSED GSimpleAction *action,
-                                            GVariant *parameter,
-                                            G_GNUC_UNUSED gpointer data)
-{
-	PurpleConnection *connection = NULL;
-	const gchar *account_id = NULL;
-	PurpleAccountManager *manager = NULL;
-	PurpleAccount *account = NULL;
-	static int form = 0;
-	gboolean multiline = FALSE, masked = FALSE;
-	char *secondary = NULL;
-
-	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
-		g_critical("Demo failure action parameter is of incorrect type %s",
-		           g_variant_get_type_string(parameter));
-		return;
-	}
-
-	account_id = g_variant_get_string(parameter, NULL);
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find_by_id(manager, account_id);
-	connection = purple_account_get_connection(account);
-	g_clear_object(&account);
-
-	/* Alternate through all four combinations of {masked, multiline}. */
-	masked = form % 2 == 1;
-	multiline = (form / 2) % 2 == 1;
-	form++;
-	secondary = g_strdup_printf(_("The input will be %s %s."),
-	                            masked ? "masked" : "unmasked",
-	                            multiline ? "multiple lines" : "single line");
-
-	purple_request_input(connection, _("Request Input Demo"),
-	                     _("Please input some text…"), secondary, _("default"),
-	                     multiline, masked, NULL,
-	                     _("OK"),
-	                     G_CALLBACK(purple_demo_protocol_request_input_ok_cb),
-	                     _("Cancel"),
-	                     G_CALLBACK(purple_demo_protocol_request_input_cancel_cb),
-	                     purple_request_cpar_from_connection(connection), NULL);
-
-	g_free(secondary);
-}
-
-static void
-purple_demo_protocol_request_choice_ok_cb(G_GNUC_UNUSED gpointer data,
-                                          gpointer value)
-{
-	const char *text = value;
-
-	g_message(_("Successfully requested a choice from UI: %s"), text);
-}
-
-static void
-purple_demo_protocol_request_choice_cancel_cb(G_GNUC_UNUSED gpointer data,
-                                              G_GNUC_UNUSED gpointer value)
-{
-	g_message(_("UI cancelled choice request"));
-}
-
-static void
-purple_demo_protocol_request_choice_activate(G_GNUC_UNUSED GSimpleAction *action,
-                                             GVariant *parameter,
-                                             G_GNUC_UNUSED gpointer data)
-{
-	PurpleConnection *connection = NULL;
-	const gchar *account_id = NULL;
-	PurpleAccountManager *manager = NULL;
-	PurpleAccount *account = NULL;
-
-	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
-		g_critical("Demo failure action parameter is of incorrect type %s",
-		           g_variant_get_type_string(parameter));
-		return;
-	}
-
-	account_id = g_variant_get_string(parameter, NULL);
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find_by_id(manager, account_id);
-	connection = purple_account_get_connection(account);
-	g_clear_object(&account);
-
-	purple_request_choice(connection, _("Request Choice Demo"),
-	                      _("Please pick an option…"), NULL, _("foo"),
-	                      _("OK"),
-	                      G_CALLBACK(purple_demo_protocol_request_choice_ok_cb),
-	                      _("Cancel"),
-	                      G_CALLBACK(purple_demo_protocol_request_choice_cancel_cb),
-	                      purple_request_cpar_from_connection(connection),
-	                      NULL, _("foo"), "foo", _("bar"), "bar",
-	                      _("baz"), "baz", NULL);
-}
-
-static void
-purple_demo_protocol_request_action_cb(G_GNUC_UNUSED gpointer data, int action)
-{
-	g_message(_("Successfully requested an action from the UI: %d"), action);
-}
-
-static void
-purple_demo_protocol_request_action_activate(G_GNUC_UNUSED GSimpleAction *action,
-                                             GVariant *parameter,
-                                             G_GNUC_UNUSED gpointer data)
-{
-	PurpleConnection *connection = NULL;
-	const gchar *account_id = NULL;
-	PurpleAccountManager *manager = NULL;
-	PurpleAccount *account = NULL;
-
-	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
-		g_critical("Demo failure action parameter is of incorrect type %s",
-		           g_variant_get_type_string(parameter));
-		return;
-	}
-
-	account_id = g_variant_get_string(parameter, NULL);
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find_by_id(manager, account_id);
-	connection = purple_account_get_connection(account);
-	g_clear_object(&account);
-
-	purple_request_action(connection, _("Request Action Demo"),
-	                      _("Please choose an action…"), NULL, 1,
-	                      purple_request_cpar_from_connection(connection),
-	                      NULL, 3,
-	                      _("foo"), purple_demo_protocol_request_action_cb,
-	                      _("bar"), purple_demo_protocol_request_action_cb,
-	                      _("baz"), purple_demo_protocol_request_action_cb);
-}
-
-typedef struct {
-	gint id;
-	gpointer ui_handle;
-} PurpleDemoProtocolWaitData;
-
-static gboolean
-purple_demo_protocol_request_wait_pulse_cb(gpointer data) {
-	PurpleDemoProtocolWaitData *wait = data;
-
-	purple_request_wait_pulse(wait->ui_handle);
-
-	return G_SOURCE_CONTINUE;
-}
-
-static void
-purple_demo_protocol_request_wait_cancel_cb(G_GNUC_UNUSED gpointer data) {
-	g_message(_("UI cancelled wait request"));
-}
-
-static void
-purple_demo_protocol_request_wait_close_cb(gpointer data) {
-	PurpleDemoProtocolWaitData *wait = data;
-
-	g_source_remove(wait->id);
-	g_free(wait);
-}
-
-static void
-purple_demo_protocol_request_wait_activate(G_GNUC_UNUSED GSimpleAction *action,
-                                           GVariant *parameter,
-                                           G_GNUC_UNUSED gpointer data)
-{
-	PurpleConnection *connection = NULL;
-	const gchar *account_id = NULL;
-	PurpleAccountManager *manager = NULL;
-	PurpleAccount *account = NULL;
-	PurpleDemoProtocolWaitData *wait = NULL;
-
-	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
-		g_critical("Demo failure action parameter is of incorrect type %s",
-		           g_variant_get_type_string(parameter));
-		return;
-	}
-
-	account_id = g_variant_get_string(parameter, NULL);
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find_by_id(manager, account_id);
-	connection = purple_account_get_connection(account);
-	g_clear_object(&account);
-
-	wait = g_new0(PurpleDemoProtocolWaitData, 1);
-
-	wait->ui_handle = purple_request_wait(connection, _("Request Wait Demo"),
-	                                      _("Please wait…"), NULL, TRUE,
-	                                      purple_demo_protocol_request_wait_cancel_cb,
-	                                      purple_request_cpar_from_connection(connection),
-	                                      wait);
-
-	wait->id = g_timeout_add(250, purple_demo_protocol_request_wait_pulse_cb,
-	                         wait);
-
-	purple_request_add_close_notify(wait->ui_handle,
-	                                purple_demo_protocol_request_wait_close_cb,
-	                                wait);
-}
-
-static void
 purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
                                           PurpleRequestPage *page)
 {
@@ -635,79 +424,6 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 	g_clear_object(&account);
 }
 
-static void
-purple_demo_protocol_request_path_ok_cb(gpointer data, const char *filename) {
-	const char *type = data;
-
-	g_message(_("Successfully requested %s from UI: %s"), type, filename);
-}
-
-static void
-purple_demo_protocol_request_path_cancel_cb(gpointer data) {
-	const char *type = data;
-
-	g_message(_("UI cancelled %s request"), type);
-}
-
-static void
-purple_demo_protocol_request_file_activate(G_GNUC_UNUSED GSimpleAction *action,
-                                           GVariant *parameter,
-                                           G_GNUC_UNUSED gpointer data)
-{
-	PurpleConnection *connection = NULL;
-	const gchar *account_id = NULL;
-	PurpleAccountManager *manager = NULL;
-	PurpleAccount *account = NULL;
-
-	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
-		g_critical("Demo failure action parameter is of incorrect type %s",
-		           g_variant_get_type_string(parameter));
-		return;
-	}
-
-	account_id = g_variant_get_string(parameter, NULL);
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find_by_id(manager, account_id);
-	connection = purple_account_get_connection(account);
-	g_clear_object(&account);
-
-	purple_request_file(connection, _("Request File Demo"),
-	                    "example.txt", FALSE,
-	                    G_CALLBACK(purple_demo_protocol_request_path_ok_cb),
-	                    G_CALLBACK(purple_demo_protocol_request_path_cancel_cb),
-	                    purple_request_cpar_from_connection(connection),
-	                    "file");
-}
-
-static void
-purple_demo_protocol_request_folder_activate(G_GNUC_UNUSED GSimpleAction *action,
-                                             GVariant *parameter,
-                                             G_GNUC_UNUSED gpointer data)
-{
-	PurpleConnection *connection = NULL;
-	const gchar *account_id = NULL;
-	PurpleAccountManager *manager = NULL;
-	PurpleAccount *account = NULL;
-
-	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
-		g_critical("Demo failure action parameter is of incorrect type %s",
-		           g_variant_get_type_string(parameter));
-		return;
-	}
-
-	account_id = g_variant_get_string(parameter, NULL);
-	manager = purple_account_manager_get_default();
-	account = purple_account_manager_find_by_id(manager, account_id);
-	connection = purple_account_get_connection(account);
-	g_clear_object(&account);
-
-	purple_request_folder(connection, _("Request Folder Demo"), NULL,
-	                      G_CALLBACK(purple_demo_protocol_request_path_ok_cb),
-	                      G_CALLBACK(purple_demo_protocol_request_path_cancel_cb),
-	                      purple_request_cpar_from_connection(connection),
-	                      "folder");
-}
-
 /******************************************************************************
  * Contact action implementations
  *****************************************************************************/
@@ -816,32 +532,8 @@ purple_demo_protocol_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *actio
 			.activate = purple_demo_protocol_remote_add,
 			.parameter_type = "s",
 		}, {
-			.name = "request-input",
-			.activate = purple_demo_protocol_request_input_activate,
-			.parameter_type = "s",
-		}, {
-			.name = "request-choice",
-			.activate = purple_demo_protocol_request_choice_activate,
-			.parameter_type = "s",
-		}, {
-			.name = "request-action",
-			.activate = purple_demo_protocol_request_action_activate,
-			.parameter_type = "s",
-		}, {
-			.name = "request-wait",
-			.activate = purple_demo_protocol_request_wait_activate,
-			.parameter_type = "s",
-		}, {
 			.name = "request-fields",
 			.activate = purple_demo_protocol_request_fields_activate,
-			.parameter_type = "s",
-		}, {
-			.name = "request-file",
-			.activate = purple_demo_protocol_request_file_activate,
-			.parameter_type = "s",
-		}, {
-			.name = "request-folder",
-			.activate = purple_demo_protocol_request_folder_activate,
 			.parameter_type = "s",
 		}
 	};
@@ -859,7 +551,6 @@ purple_demo_protocol_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
                               G_GNUC_UNUSED PurpleConnection *connection)
 {
 	GMenu *menu = NULL;
-	GMenu *submenu = NULL;
 	GMenuItem *item = NULL;
 
 	menu = g_menu_new();
@@ -892,52 +583,11 @@ purple_demo_protocol_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
 	g_menu_append_item(menu, item);
 	g_object_unref(item);
 
-	submenu = g_menu_new();
-
-	item = g_menu_item_new(_("Input"), "prpl-demo.request-input");
+	item = g_menu_item_new(_("Request Fields"), "prpl-demo.request-fields");
 	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
 	                          "account");
-	g_menu_append_item(submenu, item);
+	g_menu_append_item(menu, item);
 	g_object_unref(item);
-
-	item = g_menu_item_new(_("Choice"), "prpl-demo.request-choice");
-	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
-	                          "account");
-	g_menu_append_item(submenu, item);
-	g_object_unref(item);
-
-	item = g_menu_item_new(_("Action"), "prpl-demo.request-action");
-	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
-	                          "account");
-	g_menu_append_item(submenu, item);
-	g_object_unref(item);
-
-	item = g_menu_item_new(_("Wait"), "prpl-demo.request-wait");
-	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
-	                          "account");
-	g_menu_append_item(submenu, item);
-	g_object_unref(item);
-
-	item = g_menu_item_new(_("Fields"), "prpl-demo.request-fields");
-	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
-	                          "account");
-	g_menu_append_item(submenu, item);
-	g_object_unref(item);
-
-	item = g_menu_item_new(_("File"), "prpl-demo.request-file");
-	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
-	                          "account");
-	g_menu_append_item(submenu, item);
-	g_object_unref(item);
-
-	item = g_menu_item_new(_("Folder"), "prpl-demo.request-folder");
-	g_menu_item_set_attribute(item, PURPLE_MENU_ATTRIBUTE_DYNAMIC_TARGET, "s",
-	                          "account");
-	g_menu_append_item(submenu, item);
-	g_object_unref(item);
-
-	g_menu_append_submenu(menu, _("Trigger requests"), G_MENU_MODEL(submenu));
-	g_object_unref(submenu);
 
 	return menu;
 }
