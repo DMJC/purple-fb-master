@@ -1,6 +1,5 @@
 libpurple_doc_content_files = [
 	'contributing.md',
-	'signals_cmd.md',
 	'signals_connection.md',
 	'signals_core.md',
 	'tut_c_plugins.md',
