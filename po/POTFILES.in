@@ -1,5 +1,4 @@
 libpurple/accounts.c
-libpurple/action.c
 libpurple/circularbuffer.c
 libpurple/connection.c
 libpurple/core.c
@@ -89,7 +88,6 @@ libpurple/tests/test_history_manager.c
 libpurple/tests/test_image.c
 libpurple/tests/test_keyvaluepair.c
 libpurple/tests/test_markup.c
-libpurple/tests/test_protocol_action.c
 libpurple/tests/test_purplepath.c
 libpurple/tests/test_ui.c
 libpurple/tests/test_util.c

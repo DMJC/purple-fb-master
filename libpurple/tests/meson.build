@@ -30,7 +30,6 @@ PROGS = [
     'presence',
     'presence_manager',
     'protocol',
-    'protocol_action',
     'protocol_contacts',
     'protocol_conversation',
     'protocol_file_transfer',

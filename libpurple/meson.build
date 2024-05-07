@@ -1,6 +1,5 @@
 purple_coresources = [
 	'accounts.c',
-	'action.c',
 	'circularbuffer.c',
 	'connection.c',
 	'core.c',
@@ -98,7 +97,6 @@ purple_coresources = [
 
 purple_coreheaders = [
 	'accounts.h',
-	'action.h',
 	'circularbuffer.h',
 	'connection.h',
 	'core.h',
