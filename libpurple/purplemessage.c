@@ -34,7 +34,6 @@ struct _PurpleMessage {
 	char *author;
 	char *author_name_color;
 	char *author_alias;
-	char *recipient;
 
 	char *contents;
 	gboolean action;
@@ -56,7 +55,6 @@ enum {
 	PROP_AUTHOR,
 	PROP_AUTHOR_ALIAS,
 	PROP_AUTHOR_NAME_COLOR,
-	PROP_RECIPIENT,
 	PROP_CONTENTS,
 	PROP_ACTION,
 	PROP_TIMESTAMP,
@@ -105,9 +103,6 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 		case PROP_AUTHOR_NAME_COLOR:
 			g_value_set_string(value,
 			                   purple_message_get_author_name_color(message));
-			break;
-		case PROP_RECIPIENT:
-			g_value_set_string(value, purple_message_get_recipient(message));
 			break;
 		case PROP_CONTENTS:
 			g_value_set_string(value, purple_message_get_contents(message));
@@ -162,9 +157,6 @@ purple_message_set_property(GObject *object, guint param_id,
 			purple_message_set_author_name_color(message,
 			                                     g_value_get_string(value));
 			break;
-		case PROP_RECIPIENT:
-			purple_message_set_recipient(message, g_value_get_string(value));
-			break;
 		case PROP_CONTENTS:
 			purple_message_set_contents(message, g_value_get_string(value));
 			break;
@@ -206,7 +198,6 @@ purple_message_finalize(GObject *obj) {
 	g_free(message->author);
 	g_free(message->author_name_color);
 	g_free(message->author_alias);
-	g_free(message->recipient);
 	g_free(message->contents);
 
 	g_clear_error(&message->error);
@@ -283,19 +274,6 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	properties[PROP_AUTHOR_ALIAS] = g_param_spec_string(
 		"author-alias", "Author's alias",
 		"The alias of the sender",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleMessage:recipient:
-	 *
-	 * The recipient of the message.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_RECIPIENT] = g_param_spec_string(
-		"recipient", "Recipient",
-		"The username of the recipient.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -437,8 +415,8 @@ purple_message_class_init(PurpleMessageClass *klass) {
  * Public API
  *****************************************************************************/
 PurpleMessage *
-purple_message_new_outgoing(const char *author, const char *recipient,
-                            const char *contents, PurpleMessageFlags flags)
+purple_message_new_outgoing(const char *author, const char *contents,
+                            PurpleMessageFlags flags)
 {
 	PurpleMessage *message = NULL;
 	GDateTime *dt = NULL;
@@ -453,7 +431,6 @@ purple_message_new_outgoing(const char *author, const char *recipient,
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
 		"author", author,
-		"recipient", recipient,
 		"contents", contents,
 		"timestamp", dt,
 		"flags", flags,
@@ -561,23 +538,6 @@ purple_message_get_author_name_color(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
 	return message->author_name_color;
-}
-
-void
-purple_message_set_recipient(PurpleMessage *message, const char *recipient) {
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	g_free(message->recipient);
-	message->recipient = g_strdup(recipient);
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_RECIPIENT]);
-}
-
-const char *
-purple_message_get_recipient(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
-
-	return message->recipient;
 }
 
 void

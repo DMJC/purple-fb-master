@@ -50,7 +50,6 @@ test_purple_message_properties(void) {
 	char *author = NULL;
 	char *author_alias = NULL;
 	char *author_name_color = NULL;
-	char *recipient = NULL;
 	char *contents = NULL;
 	gboolean action = FALSE;
 	gboolean delivered = FALSE;
@@ -73,7 +72,6 @@ test_purple_message_properties(void) {
 		"author-name-color", "purple",
 		"delivered", TRUE,
 		"edited", TRUE,
-		"recipient", "pidgy",
 		"contents", "Now that is a big door",
 		"timestamp", timestamp,
 		"flags", PURPLE_MESSAGE_SYSTEM,
@@ -91,7 +89,6 @@ test_purple_message_properties(void) {
 		"delivered-at", &delivered_at1,
 		"edited", &edited,
 		"edited-at", &edited_at1,
-		"recipient", &recipient,
 		"contents", &contents,
 		"timestamp", &timestamp1,
 		"flags", &flags,
@@ -107,7 +104,6 @@ test_purple_message_properties(void) {
 	g_assert_nonnull(delivered_at1);
 	g_assert_true(edited);
 	g_assert_nonnull(edited_at1);
-	g_assert_cmpstr(recipient, ==, "pidgy");
 	g_assert_cmpstr(contents, ==, "Now that is a big door");
 	g_assert_true(g_date_time_equal(timestamp1, timestamp));
 	g_assert_cmpint(flags, ==, PURPLE_MESSAGE_SYSTEM);
@@ -119,7 +115,6 @@ test_purple_message_properties(void) {
 	g_clear_pointer(&author_name_color, g_free);
 	g_clear_pointer(&delivered_at1, g_date_time_unref);
 	g_clear_pointer(&edited_at1, g_date_time_unref);
-	g_clear_pointer(&recipient, g_free);
 	g_clear_pointer(&contents, g_free);
 	g_clear_pointer(&timestamp, g_date_time_unref);
 	g_clear_pointer(&timestamp1, g_date_time_unref);

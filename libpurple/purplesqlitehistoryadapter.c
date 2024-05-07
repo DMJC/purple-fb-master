@@ -131,8 +131,7 @@ purple_sqlite_history_adapter_build_query(PurpleSqliteHistoryAdapter *adapter,
 	} else {
 		query = g_string_new("SELECT "
 		                     "message_id, author, author_name_color, "
-		                     "author_alias, recipient, content, "
-		                     "client_timestamp "
+		                     "author_alias, content, client_timestamp "
 		                     "FROM message_log WHERE TRUE\n");
 	}
 
@@ -303,7 +302,6 @@ purple_sqlite_history_adapter_query(PurpleHistoryAdapter *adapter,
 		const gchar *author = NULL;
 		const gchar *author_name_color = NULL;
 		const gchar *author_alias = NULL;
-		const gchar *recipient = NULL;
 		const gchar *content = NULL;
 		const gchar *timestamp = NULL;
 
@@ -311,9 +309,8 @@ purple_sqlite_history_adapter_query(PurpleHistoryAdapter *adapter,
 		author = (const gchar *)sqlite3_column_text(prepared_statement, 1);
 		author_name_color = (const gchar *)sqlite3_column_text(prepared_statement, 2);
 		author_alias = (const gchar *)sqlite3_column_text(prepared_statement, 3);
-		recipient = (const gchar *)sqlite3_column_text(prepared_statement, 4);
-		content = (const gchar *)sqlite3_column_text(prepared_statement, 5);
-		timestamp = (const gchar *)sqlite3_column_text(prepared_statement, 6);
+		content = (const gchar *)sqlite3_column_text(prepared_statement, 4);
+		timestamp = (const gchar *)sqlite3_column_text(prepared_statement, 5);
 		g_date_time = g_date_time_new_from_iso8601(timestamp, NULL);
 
 		message = g_object_new(PURPLE_TYPE_MESSAGE,
@@ -321,7 +318,6 @@ purple_sqlite_history_adapter_query(PurpleHistoryAdapter *adapter,
 		                       "author", author,
 		                       "author_name_color", author_name_color,
 		                       "author_alias", author_alias,
-		                       "recipient", recipient,
 		                       "contents", content,
 		                       "timestamp", g_date_time,
 		                       NULL);
@@ -395,8 +391,8 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
 
 	script = "INSERT INTO message_log(protocol, account, conversation_id, "
 			 "message_id, author, author_name_color, author_alias, "
-			 "recipient, content, client_timestamp) "
-	         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			 "content, client_timestamp) "
+	         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	sqlite_adapter = PURPLE_SQLITE_HISTORY_ADAPTER(adapter);
 
@@ -446,13 +442,10 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
 	                  7, purple_message_get_author_alias(message), -1,
 	                  SQLITE_STATIC);
 	sqlite3_bind_text(prepared_statement,
-	                  8, purple_message_get_recipient(message), -1,
-	                  SQLITE_STATIC);
-	sqlite3_bind_text(prepared_statement,
-	                  9, purple_message_get_contents(message), -1,
+	                  8, purple_message_get_contents(message), -1,
 	                  SQLITE_STATIC);
 	timestamp = g_date_time_format_iso8601(purple_message_get_timestamp(message));
-	sqlite3_bind_text(prepared_statement, 10, timestamp, -1, g_free);
+	sqlite3_bind_text(prepared_statement, 9, timestamp, -1, g_free);
 
 	result = sqlite3_step(prepared_statement);
 

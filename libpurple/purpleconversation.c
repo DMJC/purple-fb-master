@@ -302,7 +302,7 @@ common_send(PurpleConversation *conversation, const char *message,
 		PurpleMessage *msg = NULL;
 		PurpleProtocolConversation *protocol_conversation = NULL;
 
-		msg = purple_message_new_outgoing(me, NULL, sent, msgflags);
+		msg = purple_message_new_outgoing(me, sent, msgflags);
 
 		protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
 		purple_protocol_conversation_send_message_async(protocol_conversation,

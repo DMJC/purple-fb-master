@@ -92,7 +92,6 @@ G_DECLARE_FINAL_TYPE(PurpleMessage, purple_message, PURPLE, MESSAGE, GObject)
 /**
  * purple_message_new_outgoing:
  * @author: The author.
- * @recipient: The recipient.
  * @contents: The contents.
  * @flags: The #PurpleMessageFlags.
  *
@@ -106,7 +105,7 @@ G_DECLARE_FINAL_TYPE(PurpleMessage, purple_message, PURPLE, MESSAGE, GObject)
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleMessage *purple_message_new_outgoing(const char *author, const char *recipient, const char *contents, PurpleMessageFlags flags);
+PurpleMessage *purple_message_new_outgoing(const char *author, const char *contents, PurpleMessageFlags flags);
 
 /**
  * purple_message_new_incoming:
@@ -211,31 +210,6 @@ void purple_message_set_author_name_color(PurpleMessage *message, const char *co
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_message_get_author_name_color(PurpleMessage *message);
-
-/**
- * purple_message_set_recipient:
- * @message: The #PurpleMessage instance.
- * @recipient: The name of the recipient.
- *
- * Sets the recipient of @message to @recipient.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_message_set_recipient(PurpleMessage *message, const char *recipient);
-
-/**
- * purple_message_get_recipient:
- * @message: The message.
- *
- * Returns the recipient of the message, not a local alias.
- *
- * Returns: the recipient of @message.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-const char *purple_message_get_recipient(PurpleMessage *message);
 
 /**
  * purple_message_set_author_alias:
