@@ -47,6 +47,7 @@ struct _PurpleConversation {
 	PurpleAvatar *avatar;
 	char *name;
 	char *title;
+	gboolean title_generated;
 
 	PurpleConnectionFlags features;
 
@@ -75,6 +76,7 @@ enum {
 	PROP_AVATAR,
 	PROP_NAME,
 	PROP_TITLE,
+	PROP_TITLE_GENERATED,
 	PROP_FEATURES,
 	PROP_AGE_RESTRICTED,
 	PROP_DESCRIPTION,
@@ -111,6 +113,41 @@ static void purple_conversation_account_connected_cb(GObject *obj,
 /**************************************************************************
  * Helpers
  **************************************************************************/
+static void
+purple_conversation_set_title_generated(PurpleConversation *conversation,
+                                        gboolean title_generated)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	/* If conversation isn't a dm or group dm, and title_generated is being set
+	 * to %TRUE exit immediately because generating the title is only allowed
+	 * on DMs and GroupDMs.
+	 */
+	if(conversation->type != PURPLE_CONVERSATION_TYPE_DM &&
+	   conversation->type != PURPLE_CONVERSATION_TYPE_GROUP_DM &&
+	   title_generated)
+	{
+		return;
+	}
+
+	if(conversation->title_generated != title_generated) {
+		GObject *obj = G_OBJECT(conversation);
+
+		conversation->title_generated = title_generated;
+
+		g_object_freeze_notify(obj);
+
+		if(conversation->title_generated) {
+			purple_conversation_generate_title(conversation);
+		}
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_TITLE_GENERATED]);
+
+		g_object_thaw_notify(obj);
+	}
+}
+
 static void
 purple_conversation_set_id(PurpleConversation *conversation, const char *id) {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
@@ -153,6 +190,20 @@ purple_conversation_set_account(PurpleConversation *conversation,
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_ACCOUNT]);
+	}
+}
+
+static void
+purple_conversation_set_conversation_type(PurpleConversation *conversation,
+                                          PurpleConversationType type)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	if(type != conversation->type) {
+		conversation->type = type;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_TYPE]);
 	}
 }
 
@@ -353,6 +404,18 @@ common_send(PurpleConversation *conversation, const char *message,
  * Callbacks
  **************************************************************************/
 static void
+purple_conversation_member_name_changed_cb(G_GNUC_UNUSED GObject *source,
+                                           G_GNUC_UNUSED GParamSpec *pspec,
+                                           gpointer data)
+{
+	PurpleConversation *conversation = data;
+
+	if(purple_conversation_get_title_generated(conversation)) {
+		purple_conversation_generate_title(conversation);
+	}
+}
+
+static void
 purple_conversation_account_connected_cb(GObject *obj,
                                          G_GNUC_UNUSED GParamSpec *pspec,
                                          gpointer data)
@@ -485,6 +548,10 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 	case PROP_TITLE:
 		g_value_set_string(value, purple_conversation_get_title(conversation));
 		break;
+	case PROP_TITLE_GENERATED:
+		g_value_set_boolean(value,
+		                    purple_conversation_get_title_generated(conversation));
+		break;
 	case PROP_FEATURES:
 		g_value_set_flags(value,
 		                  purple_conversation_get_features(conversation));
@@ -564,6 +631,17 @@ purple_conversation_constructed(GObject *object) {
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->constructed(object);
 
+	if(purple_strempty(conversation->title)) {
+		if(conversation->type == PURPLE_CONVERSATION_TYPE_DM ||
+		   conversation->type == PURPLE_CONVERSATION_TYPE_GROUP_DM)
+		{
+			/* There's no way to add members during construction, so just call
+			 * set_title_generated.
+			 */
+			purple_conversation_set_title_generated(conversation, TRUE);
+		}
+	}
+
 	g_object_get(object, "account", &account, NULL);
 	gc = purple_account_get_connection(account);
 
@@ -574,9 +652,6 @@ purple_conversation_constructed(GObject *object) {
 		purple_conversation_set_features(conversation,
 		                                 purple_connection_get_flags(gc));
 	}
-
-	/* Auto-set the title. */
-	purple_conversation_autoset_title(conversation);
 
 	g_object_unref(account);
 }
@@ -648,7 +723,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"The type of the conversation.",
 		PURPLE_TYPE_CONVERSATION_TYPE,
 		PURPLE_CONVERSATION_TYPE_UNSET,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversation:account:
@@ -690,7 +765,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"name", "Name",
 		"The name of the conversation.",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversation:title:
@@ -703,7 +778,27 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"title", "Title",
 		"The title of the conversation.",
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:title-generated:
+	 *
+	 * Whether or not the title of the conversation was generated by
+	 * [method@Conversation.generate_title].
+	 *
+	 * Note: This only works on DMs and GroupDMs.
+	 *
+	 * If this is %TRUE, [method@Conversation.generate_title] will
+	 * automatically be called whenever a member is added or removed, or when
+	 * their display name changes.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_TITLE_GENERATED] = g_param_spec_boolean(
+		"title-generated", "title-generated",
+		"Whether or not the current title was generated.",
+		FALSE,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversation:features:
@@ -1088,20 +1183,6 @@ purple_conversation_get_conversation_type(PurpleConversation *conversation) {
 	return conversation->type;
 }
 
-void
-purple_conversation_set_conversation_type(PurpleConversation *conversation,
-                                          PurpleConversationType type)
-{
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
-
-	if(type != conversation->type) {
-		conversation->type = type;
-
-		g_object_notify_by_pspec(G_OBJECT(conversation),
-		                         properties[PROP_TYPE]);
-	}
-}
-
 PurpleAccount *
 purple_conversation_get_account(PurpleConversation *conversation) {
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
@@ -1129,14 +1210,24 @@ purple_conversation_set_title(PurpleConversation *conversation,
                               const char *title)
 {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
-	g_return_if_fail(title != NULL);
 
 	if(!purple_strequal(conversation->title, title)) {
+		GObject *obj = G_OBJECT(conversation);
+
 		g_free(conversation->title);
 		conversation->title = g_strdup(title);
 
-		g_object_notify_by_pspec(G_OBJECT(conversation),
-		                         properties[PROP_TITLE]);
+		/* We have to g_object_freeze_notify here because we're modifying more
+		 * than one property. However, purple_conversation_generate_title will
+		 * also have called g_object_freeze_notify before calling us because it
+		 * needs to set the title-generated property to TRUE even though we set
+		 * it to FALSE here. We do this, because we didn't want to write
+		 * additional API that skips that part.
+		 */
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_TITLE]);
+		purple_conversation_set_title_generated(conversation, FALSE);
+		g_object_thaw_notify(obj);
 	}
 }
 
@@ -1148,14 +1239,80 @@ purple_conversation_get_title(PurpleConversation *conversation) {
 }
 
 void
-purple_conversation_autoset_title(PurpleConversation *conversation) {
-	const char *name = NULL;
+purple_conversation_generate_title(PurpleConversation *conversation) {
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *account_info = NULL;
+	GString *str = NULL;
+	guint n_members = 0;
+	gboolean first = TRUE;
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	name = purple_conversation_get_name(conversation);
+	if(conversation->type != PURPLE_CONVERSATION_TYPE_DM &&
+	   conversation->type != PURPLE_CONVERSATION_TYPE_GROUP_DM)
+	{
+		g_warning("purple_conversation_generate_title called for non DM/Group "
+		          "DM conversation");
 
-	purple_conversation_set_title(conversation, name);
+		return;
+	}
+
+	account = purple_conversation_get_account(conversation);
+	account_info = PURPLE_CONTACT_INFO(account);
+
+	str = g_string_new("");
+
+	n_members = g_list_model_get_n_items(G_LIST_MODEL(conversation->members));
+	for(guint i = 0; i < n_members; i++) {
+		PurpleContactInfo *info = NULL;
+		PurpleConversationMember *member = NULL;
+		const char *name = NULL;
+
+		member = g_list_model_get_item(G_LIST_MODEL(conversation->members), i);
+		info = purple_conversation_member_get_contact_info(member);
+		if(purple_contact_info_compare(info, account_info) == 0) {
+			g_clear_object(&member);
+
+			continue;
+		}
+
+		name = purple_contact_info_get_name_for_display(info);
+		if(purple_strempty(name)) {
+			g_warning("contact %p has no displayable name", info);
+
+			g_clear_object(&member);
+
+			continue;
+		}
+
+		if(!first) {
+			g_string_append_printf(str, ", %s", name);
+		} else {
+			g_string_append(str, name);
+			first = FALSE;
+		}
+
+		g_clear_object(&member);
+	}
+
+	/* If we found at least 1 user to add, then we set the title. */
+	if(!first) {
+		GObject *obj = G_OBJECT(conversation);
+
+		g_object_freeze_notify(obj);
+		purple_conversation_set_title(conversation, str->str);
+		purple_conversation_set_title_generated(conversation, TRUE);
+		g_object_thaw_notify(obj);
+	}
+
+	g_string_free(str, TRUE);
+}
+
+gboolean
+purple_conversation_get_title_generated(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	return conversation->title_generated;
 }
 
 void
@@ -1639,6 +1796,16 @@ purple_conversation_add_member(PurpleConversation *conversation,
 	member = purple_conversation_member_new(info);
 	g_list_store_append(conversation->members, member);
 
+	/* Add a callback for notify::name-for-display on info. */
+	g_signal_connect_object(info, "notify::name-for-display",
+	                        G_CALLBACK(purple_conversation_member_name_changed_cb),
+	                        conversation, G_CONNECT_DEFAULT);
+
+	/* Update the title if necessary. */
+	if(purple_conversation_get_title_generated(conversation)) {
+		purple_conversation_generate_title(conversation);
+	}
+
 	g_signal_emit(conversation, signals[SIG_MEMBER_ADDED], 0, member, announce,
 	              message);
 
@@ -1666,6 +1833,16 @@ purple_conversation_remove_member(PurpleConversation *conversation,
 	                               position);
 
 	g_list_store_remove(conversation->members, position);
+
+	/* Remove our signal handlers for the member. */
+	g_signal_handlers_disconnect_by_func(info,
+	                                     purple_conversation_member_name_changed_cb,
+	                                     conversation);
+
+	/* Update our title if necessary. */
+	if(purple_conversation_get_title_generated(conversation)) {
+		purple_conversation_generate_title(conversation);
+	}
 
 	g_signal_emit(conversation, signals[SIG_MEMBER_REMOVED], 0, member,
 	              announce, message);

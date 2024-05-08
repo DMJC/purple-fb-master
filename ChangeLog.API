@@ -503,6 +503,7 @@ version 3.0.0 (??/??/????):
 		* PurpleConversationType
 		* purple_conversation::conversation-switched signal
 		* purple_conversation_add_smiley
+		* purple_conversation_autoset_title
 		* purple_conversation_clear_message_history
 		* purple_conversation_close_logs
 		* purple_conversation_do_command

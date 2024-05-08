@@ -69,7 +69,6 @@ test_purple_conversation_manager_register_unregister(void) {
 	conversation = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
-		"name", "purple_conversation_autoset_title sucks",
 		NULL);
 
 	/* Add the conversation to the manager. */
@@ -136,7 +135,6 @@ test_purple_conversation_manager_signal_conversation_changed(void) {
 	conversation = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
-		"name", "kool kats",
 		NULL);
 	purple_conversation_manager_register(manager, conversation);
 
@@ -185,7 +183,6 @@ test_purple_conversation_manager_signal_present_conversation(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"type", PURPLE_CONVERSATION_TYPE_DM,
-		"name", "bleh",
 		NULL);
 
 	ret = purple_conversation_manager_register(manager, conversation);
@@ -238,13 +235,13 @@ test_purple_conversation_manager_find_dm_exists(void) {
 	manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
 
 	account = purple_account_new("test", "test");
-	contact = purple_contact_new(account, NULL);
+	contact = purple_contact_new(account,
+	                             "a9780f2a-eeb5-4d6b-89cb-52e5dad3973f");
 
 	conversation1 = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"type", PURPLE_CONVERSATION_TYPE_DM,
-		"name", "this is required for some reason",
 		NULL);
 	purple_conversation_manager_register(manager, conversation1);
 	purple_conversation_add_member(conversation1, PURPLE_CONTACT_INFO(contact),
@@ -287,7 +284,6 @@ test_purple_conversation_manager_find_dm_does_not_exist(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account1,
 		"type", PURPLE_CONVERSATION_TYPE_CHANNEL,
-		"name", "this is required for some reason",
 		NULL);
 	purple_conversation_manager_register(manager, conversation1);
 
@@ -298,7 +294,6 @@ test_purple_conversation_manager_find_dm_does_not_exist(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account1,
 		"type", PURPLE_CONVERSATION_TYPE_DM,
-		"name", "this is required for some reason",
 		NULL);
 	purple_conversation_manager_register(manager, conversation2);
 
@@ -307,7 +302,6 @@ test_purple_conversation_manager_find_dm_does_not_exist(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account2,
 		"type", PURPLE_CONVERSATION_TYPE_CHANNEL,
-		"name", "this is required for some reason",
 		NULL);
 	purple_conversation_manager_register(manager, conversation2);
 

@@ -47,6 +47,7 @@ test_purple_conversation_properties(void) {
 	char *description = NULL;
 	char *id = NULL;
 	char *name = NULL;
+	char *title = NULL;
 	char *topic = NULL;
 	char *user_nickname = NULL;
 	gboolean age_restricted = FALSE;
@@ -62,9 +63,6 @@ test_purple_conversation_properties(void) {
 	/* Use g_object_new so we can test setting properties by name. All of them
 	 * call the setter methods, so by doing it this way we exercise more of the
 	 * code.
-	 *
-	 * We don't currently test title because purple_conversation_autoset_title
-	 * makes it something we don't expect it to be.
 	 */
 	conversation = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
@@ -78,6 +76,7 @@ test_purple_conversation_properties(void) {
 		"features", PURPLE_CONNECTION_FLAG_HTML,
 		"id", "id1",
 		"name", "name1",
+		"title", "test conversation",
 		"topic", "the topic...",
 		"topic-author", topic_author,
 		"topic-updated", topic_updated,
@@ -99,6 +98,7 @@ test_purple_conversation_properties(void) {
 		"members", &members,
 		"name", &name,
 		"tags", &tags,
+		"title", &title,
 		"topic", &topic,
 		"topic-author", &topic_author1,
 		"topic-updated", &topic_updated1,
@@ -141,6 +141,9 @@ test_purple_conversation_properties(void) {
 	g_assert_true(PURPLE_IS_TAGS(tags));
 	g_clear_object(&tags);
 
+	g_assert_cmpstr(title, ==, "test conversation");
+	g_clear_pointer(&title, g_free);
+
 	g_assert_cmpstr(topic, ==, "the topic...");
 	g_clear_pointer(&topic, g_free);
 
@@ -178,7 +181,6 @@ test_purple_conversation_set_topic_full(void) {
 	conversation = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
-		"name", "this is required for some reason",
 		NULL);
 
 	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
@@ -215,7 +217,6 @@ test_purple_conversation_is_dm(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"type", PURPLE_CONVERSATION_TYPE_DM,
-		"name", "this is required for some reason",
 		NULL);
 
 	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
@@ -239,7 +240,6 @@ test_purple_conversation_is_group_dm(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"type", PURPLE_CONVERSATION_TYPE_GROUP_DM,
-		"name", "this is required for some reason",
 		NULL);
 
 	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
@@ -263,7 +263,6 @@ test_purple_conversation_is_channel(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"type", PURPLE_CONVERSATION_TYPE_CHANNEL,
-		"name", "this is required for some reason",
 		NULL);
 
 	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
@@ -287,7 +286,6 @@ test_purple_conversation_is_thread(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"type", PURPLE_CONVERSATION_TYPE_THREAD,
-		"name", "this is required for some reason",
 		NULL);
 
 	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
@@ -336,8 +334,10 @@ test_purple_conversation_members_add_remove(void) {
 	gint added_called = 0;
 	gint removed_called = 0;
 
-	/* Create our instances. */
-	info = purple_contact_info_new(NULL);
+	/* Create our instances. The id is just a uuid 4 to help us avoid a
+	 * g_warning.
+	 */
+	info = purple_contact_info_new("745c50ba-1189-48d9-827c-051783026c96");
 	account = purple_account_new("test", "test");
 	conversation = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
@@ -427,7 +427,6 @@ test_purple_conversation_message_write_one(void) {
 	conversation = g_object_new(
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
-		"name", "this is required",
 		NULL);
 
 	messages = purple_conversation_get_messages(conversation);
@@ -488,6 +487,125 @@ test_purple_conversation_signals_present(void) {
 }
 
 /******************************************************************************
+ * generate_title tests
+ *****************************************************************************/
+static void
+test_purple_conversation_generate_title_empty(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	const char *title = NULL;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
+		NULL);
+
+	title = purple_conversation_get_title(conversation);
+	g_assert_null(title);
+
+	purple_conversation_set_title(conversation, "test");
+	title = purple_conversation_get_title(conversation);
+
+	/* There are no members in this conversation, so calling generate_title
+	 * doesn't change the title.
+	 */
+	purple_conversation_generate_title(conversation);
+	title = purple_conversation_get_title(conversation);
+	g_assert_cmpstr(title, ==, "test");
+
+	g_assert_finalize_object(conversation);
+	g_clear_object(&account);
+}
+
+static void
+test_purple_conversation_generate_title_dm(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleConversation *conversation = NULL;
+	const char *title = NULL;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_DM,
+		NULL);
+
+	title = purple_conversation_get_title(conversation);
+	g_assert_null(title);
+
+	contact = purple_contact_new(account, NULL);
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), "Alice");
+	purple_conversation_add_member(conversation, PURPLE_CONTACT_INFO(contact),
+	                               FALSE, NULL);
+
+	title = purple_conversation_get_title(conversation);
+	g_assert_cmpstr(title, ==, "Alice");
+
+	/* Make sure the title updates when the display name changes. */
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), "alice!");
+	title = purple_conversation_get_title(conversation);
+	g_assert_cmpstr(title, ==, "alice!");
+
+	g_assert_finalize_object(conversation);
+	g_assert_finalize_object(contact);
+	g_clear_object(&account);
+}
+
+static void
+test_purple_conversation_generate_title_group_dm(void) {
+	PurpleAccount *account = NULL;
+	PurpleContact *contact1 = NULL;
+	PurpleContact *contact2 = NULL;
+	PurpleContact *contact3 = NULL;
+	PurpleConversation *conversation = NULL;
+	const char *title = NULL;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"type", PURPLE_CONVERSATION_TYPE_GROUP_DM,
+		NULL);
+
+	title = purple_conversation_get_title(conversation);
+	g_assert_null(title);
+
+	contact1 = purple_contact_new(account, NULL);
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact1), "Alice");
+	purple_conversation_add_member(conversation, PURPLE_CONTACT_INFO(contact1),
+	                               FALSE, NULL);
+
+	contact2 = purple_contact_new(account, NULL);
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact2), "Bob");
+	purple_conversation_add_member(conversation, PURPLE_CONTACT_INFO(contact2),
+	                               FALSE, NULL);
+
+	contact3 = purple_contact_new(account, NULL);
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact3), "Eve");
+	purple_conversation_add_member(conversation, PURPLE_CONTACT_INFO(contact3),
+	                               FALSE, NULL);
+
+	title = purple_conversation_get_title(conversation);
+	g_assert_cmpstr(title, ==, "Alice, Bob, Eve");
+
+	/* Change some names around and verify the title was generated properly. */
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact2), "Robert");
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact3), "Evelyn");
+
+	title = purple_conversation_get_title(conversation);
+	g_assert_cmpstr(title, ==, "Alice, Robert, Evelyn");
+
+	g_assert_finalize_object(conversation);
+	g_assert_finalize_object(contact1);
+	g_assert_finalize_object(contact2);
+	g_assert_finalize_object(contact3);
+	g_clear_object(&account);
+}
+
+/******************************************************************************
  * Main
  *****************************************************************************/
 gint
@@ -519,6 +637,13 @@ main(gint argc, gchar *argv[]) {
 
 	g_test_add_func("/conversation/signals/present",
 	                test_purple_conversation_signals_present);
+
+	g_test_add_func("/conversation/generate-title/empty",
+	                test_purple_conversation_generate_title_empty);
+	g_test_add_func("/conversation/generate-title/dm",
+	                test_purple_conversation_generate_title_dm);
+	g_test_add_func("/conversation/generate-title/group-dm",
+	                test_purple_conversation_generate_title_group_dm);
 
 	ret = g_test_run();
 

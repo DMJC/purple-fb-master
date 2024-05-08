@@ -203,7 +203,6 @@ test_purple_protocol_conversation_empty_send_message_async(void) {
 		conversation = g_object_new(
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
-			"name", "this is required at the moment",
 			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 		message = g_object_new(PURPLE_TYPE_MESSAGE, NULL);
@@ -262,7 +261,6 @@ test_purple_protocol_conversation_empty_set_topic_async(void) {
 		conversation = g_object_new(
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
-			"name", "this is required at the moment",
 			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 
@@ -395,7 +393,6 @@ test_purple_protocol_conversation_empty_set_avatar_async(void) {
 		conversation = g_object_new(
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
-			"name", "this is required at the moment",
 			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 
@@ -451,7 +448,6 @@ test_purple_protocol_conversation_empty_send_typing(void) {
 		conversation = g_object_new(
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
-			"name", "this is required at the moment",
 			"type", PURPLE_CONVERSATION_TYPE_DM,
 			NULL);
 
@@ -545,7 +541,6 @@ test_purple_protocol_conversation_create_conversation_async(PurpleProtocolConver
 		conversation = g_object_new(
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
-			"name", "test",
 			NULL);
 		g_task_return_pointer(task, conversation, g_object_unref);
 	}

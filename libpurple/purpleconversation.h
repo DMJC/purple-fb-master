@@ -203,21 +203,6 @@ PURPLE_AVAILABLE_IN_3_0
 PurpleConversationType purple_conversation_get_conversation_type(PurpleConversation *conversation);
 
 /**
- * purple_conversation_set_conversation_type:
- * @conversation: The instance.
- * @type: The new type.
- *
- * Sets the type of @conversation to @type.
- *
- * > Note this only for the internal representation in libpurple and the
- * protocol will not be told to change the type.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_set_conversation_type(PurpleConversation *conversation, PurpleConversationType type);
-
-/**
  * purple_conversation_get_account:
  * @conversation: The conversation.
  *
@@ -272,18 +257,37 @@ PURPLE_AVAILABLE_IN_ALL
 const char *purple_conversation_get_title(PurpleConversation *conversation);
 
 /**
- * purple_conversation_autoset_title:
- * @conversation: The conversation.
+ * purple_conversation_generate_title:
+ * @conversation: The instance.
  *
- * Automatically sets the specified conversation's title.
+ * Sets the title for @conversation, which must be a DM or Group DM, to a comma
+ * separated string of the display names for each [class@ConversationMember].
  *
- * This function takes OPT_IM_ALIAS_TAB into account, as well as the
- * user's alias.
+ * If @conversation is not a DM or Group DM, no changes will be made.
  *
- * Since: 2.0
+ * If no members are found, [property@Conversation:title] will not be changed.
+ *
+ * If the title is updated, [property@Conversation:title-generated] will be
+ * updated as well.
+ *
+ * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_autoset_title(PurpleConversation *conversation);
+PURPLE_AVAILABLE_IN_3_0
+void purple_conversation_generate_title(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_get_title_generated:
+ * @conversation: The instance.
+ *
+ * Gets whether or not the current title was automatically generated via
+ * [method@Conversation.generate_title].
+ *
+ * Returns: %TRUE if the title was automatically generated.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_conversation_get_title_generated(PurpleConversation *conversation);
 
 /**
  * purple_conversation_set_name:
