@@ -106,4 +106,28 @@
 		"group:Nymphs"
 	],
 	"username": "Aegina"
+}, {
+	"id": "alice",
+	"presence": {
+		"primitive": "online"
+	},
+	"username": "Alice"
+}, {
+	"id": "bob",
+	"presence": {
+		"primitive": "offline"
+	},
+	"username": "Bob"
+}, {
+	"id": "carlos",
+	"presence": {
+		"primitive": "away"
+	},
+	"username": "Carlos"
+}, {
+	"id": "erin",
+	"presence": {
+		"primitive": "do-not-disturb"
+	},
+	"username": "Erin"
 }]
