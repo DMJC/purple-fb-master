@@ -72,6 +72,57 @@ PURPLE_AVAILABLE_IN_ALL
 PurpleAccount *purple_account_new(const char *username, const char *protocol_id);
 
 /**
+ * purple_account_get_id:
+ * @account: The instance.
+ *
+ * Gets the id of @account.
+ *
+ * Returns: The id of @account.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+const char *purple_account_get_id(PurpleAccount *account);
+
+/**
+ * purple_account_get_username:
+ * @account: The instance.
+ *
+ * Gets the username for @account.
+ *
+ * Returns: The username.
+ *
+ * Since: 2.0
+ */
+PURPLE_AVAILABLE_IN_2_0
+const char *purple_account_get_username(PurpleAccount *account);
+
+/**
+ * purple_account_set_username:
+ * @account: The instance.
+ * @username: (nullable): The new username.
+ *
+ * Sets the username of @account to @username.
+ *
+ * Since: 2.0
+ */
+PURPLE_AVAILABLE_IN_2_0
+void purple_account_set_username(PurpleAccount *account, const char *username);
+
+/**
+ * purple_account_get_contact_info:
+ * @account: The instance.
+ *
+ * Gets the [class@ContactInfo] for @account.
+ *
+ * Returns: (transfer none): The contact info for @account.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleContactInfo *purple_account_get_contact_info(PurpleAccount *account);
+
+/**
  * purple_account_connect:
  * @account: The account to connect to.
  *

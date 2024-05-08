@@ -86,6 +86,9 @@ typedef struct {
 
 enum {
 	PROP_0,
+	PROP_ID,
+	PROP_USERNAME,
+	PROP_CONTACT_INFO,
 	PROP_REQUIRE_PASSWORD,
 	PROP_ENABLED,
 	PROP_CONNECTION,
@@ -113,6 +116,13 @@ G_DEFINE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE_TYPE_CONTACT_INFO);
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static void
+purple_account_set_id(PurpleAccount *account, const char *id) {
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	purple_contact_info_set_id(PURPLE_CONTACT_INFO(account), id);
+}
+
 static void
 purple_account_free_notify_settings(PurpleAccount *account) {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
@@ -598,39 +608,44 @@ purple_account_set_property(GObject *obj, guint param_id, const GValue *value,
 	PurpleAccount *account = PURPLE_ACCOUNT(obj);
 
 	switch(param_id) {
-		case PROP_REQUIRE_PASSWORD:
-			purple_account_set_require_password(account,
-			                                    g_value_get_boolean(value));
-			break;
-		case PROP_ENABLED:
-			purple_account_set_enabled(account, g_value_get_boolean(value));
-			break;
-		case PROP_CONNECTION:
-			purple_account_set_connection(account, g_value_get_object(value));
-			break;
-		case PROP_PROTOCOL_ID:
-			purple_account_set_protocol_id(account, g_value_get_string(value));
-			break;
-		case PROP_USER_INFO:
-			purple_account_set_user_info(account, g_value_get_string(value));
-			break;
-		case PROP_BUDDY_ICON_PATH:
-			purple_account_set_buddy_icon_path(account,
-			                                   g_value_get_string(value));
-			break;
-		case PROP_REMEMBER_PASSWORD:
-			purple_account_set_remember_password(account,
-			                                     g_value_get_boolean(value));
-			break;
-		case PROP_PROXY_INFO:
-			purple_account_set_proxy_info(account, g_value_get_object(value));
-			break;
-		case PROP_ERROR:
-			purple_account_set_error(account, g_value_get_boxed(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		purple_account_set_id(account, g_value_get_string(value));
+		break;
+	case PROP_USERNAME:
+		purple_account_set_username(account, g_value_get_string(value));
+		break;
+	case PROP_REQUIRE_PASSWORD:
+		purple_account_set_require_password(account,
+		                                    g_value_get_boolean(value));
+		break;
+	case PROP_ENABLED:
+		purple_account_set_enabled(account, g_value_get_boolean(value));
+		break;
+	case PROP_CONNECTION:
+		purple_account_set_connection(account, g_value_get_object(value));
+		break;
+	case PROP_PROTOCOL_ID:
+		purple_account_set_protocol_id(account, g_value_get_string(value));
+		break;
+	case PROP_USER_INFO:
+		purple_account_set_user_info(account, g_value_get_string(value));
+		break;
+	case PROP_BUDDY_ICON_PATH:
+		purple_account_set_buddy_icon_path(account, g_value_get_string(value));
+		break;
+	case PROP_REMEMBER_PASSWORD:
+		purple_account_set_remember_password(account,
+		                                     g_value_get_boolean(value));
+		break;
+	case PROP_PROXY_INFO:
+		purple_account_set_proxy_info(account, g_value_get_object(value));
+		break;
+	case PROP_ERROR:
+		purple_account_set_error(account, g_value_get_boxed(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -641,42 +656,50 @@ purple_account_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleAccount *account = PURPLE_ACCOUNT(obj);
 
 	switch(param_id) {
-		case PROP_REQUIRE_PASSWORD:
-			g_value_set_boolean(value,
-			                    purple_account_get_require_password(account));
-			break;
-		case PROP_ENABLED:
-			g_value_set_boolean(value, purple_account_get_enabled(account));
-			break;
-		case PROP_CONNECTION:
-			g_value_set_object(value, purple_account_get_connection(account));
-			break;
-		case PROP_PROTOCOL_ID:
-			g_value_set_string(value, purple_account_get_protocol_id(account));
-			break;
-		case PROP_USER_INFO:
-			g_value_set_string(value, purple_account_get_user_info(account));
-			break;
-		case PROP_BUDDY_ICON_PATH:
-			g_value_set_string(value,
-			                   purple_account_get_buddy_icon_path(account));
-			break;
-		case PROP_REMEMBER_PASSWORD:
-			g_value_set_boolean(value,
-			                    purple_account_get_remember_password(account));
-			break;
-		case PROP_PROXY_INFO:
-			g_value_set_object(value, purple_account_get_proxy_info(account));
-			break;
-		case PROP_ERROR:
-			g_value_set_boxed(value, purple_account_get_error(account));
-			break;
-		case PROP_CONNECTED:
-			g_value_set_boolean(value, purple_account_is_connected(account));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		g_value_set_string(value, purple_account_get_id(account));
+		break;
+	case PROP_USERNAME:
+		g_value_set_string(value, purple_account_get_username(account));
+		break;
+	case PROP_CONTACT_INFO:
+		g_value_set_object(value, purple_account_get_contact_info(account));
+		break;
+	case PROP_REQUIRE_PASSWORD:
+		g_value_set_boolean(value,
+		                    purple_account_get_require_password(account));
+		break;
+	case PROP_ENABLED:
+		g_value_set_boolean(value, purple_account_get_enabled(account));
+		break;
+	case PROP_CONNECTION:
+		g_value_set_object(value, purple_account_get_connection(account));
+		break;
+	case PROP_PROTOCOL_ID:
+		g_value_set_string(value, purple_account_get_protocol_id(account));
+		break;
+	case PROP_USER_INFO:
+		g_value_set_string(value, purple_account_get_user_info(account));
+		break;
+	case PROP_BUDDY_ICON_PATH:
+		g_value_set_string(value, purple_account_get_buddy_icon_path(account));
+		break;
+	case PROP_REMEMBER_PASSWORD:
+		g_value_set_boolean(value,
+		                    purple_account_get_remember_password(account));
+		break;
+	case PROP_PROXY_INFO:
+		g_value_set_object(value, purple_account_get_proxy_info(account));
+		break;
+	case PROP_ERROR:
+		g_value_set_boxed(value, purple_account_get_error(account));
+		break;
+	case PROP_CONNECTED:
+		g_value_set_boolean(value, purple_account_is_connected(account));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -759,6 +782,45 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	obj_class->finalize = purple_account_finalize;
 	obj_class->get_property = purple_account_get_property;
 	obj_class->set_property = purple_account_set_property;
+
+	/**
+	 * PurpleAccount:id:
+	 *
+	 * The unique identifier for the account.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ID] = g_param_spec_string(
+		"id", "id",
+		"A unique identifier for the account.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAccount:username:
+	 *
+	 * The username for the account.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_USERNAME] = g_param_spec_string(
+		"username", "username",
+		"The username for the account.",
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAccount:contact-info:
+	 *
+	 * The [class@ContactInfo] for the account.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_CONTACT_INFO] = g_param_spec_object(
+		"contact-info", "contact-info",
+		"The contact info for the account.",
+		PURPLE_TYPE_CONTACT_INFO,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleAccount:require-password:
@@ -999,6 +1061,34 @@ purple_account_new(const gchar *username, const gchar *protocol_id) {
 		"protocol-id", protocol_id,
 		"enabled", FALSE,
 		NULL);
+}
+
+const char *
+purple_account_get_id(PurpleAccount *account) {
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
+
+	return purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
+}
+
+const char *
+purple_account_get_username(PurpleAccount *account) {
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
+
+	return purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+}
+
+void
+purple_account_set_username(PurpleAccount *account, const char *username) {
+	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
+
+	purple_contact_info_set_username(PURPLE_CONTACT_INFO(account), username);
+}
+
+PurpleContactInfo *
+purple_account_get_contact_info(PurpleAccount *account) {
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
+
+	return PURPLE_CONTACT_INFO(account);
 }
 
 void
