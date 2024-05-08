@@ -26,9 +26,19 @@
 
 #include "pidgin/pidginnotificationlist.h"
 
+#include "pidgin/pidginnotifiable.h"
 #include "pidgin/pidginnotificationaddcontact.h"
 #include "pidgin/pidginnotificationauthorizationrequest.h"
 #include "pidgin/pidginnotificationconnectionerror.h"
+
+enum {
+	PROP_0,
+	N_PROPERTIES,
+	/* Overrides */
+	PROP_NEEDS_ATTENTION = N_PROPERTIES,
+	PROP_NOTIFICATION_COUNT,
+};
+/* There's no global properties because we only have overrides right now. */
 
 struct _PidginNotificationList {
 	GtkBox parent;
@@ -36,9 +46,6 @@ struct _PidginNotificationList {
 	GtkStack *stack;
 	GtkSingleSelection *selection_model;
 };
-
-G_DEFINE_FINAL_TYPE(PidginNotificationList, pidgin_notification_list,
-                    GTK_TYPE_BOX)
 
 /******************************************************************************
  * Helpers
@@ -102,6 +109,24 @@ pidgin_notification_generic_new(PurpleNotification *notification) {
 	return row;
 }
 
+static guint
+pidgin_notification_list_get_count(PidginNotificationList *list) {
+	g_return_val_if_fail(PIDGIN_IS_NOTIFICATION_LIST(list), 0);
+
+	return g_list_model_get_n_items(G_LIST_MODEL(list->selection_model));
+}
+
+static gboolean
+pidgin_notification_list_get_needs_attention(PidginNotificationList *list) {
+	guint count = 0;
+
+	g_return_val_if_fail(PIDGIN_IS_NOTIFICATION_LIST(list), FALSE);
+
+	count = g_list_model_get_n_items(G_LIST_MODEL(list->selection_model));
+
+	return (count > 0);
+}
+
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -113,12 +138,18 @@ pidgin_notification_list_items_changed_cb(GListModel *model,
                                           gpointer data)
 {
 	PidginNotificationList *list = data;
+	GObject *obj = G_OBJECT(list);
 
 	if(g_list_model_get_n_items(model) != 0) {
 		gtk_stack_set_visible_child_name(list->stack, "view");
 	} else {
 		gtk_stack_set_visible_child_name(list->stack, "placeholder");
 	}
+
+	g_object_freeze_notify(obj);
+	g_object_notify(obj, "needs-attention");
+	g_object_notify(obj, "notification-count");
+	g_object_thaw_notify(obj);
 }
 
 static void
@@ -158,8 +189,41 @@ pidgin_notification_list_bind_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
 }
 
 /******************************************************************************
+ * PidginNotifiable Implementation
+ *****************************************************************************/
+static void
+pidgin_notification_list_notifiable_init(G_GNUC_UNUSED PidginNotifiableInterface *iface) {
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_FINAL_TYPE_WITH_CODE(
+	PidginNotificationList,
+	pidgin_notification_list,
+	GTK_TYPE_BOX,
+	G_IMPLEMENT_INTERFACE(PIDGIN_TYPE_NOTIFIABLE, pidgin_notification_list_notifiable_init))
+
+static void
+pidgin_notification_list_get_property(GObject *obj, guint param_id,
+                                      GValue *value, GParamSpec *pspec)
+{
+	PidginNotificationList *list = PIDGIN_NOTIFICATION_LIST(obj);
+
+	switch(param_id) {
+	case PROP_NEEDS_ATTENTION:
+		g_value_set_boolean(value,
+		                    pidgin_notification_list_get_needs_attention(list));
+		break;
+	case PROP_NOTIFICATION_COUNT:
+		g_value_set_uint(value, pidgin_notification_list_get_count(list));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
+	}
+}
+
 static void
 pidgin_notification_list_init(PidginNotificationList *list) {
 	GListModel *model = NULL;
@@ -176,7 +240,15 @@ pidgin_notification_list_init(PidginNotificationList *list) {
 
 static void
 pidgin_notification_list_class_init(PidginNotificationListClass *klass) {
+	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+
+	obj_class->get_property = pidgin_notification_list_get_property;
+
+	g_object_class_override_property(obj_class, PROP_NEEDS_ATTENTION,
+	                                 "needs-attention");
+	g_object_class_override_property(obj_class, PROP_NOTIFICATION_COUNT,
+	                                 "notification-count");
 
 	gtk_widget_class_set_template_from_resource(
 	    widget_class,

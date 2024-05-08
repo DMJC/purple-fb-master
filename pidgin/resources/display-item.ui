@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkTreeExpander" id="expander">
+        <binding name="list-row">
+          <lookup name="item">GtkListItem</lookup>
+        </binding>
+        <property name="child">
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="xalign">0</property>
+                <property name="hexpand">0</property>
+                <binding name="label">
+                  <lookup name="title" type="PidginDisplayItem">
+                    <lookup name="item">expander</lookup>
+                  </lookup>
+                </binding>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <style>
+                  <class name="accent"/>
+                  <class name="circular"/>
+                </style>
+                <property name="halign">end</property>
+                <binding name="visible">
+                  <lookup name="needs-attention" type="PidginDisplayItem">
+                    <lookup name="item">expander</lookup>
+                  </lookup>
+                </binding>
+                <binding name="label">
+                  <lookup name="badge-number" type="PidginDisplayItem">
+                    <lookup name="item">expander</lookup>
+                  </lookup>
+                </binding>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>

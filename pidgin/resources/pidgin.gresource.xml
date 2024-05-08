@@ -36,6 +36,7 @@
     <file compressed="true" preprocess="xml-stripblanks">contactlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">contactlistitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conversationmemberlistitem.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">display-item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">infopane.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">notificationlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
