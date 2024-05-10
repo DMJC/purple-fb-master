@@ -5,12 +5,6 @@ purple_coresources = [
 	'core.c',
 	'debug.c',
 	'image.c',
-	'media/backend-iface.c',
-	'media/candidate.c',
-	'media/codec.c',
-	'media/enum-types.c',
-	'media.c',
-	'mediamanager.c',
 	'network.c',
 	'notify.c',
 	'plugins.c',
@@ -64,7 +58,6 @@ purple_coresources = [
 	'purpleprotocolconversation.c',
 	'purpleprotocolfiletransfer.c',
 	'purpleprotocolmanager.c',
-	'purpleprotocolmedia.c',
 	'purpleprotocolroster.c',
 	'purpleprotocolserver.c',
 	'purpleprotocolwhiteboard.c',
@@ -102,9 +95,6 @@ purple_coreheaders = [
 	'core.h',
 	'debug.h',
 	'image.h',
-	'media.h',
-	'media-gst.h',
-	'mediamanager.h',
 	'network.h',
 	'notify.h',
 	'plugins.h',
@@ -157,7 +147,6 @@ purple_coreheaders = [
 	'purpleprotocolcontacts.h',
 	'purpleprotocolconversation.h',
 	'purpleprotocolfiletransfer.h',
-	'purpleprotocolmedia.h',
 	'purpleprotocolmanager.h',
 	'purpleprotocolroster.h',
 	'purpleprotocolserver.h',
@@ -234,13 +223,6 @@ if IS_WIN32
 	purple_coresources += windows.compile_resources(libpurplerc)
 endif
 
-purple_mediaheaders = [
-	'media/backend-iface.h',
-	'media/candidate.h',
-	'media/codec.h',
-	'media/enum-types.h'
-]
-
 purple_enumheaders = [
 	'connection.h',
 	'debug.h',
@@ -271,7 +253,7 @@ enums_c = enums[0]
 enums_h = enums[1]
 
 PURPLE_H_INCLUDES = []
-foreach header : purple_coreheaders + purple_mediaheaders + purple_request_headers + ['purpleversionconsts.h', 'purpleenums.h']
+foreach header : purple_coreheaders + purple_request_headers + ['purpleversionconsts.h', 'purpleenums.h']
 	PURPLE_H_INCLUDES += f'#include <libpurple/@header@>'
 endforeach
 purple_h_conf = configuration_data()
@@ -316,9 +298,6 @@ libpurple = library('purple3',
 install_headers(purple_coreheaders,
                 subdir : purple_include_base)
 
-install_headers(purple_mediaheaders,
-                subdir : purple_include_base / 'media')
-
 install_headers(purple_request_headers,
                 subdir : purple_include_base / 'request')
 
@@ -337,7 +316,7 @@ pkgconfig.generate(
 
 if enable_introspection
 	introspection_sources = (purple_coresources + purple_coreheaders +
-	                         purple_builtheaders + purple_mediaheaders + purple_request_headers)
+	                         purple_builtheaders + purple_request_headers)
 
 	libpurple_gir = gnome.generate_gir(libpurple,
 	    sources : introspection_sources,
@@ -375,5 +354,5 @@ test(
 		meson.current_source_dir(),
 		'check_license_header_template.h',
 	] + ['glibcompat.h'] + purple_coresources + purple_coreheaders +
-	purple_mediaheaders + purple_private_headers + purple_request_headers)
+	purple_private_headers + purple_request_headers)
 

@@ -4,12 +4,6 @@ libpurple/connection.c
 libpurple/core.c
 libpurple/debug.c
 libpurple/image.c
-libpurple/media/backend-iface.c
-libpurple/media.c
-libpurple/media/candidate.c
-libpurple/media/codec.c
-libpurple/media/enum-types.c
-libpurple/mediamanager.c
 libpurple/network.c
 libpurple/notify.c
 libpurple/plugins/autoaccept/autoaccept.c
@@ -55,7 +49,6 @@ libpurple/purplepresence.c
 libpurple/purpleprotocol.c
 libpurple/purpleprotocolclient.c
 libpurple/purpleprotocolmanager.c
-libpurple/purpleprotocolmedia.c
 libpurple/purpleprotocolserver.c
 libpurple/purpleprotocolwhiteboard.c
 libpurple/purplesqlitehistoryadapter.c

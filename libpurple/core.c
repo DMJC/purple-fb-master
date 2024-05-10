@@ -234,7 +234,6 @@ purple_core_quit(void)
 	purple_plugins_uninit();
 
 	/* after plugins */
-	purple_media_manager_shutdown();
 	purple_contact_manager_shutdown();
 	purple_account_manager_shutdown();
 	purple_credential_manager_shutdown();
