@@ -348,7 +348,7 @@ pidgin_display_window_class_init(PidginDisplayWindowClass *klass) {
 
 	gtk_widget_class_set_template_from_resource(
 	    widget_class,
-	    "/im/pidgin/Pidgin3/Display/window.ui"
+	    "/im/pidgin/Pidgin3/display-window.ui"
 	);
 
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,

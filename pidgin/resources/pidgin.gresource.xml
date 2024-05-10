@@ -12,7 +12,6 @@
     <file compressed="true" preprocess="xml-stripblanks">Conversations/conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Conversations/message.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Debug/debug.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">Display/window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Keypad/keypad.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Media/window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">Notifications/addcontact.ui</file>
@@ -37,6 +36,7 @@
     <file compressed="true" preprocess="xml-stripblanks">contactlistitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">conversationmemberlistitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">display-item.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">display-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">infopane.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">notificationlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
