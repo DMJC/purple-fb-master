@@ -25,7 +25,6 @@
 #include "purpledemoprotocolclient.h"
 #include "purpledemoprotocolcontacts.h"
 #include "purpledemoprotocolconversation.h"
-#include "purpledemoprotocolmedia.h"
 
 struct _PurpleDemoProtocol {
 	PurpleProtocol parent;
@@ -67,9 +66,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CONTACTS,
 	                              purple_demo_protocol_contacts_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CONVERSATION,
-	                              purple_demo_protocol_conversation_init)
-	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_MEDIA,
-	                              purple_demo_protocol_media_init))
+	                              purple_demo_protocol_conversation_init))
 
 static void
 purple_demo_protocol_init(G_GNUC_UNUSED PurpleDemoProtocol *protocol) {
