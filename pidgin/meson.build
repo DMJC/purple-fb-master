@@ -3,7 +3,6 @@ if not ENABLE_GTK
 endif
 
 libpidgin_SOURCES = [
-	'gtkmedia.c',
 	'gtknotify.c',
 	'gtkrequest.c',
 	'gtkutils.c',
@@ -51,11 +50,9 @@ libpidgin_SOURCES = [
 	'prefs/pidgincredentialprefs.c',
 	'prefs/pidginnetworkprefs.c',
 	'prefs/pidginproxyprefs.c',
-	'prefs/pidginvvprefs.c',
 ]
 
 libpidgin_headers = [
-	'gtkmedia.h',
 	'gtknotify.h',
 	'gtkrequest.h',
 	'gtkutils.h',
@@ -107,7 +104,6 @@ libpidgin_prefs_headers = [
 	'prefs/pidgincredentialprefs.h',
 	'prefs/pidginnetworkprefs.h',
 	'prefs/pidginproxyprefs.h',
-	'prefs/pidginvvprefs.h',
 ]
 
 pidgin_SOURCES = [

@@ -30,11 +30,15 @@
 
 #include <purple.h>
 
+#include <adwaita.h>
+
 #include "pidginprefs.h"
 #include "pidginprefsinternal.h"
 #include "gtkutils.h"
 #include "pidgincore.h"
+#if 0
 #include "pidginvvprefs.h"
+#endif
 
 struct _PidginPrefsWindow {
 	GtkDialog parent;
@@ -181,6 +185,7 @@ pidgin_prefs_bind_expander_row(const gchar *key, GtkWidget *widget)
 	                 G_CALLBACK(set_expander_row_pref), (gchar *)key);
 }
 
+#if 0
 static void
 vv_test_switch_page_cb(GtkStack *stack, G_GNUC_UNUSED GParamSpec *pspec,
                        gpointer data)
@@ -192,6 +197,7 @@ vv_test_switch_page_cb(GtkStack *stack, G_GNUC_UNUSED GParamSpec *pspec,
 		pidgin_vv_prefs_disable_test_pipelines(vv_prefs);
 	}
 }
+#endif
 
 /******************************************************************************
  * GObject Implementation
@@ -217,8 +223,10 @@ pidgin_prefs_window_class_init(PidginPrefsWindowClass *klass)
 	);
 
 	/* Main window */
+#if 0
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        vv_test_switch_page_cb);
+#endif
 }
 
 static void

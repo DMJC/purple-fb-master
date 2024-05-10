@@ -98,7 +98,6 @@ libpurple/win32/libc_interface.c
 libpurple/win32/win32dep.c
 libpurple/xmlnode.c
 pidgin/data/im.pidgin.Pidgin3.metainfo.xml
-pidgin/gtkmedia.c
 pidgin/gtknotify.c
 pidgin/gtkrequest.c
 pidgin/gtkutils.c

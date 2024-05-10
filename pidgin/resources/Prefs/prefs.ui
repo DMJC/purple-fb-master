@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
   <template class="PidginPrefsWindow" parent="GtkDialog">
+    <property name="default-width">640</property>
+    <property name="default-height">480</property>
     <property name="title" translatable="1">Preferences</property>
     <child internal-child="content_area">
       <object class="GtkBox">
@@ -39,7 +41,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </child>
         <child>
           <object class="GtkStack" id="stack">
+            <!--
             <signal name="notify::visible-child" handler="vv_test_switch_page_cb" object="vv" swapped="no"/>
+            -->
             <child>
               <object class="GtkStackPage">
                 <property name="name">conversations</property>
@@ -85,6 +89,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                 </property>
               </object>
             </child>
+            <!--
             <child>
               <object class="GtkStackPage">
                 <property name="name">vv</property>
@@ -94,6 +99,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                 </property>
               </object>
             </child>
+            -->
           </object>
         </child>
       </object>

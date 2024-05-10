@@ -30,7 +30,6 @@
 
 #include "pidginui.h"
 
-#include "gtkmedia.h"
 #include "gtknotify.h"
 #include "gtkrequest.h"
 #include "gtkwhiteboard.h"
@@ -129,7 +128,6 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	purple_whiteboard_set_ui_ops(pidgin_whiteboard_get_ui_ops());
 
 	pidgin_request_init();
-	pidgin_medias_init();
 	pidgin_notify_init();
 
 	return TRUE;
