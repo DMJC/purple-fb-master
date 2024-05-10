@@ -40,6 +40,7 @@
     <file compressed="true" preprocess="xml-stripblanks">infopane.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">notificationlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
+    <file compressed="true">style.css</file>
     <file>icons/16x16/status/pidgin-user-available.png</file>
     <file>icons/16x16/status/pidgin-user-away.png</file>
     <file>icons/16x16/status/pidgin-user-do-not-disturb.png</file>

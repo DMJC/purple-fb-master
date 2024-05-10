@@ -1,0 +1,10 @@
+/* This file is automatically loaded by AdwApplication. */
+.notification-count {
+  font-weight: bold;
+  font-size: 0.8em;
+  border-radius: 10px;
+  min-width: 0.7em;
+  padding: 2px 5px;
+  color: @accent_fg_color;
+  background-color: @accent_bg_color;
+}

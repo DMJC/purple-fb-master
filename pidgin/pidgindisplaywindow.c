@@ -445,8 +445,17 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 			                                       id,
 			                                       NULL);
 		if (!item_exists) {
+			PurpleProtocol *protocol = NULL;
+			const char *icon_name = NULL;
+
 			item = pidgin_display_item_new(pidgin_conversation, id);
 			g_object_set_data(G_OBJECT(item), "conversation", purple_conversation);
+
+			protocol = purple_account_get_protocol(account);
+			icon_name = purple_protocol_get_icon_name(protocol);
+			if(!purple_strempty(icon_name)) {
+				pidgin_display_item_set_icon_name(item, icon_name);
+			}
 
 			g_object_bind_property(purple_conversation, "title",
 			                       item, "title",
