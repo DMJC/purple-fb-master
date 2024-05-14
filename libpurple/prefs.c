@@ -482,15 +482,10 @@ get_path_dirname(const char *name)
 		*c = '\0';
 
 		if (*str == '\0') {
-			g_free(str);
-
-			str = g_strdup("/");
+			g_set_str(&str, "/");
 		}
-	}
-	else {
-		g_free(str);
-
-		str = g_strdup(".");
+	} else {
+		g_set_str(&str, ".");
 	}
 
 	return str;
@@ -891,9 +886,7 @@ purple_prefs_set_string(const char *name, const char *value)
 			return;
 		}
 
-		if (!purple_strequal(pref->value.string, value)) {
-			g_free(pref->value.string);
-			pref->value.string = g_strdup(value);
+		if(g_set_str(&pref->value.string, value)) {
 			do_callbacks(name, pref);
 		}
 	} else {
@@ -951,9 +944,7 @@ purple_prefs_set_path(const char *name, const char *value)
 			return;
 		}
 
-		if (!purple_strequal(pref->value.string, value)) {
-			g_free(pref->value.string);
-			pref->value.string = g_strdup(value);
+		if(g_set_str(&pref->value.string, value)) {
 			do_callbacks(name, pref);
 		}
 	} else {

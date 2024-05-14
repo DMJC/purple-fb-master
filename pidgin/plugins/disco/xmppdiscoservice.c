@@ -322,10 +322,9 @@ void
 xmpp_disco_service_set_name(XmppDiscoService *service, const char *name) {
 	g_return_if_fail(XMPP_DISCO_IS_SERVICE(service));
 
-	g_free(service->name);
-	service->name = g_strdup(name);
-
-	g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_NAME]);
+	if(g_set_str(&service->name, name)) {
+		g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_NAME]);
+	}
 }
 
 const char *
@@ -341,10 +340,10 @@ xmpp_disco_service_set_description(XmppDiscoService *service,
 {
 	g_return_if_fail(XMPP_DISCO_IS_SERVICE(service));
 
-	g_free(service->description);
-	service->description = g_strdup(description);
-
-	g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_DESCRIPTION]);
+	if(g_set_str(&service->description, description)) {
+		g_object_notify_by_pspec(G_OBJECT(service),
+		                         properties[PROP_DESCRIPTION]);
+	}
 }
 
 XmppDiscoServiceType
@@ -382,17 +381,15 @@ void
 xmpp_disco_service_set_gateway_type(XmppDiscoService *service,
                                     const char *gateway_type)
 {
-	GObject *obj = NULL;
 	g_return_if_fail(XMPP_DISCO_IS_SERVICE(service));
 
-	g_free(service->gateway_type);
-	service->gateway_type = g_strdup(gateway_type);
-
-	obj = G_OBJECT(service);
-	g_object_freeze_notify(obj);
-	g_object_notify_by_pspec(obj, properties[PROP_GATEWAY_TYPE]);
-	g_object_notify_by_pspec(obj, properties[PROP_ICON_NAME]);
-	g_object_thaw_notify(obj);
+	if(g_set_str(&service->gateway_type, gateway_type)) {
+		GObject *obj = G_OBJECT(service);
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_GATEWAY_TYPE]);
+		g_object_notify_by_pspec(obj, properties[PROP_ICON_NAME]);
+		g_object_thaw_notify(obj);
+	}
 }
 
 XmppDiscoServiceFlags
@@ -446,10 +443,9 @@ void
 xmpp_disco_service_set_jid(XmppDiscoService *service, const char *jid) {
 	g_return_if_fail(XMPP_DISCO_IS_SERVICE(service));
 
-	g_free(service->jid);
-	service->jid = g_strdup(jid);
-
-	g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_JID]);
+	if(g_set_str(&service->jid, jid)) {
+		g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_JID]);
+	}
 }
 
 const char *
@@ -463,10 +459,9 @@ void
 xmpp_disco_service_set_node(XmppDiscoService *service, const char *node) {
 	g_return_if_fail(XMPP_DISCO_IS_SERVICE(service));
 
-	g_free(service->node);
-	service->node = g_strdup(node);
-
-	g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_NODE]);
+	if(g_set_str(&service->node, node)) {
+		g_object_notify_by_pspec(G_OBJECT(service), properties[PROP_NODE]);
+	}
 }
 
 gboolean

@@ -77,10 +77,9 @@ purple_whiteboard_set_id(PurpleWhiteboard *whiteboard, const gchar *id) {
 
 	priv = purple_whiteboard_get_instance_private(whiteboard);
 
-	g_free(priv->id);
-	priv->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(whiteboard), properties[PROP_ID]);
+	if(g_set_str(&priv->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(whiteboard), properties[PROP_ID]);
+	}
 }
 
 /******************************************************************************

@@ -54,10 +54,9 @@ static void
 purple_sqlite_history_adapter_set_filename(PurpleSqliteHistoryAdapter *adapter,
                                            const gchar *filename)
 {
-	g_free(adapter->filename);
-	adapter->filename = g_strdup(filename);
-
-	g_object_notify_by_pspec(G_OBJECT(adapter), properties[PROP_FILENAME]);
+	if(g_set_str(&adapter->filename, filename)) {
+		g_object_notify_by_pspec(G_OBJECT(adapter), properties[PROP_FILENAME]);
+	}
 }
 
 static gboolean

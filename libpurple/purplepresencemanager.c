@@ -172,10 +172,7 @@ purple_presence_manager_set_path(PurplePresenceManager *manager,
 {
 	g_return_if_fail(PURPLE_IS_PRESENCE_MANAGER(manager));
 
-	if(!purple_strequal(path, manager->path)) {
-		g_free(manager->path);
-		manager->path = g_strdup(path);
-
+	if(g_set_str(&manager->path, path)) {
 		g_object_notify_by_pspec(G_OBJECT(manager), properties[PROP_PATH]);
 	}
 }

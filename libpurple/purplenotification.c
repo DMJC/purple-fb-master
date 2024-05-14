@@ -699,10 +699,7 @@ purple_notification_set_title(PurpleNotification *notification,
 
 	priv = purple_notification_get_instance_private(notification);
 
-	if(!purple_strequal(priv->title, title)) {
-		g_free(priv->title);
-		priv->title = g_strdup(title);
-
+	if(g_set_str(&priv->title, title)) {
 		g_object_notify_by_pspec(G_OBJECT(notification),
 		                         properties[PROP_TITLE]);
 	}
@@ -729,10 +726,7 @@ purple_notification_set_subtitle(PurpleNotification *notification,
 
 	priv = purple_notification_get_instance_private(notification);
 
-	if(!purple_strequal(priv->subtitle, subtitle)) {
-		g_free(priv->subtitle);
-		priv->subtitle = g_strdup(subtitle);
-
+	if(g_set_str(&priv->subtitle, subtitle)) {
 		g_object_notify_by_pspec(G_OBJECT(notification),
 		                         properties[PROP_SUBTITLE]);
 	}
@@ -759,10 +753,7 @@ purple_notification_set_icon_name(PurpleNotification *notification,
 
 	priv = purple_notification_get_instance_private(notification);
 
-	if(!purple_strequal(priv->icon_name, icon_name)) {
-		g_free(priv->icon_name);
-		priv->icon_name = g_strdup(icon_name);
-
+	if(g_set_str(&priv->icon_name, icon_name)) {
 		g_object_notify_by_pspec(G_OBJECT(notification),
 		                         properties[PROP_ICON_NAME]);
 	}

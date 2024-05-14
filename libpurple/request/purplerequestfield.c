@@ -66,10 +66,9 @@ purple_request_field_set_id(PurpleRequestField *field, const char *id) {
 
 	priv = purple_request_field_get_instance_private(field);
 
-	g_free(priv->id);
-	priv->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_ID]);
+	if(g_set_str(&priv->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_ID]);
+	}
 }
 
 /******************************************************************************
@@ -324,10 +323,9 @@ purple_request_field_set_label(PurpleRequestField *field, const char *label)
 
 	priv = purple_request_field_get_instance_private(field);
 
-	g_free(priv->label);
-	priv->label = g_strdup(label);
-
-	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_LABEL]);
+	if(g_set_str(&priv->label, label)) {
+		g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_LABEL]);
+	}
 }
 
 void
@@ -354,10 +352,9 @@ purple_request_field_set_type_hint(PurpleRequestField *field,
 
 	priv = purple_request_field_get_instance_private(field);
 
-	g_free(priv->type_hint);
-	priv->type_hint = g_strdup(type_hint);
-
-	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_TYPE_HINT]);
+	if(g_set_str(&priv->type_hint, type_hint)) {
+		g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_TYPE_HINT]);
+	}
 }
 
 void
@@ -369,10 +366,9 @@ purple_request_field_set_tooltip(PurpleRequestField *field, const char *tooltip)
 
 	priv = purple_request_field_get_instance_private(field);
 
-	g_free(priv->tooltip);
-	priv->tooltip = g_strdup(tooltip);
-
-	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_TOOLTIP]);
+	if(g_set_str(&priv->tooltip, tooltip)) {
+		g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_TOOLTIP]);
+	}
 }
 
 void

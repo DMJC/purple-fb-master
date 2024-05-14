@@ -229,10 +229,9 @@ void
 purple_proxy_info_set_hostname(PurpleProxyInfo *info, const gchar *hostname) {
     g_return_if_fail(PURPLE_IS_PROXY_INFO(info));
 
-    g_free(info->hostname);
-    info->hostname = g_strdup(hostname);
-
-    g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_HOSTNAME]);
+    if(g_set_str(&info->hostname, hostname)) {
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_HOSTNAME]);
+	}
 }
 
 const gchar *
@@ -262,10 +261,9 @@ void
 purple_proxy_info_set_username(PurpleProxyInfo *info, const gchar *username) {
     g_return_if_fail(PURPLE_IS_PROXY_INFO(info));
 
-    g_free(info->username);
-    info->username = g_strdup(username);
-
-    g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_USERNAME]);
+    if(g_set_str(&info->username, username)) {
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_USERNAME]);
+	}
 }
 
 const gchar *
@@ -279,10 +277,9 @@ void
 purple_proxy_info_set_password(PurpleProxyInfo *info, const gchar *password) {
     g_return_if_fail(PURPLE_IS_PROXY_INFO(info));
 
-    g_free(info->password);
-    info->password = g_strdup(password);
-
-    g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_PASSWORD]);
+    if(g_set_str(&info->password, password)) {
+		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_PASSWORD]);
+	}
 }
 
 const gchar *

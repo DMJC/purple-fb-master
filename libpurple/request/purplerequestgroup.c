@@ -50,10 +50,9 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
  *****************************************************************************/
 static void
 purple_request_group_set_title(PurpleRequestGroup *group, const char *title) {
-	g_free(group->title);
-	group->title = g_strdup(title);
-
-	g_object_notify_by_pspec(G_OBJECT(group), properties[PROP_TITLE]);
+	if(g_set_str(&group->title, title)) {
+		g_object_notify_by_pspec(G_OBJECT(group), properties[PROP_TITLE]);
+	}
 }
 
 /******************************************************************************

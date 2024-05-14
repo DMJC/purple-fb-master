@@ -197,10 +197,7 @@ void
 pidgin_info_pane_set_title(PidginInfoPane *pane, const char *title) {
 	g_return_if_fail(PIDGIN_IS_INFO_PANE(pane));
 
-	if(!purple_strequal(pane->title, title)) {
-		g_free(pane->title);
-		pane->title = g_strdup(title);
-
+	if(g_set_str(&pane->title, title)) {
 		g_object_notify_by_pspec(G_OBJECT(pane), properties[PROP_TITLE]);
 	}
 }
@@ -216,10 +213,7 @@ void
 pidgin_info_pane_set_subtitle(PidginInfoPane *pane, const char *subtitle) {
 	g_return_if_fail(PIDGIN_IS_INFO_PANE(pane));
 
-	if(!purple_strequal(pane->subtitle, subtitle)) {
-		g_free(pane->subtitle);
-		pane->subtitle = g_strdup(subtitle);
-
+	if(g_set_str(&pane->subtitle, subtitle)) {
 		g_object_notify_by_pspec(G_OBJECT(pane), properties[PROP_SUBTITLE]);
 	}
 }

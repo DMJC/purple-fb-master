@@ -171,10 +171,7 @@ static void
 purple_saved_presence_set_id(PurpleSavedPresence *presence, const char *id) {
 	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
 
-	if(!purple_strequal(presence->id, id)) {
-		g_free(presence->id);
-		presence->id = g_strdup(id);
-
+	if(g_set_str(&presence->id, id)) {
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_ID]);
 	}
 }
@@ -503,10 +500,7 @@ purple_saved_presence_set_name(PurpleSavedPresence *presence,
 {
 	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
 
-	if(!purple_strequal(presence->name, name)) {
-		g_free(presence->name);
-		presence->name = g_strdup(name);
-
+	if(g_set_str(&presence->name, name)) {
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_NAME]);
 	}
 }
@@ -546,10 +540,7 @@ purple_saved_presence_set_message(PurpleSavedPresence *presence,
 {
 	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
 
-	if(!purple_strequal(presence->message, message)) {
-		g_free(presence->message);
-		presence->message = g_strdup(message);
-
+	if(g_set_str(&presence->message, message)) {
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_MESSAGE]);
 	}
 }
@@ -567,10 +558,7 @@ purple_saved_presence_set_emoji(PurpleSavedPresence *presence,
 {
 	g_return_if_fail(PURPLE_IS_SAVED_PRESENCE(presence));
 
-	if(!purple_strequal(presence->emoji, emoji)) {
-		g_free(presence->emoji);
-		presence->emoji = g_strdup(emoji);
-
+	if(g_set_str(&presence->emoji, emoji)) {
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_EMOJI]);
 	}
 }

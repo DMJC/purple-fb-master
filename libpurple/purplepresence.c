@@ -461,10 +461,7 @@ void
 purple_presence_set_message(PurplePresence *presence, const char *message) {
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	if(!purple_strequal(presence->message, message)) {
-		g_free(presence->message);
-		presence->message = g_strdup(message);
-
+	if(g_set_str(&presence->message, message)) {
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_MESSAGE]);
 	}
 }
@@ -480,10 +477,7 @@ void
 purple_presence_set_emoji(PurplePresence *presence, const char *emoji) {
 	g_return_if_fail(PURPLE_IS_PRESENCE(presence));
 
-	if(!purple_strequal(presence->emoji, emoji)) {
-		g_free(presence->emoji);
-		presence->emoji = g_strdup(emoji);
-
+	if(g_set_str(&presence->emoji, emoji)) {
 		g_object_notify_by_pspec(G_OBJECT(presence), properties[PROP_EMOJI]);
 	}
 }

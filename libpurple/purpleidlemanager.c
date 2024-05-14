@@ -158,15 +158,11 @@ purple_idle_manager_set_source(PurpleIdleManager *manager,
 		}
 	}
 
-	/* Finally check if new_source matches old source. */
-	if(!purple_strequal(new_source, manager->active_source)) {
-		/* We have to set the active source before emitting the property change
-		 * otherwise purple_idle_manager_get_timestamp will look up the wrong
-		 * value.
-		 */
-		g_free(manager->active_source);
-		manager->active_source = g_strdup(new_source);
-
+	/* We have to set the active source before emitting the property change
+	 * otherwise purple_idle_manager_get_timestamp will look up the wrong
+	 * value.
+	 */
+	if(g_set_str(&manager->active_source, new_source)) {
 		g_object_notify_by_pspec(G_OBJECT(manager),
 		                         properties[PROP_TIMESTAMP]);
 

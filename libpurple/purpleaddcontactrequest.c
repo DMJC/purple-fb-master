@@ -75,10 +75,9 @@ purple_add_contact_request_set_username(PurpleAddContactRequest *request,
 {
 	g_return_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request));
 
-	g_free(request->username);
-	request->username = g_strdup(username);
-
-	g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_USERNAME]);
+	if(g_set_str(&request->username, username)) {
+		g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_USERNAME]);
+	}
 }
 
 /******************************************************************************
@@ -289,10 +288,9 @@ purple_add_contact_request_set_alias(PurpleAddContactRequest *request,
 {
 	g_return_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request));
 
-	g_free(request->alias);
-	request->alias = g_strdup(alias);
-
-	g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_ALIAS]);
+	if(g_set_str(&request->alias, alias)) {
+		g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_ALIAS]);
+	}
 }
 
 const gchar *
@@ -308,10 +306,9 @@ purple_add_contact_request_set_message(PurpleAddContactRequest *request,
 {
 	g_return_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request));
 
-	g_free(request->message);
-	request->message = g_strdup(message);
-
-	g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_MESSAGE]);
+	if(g_set_str(&request->message, message)) {
+		g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_MESSAGE]);
+	}
 }
 
 const gchar *

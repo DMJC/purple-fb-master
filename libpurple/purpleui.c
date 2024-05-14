@@ -56,10 +56,9 @@ purple_ui_set_id(PurpleUi *ui, const char *id) {
 
 	priv = purple_ui_get_instance_private(ui);
 
-	g_free(priv->id);
-	priv->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_ID]);
+	if(g_set_str(&priv->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_ID]);
+	}
 }
 
 static void
@@ -70,10 +69,9 @@ purple_ui_set_name(PurpleUi *ui, const char *name) {
 
 	priv = purple_ui_get_instance_private(ui);
 
-	g_free(priv->name);
-	priv->name = g_strdup(name);
-
-	g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_NAME]);
+	if(g_set_str(&priv->name, name)) {
+		g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_NAME]);
+	}
 }
 
 static void
@@ -84,10 +82,9 @@ purple_ui_set_version(PurpleUi *ui, const char *version) {
 
 	priv = purple_ui_get_instance_private(ui);
 
-	g_free(priv->version);
-	priv->version = g_strdup(version);
-
-	g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_VERSION]);
+	if(g_set_str(&priv->version, version)) {
+		g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_VERSION]);
+	}
 }
 
 static void
@@ -98,10 +95,9 @@ purple_ui_set_website(PurpleUi *ui, const char *website) {
 
 	priv = purple_ui_get_instance_private(ui);
 
-	g_free(priv->website);
-	priv->website = g_strdup(website);
-
-	g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_WEBSITE]);
+	if(g_set_str(&priv->website, website)) {
+		g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_WEBSITE]);
+	}
 }
 
 static void
@@ -112,10 +108,10 @@ purple_ui_set_support_website(PurpleUi *ui, const char *support_website) {
 
 	priv = purple_ui_get_instance_private(ui);
 
-	g_free(priv->support_website);
-	priv->support_website = g_strdup(support_website);
-
-	g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_SUPPORT_WEBSITE]);
+	if(g_set_str(&priv->support_website, support_website)) {
+		g_object_notify_by_pspec(G_OBJECT(ui),
+		                         properties[PROP_SUPPORT_WEBSITE]);
+	}
 }
 
 static void
@@ -126,10 +122,9 @@ purple_ui_set_client_type(PurpleUi *ui, const char *client_type) {
 
 	priv = purple_ui_get_instance_private(ui);
 
-	g_free(priv->client_type);
-	priv->client_type = g_strdup(client_type);
-
-	g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_CLIENT_TYPE]);
+	if(g_set_str(&priv->client_type, client_type)) {
+		g_object_notify_by_pspec(G_OBJECT(ui), properties[PROP_CLIENT_TYPE]);
+	}
 }
 
 /******************************************************************************

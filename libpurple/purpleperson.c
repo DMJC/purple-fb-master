@@ -572,11 +572,8 @@ void
 purple_person_set_alias(PurplePerson *person, const char *alias) {
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 
-	if(!purple_strequal(person->alias, alias)) {
+	if(g_set_str(&person->alias, alias)) {
 		GObject *obj = G_OBJECT(person);
-
-		g_free(person->alias);
-		person->alias = g_strdup(alias);
 
 		g_object_freeze_notify(obj);
 		g_object_notify_by_pspec(obj, properties[PROP_ALIAS]);
@@ -635,11 +632,8 @@ void
 purple_person_set_color(PurplePerson *person, const char *color) {
 	g_return_if_fail(PURPLE_IS_PERSON(person));
 
-	if(!purple_strequal(person->color, color)) {
+	if(g_set_str(&person->color, color)) {
 		GObject *obj = G_OBJECT(person);
-
-		g_free(person->color);
-		person->color = g_strdup(color);
 
 		g_object_freeze_notify(obj);
 		g_object_notify_by_pspec(obj, properties[PROP_COLOR]);

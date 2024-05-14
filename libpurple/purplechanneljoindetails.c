@@ -275,10 +275,7 @@ purple_channel_join_details_set_name(PurpleChannelJoinDetails *details,
 {
 	g_return_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details));
 
-	if(!purple_strequal(details->name, name)) {
-		g_free(details->name);
-		details->name = g_strdup(name);
-
+	if(g_set_str(&details->name, name)) {
 		g_object_notify_by_pspec(G_OBJECT(details), properties[PROP_NAME]);
 	}
 }
@@ -296,10 +293,7 @@ purple_channel_join_details_set_nickname(PurpleChannelJoinDetails *details,
 {
 	g_return_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details));
 
-	if(!purple_strequal(details->nickname, nickname)) {
-		g_free(details->nickname);
-		details->nickname = g_strdup(nickname);
-
+	if(g_set_str(&details->nickname, nickname)) {
 		g_object_notify_by_pspec(G_OBJECT(details), properties[PROP_NICKNAME]);
 	}
 }
@@ -324,10 +318,7 @@ purple_channel_join_details_set_password(PurpleChannelJoinDetails *details,
 {
 	g_return_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details));
 
-	if(!purple_strequal(details->password, password)) {
-		g_free(details->password);
-		details->password = g_strdup(password);
-
+	if(g_set_str(&details->password, password)) {
 		g_object_notify_by_pspec(G_OBJECT(details), properties[PROP_PASSWORD]);
 	}
 }

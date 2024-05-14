@@ -54,9 +54,7 @@ static void
 _purple_image_set_path(PurpleImage *image, const gchar *path) {
 	PurpleImagePrivate *priv = purple_image_get_instance_private(image);
 
-	g_free(priv->path);
-
-	priv->path = g_strdup(path);
+	g_set_str(&priv->path, path);
 }
 
 static void
@@ -456,8 +454,7 @@ purple_image_set_friendly_filename(PurpleImage *image, const gchar *filename) {
 		escaped = NULL;
 	}
 
-	g_free(priv->friendly_filename);
-	priv->friendly_filename = g_strdup(escaped);
+	g_set_str(&priv->friendly_filename, escaped);
 }
 
 const gchar *

@@ -295,8 +295,7 @@ void purple_xmlnode_set_prefix(PurpleXmlNode *node, const char *prefix)
 {
 	g_return_if_fail(node != NULL);
 
-	g_free(node->prefix);
-	node->prefix = g_strdup(prefix);
+	g_set_str(&node->prefix, prefix);
 }
 
 const char *purple_xmlnode_get_prefix(const PurpleXmlNode *node)

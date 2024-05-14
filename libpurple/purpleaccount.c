@@ -1215,25 +1215,24 @@ void
 purple_account_set_user_info(PurpleAccount *account, const char *user_info) {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	g_free(account->user_info);
-	account->user_info = g_strdup(user_info);
+	if(g_set_str(&account->user_info, user_info)) {
+		g_object_notify_by_pspec(G_OBJECT(account),
+		                         properties[PROP_USER_INFO]);
 
-	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_USER_INFO]);
-
-	purple_accounts_schedule_save();
+		purple_accounts_schedule_save();
+	}
 }
 
 void
 purple_account_set_buddy_icon_path(PurpleAccount *account, const char *path) {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	g_free(account->buddy_icon_path);
-	account->buddy_icon_path = g_strdup(path);
+	if(g_set_str(&account->buddy_icon_path, path)) {
+		g_object_notify_by_pspec(G_OBJECT(account),
+		                         properties[PROP_BUDDY_ICON_PATH]);
 
-	g_object_notify_by_pspec(G_OBJECT(account),
-	                         properties[PROP_BUDDY_ICON_PATH]);
-
-	purple_accounts_schedule_save();
+		purple_accounts_schedule_save();
+	}
 }
 
 void
@@ -1242,12 +1241,12 @@ purple_account_set_protocol_id(PurpleAccount *account, const char *protocol_id)
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 	g_return_if_fail(protocol_id != NULL);
 
-	g_free(account->protocol_id);
-	account->protocol_id = g_strdup(protocol_id);
+	if(g_set_str(&account->protocol_id, protocol_id)) {
+		g_object_notify_by_pspec(G_OBJECT(account),
+		                         properties[PROP_PROTOCOL_ID]);
 
-	g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_PROTOCOL_ID]);
-
-	purple_accounts_schedule_save();
+		purple_accounts_schedule_save();
+	}
 }
 
 void

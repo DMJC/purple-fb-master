@@ -217,8 +217,7 @@ purple_account_option_set_default_string(PurpleAccountOption *option,
 	g_return_if_fail(option != NULL);
 	g_return_if_fail(option->type == PURPLE_PREF_STRING);
 
-	g_free(option->default_value.string);
-	option->default_value.string = g_strdup(value);
+	g_set_str(&option->default_value.string, value);
 }
 
 void

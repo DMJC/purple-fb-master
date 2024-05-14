@@ -238,10 +238,7 @@ purple_request_field_string_set_default_value(PurpleRequestFieldString *field,
 {
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD_STRING(field));
 
-	if(!purple_strequal(field->default_value, default_value)) {
-		g_free(field->default_value);
-		field->default_value = g_strdup(default_value);
-
+	if(g_set_str(&field->default_value, default_value)) {
 		g_object_notify_by_pspec(G_OBJECT(field),
 		                         properties[PROP_DEFAULT_VALUE]);
 	}
@@ -255,22 +252,18 @@ purple_request_field_string_set_value(PurpleRequestFieldString *field,
 
 	g_return_if_fail(PURPLE_IS_REQUEST_FIELD_STRING(field));
 
-	if(purple_strequal(field->value, value)) {
-		return;
-	}
-
 	before = purple_request_field_string_is_filled(PURPLE_REQUEST_FIELD(field));
-	g_free(field->value);
-	field->value = g_strdup(value);
-	after = purple_request_field_string_is_filled(PURPLE_REQUEST_FIELD(field));
+	if(g_set_str(&field->value, value)) {
+		after = purple_request_field_string_is_filled(PURPLE_REQUEST_FIELD(field));
 
-	g_object_freeze_notify(G_OBJECT(field));
-	g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALUE]);
-	g_object_notify(G_OBJECT(field), "valid");
-	if(before != after) {
-		g_object_notify(G_OBJECT(field), "filled");
+		g_object_freeze_notify(G_OBJECT(field));
+		g_object_notify_by_pspec(G_OBJECT(field), properties[PROP_VALUE]);
+		g_object_notify(G_OBJECT(field), "valid");
+		if(before != after) {
+			g_object_notify(G_OBJECT(field), "filled");
+		}
+		g_object_thaw_notify(G_OBJECT(field));
 	}
-	g_object_thaw_notify(G_OBJECT(field));
 }
 
 void

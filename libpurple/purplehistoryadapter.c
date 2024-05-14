@@ -49,10 +49,9 @@ purple_history_adapter_set_id(PurpleHistoryAdapter *adapter, const gchar *id) {
 
 	priv = purple_history_adapter_get_instance_private(adapter);
 
-	g_free(priv->id);
-	priv->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(adapter), properties[PROP_ID]);
+	if(g_set_str(&priv->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(adapter), properties[PROP_ID]);
+	}
 }
 
 static void
@@ -63,10 +62,9 @@ purple_history_adapter_set_name(PurpleHistoryAdapter *adapter,
 
 	priv = purple_history_adapter_get_instance_private(adapter);
 
-	g_free(priv->name);
-	priv->name = g_strdup(name);
-
-	g_object_notify_by_pspec(G_OBJECT(adapter), properties[PROP_NAME]);
+	if(g_set_str(&priv->name, name)) {
+		g_object_notify_by_pspec(G_OBJECT(adapter), properties[PROP_NAME]);
+	}
 }
 
 /******************************************************************************

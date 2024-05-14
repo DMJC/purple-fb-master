@@ -126,13 +126,7 @@ purple_contact_info_update_name_for_display(PurpleContactInfo *info) {
 		name_for_display = priv->id;
 	}
 
-	if(!purple_strequal(name_for_display, priv->name_for_display)) {
-		/* If we have a new name for display, free the old one, dup the new one
-		 * into the struct, and then emit the notify signal.
-		 */
-		g_free(priv->name_for_display);
-		priv->name_for_display = g_strdup(name_for_display);
-
+	if(g_set_str(&priv->name_for_display, name_for_display)) {
 		g_object_notify_by_pspec(G_OBJECT(info),
 		                         properties[PROP_NAME_FOR_DISPLAY]);
 	}
@@ -702,18 +696,12 @@ purple_contact_info_get_id(PurpleContactInfo *info) {
 void
 purple_contact_info_set_id(PurpleContactInfo *info, const gchar *id) {
 	PurpleContactInfoPrivate *priv = NULL;
-	gboolean changed = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	changed = !purple_strequal(priv->id, id);
-
-	g_free(priv->id);
-	priv->id = g_strdup(id);
-
-	if(changed) {
+	if(g_set_str(&priv->id, id)) {
 		g_object_freeze_notify(G_OBJECT(info));
 
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ID]);
@@ -740,18 +728,12 @@ purple_contact_info_set_username(PurpleContactInfo *info,
                                  const gchar *username)
 {
 	PurpleContactInfoPrivate *priv = NULL;
-	gboolean changed = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	changed = !purple_strequal(priv->username, username);
-
-	g_free(priv->username);
-	priv->username = g_strdup(username);
-
-	if(changed) {
+	if(g_set_str(&priv->username, username)) {
 		g_object_freeze_notify(G_OBJECT(info));
 
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_USERNAME]);
@@ -778,18 +760,12 @@ purple_contact_info_set_display_name(PurpleContactInfo *info,
                                      const gchar *display_name)
 {
 	PurpleContactInfoPrivate *priv = NULL;
-	gboolean changed = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	changed = !purple_strequal(priv->display_name, display_name);
-
-	g_free(priv->display_name);
-	priv->display_name = g_strdup(display_name);
-
-	if(changed) {
+	if(g_set_str(&priv->display_name, display_name)) {
 		g_object_freeze_notify(G_OBJECT(info));
 
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_DISPLAY_NAME]);
@@ -814,18 +790,12 @@ purple_contact_info_get_alias(PurpleContactInfo *info) {
 void
 purple_contact_info_set_alias(PurpleContactInfo *info, const gchar *alias) {
 	PurpleContactInfoPrivate *priv = NULL;
-	gboolean changed = FALSE;
 
 	g_return_if_fail(PURPLE_IS_CONTACT_INFO(info));
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	changed = !purple_strequal(priv->alias, alias);
-
-	g_free(priv->alias);
-	priv->alias = g_strdup(alias);
-
-	if(changed) {
+	if(g_set_str(&priv->alias, alias)) {
 		g_object_freeze_notify(G_OBJECT(info));
 
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_ALIAS]);
@@ -855,10 +825,7 @@ purple_contact_info_set_color(PurpleContactInfo *info, const char *color) {
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	if(!purple_strequal(priv->color, color)) {
-		g_free(priv->color);
-		priv->color = g_strdup(color);
-
+	if(g_set_str(&priv->color, color)) {
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_COLOR]);
 	}
 }
@@ -882,10 +849,7 @@ purple_contact_info_set_email(PurpleContactInfo *info, const char *email) {
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	if(!purple_strequal(priv->email, email)) {
-		g_free(priv->email);
-		priv->email = g_strdup(email);
-
+	if(g_set_str(&priv->email, email)) {
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_EMAIL]);
 	}
 }
@@ -911,10 +875,7 @@ purple_contact_info_set_phone_number(PurpleContactInfo *info,
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	if(!purple_strequal(priv->phone_number, phone_number)) {
-		g_free(priv->phone_number);
-		priv->phone_number = g_strdup(phone_number);
-
+	if(g_set_str(&priv->phone_number, phone_number)) {
 		g_object_notify_by_pspec(G_OBJECT(info),
 		                         properties[PROP_PHONE_NUMBER]);
 	}
@@ -974,10 +935,7 @@ purple_contact_info_set_note(PurpleContactInfo *info, const char *note) {
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	if(!purple_strequal(priv->note, note)) {
-		g_free(priv->note);
-		priv->note = g_strdup(note);
-
+	if(g_set_str(&priv->note, note)) {
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_NOTE]);
 	}
 }
@@ -1117,10 +1075,7 @@ purple_contact_info_set_sid(PurpleContactInfo *info, const char *sid) {
 
 	priv = purple_contact_info_get_instance_private(info);
 
-	if(!purple_strequal(priv->sid, sid)) {
-		g_free(priv->sid);
-		priv->sid = g_strdup(sid);
-
+	if(g_set_str(&priv->sid, sid)) {
 		g_object_notify_by_pspec(G_OBJECT(info), properties[PROP_SID]);
 	}
 }

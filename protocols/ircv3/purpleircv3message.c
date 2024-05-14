@@ -210,10 +210,7 @@ purple_ircv3_message_set_command(PurpleIRCv3Message *message,
 	g_return_if_fail(PURPLE_IRCV3_IS_MESSAGE(message));
 	g_return_if_fail(!purple_strempty(command));
 
-	if(!purple_strequal(message->command, command)) {
-		g_free(message->command);
-		message->command = g_strdup(command);
-
+	if(g_set_str(&message->command, command)) {
 		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_COMMAND]);
 	}
 }
@@ -231,10 +228,7 @@ purple_ircv3_message_set_source(PurpleIRCv3Message *message,
 {
 	g_return_if_fail(PURPLE_IRCV3_IS_MESSAGE(message));
 
-	if(!purple_strequal(message->source, source)) {
-		g_free(message->source);
-		message->source = g_strdup(source);
-
+	if(g_set_str(&message->source, source)) {
 		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_SOURCE]);
 	}
 }

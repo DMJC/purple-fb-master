@@ -64,10 +64,10 @@ purple_protocol_set_id(PurpleProtocol *protocol, const gchar *id) {
 	PurpleProtocolPrivate *priv = NULL;
 
 	priv = purple_protocol_get_instance_private(protocol);
-	g_free(priv->id);
-	priv->id = g_strdup(id);
 
-	g_object_notify_by_pspec(G_OBJECT(protocol), properties[PROP_ID]);
+	if(g_set_str(&priv->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(protocol), properties[PROP_ID]);
+	}
 }
 
 static void
@@ -75,10 +75,10 @@ purple_protocol_set_name(PurpleProtocol *protocol, const gchar *name) {
 	PurpleProtocolPrivate *priv = NULL;
 
 	priv = purple_protocol_get_instance_private(protocol);
-	g_free(priv->name);
-	priv->name = g_strdup(name);
 
-	g_object_notify_by_pspec(G_OBJECT(protocol), properties[PROP_NAME]);
+	if(g_set_str(&priv->name, name)) {
+		g_object_notify_by_pspec(G_OBJECT(protocol), properties[PROP_NAME]);
+	}
 }
 
 static void
@@ -86,10 +86,11 @@ purple_protocol_set_description(PurpleProtocol *protocol, const gchar *descripti
 	PurpleProtocolPrivate *priv = NULL;
 
 	priv = purple_protocol_get_instance_private(protocol);
-	g_free(priv->description);
-	priv->description = g_strdup(description);
 
-	g_object_notify_by_pspec(G_OBJECT(protocol), properties[PROP_DESCRIPTION]);
+	if(g_set_str(&priv->description, description)) {
+		g_object_notify_by_pspec(G_OBJECT(protocol),
+		                         properties[PROP_DESCRIPTION]);
+	}
 }
 
 static void
@@ -100,10 +101,10 @@ purple_protocol_set_icon_name(PurpleProtocol *protocol,
 
 	priv = purple_protocol_get_instance_private(protocol);
 
-	g_free(priv->icon_name);
-	priv->icon_name = g_strdup(icon_name);
-
-	g_object_notify_by_pspec(G_OBJECT(protocol), properties[PROP_ICON_NAME]);
+	if(g_set_str(&priv->icon_name, icon_name)) {
+		g_object_notify_by_pspec(G_OBJECT(protocol),
+		                         properties[PROP_ICON_NAME]);
+	}
 }
 
 static void
@@ -114,11 +115,10 @@ purple_protocol_set_icon_search_path(PurpleProtocol *protocol,
 
 	priv = purple_protocol_get_instance_private(protocol);
 
-	g_free(priv->icon_search_path);
-	priv->icon_search_path = g_strdup(path);
-
-	g_object_notify_by_pspec(G_OBJECT(protocol),
-	                         properties[PROP_ICON_SEARCH_PATH]);
+	if(g_set_str(&priv->icon_search_path, path)) {
+		g_object_notify_by_pspec(G_OBJECT(protocol),
+		                         properties[PROP_ICON_SEARCH_PATH]);
+	}
 }
 
 static void
@@ -129,11 +129,10 @@ purple_protocol_set_icon_resource_path(PurpleProtocol *protocol,
 
 	priv = purple_protocol_get_instance_private(protocol);
 
-	g_free(priv->icon_resource_path);
-	priv->icon_resource_path = g_strdup(path);
-
-	g_object_notify_by_pspec(G_OBJECT(protocol),
-	                         properties[PROP_ICON_RESOURCE_PATH]);
+	if(g_set_str(&priv->icon_resource_path, path)) {
+		g_object_notify_by_pspec(G_OBJECT(protocol),
+		                         properties[PROP_ICON_RESOURCE_PATH]);
+	}
 }
 
 static void

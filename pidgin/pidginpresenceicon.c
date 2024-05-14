@@ -256,16 +256,15 @@ pidgin_presence_icon_set_fallback(PidginPresenceIcon *icon,
 	g_return_if_fail(PIDGIN_IS_PRESENCE_ICON(icon));
 	g_return_if_fail(fallback != NULL);
 
-	g_free(icon->fallback);
-	icon->fallback = g_strdup(fallback);
+	if(g_set_str(&icon->fallback, fallback)) {
+		g_object_freeze_notify(G_OBJECT(icon));
 
-	g_object_freeze_notify(G_OBJECT(icon));
+		pidgin_presence_icon_update(icon);
 
-	pidgin_presence_icon_update(icon);
+		g_object_notify_by_pspec(G_OBJECT(icon), properties[PROP_FALLBACK]);
 
-	g_object_notify_by_pspec(G_OBJECT(icon), properties[PROP_FALLBACK]);
-
-	g_object_thaw_notify(G_OBJECT(icon));
+		g_object_thaw_notify(G_OBJECT(icon));
+	}
 }
 
 GtkIconSize

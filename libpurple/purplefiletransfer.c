@@ -110,10 +110,7 @@ purple_file_transfer_set_filename(PurpleFileTransfer *transfer,
 	g_return_if_fail(PURPLE_IS_FILE_TRANSFER(transfer));
 	g_return_if_fail(!purple_strempty(filename));
 
-	if(!purple_strequal(transfer->filename, filename)) {
-		g_free(transfer->filename);
-		transfer->filename = g_strdup(filename);
-
+	if(g_set_str(&transfer->filename, filename)) {
 		g_object_notify_by_pspec(G_OBJECT(transfer),
 		                         properties[PROP_FILENAME]);
 	}
@@ -653,10 +650,7 @@ purple_file_transfer_set_content_type(PurpleFileTransfer *transfer,
 {
 	g_return_if_fail(PURPLE_IS_FILE_TRANSFER(transfer));
 
-	if(!purple_strequal(transfer->content_type, content_type)) {
-		g_free(transfer->content_type);
-		transfer->content_type = g_strdup(content_type);
-
+	if(g_set_str(&transfer->content_type, content_type)) {
 		g_object_notify_by_pspec(G_OBJECT(transfer),
 		                         properties[PROP_CONTENT_TYPE]);
 	}
@@ -675,10 +669,7 @@ purple_file_transfer_set_message(PurpleFileTransfer *transfer,
 {
 	g_return_if_fail(PURPLE_IS_FILE_TRANSFER(transfer));
 
-	if(!purple_strequal(transfer->message, message)) {
-		g_free(transfer->message);
-		transfer->message = g_strdup(message);
-
+	if(g_set_str(&transfer->message, message)) {
 		g_object_notify_by_pspec(G_OBJECT(transfer), properties[PROP_MESSAGE]);
 	}
 }

@@ -55,10 +55,9 @@ static void
 purple_avatar_set_filename(PurpleAvatar *avatar, const char *filename) {
 	g_return_if_fail(PURPLE_IS_AVATAR(avatar));
 
-	g_free(avatar->filename);
-	avatar->filename = g_strdup(filename);
-
-	g_object_notify_by_pspec(G_OBJECT(avatar), properties[PROP_FILENAME]);
+	if(g_set_str(&avatar->filename, filename)) {
+		g_object_notify_by_pspec(G_OBJECT(avatar), properties[PROP_FILENAME]);
+	}
 }
 
 static PurpleAvatar *

@@ -44,10 +44,9 @@ static void
 pidgin_account_filter_protocol_set_protocol_id(PidginAccountFilterProtocol *filter,
                                                const gchar *protocol_id)
 {
-	g_free(filter->protocol_id);
-	filter->protocol_id = g_strdup(protocol_id);
-
-	gtk_filter_changed(GTK_FILTER(filter), GTK_FILTER_CHANGE_DIFFERENT);
+	if(g_set_str(&filter->protocol_id, protocol_id)) {
+		gtk_filter_changed(GTK_FILTER(filter), GTK_FILTER_CHANGE_DIFFERENT);
+	}
 }
 
 /******************************************************************************

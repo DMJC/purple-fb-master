@@ -56,10 +56,9 @@ purple_credential_provider_set_id(PurpleCredentialProvider *provider,
 
 	priv = purple_credential_provider_get_instance_private(provider);
 
-	g_free(priv->id);
-	priv->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(provider), properties[PROP_ID]);
+	if(g_set_str(&priv->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(provider), properties[PROP_ID]);
+	}
 }
 
 static void
@@ -70,10 +69,9 @@ purple_credential_provider_set_name(PurpleCredentialProvider *provider,
 
 	priv = purple_credential_provider_get_instance_private(provider);
 
-	g_free(priv->name);
-	priv->name = g_strdup(name);
-
-	g_object_notify_by_pspec(G_OBJECT(provider), properties[PROP_NAME]);
+	if(g_set_str(&priv->name, name)) {
+		g_object_notify_by_pspec(G_OBJECT(provider), properties[PROP_NAME]);
+	}
 }
 
 static void
@@ -84,10 +82,9 @@ purple_credential_provider_set_description(PurpleCredentialProvider *provider,
 
 	priv = purple_credential_provider_get_instance_private(provider);
 
-	g_free(priv->description);
-	priv->description = g_strdup(description);
-
-	g_object_notify_by_pspec(G_OBJECT(provider), properties[PROP_DESCRIPTION]);
+	if(g_set_str(&priv->description, description)) {
+		g_object_notify_by_pspec(G_OBJECT(provider), properties[PROP_DESCRIPTION]);
+	}
 }
 
 static void

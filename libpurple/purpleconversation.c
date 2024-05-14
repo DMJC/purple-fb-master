@@ -152,10 +152,7 @@ static void
 purple_conversation_set_id(PurpleConversation *conversation, const char *id) {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	if(!purple_strequal(id, conversation->id)) {
-		g_free(conversation->id);
-		conversation->id = g_strdup(id);
-
+	if(g_set_str(&conversation->id, id)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation), properties[PROP_ID]);
 	}
 }
@@ -1211,11 +1208,8 @@ purple_conversation_set_title(PurpleConversation *conversation,
 {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	if(!purple_strequal(conversation->title, title)) {
+	if(g_set_str(&conversation->title, title)) {
 		GObject *obj = G_OBJECT(conversation);
-
-		g_free(conversation->title);
-		conversation->title = g_strdup(title);
 
 		/* We have to g_object_freeze_notify here because we're modifying more
 		 * than one property. However, purple_conversation_generate_title will
@@ -1321,10 +1315,7 @@ purple_conversation_set_name(PurpleConversation *conversation,
 {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	if(!purple_strequal(conversation->name, name)) {
-		g_free(conversation->name);
-		conversation->name = g_strdup(name);
-
+	if(g_set_str(&conversation->name, name)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_NAME]);
 	}
@@ -1521,10 +1512,7 @@ purple_conversation_set_description(PurpleConversation *conversation,
 {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	if(!purple_strequal(conversation->description, description)) {
-		g_free(conversation->description);
-		conversation->description = g_strdup(description);
-
+	if(g_set_str(&conversation->description, description)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_DESCRIPTION]);
 	}
@@ -1543,10 +1531,7 @@ purple_conversation_set_topic(PurpleConversation *conversation,
 {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	if(!purple_strequal(conversation->topic, topic)) {
-		g_free(conversation->topic);
-		conversation->topic = g_strdup(topic);
-
+	if(g_set_str(&conversation->topic, topic)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_TOPIC]);
 	}
@@ -1624,10 +1609,7 @@ purple_conversation_set_user_nickname(PurpleConversation *conversation,
 {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
-	if(!purple_strequal(conversation->user_nickname, nickname)) {
-		g_free(conversation->user_nickname);
-		conversation->user_nickname = g_strdup(nickname);
-
+	if(g_set_str(&conversation->user_nickname, nickname)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_USER_NICKNAME]);
 	}

@@ -71,14 +71,9 @@ pidgin_display_item_set_id(PidginDisplayItem *item, const char *id) {
 	g_return_if_fail(PIDGIN_IS_DISPLAY_ITEM(item));
 	g_return_if_fail(id != NULL);
 
-	if(item->id == id) {
-		return;
+	if(g_set_str(&item->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(item), properties[PROP_ID]);
 	}
-
-	g_free(item->id);
-	item->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(item), properties[PROP_ID]);
 }
 
 /******************************************************************************
@@ -327,14 +322,9 @@ void
 pidgin_display_item_set_title(PidginDisplayItem *item, const char *title) {
 	g_return_if_fail(PIDGIN_IS_DISPLAY_ITEM(item));
 
-	if(item->title == title) {
-		return;
+	if(g_set_str(&item->title, title)) {
+		g_object_notify_by_pspec(G_OBJECT(item), properties[PROP_TITLE]);
 	}
-
-	g_free(item->title);
-	item->title = g_strdup(title);
-
-	g_object_notify_by_pspec(G_OBJECT(item), properties[PROP_TITLE]);
 }
 
 const char *
@@ -350,14 +340,9 @@ pidgin_display_item_set_icon_name(PidginDisplayItem *item,
 {
 	g_return_if_fail(PIDGIN_IS_DISPLAY_ITEM(item));
 
-	if(item->icon_name == icon_name) {
-		return;
+	if(g_set_str(&item->icon_name, icon_name)) {
+		g_object_notify_by_pspec(G_OBJECT(item), properties[PROP_ICON_NAME]);
 	}
-
-	g_free(item->icon_name);
-	item->icon_name = g_strdup(icon_name);
-
-	g_object_notify_by_pspec(G_OBJECT(item), properties[PROP_ICON_NAME]);
 }
 
 gboolean

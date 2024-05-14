@@ -184,11 +184,10 @@ purple_connection_set_display_name(PurpleConnection *connection,
 
 	priv = purple_connection_get_instance_private(connection);
 
-	g_clear_pointer(&priv->display_name, g_free);
-	priv->display_name = g_strdup(name);
-
-	g_object_notify_by_pspec(G_OBJECT(connection),
-	                         properties[PROP_DISPLAY_NAME]);
+	if(g_set_str(&priv->display_name, name)) {
+		g_object_notify_by_pspec(G_OBJECT(connection),
+		                         properties[PROP_DISPLAY_NAME]);
+	}
 }
 
 PurpleConnectionState
@@ -482,10 +481,9 @@ purple_connection_set_id(PurpleConnection *connection, const gchar *id) {
 
 	priv = purple_connection_get_instance_private(connection);
 
-	g_free(priv->id);
-	priv->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(connection), properties[PROP_ID]);
+	if(g_set_str(&priv->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(connection), properties[PROP_ID]);
+	}
 }
 
 static void

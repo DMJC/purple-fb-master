@@ -75,10 +75,9 @@ G_DEFINE_FINAL_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
  *****************************************************************************/
 static void
 purple_message_set_author(PurpleMessage *message, const char *author) {
-	g_free(message->author);
-	message->author = g_strdup(author);
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_AUTHOR]);
+	if(g_set_str(&message->author, author)) {
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_AUTHOR]);
+	}
 }
 
 /******************************************************************************
@@ -507,10 +506,9 @@ void
 purple_message_set_id(PurpleMessage *message, const char *id) {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
-	g_free(message->id);
-	message->id = g_strdup(id);
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ID]);
+	if(g_set_str(&message->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ID]);
+	}
 }
 
 const char *
@@ -526,11 +524,10 @@ purple_message_set_author_name_color(PurpleMessage *message,
 {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
-	g_free(message->author_name_color);
-	message->author_name_color = g_strdup(color);
-
-	g_object_notify_by_pspec(G_OBJECT(message),
-	                         properties[PROP_AUTHOR_NAME_COLOR]);
+	if(g_set_str(&message->author_name_color, color)) {
+		g_object_notify_by_pspec(G_OBJECT(message),
+		                         properties[PROP_AUTHOR_NAME_COLOR]);
+	}
 }
 
 const char *
@@ -546,10 +543,10 @@ purple_message_set_author_alias(PurpleMessage *message,
 {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
-	g_free(message->author_alias);
-	message->author_alias = g_strdup(author_alias);
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_AUTHOR_ALIAS]);
+	if(g_set_str(&message->author_alias, author_alias)) {
+		g_object_notify_by_pspec(G_OBJECT(message),
+		                         properties[PROP_AUTHOR_ALIAS]);
+	}
 }
 
 const char *
@@ -566,10 +563,9 @@ void
 purple_message_set_contents(PurpleMessage *message, const char *contents) {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
-	g_free(message->contents);
-	message->contents = g_strdup(contents);
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_CONTENTS]);
+	if(g_set_str(&message->contents, contents)) {
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_CONTENTS]);
+	}
 }
 
 const char *

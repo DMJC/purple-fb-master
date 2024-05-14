@@ -84,11 +84,10 @@ purple_data_dir(void) {
 
 void
 purple_util_set_user_dir(const gchar *dir) {
-	g_free(custom_user_dir);
-	custom_user_dir = g_strdup(dir);
-
-	g_clear_pointer(&user_dir, g_free);
-	g_clear_pointer(&cache_dir, g_free);
-	g_clear_pointer(&config_dir, g_free);
-	g_clear_pointer(&data_dir, g_free);
+	if(g_set_str(&custom_user_dir, dir)) {
+		g_clear_pointer(&user_dir, g_free);
+		g_clear_pointer(&cache_dir, g_free);
+		g_clear_pointer(&config_dir, g_free);
+		g_clear_pointer(&data_dir, g_free);
+	}
 }

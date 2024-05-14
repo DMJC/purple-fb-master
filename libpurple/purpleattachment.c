@@ -56,16 +56,10 @@ static void
 purple_attachment_set_content_type(PurpleAttachment *attachment,
                                     const gchar *content_type)
 {
-	if(attachment->content_type == content_type) {
-		return;
+	if(g_set_str(&attachment->content_type, content_type)) {
+		g_object_notify_by_pspec(G_OBJECT(attachment),
+		                         properties[PROP_CONTENT_TYPE]);
 	}
-
-	g_clear_pointer(&attachment->content_type, g_free);
-
-	attachment->content_type = g_strdup(content_type);
-
-	g_object_notify_by_pspec(G_OBJECT(attachment),
-	                         properties[PROP_CONTENT_TYPE]);
 }
 
 /******************************************************************************
@@ -313,14 +307,10 @@ purple_attachment_set_remote_uri(PurpleAttachment *attachment,
 {
 	g_return_if_fail(PURPLE_IS_ATTACHMENT(attachment));
 
-	if(attachment->remote_uri == remote_uri) {
-		return;
+	if(g_set_str(&attachment->remote_uri, remote_uri)) {
+		g_object_notify_by_pspec(G_OBJECT(attachment),
+		                         properties[PROP_REMOTE_URI]);
 	}
-
-	g_free(attachment->remote_uri);
-	attachment->remote_uri = g_strdup(remote_uri);
-
-	g_object_notify_by_pspec(G_OBJECT(attachment), properties[PROP_REMOTE_URI]);
 }
 
 guint64
