@@ -85,6 +85,21 @@ test_purple_protocol_contacts_empty_class_init(G_GNUC_UNUSED TestPurpleProtocolC
  * TestProtocolContactsEmpty Tests
  *****************************************************************************/
 static void
+test_purple_protocol_contacts_empty_get_minimum_search_length(void) {
+	PurpleProtocolContacts *protocol = NULL;
+	guint minimum_search_length = 0;
+
+	protocol = g_object_new(test_purple_protocol_contacts_empty_get_type(),
+	                        NULL);
+	minimum_search_length = purple_protocol_contacts_get_minimum_search_length(protocol);
+
+	/* There is a default implementation that returns 3. */
+	g_assert_cmpuint(minimum_search_length, ==, 3);
+
+	g_assert_finalize_object(protocol);
+}
+
+static void
 test_purple_protocol_contacts_empty_search_async(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
@@ -226,6 +241,13 @@ struct _TestPurpleProtocolContacts {
 	guint get_profile_finish;
 };
 
+static guint
+test_purple_protocol_contacts_get_minimum_search_length(PurpleProtocolContacts *protocol_contacts) {
+	g_assert_true(PURPLE_IS_PROTOCOL_CONTACTS(protocol_contacts));
+
+	return 2;
+}
+
 static void
 test_purple_protocol_contacts_search_async(PurpleProtocolContacts *protocol_contacts,
                                            G_GNUC_UNUSED PurpleAccount *account,
@@ -325,6 +347,8 @@ test_purple_protocol_contacts_get_menu(G_GNUC_UNUSED PurpleProtocolContacts *pro
 
 static void
 test_purple_protocol_contacts_iface_init(PurpleProtocolContactsInterface *iface) {
+	iface->get_minimum_search_length =
+		test_purple_protocol_contacts_get_minimum_search_length;
 	iface->search_async = test_purple_protocol_contacts_search_async;
 	iface->search_finish = test_purple_protocol_contacts_search_finish;
 
@@ -357,6 +381,21 @@ test_purple_protocol_contacts_class_init(G_GNUC_UNUSED TestPurpleProtocolContact
 /******************************************************************************
  * TestProtocolContacts search test
  *****************************************************************************/
+static void
+test_protocol_contacts_search_minimum_length(void) {
+	PurpleProtocolContacts *protocol = NULL;
+	guint minimum_search_length = 0;
+
+	protocol = g_object_new(test_purple_protocol_contacts_get_type(), NULL);
+
+	minimum_search_length =
+		test_purple_protocol_contacts_get_minimum_search_length(protocol);
+
+	g_assert_cmpuint(minimum_search_length, ==, 2);
+
+	g_assert_finalize_object(protocol);
+}
+
 static void
 test_purple_protocol_contacts_search_cb(GObject *obj, GAsyncResult *res,
                                         gpointer data)
@@ -576,6 +615,8 @@ main(int argc, char **argv) {
 
 	loop = g_main_loop_new(NULL, FALSE);
 
+	g_test_add_func("/protocol-contacts/empty/get-minimum-search-length",
+	                test_purple_protocol_contacts_empty_get_minimum_search_length);
 	g_test_add_func("/protocol-contacts/empty/search-async",
 	                test_purple_protocol_contacts_empty_search_async);
 	g_test_add_func("/protocol-contacts/empty/search-finish",
@@ -589,6 +630,8 @@ main(int argc, char **argv) {
 	g_test_add_func("/protocol-contacts/empty/get-menu",
 	                test_purple_protocol_contacts_empty_get_menu);
 
+	g_test_add_func("/protocol-contacts/normal/get-minimum-search-length",
+	                test_protocol_contacts_search_minimum_length);
 	g_test_add_func("/protocol-contacts/normal/search-async-normal",
 	                test_purple_protocol_contacts_search_normal);
 	g_test_add_func("/protocol-contacts/normal/search-async-error",

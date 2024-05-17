@@ -25,6 +25,15 @@
 #include "util.h"
 
 /******************************************************************************
+ * Default Implementations
+ *****************************************************************************/
+static guint
+purple_protocol_contacts_default_get_minimum_search_length(G_GNUC_UNUSED PurpleProtocolContacts *protocol_contacts)
+{
+	return 3;
+}
+
+/******************************************************************************
  * GInterface Implementation
  *****************************************************************************/
 G_DEFINE_INTERFACE(PurpleProtocolContacts, purple_protocol_contacts,
@@ -33,11 +42,52 @@ G_DEFINE_INTERFACE(PurpleProtocolContacts, purple_protocol_contacts,
 static void
 purple_protocol_contacts_default_init(G_GNUC_UNUSED PurpleProtocolContactsInterface *iface)
 {
+	iface->get_minimum_search_length = purple_protocol_contacts_default_get_minimum_search_length;
 }
 
 /******************************************************************************
  * Public API
  *****************************************************************************/
+gboolean
+purple_protocol_contacts_implements_search(PurpleProtocolContacts *protocol_contacts)
+{
+	PurpleProtocolContactsInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONTACTS(protocol_contacts),
+	                     FALSE);
+
+	iface = PURPLE_PROTOCOL_CONTACTS_GET_IFACE(protocol_contacts);
+
+	if(iface->get_minimum_search_length == NULL) {
+		return FALSE;
+	}
+
+	if(iface->search_async == NULL) {
+		return FALSE;
+	}
+
+	if(iface->search_finish == NULL) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+guint
+purple_protocol_contacts_get_minimum_search_length(PurpleProtocolContacts *protocol_contacts)
+{
+	PurpleProtocolContactsInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONTACTS(protocol_contacts), 3);
+
+	iface = PURPLE_PROTOCOL_CONTACTS_GET_IFACE(protocol_contacts);
+	if(iface != NULL && iface->get_minimum_search_length != NULL) {
+		return iface->get_minimum_search_length(protocol_contacts);
+	}
+
+	return 3;
+}
+
 void
 purple_protocol_contacts_search_async(PurpleProtocolContacts *protocol_contacts,
                                       PurpleAccount *account,

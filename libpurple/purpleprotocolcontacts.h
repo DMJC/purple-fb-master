@@ -65,6 +65,7 @@ struct _PurpleProtocolContactsInterface {
 	GTypeInterface parent;
 
 	/*< public >*/
+	guint (*get_minimum_search_length)(PurpleProtocolContacts *protocol_contacts);
 	void (*search_async)(PurpleProtocolContacts *protocol_contacts, PurpleAccount *account, const char *text, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	GListModel *(*search_finish)(PurpleProtocolContacts *protocol_contacts, GAsyncResult *result, GError **error);
 
@@ -79,6 +80,37 @@ struct _PurpleProtocolContactsInterface {
 };
 
 G_BEGIN_DECLS
+
+/**
+ * purple_protocol_contacts_implements_search:
+ * @protocol_contacts: The instance.
+ *
+ * Checks if @protocol_contacts implements
+ * [vfunc@ProtocolContacts.search_async] and
+ * [vfunc@ProtocolContacts.search_finish].
+ *
+ * Returns: %TRUE if the search interface is implemented, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_protocol_contacts_implements_search(PurpleProtocolContacts *protocol_contacts);
+
+/**
+ * purple_protocol_contacts_get_minimum_search_length:
+ * @protocol_contacts: The instance.
+ *
+ * Gets the minimum length of the search term before
+ * [method@ProtocolContacts.search_async] should be called.
+ *
+ * The default implementation returns 3.
+ *
+ * Returns: The minimum length of the search term.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+guint purple_protocol_contacts_get_minimum_search_length(PurpleProtocolContacts *protocol_contacts);
 
 /**
  * purple_protocol_contacts_search_async:
