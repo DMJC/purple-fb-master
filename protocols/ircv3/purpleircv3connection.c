@@ -494,6 +494,7 @@ purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *conne
 			"account", account,
 			"id", id,
 			"name", id,
+			"title", id,
 			"type", type,
 			NULL);
 
