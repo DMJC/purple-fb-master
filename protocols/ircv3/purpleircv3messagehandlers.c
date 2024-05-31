@@ -25,107 +25,15 @@
 #include "purpleircv3messagehandlers.h"
 
 #include "purpleircv3connection.h"
-#include "purpleircv3constants.h"
 #include "purpleircv3core.h"
-#include "purpleircv3ctcp.h"
-#include "purpleircv3formatting.h"
-#include "purpleircv3source.h"
-
-/******************************************************************************
- * Fallback
- *****************************************************************************/
-gboolean
-purple_ircv3_message_handler_fallback(PurpleIRCv3Message *message,
-                                      G_GNUC_UNUSED GError **error,
-                                      gpointer data)
-{
-	PurpleIRCv3Connection *connection = data;
-	char *new_command = NULL;
-	const char *command = NULL;
-
-	command = purple_ircv3_message_get_command(message);
-
-	new_command = g_strdup_printf(_("unknown command '%s'"), command);
-	purple_ircv3_message_set_command(message, new_command);
-	purple_ircv3_connection_add_status_message(connection, message);
-
-	g_clear_pointer(&new_command, g_free);
-
-	return TRUE;
-}
-
-/******************************************************************************
- * Status Messages
- *****************************************************************************/
-gboolean
-purple_ircv3_message_handler_status(PurpleIRCv3Message *message,
-                                    G_GNUC_UNUSED GError **error,
-                                    gpointer data)
-{
-	purple_ircv3_connection_add_status_message(data, message);
-
-	return TRUE;
-}
-
-gboolean
-purple_ircv3_message_handler_status_ignore_param0(PurpleIRCv3Message *message,
-                                                  GError **error,
-                                                  gpointer data)
-{
-	GStrv params = NULL;
-	GStrv new_params = NULL;
-	guint n_params = 0;
-
-	params = purple_ircv3_message_get_params(message);
-	if(params != NULL) {
-		n_params = g_strv_length(params);
-	}
-
-	if(n_params <= 1) {
-		g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
-		            "expected n_params > 1, got %u", n_params);
-
-		return FALSE;
-	}
-
-	/* We need to make a copy because otherwise we'd get a use after free in
-	 * set_params.
-	 */
-	new_params = g_strdupv(params + 1);
-	purple_ircv3_message_set_params(message, new_params);
-	g_clear_pointer(&new_params, g_strfreev);
-
-	purple_ircv3_connection_add_status_message(data, message);
-
-	return TRUE;
-}
 
 /******************************************************************************
  * General Commands
  *****************************************************************************/
 gboolean
-purple_ircv3_message_handler_ping(PurpleIRCv3Message *message,
-                                  G_GNUC_UNUSED GError **error,
-                                  gpointer data)
-{
-	PurpleIRCv3Connection *connection = data;
-	GStrv params = NULL;
-
-	params = purple_ircv3_message_get_params(message);
-
-	if(params != NULL && g_strv_length(params) == 1) {
-		purple_ircv3_connection_writef(connection, "PONG %s", params[0]);
-	} else {
-		purple_ircv3_connection_writef(connection, "PONG");
-	}
-
-	return TRUE;
-}
-
-gboolean
-purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
-                                     G_GNUC_UNUSED GError **error,
-                                     gpointer data)
+purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED IbisClient *client,
+                                     const char *command,
+                                     IbisMessage *ibis_message, gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
 	PurpleContact *contact = NULL;
@@ -133,21 +41,18 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	PurpleMessage *message = NULL;
 	PurpleMessageFlags flags = PURPLE_MESSAGE_RECV;
 	GDateTime *dt = NULL;
-	GHashTable *tags = NULL;
+	IbisTags *tags = NULL;
 	GStrv params = NULL;
-	gpointer raw_id = NULL;
-	gpointer raw_timestamp = NULL;
 	char *nick = NULL;
 	char *stripped = NULL;
-	const char *command = NULL;
 	const char *id = NULL;
+	const char *raw_tag = NULL;
 	const char *source = NULL;
 	const char *target = NULL;
 
-	command = purple_ircv3_message_get_command(v3_message);
-	params = purple_ircv3_message_get_params(v3_message);
-	source = purple_ircv3_message_get_source(v3_message);
-	tags = purple_ircv3_message_get_tags(v3_message);
+	params = ibis_message_get_params(ibis_message);
+	source = ibis_message_get_source(ibis_message);
+	tags = ibis_message_get_tags(ibis_message);
 
 	if(params == NULL) {
 		g_warning("privmsg received with no parameters");
@@ -163,7 +68,7 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 		return FALSE;
 	}
 
-	purple_ircv3_source_parse(source, &nick, NULL, NULL);
+	ibis_source_parse(source, &nick, NULL, NULL);
 
 	/* Find or create the conversation. */
 	target = params[0];
@@ -190,28 +95,24 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 		}
 	}
 
-	/* Grab the msgid if one was provided. */
-	if(g_hash_table_lookup_extended(tags, "msgid", NULL, &raw_id)) {
-		if(!purple_strempty(raw_id)) {
-			id = raw_id;
-		}
-	}
-
-	if(purple_strequal(command, PURPLE_IRCV3_MSG_NOTICE)) {
+	if(purple_strequal(command, IBIS_MSG_NOTICE)) {
 		flags |= PURPLE_MESSAGE_NOTIFY;
 	}
 
+	/* Grab the msgid if one was provided. */
+	raw_tag = ibis_tags_lookup(tags, "msgid");
+	if(!purple_strempty(raw_tag)) {
+		id = raw_tag;
+	}
+
 	/* Determine the timestamp of the message. */
-	if(g_hash_table_lookup_extended(tags, "time", NULL, &raw_timestamp)) {
-		const char *timestamp = raw_timestamp;
+	raw_tag = ibis_tags_lookup(tags, "time");
+	if(!purple_strempty(raw_tag)) {
+		GTimeZone *tz = g_time_zone_new_utc();
 
-		if(!purple_strempty(timestamp)) {
-			GTimeZone *tz = g_time_zone_new_utc();
+		dt = g_date_time_new_from_iso8601(raw_tag, tz);
 
-			dt = g_date_time_new_from_iso8601(timestamp, tz);
-
-			g_time_zone_unref(tz);
-		}
+		g_time_zone_unref(tz);
 	}
 
 	/* If the server didn't provide a time, use the current local time. */
@@ -219,7 +120,7 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 		dt = g_date_time_new_now_local();
 	}
 
-	stripped = purple_ircv3_formatting_strip(params[1]);
+	stripped = ibis_formatting_strip(params[1]);
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
 		"author", source,
@@ -233,9 +134,11 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 	g_date_time_unref(dt);
 
 	/* Check if this is a CTCP message. */
-	if(!purple_ircv3_ctcp_handle(connection, conversation, message)) {
-		purple_conversation_write_message(conversation, message);
+	if(ibis_message_get_ctcp(ibis_message)) {
+		/* TODO: later... */
 	}
+
+	purple_conversation_write_message(conversation, message);
 
 	g_clear_pointer(&nick, g_free);
 	g_clear_object(&message);
@@ -244,49 +147,44 @@ purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *v3_message,
 }
 
 gboolean
-purple_ircv3_message_handler_topic(PurpleIRCv3Message *message,
-                                   GError **error,
+purple_ircv3_message_handler_topic(G_GNUC_UNUSED IbisClient *client,
+                                   const char *command, IbisMessage *message,
                                    gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
 	PurpleConversation *conversation = NULL;
 	GStrv params = NULL;
 	const char *channel = NULL;
-	const char *command = NULL;
 	const char *topic = NULL;
 	guint n_params = 0;
 
-	command = purple_ircv3_message_get_command(message);
-	params = purple_ircv3_message_get_params(message);
+	params = ibis_message_get_params(message);
 	n_params = g_strv_length(params);
 
-	if(purple_strequal(command, PURPLE_IRCV3_MSG_TOPIC)) {
+	if(purple_strequal(command, IBIS_MSG_TOPIC)) {
 		if(n_params != 2) {
-			g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
-			            "received TOPIC with %u parameters, expected 2",
-			            n_params);
+			g_message("received TOPIC with %u parameters, expected 2",
+			          n_params);
 
 			return FALSE;
 		}
 
 		channel = params[0];
 		topic = params[1];
-	} else if(purple_strequal(command, PURPLE_IRCV3_RPL_NOTOPIC)) {
+	} else if(purple_strequal(command, IBIS_RPL_NOTOPIC)) {
 		if(n_params != 3) {
-			g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
-			            "received RPL_NOTOPIC with %u parameters, expected 3",
-			            n_params);
+			g_message("received RPL_NOTOPIC with %u parameters, expected 3",
+			          n_params);
 
 			return FALSE;
 		}
 
 		channel = params[1];
 		topic = "";
-	} else if(purple_strequal(command, PURPLE_IRCV3_RPL_TOPIC)) {
+	} else if(purple_strequal(command, IBIS_RPL_TOPIC)) {
 		if(n_params != 3) {
-			g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
-			            "received RPL_TOPIC with %u parameters, expected 3",
-			            n_params);
+			g_message("received RPL_TOPIC with %u parameters, expected 3",
+			          n_params);
 
 			return FALSE;
 		}
@@ -294,8 +192,7 @@ purple_ircv3_message_handler_topic(PurpleIRCv3Message *message,
 		channel = params[1];
 		topic = params[2];
 	} else {
-		g_set_error(error, PURPLE_IRCV3_DOMAIN, 0, "unexpected command %s",
-		            command);
+		g_message("unexpected command %s", command);
 
 		return FALSE;
 	}
@@ -303,8 +200,7 @@ purple_ircv3_message_handler_topic(PurpleIRCv3Message *message,
 	conversation = purple_ircv3_connection_find_or_create_conversation(connection,
 	                                                                   channel);
 	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		g_set_error(error, PURPLE_IRCV3_DOMAIN, 0,
-		            "failed to find or create channel '%s'", channel);
+		g_message("failed to find or create channel '%s'", channel);
 
 		return FALSE;
 	}

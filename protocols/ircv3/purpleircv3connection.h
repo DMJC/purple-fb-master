@@ -36,6 +36,8 @@
 
 #include <purple.h>
 
+#include <ibis.h>
+
 #include "purpleircv3version.h"
 
 G_BEGIN_DECLS
@@ -45,9 +47,6 @@ G_BEGIN_DECLS
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 G_DECLARE_DERIVABLE_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
                          PURPLE_IRCV3, CONNECTION, PurpleConnection)
-
-#include "purpleircv3capabilities.h"
-#include "purpleircv3message.h"
 
 struct _PurpleIRCv3ConnectionClass {
 	/*< private >*/
@@ -68,48 +67,17 @@ struct _PurpleIRCv3ConnectionClass {
 G_GNUC_INTERNAL void purple_ircv3_connection_register(GPluginNativePlugin *plugin);
 
 /**
- * purple_ircv3_connection_emit_ctcp_request:
+ * purple_ircv3_connection_get_client:
  * @connection: The instance.
- * @conversation: The conversation.
- * @message: The message.
- * @command: The CTCP command.
- * @parameters: (nullable): The CTCP parameters.
  *
- * Emits the [signal@Connection:ctcp-request] signal with the given @command
- * and @parameters which originated from @message in @conversation.
+ * Gets the [class@Ibis.Client] from @connection.
  *
- * The message may be modified by a signal handler. For example, the default
- * handler will output an internationalized string that describes what command
- * was requested.
- *
- * Returns: %TRUE if the request was handled and the message should not be
- *          echoed, otherwise %FALSE.
+ * Returns: (transfer none): The client instance if connected, otherwise %NULL.
  *
  * Since: 3.0
  */
-G_GNUC_INTERNAL gboolean purple_ircv3_connection_emit_ctcp_request(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message, const char *command, const char *parameters);
-
-/**
- * purple_ircv3_connection_emit_ctcp_response:
- * @connection: The instance.
- * @conversation: The conversation.
- * @message: The message.
- * @command: The CTCP command.
- * @parameters: (nullable): The CTCP parameters.
- *
- * Emits the [signal@Connection:ctcp-response] signal with the given @command
- * and @parameters which originated from @message in @conversation.
- *
- * The message may be modified by a signal handler. For example, the default
- * handler will output an internationalized string that describes what the
- * response was.
- *
- * Returns: %TRUE if the request was handled and the message should not be
- *          echoed, otherwise %FALSE.
- *
- * Since: 3.0
- */
-G_GNUC_INTERNAL gboolean purple_ircv3_connection_emit_ctcp_response(PurpleIRCv3Connection *connection, PurpleConversation *conversation, PurpleMessage *message, const char *command, const char *parameters);
+PURPLE_AVAILABLE_IN_3_0
+IbisClient *purple_ircv3_connection_get_client(PurpleIRCv3Connection *connection);
 
 /**
  * purple_ircv3_connection_writef:
@@ -125,29 +93,6 @@ G_GNUC_INTERNAL gboolean purple_ircv3_connection_emit_ctcp_response(PurpleIRCv3C
 void purple_ircv3_connection_writef(PurpleIRCv3Connection *connection, const char *format, ...) G_GNUC_PRINTF(2, 3);
 
 /**
- * purple_ircv3_connection_get_capabilities:
- * @connection: The instance.
- *
- * Gets the list of capabilities that the server supplied during registration.
- *
- * Returns: (transfer none): The list of capabilities that the server supports.
- */
-PurpleIRCv3Capabilities *purple_ircv3_connection_get_capabilities(PurpleIRCv3Connection *connection);
-
-/**
- * purple_ircv3_connection_get_registered:
- * @connection: The instance.
- *
- * Gets whether or not the connection has finished the registration process.
- *
- * Returns: %TRUE if registration has been completed otherwise %FALSE.
- *
- * Since: 3.0
- */
-PURPLE_IRCV3_AVAILABLE_IN_ALL
-gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connection);
-
-/**
  * purple_ircv3_connection_add_status_message:
  * @connection: The instance.
  * @message: The message.
@@ -157,7 +102,7 @@ gboolean purple_ircv3_connection_get_registered(PurpleIRCv3Connection *connectio
  * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
-void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, PurpleIRCv3Message *message);
+void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, IbisMessage *message);
 
 /**
  * purple_ircv3_connection_is_channel:

@@ -22,10 +22,11 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <ibis.h>
+
 #include "purpleircv3protocolconversation.h"
 
 #include "purpleircv3connection.h"
-#include "purpleircv3constants.h"
 #include "purpleircv3core.h"
 
 /******************************************************************************
@@ -42,6 +43,8 @@ purple_ircv3_protocol_conversation_send_message_async(PurpleProtocolConversation
 	PurpleIRCv3Connection *v3_connection = NULL;
 	PurpleAccount *account = NULL;
 	PurpleConnection *connection = NULL;
+	IbisClient *client = NULL;
+	IbisMessage *ibis_message = NULL;
 	GTask *task = NULL;
 	const char *id = NULL;
 
@@ -57,8 +60,12 @@ purple_ircv3_protocol_conversation_send_message_async(PurpleProtocolConversation
 		id = purple_conversation_get_name(conversation);
 	}
 
-	purple_ircv3_connection_writef(v3_connection, "PRIVMSG %s :%s", id,
-	                               purple_message_get_contents(message));
+	client = purple_ircv3_connection_get_client(v3_connection);
+
+	ibis_message = ibis_message_new(IBIS_MSG_PRIVMSG);
+	ibis_message_set_params(ibis_message, id,
+	                        purple_message_get_contents(message), NULL);
+	ibis_client_write(client, ibis_message);
 
 	task = g_task_new(protocol, cancellable, callback, data);
 	g_task_return_boolean(task, TRUE);
@@ -97,7 +104,8 @@ purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation
 	PurpleConnection *connection = NULL;
 	PurpleConversation *conversation = NULL;
 	PurpleConversationManager *manager = NULL;
-	GString *cmd = NULL;
+	IbisClient *client = NULL;
+	IbisMessage *message = NULL;
 	GTask *task = NULL;
 	const char *name = NULL;
 	const char *password = NULL;
@@ -130,13 +138,13 @@ purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation
 		return;
 	}
 
-	/* Build our join string. */
-	cmd = g_string_new(NULL);
-	g_string_append_printf(cmd, "%s %s", PURPLE_IRCV3_MSG_JOIN, name);
+	message = ibis_message_new(IBIS_MSG_JOIN);
 
 	password = purple_channel_join_details_get_password(details);
 	if(!purple_strempty(password)) {
-		g_string_append_printf(cmd, " %s", password);
+		ibis_message_set_params(message, name, password, NULL);
+	} else {
+		ibis_message_set_params(message, name, NULL);
 	}
 
 	conversation = g_object_new(
@@ -149,8 +157,8 @@ purple_ircv3_protocol_conversation_join_channel_async(PurpleProtocolConversation
 	purple_conversation_manager_register(manager, conversation);
 	g_clear_object(&conversation);
 
-	purple_ircv3_connection_writef(v3_connection, "%s", cmd->str);
-	g_string_free(cmd, TRUE);
+	client = purple_ircv3_connection_get_client(v3_connection);
+	ibis_client_write(client, message);
 
 	g_task_return_boolean(task, TRUE);
 	g_clear_object(&task);

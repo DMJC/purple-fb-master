@@ -30,37 +30,16 @@
 
 #include <glib.h>
 
+#include <ibis.h>
+
 #include <purple.h>
 
-#include "purpleircv3message.h"
 #include "purpleircv3version.h"
 
 G_BEGIN_DECLS
 
-/**
- * PurpleIRCv3MessageHandler:
- * @message: The [class@Message] to handle.
- * @error: (nullable): A return address for a [type@GLib.Error].
- * @data: The user data that was passed to [method@PurpleIRCv3.Parser.parse].
- *
- * Defines the type of a function that will be called to handle @message.
- *
- * Returns: %TRUE if the command was handled properly, otherwise %FALSE and
- *          @error may be set.
- *
- * Since: 3.0
- */
-PURPLE_IRCV3_AVAILABLE_TYPE_IN_3_0
-typedef gboolean (*PurpleIRCv3MessageHandler)(PurpleIRCv3Message *message,
-                                              GError **error,
-                                              gpointer data);
-
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_fallback(PurpleIRCv3Message *message, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status(PurpleIRCv3Message *message, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_status_ignore_param0(PurpleIRCv3Message *message, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_ping(PurpleIRCv3Message *message, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_privmsg(PurpleIRCv3Message *message, GError **error, gpointer data);
-G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_topic(PurpleIRCv3Message *message, GError **error, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_privmsg(IbisClient *client, const char *command, IbisMessage *message, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_topic(IbisClient *client, const char *command, IbisMessage *message, gpointer data);
 
 G_END_DECLS
 

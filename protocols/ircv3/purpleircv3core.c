@@ -30,7 +30,6 @@
 
 #include "purpleircv3core.h"
 
-#include "purpleircv3capabilities.h"
 #include "purpleircv3connection.h"
 #include "purpleircv3protocol.h"
 
@@ -77,7 +76,6 @@ purple_ircv3_load(GPluginPlugin *plugin, GError **error) {
 		return FALSE;
 	}
 
-	purple_ircv3_capabilities_register(GPLUGIN_NATIVE_PLUGIN(plugin));
 	purple_ircv3_connection_register(GPLUGIN_NATIVE_PLUGIN(plugin));
 	purple_ircv3_protocol_register(GPLUGIN_NATIVE_PLUGIN(plugin));
 
