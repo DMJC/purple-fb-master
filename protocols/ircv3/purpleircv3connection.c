@@ -50,6 +50,12 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleIRCv3Connection,
                                0,
                                G_ADD_PRIVATE_DYNAMIC(PurpleIRCv3Connection))
 
+static gboolean
+purple_ircv3_connection_unknown_message_cb(IbisClient *client,
+                                           const char *command,
+                                           IbisMessage *message,
+                                           gpointer data);
+
 /******************************************************************************
  * Helpers
  *****************************************************************************/
@@ -74,7 +80,9 @@ purple_ircv3_connection_add_message_handlers(PurpleIRCv3Connection *connection,
 	                        G_CALLBACK(purple_ircv3_message_handler_privmsg),
 	                        connection, G_CONNECT_DEFAULT);
 
-	g_warning("added all the signal");
+	g_signal_connect_object(client, "message",
+	                        G_CALLBACK(purple_ircv3_connection_unknown_message_cb),
+	                        connection, G_CONNECT_AFTER);
 }
 
 static void
@@ -111,6 +119,37 @@ purple_ircv3_connection_rejoin_channels(PurpleIRCv3Connection *connection) {
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
+static gboolean
+purple_ircv3_connection_unknown_message_cb(G_GNUC_UNUSED IbisClient *client,
+                                           G_GNUC_UNUSED const char *command,
+                                           IbisMessage *message,
+                                           gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+	PurpleMessage *purple_message = NULL;
+	char *contents = NULL;
+
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	contents = g_strdup_printf(_("unhandled message: '%s'"),
+	                           ibis_message_get_raw_message(message));
+
+	purple_message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
+		"author", ibis_message_get_source(message),
+		"contents", contents,
+		NULL);
+
+	purple_conversation_write_message(priv->status_conversation,
+	                                  purple_message);
+	g_clear_object(&purple_message);
+
+	g_free(contents);
+
+	return TRUE;
+}
+
 static void
 purple_ircv3_connection_connect_cb(GObject *source,
                                    G_GNUC_UNUSED GParamSpec *pspec,
