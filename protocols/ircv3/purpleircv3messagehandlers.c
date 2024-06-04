@@ -99,20 +99,22 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED IbisClient *client,
 		flags |= PURPLE_MESSAGE_NOTIFY;
 	}
 
-	/* Grab the msgid if one was provided. */
-	raw_tag = ibis_tags_lookup(tags, "msgid");
-	if(!purple_strempty(raw_tag)) {
-		id = raw_tag;
-	}
+	if(IBIS_IS_TAGS(tags)) {
+		/* Grab the msgid if one was provided. */
+		raw_tag = ibis_tags_lookup(tags, "msgid");
+		if(!purple_strempty(raw_tag)) {
+			id = raw_tag;
+		}
 
-	/* Determine the timestamp of the message. */
-	raw_tag = ibis_tags_lookup(tags, "time");
-	if(!purple_strempty(raw_tag)) {
-		GTimeZone *tz = g_time_zone_new_utc();
+		/* Determine the timestamp of the message. */
+		raw_tag = ibis_tags_lookup(tags, "time");
+		if(!purple_strempty(raw_tag)) {
+			GTimeZone *tz = g_time_zone_new_utc();
 
-		dt = g_date_time_new_from_iso8601(raw_tag, tz);
+			dt = g_date_time_new_from_iso8601(raw_tag, tz);
 
-		g_time_zone_unref(tz);
+			g_time_zone_unref(tz);
+		}
 	}
 
 	/* If the server didn't provide a time, use the current local time. */
