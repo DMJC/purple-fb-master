@@ -46,6 +46,7 @@ struct _PurpleConversation {
 
 	PurpleAvatar *avatar;
 	char *name;
+	char *alias;
 	char *title;
 	gboolean title_generated;
 
@@ -75,7 +76,9 @@ enum {
 	PROP_ACCOUNT,
 	PROP_AVATAR,
 	PROP_NAME,
+	PROP_ALIAS,
 	PROP_TITLE,
+	PROP_TITLE_FOR_DISPLAY,
 	PROP_TITLE_GENERATED,
 	PROP_FEATURES,
 	PROP_AGE_RESTRICTED,
@@ -461,6 +464,9 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 	case PROP_NAME:
 		purple_conversation_set_name(conversation, g_value_get_string(value));
 		break;
+	case PROP_ALIAS:
+		purple_conversation_set_alias(conversation, g_value_get_string(value));
+		break;
 	case PROP_TITLE:
 		purple_conversation_set_title(conversation, g_value_get_string(value));
 		break;
@@ -542,8 +548,15 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 	case PROP_NAME:
 		g_value_set_string(value, purple_conversation_get_name(conversation));
 		break;
+	case PROP_ALIAS:
+		g_value_set_string(value, purple_conversation_get_alias(conversation));
+		break;
 	case PROP_TITLE:
 		g_value_set_string(value, purple_conversation_get_title(conversation));
+		break;
+	case PROP_TITLE_FOR_DISPLAY:
+		g_value_set_string(value,
+		                   purple_conversation_get_title_for_display(conversation));
 		break;
 	case PROP_TITLE_GENERATED:
 		g_value_set_boolean(value,
@@ -667,6 +680,7 @@ purple_conversation_finalize(GObject *object) {
 	g_clear_pointer(&conversation->id, g_free);
 	g_clear_object(&conversation->avatar);
 	g_clear_pointer(&conversation->name, g_free);
+	g_clear_pointer(&conversation->alias, g_free);
 	g_clear_pointer(&conversation->title, g_free);
 
 	g_clear_pointer(&conversation->description, g_free);
@@ -765,6 +779,18 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
+	 * PurpleConversation:alias:
+	 *
+	 * An alias for the conversation that is local to the libpurple user.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ALIAS] = g_param_spec_string(
+		"alias", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
 	 * PurpleConversation:title:
 	 *
 	 * The title of the conversation.
@@ -776,6 +802,27 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"The title of the conversation.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:title-for-display:
+	 *
+	 * The title that should be displayed for the conversation based on which
+	 * properties are set.
+	 *
+	 * If [property@Conversation:alias] is set, that will be returned.
+	 *
+	 * If alias is not set but [property@Conversation:title] is set, then value
+	 * of title will be returned.
+	 *
+	 * As a fallback, [property@Conversation:id] will be returned if nothing
+	 * else is set.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_TITLE_FOR_DISPLAY] = g_param_spec_string(
+		"title-for-display", NULL, NULL,
+		NULL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversation:title-generated:
@@ -1220,6 +1267,7 @@ purple_conversation_set_title(PurpleConversation *conversation,
 		 */
 		g_object_freeze_notify(obj);
 		g_object_notify_by_pspec(obj, properties[PROP_TITLE]);
+		g_object_notify_by_pspec(obj, properties[PROP_TITLE_FOR_DISPLAY]);
 		purple_conversation_set_title_generated(conversation, FALSE);
 		g_object_thaw_notify(obj);
 	}
@@ -1861,5 +1909,43 @@ purple_conversation_set_avatar(PurpleConversation *conversation,
 	if(g_set_object(&conversation->avatar, avatar)) {
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_AVATAR]);
+	}
+}
+
+const char *
+purple_conversation_get_title_for_display(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	if(!purple_strempty(conversation->alias)) {
+		return conversation->alias;
+	}
+
+	if(!purple_strempty(conversation->title)) {
+		return conversation->title;
+	}
+
+	return conversation->id;
+}
+
+const char *
+purple_conversation_get_alias(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	return conversation->alias;
+}
+
+void
+purple_conversation_set_alias(PurpleConversation *conversation,
+                              const char *alias)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	if(g_set_str(&conversation->alias, alias)) {
+		GObject *obj = G_OBJECT(conversation);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_ALIAS]);
+		g_object_notify_by_pspec(obj, properties[PROP_TITLE_FOR_DISPLAY]);
+		g_object_thaw_notify(obj);
 	}
 }

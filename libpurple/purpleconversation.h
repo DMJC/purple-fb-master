@@ -912,6 +912,47 @@ PurpleAvatar *purple_conversation_get_avatar(PurpleConversation *conversation);
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_avatar(PurpleConversation *conversation, PurpleAvatar *avatar);
 
+/**
+ * purple_conversation_get_title_for_display:
+ * @conversation: The instance.
+ *
+ * Gets the title that should be displayed for @conversation.
+ *
+ * A full breakdown for how this works can be found in the documentation for
+ * [property@Conversation:title-for-display].
+ *
+ * Returns: The title to display.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+const char *purple_conversation_get_title_for_display(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_get_alias:
+ * @conversation: The instance.
+ *
+ * Gets the libpurple user defined alias for @conversation.
+ *
+ * Returns: (nullable): The alias or %NULL.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+const char *purple_conversation_get_alias(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_alias:
+ * @conversation: The instance.
+ * @alias: (nullable): The new alias.
+ *
+ * Sets the libpurple user defined alias of @conversation to @alias.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_conversation_set_alias(PurpleConversation *conversation, const char *alias);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONVERSATION_H */

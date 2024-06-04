@@ -23,6 +23,21 @@
 #include "test_ui.h"
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+test_purple_conversation_notify_counter_cb(GObject *obj,
+                                           G_GNUC_UNUSED GParamSpec *pspec,
+                                           gpointer data)
+{
+	guint *counter = data;
+
+	g_assert_true(PURPLE_IS_CONVERSATION(obj));
+
+	*counter = *counter + 1;
+}
+
+/******************************************************************************
  * Tests
  *****************************************************************************/
 static void
@@ -44,10 +59,12 @@ test_purple_conversation_properties(void) {
 	GDateTime *topic_updated = NULL;
 	GDateTime *topic_updated1 = NULL;
 	GListModel *members = NULL;
+	char *alias = NULL;
 	char *description = NULL;
 	char *id = NULL;
 	char *name = NULL;
 	char *title = NULL;
+	char *title_for_display = NULL;
 	char *topic = NULL;
 	char *user_nickname = NULL;
 	gboolean age_restricted = FALSE;
@@ -68,6 +85,7 @@ test_purple_conversation_properties(void) {
 		PURPLE_TYPE_CONVERSATION,
 		"account", account,
 		"age-restricted", TRUE,
+		"alias", "talky talk",
 		"avatar", avatar,
 		"created-on", created_on,
 		"creator", creator,
@@ -88,6 +106,7 @@ test_purple_conversation_properties(void) {
 	g_object_get(conversation,
 		"account", &account1,
 		"age-restricted", &age_restricted,
+		"alias", &alias,
 		"avatar", &avatar1,
 		"created-on", &created_on1,
 		"creator", &creator1,
@@ -99,6 +118,7 @@ test_purple_conversation_properties(void) {
 		"name", &name,
 		"tags", &tags,
 		"title", &title,
+		"title-for-display", &title_for_display,
 		"topic", &topic,
 		"topic-author", &topic_author1,
 		"topic-updated", &topic_updated1,
@@ -111,6 +131,9 @@ test_purple_conversation_properties(void) {
 	g_clear_object(&account1);
 
 	g_assert_true(age_restricted);
+
+	g_assert_cmpstr(alias, ==, "talky talk");
+	g_clear_pointer(&alias, g_free);
 
 	g_assert_true(avatar1 == avatar);
 	g_clear_object(&avatar1);
@@ -143,6 +166,9 @@ test_purple_conversation_properties(void) {
 
 	g_assert_cmpstr(title, ==, "test conversation");
 	g_clear_pointer(&title, g_free);
+
+	g_assert_cmpstr(title_for_display, ==, "talky talk");
+	g_clear_pointer(&title_for_display, g_free);
 
 	g_assert_cmpstr(topic, ==, "the topic...");
 	g_clear_pointer(&topic, g_free);
@@ -202,6 +228,70 @@ test_purple_conversation_set_topic_full(void) {
 	g_clear_object(&author);
 	g_clear_object(&account);
 	g_clear_object(&conversation);
+}
+
+static void
+test_purple_conversation_title_for_display(void) {
+	PurpleAccount *account = NULL;
+	PurpleConversation *conversation = NULL;
+	const char *title_for_display = NULL;
+	guint counter = 0;
+
+	account = purple_account_new("test", "test");
+	conversation = g_object_new(
+		PURPLE_TYPE_CONVERSATION,
+		"account", account,
+		"id", "id1",
+		NULL);
+	g_signal_connect(conversation, "notify::title-for-display",
+	                 G_CALLBACK(test_purple_conversation_notify_counter_cb),
+	                 &counter);
+
+	/* Make sure the defaults are all as expected. */
+	g_assert_cmpuint(counter, ==, 0);
+	title_for_display = purple_conversation_get_title_for_display(conversation);
+	g_assert_cmpstr(title_for_display, ==, "id1");
+
+	/* Set the alias, verify that the notify was sent for name-for-display and
+	 * that it returns the right value.
+	 */
+	purple_conversation_set_alias(conversation, "alias1");
+	g_assert_cmpuint(counter, ==, 1);
+	title_for_display = purple_conversation_get_title_for_display(conversation);
+	g_assert_cmpstr(title_for_display, ==, "alias1");
+
+	/* Set the title, which won't change the name for display because alias is
+	 * set, but it should still emit the signal because we don't track the
+	 * name-for-display in every setter.
+	 */
+	purple_conversation_set_title(conversation, "title1");
+	g_assert_cmpuint(counter, ==, 2);
+	title_for_display = purple_conversation_get_title_for_display(conversation);
+	g_assert_cmpstr(title_for_display, ==, "alias1");
+
+	/* Now set the alias to NULL which should emit the signal and
+	 * title_for_display should now return title1.
+	 */
+	purple_conversation_set_alias(conversation, NULL);
+	g_assert_cmpuint(counter, ==, 3);
+	title_for_display = purple_conversation_get_title_for_display(conversation);
+	g_assert_cmpstr(title_for_display, ==, "title1");
+
+	/* Finally remove the title as well, which should emit the signal and
+	 * get_title_for_display should return the id.
+	 */
+	purple_conversation_set_title(conversation, NULL);
+	g_assert_cmpuint(counter, ==, 4);
+	title_for_display = purple_conversation_get_title_for_display(conversation);
+	g_assert_cmpstr(title_for_display, ==, "id1");
+
+	/* We're done!! */
+	g_assert_finalize_object(conversation);
+
+	/* We can't use g_assert_finalize_object because accounts automatically
+	 * get added to the account manager.
+	 */
+	g_clear_object(&account);
 }
 
 /******************************************************************************
@@ -620,6 +710,8 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_conversation_properties);
 	g_test_add_func("/conversation/set-topic-full",
 	                test_purple_conversation_set_topic_full);
+	g_test_add_func("/conversation/title-for-display",
+	                test_purple_conversation_title_for_display);
 
 	g_test_add_func("/conversation/is-dm", test_purple_conversation_is_dm);
 	g_test_add_func("/conversation/is-group-dm",
