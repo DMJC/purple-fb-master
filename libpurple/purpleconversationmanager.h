@@ -63,6 +63,25 @@ PURPLE_AVAILABLE_TYPE_IN_3_0
 typedef void (*PurpleConversationManagerForeachFunc)(PurpleConversation *conversation, gpointer data);
 
 /**
+ * purple_conversation_manager_new:
+ * @filename: (nullable): The filename to serialize to.
+ *
+ * Creates a new conversation manager that will be backed by @filename.
+ *
+ * This is typically only called by user interfaces in
+ * [vfunc@Ui.get_conversation_manager].
+ *
+ * If you need a [class@ConversationManager] instance, you probably want to use
+ * [func@ConversationManager.get_default].
+ *
+ * Returns: (transfer full): The new instance.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleConversationManager *purple_conversation_manager_new(const char *filename);
+
+/**
  * purple_conversation_manager_get_default:
  *
  * Gets the default instance of #PurpleConversationManager.  This instance
@@ -74,6 +93,19 @@ typedef void (*PurpleConversationManagerForeachFunc)(PurpleConversation *convers
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversationManager *purple_conversation_manager_get_default(void);
+
+/**
+ * purple_conversation_manager_get_filename:
+ * @manager: The instance.
+ *
+ * Gets the filename the @manager should be serializing itself to.
+ *
+ * Returns: (transfer none) (nullable): The filename.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+const char *purple_conversation_manager_get_filename(PurpleConversationManager *manager);
 
 /**
  * purple_conversation_manager_register:

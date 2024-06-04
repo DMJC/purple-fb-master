@@ -307,6 +307,20 @@ purple_ui_class_init(PurpleUiClass *klass) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
+PurpleConversationManager *
+purple_ui_get_conversation_manager(PurpleUi *ui) {
+	PurpleUiClass *klass = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_UI(ui), NULL);
+
+	klass = PURPLE_UI_GET_CLASS(ui);
+	if(klass != NULL && klass->get_conversation_manager != NULL) {
+		return klass->get_conversation_manager(ui);
+	}
+
+	return NULL;
+}
+
 const char *
 purple_ui_get_id(PurpleUi *ui) {
 	PurpleUiPrivate *priv = NULL;

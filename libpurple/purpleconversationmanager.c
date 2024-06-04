@@ -22,9 +22,18 @@
 
 #include "purpleconversationmanager.h"
 
+#include "core.h"
 #include "purplecontact.h"
 #include "purpleprivate.h"
+#include "purpleui.h"
 #include "util.h"
+
+enum {
+	PROP_0,
+	PROP_FILENAME,
+	N_PROPERTIES,
+};
+static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 enum {
 	SIG_REGISTERED,
@@ -37,6 +46,8 @@ static guint signals[N_SIGNALS] = {0, };
 
 struct _PurpleConversationManager {
 	GObject parent;
+
+	char *filename;
 
 	GHashTable *conversations;
 };
@@ -51,6 +62,17 @@ typedef gboolean (*PurpleConversationManagerCompareFunc)(PurpleConversation *con
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static void
+purple_conversation_manager_set_filename(PurpleConversationManager *manager,
+                                         const char *filename)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager));
+
+	if(g_set_str(&manager->filename, filename)) {
+		g_object_notify_by_pspec(G_OBJECT(manager), properties[PROP_FILENAME]);
+	}
+}
+
 static gboolean
 purple_conversation_has_id(PurpleConversation *conversation, gpointer data) {
 	const char *needle = data;
@@ -138,8 +160,44 @@ purple_conversation_manager_finalize(GObject *obj) {
 	PurpleConversationManager *manager = PURPLE_CONVERSATION_MANAGER(obj);
 
 	g_hash_table_destroy(manager->conversations);
+	g_clear_pointer(&manager->filename, g_free);
 
 	G_OBJECT_CLASS(purple_conversation_manager_parent_class)->finalize(obj);
+}
+
+static void
+purple_conversation_manager_get_property(GObject *obj, guint param_id,
+                                         GValue *value, GParamSpec *pspec)
+{
+	PurpleConversationManager *manager = PURPLE_CONVERSATION_MANAGER(obj);
+
+	switch(param_id) {
+	case PROP_FILENAME:
+		g_value_set_string(value,
+		                   purple_conversation_manager_get_filename(manager));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
+	}
+}
+
+static void
+purple_conversation_manager_set_property(GObject *obj, guint param_id,
+                                         const GValue *value,
+                                         GParamSpec *pspec)
+{
+	PurpleConversationManager *manager = PURPLE_CONVERSATION_MANAGER(obj);
+
+	switch(param_id) {
+	case PROP_FILENAME:
+		purple_conversation_manager_set_filename(manager,
+		                                         g_value_get_string(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
+	}
 }
 
 static void
@@ -147,6 +205,24 @@ purple_conversation_manager_class_init(PurpleConversationManagerClass *klass) {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
 	obj_class->finalize = purple_conversation_manager_finalize;
+	obj_class->get_property = purple_conversation_manager_get_property;
+	obj_class->set_property = purple_conversation_manager_set_property;
+
+	/**
+	 * PurpleConversationManager:filename:
+	 *
+	 * The filename that the manager should save its contents to.
+	 *
+	 * If this is %NULL, no serialization will be performed.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_FILENAME] = g_param_spec_string(
+		"filename", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
 	 * PurpleConversationManager::registered:
@@ -249,7 +325,13 @@ purple_conversation_manager_class_init(PurpleConversationManagerClass *klass) {
 void
 purple_conversation_manager_startup(void) {
 	if(default_manager == NULL) {
-		default_manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
+		PurpleUi *ui = purple_core_get_ui();
+
+		default_manager = purple_ui_get_conversation_manager(ui);
+		if(PURPLE_IS_CONVERSATION_MANAGER(default_manager)) {
+			g_object_add_weak_pointer(G_OBJECT(default_manager),
+			                          (gpointer *)&default_manager);
+		}
 	}
 }
 
@@ -262,8 +344,23 @@ purple_conversation_manager_shutdown(void) {
  * Public API
  *****************************************************************************/
 PurpleConversationManager *
+purple_conversation_manager_new(const char *filename) {
+	return g_object_new(
+		PURPLE_TYPE_CONVERSATION_MANAGER,
+		"filename", filename,
+		NULL);
+}
+
+PurpleConversationManager *
 purple_conversation_manager_get_default(void) {
 	return default_manager;
+}
+
+const char *
+purple_conversation_manager_get_filename(PurpleConversationManager *manager) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MANAGER(manager), NULL);
+
+	return manager->filename;
 }
 
 gboolean

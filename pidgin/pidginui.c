@@ -147,6 +147,18 @@ pidgin_ui_stop(G_GNUC_UNUSED PurpleUi *ui) {
 	g_application_quit(g_application_get_default());
 }
 
+static PurpleConversationManager *
+pidgin_ui_get_conversation_manager(G_GNUC_UNUSED PurpleUi *ui) {
+	PurpleConversationManager *manager = NULL;
+	char *filename = NULL;
+
+	filename = g_build_filename(purple_config_dir(), "conversations.db", NULL);
+	manager = purple_conversation_manager_new(filename);
+	g_free(filename);
+
+	return manager;
+}
+
 static gpointer
 pidgin_ui_get_settings_backend(G_GNUC_UNUSED PurpleUi *ui) {
 	GSettingsBackend *backend = NULL;
@@ -202,6 +214,7 @@ pidgin_ui_class_init(PidginUiClass *klass) {
 	ui_class->prefs_init = pidgin_ui_prefs_init;
 	ui_class->start = pidgin_ui_start;
 	ui_class->stop = pidgin_ui_stop;
+	ui_class->get_conversation_manager = pidgin_ui_get_conversation_manager;
 	ui_class->get_settings_backend = pidgin_ui_get_settings_backend;
 	ui_class->get_history_adapter = pidgin_ui_get_history_adapter;
 	ui_class->get_presence_manager = pidgin_ui_get_presence_manager;

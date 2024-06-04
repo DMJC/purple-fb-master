@@ -42,6 +42,36 @@ test_purple_conversation_manager_counter_cb(PurpleConversationManager *manager,
  * Tests
  *****************************************************************************/
 static void
+test_purple_conversation_manager_new_null(void) {
+	PurpleConversationManager *manager = NULL;
+	const char *filename = NULL;
+
+	manager = purple_conversation_manager_new(NULL);
+
+	g_assert_true(PURPLE_IS_CONVERSATION_MANAGER(manager));
+
+	filename = purple_conversation_manager_get_filename(manager);
+	g_assert_null(filename);
+
+	g_assert_finalize_object(manager);
+}
+
+static void
+test_purple_conversation_manager_new_filename(void) {
+	PurpleConversationManager *manager = NULL;
+	const char *filename = NULL;
+
+	manager = purple_conversation_manager_new("convos.db");
+
+	g_assert_true(PURPLE_IS_CONVERSATION_MANAGER(manager));
+
+	filename = purple_conversation_manager_get_filename(manager);
+	g_assert_cmpstr(filename, ==, "convos.db");
+
+	g_assert_finalize_object(manager);
+}
+
+static void
 test_purple_conversation_manager_register_unregister(void) {
 	PurpleAccount *account = NULL;
 	PurpleConversationManager *manager = NULL;
@@ -335,6 +365,11 @@ main(gint argc, gchar *argv[]) {
 	g_test_init(&argc, &argv, NULL);
 
 	test_ui_purple_init();
+
+	g_test_add_func("/conversation-manager/new/null",
+	                test_purple_conversation_manager_new_null);
+	g_test_add_func("/conversation-manager/new/filename",
+	                test_purple_conversation_manager_new_filename);
 
 	g_test_add_func("/conversation-manager/register-unregister",
 	                test_purple_conversation_manager_register_unregister);

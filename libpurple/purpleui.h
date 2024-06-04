@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleconversationmanager.h"
 #include "purplehistoryadapter.h"
 #include "purplepresencemanager.h"
 #include "purpleversion.h"
@@ -76,13 +77,30 @@ struct _PurpleUiClass {
 	gboolean (*start)(PurpleUi *ui, GError **error);
 	void (*stop)(PurpleUi *ui);
 
-	gpointer (*get_settings_backend)(PurpleUi *ui);
+	PurpleConversationManager *(*get_conversation_manager)(PurpleUi *ui);
 	PurpleHistoryAdapter *(*get_history_adapter)(PurpleUi *ui);
 	PurplePresenceManager *(*get_presence_manager)(PurpleUi *ui);
+	gpointer (*get_settings_backend)(PurpleUi *ui);
 
 	/*< private >*/
 	gpointer reserved[4];
 };
+
+/**
+ * purple_ui_get_conversation_manager:
+ * @ui: The instance.
+ *
+ * Gets the default conversation manager manage from @ui.
+ *
+ * Note: This should only be called by libpurple which will manage it's life
+ * cycle.
+ *
+ * Returns: (transfer full): The conversation manager for @ui.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleConversationManager *purple_ui_get_conversation_manager(PurpleUi *ui);
 
 /**
  * purple_ui_get_id:

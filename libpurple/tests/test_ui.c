@@ -56,6 +56,11 @@ test_purple_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	return TRUE;
 }
 
+static PurpleConversationManager *
+test_purple_ui_get_conversation_manager(G_GNUC_UNUSED PurpleUi *ui) {
+	return purple_conversation_manager_new(NULL);
+}
+
 static gpointer
 test_purple_ui_get_settings_backend(G_GNUC_UNUSED PurpleUi *ui) {
 	return g_memory_settings_backend_new();
@@ -70,6 +75,8 @@ test_purple_ui_class_init(TestPurpleUiClass *klass) {
 	PurpleUiClass *ui_class = PURPLE_UI_CLASS(klass);
 
 	ui_class->start = test_purple_ui_start;
+	ui_class->get_conversation_manager =
+		test_purple_ui_get_conversation_manager;
 	ui_class->get_settings_backend = test_purple_ui_get_settings_backend;
 }
 
