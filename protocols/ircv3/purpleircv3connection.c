@@ -24,6 +24,8 @@
 
 #include <birb.h>
 
+#include <hasl.h>
+
 #include "purpleircv3connection.h"
 
 #include "purpleircv3core.h"
@@ -55,6 +57,10 @@ purple_ircv3_connection_unknown_message_cb(IbisClient *client,
                                            const char *command,
                                            IbisMessage *message,
                                            gpointer data);
+
+static gboolean
+purple_ircv3_connection_saslsuccess(IbisClient *client, const char *command,
+                                    IbisMessage *message, gpointer data);
 
 /******************************************************************************
  * Helpers
@@ -116,6 +122,50 @@ purple_ircv3_connection_rejoin_channels(PurpleIRCv3Connection *connection) {
 	}
 }
 
+static inline void
+purple_ircv3_connection_setup_sasl(PurpleIRCv3Connection *connection,
+                                   PurpleAccount *account)
+{
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+	HaslContext *hasl_context = NULL;
+	const char *value = NULL;
+	gboolean clear_text = FALSE;
+
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	hasl_context = hasl_context_new();
+
+	value = purple_account_get_string(account, "sasl-login-name", NULL);
+	if(!purple_strempty(value)) {
+		hasl_context_set_username(hasl_context, value);
+	} else {
+		hasl_context_set_username(hasl_context,
+		                          ibis_client_get_nick(priv->client));
+
+		/* Since the user doesn't have a SASL login name set, we'll listen for
+		 * IBIS_RPL_SASLSUCCESS and use that to set the login name to the
+		 * username in HASL which worked if the signal handler gets called.
+		 */
+		g_signal_connect_object(priv->client, "message::" IBIS_RPL_SASLSUCCESS,
+		                        G_CALLBACK(purple_ircv3_connection_saslsuccess),
+		                        connection, G_CONNECT_DEFAULT);
+	}
+
+	value = purple_connection_get_password(PURPLE_CONNECTION(connection));
+	hasl_context_set_password(hasl_context, value);
+
+	value = purple_account_get_string(account, "sasl-mechanisms", NULL);
+	if(!purple_strempty(value)) {
+		hasl_context_set_allowed_mechanisms(hasl_context, value);
+	}
+
+	clear_text = purple_account_get_bool(account, "plain-sasl-in-clear", FALSE);
+	hasl_context_set_allow_clear_text(hasl_context, clear_text);
+
+	ibis_client_set_hasl_context(priv->client, hasl_context);
+	g_clear_object(&hasl_context);
+}
+
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -148,6 +198,39 @@ purple_ircv3_connection_unknown_message_cb(G_GNUC_UNUSED IbisClient *client,
 	g_free(contents);
 
 	return TRUE;
+}
+
+static gboolean
+purple_ircv3_connection_saslsuccess(IbisClient *client,
+                                    G_GNUC_UNUSED const char *command,
+                                    G_GNUC_UNUSED IbisMessage *message,
+                                    gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+	PurpleAccount *account = NULL;
+	const char *value = NULL;
+
+	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
+	value = purple_account_get_string(account, "sasl-login-name", NULL);
+
+	/* If the sasl-login-name is empty, we set it to the current username in
+	 * our hasl context that was used to login.
+	 */
+	if(purple_strempty(value)) {
+		HaslContext *hasl_context = NULL;
+
+		hasl_context = ibis_client_get_hasl_context(client);
+		if(HASL_IS_CONTEXT(hasl_context)) {
+			purple_account_set_string(account, "sasl-login-name",
+			                          hasl_context_get_username(hasl_context));
+
+		}
+	}
+
+	/* We don't actually handle SASLSUCCESS, but we just needed to know if it
+	 * was sent.
+	 */
+	return FALSE;
 }
 
 static void
@@ -239,6 +322,8 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 		default_port = PURPLE_IRCV3_DEFAULT_PLAIN_PORT;
 	}
 	port = purple_account_get_int(account, "port", default_port);
+
+	purple_ircv3_connection_setup_sasl(connection, account);
 
 	resolver = purple_proxy_get_proxy_resolver(account, &local_error);
 	if(local_error != NULL) {
