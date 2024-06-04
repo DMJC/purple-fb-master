@@ -32,7 +32,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
           <object class="PidginInfoPane" id="info_pane">
             <property name="hexpand">1</property>
             <binding name="title">
-              <lookup name="title" type="PurpleConversation">
+              <lookup name="title-for-display" type="PurpleConversation">
                 <lookup name="conversation">PidginConversation</lookup>
               </lookup>
             </binding>

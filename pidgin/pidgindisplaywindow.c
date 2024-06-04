@@ -457,9 +457,9 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 				pidgin_display_item_set_icon_name(item, icon_name);
 			}
 
-			g_object_bind_property(purple_conversation, "title",
+			g_object_bind_property(purple_conversation, "title-for-display",
 			                       item, "title",
-			                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+			                       G_BINDING_SYNC_CREATE);
 
 			g_list_store_append(window->conversation_model, item);
 			g_clear_object(&item);
