@@ -677,6 +677,7 @@ purple_conversation_finalize(GObject *object) {
 
 	purple_request_close_with_handle(conversation);
 
+	g_clear_object(&conversation->account);
 	g_clear_pointer(&conversation->id, g_free);
 	g_clear_object(&conversation->avatar);
 	g_clear_pointer(&conversation->name, g_free);

@@ -148,6 +148,89 @@ purple_protocol_conversation_create_conversation_finish(PurpleProtocolConversati
 	return FALSE;
 }
 
+gboolean
+purple_protocol_conversation_implements_leave_conversation(PurpleProtocolConversation *protocol)
+{
+	PurpleProtocolConversation *protocol_conversation = NULL;
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
+
+	protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol_conversation);
+
+	if(iface->leave_conversation_async == NULL) {
+		return FALSE;
+	}
+
+	if(iface->leave_conversation_finish == NULL) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+void
+purple_protocol_conversation_leave_conversation_async(PurpleProtocolConversation *protocol,
+                                                      PurpleConversation *conversation,
+                                                      GCancellable *cancellable,
+                                                      GAsyncReadyCallback callback,
+                                                      gpointer data)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol));
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface != NULL && iface->leave_conversation_async != NULL) {
+		iface->leave_conversation_async(protocol, conversation, cancellable,
+		                                callback, data);
+	} else {
+		GTask *task = NULL;
+
+		task = g_task_new(protocol, cancellable, callback, data);
+		g_task_return_new_error(task, PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
+		                        "%s does not implement leave_conversation_async",
+		                        G_OBJECT_TYPE_NAME(protocol));
+		g_task_set_source_tag(task,
+		                      purple_protocol_conversation_leave_conversation_async);
+
+		g_clear_object(&task);
+	}
+}
+
+gboolean
+purple_protocol_conversation_leave_conversation_finish(PurpleProtocolConversation *protocol,
+                                                       GAsyncResult *result,
+                                                       GError **error)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface != NULL && iface->leave_conversation_finish != NULL) {
+		return iface->leave_conversation_finish(protocol, result, error);
+	}
+
+	if(G_IS_TASK(result)) {
+		GTask *task = G_TASK(result);
+		gpointer source = NULL;
+
+		source = g_task_get_source_tag(task);
+		if(source == purple_protocol_conversation_leave_conversation_async) {
+			return g_task_propagate_boolean(task, error);
+		} else {
+			g_warning("%s does not implement leave_conversation_finish",
+			          G_OBJECT_TYPE_NAME(protocol));
+		}
+	}
+
+	return FALSE;
+}
+
 void
 purple_protocol_conversation_send_message_async(PurpleProtocolConversation *protocol,
                                                 PurpleConversation *conversation,

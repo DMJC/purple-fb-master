@@ -77,6 +77,9 @@ struct _PurpleProtocolConversationInterface {
 	void (*create_conversation_async)(PurpleProtocolConversation *protocol, PurpleAccount *account, PurpleCreateConversationDetails *details, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	PurpleConversation *(*create_conversation_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
+	void (*leave_conversation_async)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	gboolean (*leave_conversation_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
 	void (*send_message_async)(PurpleProtocolConversation *protocol, PurpleConversation *conversation, PurpleMessage *message, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
 	gboolean (*send_message_finish)(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
@@ -170,6 +173,59 @@ void purple_protocol_conversation_create_conversation_async(PurpleProtocolConver
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversation *purple_protocol_conversation_create_conversation_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
+
+/**
+ * purple_protocol_conversation_implements_leave_conversation:
+ * @protocol: The instance.
+ *
+ * Checks if @protocol implements
+ * [vfunc@ProtocolConversation.leave_conversation_async] and
+ * [vfunc@ProtocolConversation.leave_conversation_finish].
+ *
+ * Returns: %TRUE if everything is implemented, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_protocol_conversation_implements_leave_conversation(PurpleProtocolConversation *protocol);
+
+/**
+ * purple_protocol_conversation_leave_conversation_async:
+ * @protocol: The instance.
+ * @conversation: The conversation to leave.
+ * @cancellable: (nullable): optional GCancellable object, %NULL to ignore.
+ * @callback: (nullable) (scope async): The callback to call after the
+ *            conversation has been created.
+ * @data: (nullable): Optional user data to pass to @callback.
+ *
+ * Attempts to leave @conversation.
+ *
+ * This needs to support all conversation types that @protocol supports.
+ *
+ * Call [method@ProtocolConversation.leave_conversation_finish] from @callback
+ * to determine whether or not leaving was successful.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_protocol_conversation_leave_conversation_async(PurpleProtocolConversation *protocol, PurpleConversation *conversation, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_protocol_conversation_leave_conversation_finish:
+ * @protocol: The instance.
+ * @result: The result that was passed to the callback.
+ * @error: A return address for a #GError.
+ *
+ * Finishes a previous call to
+ * [method@ProtocolConversation.leave_conversation_async].
+ *
+ * Returns: %TRUE if the conversation was left successfully, otherwise %FALSE
+ *          with @error set.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_protocol_conversation_leave_conversation_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 /**
  * purple_protocol_conversation_send_message_async:
