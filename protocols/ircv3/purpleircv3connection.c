@@ -86,6 +86,13 @@ purple_ircv3_connection_add_message_handlers(PurpleIRCv3Connection *connection,
 	                        G_CALLBACK(purple_ircv3_message_handler_privmsg),
 	                        connection, G_CONNECT_DEFAULT);
 
+	g_signal_connect_object(client, "message::" IBIS_MSG_JOIN,
+	                        G_CALLBACK(purple_ircv3_message_handler_join),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_MSG_PART,
+	                        G_CALLBACK(purple_ircv3_message_handler_part),
+	                        connection, G_CONNECT_DEFAULT);
+
 	g_signal_connect_object(client, "message",
 	                        G_CALLBACK(purple_ircv3_connection_unknown_message_cb),
 	                        connection, G_CONNECT_AFTER);
