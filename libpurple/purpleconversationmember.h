@@ -129,6 +129,50 @@ PurpleTypingState purple_conversation_member_get_typing_state(PurpleConversation
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_member_set_typing_state(PurpleConversationMember *member, PurpleTypingState state, guint seconds);
 
+/**
+ * purple_conversation_member_get_nickname:
+ * @member: The instance.
+ *
+ * Sets the custom nickname for the remote user.
+ *
+ * Returns: (nullable): The custom nickname if set, otherwise %NULL.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+const char *purple_conversation_member_get_nickname(PurpleConversationMember *member);
+
+/**
+ * purple_conversation_member_set_nickname:
+ * @member: The instance.
+ * @nickname: (nullable): The new nickname.
+ *
+ * Sets the custom nickname for @member.
+ *
+ * This can be unset by passing in %NULL for @nickname.
+ *
+ * > Note: This should typically only be called by protocol plugins.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_conversation_member_set_nickname(PurpleConversationMember *member, const char *nickname);
+
+/**
+ * purple_conversation_member_get_name_for_display:
+ * @member: The instance.
+ *
+ * Gets the name that should be displayed for @member.
+ *
+ * See [property@ConversationMember:name-for-display] for more information.
+ *
+ * Returns: (transfer none): The name that should be displayed for @member.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+const char *purple_conversation_member_get_name_for_display(PurpleConversationMember *member);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONVERSATION_MEMBER_H */

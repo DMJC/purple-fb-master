@@ -21,6 +21,21 @@
 #include <purple.h>
 
 /******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static void
+test_purple_conversation_member_notify_counter(GObject *self,
+                                               G_GNUC_UNUSED GParamSpec *pspec,
+                                               gpointer data)
+{
+	guint *counter = data;
+
+	g_assert_true(PURPLE_IS_CONVERSATION_MEMBER(self));
+
+	*counter = *counter + 1;
+}
+
+/******************************************************************************
  * Tests
  *****************************************************************************/
 static void
@@ -45,6 +60,8 @@ test_purple_conversation_member_properties(void) {
 	PurpleConversationMember *member = NULL;
 	PurpleTags *tags = NULL;
 	PurpleTypingState typing_state = PURPLE_TYPING_STATE_NONE;
+	char *name_for_display = NULL;
+	char *nickname = NULL;
 
 	info = purple_contact_info_new("abc123");
 
@@ -55,27 +72,81 @@ test_purple_conversation_member_properties(void) {
 	member = g_object_new(
 		PURPLE_TYPE_CONVERSATION_MEMBER,
 		"contact-info", info,
+		"nickname", "pidgy",
 		"typing-state", PURPLE_TYPING_STATE_TYPING,
 		NULL);
 
 	/* Now use g_object_get to read all of the properties. */
 	g_object_get(member,
 		"contact-info", &info1,
+		"name-for-display", &name_for_display,
+		"nickname", &nickname,
 		"tags", &tags,
 		"typing-state", &typing_state,
 		NULL);
 
-	/* Compare all the things. */
 	g_assert_true(info1 == info);
-	g_assert_true(PURPLE_IS_TAGS(tags));
-	g_assert_cmpint(typing_state, ==, PURPLE_TYPING_STATE_TYPING);
-
-	/* Free/unref all the things. */
 	g_clear_object(&info1);
+
+	g_assert_cmpstr(name_for_display, ==, "pidgy");
+	g_clear_pointer(&name_for_display, g_free);
+
+	g_assert_cmpstr(nickname, ==, "pidgy");
+	g_clear_pointer(&nickname, g_free);
+
+	g_assert_true(PURPLE_IS_TAGS(tags));
 	g_clear_object(&tags);
 
-	g_clear_object(&info);
-	g_clear_object(&member);
+	g_assert_cmpint(typing_state, ==, PURPLE_TYPING_STATE_TYPING);
+
+	g_assert_finalize_object(member);
+	g_assert_finalize_object(info);
+}
+
+static void
+test_purple_conversation_member_name_for_display(void) {
+	PurpleContactInfo *info = NULL;
+	PurpleConversationMember *member = NULL;
+	const char *name_for_display = NULL;
+	guint counter = 0;
+
+	info = purple_contact_info_new("abc123");
+	member = purple_conversation_member_new(info);
+	g_signal_connect(member, "notify::name-for-display",
+	                 G_CALLBACK(test_purple_conversation_member_notify_counter),
+	                 &counter);
+
+	/* Make sure our counter is still 0. */
+	g_assert_cmpuint(counter, ==, 0);
+
+	/* Make sure the default falls back to the contact info's id. */
+	name_for_display = purple_conversation_member_get_name_for_display(member);
+	g_assert_cmpstr(name_for_display, ==, "abc123");
+
+	/* Set the username on the contact info and make sure it propagates up. */
+	purple_contact_info_set_username(info, "tron");
+	name_for_display = purple_conversation_member_get_name_for_display(member);
+	g_assert_cmpstr(name_for_display, ==, "tron");
+	g_assert_cmpuint(counter, ==, 1);
+
+	/* Set the nickname on the conversation member and make sure that takes
+	 * precedence.
+	 */
+	purple_conversation_member_set_nickname(member, "rinzler");
+	name_for_display = purple_conversation_member_get_name_for_display(member);
+	g_assert_cmpstr(name_for_display, ==, "rinzler");
+	g_assert_cmpuint(counter, ==, 2);
+
+	/* Remove the nickname and verify it falls back to the value from the
+	 * contact info.
+	 */
+	purple_conversation_member_set_nickname(member, NULL);
+	name_for_display = purple_conversation_member_get_name_for_display(member);
+	g_assert_cmpstr(name_for_display, ==, "tron");
+	g_assert_cmpuint(counter, ==, 3);
+
+	g_assert_finalize_object(member);
+	g_assert_finalize_object(info);
 }
 
 /******************************************************************************
@@ -162,6 +233,8 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_conversation_member_new);
 	g_test_add_func("/conversation-member/properties",
 	                test_purple_conversation_member_properties);
+	g_test_add_func("/conversation-member/name-for-display",
+	                test_purple_conversation_member_name_for_display);
 
 	g_test_add_func("/conversation-member/typing-state/timeout",
 	                test_purple_conversation_member_typing_state_timeout);
