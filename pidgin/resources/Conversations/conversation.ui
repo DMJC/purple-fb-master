@@ -121,11 +121,18 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                 <property name="model">
                   <object class="GtkSingleSelection">
                     <property name="autoselect">false</property>
-                    <binding name="model">
-                      <lookup name="members" type="PurpleConversation">
-                        <lookup name="conversation">PidginConversation</lookup>
-                      </lookup>
-                    </binding>
+                    <property name="model">
+                      <object class="GtkSortListModel">
+                        <property name="sorter">
+                          <object class="GtkCustomSorter" id="memberlist_sorter"/>
+                        </property>
+                        <binding name="model">
+                          <lookup name="members" type="PurpleConversation">
+                            <lookup name="conversation">PidginConversation</lookup>
+                          </lookup>
+                        </binding>
+                      </object>
+                    </property>
                   </object>
                 </property>
               </object>

@@ -48,6 +48,8 @@ struct _PidginConversation {
 	GtkWidget *history;
 	GtkAdjustment *history_adjustment;
 
+	GtkCustomSorter *memberlist_sorter;
+
 	GtkWidget *input;
 };
 
@@ -340,6 +342,24 @@ pidgin_conversation_member_list_context_cb(GtkGestureSingle *self,
 	pidgin_contact_info_menu_popup(info, account, parent, x, y);
 }
 
+static int
+pidgin_conversation_member_list_sort(gconstpointer a, gconstpointer b,
+                                     G_GNUC_UNUSED gpointer data)
+{
+	PurpleConversationMember *member_a = NULL;
+	PurpleConversationMember *member_b = NULL;
+	PurpleContactInfo *info_a = NULL;
+	PurpleContactInfo *info_b = NULL;
+
+	member_a = PURPLE_CONVERSATION_MEMBER((gpointer)a);
+	member_b = PURPLE_CONVERSATION_MEMBER((gpointer)b);
+
+	info_a = purple_conversation_member_get_contact_info(member_a);
+	info_b = purple_conversation_member_get_contact_info(member_b);
+
+	return purple_contact_info_compare(info_a, info_b);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -391,6 +411,10 @@ pidgin_conversation_set_property(GObject *obj, guint param_id,
 static void
 pidgin_conversation_init(PidginConversation *conversation) {
 	gtk_widget_init_template(GTK_WIDGET(conversation));
+
+	gtk_custom_sorter_set_sort_func(conversation->memberlist_sorter,
+	                                pidgin_conversation_member_list_sort,
+	                                NULL, NULL);
 }
 
 static void
@@ -429,6 +453,8 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	                                     history);
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     history_adjustment);
+	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
+	                                     memberlist_sorter);
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     input);
 
