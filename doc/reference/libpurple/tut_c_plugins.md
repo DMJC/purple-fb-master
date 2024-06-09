@@ -26,41 +26,37 @@ different?
 #include <purple.h>
 
 static GPluginPluginInfo *
-hello_world_query(GError **error)
-{
+hello_world_query(GError **error) {
 	const gchar * const authors[] = {
-		"Author Name <e@mail>",
+		"Author Name <aname@example.com>",
 		NULL
 	};
 
-	/* For specific notes on the meanings of each of these members, consult the
-	   C Plugin Howto on the website. */
 	return purple_plugin_info_new (
-		"name",         "Hello World!",
-		"version",      VERSION,
-		"category",     "Example",
-		"summary",      "Hello World Plugin",
-		"description",  "Hello World Plugin",
-		"authors",      authors,
-		"website",      "http://helloworld.tld",
-		"abi-version",  PURPLE_ABI_VERSION,
+		"id", "hello_world",
+		"name", "Hello World!",
+		"version", "1.0",
+		"category", "Example",
+		"summary", "Hello World Plugin",
+		"description", "Displays a \"Hello World!\" message when loaded",
+		"authors", authors,
+		"website", "http://helloworld.tld",
+		"abi-version", PURPLE_ABI_VERSION,
 		NULL
 	);
 }
 
 static gboolean
-hello_world_load(GPluginPlugin *plugin, GError **error)
-{
+hello_world_load(GPluginPlugin *plugin, GError **error) {
 	purple_notify_message(plugin, PURPLE_NOTIFY_MSG_INFO, "Hello World!",
-                        "This is the Hello World! plugin :)",
-                        NULL, NULL, NULL, NULL);
+	                      "This is the Hello World! plugin :)",
+	                      NULL, NULL, NULL, NULL);
 
 	return TRUE;
 }
 
 static gboolean
-hello_world_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error)
-{
+hello_world_unload(GPluginPlugin *plugin, gboolean shutdown, GError **error) {
 	return TRUE;
 }
 
@@ -100,3 +96,44 @@ can call `g_set_error()` on the `error` argument and return `FALSE`.
 Finally we have `GPLUGIN_NATIVE_PLUGIN_DECLARE()`. It is a helper macro that
 makes creating plugins easier. It has a single argument which is the prefix
 used for the `_query`, `_load`, and `_unload` functions.
+
+### Building
+
+You may want to compile your plugin by using your libpurple from the packages
+on your system. You can easily do this with meson build system. Let's say
+you've already wrote the hello world plugin and saved it as `hello_world.c`.
+Create a file named `meson.build`:
+
+```python
+project('hello_world_plugin', 'c')
+
+libpurple_dep = dependency('purple-3')
+
+PURPLE_PLUGINDIR = libpurple_dep.get_pkgconfig_variable('plugindir')
+
+library('libhelloworld', 'hello_world.c',
+	c_args : [
+		'-DG_LOG_USE_STRUCTURED',
+		'-DG_LOG_DOMAIN="PurplePlugin-HelloWorld"'
+	],
+	dependencies : [libpurple_dep],
+	name_prefix : '',
+	install : true,
+	install_dir : PURPLE_PLUGINDIR)
+```
+
+This `meson.build` file will build your plugin and install it into the right
+location for libpurple to find it.
+
+If you're using this example to compile your own plugin. You
+should change the project name at the beginning of the file and change the
+library name which in this case is `libhelloworld`. You will also need to
+change the `G_LOG_DOMAIN` macro to your own log domain.
+
+Now, you can quickly build your plugin with the following commands:
+
+```
+meson setup build
+meson compile -C build
+meson install -C build
+```
