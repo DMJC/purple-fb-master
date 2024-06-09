@@ -107,6 +107,21 @@ pidgin_conversation_set_tooltip_for_timestamp(GtkTooltip *tooltip,
 	return TRUE;
 }
 
+/* This is used to call g_markup_escape_text for the topic before displaying it
+ * in its normal label and the tool tip for that label.
+ */
+static char *
+pidgin_conversation_escape_topic(G_GNUC_UNUSED GObject *self,
+                                 const char *topic,
+                                 G_GNUC_UNUSED gpointer data)
+{
+	if(topic == NULL) {
+		return g_strdup("");
+	}
+
+	return g_markup_escape_text(topic, -1);
+}
+
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -458,6 +473,8 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 	gtk_widget_class_bind_template_child(widget_class, PidginConversation,
 	                                     input);
 
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_conversation_escape_topic);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_conversation_input_key_pressed_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
