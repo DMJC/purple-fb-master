@@ -295,6 +295,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	gint default_port = PURPLE_IRCV3_DEFAULT_TLS_PORT;
 	gint port = 0;
 	gboolean tls = TRUE;
+	gboolean require_password = FALSE;
 
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(purple_connection), FALSE);
 
@@ -331,7 +332,10 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	}
 	port = purple_account_get_int(account, "port", default_port);
 
-	purple_ircv3_connection_setup_sasl(connection, account);
+	require_password = purple_account_get_require_password(account);
+	if(require_password) {
+		purple_ircv3_connection_setup_sasl(connection, account);
+	}
 
 	cancellable = purple_connection_get_cancellable(purple_connection);
 
