@@ -287,6 +287,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	PurpleIRCv3Connection *connection = NULL;
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
+	GCancellable *cancellable = NULL;
 	GError *local_error = NULL;
 	GProxyResolver *resolver = NULL;
 	const char *password = NULL;
@@ -332,6 +333,8 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 
 	purple_ircv3_connection_setup_sasl(connection, account);
 
+	cancellable = purple_connection_get_cancellable(purple_connection);
+
 	resolver = purple_proxy_get_proxy_resolver(account, &local_error);
 	if(local_error != NULL) {
 		g_propagate_error(error, local_error);
@@ -343,7 +346,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	}
 
 	ibis_client_connect(priv->client, priv->server_name, port, password, tls,
-	                    resolver);
+	                    cancellable, resolver);
 
 	return TRUE;
 }
