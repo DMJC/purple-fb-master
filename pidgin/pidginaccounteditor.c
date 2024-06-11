@@ -1324,9 +1324,9 @@ pidgin_account_editor_save(PidginAccountEditor *editor) {
 	if(new_account) {
 		PurpleAccountManager *manager = NULL;
 
-		purple_account_set_enabled(editor->account, TRUE);
-
 		manager = purple_account_manager_get_default();
 		purple_account_manager_add(manager, editor->account);
+
+		purple_account_set_enabled(editor->account, TRUE);
 	}
 }
