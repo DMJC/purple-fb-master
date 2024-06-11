@@ -47,8 +47,10 @@ struct _PidginDisplayWindow {
 
 	GtkWidget *plugin_list;
 
-	GListModel *base_model;
+	GListStore *base_model;
 	GListModel *selection_model;
+
+	PidginDisplayItem *conversations_item;
 
 	GListStore *conversation_model;
 };
@@ -256,6 +258,13 @@ pidgin_display_window_conversation_unregistered_cb(G_GNUC_UNUSED PurpleConversat
 	pidgin_display_window_remove(window, conversation);
 }
 
+static void
+pidgin_display_window_conversation_present_cb(PurpleConversation *conversation,
+                                              gpointer data)
+{
+	pidgin_display_window_select(data, conversation);
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -285,7 +294,8 @@ pidgin_display_window_init(PidginDisplayWindow *window) {
 	g_object_ref(window->selection_model);
 
 	/* Setup the tree list model. */
-	tree_model = gtk_tree_list_model_new(window->base_model, FALSE, TRUE,
+	tree_model = gtk_tree_list_model_new(G_LIST_MODEL(window->base_model),
+	                                     FALSE, TRUE,
 	                                     (GtkTreeListModelCreateModelFunc)pidgin_display_window_create_model,
 	                                     window, NULL);
 
@@ -361,6 +371,8 @@ pidgin_display_window_class_init(PidginDisplayWindowClass *klass) {
 	                                     base_model);
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
 	                                     selection_model);
+	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
+	                                     conversations_item);
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
 	                                     conversation_model);
 
@@ -461,6 +473,10 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 			                       item, "title",
 			                       G_BINDING_SYNC_CREATE);
 
+			g_signal_connect_object(purple_conversation, "present",
+			                        G_CALLBACK(pidgin_display_window_conversation_present_cb),
+			                        window, G_CONNECT_DEFAULT);
+
 			g_list_store_append(window->conversation_model, item);
 			g_clear_object(&item);
 		}
@@ -497,6 +513,10 @@ pidgin_display_window_remove(PidginDisplayWindow *window,
 	g_clear_object(&item);
 
 	if(found) {
+		g_signal_handlers_disconnect_by_func(conversation,
+		                                     G_CALLBACK(pidgin_display_window_conversation_present_cb),
+		                                     window);
+
 		g_list_store_remove(window->conversation_model, position);
 	}
 }
@@ -534,13 +554,44 @@ void
 pidgin_display_window_select(PidginDisplayWindow *window,
                              PurpleConversation *conversation)
 {
-	/* TODO: This is used by the unity and gestures plugins, but I'm really not
-	 * sure how to make this work yet without some hard-coding or something, so
-	 * I'm opting to stub it out for now.
-	 */
+	PidginDisplayItem *item = NULL;
+	guint position = 0;
+	gboolean found = FALSE;
+	gchar *id = NULL;
 
 	g_return_if_fail(PIDGIN_IS_DISPLAY_WINDOW(window));
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	/* Create a wrapper item for our find function. */
+	id = g_uuid_string_random();
+	item = g_object_new(PIDGIN_TYPE_DISPLAY_ITEM, "id", id, NULL);
+	g_free(id);
+	g_object_set_data(G_OBJECT(item), "conversation", conversation);
+
+	found = g_list_store_find_with_equal_func(window->conversation_model,
+	                                          item,
+	                                          pidgin_display_window_find_conversation,
+	                                          &position);
+	g_clear_object(&item);
+
+	if(found) {
+		/* Figure out where the conversations_item is because we need to add to
+		 * that position.
+		 */
+		guint conversations_position = 0;
+		guint real_position = 0;
+
+		g_list_store_find(window->base_model, window->conversations_item,
+		                  &conversations_position);
+
+		/* Since this is a nested model, we need to increment by one to get to
+		 * the correct item.
+		 */
+		real_position = conversations_position + position + 1;
+
+		gtk_single_selection_set_selected(GTK_SINGLE_SELECTION(window->selection_model),
+		                                  real_position);
+	}
 }
 
 void

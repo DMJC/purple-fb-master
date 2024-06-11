@@ -105,7 +105,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
       </object>
     </child>
     <child>
-      <object class="PidginDisplayItem">
+      <object class="PidginDisplayItem" id="conversations_item">
         <property name="icon-name">user-available-symbolic</property>
         <property name="id">__conversations__</property>
         <property name="title" translatable="1">Conversations</property>

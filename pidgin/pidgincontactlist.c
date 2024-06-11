@@ -206,6 +206,27 @@ pidgin_contact_list_avatar_cb(G_GNUC_UNUSED GObject *self,
 }
 
 static void
+pidgin_contact_list_create_dm_cb(GObject *source, GAsyncResult *result,
+                                 G_GNUC_UNUSED gpointer data)
+{
+	PurpleConversation *conversation = NULL;
+	GError *error = NULL;
+
+	conversation = purple_contact_create_dm_finish(PURPLE_CONTACT(source),
+	                                               result, &error);
+
+	if(error != NULL) {
+		g_warning("Failed to create dm for contact: %s", error->message);
+
+		g_clear_error(&error);
+
+		return;
+	}
+
+	purple_conversation_present(conversation);
+}
+
+static void
 pidgin_contact_list_activate_cb(GtkListView *self, guint position,
                                 G_GNUC_UNUSED gpointer data)
 {
@@ -226,8 +247,11 @@ pidgin_contact_list_activate_cb(GtkListView *self, guint position,
 
 	info = purple_person_get_priority_contact_info(person);
 	conversation = purple_contact_find_dm(PURPLE_CONTACT(info));
-	if(!PURPLE_IS_CONVERSATION(conversation)) {
-		purple_contact_create_dm_async(PURPLE_CONTACT(info), NULL, NULL, NULL);
+	if(PURPLE_IS_CONVERSATION(conversation)) {
+		purple_conversation_present(conversation);
+	} else {
+		purple_contact_create_dm_async(PURPLE_CONTACT(info), NULL,
+		                               pidgin_contact_list_create_dm_cb, NULL);
 	}
 
 	g_clear_object(&person);
