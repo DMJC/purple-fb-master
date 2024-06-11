@@ -67,17 +67,10 @@ purple_bonjour_connection_connect(PurpleConnection *purple_connection,
 }
 
 static gboolean
-purple_bonjour_connection_disconnect(PurpleConnection *purple_connection,
-                                     GError **error)
+purple_bonjour_connection_disconnect(G_GNUC_UNUSED PurpleConnection *purple_connection,
+                                     G_GNUC_UNUSED GError **error)
 {
-	PurpleConnectionClass *parent_class = NULL;
-
-	g_return_val_if_fail(PURPLE_BONJOUR_IS_CONNECTION(purple_connection),
-	                     FALSE);
-
-	/* Chain up to our parent's disconnect method. */
-	parent_class = PURPLE_CONNECTION_CLASS(purple_bonjour_connection_parent_class);
-	return parent_class->disconnect(purple_connection, error);
+	return TRUE;
 }
 
 /******************************************************************************

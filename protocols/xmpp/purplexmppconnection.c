@@ -159,15 +159,10 @@ purple_xmpp_connection_disconnect(PurpleConnection *purple_connection,
                                   GError **error)
 {
 	PurpleXmppConnection *connection = NULL;
-	PurpleConnectionClass *parent_class = NULL;
 
 	g_return_val_if_fail(PURPLE_XMPP_IS_CONNECTION(purple_connection), FALSE);
 
 	connection = PURPLE_XMPP_CONNECTION(purple_connection);
-
-	/* Chain up to our parent's disconnect method. */
-	parent_class = PURPLE_CONNECTION_CLASS(purple_xmpp_connection_parent_class);
-	parent_class->disconnect(purple_connection, error);
 
 	return xeme_connection_close(connection->xeme_connection, error);
 }

@@ -493,17 +493,12 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 
 static gboolean
 purple_ircv3_connection_disconnect(PurpleConnection *purple_connection,
-                                   GError **error)
+                                   G_GNUC_UNUSED GError **error)
 {
 	PurpleIRCv3Connection *connection = NULL;
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
-	PurpleConnectionClass *parent_class = NULL;
 
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(purple_connection), FALSE);
-
-	/* Chain up to our parent's disconnect to do initial clean up. */
-	parent_class = PURPLE_CONNECTION_CLASS(purple_ircv3_connection_parent_class);
-	parent_class->disconnect(purple_connection, error);
 
 	connection = PURPLE_IRCV3_CONNECTION(purple_connection);
 	priv = purple_ircv3_connection_get_instance_private(connection);
