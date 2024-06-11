@@ -738,6 +738,7 @@ pidgin_account_editor_login_options_update_editable(PidginAccountEditor *editor)
 static gboolean
 pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 	PurpleProtocol *protocol = NULL;
+	GList *user_splits = NULL;
 	GList *split_item = NULL;
 	GList *row_item = NULL;
 	GString *username = NULL;
@@ -750,7 +751,8 @@ pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 
 	username = g_string_new(gtk_editable_get_text(GTK_EDITABLE(editor->username)));
 
-	split_item = purple_protocol_get_user_splits(protocol);
+	user_splits = purple_protocol_get_user_splits(protocol);
+	split_item = g_list_first(user_splits);
 	row_item = editor->user_split_rows;
 	while(split_item != NULL && row_item != NULL) {
 		PurpleAccountUserSplit *split = split_item->data;
@@ -774,6 +776,8 @@ pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 		split_item = split_item->next;
 		row_item = row_item->next;
 	}
+	g_list_free_full(user_splits,
+	                 (GDestroyNotify)purple_account_user_split_destroy);
 
 	if(!PURPLE_IS_ACCOUNT(editor->account)) {
 		editor->account = purple_account_new(username->str, protocol_id);
