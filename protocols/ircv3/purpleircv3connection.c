@@ -277,6 +277,18 @@ purple_ircv3_connection_error_cb(GObject *source,
 	}
 }
 
+static void
+purple_ircv3_connection_capabilities_ready_cb(IbisCapabilities *capabilities,
+                                              G_GNUC_UNUSED gpointer data)
+{
+	/* account-tag just adds an account tag to everything if it's available.
+	 * The account-tag is the user's username for authentication for all users
+	 * not just the one using libpurple.
+	 */
+	ibis_capabilities_lookup_and_request(capabilities,
+	                                     IBIS_CAPABILITY_ACCOUNT_TAG);
+}
+
 /******************************************************************************
  * PurpleConnection Implementation
  *****************************************************************************/
@@ -288,6 +300,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	GCancellable *cancellable = NULL;
+	IbisCapabilities *capabilities = NULL;
 	GError *local_error = NULL;
 	GProxyResolver *resolver = NULL;
 	const char *password = NULL;
@@ -338,6 +351,12 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	}
 
 	cancellable = purple_connection_get_cancellable(purple_connection);
+
+	/* Connect to the ready signal of capabilities. */
+	capabilities = ibis_client_get_capabilities(priv->client);
+	g_signal_connect_object(capabilities, "ready",
+	                        G_CALLBACK(purple_ircv3_connection_capabilities_ready_cb),
+	                        connection, G_CONNECT_DEFAULT);
 
 	resolver = purple_proxy_get_proxy_resolver(account, &local_error);
 	if(local_error != NULL) {
