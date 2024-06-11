@@ -65,7 +65,7 @@ struct _PidginNotifiableInterface {
     GTypeInterface parent;
 
     /*< private >*/
-    gpointer reservered[4];
+    gpointer reserved[4];
 };
 
 /**
