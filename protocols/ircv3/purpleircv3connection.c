@@ -66,39 +66,6 @@ purple_ircv3_connection_saslsuccess(IbisClient *client, const char *command,
  * Helpers
  *****************************************************************************/
 static void
-purple_ircv3_connection_add_message_handlers(PurpleIRCv3Connection *connection,
-                                             IbisClient *client)
-{
-	g_signal_connect_object(client, "message::" IBIS_MSG_TOPIC,
-	                        G_CALLBACK(purple_ircv3_message_handler_topic),
-	                        connection, G_CONNECT_DEFAULT);
-	g_signal_connect_object(client, "message::" IBIS_RPL_NOTOPIC,
-	                        G_CALLBACK(purple_ircv3_message_handler_topic),
-	                        connection, G_CONNECT_DEFAULT);
-	g_signal_connect_object(client, "message::" IBIS_RPL_TOPIC,
-	                        G_CALLBACK(purple_ircv3_message_handler_topic),
-	                        connection, G_CONNECT_DEFAULT);
-
-	g_signal_connect_object(client, "message::" IBIS_MSG_PRIVMSG,
-	                        G_CALLBACK(purple_ircv3_message_handler_privmsg),
-	                        connection, G_CONNECT_DEFAULT);
-	g_signal_connect_object(client, "message::" IBIS_MSG_NOTICE,
-	                        G_CALLBACK(purple_ircv3_message_handler_privmsg),
-	                        connection, G_CONNECT_DEFAULT);
-
-	g_signal_connect_object(client, "message::" IBIS_MSG_JOIN,
-	                        G_CALLBACK(purple_ircv3_message_handler_join),
-	                        connection, G_CONNECT_DEFAULT);
-	g_signal_connect_object(client, "message::" IBIS_MSG_PART,
-	                        G_CALLBACK(purple_ircv3_message_handler_part),
-	                        connection, G_CONNECT_DEFAULT);
-
-	g_signal_connect_object(client, "message",
-	                        G_CALLBACK(purple_ircv3_connection_unknown_message_cb),
-	                        connection, G_CONNECT_AFTER);
-}
-
-static void
 purple_ircv3_connection_rejoin_channels(PurpleIRCv3Connection *connection) {
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
@@ -174,39 +141,8 @@ purple_ircv3_connection_setup_sasl(PurpleIRCv3Connection *connection,
 }
 
 /******************************************************************************
- * Callbacks
+ * Message Handlers
  *****************************************************************************/
-static gboolean
-purple_ircv3_connection_unknown_message_cb(G_GNUC_UNUSED IbisClient *client,
-                                           G_GNUC_UNUSED const char *command,
-                                           IbisMessage *message,
-                                           gpointer data)
-{
-	PurpleIRCv3Connection *connection = data;
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
-	PurpleMessage *purple_message = NULL;
-	char *contents = NULL;
-
-	priv = purple_ircv3_connection_get_instance_private(connection);
-
-	contents = g_strdup_printf(_("unhandled message: '%s'"),
-	                           ibis_message_get_raw_message(message));
-
-	purple_message = g_object_new(
-		PURPLE_TYPE_MESSAGE,
-		"author", ibis_message_get_source(message),
-		"contents", contents,
-		NULL);
-
-	purple_conversation_write_message(priv->status_conversation,
-	                                  purple_message);
-	g_clear_object(&purple_message);
-
-	g_free(contents);
-
-	return TRUE;
-}
-
 static gboolean
 purple_ircv3_connection_saslsuccess(IbisClient *client,
                                     G_GNUC_UNUSED const char *command,
@@ -238,6 +174,187 @@ purple_ircv3_connection_saslsuccess(IbisClient *client,
 	 * was sent.
 	 */
 	return FALSE;
+}
+
+static gboolean
+purple_ircv3_server_message_handler(G_GNUC_UNUSED IbisClient *client,
+                                    G_GNUC_UNUSED const char *command,
+                                    IbisMessage *message,
+                                    gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+	PurpleMessage *purple_message = NULL;
+	GStrv params = NULL;
+	char *body = NULL;
+	const char *source = NULL;
+
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	/* The first parameter is supposed to be our nick which we don't want to
+	 * echo so we skip past it.
+	 */
+	params = ibis_message_get_params(message);
+	body = g_strjoinv(" ", params + 1);
+
+	source = ibis_message_get_source(message);
+
+	purple_message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
+		"author", source,
+		"contents", body,
+		NULL);
+
+	g_free(body);
+
+	purple_conversation_write_message(priv->status_conversation,
+	                                  purple_message);
+	g_clear_object(&purple_message);
+
+	return TRUE;
+}
+
+static gboolean
+purple_ircv3_server_no_motd_handler(G_GNUC_UNUSED IbisClient *client,
+                                    G_GNUC_UNUSED const char *command,
+                                    IbisMessage *message,
+                                    gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+	PurpleMessage *purple_message = NULL;
+	const char *source = NULL;
+
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	source = ibis_message_get_source(message);
+
+	purple_message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
+		"author", source,
+		"contents", _("no message of the day found"),
+		NULL);
+
+
+	purple_conversation_write_message(priv->status_conversation,
+	                                  purple_message);
+	g_clear_object(&purple_message);
+
+	return TRUE;
+}
+
+static void
+purple_ircv3_connection_add_message_handlers(PurpleIRCv3Connection *connection,
+                                             IbisClient *client)
+{
+	g_signal_connect_object(client, "message::" IBIS_RPL_WELCOME,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_YOURHOST,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_CREATED,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_MYINFO,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_LUSERCLIENT,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_LUSEROP,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_LUSERUNKNOWN,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_LUSERCHANNELS,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_LUSERME,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_LOCALUSERS,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_GLOBALUSERS,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_MOTD,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_MOTDSTART,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_UMODEIS,
+	                        G_CALLBACK(purple_ircv3_server_message_handler),
+	                        connection, G_CONNECT_DEFAULT);
+
+	g_signal_connect_object(client, "message::" IBIS_ERR_NOMOTD,
+	                        G_CALLBACK(purple_ircv3_server_no_motd_handler),
+	                        connection, G_CONNECT_DEFAULT);
+
+	g_signal_connect_object(client, "message::" IBIS_MSG_TOPIC,
+	                        G_CALLBACK(purple_ircv3_message_handler_topic),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_NOTOPIC,
+	                        G_CALLBACK(purple_ircv3_message_handler_topic),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_TOPIC,
+	                        G_CALLBACK(purple_ircv3_message_handler_topic),
+	                        connection, G_CONNECT_DEFAULT);
+
+	g_signal_connect_object(client, "message::" IBIS_MSG_PRIVMSG,
+	                        G_CALLBACK(purple_ircv3_message_handler_privmsg),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_MSG_NOTICE,
+	                        G_CALLBACK(purple_ircv3_message_handler_privmsg),
+	                        connection, G_CONNECT_DEFAULT);
+
+	g_signal_connect_object(client, "message::" IBIS_MSG_JOIN,
+	                        G_CALLBACK(purple_ircv3_message_handler_join),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_MSG_PART,
+	                        G_CALLBACK(purple_ircv3_message_handler_part),
+	                        connection, G_CONNECT_DEFAULT);
+
+	g_signal_connect_object(client, "message",
+	                        G_CALLBACK(purple_ircv3_connection_unknown_message_cb),
+	                        connection, G_CONNECT_AFTER);
+}
+
+/******************************************************************************
+ * Callbacks
+ *****************************************************************************/
+static gboolean
+purple_ircv3_connection_unknown_message_cb(G_GNUC_UNUSED IbisClient *client,
+                                           G_GNUC_UNUSED const char *command,
+                                           IbisMessage *message,
+                                           gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+	PurpleIRCv3ConnectionPrivate *priv = NULL;
+	PurpleMessage *purple_message = NULL;
+	char *contents = NULL;
+
+	priv = purple_ircv3_connection_get_instance_private(connection);
+
+	contents = g_strdup_printf(_("unhandled message: '%s'"),
+	                           ibis_message_get_raw_message(message));
+
+	purple_message = g_object_new(
+		PURPLE_TYPE_MESSAGE,
+		"author", ibis_message_get_source(message),
+		"contents", contents,
+		NULL);
+
+	purple_conversation_write_message(priv->status_conversation,
+	                                  purple_message);
+	g_clear_object(&purple_message);
+
+	g_free(contents);
+
+	return TRUE;
 }
 
 static void
