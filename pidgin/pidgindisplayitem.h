@@ -214,6 +214,32 @@ GListModel *pidgin_display_item_get_children(PidginDisplayItem *item);
 PIDGIN_AVAILABLE_IN_3_0
 void pidgin_display_item_set_children(PidginDisplayItem *item, GListModel *children);
 
+/**
+ * pidgin_display_item_get_menu:
+ * @item: The instance.
+ *
+ * Gets the menu from @item.
+ *
+ * Returns: (transfer none) (nullable): The menu if one exists, otherwise
+ *          %NULL.
+ *
+ * Since: 3.0
+ */
+PIDGIN_AVAILABLE_IN_3_0
+GMenuModel *pidgin_display_item_get_menu(PidginDisplayItem *item);
+
+/**
+ * pidgin_display_item_set_menu:
+ * @item: The instance.
+ * @menu: (nullable) (transfer none): The new menu.
+ *
+ * Sets the menu for @item to @menu.
+ *
+ * Since: 3.0
+ */
+PIDGIN_AVAILABLE_IN_3_0
+void pidgin_display_item_set_menu(PidginDisplayItem *item, GMenuModel *menu);
+
 G_END_DECLS
 
 #endif /* PIDGIN_DISPLAY_ITEM_H */

@@ -32,8 +32,9 @@ struct _PidginDisplayItem {
 
 	char *icon_name;
 
-	gboolean needs_attention;
+	GMenuModel *menu;
 
+	gboolean needs_attention;
 	guint badge_number;
 
 	GListModel *children;
@@ -48,6 +49,7 @@ enum {
 	PROP_NEEDS_ATTENTION,
 	PROP_BADGE_NUMBER,
 	PROP_CHILDREN,
+	PROP_MENU,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -85,6 +87,7 @@ pidgin_display_item_dispose(GObject *obj) {
 
 	g_clear_object(&item->widget);
 	g_clear_object(&item->children);
+	g_clear_object(&item->menu);
 
 	G_OBJECT_CLASS(pidgin_display_item_parent_class)->dispose(obj);
 }
@@ -107,32 +110,35 @@ pidgin_display_item_get_property(GObject *obj, guint param_id, GValue *value,
 	PidginDisplayItem *item = PIDGIN_DISPLAY_ITEM(obj);
 
 	switch(param_id) {
-		case PROP_WIDGET:
-			g_value_set_object(value, pidgin_display_item_get_widget(item));
-			break;
-		case PROP_ID:
-			g_value_set_string(value, pidgin_display_item_get_id(item));
-			break;
-		case PROP_TITLE:
-			g_value_set_string(value, pidgin_display_item_get_title(item));
-			break;
-		case PROP_ICON_NAME:
-			g_value_set_string(value, pidgin_display_item_get_icon_name(item));
-			break;
-		case PROP_NEEDS_ATTENTION:
-			g_value_set_boolean(value,
-			                    pidgin_display_item_get_needs_attention(item));
-			break;
-		case PROP_BADGE_NUMBER:
-			g_value_set_uint(value,
-			                 pidgin_display_item_get_badge_number(item));
-			break;
-		case PROP_CHILDREN:
-			g_value_set_object(value, pidgin_display_item_get_children(item));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_WIDGET:
+		g_value_set_object(value, pidgin_display_item_get_widget(item));
+		break;
+	case PROP_ID:
+		g_value_set_string(value, pidgin_display_item_get_id(item));
+		break;
+	case PROP_TITLE:
+		g_value_set_string(value, pidgin_display_item_get_title(item));
+		break;
+	case PROP_ICON_NAME:
+		g_value_set_string(value, pidgin_display_item_get_icon_name(item));
+		break;
+	case PROP_NEEDS_ATTENTION:
+		g_value_set_boolean(value,
+		                    pidgin_display_item_get_needs_attention(item));
+		break;
+	case PROP_BADGE_NUMBER:
+		g_value_set_uint(value,
+		                 pidgin_display_item_get_badge_number(item));
+		break;
+	case PROP_CHILDREN:
+		g_value_set_object(value, pidgin_display_item_get_children(item));
+		break;
+	case PROP_MENU:
+		g_value_set_object(value, pidgin_display_item_get_menu(item));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -143,32 +149,35 @@ pidgin_display_item_set_property(GObject *obj, guint param_id,
 	PidginDisplayItem *item = PIDGIN_DISPLAY_ITEM(obj);
 
 	switch(param_id) {
-		case PROP_WIDGET:
-			pidgin_display_item_set_widget(item, g_value_get_object(value));
-			break;
-		case PROP_ID:
-			pidgin_display_item_set_id(item, g_value_get_string(value));
-			break;
-		case PROP_TITLE:
-			pidgin_display_item_set_title(item, g_value_get_string(value));
-			break;
-		case PROP_ICON_NAME:
-			pidgin_display_item_set_icon_name(item, g_value_get_string(value));
-			break;
-		case PROP_NEEDS_ATTENTION:
-			pidgin_display_item_set_needs_attention(item,
-			                                        g_value_get_boolean(value));
-			break;
-		case PROP_BADGE_NUMBER:
-			pidgin_display_item_set_badge_number(item,
-			                                     g_value_get_uint(value));
-			break;
-		case PROP_CHILDREN:
-			pidgin_display_item_set_children(item, g_value_get_object(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_WIDGET:
+		pidgin_display_item_set_widget(item, g_value_get_object(value));
+		break;
+	case PROP_ID:
+		pidgin_display_item_set_id(item, g_value_get_string(value));
+		break;
+	case PROP_TITLE:
+		pidgin_display_item_set_title(item, g_value_get_string(value));
+		break;
+	case PROP_ICON_NAME:
+		pidgin_display_item_set_icon_name(item, g_value_get_string(value));
+		break;
+	case PROP_NEEDS_ATTENTION:
+		pidgin_display_item_set_needs_attention(item,
+		                                        g_value_get_boolean(value));
+		break;
+	case PROP_BADGE_NUMBER:
+		pidgin_display_item_set_badge_number(item,
+		                                     g_value_get_uint(value));
+		break;
+	case PROP_CHILDREN:
+		pidgin_display_item_set_children(item, g_value_get_object(value));
+		break;
+	case PROP_MENU:
+		pidgin_display_item_set_menu(item, g_value_get_object(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -193,8 +202,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_WIDGET] = g_param_spec_object(
-		"widget", "widget",
-		"The widget for this item",
+		"widget", NULL, NULL,
 		GTK_TYPE_WIDGET,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -207,8 +215,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
-		"id", "id",
-		"A unique identifier for the item",
+		"id", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -220,8 +227,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_TITLE] = g_param_spec_string(
-		"title", "title",
-		"The title for the item",
+		"title", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -233,8 +239,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ICON_NAME] = g_param_spec_string(
-		"icon-name", "icon-name",
-		"The icon-name to use for this item",
+		"icon-name", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -246,8 +251,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_NEEDS_ATTENTION] = g_param_spec_boolean(
-		"needs-attention", "needs-attention",
-		"Whether or not the item needs attention",
+		"needs-attention", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -260,8 +264,7 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_BADGE_NUMBER] = g_param_spec_uint(
-		"badge-number", "badge-number",
-		"The number to show in the badge",
+		"badge-number", NULL, NULL,
 		0, G_MAXUINT, 0,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -274,9 +277,20 @@ pidgin_display_item_class_init(PidginDisplayItemClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_CHILDREN] = g_param_spec_object(
-		"children", "children",
-		"A GListModel of child items",
+		"children", NULL, NULL,
 		G_TYPE_LIST_MODEL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PidginDisplayItem:menu:
+	 *
+	 * An optional menu to show on the item.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_MENU] = g_param_spec_object(
+		"menu", NULL, NULL,
+		G_TYPE_MENU_MODEL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
@@ -402,5 +416,21 @@ pidgin_display_item_set_children(PidginDisplayItem *item,
 
 	if(g_set_object(&item->children, children)) {
 		g_object_notify_by_pspec(G_OBJECT(item), properties[PROP_CHILDREN]);
+	}
+}
+
+GMenuModel *
+pidgin_display_item_get_menu(PidginDisplayItem *item) {
+	g_return_val_if_fail(PIDGIN_IS_DISPLAY_ITEM(item), NULL);
+
+	return item->menu;
+}
+
+void
+pidgin_display_item_set_menu(PidginDisplayItem *item, GMenuModel *model) {
+	g_return_if_fail(PIDGIN_IS_DISPLAY_ITEM(item));
+
+	if(g_set_object(&item->menu, model)) {
+		g_object_notify_by_pspec(G_OBJECT(item), properties[PROP_MENU]);
 	}
 }

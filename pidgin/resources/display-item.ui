@@ -16,6 +16,9 @@
               </lookup>
             </binding>
             <child>
+              <object class="GtkEventControllerMotion" id="motion_controller"/>
+            </child>
+            <child>
               <object class="GtkImage">
                 <binding name="icon-name">
                   <lookup name="icon-name" type="PidginDisplayItem">
@@ -37,27 +40,71 @@
               </object>
             </child>
             <child>
-              <object class="GtkBox">
-                <property name="spacing">6</property>
-                <property name="visible" bind-source="GtkListItem" bind-property="selected" bind-flags="sync-create|invert-boolean"/>
+              <object class="GtkStack">
+                <property name="transition-type">crossfade</property>
+                <binding name="visible-child-name">
+                  <closure type="gchararray" function="pidgin_display_window_show_item_actions_cb">
+                    <lookup name="selected">GtkListItem</lookup>
+                    <lookup name="contains-pointer">motion_controller</lookup>
+                    <lookup name="active">menu_button</lookup>
+                  </closure>
+                </binding>
                 <child>
-                  <object class="GtkLabel">
-                    <style>
-                      <class name="notification-count"/>
-                    </style>
-                    <property name="halign">end</property>
-                    <property name="hexpand">true</property>
-                    <property name="valign">center</property>
-                    <binding name="visible">
-                      <lookup name="needs-attention" type="PidginDisplayItem">
-                        <lookup name="item">expander</lookup>
-                      </lookup>
-                    </binding>
-                    <binding name="label">
-                      <lookup name="badge-number" type="PidginDisplayItem">
-                        <lookup name="item">expander</lookup>
-                      </lookup>
-                    </binding>
+                  <object class="GtkStackPage">
+                    <property name="name">notifications</property>
+                    <property name="child">
+                      <object class="GtkBox">
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <style>
+                              <class name="notification-count"/>
+                            </style>
+                            <property name="halign">end</property>
+                            <property name="hexpand">true</property>
+                            <property name="valign">center</property>
+                            <binding name="visible">
+                              <lookup name="needs-attention" type="PidginDisplayItem">
+                                <lookup name="item">expander</lookup>
+                              </lookup>
+                            </binding>
+                            <binding name="label">
+                              <lookup name="badge-number" type="PidginDisplayItem">
+                                <lookup name="item">expander</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">actions</property>
+                    <property name="child">
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <child>
+                          <object class="GtkMenuButton" id="menu_button">
+                            <style>
+                              <class name="flat"/>
+                            </style>
+                            <property name="icon-name">view-more-symbolic</property>
+                            <binding name="menu-model">
+                              <lookup name="menu" type="PidginDisplayItem">
+                                <lookup name="item">expander</lookup>
+                              </lookup>
+                            </binding>
+                            <binding name="visible">
+                              <closure type="gboolean" function="pidgin_display_window_show_item_menu_cb">
+                                <lookup name="item">expander</lookup>
+                              </closure>
+                            </binding>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
               </object>

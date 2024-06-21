@@ -265,6 +265,36 @@ pidgin_display_window_conversation_present_cb(PurpleConversation *conversation,
 	pidgin_display_window_select(data, conversation);
 }
 
+static gboolean
+pidgin_display_window_show_item_menu_cb(G_GNUC_UNUSED GObject *source,
+                                        PidginDisplayItem *item,
+                                        G_GNUC_UNUSED gpointer data)
+{
+	GMenuModel *model = NULL;
+
+	if(!PIDGIN_IS_DISPLAY_ITEM(item)) {
+		return FALSE;
+	}
+
+	model = pidgin_display_item_get_menu(item);
+
+	return G_IS_MENU_MODEL(model);
+}
+
+static char *
+pidgin_display_window_show_item_actions_cb(G_GNUC_UNUSED GObject *source,
+                                           gboolean item_selected,
+                                           gboolean item_contains_pointer,
+                                           gboolean menu_button_active,
+                                           G_GNUC_UNUSED gpointer data)
+{
+	if(item_selected || item_contains_pointer || menu_button_active) {
+		return g_strdup("actions");
+	}
+
+	return g_strdup("notifications");
+}
+
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
@@ -380,6 +410,10 @@ pidgin_display_window_class_init(PidginDisplayWindowClass *klass) {
 	                                        pidgin_display_window_key_pressed_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_display_window_selected_item_changed_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_display_window_show_item_menu_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_display_window_show_item_actions_cb);
 }
 
 /******************************************************************************

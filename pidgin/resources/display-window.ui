@@ -67,6 +67,9 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
         <property name="icon-name">application-x-addon-symbolic</property>
         <property name="id">__plugins__</property>
         <property name="title" translatable="1">Plugins</property>
+        <property name="menu">
+          <object class="PidginPluginsMenu"/>
+        </property>
         <property name="widget">
           <object class="GtkBox">
             <property name="orientation">vertical</property>
