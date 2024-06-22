@@ -50,6 +50,7 @@ struct _PidginDisplayWindow {
 	GListStore *base_model;
 	GListModel *selection_model;
 
+	GMenuModel *conversation_menu;
 	PidginDisplayItem *conversations_item;
 
 	GListStore *conversation_model;
@@ -63,22 +64,6 @@ static GtkWidget *default_window = NULL;
 /******************************************************************************
  * Helpers
  *****************************************************************************/
-static void
-pidgin_display_window_actions_set_enabled(GActionMap *map,
-                                          const gchar **actions,
-                                          gboolean enabled)
-{
-	for(int i = 0; actions[i] != NULL; i++) {
-		GAction *action = NULL;
-		const gchar *name = actions[i];
-
-		action = g_action_map_lookup_action(map, name);
-		if(action != NULL) {
-			g_simple_action_set_enabled(G_SIMPLE_ACTION(action), enabled);
-		}
-	}
-}
-
 static GListModel *
 pidgin_display_window_create_model(GObject *item,
                                    G_GNUC_UNUSED gpointer data)
@@ -119,45 +104,113 @@ pidgin_display_window_find_conversation_by_id(gconstpointer a,
 }
 
 /******************************************************************************
- * Actions
+ * Callbacks
  *****************************************************************************/
 static void
-pidgin_display_window_close_conversation(G_GNUC_UNUSED GSimpleAction *simple,
-                                         G_GNUC_UNUSED GVariant *parameter,
-                                         gpointer data)
+pidgin_display_window_leave_conversation_cb(GObject *source,
+                                            GAsyncResult *result,
+                                            gpointer data)
 {
-	PidginDisplayWindow *window = data;
-	PurpleConversation *selected = NULL;
+	PurpleConversation *conversation = data;
+	GError *error = NULL;
+	gboolean left = FALSE;
 
-	selected = pidgin_display_window_get_selected(window);
-	if(PURPLE_IS_CONVERSATION(selected)) {
-		GtkWidget *conversation = NULL;
+	left = purple_protocol_conversation_leave_conversation_finish(PURPLE_PROTOCOL_CONVERSATION(source),
+	                                                              result, &error);
+	if(error != NULL) {
+		g_warning("failed to leave conversation: '%s'", error->message);
+		g_clear_error(&error);
+	} else if(left) {
+		PurpleConversationManager *manager = NULL;
 
-		conversation = pidgin_conversation_from_purple_conversation(selected);
-		if(PIDGIN_IS_CONVERSATION(conversation)) {
-			pidgin_conversation_close(PIDGIN_CONVERSATION(conversation));
-			g_clear_object(&conversation);
-		}
+		manager = purple_conversation_manager_get_default();
 
-		pidgin_display_window_remove(window, selected);
+		purple_conversation_manager_unregister(manager, conversation);
+	} else {
+		g_warning("failed to leave conversation for unknown reasons");
+	}
+
+	g_clear_object(&conversation);
+}
+
+/******************************************************************************
+ * Conversation Actions
+ *****************************************************************************/
+static void
+pidgin_display_window_leave_conversation(G_GNUC_UNUSED GSimpleAction *simple,
+                                         GVariant *parameter,
+                                         G_GNUC_UNUSED gpointer data)
+{
+	PurpleAccount *account = NULL;
+	PurpleAccountManager *account_manager = NULL;
+	PurpleConversation *conversation = NULL;
+	PurpleConversationManager *conversation_manager = NULL;
+	PurpleProtocol *protocol = NULL;
+	GStrv parts = NULL;
+	const char *id = NULL;
+
+	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
+		g_warning("parameter is of type %s, expected %s",
+		          g_variant_get_type_string(parameter),
+		          (char *)G_VARIANT_TYPE_STRING);
+
+		return;
+	}
+
+	id = g_variant_get_string(parameter, NULL);
+	parts = g_strsplit(id, "-", 2);
+	if(g_strv_length(parts) != 2) {
+		g_warning("unexpected id format '%s'", id);
+
+		g_strfreev(parts);
+
+		return;
+	}
+
+	account_manager = purple_account_manager_get_default();
+	account = purple_account_manager_find_by_id(account_manager, parts[0]);
+	if(!PURPLE_IS_ACCOUNT(account)) {
+		g_warning("failed to find account with id '%s'", parts[0]);
+
+		g_strfreev(parts);
+
+		return;
+	}
+
+	conversation_manager = purple_conversation_manager_get_default();
+	conversation = purple_conversation_manager_find_with_id(conversation_manager,
+	                                                        account, parts[1]);
+	if(!PURPLE_IS_CONVERSATION(conversation)) {
+		g_warning("failed to find conversation with id '%s'", parts[1]);
+
+		g_strfreev(parts);
+
+		return;
+	}
+
+	/* We're done with parts now so free it. */
+	g_strfreev(parts);
+
+	protocol = purple_account_get_protocol(account);
+	if(PURPLE_IS_PROTOCOL_CONVERSATION(protocol)) {
+		PurpleProtocolConversation *protocol_conversation = NULL;
+
+		protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
+
+		purple_protocol_conversation_leave_conversation_async(protocol_conversation,
+		                                                      conversation,
+		                                                      NULL,
+		                                                      pidgin_display_window_leave_conversation_cb,
+		                                                      g_object_ref(conversation));
 	}
 }
 
-static GActionEntry win_entries[] = {
+static GActionEntry conversation_entries[] = {
 	{
-		.name = "close",
-		.activate = pidgin_display_window_close_conversation
+		.name = "leave",
+		.activate = pidgin_display_window_leave_conversation,
+		.parameter_type  = "s",
 	}
-};
-
-/*<private>
- * pidgin_display_window_conversation_actions:
- *
- * A list of action names that are only valid if a conversation is selected.
- */
-static const gchar *pidgin_display_window_conversation_actions[] = {
-	"close",
-	NULL
 };
 
 /******************************************************************************
@@ -214,23 +267,13 @@ pidgin_display_window_selected_item_changed_cb(GObject *self,
 {
 	PidginDisplayItem *item = NULL;
 	PidginDisplayWindow *window = data;
-	PurpleConversation *conversation = NULL;
 	GtkSingleSelection *selection = GTK_SINGLE_SELECTION(self);
 	GtkTreeListRow *row = NULL;
 	GtkWidget *widget = NULL;
-	gboolean is_conversation = FALSE;
 
 	row = gtk_single_selection_get_selected_item(selection);
 
 	item = gtk_tree_list_row_get_item(row);
-
-	/* Toggle whether actions should be enabled or disabled. */
-	conversation = g_object_get_data(G_OBJECT(item), "conversation");
-	is_conversation = PURPLE_IS_CONVERSATION(conversation);
-
-	pidgin_display_window_actions_set_enabled(G_ACTION_MAP(window),
-	                                          pidgin_display_window_conversation_actions,
-	                                          is_conversation);
 
 	widget = pidgin_display_item_get_widget(item);
 	if(GTK_IS_WIDGET(widget)) {
@@ -312,6 +355,7 @@ static void
 pidgin_display_window_init(PidginDisplayWindow *window) {
 	GtkEventController *key = NULL;
 	GtkTreeListModel *tree_model = NULL;
+	GSimpleActionGroup *conversation_actions = NULL;
 	GPluginManager *plugin_manager = NULL;
 	gpointer settings_backend = NULL;
 
@@ -338,8 +382,14 @@ pidgin_display_window_init(PidginDisplayWindow *window) {
 	gtk_window_set_application(GTK_WINDOW(window),
 	                           GTK_APPLICATION(g_application_get_default()));
 
-	g_action_map_add_action_entries(G_ACTION_MAP(window), win_entries,
-	                                G_N_ELEMENTS(win_entries), window);
+	conversation_actions = g_simple_action_group_new();
+	g_action_map_add_action_entries(G_ACTION_MAP(conversation_actions),
+	                                conversation_entries,
+	                                G_N_ELEMENTS(conversation_entries),
+	                                window);
+	gtk_widget_insert_action_group(GTK_WIDGET(window), "conversation",
+	                               G_ACTION_GROUP(conversation_actions));
+	g_clear_object(&conversation_actions);
 
 	/* Add a key controller. */
 	key = gtk_event_controller_key_new();
@@ -401,6 +451,8 @@ pidgin_display_window_class_init(PidginDisplayWindowClass *klass) {
 	                                     base_model);
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
 	                                     selection_model);
+	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
+	                                     conversation_menu);
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
 	                                     conversations_item);
 	gtk_widget_class_bind_template_child(widget_class, PidginDisplayWindow,
@@ -492,9 +544,15 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 			                                       NULL);
 		if (!item_exists) {
 			PurpleProtocol *protocol = NULL;
+			GMenu *menu = NULL;
 			const char *icon_name = NULL;
 
+			menu = purple_menu_copy(window->conversation_menu);
+			purple_menu_populate_dynamic_targets(menu, "id", id, NULL);
+
 			item = pidgin_display_item_new(pidgin_conversation, id);
+			pidgin_display_item_set_menu(item, G_MENU_MODEL(menu));
+			g_clear_object(&menu);
 			g_object_set_data(G_OBJECT(item), "conversation", purple_conversation);
 
 			protocol = purple_account_get_protocol(account);

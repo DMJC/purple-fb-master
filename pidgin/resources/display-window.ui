@@ -24,6 +24,15 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
   <!-- interface-name Pidgin -->
   <!-- interface-description Internet Messenger -->
   <!-- interface-copyright Pidgin Developers <devel@pidgin.im> -->
+  <menu id="conversation_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Leave</attribute>
+        <attribute name="action">conversation.leave</attribute>
+        <attribute name="dynamic-target">id</attribute>
+      </item>
+    </section>
+  </menu>
   <object class="GListStore" id="base_model">
     <property name="item-type">PidginDisplayItem</property>
     <child>
