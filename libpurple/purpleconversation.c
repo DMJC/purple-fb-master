@@ -72,6 +72,7 @@ struct _PurpleConversation {
 enum {
 	PROP_0,
 	PROP_ID,
+	PROP_GLOBAL_ID,
 	PROP_TYPE,
 	PROP_ACCOUNT,
 	PROP_AVATAR,
@@ -156,7 +157,12 @@ purple_conversation_set_id(PurpleConversation *conversation, const char *id) {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
 	if(g_set_str(&conversation->id, id)) {
-		g_object_notify_by_pspec(G_OBJECT(conversation), properties[PROP_ID]);
+		GObject *obj = G_OBJECT(conversation);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_ID]);
+		g_object_notify_by_pspec(obj, properties[PROP_GLOBAL_ID]);
+		g_object_thaw_notify(obj);
 	}
 }
 
@@ -178,6 +184,8 @@ purple_conversation_set_account(PurpleConversation *conversation,
 	}
 
 	if(g_set_object(&conversation->account, account)) {
+		GObject *obj = NULL;
+
 		if(PURPLE_IS_ACCOUNT(conversation->account)) {
 			purple_conversation_add_member(conversation,
 			                               PURPLE_CONTACT_INFO(account),
@@ -188,8 +196,11 @@ purple_conversation_set_account(PurpleConversation *conversation,
 			                        conversation, 0);
 		}
 
-		g_object_notify_by_pspec(G_OBJECT(conversation),
-		                         properties[PROP_ACCOUNT]);
+		obj = G_OBJECT(conversation);
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_ACCOUNT]);
+		g_object_notify_by_pspec(obj, properties[PROP_GLOBAL_ID]);
+		g_object_thaw_notify(obj);
 	}
 }
 
@@ -533,6 +544,10 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 	case PROP_ID:
 		g_value_set_string(value, purple_conversation_get_id(conversation));
 		break;
+	case PROP_GLOBAL_ID:
+		g_value_take_string(value,
+		                    purple_conversation_get_global_id(conversation));
+		break;
 	case PROP_TYPE:
 		g_value_set_enum(value,
 		                 purple_conversation_get_conversation_type(conversation));
@@ -721,6 +736,22 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"The identifier for the conversation.",
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:global-id:
+	 *
+	 * A libpurple global id for the conversation.
+	 *
+	 * This is an opaque value but it ties the conversation to the libpurple
+	 * account it belongs to, which makes it globally unique inside of
+	 * libpurple.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_GLOBAL_ID] = g_param_spec_string(
+		"global-id", NULL, NULL,
+		NULL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversation:type:
@@ -1218,6 +1249,17 @@ purple_conversation_get_id(PurpleConversation *conversation) {
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
 	return conversation->id;
+}
+
+char *
+purple_conversation_get_global_id(PurpleConversation *conversation) {
+	const char *account_id = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
+
+	account_id = purple_account_get_id(conversation->account);
+
+	return g_strdup_printf("%s-%s", account_id, conversation->id);
 }
 
 PurpleConversationType

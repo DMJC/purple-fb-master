@@ -61,6 +61,7 @@ test_purple_conversation_properties(void) {
 	GListModel *members = NULL;
 	char *alias = NULL;
 	char *description = NULL;
+	char *global_id = NULL;
 	char *id = NULL;
 	char *name = NULL;
 	char *title = NULL;
@@ -70,7 +71,12 @@ test_purple_conversation_properties(void) {
 	gboolean age_restricted = FALSE;
 	gboolean favorite = FALSE;
 
-	account = purple_account_new("test", "test");
+	account = g_object_new(
+		PURPLE_TYPE_ACCOUNT,
+		"id", "test",
+		"protocol-id", "test",
+		NULL);
+
 	avatar = g_object_new(PURPLE_TYPE_AVATAR, NULL);
 	creator = purple_contact_info_new(NULL);
 	created_on = g_date_time_new_now_utc();
@@ -113,6 +119,7 @@ test_purple_conversation_properties(void) {
 		"description", &description,
 		"favorite", &favorite,
 		"features", &features,
+		"global-id", &global_id,
 		"id", &id,
 		"members", &members,
 		"name", &name,
@@ -151,6 +158,9 @@ test_purple_conversation_properties(void) {
 	g_assert_true(favorite);
 
 	g_assert_cmpint(features, ==, PURPLE_CONNECTION_FLAG_HTML);
+
+	g_assert_cmpstr(global_id, ==, "test-id1");
+	g_clear_pointer(&global_id, g_free);
 
 	g_assert_cmpstr(id, ==, "id1");
 	g_clear_pointer(&id, g_free);

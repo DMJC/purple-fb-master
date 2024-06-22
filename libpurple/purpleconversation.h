@@ -182,12 +182,32 @@ void purple_conversation_present(PurpleConversation *conversation);
  *
  * Gets the opaque identifier from @conversation.
  *
+ * This value is specific to the protocol and could conflict with the same
+ * conversation on other accounts. To get a libpurple unique id see
+ * [method@Conversation.get_global_id].
+ *
  * Returns: (nullable): The id of @conversation.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_conversation_get_id(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_get_global_id:
+ * @conversation: The instance.
+ *
+ * Gets a globally unique id for @conversation.
+ *
+ * This id ties the [property@Conversation:id] to the [class@Account] that the
+ * conversation is for.
+ *
+ * Returns: (transfer full): A globally unique id of @conversation.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+char *purple_conversation_get_global_id(PurpleConversation *conversation);
 
 /**
  * purple_conversation_get_conversation_type:
