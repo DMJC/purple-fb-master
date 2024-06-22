@@ -288,7 +288,7 @@ pidgin_channel_join_dialog_init(PidginChannelJoinDialog *dialog) {
 	                                  pidgin_channel_join_dialog_filter_accounts,
 	                                  NULL, NULL);
 
-	dialog->details = purple_channel_join_details_new(FALSE, FALSE);
+	dialog->details = purple_channel_join_details_new(0, FALSE, 0, FALSE, 0);
 
 	/* Bind the visible properties. */
 	g_object_bind_property(dialog->details, "nickname-supported",

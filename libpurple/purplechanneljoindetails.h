@@ -51,8 +51,11 @@ G_DECLARE_FINAL_TYPE(PurpleChannelJoinDetails, purple_channel_join_details, PURP
 
 /**
  * purple_channel_join_details_new:
+ * @name_max_length: The maximum length for a channel name.
  * @nickname_supported: Whether or not nicknames are supported.
+ * @nickname_max_length: The maximum length for a nickname.
  * @password_supported: Whether or not passwords are supported.
+ * @password_max_length: The maximum length for a password.
  *
  * Creates a new [class@ChannelJoinDetails].
  *
@@ -61,7 +64,7 @@ G_DECLARE_FINAL_TYPE(PurpleChannelJoinDetails, purple_channel_join_details, PURP
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleChannelJoinDetails *purple_channel_join_details_new(gboolean nickname_supported, gboolean password_supported);
+PurpleChannelJoinDetails *purple_channel_join_details_new(int name_max_length, gboolean nickname_supported, int nickname_max_length, gboolean password_supported, int password_max_length);
 
 /**
  * purple_channel_join_details_get_name:
@@ -87,6 +90,20 @@ const char *purple_channel_join_details_get_name(PurpleChannelJoinDetails *detai
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_channel_join_details_set_name(PurpleChannelJoinDetails *details, const char *name);
+
+/**
+ * purple_channel_join_details_get_name_max_length:
+ * @details: The instance.
+ *
+ * Gets the maximum length that the channel's name can be in characters.
+ *
+ * Returns: The maximum number of characters the channel name can be or %0 for
+ *          no limit.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+int purple_channel_join_details_get_name_max_length(PurpleChannelJoinDetails *details);
 
 /**
  * purple_channel_join_details_get_nickname:
@@ -127,6 +144,21 @@ PURPLE_AVAILABLE_IN_3_0
 gboolean purple_channel_join_details_get_nickname_supported(PurpleChannelJoinDetails *details);
 
 /**
+ * purple_channel_join_details_get_nickname_max_length:
+ * @details: The instance.
+ *
+ * Gets the maximum length that the user's channel-specific nickname can be in
+ * characters.
+ *
+ * Returns: The maximum number of characters the nickname can be or %0 for no
+ *          limit.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+int purple_channel_join_details_get_nickname_max_length(PurpleChannelJoinDetails *details);
+
+/**
  * purple_channel_join_details_get_password:
  * @details: The instance.
  *
@@ -163,6 +195,20 @@ void purple_channel_join_details_set_password(PurpleChannelJoinDetails *details,
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_channel_join_details_get_password_supported(PurpleChannelJoinDetails *details);
+
+/**
+ * purple_channel_join_details_get_password_max_length:
+ * @details: The instance.
+ *
+ * Gets the maximum length that the channel password can be in characters.
+ *
+ * Returns: The maximum number of characters the password can be or %0 for no
+ *          limit.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+int purple_channel_join_details_get_password_max_length(PurpleChannelJoinDetails *details);
 
 /**
  * purple_channel_join_details_merge:

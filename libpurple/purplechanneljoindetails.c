@@ -26,10 +26,13 @@
 enum {
 	PROP_0,
 	PROP_NAME,
-	PROP_NICKNAME,
+	PROP_NAME_MAX_LENGTH,
 	PROP_NICKNAME_SUPPORTED,
-	PROP_PASSWORD,
+	PROP_NICKNAME,
+	PROP_NICKNAME_MAX_LENGTH,
 	PROP_PASSWORD_SUPPORTED,
+	PROP_PASSWORD,
+	PROP_PASSWORD_MAX_LENGTH,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -38,15 +41,34 @@ struct _PurpleChannelJoinDetails {
 	GObject parent;
 
 	char *name;
-	char *nickname;
+	int name_max_length;
+
 	gboolean nickname_supported;
-	char *password;
+	char *nickname;
+	int nickname_max_length;
+
 	gboolean password_supported;
+	char *password;
+	int password_max_length;
 };
 
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static void
+purple_channel_join_details_set_name_max_length(PurpleChannelJoinDetails *details,
+                                                int name_max_length)
+{
+	g_return_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details));
+
+	if(details->name_max_length != name_max_length) {
+		details->name_max_length = name_max_length;
+
+		g_object_notify_by_pspec(G_OBJECT(details),
+		                         properties[PROP_NAME_MAX_LENGTH]);
+	}
+}
+
 static void
 purple_channel_join_details_set_nickname_supported(PurpleChannelJoinDetails *details,
                                                    gboolean nickname_supported)
@@ -62,6 +84,20 @@ purple_channel_join_details_set_nickname_supported(PurpleChannelJoinDetails *det
 }
 
 static void
+purple_channel_join_details_set_nickname_max_length(PurpleChannelJoinDetails *details,
+                                                    int nickname_max_length)
+{
+	g_return_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details));
+
+	if(details->nickname_max_length != nickname_max_length) {
+		details->nickname_max_length = nickname_max_length;
+
+		g_object_notify_by_pspec(G_OBJECT(details),
+		                         properties[PROP_NICKNAME_MAX_LENGTH]);
+	}
+}
+
+static void
 purple_channel_join_details_set_password_supported(PurpleChannelJoinDetails *details,
                                                    gboolean password_supported)
 {
@@ -72,6 +108,20 @@ purple_channel_join_details_set_password_supported(PurpleChannelJoinDetails *det
 
 		g_object_notify_by_pspec(G_OBJECT(details),
 		                         properties[PROP_PASSWORD_SUPPORTED]);
+	}
+}
+
+static void
+purple_channel_join_details_set_password_max_length(PurpleChannelJoinDetails *details,
+                                                    int password_max_length)
+{
+	g_return_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details));
+
+	if(details->password_max_length != password_max_length) {
+		details->password_max_length = password_max_length;
+
+		g_object_notify_by_pspec(G_OBJECT(details),
+		                         properties[PROP_PASSWORD_MAX_LENGTH]);
 	}
 }
 
@@ -103,21 +153,33 @@ purple_channel_join_details_get_property(GObject *obj, guint param_id,
 		g_value_set_string(value,
 		                   purple_channel_join_details_get_name(details));
 		break;
-	case PROP_NICKNAME:
-		g_value_set_string(value,
-		                   purple_channel_join_details_get_nickname(details));
+	case PROP_NAME_MAX_LENGTH:
+		g_value_set_int(value,
+		                purple_channel_join_details_get_name_max_length(details));
 		break;
 	case PROP_NICKNAME_SUPPORTED:
 		g_value_set_boolean(value,
 		                    purple_channel_join_details_get_nickname_supported(details));
 		break;
-	case PROP_PASSWORD:
+	case PROP_NICKNAME:
 		g_value_set_string(value,
-		                   purple_channel_join_details_get_password(details));
+		                   purple_channel_join_details_get_nickname(details));
+		break;
+	case PROP_NICKNAME_MAX_LENGTH:
+		g_value_set_int(value,
+		                purple_channel_join_details_get_nickname_max_length(details));
 		break;
 	case PROP_PASSWORD_SUPPORTED:
 		g_value_set_boolean(value,
 		                    purple_channel_join_details_get_password_supported(details));
+		break;
+	case PROP_PASSWORD:
+		g_value_set_string(value,
+		                   purple_channel_join_details_get_password(details));
+		break;
+	case PROP_PASSWORD_MAX_LENGTH:
+		g_value_set_int(value,
+		                purple_channel_join_details_get_password_max_length(details));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -137,21 +199,33 @@ purple_channel_join_details_set_property(GObject *obj, guint param_id,
 		purple_channel_join_details_set_name(details,
 		                                     g_value_get_string(value));
 		break;
+	case PROP_NAME_MAX_LENGTH:
+		purple_channel_join_details_set_name_max_length(details,
+		                                                g_value_get_int(value));
+		break;
+	case PROP_NICKNAME_SUPPORTED:
+		purple_channel_join_details_set_nickname_supported(details,
+		                                                   g_value_get_boolean(value));
+		break;
 	case PROP_NICKNAME:
 		purple_channel_join_details_set_nickname(details,
 		                                         g_value_get_string(value));
 		break;
-	case PROP_NICKNAME_SUPPORTED:
-		purple_channel_join_details_set_nickname_supported(details,
+	case PROP_NICKNAME_MAX_LENGTH:
+		purple_channel_join_details_set_nickname_max_length(details,
+		                                                    g_value_get_int(value));
+		break;
+	case PROP_PASSWORD_SUPPORTED:
+		purple_channel_join_details_set_password_supported(details,
 		                                                   g_value_get_boolean(value));
 		break;
 	case PROP_PASSWORD:
 		purple_channel_join_details_set_password(details,
 		                                         g_value_get_string(value));
 		break;
-	case PROP_PASSWORD_SUPPORTED:
-		purple_channel_join_details_set_password_supported(details,
-		                                                   g_value_get_boolean(value));
+	case PROP_PASSWORD_MAX_LENGTH:
+		purple_channel_join_details_set_password_max_length(details,
+		                                                    g_value_get_int(value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -180,10 +254,35 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_NAME] = g_param_spec_string(
-		"name", "name",
-		"The name of the channel to join.",
+		"name", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleChannelJoinDetails:name-max-length:
+	 *
+	 * The maximum length of the name of the channel to join.
+	 *
+	 * A value of %0 means there is no maximum.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_NAME_MAX_LENGTH] = g_param_spec_int(
+		"name-max-length", NULL, NULL,
+		0, G_MAXINT, 0,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleChannelJoinDetails:nickname-supported:
+	 *
+	 * Whether or not the protocol supports channel-specific nicknames.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_NICKNAME_SUPPORTED] = g_param_spec_boolean(
+		"nickname-supported", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleChannelJoinDetails:nickname:
@@ -197,21 +296,33 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_NICKNAME] = g_param_spec_string(
-		"nickname", "nickname",
-		"The channel-specific nickname for the user.",
+		"nickname", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleChannelJoinDetails:nickname-supported:
+	 * PurpleChannelJoinDetails:nickname-max-length:
 	 *
-	 * Whether or not the protocol supports channel-specific nicknames.
+	 * The maximum length for the channel specific nickname.
+	 *
+	 * A value of %0 indicates no limit.
 	 *
 	 * Since: 3.0
 	 */
-	properties[PROP_NICKNAME_SUPPORTED] = g_param_spec_boolean(
-		"nickname-supported", "nickname-supported",
-		"Whether or not the protocol supports channel-specific nicknames.",
+	properties[PROP_NICKNAME_MAX_LENGTH] = g_param_spec_int(
+		"nickname-max-length", NULL, NULL,
+		0, G_MAXINT, 0,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleChannelJoinDetails:password-supported:
+	 *
+	 * Whether or not the protocol supports channel passwords.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_PASSWORD_SUPPORTED] = g_param_spec_boolean(
+		"password-supported", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -227,23 +338,24 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_PASSWORD] = g_param_spec_string(
-		"password", "password",
-		"The password to join this channel.",
+		"password", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleChannelJoinDetails:password-supported:
+	 * PurpleChannelJoinDetails:password-max-length:
 	 *
-	 * Whether or not the protocol supports channel passwords.
+	 * The maximum length for the channel specific password.
+	 *
+	 * A value of %0 indicates no limit.
 	 *
 	 * Since: 3.0
 	 */
-	properties[PROP_PASSWORD_SUPPORTED] = g_param_spec_boolean(
-		"password-supported", "password-supported",
-		"Whether or not the protocol supports channel passwords.",
-		FALSE,
+	properties[PROP_PASSWORD_MAX_LENGTH] = g_param_spec_int(
+		"password-max-length", NULL, NULL,
+		0, G_MAXINT, 0,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
@@ -252,13 +364,19 @@ purple_channel_join_details_class_init(PurpleChannelJoinDetailsClass *klass) {
  * Public API
  *****************************************************************************/
 PurpleChannelJoinDetails *
-purple_channel_join_details_new(gboolean nickname_supported,
-                                gboolean password_supported)
+purple_channel_join_details_new(int name_max_length,
+                                gboolean nickname_supported,
+                                int nickname_max_length,
+                                gboolean password_supported,
+                                int password_max_length)
 {
 	return g_object_new(
 		PURPLE_TYPE_CHANNEL_JOIN_DETAILS,
+		"name-max-length", name_max_length,
 		"nickname-supported", nickname_supported,
+		"nickname-max-length", nickname_max_length,
 		"password-supported", password_supported,
+		"password-max-length", password_max_length,
 		NULL);
 }
 
@@ -280,6 +398,21 @@ purple_channel_join_details_set_name(PurpleChannelJoinDetails *details,
 	}
 }
 
+int
+purple_channel_join_details_get_name_max_length(PurpleChannelJoinDetails *details)
+{
+	g_return_val_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details), 0);
+
+	return details->name_max_length;
+}
+
+gboolean
+purple_channel_join_details_get_nickname_supported(PurpleChannelJoinDetails *details) {
+	g_return_val_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details), FALSE);
+
+	return details->nickname_supported;
+}
+
 const char *
 purple_channel_join_details_get_nickname(PurpleChannelJoinDetails *details) {
 	g_return_val_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details), NULL);
@@ -298,11 +431,20 @@ purple_channel_join_details_set_nickname(PurpleChannelJoinDetails *details,
 	}
 }
 
+int
+purple_channel_join_details_get_nickname_max_length(PurpleChannelJoinDetails *details)
+{
+	g_return_val_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details), 0);
+
+	return details->nickname_max_length;
+}
+
 gboolean
-purple_channel_join_details_get_nickname_supported(PurpleChannelJoinDetails *details) {
+purple_channel_join_details_get_password_supported(PurpleChannelJoinDetails *details)
+{
 	g_return_val_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details), FALSE);
 
-	return details->nickname_supported;
+	return details->password_supported;
 }
 
 const char *
@@ -323,12 +465,12 @@ purple_channel_join_details_set_password(PurpleChannelJoinDetails *details,
 	}
 }
 
-gboolean
-purple_channel_join_details_get_password_supported(PurpleChannelJoinDetails *details)
+int
+purple_channel_join_details_get_password_max_length(PurpleChannelJoinDetails *details)
 {
-	g_return_val_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details), FALSE);
+	g_return_val_if_fail(PURPLE_IS_CHANNEL_JOIN_DETAILS(details), 0);
 
-	return details->password_supported;
+	return details->password_max_length;
 }
 
 void

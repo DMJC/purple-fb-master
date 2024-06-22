@@ -413,7 +413,7 @@ test_purple_protocol_conversation_empty_join_channel_async(void) {
 		protocol = g_object_new(test_purple_protocol_conversation_empty_get_type(),
 		                        NULL);
 		account = purple_account_new("test", "test");
-		details = purple_channel_join_details_new(FALSE, FALSE);
+		details = purple_channel_join_details_new(0, FALSE, 0, FALSE, 0);
 
 		purple_protocol_conversation_join_channel_async(protocol, account,
 		                                                details, NULL, NULL,
@@ -733,7 +733,7 @@ test_purple_protocol_conversation_get_channel_join_details(PurpleProtocolConvers
 	g_assert_true(PURPLE_IS_PROTOCOL_CONVERSATION(protocol));
 	g_assert_true(PURPLE_IS_ACCOUNT(account));
 
-	return purple_channel_join_details_new(TRUE, TRUE);
+	return purple_channel_join_details_new(16, TRUE, 16, TRUE, 0);
 }
 
 static void
@@ -1343,7 +1343,7 @@ test_purple_protocol_conversation_join_channel_idle(gpointer data) {
 	g_object_set_data_full(G_OBJECT(protocol), "account", account,
 	                       g_object_unref);
 
-	details = purple_channel_join_details_new(FALSE, FALSE);
+	details = purple_channel_join_details_new(0, FALSE, 0, FALSE, 0);
 	g_object_set_data_full(G_OBJECT(protocol), "details", details,
 	                       g_object_unref);
 

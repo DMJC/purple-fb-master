@@ -89,7 +89,7 @@ static PurpleChannelJoinDetails *
 purple_ircv3_protocol_conversation_get_channel_join_details(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
                                                             G_GNUC_UNUSED PurpleAccount *account)
 {
-	return purple_channel_join_details_new(FALSE, TRUE);
+	return purple_channel_join_details_new(0, FALSE, 0, TRUE, 0);
 }
 
 static void
