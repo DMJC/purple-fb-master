@@ -323,7 +323,14 @@ pidgin_conversation_process_message_contents_cb(G_GNUC_UNUSED GObject *self,
                                                 const char *contents,
                                                 G_GNUC_UNUSED gpointer data)
 {
-	return g_markup_escape_text(contents, -1);
+	char *escaped = NULL;
+	char *linkified = NULL;
+
+	escaped = g_markup_escape_text(contents, -1);
+	linkified = purple_markup_linkify(escaped);
+	g_free(escaped);
+
+	return linkified;
 }
 
 static void
