@@ -87,7 +87,7 @@ pidgin_contact_info_menu_get_starting_items(PurpleContactInfo *info,
 	const char *account_id = NULL;
 	const char *contact_id = NULL;
 
-	account_id = purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
+	account_id = purple_account_get_id(account);
 	contact_id = purple_contact_info_get_id(info);
 
 	menu = g_menu_new();

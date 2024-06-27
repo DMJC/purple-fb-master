@@ -113,7 +113,6 @@ searchresults_callback_wrapper_cb(G_GNUC_UNUSED GtkWidget *widget,
 static void
 pidgin_widget_decorate_account(GtkWidget *cont, PurpleAccount *account)
 {
-	PurpleContactInfo *info = NULL;
 	PurpleProtocol *protocol = NULL;
 	GtkWidget *image;
 	const gchar *icon_name = NULL;
@@ -121,13 +120,12 @@ pidgin_widget_decorate_account(GtkWidget *cont, PurpleAccount *account)
 	if (!account)
 		return;
 
-	info = PURPLE_CONTACT_INFO(account);
 	protocol = purple_account_get_protocol(account);
 	icon_name = purple_protocol_get_icon_name(protocol);
 
 	image = gtk_image_new_from_icon_name(icon_name);
 
-	gtk_widget_set_tooltip_text(image, purple_contact_info_get_username(info));
+	gtk_widget_set_tooltip_text(image, purple_account_get_username(account));
 
 	if (GTK_IS_BOX(cont)) {
 		gtk_widget_set_halign(image, GTK_ALIGN_START);
@@ -530,7 +528,7 @@ userinfo_hash(PurpleAccount *account, const char *who)
 {
 	char key[256];
 	g_snprintf(key, sizeof(key), "%s - %s",
-	           purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)),
+	           purple_account_get_username(account),
 	           purple_normalize(account, who));
 	return g_utf8_strup(key, -1);
 }

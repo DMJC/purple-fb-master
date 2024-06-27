@@ -228,7 +228,7 @@ pidgin_account_manager_row_remove_cb(G_GNUC_UNUSED GtkButton *self,
 	const char *name = NULL;
 	char *protocol_name = NULL;
 
-	info = PURPLE_CONTACT_INFO(row->account);
+	info = purple_account_get_contact_info(row->account);
 	name = purple_contact_info_get_name_for_display(info);
 	protocol_name = pidgin_account_manager_row_protocol_name_cb(NULL,
 	                                                            row->account,

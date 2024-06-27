@@ -100,7 +100,6 @@ pidgin_accounts_disabled_menu_get_item_attributes(GMenuModel *model,
 {
 	PidginAccountsDisabledMenu *menu = NULL;
 	PurpleAccount *account = NULL;
-	PurpleContactInfo *info = NULL;
 	PurpleProtocol *protocol = NULL;
 	GVariant *value = NULL;
 	const gchar *account_name = NULL, *protocol_name = NULL;
@@ -131,8 +130,7 @@ pidgin_accounts_disabled_menu_get_item_attributes(GMenuModel *model,
 		return;
 	}
 
-	info = PURPLE_CONTACT_INFO(account);
-	account_name = purple_contact_info_get_username(info);
+	account_name = purple_account_get_username(account);
 	protocol_name = purple_account_get_protocol_name(account);
 
 	/* translators: This format string is intended to contain the account
@@ -147,7 +145,7 @@ pidgin_accounts_disabled_menu_get_item_attributes(GMenuModel *model,
 	g_hash_table_insert(*attributes, G_MENU_ATTRIBUTE_ACTION,
 	                    g_variant_ref_sink(value));
 
-	value = g_variant_new_printf("%s", purple_contact_info_get_id(info));
+	value = g_variant_new_printf("%s", purple_account_get_id(account));
 	g_hash_table_insert(*attributes, G_MENU_ATTRIBUTE_TARGET,
 	                    g_variant_ref_sink(value));
 

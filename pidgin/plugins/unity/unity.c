@@ -88,7 +88,6 @@ static gchar *
 conversation_id(PurpleConversation *conv)
 {
 	PurpleAccount *account = purple_conversation_get_account(conv);
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	const char *type = "misc";
 
 	if(PURPLE_IS_IM_CONVERSATION(conv)) {
@@ -100,7 +99,7 @@ conversation_id(PurpleConversation *conv)
 	return g_strdup_printf("%s:%s:%s:%s",
 	                       type,
 	                       purple_conversation_get_name(conv),
-	                       purple_contact_info_get_username(info),
+	                       purple_account_get_username(account),
 	                       purple_account_get_protocol_id(account));
 }
 

@@ -61,7 +61,7 @@ pidgin_account_display_refresh(PidginAccountDisplay *display) {
 		protocol = purple_account_get_protocol(account);
 		icon_name = purple_protocol_get_icon_name(protocol);
 
-		info = PURPLE_CONTACT_INFO(account);
+		info = purple_account_get_contact_info(account);
 		alias = purple_contact_info_get_alias(info);
 		protocol_name = purple_account_get_protocol_name(account);
 		username = purple_contact_info_get_username(info);

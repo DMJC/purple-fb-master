@@ -147,12 +147,10 @@ pidgin_account_editor_update_login_options(PidginAccountEditor *editor,
 
 	/* If we have an account, populate its values. */
 	if(PURPLE_IS_ACCOUNT(editor->account)) {
-		/* The username will be split apart below and eventually set as the text
-		 * in the username entry.
+		/* The username will be split apart below and eventually set as the
+		 * text in the username entry.
 		 */
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
-
-		username = g_strdup(purple_contact_info_get_username(info));
+		username = g_strdup(purple_account_get_username(editor->account));
 		require_password = purple_account_get_require_password(editor->account);
 
 		if(purple_account_is_connected(editor->account)) {
@@ -257,8 +255,9 @@ pidgin_account_editor_update_user_options(PidginAccountEditor *editor,
 
 	/* Determine our values. */
 	if(editor->account != NULL) {
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
+		PurpleContactInfo *info = NULL;
 
+		info = purple_account_get_contact_info(editor->account);
 		svalue = purple_contact_info_get_alias(info);
 		use_global = purple_account_get_bool(editor->account,
 		                                     "use-global-buddyicon", TRUE);
@@ -783,9 +782,7 @@ pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 		editor->account = purple_account_new(username->str, protocol_id);
 		new_account = TRUE;
 	} else {
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
-
-		purple_contact_info_set_username(info, username->str);
+		purple_account_set_username(editor->account, username->str);
 		purple_account_set_protocol_id(editor->account, protocol_id);
 	}
 
@@ -799,11 +796,13 @@ pidgin_account_editor_save_login_options(PidginAccountEditor *editor) {
 
 static void
 pidgin_account_editor_save_user_options(PidginAccountEditor *editor) {
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(editor->account);
+	PurpleContactInfo *info = NULL;
 	const gchar *svalue = NULL;
 	gboolean bvalue = FALSE;
 
 	purple_account_freeze_notify_settings(editor->account);
+
+	info = purple_account_get_contact_info(editor->account);
 
 	/* Set the alias. */
 	svalue = gtk_editable_get_text(GTK_EDITABLE(editor->alias));

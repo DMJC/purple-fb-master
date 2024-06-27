@@ -89,7 +89,7 @@ pidgin_notification_connection_error_update(PidginNotificationConnectionError *e
 	}
 
 	/* Set the target for our actions. */
-	account_id = purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
+	account_id = purple_account_get_id(account);
 	gtk_actionable_set_action_target(GTK_ACTIONABLE(error->reconnect), "s",
 	                                 account_id);
 	gtk_actionable_set_action_target(GTK_ACTIONABLE(error->reenable), "s",

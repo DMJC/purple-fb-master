@@ -522,7 +522,6 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 	if(PIDGIN_IS_CONVERSATION(pidgin_conversation)) {
 		PidginDisplayItem *item = NULL;
 		PurpleAccount *account = purple_conversation_get_account(purple_conversation);
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 		const char *account_id = NULL;
 		char *id = NULL;
 		gboolean item_exists = FALSE;
@@ -534,7 +533,7 @@ pidgin_display_window_add(PidginDisplayWindow *window,
 			gtk_widget_unparent(pidgin_conversation);
 		}
 
-		account_id = purple_contact_info_get_id(info);
+		account_id = purple_account_get_id(account);
 		id = g_strdup_printf("%s-%s", account_id, conversation_id);
 		item_exists =
 			g_list_store_find_with_equal_func_full(window->conversation_model,

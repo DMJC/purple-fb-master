@@ -176,7 +176,7 @@ pidgin_notification_add_contact_message_cb(G_GNUC_UNUSED GtkButton *button,
 	if(!PURPLE_IS_CONTACT(contact)) {
 		g_warning("failed to find a user named '%s' on account %s",
 		          username,
-		          purple_contact_info_get_username(PURPLE_CONTACT_INFO(account)));
+		          purple_account_get_username(account));
 
 		return;
 	}
