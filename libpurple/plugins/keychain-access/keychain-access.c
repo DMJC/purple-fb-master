@@ -91,7 +91,6 @@ purple_keychain_access_read_password_async(PurpleCredentialProvider *provider,
                                            GAsyncReadyCallback callback,
                                            gpointer data)
 {
-	PurpleContactInfo *info = NULL;
 	GTask *task = NULL;
 	const gchar *account_name = NULL;
 	CFStringRef keys[4];
@@ -104,8 +103,7 @@ purple_keychain_access_read_password_async(PurpleCredentialProvider *provider,
 	g_return_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider));
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	info = PURPLE_CONTACT_INFO(account);
-	account_name = purple_contact_info_get_username(info);
+	account_name = purple_account_get_username(account);
 	cf_account_name = CFStringCreateWithCString(kCFAllocatorDefault,
 	                                            account_name,
 	                                            kCFStringEncodingUTF8);
@@ -190,7 +188,6 @@ purple_keychain_access_write_password_async(PurpleCredentialProvider *provider,
                                             GAsyncReadyCallback callback,
                                             gpointer data)
 {
-	PurpleContactInfo *info = NULL;
 	GTask *task = NULL;
 	const gchar *account_name = NULL;
 	CFStringRef keys[3];
@@ -203,8 +200,7 @@ purple_keychain_access_write_password_async(PurpleCredentialProvider *provider,
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 	g_return_if_fail(password != NULL);
 
-	info = PURPLE_CONTACT_INFO(account);
-	account_name = purple_contact_info_get_username(info);
+	account_name = purple_account_get_username(account);
 	cf_account_name = CFStringCreateWithCString(kCFAllocatorDefault,
 	                                            account_name,
 	                                            kCFStringEncodingUTF8);
@@ -266,7 +262,6 @@ purple_keychain_access_clear_password_async(PurpleCredentialProvider *provider,
                                             GAsyncReadyCallback callback,
                                             gpointer data)
 {
-	PurpleContactInfo *info = NULL;
 	GTask *task = NULL;
 	const gchar *account_name = NULL;
 	CFStringRef keys[2];
@@ -278,8 +273,7 @@ purple_keychain_access_clear_password_async(PurpleCredentialProvider *provider,
 	g_return_if_fail(PURPLE_IS_CREDENTIAL_PROVIDER(provider));
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	info = PURPLE_CONTACT_INFO(account);
-	account_name = purple_contact_info_get_username(info);
+	account_name = purple_account_get_username(account);
 	cf_account_name = CFStringCreateWithCString(kCFAllocatorDefault,
 	                                            account_name,
 	                                            kCFStringEncodingUTF8);
@@ -331,7 +325,8 @@ purple_keychain_access_clear_password_finish(PurpleCredentialProvider *provider,
  * GObject Implementation
  *****************************************************************************/
 static void
-purple_keychain_access_init(PurpleKeychainAccess *keychain_access) {
+purple_keychain_access_init(G_GNUC_UNUSED PurpleKeychainAccess *keychain_access)
+{
 }
 
 static void
@@ -354,7 +349,8 @@ purple_keychain_access_class_init(PurpleKeychainAccessClass *klass) {
 }
 
 static void
-purple_keychain_access_class_finalize(PurpleKeychainAccessClass *klass) {
+purple_keychain_access_class_finalize(G_GNUC_UNUSED PurpleKeychainAccessClass *klass)
+{
 }
 
 /******************************************************************************
