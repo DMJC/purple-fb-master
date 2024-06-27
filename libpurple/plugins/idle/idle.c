@@ -57,7 +57,6 @@ idleable_filter(PurpleAccount *account, G_GNUC_UNUSED gpointer data)
 static void
 set_idle_time(PurpleAccount *acct, int mins_idle) {
 	PurpleConnection *gc = purple_account_get_connection(acct);
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
 	PurplePresence *presence = purple_account_get_presence(acct);
 	GDateTime *idle_since = NULL;
 
@@ -66,7 +65,7 @@ set_idle_time(PurpleAccount *acct, int mins_idle) {
 	}
 
 	purple_debug_info("idle", "setting idle time for %s to %d\n",
-	                  purple_contact_info_get_username(info), mins_idle);
+	                  purple_account_get_username(acct), mins_idle);
 
 	if(mins_idle > 0) {
 		GDateTime *now = g_date_time_new_now_local();
@@ -87,13 +86,12 @@ set_idle_time_cb(gpointer data, gpointer user_data) {
 static void
 idle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 	PurpleAccount *acct = purple_request_page_get_account(page, "acct");
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
 	int tm = purple_request_page_get_integer(page, "mins");
 
 	/* only add the account to the GList if it's not already been idled */
 	if(!unidle_filter(acct, NULL)) {
 		purple_debug_misc("idle", "%s hasn't been idled yet; adding to list.",
-		                  purple_contact_info_get_username(info));
+		                  purple_account_get_username(acct));
 		idled_accts = g_list_append(idled_accts, acct);
 	}
 
@@ -113,10 +111,8 @@ idle_all_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
 		acct = (PurpleAccount *)(iter->data);
 
 		if(acct && idleable_filter(acct, NULL)) {
-			PurpleContactInfo *info = PURPLE_CONTACT_INFO(acct);
-
 			purple_debug_misc("idle", "Idling %s.\n",
-			                  purple_contact_info_get_username(info));
+			                  purple_account_get_username(acct));
 
 			set_idle_time(acct, tm);
 

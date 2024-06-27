@@ -531,7 +531,7 @@ purple_credential_manager_write_password_async(PurpleCredentialManager *manager,
 	if(!purple_account_get_remember_password(account)) {
 		const char *name = NULL;
 
-		name = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+		name = purple_account_get_username(account);
 
 		g_task_return_new_error(task, PURPLE_CREDENTIAL_MANAGER_DOMAIN, 0,
 		                        _("account \"%s\" is not marked to be stored"),

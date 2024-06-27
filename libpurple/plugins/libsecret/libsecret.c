@@ -148,7 +148,6 @@ purple_libsecret_read_password_async(PurpleCredentialProvider *provider,
                                      GAsyncReadyCallback callback,
                                      gpointer data)
 {
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = NULL;
 
 	task = g_task_new(provider, cancellable, callback, data);
@@ -156,7 +155,7 @@ purple_libsecret_read_password_async(PurpleCredentialProvider *provider,
 
 	secret_password_lookup(&purple_libsecret_schema, cancellable,
                            purple_libsecret_read_password_callback, task,
-                           "user", purple_contact_info_get_username(info),
+                           "user", purple_account_get_username(account),
                            "protocol", purple_account_get_protocol_id(account),
                            NULL);
 }
@@ -175,19 +174,19 @@ purple_libsecret_read_password_finish(PurpleCredentialProvider *provider,
 static void
 purple_libsecret_write_password_async(PurpleCredentialProvider *provider,
                                       PurpleAccount *account,
-                                      const gchar *password,
+                                      const char *password,
                                       GCancellable *cancellable,
                                       GAsyncReadyCallback callback,
                                       gpointer data)
 {
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = NULL;
-	gchar *label = NULL;
-	const gchar *username = NULL;
+	char *label = NULL;
+	const char *username = NULL;
 
 	task = g_task_new(provider, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_libsecret_write_password_async);
-	username = purple_contact_info_get_username(info);
+
+	username = purple_account_get_username(account);
 
 	label = g_strdup_printf(_("libpurple password for account %s"), username);
 	secret_password_store(&purple_libsecret_schema,
@@ -218,7 +217,6 @@ purple_libsecret_clear_password_async(PurpleCredentialProvider *provider,
                                       GAsyncReadyCallback callback,
                                       gpointer data)
 {
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	GTask *task = NULL;
 
 	task = g_task_new(provider, cancellable, callback, data);
@@ -226,7 +224,7 @@ purple_libsecret_clear_password_async(PurpleCredentialProvider *provider,
 
 	secret_password_clear(&purple_libsecret_schema, cancellable,
 	                      purple_libsecret_clear_password_callback, task,
-	                      "user", purple_contact_info_get_username(info),
+	                      "user", purple_account_get_username(account),
 	                      "protocol", purple_account_get_protocol_id(account),
 	                      NULL);
 }

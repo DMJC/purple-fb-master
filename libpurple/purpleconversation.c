@@ -177,9 +177,10 @@ purple_conversation_set_account(PurpleConversation *conversation,
 	/* Remove the account from the conversation if it's a member. */
 	if(PURPLE_IS_ACCOUNT(conversation->account)) {
 		if(PURPLE_IS_CONVERSATION_MEMBER(member)) {
-			purple_conversation_remove_member(conversation,
-			                                  PURPLE_CONTACT_INFO(conversation->account),
-			                                  FALSE, NULL);
+			PurpleContactInfo *info = NULL;
+
+			info = purple_account_get_contact_info(conversation->account);
+			purple_conversation_remove_member(conversation, info, FALSE, NULL);
 		}
 	}
 
@@ -187,9 +188,10 @@ purple_conversation_set_account(PurpleConversation *conversation,
 		GObject *obj = NULL;
 
 		if(PURPLE_IS_ACCOUNT(conversation->account)) {
-			purple_conversation_add_member(conversation,
-			                               PURPLE_CONTACT_INFO(account),
-			                               FALSE, NULL);
+			PurpleContactInfo *info = NULL;
+
+			info = purple_account_get_contact_info(account);
+			purple_conversation_add_member(conversation, info, FALSE, NULL);
 
 			g_signal_connect_object(account, "notify::connected",
 			                        G_CALLBACK(purple_conversation_account_connected_cb),
@@ -338,7 +340,7 @@ common_send(PurpleConversation *conversation, const char *message,
 
 	protocol = purple_account_get_protocol(account);
 
-	me = purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(account));
+	me = purple_account_get_username(account);
 
 	/* Always linkify the text for display, unless we're explicitly asked to do
 	 * otherwise. */
@@ -1343,7 +1345,7 @@ purple_conversation_generate_title(PurpleConversation *conversation) {
 	}
 
 	account = purple_conversation_get_account(conversation);
-	account_info = PURPLE_CONTACT_INFO(account);
+	account_info = purple_account_get_contact_info(account);
 
 	str = g_string_new("");
 

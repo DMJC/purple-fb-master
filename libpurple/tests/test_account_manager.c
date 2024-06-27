@@ -100,7 +100,6 @@ test_purple_account_manager_add_remove(void) {
 static gboolean
 test_purple_account_manager_find_func(gconstpointer a, gconstpointer b) {
 	PurpleAccount *account = PURPLE_ACCOUNT((gpointer)a);
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	const gchar *desired_username = b;
 	const gchar *protocol_id = NULL;
 	const gchar *username = NULL;
@@ -112,7 +111,7 @@ test_purple_account_manager_find_func(gconstpointer a, gconstpointer b) {
 	}
 
 	/* Finally verify the username. */
-	username = purple_contact_info_get_username(info);
+	username = purple_account_get_username(account);
 	if(!purple_strequal(username, desired_username)) {
 		return FALSE;
 	}

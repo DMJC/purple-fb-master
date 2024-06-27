@@ -773,18 +773,15 @@ gboolean
 purple_connection_connect(PurpleConnection *connection, GError **error) {
 	PurpleConnectionClass *klass = NULL;
 	PurpleConnectionPrivate *priv = NULL;
-	PurpleContactInfo *info = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), FALSE);
 
 	priv = purple_connection_get_instance_private(connection);
 
-	info = PURPLE_CONTACT_INFO(priv->account);
-
 	if(!purple_account_is_disconnected(priv->account)) {
 		g_set_error(error, PURPLE_CONNECTION_ERROR, 0,
 		            "account %s is not disconnected",
-		            purple_contact_info_get_username(info));
+		            purple_account_get_username(priv->account));
 
 		return TRUE;
 	}
@@ -795,7 +792,7 @@ purple_connection_connect(PurpleConnection *connection, GError **error) {
 	{
 		g_set_error(error, PURPLE_CONNECTION_ERROR, 0,
 		            "Cannot connect to account %s without a password.",
-		            purple_contact_info_get_username(info));
+		            purple_account_get_username(priv->account));
 
 		return FALSE;
 	}
@@ -810,7 +807,7 @@ purple_connection_connect(PurpleConnection *connection, GError **error) {
 
 	g_set_error(error, PURPLE_CONNECTION_ERROR, 0,
 	            "The connection for %s did not implement the connect method",
-	            purple_contact_info_get_username(info));
+	            purple_account_get_username(priv->account));
 
 	return FALSE;
 }

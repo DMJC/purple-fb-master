@@ -447,7 +447,7 @@ test_purple_conversation_members_add_remove(void) {
 
 	/* Make sure the account got added as a member. */
 	test_member = purple_conversation_find_member(conversation,
-	                                              PURPLE_CONTACT_INFO(account));
+	                                              purple_account_get_contact_info(account));
 	g_assert_nonnull(test_member);
 
 	/* Connect our signals. */

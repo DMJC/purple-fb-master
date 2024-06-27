@@ -217,10 +217,9 @@ parse_proxy_info(PurpleXmlNode *node, PurpleAccount *account)
 			purple_proxy_info_set_proxy_type(proxy_info, PURPLE_PROXY_TYPE_USE_ENVVAR);
 		else
 		{
-			PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 			purple_debug_error("accounts", "Invalid proxy type found when "
 			                   "loading account information for %s\n",
-			                   purple_contact_info_get_username(info));
+			                   purple_account_get_username(account));
 		}
 		g_free(data);
 	}
@@ -288,13 +287,11 @@ parse_current_error(PurpleXmlNode *node, PurpleAccount *account)
 	g_free(type_str);
 
 	if(type > PURPLE_CONNECTION_ERROR_OTHER_ERROR) {
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
-
 		purple_debug_error("accounts",
 		                   "Invalid PurpleConnectionError value %d found when "
 		                   "loading account information for %s\n",
 		                   type,
-		                   purple_contact_info_get_username(info));
+		                   purple_account_get_username(account));
 		type = PURPLE_CONNECTION_ERROR_OTHER_ERROR;
 	}
 
@@ -384,7 +381,10 @@ parse_account(PurpleXmlNode *node)
 	if ((child != NULL) && ((data = purple_xmlnode_get_data(child)) != NULL))
 	{
 		if (*data != '\0') {
-			purple_contact_info_set_alias(PURPLE_CONTACT_INFO(ret), data);
+			PurpleContactInfo *info = NULL;
+
+			info = purple_account_get_contact_info(ret);
+			purple_contact_info_set_alias(info, data);
 		}
 		g_free(data);
 	}
@@ -458,11 +458,9 @@ purple_accounts_delete_set(GObject *obj, GAsyncResult *res, gpointer d) {
 
 	r = purple_credential_manager_clear_password_finish(manager, res, &error);
 	if(r != TRUE) {
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
-
 		purple_debug_warning("accounts",
 		                     "Failed to remove password for account %s: %s",
-		                     purple_contact_info_get_name_for_display(info),
+		                     purple_account_get_username(account),
 		                     (error != NULL) ? error->message : "Unknown error");
 
 		g_clear_error(&error);

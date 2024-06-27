@@ -501,7 +501,6 @@ PurpleNotification *
 purple_notification_new_from_add_contact_request(PurpleAddContactRequest *request)
 {
 	PurpleAccount *account = NULL;
-	PurpleContactInfo *info = NULL;
 	PurpleNotification *notification = NULL;
 	char *title = NULL;
 	const char *alias = NULL;
@@ -510,7 +509,6 @@ purple_notification_new_from_add_contact_request(PurpleAddContactRequest *reques
 	g_return_val_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request), NULL);
 
 	account = purple_add_contact_request_get_account(request);
-	info = PURPLE_CONTACT_INFO(account);
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_ADD_CONTACT,
 	                                       account, request, g_object_unref);
 
@@ -520,11 +518,11 @@ purple_notification_new_from_add_contact_request(PurpleAddContactRequest *reques
 	if(alias != NULL && *alias != '\0') {
 		title = g_strdup_printf(_("%s (%s) added %s to their contact list"),
 		                        alias, username,
-		                        purple_contact_info_get_username(info));
+		                        purple_account_get_username(account));
 	} else {
 		title = g_strdup_printf(_("%s added %s to their contact list"),
 		                        username,
-		                        purple_contact_info_get_username(info));
+		                        purple_account_get_username(account));
 	}
 
 	purple_notification_set_title(notification, title);
@@ -537,7 +535,6 @@ PurpleNotification *
 purple_notification_new_from_authorization_request(PurpleAuthorizationRequest *authorization_request)
 {
 	PurpleAccount *account = NULL;
-	PurpleContactInfo *info = NULL;
 	PurpleNotification *notification = NULL;
 	char *title = NULL;
 	const char *alias = NULL;
@@ -547,7 +544,6 @@ purple_notification_new_from_authorization_request(PurpleAuthorizationRequest *a
 	                     NULL);
 
 	account = purple_authorization_request_get_account(authorization_request);
-	info = PURPLE_CONTACT_INFO(account);
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_AUTHORIZATION_REQUEST,
 	                                       account, authorization_request,
 	                                       g_object_unref);
@@ -559,12 +555,12 @@ purple_notification_new_from_authorization_request(PurpleAuthorizationRequest *a
 		title = g_strdup_printf(_("%s (%s) would like to add %s to their"
 		                          " contact list"),
 		                        alias, username,
-		                        purple_contact_info_get_username(info));
+		                        purple_account_get_username(account));
 	} else {
 		title = g_strdup_printf(_("%s would like to add %s to their contact"
 		                          " list"),
 		                        username,
-		                        purple_contact_info_get_username(info));
+		                        purple_account_get_username(account));
 	}
 
 	purple_notification_set_title(notification, title);
@@ -589,7 +585,7 @@ purple_notification_new_from_connection_error(PurpleAccount *account,
 	                                       account, info, NULL);
 
 	/* Set the title of the notification. */
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	username = purple_account_get_username(account);
 	if(purple_account_get_enabled(account)) {
 		title = g_strdup_printf(_("%s disconnected"), username);
 	} else {

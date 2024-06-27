@@ -633,10 +633,8 @@ purple_account_manager_reorder(PurpleAccountManager *manager,
 			new_index--;
 		}
 	} else {
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
-
 		g_critical("Unregistered account (%s) found during reorder!",
-		           purple_contact_info_get_username(info));
+		           purple_account_get_username(account));
 
 		return;
 	}
@@ -657,9 +655,8 @@ purple_account_manager_find_by_id(PurpleAccountManager *manager,
 
 	for(guint index = 0; index < manager->accounts->len; index++) {
 		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 
-		if(purple_strequal(purple_contact_info_get_id(info), id)) {
+		if(purple_strequal(purple_account_get_id(account), id)) {
 			return g_object_ref(account);
 		}
 	}
@@ -669,7 +666,7 @@ purple_account_manager_find_by_id(PurpleAccountManager *manager,
 
 PurpleAccount *
 purple_account_manager_find(PurpleAccountManager *manager,
-                            const gchar *username, const gchar *protocol_id)
+                            const char *username, const char *protocol_id)
 {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT_MANAGER(manager), NULL);
 	g_return_val_if_fail(username != NULL, NULL);
@@ -677,11 +674,10 @@ purple_account_manager_find(PurpleAccountManager *manager,
 
 	for(guint index = 0; index < manager->accounts->len; index++) {
 		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
-		gchar *normalized = NULL;
-		const gchar *existing_protocol_id = NULL;
-		const gchar *existing_username = NULL;
-		const gchar *existing_normalized = NULL;
+		char *normalized = NULL;
+		const char *existing_protocol_id = NULL;
+		const char *existing_username = NULL;
+		const char *existing_normalized = NULL;
 
 		/* Check if the protocol id matches what the user asked for. */
 		existing_protocol_id = purple_account_get_protocol_id(account);
@@ -690,7 +686,7 @@ purple_account_manager_find(PurpleAccountManager *manager,
 		}
 
 		/* Finally verify the username. */
-		existing_username = purple_contact_info_get_username(info);
+		existing_username = purple_account_get_username(account);
 		normalized = g_strdup(purple_normalize(account, username));
 		existing_normalized = purple_normalize(account, existing_username);
 

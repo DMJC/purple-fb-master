@@ -52,7 +52,6 @@ purple_authorization_request_notification_update(PurpleAuthorizationRequestNotif
 {
 	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
-	PurpleContactInfo *info = NULL;
 	PurpleNotification *notification = PURPLE_NOTIFICATION(auth_notification);
 	char *title = NULL;
 	const char *alias = NULL;
@@ -60,7 +59,6 @@ purple_authorization_request_notification_update(PurpleAuthorizationRequestNotif
 
 	request = auth_notification->authorization_request;
 	account = purple_authorization_request_get_account(request);
-	info = PURPLE_CONTACT_INFO(account);
 	username = purple_authorization_request_get_username(request);
 	alias = purple_authorization_request_get_alias(request);
 
@@ -68,12 +66,12 @@ purple_authorization_request_notification_update(PurpleAuthorizationRequestNotif
 		title = g_strdup_printf(_("%s (%s) would like to add %s to their"
 		                          " contact list"),
 		                        alias, username,
-		                        purple_contact_info_get_username(info));
+		                        purple_account_get_username(account));
 	} else {
 		title = g_strdup_printf(_("%s would like to add %s to their contact"
 		                          " list"),
 		                        username,
-		                        purple_contact_info_get_username(info));
+		                        purple_account_get_username(account));
 	}
 
 	purple_notification_set_title(notification, title);

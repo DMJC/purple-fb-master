@@ -336,7 +336,7 @@ test_purple_conversation_manager_find_dm_does_not_exist(void) {
 		"account", account2,
 		"type", PURPLE_CONVERSATION_TYPE_CHANNEL,
 		NULL);
-	purple_conversation_manager_register(manager, conversation2);
+	purple_conversation_manager_register(manager, conversation3);
 
 	conversation4 = purple_conversation_manager_find_dm(manager, contact);
 	g_assert_null(conversation4);

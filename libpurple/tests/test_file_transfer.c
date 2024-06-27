@@ -46,7 +46,7 @@ test_purple_file_transfer_new_send(gconstpointer data) {
 	g_assert_true(PURPLE_IS_FILE_TRANSFER(transfer));
 
 	initiator = purple_file_transfer_get_initiator(transfer);
-	g_assert_true(initiator == PURPLE_CONTACT_INFO(account));
+	g_assert_true(initiator == purple_account_get_contact_info(account));
 
 	filename = purple_file_transfer_get_filename(transfer);
 	basename = g_path_get_basename(executable);
