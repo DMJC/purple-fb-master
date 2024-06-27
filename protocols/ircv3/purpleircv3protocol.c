@@ -141,7 +141,7 @@ purple_ircv3_protocol_create_connection(PurpleProtocol *protocol,
 	/* Make sure the username (which includes the servername via usersplits),
 	 * does not contain any whitespace.
 	 */
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	username = purple_account_get_username(account);
 	if(strpbrk(username, " \t\v\r\n") != NULL) {
 		g_set_error(error,
 		            PURPLE_CONNECTION_ERROR,
@@ -177,7 +177,7 @@ purple_ircv3_protocol_can_connect_async(PurpleProtocol *protocol,
 
 	monitor = g_network_monitor_get_default();
 
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	username = purple_account_get_username(account);
 	parts = g_strsplit(username, "@", 2);
 	port = purple_account_get_int(account, "port",
 	                              PURPLE_IRCV3_DEFAULT_TLS_PORT);

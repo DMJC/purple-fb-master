@@ -251,7 +251,10 @@ purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
 
 	account = purple_request_page_get_account(page, "account");
 	if(PURPLE_IS_ACCOUNT(account)) {
-		tmp = purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(account));
+		PurpleContactInfo *info = NULL;
+
+		info = purple_account_get_contact_info(account);
+		tmp = purple_contact_info_get_name_for_display(info);
 	} else {
 		tmp = _("(unset)");
 	}

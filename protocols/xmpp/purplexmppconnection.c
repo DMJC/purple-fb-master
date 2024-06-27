@@ -104,7 +104,7 @@ purple_xmpp_connection_connect(PurpleConnection *purple_connection,
 	}
 
 	/* Grab some more information that we need. */
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	username = purple_account_get_username(account);
 	connection->xeme_connection = xeme_connection_new(username);
 
 	/* If we have a resource, tell the xeme connection about it. */

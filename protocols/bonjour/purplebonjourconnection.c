@@ -54,7 +54,7 @@ purple_bonjour_connection_connect(PurpleConnection *purple_connection,
 	account = purple_connection_get_account(purple_connection);
 
 	/* Grab some more information that we need. */
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	username = purple_account_get_username(account);
 	port = purple_account_get_int(account, PURPLE_BONJOUR_OPTION_PORT,
 	                              PURPLE_BONJOUR_DEFAULT_PORT);
 

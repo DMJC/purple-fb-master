@@ -560,7 +560,6 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
 	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
-	PurpleContactInfo *info = NULL;
 	PurpleConversationManager *conversation_manager = NULL;
 	char **userparts = NULL;
 	const char *username = NULL;
@@ -570,13 +569,12 @@ purple_ircv3_connection_constructed(GObject *obj) {
 
 	priv = purple_ircv3_connection_get_instance_private(connection);
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
-	info = PURPLE_CONTACT_INFO(account);
 
 	title = g_strdup_printf(_("status for %s"),
-	                        purple_contact_info_get_username(info));
+	                        purple_account_get_username(account));
 
 	/* Split the username into nick and server and store the values. */
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	username = purple_account_get_username(account);
 	userparts = g_strsplit(username, "@", 2);
 	purple_connection_set_display_name(PURPLE_CONNECTION(connection),
 	                                   userparts[0]);

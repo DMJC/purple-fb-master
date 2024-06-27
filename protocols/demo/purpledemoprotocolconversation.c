@@ -72,7 +72,7 @@ purple_demo_protocol_generate_conversation_id(PurpleAccount *account,
 	/* Build a checksum of the account and the sorted participants. */
 	checksum = g_checksum_new(G_CHECKSUM_SHA256);
 
-	id = purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
+	id = purple_account_get_id(account);
 	g_checksum_update(checksum, (guchar *)id, -1);
 
 	for(guint i = 0; i < g_list_model_get_n_items(G_LIST_MODEL(sorted)); i++) {
