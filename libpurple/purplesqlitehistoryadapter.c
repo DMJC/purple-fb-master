@@ -419,8 +419,8 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
 	                  2, purple_account_get_username(account), -1,
 	                  SQLITE_STATIC);
 	sqlite3_bind_text(prepared_statement,
-	                  3, purple_conversation_get_name(conversation), -1,
-	                  SQLITE_STATIC);
+	                  3, purple_conversation_get_global_id(conversation), -1,
+	                  g_free);
 	message_id = purple_message_get_id(message);
 	if(message_id != NULL) {
 		sqlite3_bind_text(prepared_statement, 4, message_id, -1,
