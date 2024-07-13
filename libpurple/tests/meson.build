@@ -59,6 +59,7 @@ test_ui = static_library(
 )
 
 testenv.set('XDG_CONFIG_HOME', meson.current_build_dir() / 'config')
+testenv.set('G_ENABLE_DIAGNOSTIC', '1')
 
 foreach prog : PROGS
     e = executable(f'test_@prog@', f'test_@prog@.c',

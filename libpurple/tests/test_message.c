@@ -54,6 +54,8 @@ test_purple_message_properties(void) {
 	gboolean action = FALSE;
 	gboolean delivered = FALSE;
 	gboolean edited = FALSE;
+	gboolean event = FALSE;
+	gboolean notice = FALSE;
 
 	timestamp = g_date_time_new_from_unix_utc(911347200);
 	error = g_error_new(g_quark_from_static_string("test-message"), 0,
@@ -65,61 +67,80 @@ test_purple_message_properties(void) {
 	 */
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
-		"id", "id",
 		"action", TRUE,
-		"author", "author",
 		"author-alias", "alias",
+		"author-name", "author",
 		"author-name-color", "purple",
+		"contents", "Now that is a big door",
 		"delivered", TRUE,
 		"edited", TRUE,
-		"contents", "Now that is a big door",
-		"timestamp", timestamp,
-		"flags", PURPLE_MESSAGE_SYSTEM,
 		"error", error,
+		"event", TRUE,
+		"flags", PURPLE_MESSAGE_SYSTEM,
+		"id", "id",
+		"notice", TRUE,
+		"timestamp", timestamp,
 		NULL);
 
 	g_object_get(
 		message,
-		"id", &id,
 		"action", &action,
-		"author", &author,
 		"author-alias", &author_alias,
+		"author-name", &author,
 		"author-name-color", &author_name_color,
+		"contents", &contents,
 		"delivered", &delivered,
 		"delivered-at", &delivered_at1,
 		"edited", &edited,
 		"edited-at", &edited_at1,
-		"contents", &contents,
-		"timestamp", &timestamp1,
-		"flags", &flags,
 		"error", &error1,
+		"event", &event,
+		"flags", &flags,
+		"id", &id,
+		"notice", &notice,
+		"timestamp", &timestamp1,
 		NULL);
 
-	g_assert_cmpstr(id, ==, "id");
 	g_assert_true(action);
+
 	g_assert_cmpstr(author, ==, "author");
+	g_clear_pointer(&author, g_free);
+
 	g_assert_cmpstr(author_alias, ==, "alias");
+	g_clear_pointer(&author_alias, g_free);
+
 	g_assert_cmpstr(author_name_color, ==, "purple");
+	g_clear_pointer(&author_name_color, g_free);
+
+	g_assert_cmpstr(contents, ==, "Now that is a big door");
+	g_clear_pointer(&contents, g_free);
+
 	g_assert_true(delivered);
 	g_assert_nonnull(delivered_at1);
+	g_clear_pointer(&delivered_at1, g_date_time_unref);
+
 	g_assert_true(edited);
 	g_assert_nonnull(edited_at1);
-	g_assert_cmpstr(contents, ==, "Now that is a big door");
-	g_assert_true(g_date_time_equal(timestamp1, timestamp));
-	g_assert_cmpint(flags, ==, PURPLE_MESSAGE_SYSTEM);
-	g_assert_error(error1, error->domain, error->code);
-
-	g_clear_pointer(&id, g_free);
-	g_clear_pointer(&author, g_free);
-	g_clear_pointer(&author_alias, g_free);
-	g_clear_pointer(&author_name_color, g_free);
-	g_clear_pointer(&delivered_at1, g_date_time_unref);
 	g_clear_pointer(&edited_at1, g_date_time_unref);
-	g_clear_pointer(&contents, g_free);
+
+	g_assert_error(error1, error->domain, error->code);
+	g_clear_error(&error);
+	g_clear_error(&error1);
+
+	g_assert_true(event);
+
+	g_assert_cmpint(flags, ==, PURPLE_MESSAGE_SYSTEM);
+
+	g_assert_cmpstr(id, ==, "id");
+	g_clear_pointer(&id, g_free);
+
+	g_assert_true(notice);
+
+	g_assert_true(g_date_time_equal(timestamp1, timestamp));
 	g_clear_pointer(&timestamp, g_date_time_unref);
 	g_clear_pointer(&timestamp1, g_date_time_unref);
-	g_clear_error(&error1);
-	g_clear_object(&message);
+
+	g_assert_finalize_object(message);
 }
 
 static void

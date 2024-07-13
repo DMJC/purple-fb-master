@@ -77,6 +77,10 @@ package_revision = vcs_tag(
 # For running `meson devenv`.
 devenv = environment()
 
+# Set G_ENABLE_DIAGNOSTIC so we get warnings about deprecated signals and
+# properties.
+devenv.set('G_ENABLE_DIAGNOSTIC', '1')
+
 # For man pages.
 man_conf.set('VERSION', meson.project_version())
 man_conf.set('prefix', get_option('prefix'))

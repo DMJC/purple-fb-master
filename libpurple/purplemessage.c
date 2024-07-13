@@ -31,12 +31,14 @@ struct _PurpleMessage {
 	GObject parent;
 
 	char *id;
-	char *author;
+	char *author_name;
 	char *author_name_color;
 	char *author_alias;
 
 	char *contents;
 	gboolean action;
+	gboolean event;
+	gboolean notice;
 
 	GDateTime *timestamp;
 	PurpleMessageFlags flags;
@@ -51,19 +53,22 @@ struct _PurpleMessage {
 
 enum {
 	PROP_0,
-	PROP_ID,
+	PROP_ACTION,
 	PROP_AUTHOR,
 	PROP_AUTHOR_ALIAS,
+	PROP_AUTHOR_NAME,
 	PROP_AUTHOR_NAME_COLOR,
 	PROP_CONTENTS,
-	PROP_ACTION,
-	PROP_TIMESTAMP,
-	PROP_FLAGS,
-	PROP_ERROR,
 	PROP_DELIVERED,
 	PROP_DELIVERED_AT,
 	PROP_EDITED,
 	PROP_EDITED_AT,
+	PROP_ERROR,
+	PROP_EVENT,
+	PROP_FLAGS,
+	PROP_ID,
+	PROP_NOTICE,
+	PROP_TIMESTAMP,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -74,9 +79,14 @@ G_DEFINE_FINAL_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
  * Helpers
  *****************************************************************************/
 static void
-purple_message_set_author(PurpleMessage *message, const char *author) {
-	if(g_set_str(&message->author, author)) {
-		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_AUTHOR]);
+purple_message_set_author_name(PurpleMessage *message, const char *author) {
+	if(g_set_str(&message->author_name, author)) {
+		GObject *obj = G_OBJECT(message);
+
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_AUTHOR]);
+		g_object_notify_by_pspec(obj, properties[PROP_AUTHOR_NAME]);
+		g_object_thaw_notify(obj);
 	}
 }
 
@@ -90,49 +100,56 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 	PurpleMessage *message = PURPLE_MESSAGE(object);
 
 	switch(param_id) {
-		case PROP_ID:
-			g_value_set_string(value, purple_message_get_id(message));
-			break;
-		case PROP_AUTHOR:
-			g_value_set_string(value, purple_message_get_author(message));
-			break;
-		case PROP_AUTHOR_ALIAS:
-			g_value_set_string(value, purple_message_get_author_alias(message));
-			break;
-		case PROP_AUTHOR_NAME_COLOR:
-			g_value_set_string(value,
-			                   purple_message_get_author_name_color(message));
-			break;
-		case PROP_CONTENTS:
-			g_value_set_string(value, purple_message_get_contents(message));
-			break;
-		case PROP_ACTION:
-			g_value_set_boolean(value, purple_message_get_action(message));
-			break;
-		case PROP_TIMESTAMP:
-			g_value_set_boxed(value, purple_message_get_timestamp(message));
-			break;
-		case PROP_FLAGS:
-			g_value_set_flags(value, purple_message_get_flags(message));
-			break;
-		case PROP_ERROR:
-			g_value_set_boxed(value, purple_message_get_error(message));
-			break;
-		case PROP_DELIVERED:
-			g_value_set_boolean(value, purple_message_get_delivered(message));
-			break;
-		case PROP_DELIVERED_AT:
-			g_value_set_boxed(value, purple_message_get_delivered_at(message));
-			break;
-		case PROP_EDITED:
-			g_value_set_boolean(value, purple_message_get_edited(message));
-			break;
-		case PROP_EDITED_AT:
-			g_value_set_boxed(value, purple_message_get_edited_at(message));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
-			break;
+	case PROP_ACTION:
+		g_value_set_boolean(value, purple_message_get_action(message));
+		break;
+	case PROP_AUTHOR:
+	case PROP_AUTHOR_NAME:
+		g_value_set_string(value, purple_message_get_author_name(message));
+		break;
+	case PROP_AUTHOR_ALIAS:
+		g_value_set_string(value, purple_message_get_author_alias(message));
+		break;
+	case PROP_AUTHOR_NAME_COLOR:
+		g_value_set_string(value,
+		                   purple_message_get_author_name_color(message));
+		break;
+	case PROP_CONTENTS:
+		g_value_set_string(value, purple_message_get_contents(message));
+		break;
+	case PROP_DELIVERED:
+		g_value_set_boolean(value, purple_message_get_delivered(message));
+		break;
+	case PROP_DELIVERED_AT:
+		g_value_set_boxed(value, purple_message_get_delivered_at(message));
+		break;
+	case PROP_EDITED:
+		g_value_set_boolean(value, purple_message_get_edited(message));
+		break;
+	case PROP_EDITED_AT:
+		g_value_set_boxed(value, purple_message_get_edited_at(message));
+		break;
+	case PROP_ERROR:
+		g_value_set_boxed(value, purple_message_get_error(message));
+		break;
+	case PROP_EVENT:
+		g_value_set_boolean(value, purple_message_get_event(message));
+		break;
+	case PROP_FLAGS:
+		g_value_set_flags(value, purple_message_get_flags(message));
+		break;
+	case PROP_ID:
+		g_value_set_string(value, purple_message_get_id(message));
+		break;
+	case PROP_NOTICE:
+		g_value_set_boolean(value, purple_message_get_notice(message));
+		break;
+	case PROP_TIMESTAMP:
+		g_value_set_boxed(value, purple_message_get_timestamp(message));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
+		break;
 	}
 }
 
@@ -143,49 +160,56 @@ purple_message_set_property(GObject *object, guint param_id,
 	PurpleMessage *message = PURPLE_MESSAGE(object);
 
 	switch(param_id) {
-		case PROP_ID:
-			purple_message_set_id(message, g_value_get_string(value));
-			break;
-		case PROP_AUTHOR:
-			purple_message_set_author(message, g_value_get_string(value));
-			break;
-		case PROP_AUTHOR_ALIAS:
-			purple_message_set_author_alias(message, g_value_get_string(value));
-			break;
-		case PROP_AUTHOR_NAME_COLOR:
-			purple_message_set_author_name_color(message,
-			                                     g_value_get_string(value));
-			break;
-		case PROP_CONTENTS:
-			purple_message_set_contents(message, g_value_get_string(value));
-			break;
-		case PROP_ACTION:
-			purple_message_set_action(message, g_value_get_boolean(value));
-			break;
-		case PROP_TIMESTAMP:
-			purple_message_set_timestamp(message, g_value_get_boxed(value));
-			break;
-		case PROP_FLAGS:
-			purple_message_set_flags(message, g_value_get_flags(value));
-			break;
-		case PROP_ERROR:
-			purple_message_set_error(message, g_value_get_boxed(value));
-			break;
-		case PROP_DELIVERED:
-			purple_message_set_delivered(message, g_value_get_boolean(value));
-			break;
-		case PROP_DELIVERED_AT:
-			purple_message_set_delivered_at(message, g_value_get_boxed(value));
-			break;
-		case PROP_EDITED:
-			purple_message_set_edited(message, g_value_get_boolean(value));
-			break;
-		case PROP_EDITED_AT:
-			purple_message_set_edited_at(message, g_value_get_boxed(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
-			break;
+	case PROP_ACTION:
+		purple_message_set_action(message, g_value_get_boolean(value));
+		break;
+	case PROP_AUTHOR:
+	case PROP_AUTHOR_NAME:
+		purple_message_set_author_name(message, g_value_get_string(value));
+		break;
+	case PROP_AUTHOR_ALIAS:
+		purple_message_set_author_alias(message, g_value_get_string(value));
+		break;
+	case PROP_AUTHOR_NAME_COLOR:
+		purple_message_set_author_name_color(message,
+		                                     g_value_get_string(value));
+		break;
+	case PROP_CONTENTS:
+		purple_message_set_contents(message, g_value_get_string(value));
+		break;
+	case PROP_DELIVERED:
+		purple_message_set_delivered(message, g_value_get_boolean(value));
+		break;
+	case PROP_DELIVERED_AT:
+		purple_message_set_delivered_at(message, g_value_get_boxed(value));
+		break;
+	case PROP_EDITED:
+		purple_message_set_edited(message, g_value_get_boolean(value));
+		break;
+	case PROP_EDITED_AT:
+		purple_message_set_edited_at(message, g_value_get_boxed(value));
+		break;
+	case PROP_ERROR:
+		purple_message_set_error(message, g_value_get_boxed(value));
+		break;
+	case PROP_EVENT:
+		purple_message_set_event(message, g_value_get_boolean(value));
+		break;
+	case PROP_FLAGS:
+		purple_message_set_flags(message, g_value_get_flags(value));
+		break;
+	case PROP_ID:
+		purple_message_set_id(message, g_value_get_string(value));
+		break;
+	case PROP_NOTICE:
+		purple_message_set_notice(message, g_value_get_boolean(value));
+		break;
+	case PROP_TIMESTAMP:
+		purple_message_set_timestamp(message, g_value_get_boxed(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
+		break;
 	}
 }
 
@@ -194,7 +218,7 @@ purple_message_finalize(GObject *obj) {
 	PurpleMessage *message = PURPLE_MESSAGE(obj);
 
 	g_free(message->id);
-	g_free(message->author);
+	g_free(message->author_name);
 	g_free(message->author_name_color);
 	g_free(message->author_alias);
 	g_free(message->contents);
@@ -225,71 +249,6 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	obj_class->finalize = purple_message_finalize;
 
 	/**
-	 * PurpleMessage:id:
-	 *
-	 * The protocol-specific identifier of the message.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_ID] = g_param_spec_string(
-		"id", "ID",
-		"The protocol specific message id",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleMessage:author:
-	 *
-	 * The author of the message.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_AUTHOR] = g_param_spec_string(
-		"author", "Author",
-		"The username of the person, who sent the message.",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleMessage:author-name-color:
-	 *
-	 * The hex color for the author's name.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_AUTHOR_NAME_COLOR] = g_param_spec_string(
-		"author-name-color", "author-name-color",
-		"The hex color to display the author's name with",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleMessage:author-alias:
-	 *
-	 * The alias of the author.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_AUTHOR_ALIAS] = g_param_spec_string(
-		"author-alias", "Author's alias",
-		"The alias of the sender",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleMessage:contents:
-	 *
-	 * The contents of the message.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_CONTENTS] = g_param_spec_string(
-		"contents", "Contents",
-		"The message text",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
 	 * PurpleMessage:action:
 	 *
 	 * Whether or not the message is an action.
@@ -302,49 +261,71 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ACTION] = g_param_spec_boolean(
-		"action", "action",
-		"Whether or not the message is an action.",
+		"action", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage:timestamp:
+	 * PurpleMessage:author:
 	 *
-	 * The timestamp of the message.
+	 * The author of the message.
+	 *
+	 * Deprecated: 3.0: This going to be repurposed once all uses are removed.
+	 */
+	properties[PROP_AUTHOR] = g_param_spec_string(
+		"author", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED);
+
+	/**
+	 * PurpleMessage:author-alias:
+	 *
+	 * The alias of the author.
 	 *
 	 * Since: 3.0
 	 */
-	properties[PROP_TIMESTAMP] = g_param_spec_boxed(
-		"timestamp", "timestamp",
-		"The timestamp of the message",
-		G_TYPE_DATE_TIME,
+	properties[PROP_AUTHOR_ALIAS] = g_param_spec_string(
+		"author-alias", NULL, NULL,
+		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage:flags:
+	 * PurpleMessage:author-name:
 	 *
-	 * The #PurpleMessageFlags for the message.
+	 * The name of author of the message.
+	 *
+	 * This is a temporary property that will be used to migrate to so that
+	 * [property@Message:author]'s type can be changed in the near future.
 	 *
 	 * Since: 3.0
 	 */
-	properties[PROP_FLAGS] = g_param_spec_flags(
-		"flags", "Flags",
-		"Bitwise set of #PurpleMessageFlags flags",
-		PURPLE_TYPE_MESSAGE_FLAGS, 0,
+	properties[PROP_AUTHOR_NAME] = g_param_spec_string(
+		"author-name", NULL, NULL,
+		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
-	 * PurpleMessage:error:
+	 * PurpleMessage:author-name-color:
 	 *
-	 * An error that this message encountered. This could be something like a
-	 * failed delivery, or failed redaction, or rate limited, etc.
+	 * The hex color for the author's name.
 	 *
 	 * Since: 3.0
 	 */
-	properties[PROP_ERROR] = g_param_spec_boxed(
-		"error", "error",
-		"An error that the message encountered",
-		G_TYPE_ERROR,
+	properties[PROP_AUTHOR_NAME_COLOR] = g_param_spec_string(
+		"author-name-color", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:contents:
+	 *
+	 * The contents of the message.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_CONTENTS] = g_param_spec_string(
+		"contents", NULL, NULL,
+		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -357,8 +338,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_DELIVERED] = g_param_spec_boolean(
-		"delivered", "delivered",
-		"Whether or not the message was delivered.",
+		"delivered", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -372,8 +352,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_DELIVERED_AT] = g_param_spec_boxed(
-		"delivered-at", "delivered-at",
-		"The time that the message was delivered.",
+		"delivered-at", NULL, NULL,
 		G_TYPE_DATE_TIME,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -387,8 +366,7 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_EDITED] = g_param_spec_boolean(
-		"edited", "edited",
-		"Whether or not this message has been edited.",
+		"edited", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -402,8 +380,88 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_EDITED_AT] = g_param_spec_boxed(
-		"edited-at", "edited-at",
-		"The time that the message was last edited.",
+		"edited-at", NULL, NULL,
+		G_TYPE_DATE_TIME,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:error:
+	 *
+	 * An error that this message encountered. This could be something like a
+	 * failed delivery, or failed redaction, or rate limited, etc.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ERROR] = g_param_spec_boxed(
+		"error", NULL, NULL,
+		G_TYPE_ERROR,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:event:
+	 *
+	 * Whether or not this message is for an event.
+	 *
+	 * Event messages can include things like a topic changing, a contact
+	 * changing their display name, someone joining or leaving a channel, and
+	 * so on.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_EVENT] = g_param_spec_boolean(
+		"event", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:flags:
+	 *
+	 * The #PurpleMessageFlags for the message.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_FLAGS] = g_param_spec_flags(
+		"flags", NULL, NULL,
+		PURPLE_TYPE_MESSAGE_FLAGS, 0,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:id:
+	 *
+	 * The protocol-specific identifier of the message.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ID] = g_param_spec_string(
+		"id", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:notice:
+	 *
+	 * Whether or not this message is a notice.
+	 *
+	 * Notice typically means that a message should not be auto replied to, but
+	 * this can vary across protocols. However, user interfaces may just want
+	 * to notice that the message was a notice instead of a normal message.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_NOTICE] = g_param_spec_boolean(
+		"notice", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleMessage:timestamp:
+	 *
+	 * The timestamp of the message.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_TIMESTAMP] = g_param_spec_boxed(
+		"timestamp", NULL, NULL,
 		G_TYPE_DATE_TIME,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -413,6 +471,25 @@ purple_message_class_init(PurpleMessageClass *klass) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
+PurpleMessage *
+purple_message_new(PurpleContactInfo *author, const char *contents) {
+	const char *author_name = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(author), NULL);
+	g_return_val_if_fail(contents != NULL, NULL);
+
+	author_name = purple_contact_info_get_username(author);
+	if(author_name == NULL) {
+		author_name = purple_contact_info_get_id(author);
+	}
+
+	return g_object_new(
+		PURPLE_TYPE_MESSAGE,
+		"author-name", author_name,
+		"contents", contents,
+		NULL);
+}
+
 PurpleMessage *
 purple_message_new_outgoing(const char *author, const char *contents,
                             PurpleMessageFlags flags)
@@ -495,19 +572,21 @@ purple_message_new_system(const char *contents, PurpleMessageFlags flags) {
 	return message;
 }
 
-const char *
-purple_message_get_id(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
+gboolean
+purple_message_get_action(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
 
-	return message->id;
+	return message->action;
 }
 
 void
-purple_message_set_id(PurpleMessage *message, const char *id) {
+purple_message_set_action(PurpleMessage *message, gboolean action) {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
-	if(g_set_str(&message->id, id)) {
-		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ID]);
+	if(action != message->action) {
+		message->action = action;
+
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ACTION]);
 	}
 }
 
@@ -515,7 +594,14 @@ const char *
 purple_message_get_author(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
-	return message->author;
+	return purple_message_get_author_name(message);
+}
+
+const char *
+purple_message_get_author_name(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
+
+	return message->author_name;
 }
 
 void
@@ -553,10 +639,11 @@ const char *
 purple_message_get_author_alias(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
-	if (message->author_alias == NULL)
-		return purple_message_get_author(message);
+	if(message->author_alias != NULL) {
+		return message->author_alias;
+	}
 
-	return message->author_alias;
+	return message->author_name;
 }
 
 void
@@ -573,158 +660,6 @@ purple_message_get_contents(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
 	return message->contents;
-}
-
-gboolean
-purple_message_is_empty(PurpleMessage *message) {
-	return (message->contents == NULL || message->contents[0] == '\0');
-}
-
-void
-purple_message_set_timestamp(PurpleMessage *message, GDateTime *timestamp) {
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	g_clear_pointer(&message->timestamp, g_date_time_unref);
-	if(timestamp != NULL) {
-		message->timestamp = g_date_time_ref(timestamp);
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_TIMESTAMP]);
-}
-
-GDateTime *
-purple_message_get_timestamp(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
-
-	if(message->timestamp == NULL) {
-		GDateTime *dt = g_date_time_new_now_local();
-		purple_message_set_timestamp(message, dt);
-		g_date_time_unref(dt);
-	}
-
-	return message->timestamp;
-}
-
-char *
-purple_message_format_timestamp(PurpleMessage *message, const char *format) {
-	GDateTime *dt = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
-	g_return_val_if_fail(format != NULL, NULL);
-
-	dt = purple_message_get_timestamp(message);
-
-	return g_date_time_format(dt, format);
-}
-
-void
-purple_message_set_flags(PurpleMessage *message, PurpleMessageFlags flags) {
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	message->flags = flags;
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_FLAGS]);
-}
-
-PurpleMessageFlags
-purple_message_get_flags(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
-
-	return message->flags;
-}
-
-void
-purple_message_set_error(PurpleMessage *message, GError *error) {
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	g_clear_error(&message->error);
-	if(error != NULL) {
-		message->error = g_error_copy(error);
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ERROR]);
-}
-
-GError *
-purple_message_get_error(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
-
-	return message->error;
-}
-
-gboolean
-purple_message_add_attachment(PurpleMessage *message,
-                              PurpleAttachment *attachment)
-{
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
-	g_return_val_if_fail(PURPLE_IS_ATTACHMENT(attachment), FALSE);
-
-	return g_hash_table_insert(message->attachments,
-	                           purple_attachment_get_hash_key(attachment),
-	                           g_object_ref(attachment));
-}
-
-gboolean
-purple_message_remove_attachment(PurpleMessage *message, guint64 id) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
-
-	return g_hash_table_remove(message->attachments, &id);
-}
-
-PurpleAttachment *
-purple_message_get_attachment(PurpleMessage *message, guint64 id) {
-	PurpleAttachment *attachment = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
-
-	attachment = g_hash_table_lookup(message->attachments, &id);
-	if(PURPLE_IS_ATTACHMENT(attachment)) {
-		return g_object_ref(attachment);
-	}
-
-	return NULL;
-}
-
-void
-purple_message_foreach_attachment(PurpleMessage *message,
-                                  PurpleAttachmentForeachFunc func,
-                                  gpointer data)
-{
-	GHashTableIter iter;
-	gpointer value;
-
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-	g_return_if_fail(func != NULL);
-
-	g_hash_table_iter_init(&iter, message->attachments);
-	while(g_hash_table_iter_next(&iter, NULL, &value)) {
-		func(PURPLE_ATTACHMENT(value), data);
-	}
-}
-
-void
-purple_message_clear_attachments(PurpleMessage *message) {
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	g_hash_table_remove_all(message->attachments);
-}
-
-gboolean
-purple_message_get_action(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
-
-	return message->action;
-}
-
-void
-purple_message_set_action(PurpleMessage *message, gboolean action) {
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	if(action != message->action) {
-		message->action = action;
-
-		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ACTION]);
-	}
 }
 
 gboolean
@@ -848,3 +783,201 @@ purple_message_set_edited_at(PurpleMessage *message, GDateTime *datetime) {
 	g_object_notify_by_pspec(obj, properties[PROP_EDITED_AT]);
 	g_object_thaw_notify(obj);
 }
+
+GError *
+purple_message_get_error(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
+
+	return message->error;
+}
+
+void
+purple_message_set_error(PurpleMessage *message, GError *error) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	g_clear_error(&message->error);
+	if(error != NULL) {
+		message->error = g_error_copy(error);
+	}
+
+	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ERROR]);
+}
+
+gboolean
+purple_message_get_event(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+
+	return message->event;
+}
+
+void
+purple_message_set_event(PurpleMessage *message, gboolean event) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	if(message->event != event) {
+		message->event = event;
+
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_EVENT]);
+	}
+}
+
+PurpleMessageFlags
+purple_message_get_flags(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
+
+	return message->flags;
+}
+
+void
+purple_message_set_flags(PurpleMessage *message, PurpleMessageFlags flags) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	message->flags = flags;
+
+	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_FLAGS]);
+}
+
+const char *
+purple_message_get_id(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
+
+	return message->id;
+}
+
+void
+purple_message_set_id(PurpleMessage *message, const char *id) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	if(g_set_str(&message->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_ID]);
+	}
+}
+
+gboolean
+purple_message_is_empty(PurpleMessage *message) {
+	return (message->contents == NULL || message->contents[0] == '\0');
+}
+
+gboolean
+purple_message_get_notice(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+
+	return message->notice;
+}
+
+void
+purple_message_set_notice(PurpleMessage *message, gboolean notice) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	if(message->notice != notice) {
+		message->notice = notice;
+
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_NOTICE]);
+	}
+}
+
+GDateTime *
+purple_message_get_timestamp(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
+
+	if(message->timestamp == NULL) {
+		GDateTime *dt = g_date_time_new_now_local();
+		purple_message_set_timestamp(message, dt);
+		g_date_time_unref(dt);
+	}
+
+	return message->timestamp;
+}
+
+void
+purple_message_set_timestamp(PurpleMessage *message, GDateTime *timestamp) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	g_clear_pointer(&message->timestamp, g_date_time_unref);
+	if(timestamp != NULL) {
+		message->timestamp = g_date_time_ref(timestamp);
+	}
+
+	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_TIMESTAMP]);
+}
+
+void
+purple_message_set_timestamp_now(PurpleMessage *message) {
+	GDateTime *dt = NULL;
+
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	dt = g_date_time_new_now_utc();
+	purple_message_set_timestamp(message, dt);
+	g_date_time_unref(dt);
+}
+
+char *
+purple_message_format_timestamp(PurpleMessage *message, const char *format) {
+	GDateTime *dt = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
+	g_return_val_if_fail(format != NULL, NULL);
+
+	dt = purple_message_get_timestamp(message);
+
+	return g_date_time_format(dt, format);
+}
+
+gboolean
+purple_message_add_attachment(PurpleMessage *message,
+                              PurpleAttachment *attachment)
+{
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+	g_return_val_if_fail(PURPLE_IS_ATTACHMENT(attachment), FALSE);
+
+	return g_hash_table_insert(message->attachments,
+	                           purple_attachment_get_hash_key(attachment),
+	                           g_object_ref(attachment));
+}
+
+gboolean
+purple_message_remove_attachment(PurpleMessage *message, guint64 id) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+
+	return g_hash_table_remove(message->attachments, &id);
+}
+
+PurpleAttachment *
+purple_message_get_attachment(PurpleMessage *message, guint64 id) {
+	PurpleAttachment *attachment = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
+
+	attachment = g_hash_table_lookup(message->attachments, &id);
+	if(PURPLE_IS_ATTACHMENT(attachment)) {
+		return g_object_ref(attachment);
+	}
+
+	return NULL;
+}
+
+void
+purple_message_foreach_attachment(PurpleMessage *message,
+                                  PurpleAttachmentForeachFunc func,
+                                  gpointer data)
+{
+	GHashTableIter iter;
+	gpointer value;
+
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+	g_return_if_fail(func != NULL);
+
+	g_hash_table_iter_init(&iter, message->attachments);
+	while(g_hash_table_iter_next(&iter, NULL, &value)) {
+		func(PURPLE_ATTACHMENT(value), data);
+	}
+}
+
+void
+purple_message_clear_attachments(PurpleMessage *message) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	g_hash_table_remove_all(message->attachments);
+}
+
