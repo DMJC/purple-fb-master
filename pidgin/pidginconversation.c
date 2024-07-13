@@ -122,6 +122,49 @@ pidgin_conversation_escape_topic(G_GNUC_UNUSED GObject *self,
 	return g_markup_escape_text(topic, -1);
 }
 
+/**
+ * pidgin_conversation_send_message:
+ * @conversation: The instance.
+ *
+ * Creates a [class@Purple.Message] from the input widgets of @conversation and
+ * sends it.
+ *
+ * Since: 3.0
+ */
+static void
+pidgin_conversation_send_message(PidginConversation *conversation) {
+	PurpleAccount *account = NULL;
+	PurpleMessage *message = NULL;
+	GtkTextBuffer *buffer = NULL;
+	GtkTextIter start;
+	GtkTextIter end;
+	char *contents = NULL;
+
+	account = purple_conversation_get_account(conversation->conversation);
+
+	/* Get the contents from the buffer. */
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(conversation->input));
+	gtk_text_buffer_get_start_iter(buffer, &start);
+	gtk_text_buffer_get_end_iter(buffer, &end);
+
+	contents = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
+
+	/* Create the message. */
+	message = purple_message_new_outgoing(purple_account_get_username(account),
+	                                      contents, 0);
+
+	/* Send the message and clean up. We don't worry about the callback as we
+	 * don't have anything to do in it right now.
+	 */
+	purple_conversation_send_message_async(conversation->conversation, message,
+	                                       NULL, NULL, NULL);
+
+	g_clear_object(&message);
+	g_clear_pointer(&contents, g_free);
+
+	gtk_text_buffer_set_text(buffer, "", -1);
+}
+
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -136,26 +179,11 @@ pidgin_conversation_input_key_pressed_cb(G_GNUC_UNUSED GtkEventControllerKey *se
 	gboolean handled = TRUE;
 
 	if(keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter) {
-		GtkTextBuffer *buffer = NULL;
-		GtkTextIter start;
-		GtkTextIter end;
-		char *contents = NULL;
-
 		if(state == GDK_SHIFT_MASK || state == GDK_CONTROL_MASK) {
 			return FALSE;
 		}
 
-		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(conversation->input));
-		gtk_text_buffer_get_start_iter(buffer, &start);
-		gtk_text_buffer_get_end_iter(buffer, &end);
-
-		contents = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
-
-		purple_conversation_send(conversation->conversation, contents);
-
-		g_clear_pointer(&contents, g_free);
-
-		gtk_text_buffer_set_text(buffer, "", -1);
+		pidgin_conversation_send_message(conversation);
 	} else if(keyval == GDK_KEY_Page_Up) {
 		pidgin_auto_adjustment_decrement(PIDGIN_AUTO_ADJUSTMENT(conversation->history_adjustment));
 	} else if(keyval == GDK_KEY_Page_Down) {
