@@ -299,6 +299,7 @@ test_purple_conversation_manager_find_dm_does_not_exist(void) {
 	PurpleAccount *account1 = NULL;
 	PurpleAccount *account2 = NULL;
 	PurpleContact *contact = NULL;
+	PurpleContactInfo *info = NULL;
 	PurpleConversation *conversation1 = NULL;
 	PurpleConversation *conversation2 = NULL;
 	PurpleConversation *conversation3 = NULL;
@@ -307,8 +308,16 @@ test_purple_conversation_manager_find_dm_does_not_exist(void) {
 
 	manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
 
+	/* Create the accounts and set the id for their contact infos as there's no
+	 * protocol backing them.
+	 */
 	account1 = purple_account_new("test1", "test1");
+	info = purple_account_get_contact_info(account1);
+	purple_contact_info_set_id(info, "test1");
+
 	account2 = purple_account_new("test2", "test2");
+	info = purple_account_get_contact_info(account2);
+	purple_contact_info_set_id(info, "test2");
 
 	contact = purple_contact_new(account1, NULL);
 

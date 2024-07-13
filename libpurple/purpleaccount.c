@@ -53,7 +53,11 @@ typedef struct {
 G_LOCK_DEFINE_STATIC(setting_notify_lock);
 
 struct _PurpleAccount {
-	PurpleContactInfo parent;
+	GObject parent;
+
+	char *id;
+	char *username;
+	PurpleContactInfo *contact_info;
 
 	gboolean require_password;
 	char *user_info;
@@ -111,7 +115,7 @@ enum {
 };
 static guint signals[N_SIGNALS] = {0, };
 
-G_DEFINE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE_TYPE_CONTACT_INFO);
+G_DEFINE_FINAL_TYPE(PurpleAccount, purple_account, G_TYPE_OBJECT);
 
 /******************************************************************************
  * Helpers
@@ -120,7 +124,9 @@ static void
 purple_account_set_id(PurpleAccount *account, const char *id) {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	purple_contact_info_set_id(PURPLE_CONTACT_INFO(account), id);
+	if(g_set_str(&account->id, id)) {
+		g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_ID]);
+	}
 }
 
 static void
@@ -538,7 +544,6 @@ setting_to_xmlnode(gpointer key, gpointer value, gpointer user_data)
 
 PurpleXmlNode *
 _purple_account_to_xmlnode(PurpleAccount *account) {
-	PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
 	PurpleXmlNode *node, *child;
 	gchar *data = NULL;
 	const char *tmp;
@@ -546,10 +551,9 @@ _purple_account_to_xmlnode(PurpleAccount *account) {
 
 	node = purple_xmlnode_new("account");
 
-	tmp = purple_contact_info_get_id(info);
-	if(tmp != NULL) {
+	if(account->id != NULL) {
 		child = purple_xmlnode_new_child(node, "id");
-		purple_xmlnode_insert_data(child, tmp, -1);
+		purple_xmlnode_insert_data(child, account->id, -1);
 	}
 
 	child = purple_xmlnode_new_child(node, "protocol");
@@ -557,8 +561,7 @@ _purple_account_to_xmlnode(PurpleAccount *account) {
 	                           -1);
 
 	child = purple_xmlnode_new_child(node, "name");
-	purple_xmlnode_insert_data(child, purple_contact_info_get_username(info),
-	                           -1);
+	purple_xmlnode_insert_data(child, account->username, -1);
 
 	child = purple_xmlnode_new_child(node, "require_password");
 	data = g_strdup_printf("%d", account->require_password);
@@ -570,7 +573,7 @@ _purple_account_to_xmlnode(PurpleAccount *account) {
 	purple_xmlnode_insert_data(child, data, -1);
 	g_clear_pointer(&data, g_free);
 
-	tmp = purple_contact_info_get_alias(info);
+	tmp = purple_contact_info_get_alias(account->contact_info);
 	if(tmp != NULL) {
 		child = purple_xmlnode_new_child(node, "alias");
 		purple_xmlnode_insert_data(child, tmp, -1);
@@ -712,28 +715,24 @@ purple_account_init(PurpleAccount *account) {
 static void
 purple_account_constructed(GObject *object) {
 	PurpleAccount *account = PURPLE_ACCOUNT(object);
-	const char *id = NULL;
 
 	G_OBJECT_CLASS(purple_account_parent_class)->constructed(object);
 
 	/* If we didn't get an id, checksum the protocol id and the username. */
-	id = purple_contact_info_get_id(PURPLE_CONTACT_INFO(object));
-	if(purple_strempty(id)) {
-		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
+	if(purple_strempty(account->id)) {
 		GChecksum *checksum = NULL;
-		const char *username = NULL;
 
 		checksum = g_checksum_new(G_CHECKSUM_SHA256);
-		username = purple_contact_info_get_username(info);
 
 		g_checksum_update(checksum, (const guchar *)account->protocol_id, -1);
-		g_checksum_update(checksum, (const guchar *)username, -1);
+		g_checksum_update(checksum, (const guchar *)account->username, -1);
 
-		purple_contact_info_set_id(info, g_checksum_get_string(checksum));
+		purple_account_set_id(account, g_checksum_get_string(checksum));
 
 		g_checksum_free(checksum);
 	}
 
+	account->contact_info = purple_contact_info_new(NULL);
 	account->presence = purple_presence_new();
 }
 
@@ -758,6 +757,10 @@ purple_account_finalize(GObject *object) {
 	purple_debug_info("account", "Destroying account %p", account);
 
 	purple_account_free_notify_settings(account);
+
+	g_clear_pointer(&account->id, g_free);
+	g_clear_pointer(&account->username, g_free);
+	g_clear_object(&account->contact_info);
 
 	g_clear_object(&account->proxy_info);
 
@@ -813,6 +816,10 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * PurpleAccount:contact-info:
 	 *
 	 * The [class@ContactInfo] for the account.
+	 *
+	 * This should be completely managed by the protocol that this account was
+	 * created for. Writing any properties to this from anything but the
+	 * protocol will lead to de-synchronization.
 	 *
 	 * Since: 3.0
 	 */
@@ -1067,46 +1074,45 @@ const char *
 purple_account_get_id(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	return purple_contact_info_get_id(PURPLE_CONTACT_INFO(account));
+	return account->id;
 }
 
 const char *
 purple_account_get_username(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	return purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
+	return account->username;
 }
 
 void
 purple_account_set_username(PurpleAccount *account, const char *username) {
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
-	purple_contact_info_set_username(PURPLE_CONTACT_INFO(account), username);
+	if(g_set_str(&account->username, username)) {
+		g_object_notify_by_pspec(G_OBJECT(account), properties[PROP_USERNAME]);
+	}
 }
 
 PurpleContactInfo *
 purple_account_get_contact_info(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
-	return PURPLE_CONTACT_INFO(account);
+	return account->contact_info;
 }
 
 void
 purple_account_connect(PurpleAccount *account)
 {
 	PurpleProtocol *protocol = NULL;
-	const char *username = NULL;
 
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 
 	purple_account_set_error(account, NULL);
 
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
-
 	if(!purple_account_get_enabled(account)) {
 		purple_debug_info("account",
 		                  "Account %s not enabled, not connecting.\n",
-		                  username);
+		                  account->username);
 		return;
 	}
 
@@ -1114,7 +1120,8 @@ purple_account_connect(PurpleAccount *account)
 	if(protocol == NULL) {
 		gchar *message;
 
-		message = g_strdup_printf(_("Missing protocol for %s"), username);
+		message = g_strdup_printf(_("Missing protocol for %s"),
+		                          account->username);
 		purple_notify_error(account, _("Connection Error"), message,
 		                    NULL, purple_request_cpar_from_account(account));
 		g_free(message);
@@ -1129,21 +1136,19 @@ void
 purple_account_disconnect(PurpleAccount *account)
 {
 	GError *error = NULL;
-	const char *username;
 
 	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
 	g_return_if_fail(!purple_account_is_disconnecting(account));
 	g_return_if_fail(!purple_account_is_disconnected(account));
 
-	username = purple_contact_info_get_username(PURPLE_CONTACT_INFO(account));
 	purple_debug_info("account", "Disconnecting account %s (%p)\n",
-	                  username ? username : "(null)", account);
+	                  account->username, account);
 
 	account->disconnecting = TRUE;
 
 	if(!purple_connection_disconnect(account->gc, &error)) {
 		g_warning("error while disconnecting account %s (%s): %s",
-		          username,
+		          account->username,
 		          purple_account_get_protocol_id(account),
 		          (error != NULL) ? error->message : "unknown error");
 		g_clear_error(&error);

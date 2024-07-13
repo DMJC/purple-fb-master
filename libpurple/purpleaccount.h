@@ -54,8 +54,7 @@ G_BEGIN_DECLS
  */
 
 PURPLE_AVAILABLE_IN_3_0
-G_DECLARE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE, ACCOUNT,
-                     PurpleContactInfo)
+G_DECLARE_FINAL_TYPE(PurpleAccount, purple_account, PURPLE, ACCOUNT, GObject)
 
 /**
  * purple_account_new:
