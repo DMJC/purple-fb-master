@@ -397,32 +397,6 @@ void purple_conversation_send_message_async(PurpleConversation *conversation, Pu
 gboolean purple_conversation_send_message_finish(PurpleConversation *conversation, GAsyncResult *result, GError **error);
 
 /**
- * purple_conversation_send:
- * @conversation: The conversation.
- * @message: The message to send.
- *
- * Sends a message to this conversation. This function calls
- * purple_conversation_send_with_flags() with no additional flags.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_send(PurpleConversation *conversation, const char *message);
-
-/**
- * purple_conversation_send_with_flags:
- * @conversation: The conversation.
- * @message: The message to send.
- * @flags: The [flags@MessageFlags] to use in addition to %PURPLE_MESSAGE_SEND.
- *
- * Sends a message to this conversation with specified flags.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_send_with_flags(PurpleConversation *conversation, const char *message, PurpleMessageFlags flags);
-
-/**
  * purple_conversation_set_features:
  * @conversation: The conversation
  * @features: Bitset defining supported features

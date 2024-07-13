@@ -248,28 +248,6 @@ purple_conversation_check_member_equal(gconstpointer a, gconstpointer b) {
 }
 
 static void
-purple_conversation_send_message_async_old_cb(GObject *protocol,
-                                              GAsyncResult *result,
-                                              gpointer data)
-{
-	PurpleProtocolConversation *protocol_conversation = NULL;
-	PurpleMessage *message = data;
-	GError *error = NULL;
-
-	protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
-	purple_protocol_conversation_send_message_finish(protocol_conversation,
-	                                                 result, &error);
-
-	if(error != NULL) {
-		g_warning("failed to send message: %s", error->message);
-
-		g_clear_error(&error);
-	}
-
-	g_clear_object(&message);
-}
-
-static void
 purple_conversation_send_message_async_cb(GObject *source,
                                           GAsyncResult *result,
                                           gpointer data)
@@ -315,102 +293,6 @@ purple_conversation_send_message_async_cb(GObject *source,
 	}
 
 	g_clear_object(&task);
-}
-
-static void
-common_send(PurpleConversation *conversation, const char *message,
-            PurpleMessageFlags msgflags)
-{
-	PurpleAccount *account;
-	PurpleConnection *gc;
-	PurpleProtocol *protocol = NULL;
-	char *displayed = NULL;
-	const char *sent, *me;
-	gint err = 0;
-
-	if(*message == '\0') {
-		return;
-	}
-
-	account = purple_conversation_get_account(conversation);
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	gc = purple_account_get_connection(account);
-	g_return_if_fail(PURPLE_IS_CONNECTION(gc));
-
-	protocol = purple_account_get_protocol(account);
-
-	me = purple_account_get_username(account);
-
-	/* Always linkify the text for display, unless we're explicitly asked to do
-	 * otherwise. */
-	if(!(msgflags & PURPLE_MESSAGE_INVISIBLE)) {
-		if(msgflags & PURPLE_MESSAGE_NO_LINKIFY) {
-			displayed = g_strdup(message);
-		} else {
-			displayed = purple_markup_linkify(message);
-		}
-	}
-
-	if(displayed && (conversation->features & PURPLE_CONNECTION_FLAG_HTML) &&
-	   !(msgflags & PURPLE_MESSAGE_RAW))
-	{
-		sent = displayed;
-	} else {
-		sent = message;
-	}
-
-	msgflags |= PURPLE_MESSAGE_SEND;
-
-	if(PURPLE_IS_PROTOCOL_CONVERSATION(protocol)) {
-		PurpleMessage *msg = NULL;
-		PurpleProtocolConversation *protocol_conversation = NULL;
-
-		msg = purple_message_new_outgoing(me, sent, msgflags);
-
-		protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
-		purple_protocol_conversation_send_message_async(protocol_conversation,
-		                                                conversation, msg,
-		                                                NULL,
-		                                                purple_conversation_send_message_async_old_cb,
-		                                                msg);
-
-		g_clear_pointer(&displayed, g_free);
-	}
-
-	if(err < 0) {
-		const char *who;
-		const char *msg;
-
-		who = purple_conversation_get_name(conversation);
-
-		if(err == -E2BIG) {
-			msg = _("Unable to send message: The message is too large.");
-
-			if(!purple_conversation_present_error(who, account, msg)) {
-				char *msg2 = g_strdup_printf(_("Unable to send message to %s."),
-				                             who);
-				purple_notify_error(gc, NULL, msg2,
-				                    _("The message is too large."),
-				                    purple_request_cpar_from_connection(gc));
-				g_free(msg2);
-			}
-		} else if(err == -ENOTCONN) {
-			purple_debug_error("conversation", "Not yet connected.");
-		} else {
-			msg = _("Unable to send message.");
-
-			if(!purple_conversation_present_error(who, account, msg)) {
-				char *msg2 = g_strdup_printf(_("Unable to send message to %s."),
-				                             who);
-				purple_notify_error(gc, NULL, msg2, NULL,
-				                    purple_request_cpar_from_connection(gc));
-				g_free(msg2);
-			}
-		}
-	}
-
-	g_free(displayed);
 }
 
 /**************************************************************************
@@ -1520,24 +1402,6 @@ purple_conversation_send_message_finish(PurpleConversation *conversation,
 	                     purple_conversation_send_message_async, FALSE);
 
 	return g_task_propagate_boolean(G_TASK(result), error);
-}
-
-void
-purple_conversation_send(PurpleConversation *conversation,
-                         const char *message)
-{
-	purple_conversation_send_with_flags(conversation, message, 0);
-}
-
-void
-purple_conversation_send_with_flags(PurpleConversation *conversation,
-                                    const char *message,
-                                    PurpleMessageFlags flags)
-{
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
-	g_return_if_fail(message != NULL);
-
-	common_send(conversation, message, flags);
 }
 
 gboolean
