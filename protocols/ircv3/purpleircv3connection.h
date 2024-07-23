@@ -144,12 +144,12 @@ PurpleConversation *purple_ircv3_connection_find_or_create_conversation(PurpleIR
 /**
  * purple_ircv3_connection_find_or_create_contact:
  * @connection: The instance.
- * @nick: The nickname of the user.
+ * @message: The message to get the contact for.
  *
- * Looks for an existing contact belonging to @connection and returns it if
- * found. If not a new contact will be created.
+ * Looks for an existing contact from @message belonging to @connection and
+ * returns it if found. If not a new contact will be created.
  *
- * This will only ever return %NULL if @connection is invalid or @nick is
+ * This will only ever return %NULL if @connection is invalid or @message is
  * %NULL.
  *
  * Note that the ownership of the contact remains with the default
@@ -160,7 +160,7 @@ PurpleConversation *purple_ircv3_connection_find_or_create_conversation(PurpleIR
  * Since: 3.0
  */
 PURPLE_IRCV3_AVAILABLE_IN_ALL
-PurpleContact *purple_ircv3_connection_find_or_create_contact(PurpleIRCv3Connection *connection, const char *nick);
+PurpleContact *purple_ircv3_connection_find_or_create_contact(PurpleIRCv3Connection *connection, IbisMessage *message);
 
 G_END_DECLS
 

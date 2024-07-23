@@ -778,22 +778,48 @@ purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *conne
 
 PurpleContact *
 purple_ircv3_connection_find_or_create_contact(PurpleIRCv3Connection *connection,
-                                               const char *nick)
+                                               IbisMessage *message)
 {
 	PurpleAccount *account = NULL;
 	PurpleContact *contact = NULL;
 	PurpleContactManager *manager = NULL;
+	IbisTags *tags = NULL;
+	const char *source = NULL;
+	char *nick = NULL;
 
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
 	manager = purple_contact_manager_get_default();
-	contact = purple_contact_manager_find_with_id(manager, account, nick);
 
+	tags = ibis_message_get_tags(message);
+	if(IBIS_IS_TAGS(tags)) {
+		const char *account_tag = NULL;
+
+		account_tag = ibis_tags_lookup(tags, IBIS_TAG_ACCOUNT);
+		if(!purple_strempty(account_tag)) {
+			contact = purple_contact_manager_find_with_id(manager, account,
+			                                              account_tag);
+		}
+	}
+
+	source = ibis_message_get_source(message);
+	ibis_source_parse(source, &nick, NULL, NULL);
+
+	/* If we don't have a contact yet, use the source (Luke) to search next. */
+	if(!PURPLE_IS_CONTACT(contact)) {
+		contact = purple_contact_manager_find_with_id(manager, account, nick);
+	}
+
+	/* If we _still_ don't have a contact, create it. */
 	if(!PURPLE_IS_CONTACT(contact)) {
 		contact = purple_contact_new(account, nick);
 		purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), nick);
 
 		purple_contact_manager_add(manager, contact);
 	}
+
+	purple_contact_info_set_sid(PURPLE_CONTACT_INFO(contact), source);
+
+	g_free(nick);
 
 	return contact;
 }
