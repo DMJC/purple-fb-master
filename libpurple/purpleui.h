@@ -37,6 +37,15 @@
 
 G_BEGIN_DECLS
 
+/**
+ * PURPLE_UI_ERROR:
+ *
+ * A GError domain for PurpleUi errors.
+ *
+ * Since: 3.0
+ */
+#define PURPLE_UI_ERROR (g_quark_from_static_string("purple-ui"))
+
 #define PURPLE_TYPE_UI (purple_ui_get_type())
 
 PURPLE_AVAILABLE_IN_3_0
@@ -81,6 +90,9 @@ struct _PurpleUiClass {
 	PurpleHistoryAdapter *(*get_history_adapter)(PurpleUi *ui);
 	PurplePresenceManager *(*get_presence_manager)(PurpleUi *ui);
 	gpointer (*get_settings_backend)(PurpleUi *ui);
+
+	void (*open_uri)(PurpleUi *ui, const char *uri, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+	gboolean (*open_uri_finish)(PurpleUi *ui, GAsyncResult *result, GError **error);
 
 	/*< private >*/
 	gpointer reserved[4];
@@ -179,6 +191,37 @@ const char *purple_ui_get_support_website(PurpleUi *ui);
  */
 PURPLE_AVAILABLE_IN_3_0
 const char *purple_ui_get_client_type(PurpleUi *ui);
+
+/**
+ * purple_ui_open_uri:
+ * @ui: The instance.
+ * @uri: The uri to open.
+ * @cancellable: (nullable): An optional cancellable.
+ * @callback: (nullable) (scope async): A callback to call with the results.
+ * @data: User data to pass to @callback.
+ *
+ * Attempts to open @uri and calls @callback with the result.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_ui_open_uri(PurpleUi *ui, const char *uri, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer data);
+
+/**
+ * purple_ui_open_uri_finish:
+ * @ui: The instance.
+ * @result: The result from the previous [method@Ui.open_uri] call.
+ * @error: Return address for a #GError, or %NULL.
+ *
+ * Finishes a previous call to [method@Ui.open_uri] and gets the result.
+ *
+ * Returns: %TRUE if the URI was opened successfully, otherwise %FALSE with
+ *          @error potentially set.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_ui_open_uri_finish(PurpleUi *ui, GAsyncResult *result, GError **error);
 
 /**
  * purple_ui_prefs_init:

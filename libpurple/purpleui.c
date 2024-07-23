@@ -22,6 +22,8 @@
 
 #include "purpleui.h"
 
+#include "util.h"
+
 typedef struct {
 	char *id;
 	char *name;
@@ -385,6 +387,46 @@ purple_ui_get_client_type(PurpleUi *ui) {
 	priv = purple_ui_get_instance_private(ui);
 
 	return priv->client_type;
+}
+
+void
+purple_ui_open_uri(PurpleUi *ui, const char *uri, GCancellable *cancellable,
+                   GAsyncReadyCallback callback, gpointer data)
+{
+	PurpleUiClass *klass = NULL;
+
+	g_return_if_fail(PURPLE_IS_UI(ui));
+	g_return_if_fail(!purple_strempty(uri));
+
+	klass = PURPLE_UI_GET_CLASS(ui);
+	if(klass && klass->open_uri) {
+		klass->open_uri(ui, uri, cancellable, callback, data);
+	} else {
+		g_task_report_new_error(G_OBJECT(ui), callback, data,
+		                        purple_ui_open_uri,
+		                        PURPLE_UI_ERROR, 0,
+		                        "%s does not implement URI handling",
+		                        G_OBJECT_TYPE_NAME(ui));
+	}
+}
+
+gboolean
+purple_ui_open_uri_finish(PurpleUi *ui, GAsyncResult *result, GError **error) {
+	PurpleUiClass *klass = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_UI(ui), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	if(g_async_result_is_tagged(result, purple_ui_open_uri)) {
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
+
+	klass = PURPLE_UI_GET_CLASS(ui);
+	if(klass != NULL && klass->open_uri_finish != NULL) {
+		return klass->open_uri_finish(ui, result, error);
+	}
+
+	return FALSE;
 }
 
 void

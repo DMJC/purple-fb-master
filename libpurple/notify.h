@@ -860,8 +860,10 @@ void purple_notify_user_info_entry_set_entry_type(
  *         similar.
  *
  * Since: 2.0
+ *
+ * Deprecated: 3.0
  */
-PURPLE_AVAILABLE_IN_ALL
+PURPLE_DEPRECATED_FOR(purple_ui_open_uri)
 void *purple_notify_uri(void *handle, const char *uri);
 
 /**
