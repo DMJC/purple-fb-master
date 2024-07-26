@@ -107,8 +107,11 @@ purple_protocol_contacts_search_async(PurpleProtocolContacts *protocol_contacts,
 		iface->search_async(protocol_contacts, account, text, cancellable,
 		                    callback, data);
 	} else {
-		g_warning("%s does not implement search_async",
-		          G_OBJECT_TYPE_NAME(protocol_contacts));
+		g_task_report_new_error(G_OBJECT(protocol_contacts), callback, data,
+		                        purple_protocol_contacts_search_async,
+		                        PURPLE_PROTOCOL_CONTACTS_DOMAIN, 0,
+		                        "%s does not implement search_async",
+		                        G_OBJECT_TYPE_NAME(protocol_contacts));
 	}
 }
 
@@ -120,6 +123,12 @@ purple_protocol_contacts_search_finish(PurpleProtocolContacts *protocol_contacts
 	PurpleProtocolContactsInterface *iface = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONTACTS(protocol_contacts), NULL);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), NULL);
+
+	if(g_async_result_is_tagged(result, purple_protocol_contacts_search_async))
+	{
+		return g_task_propagate_pointer(G_TASK(result), error);
+	}
 
 	iface = PURPLE_PROTOCOL_CONTACTS_GET_IFACE(protocol_contacts);
 	if(iface != NULL && iface->search_finish != NULL) {
@@ -145,10 +154,12 @@ purple_protocol_contacts_search_finish(PurpleProtocolContacts *protocol_contacts
 			            G_OBJECT_TYPE_NAME(protocol_contacts),
 			            g_type_name(type));
 		}
-	} else {
-		g_warning("%s does not implement search_finish",
-		          G_OBJECT_TYPE_NAME(protocol_contacts));
+
+		return ret;
 	}
+
+	g_warning("purple_protocol_contacts_search_finish called without calling "
+	          "purple_protocol_contacts_search_async");
 
 	return NULL;
 }
@@ -170,8 +181,11 @@ purple_protocol_contacts_get_profile_async(PurpleProtocolContacts *protocol_cont
 		iface->get_profile_async(protocol_contacts, info, cancellable,
 		                         callback, data);
 	} else {
-		g_warning("%s does not implement get_profile_async",
-		          G_OBJECT_TYPE_NAME(protocol_contacts));
+		g_task_report_new_error(G_OBJECT(protocol_contacts), callback, data,
+		                        purple_protocol_contacts_get_profile_async,
+		                        PURPLE_PROTOCOL_CONTACTS_DOMAIN, 0,
+		                        "%s does not implement get_profile_async",
+		                        G_OBJECT_TYPE_NAME(protocol_contacts));
 	}
 }
 
@@ -183,14 +197,21 @@ purple_protocol_contacts_get_profile_finish(PurpleProtocolContacts *protocol_con
 	PurpleProtocolContactsInterface *iface = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONTACTS(protocol_contacts), NULL);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), NULL);
+
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_contacts_get_profile_async))
+	{
+		return g_task_propagate_pointer(G_TASK(result), error);
+	}
 
 	iface = PURPLE_PROTOCOL_CONTACTS_GET_IFACE(protocol_contacts);
 	if(iface != NULL && iface->get_profile_finish != NULL) {
 		return iface->get_profile_finish(protocol_contacts, result, error);
-	} else {
-		g_warning("%s does not implement get_profile_finish",
-		          G_OBJECT_TYPE_NAME(protocol_contacts));
 	}
+
+	g_warning("purple_protocol_contacts_get_profile_finish without calling "
+	          "purple_protocol_contacts_get_profile_async");
 
 	return NULL;
 }

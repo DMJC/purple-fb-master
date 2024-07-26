@@ -100,93 +100,81 @@ test_purple_protocol_contacts_empty_get_minimum_search_length(void) {
 }
 
 static void
-test_purple_protocol_contacts_empty_search_async(void) {
-	if(g_test_subprocess()) {
-		PurpleAccount *account = NULL;
-		PurpleProtocolContacts *protocol = NULL;
+test_purple_protocol_contacts_empty_search_cb(GObject *source,
+                                              GAsyncResult *result,
+                                              G_GNUC_UNUSED gpointer data)
+{
+	PurpleProtocolContacts *protocol = NULL;
+	GError *error = NULL;
+	GListModel *model = NULL;
 
-		protocol = g_object_new(test_purple_protocol_contacts_empty_get_type(),
-		                        NULL);
+	g_assert_true(PURPLE_IS_PROTOCOL_CONTACTS(source));
 
-		account = purple_account_new("test", "test");
-		purple_protocol_contacts_search_async(protocol, account, "alice", NULL,
-		                                      NULL, NULL);
+	protocol = PURPLE_PROTOCOL_CONTACTS(source);
 
-		g_clear_object(&account);
-		g_clear_object(&protocol);
-	}
-
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolContactsEmpty*search_async*");
+	model = purple_protocol_contacts_search_finish(protocol, result, &error);
+	g_assert_error(error, PURPLE_PROTOCOL_CONTACTS_DOMAIN, 0);
+	g_clear_error(&error);
+	g_assert_null(model);
 }
 
 static void
-test_purple_protocol_contacts_empty_search_finish(void) {
-	if(g_test_subprocess()) {
-		PurpleProtocolContacts *protocol = NULL;
-		GTask *task = NULL;
+test_purple_protocol_contacts_empty_search_async(void) {
+	PurpleAccount *account = NULL;
+	PurpleProtocolContacts *protocol = NULL;
 
-		protocol = g_object_new(test_purple_protocol_contacts_empty_get_type(),
-		                        NULL);
+	protocol = g_object_new(test_purple_protocol_contacts_empty_get_type(),
+	                        NULL);
 
-		task = g_task_new(protocol, NULL, NULL, NULL);
-		purple_protocol_contacts_search_finish(protocol, G_ASYNC_RESULT(task),
-		                                       NULL);
+	account = purple_account_new("test", "test");
+	purple_protocol_contacts_search_async(protocol, account, "alice", NULL,
+	                                      test_purple_protocol_contacts_empty_search_cb,
+	                                      NULL);
 
-		g_clear_object(&task);
-		g_clear_object(&protocol);
-	}
+	g_main_context_iteration(NULL, FALSE);
 
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolContactsEmpty*search_finish*");
+	g_assert_finalize_object(account);
+	g_assert_finalize_object(protocol);
+}
+
+static void
+test_purple_protocol_contacts_empty_get_profile_cb(GObject *source,
+                                                   GAsyncResult *result,
+                                                   G_GNUC_UNUSED gpointer data)
+{
+	PurpleProtocolContacts *protocol = NULL;
+	GError *error = NULL;
+	char *profile = NULL;
+
+	g_assert_true(PURPLE_IS_PROTOCOL_CONTACTS(source));
+
+	protocol = PURPLE_PROTOCOL_CONTACTS(source);
+
+	profile = purple_protocol_contacts_get_profile_finish(protocol, result,
+	                                                      &error);
+	g_assert_error(error, PURPLE_PROTOCOL_CONTACTS_DOMAIN, 0);
+	g_clear_error(&error);
+	g_assert_null(profile);
 }
 
 static void
 test_purple_protocol_contacts_empty_get_profile_async(void) {
-	if(g_test_subprocess()) {
-		PurpleContactInfo *info = NULL;
-		PurpleProtocolContacts *protocol_contacts = NULL;
+	PurpleContactInfo *info = NULL;
+	PurpleProtocolContacts *protocol_contacts = NULL;
 
-		protocol_contacts = g_object_new(test_purple_protocol_contacts_empty_get_type(),
-		                                 NULL);
-		info = purple_contact_info_new(NULL);
+	protocol_contacts = g_object_new(test_purple_protocol_contacts_empty_get_type(),
+	                                 NULL);
+	info = purple_contact_info_new(NULL);
 
-		purple_protocol_contacts_get_profile_async(protocol_contacts, info,
-		                                           NULL, NULL, NULL);
+	purple_protocol_contacts_get_profile_async(protocol_contacts, info,
+	                                           NULL,
+	                                           test_purple_protocol_contacts_empty_get_profile_cb,
+	                                           NULL);
 
-		g_clear_object(&info);
-		g_clear_object(&protocol_contacts);
-	}
+	g_main_context_iteration(NULL, FALSE);
 
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolContactsEmpty*get_profile_async*");
-}
-
-static void
-test_purple_protocol_contacts_empty_get_profile_finish(void) {
-	if(g_test_subprocess()) {
-		PurpleProtocolContacts *protocol_contacts = NULL;
-		GError *error = NULL;
-		GTask *task = NULL;
-		char *result = NULL;
-
-		protocol_contacts = g_object_new(test_purple_protocol_contacts_empty_get_type(),
-		                                 NULL);
-
-		task = g_task_new(protocol_contacts, NULL, NULL, NULL);
-
-		result = purple_protocol_contacts_get_profile_finish(protocol_contacts,
-		                                                     G_ASYNC_RESULT(task),
-		                                                     &error);
-		g_assert_no_error(error);
-		g_assert_false(result);
-
-		g_clear_object(&task);
-		g_clear_object(&protocol_contacts);
-	}
-
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolContactsEmpty*get_profile_finish*");
+	g_assert_finalize_object(info);
+	g_assert_finalize_object(protocol_contacts);
 }
 
 static void
@@ -611,6 +599,8 @@ main(int argc, char **argv) {
 
 	g_test_init(&argc, &argv, NULL);
 
+	g_test_set_nonfatal_assertions();
+
 	test_ui_purple_init();
 
 	loop = g_main_loop_new(NULL, FALSE);
@@ -619,12 +609,8 @@ main(int argc, char **argv) {
 	                test_purple_protocol_contacts_empty_get_minimum_search_length);
 	g_test_add_func("/protocol-contacts/empty/search-async",
 	                test_purple_protocol_contacts_empty_search_async);
-	g_test_add_func("/protocol-contacts/empty/search-finish",
-	                test_purple_protocol_contacts_empty_search_finish);
 	g_test_add_func("/protocol-contacts/empty/get-profile-async",
 	                test_purple_protocol_contacts_empty_get_profile_async);
-	g_test_add_func("/protocol-contacts/empty/get-profile-finish",
-	                test_purple_protocol_contacts_empty_get_profile_finish);
 	g_test_add_func("/protocol-contacts/empty/get-actions",
 	                test_purple_protocol_contacts_empty_get_actions);
 	g_test_add_func("/protocol-contacts/empty/get-menu",
