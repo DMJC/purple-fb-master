@@ -85,119 +85,101 @@ test_purple_protocol_file_transfer_empty_class_init(G_GNUC_UNUSED TestPurpleProt
  * TestProtocolFileTransferEmpty Tests
  *****************************************************************************/
 static void
-test_purple_protocol_file_transfer_empty_send_async(gconstpointer data) {
-	if(g_test_subprocess()) {
-		PurpleAccount *account = NULL;
-		PurpleContactInfo *remote = NULL;
-		PurpleFileTransfer *transfer = NULL;
-		PurpleProtocolFileTransfer *protocol_file_transfer = NULL;
-		GFile *local_file = NULL;
+test_purple_protocol_file_transfer_empty_send_cb(GObject *source,
+                                                 GAsyncResult *result,
+                                                 G_GNUC_UNUSED gpointer data)
+{
+	PurpleProtocolFileTransfer *protocol = NULL;
+	GError *error = NULL;
+	gboolean success = FALSE;
 
-		account = purple_account_new("test", "test");
-		remote = purple_contact_info_new(NULL);
-		local_file = g_file_new_for_path(data);
+	g_assert_true(PURPLE_IS_PROTOCOL_FILE_TRANSFER(source));
+	protocol = PURPLE_PROTOCOL_FILE_TRANSFER(source);
 
-		transfer = purple_file_transfer_new_send(account, remote, local_file);
-		g_clear_object(&account);
-		g_clear_object(&remote);
-		g_clear_object(&local_file);
-
-		protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_empty_get_type(),
-		                                      NULL);
-
-		purple_protocol_file_transfer_send_async(protocol_file_transfer,
-		                                         transfer, NULL, NULL);
-
-		g_clear_object(&transfer);
-		g_clear_object(&protocol_file_transfer);
-	}
-
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolFileTransferEmpty*send_async*");
+	success = purple_protocol_file_transfer_send_finish(protocol, result,
+	                                                    &error);
+	g_assert_error(error, PURPLE_PROTOCOL_FILE_TRANSFER_ERROR, 0);
+	g_clear_error(&error);
+	g_assert_false(success);
 }
 
 static void
-test_purple_protocol_file_transfer_empty_send_finish(void) {
-	if(g_test_subprocess()) {
-		PurpleProtocolFileTransfer *protocol_file_transfer = NULL;
-		GError *error = NULL;
-		GTask *task = NULL;
-		gboolean result = FALSE;
+test_purple_protocol_file_transfer_empty_send(gconstpointer data) {
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *remote = NULL;
+	PurpleFileTransfer *transfer = NULL;
+	PurpleProtocolFileTransfer *protocol_file_transfer = NULL;
+	GFile *local_file = NULL;
 
-		protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_empty_get_type(),
-		                                      NULL);
+	account = purple_account_new("test", "test");
+	remote = purple_contact_info_new(NULL);
+	local_file = g_file_new_for_path(data);
 
-		task = g_task_new(protocol_file_transfer, NULL, NULL, NULL);
+	transfer = purple_file_transfer_new_send(account, remote, local_file);
+	g_clear_object(&account);
+	g_clear_object(&remote);
+	g_clear_object(&local_file);
 
-		result = purple_protocol_file_transfer_send_finish(protocol_file_transfer,
-		                                                   G_ASYNC_RESULT(task),
-		                                                   &error);
-		g_assert_no_error(error);
-		g_assert_false(result);
+	protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_empty_get_type(),
+	                                      NULL);
 
-		g_clear_object(&task);
-		g_clear_object(&protocol_file_transfer);
-	}
+	purple_protocol_file_transfer_send_async(protocol_file_transfer,
+	                                         transfer,
+	                                         test_purple_protocol_file_transfer_empty_send_cb,
+	                                         NULL);
 
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolFileTransferEmpty*send_finish*");
+	g_main_context_iteration(NULL, FALSE);
+
+	g_assert_finalize_object(transfer);
+	g_assert_finalize_object(protocol_file_transfer);
 }
 
 static void
-test_purple_protocol_file_transfer_empty_receive_async(void) {
-	if(g_test_subprocess()) {
-		PurpleAccount *account = NULL;
-		PurpleContactInfo *remote = NULL;
-		PurpleFileTransfer *transfer = NULL;
-		PurpleProtocolFileTransfer *protocol_file_transfer = NULL;
+test_purple_protocol_file_transfer_empty_receive_cb(GObject *source,
+                                                    GAsyncResult *result,
+                                                    G_GNUC_UNUSED gpointer data)
+{
+	PurpleProtocolFileTransfer *protocol = NULL;
+	GError *error = NULL;
+	gboolean success = FALSE;
 
-		account = purple_account_new("test", "test");
-		remote = purple_contact_info_new(NULL);
+	g_assert_true(PURPLE_IS_PROTOCOL_FILE_TRANSFER(source));
+	protocol = PURPLE_PROTOCOL_FILE_TRANSFER(source);
 
-		transfer = purple_file_transfer_new_receive(account, remote,
-		                                            "file.png", 0);
-		g_clear_object(&account);
-		g_clear_object(&remote);
-
-		protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_empty_get_type(),
-		                                      NULL);
-
-		purple_protocol_file_transfer_receive_async(protocol_file_transfer,
-		                                            transfer, NULL, NULL);
-
-		g_clear_object(&transfer);
-		g_clear_object(&protocol_file_transfer);
-	}
-
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolFileTransferEmpty*receive_async*");
+	success = purple_protocol_file_transfer_receive_finish(protocol, result,
+	                                                       &error);
+	g_assert_error(error, PURPLE_PROTOCOL_FILE_TRANSFER_ERROR, 0);
+	g_clear_error(&error);
+	g_assert_false(success);
 }
 
 static void
-test_purple_protocol_file_transfer_empty_receive_finish(void) {
-	if(g_test_subprocess()) {
-		PurpleProtocolFileTransfer *protocol_file_transfer = NULL;
-		GError *error = NULL;
-		GTask *task = NULL;
-		gboolean result = FALSE;
+test_purple_protocol_file_transfer_empty_receive(void) {
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *remote = NULL;
+	PurpleFileTransfer *transfer = NULL;
+	PurpleProtocolFileTransfer *protocol_file_transfer = NULL;
 
-		protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_empty_get_type(),
-		                                      NULL);
+	account = purple_account_new("test", "test");
+	remote = purple_contact_info_new(NULL);
 
-		task = g_task_new(protocol_file_transfer, NULL, NULL, NULL);
+	transfer = purple_file_transfer_new_receive(account, remote,
+	                                            "file.png", 0);
+	g_clear_object(&account);
+	g_clear_object(&remote);
 
-		result = purple_protocol_file_transfer_receive_finish(protocol_file_transfer,
-		                                                      G_ASYNC_RESULT(task),
-		                                                      &error);
-		g_assert_no_error(error);
-		g_assert_false(result);
+	protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_empty_get_type(),
+	                                      NULL);
 
-		g_clear_object(&task);
-		g_clear_object(&protocol_file_transfer);
-	}
+	purple_protocol_file_transfer_receive_async(protocol_file_transfer,
+	                                            transfer,
+	                                            test_purple_protocol_file_transfer_empty_receive_cb,
+	                                            NULL);
 
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolFileTransferEmpty*receive_finish*");
+	g_main_context_iteration(NULL, FALSE);
+
+	g_assert_finalize_object(transfer);
+	g_assert_finalize_object(protocol_file_transfer);
 }
 
 /******************************************************************************
@@ -536,18 +518,16 @@ main(int argc, char **argv) {
 
 	g_test_init(&argc, &argv, NULL);
 
+	g_test_set_nonfatal_assertions();
+
 	test_ui_purple_init();
 
 	loop = g_main_loop_new(NULL, FALSE);
 
-	g_test_add_data_func("/protocol-contacts/empty/send-async", argv[0],
-	                     test_purple_protocol_file_transfer_empty_send_async);
-	g_test_add_func("/protocol-contacts/empty/send-finish",
-	                test_purple_protocol_file_transfer_empty_send_finish);
-	g_test_add_func("/protocol-contacts/empty/receive-async",
-	                test_purple_protocol_file_transfer_empty_receive_async);
-	g_test_add_func("/protocol-contacts/empty/receive-finish",
-	                test_purple_protocol_file_transfer_empty_receive_finish);
+	g_test_add_data_func("/protocol-contacts/empty/send", argv[0],
+	                     test_purple_protocol_file_transfer_empty_send);
+	g_test_add_func("/protocol-contacts/empty/receive",
+	                test_purple_protocol_file_transfer_empty_receive);
 
 	g_test_add_data_func("/protocol-contacts/normal/send-normal", argv[0],
 	                     test_purple_protocol_file_transfer_send_normal);

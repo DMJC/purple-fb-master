@@ -50,8 +50,11 @@ purple_protocol_file_transfer_send_async(PurpleProtocolFileTransfer *protocol,
 	if(iface != NULL && iface->send_async != NULL) {
 		iface->send_async(protocol, transfer, callback, data);
 	} else {
-		g_warning("%s does not implement send_async",
-		          G_OBJECT_TYPE_NAME(protocol));
+		g_task_report_new_error(G_OBJECT(protocol), callback, data,
+		                        purple_protocol_file_transfer_send_async,
+		                        PURPLE_PROTOCOL_FILE_TRANSFER_ERROR, 0,
+		                        "%s does not implement send_async",
+		                        G_OBJECT_TYPE_NAME(protocol));
 	}
 }
 
@@ -63,14 +66,21 @@ purple_protocol_file_transfer_send_finish(PurpleProtocolFileTransfer *protocol,
 	PurpleProtocolFileTransferInterface *iface = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_FILE_TRANSFER(protocol), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_file_transfer_send_async))
+	{
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
 
 	iface = PURPLE_PROTOCOL_FILE_TRANSFER_GET_IFACE(protocol);
 	if(iface != NULL && iface->send_finish != NULL) {
 		return iface->send_finish(protocol, result, error);
-	} else {
-		g_warning("%s does not implement send_finish",
-		          G_OBJECT_TYPE_NAME(protocol));
 	}
+
+	g_warning("purple_protocol_file_transfer_send_finish called without "
+	          "calling purple_protocol_file_transfer_send_async");
 
 	return FALSE;
 }
@@ -89,8 +99,11 @@ purple_protocol_file_transfer_receive_async(PurpleProtocolFileTransfer *protocol
 	if(iface != NULL && iface->receive_async != NULL) {
 		iface->receive_async(protocol, transfer, callback, data);
 	} else {
-		g_warning("%s does not implement receive_async",
-		          G_OBJECT_TYPE_NAME(protocol));
+		g_task_report_new_error(G_OBJECT(protocol), callback, data,
+		                        purple_protocol_file_transfer_receive_async,
+		                        PURPLE_PROTOCOL_FILE_TRANSFER_ERROR, 0,
+		                        "%s does not implement receive_async",
+		                        G_OBJECT_TYPE_NAME(protocol));
 	}
 }
 
@@ -102,14 +115,21 @@ purple_protocol_file_transfer_receive_finish(PurpleProtocolFileTransfer *protoco
 	PurpleProtocolFileTransferInterface *iface = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_FILE_TRANSFER(protocol), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_file_transfer_receive_async))
+	{
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
 
 	iface = PURPLE_PROTOCOL_FILE_TRANSFER_GET_IFACE(protocol);
 	if(iface != NULL && iface->receive_finish != NULL) {
 		return iface->receive_finish(protocol, result, error);
-	} else {
-		g_warning("%s does not implement receive_finish",
-		          G_OBJECT_TYPE_NAME(protocol));
 	}
+
+	g_warning("purple_protocol_file_transfer_receive_finish called without "
+	          "calling purple_protocol_file_transfer_receive_async");
 
 	return FALSE;
 }

@@ -36,6 +36,17 @@
 
 #define PURPLE_TYPE_PROTOCOL_FILE_TRANSFER (purple_protocol_file_transfer_get_type())
 
+/**
+ * PURPLE_PROTOCOL_FILE_TRANSFER_ERROR:
+ *
+ * A constant for protocol file transfer errors.
+ *
+ * Since: 3.0
+ */
+#define PURPLE_PROTOCOL_FILE_TRANSFER_ERROR \
+	(g_quark_from_static_string("purple-protocol-file-transfer")) \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
+
 PURPLE_AVAILABLE_IN_3_0
 G_DECLARE_INTERFACE(PurpleProtocolFileTransfer,
                     purple_protocol_file_transfer, PURPLE,
