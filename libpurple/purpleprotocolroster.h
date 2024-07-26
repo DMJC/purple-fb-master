@@ -35,6 +35,17 @@
 #include "purpleprotocol.h"
 #include "purpleversion.h"
 
+/**
+ * PURPLE_PROTOCOL_ROSTER_ERROR:
+ *
+ * A #GError domain for protocol roster errors.
+ *
+ * Since: 3.0
+ */
+#define PURPLE_PROTOCOL_ROSTER_ERROR \
+	(g_quark_from_static_string("purple-protocol-roster")) \
+	PURPLE_AVAILABLE_MACRO_IN_3_0
+
 #define PURPLE_TYPE_PROTOCOL_ROSTER (purple_protocol_roster_get_type())
 
 PURPLE_AVAILABLE_IN_3_0

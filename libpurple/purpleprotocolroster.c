@@ -54,8 +54,11 @@ purple_protocol_roster_add_async(PurpleProtocolRoster *roster,
 		iface->add_async(roster, account, contact, cancellable, callback,
 		                 data);
 	} else {
-		g_warning("%s does not implement the add_async method",
-		          G_OBJECT_TYPE_NAME(roster));
+		g_task_report_new_error(G_OBJECT(roster), callback, data,
+		                        purple_protocol_roster_add_async,
+		                        PURPLE_PROTOCOL_ROSTER_ERROR, 0,
+		                        "%s does not implement the add_async method",
+		                        G_OBJECT_TYPE_NAME(roster));
 	}
 }
 
@@ -66,11 +69,19 @@ purple_protocol_roster_add_finish(PurpleProtocolRoster *roster,
 	PurpleProtocolRosterInterface *iface = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_ROSTER(roster), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	if(g_async_result_is_tagged(result, purple_protocol_roster_add_async)) {
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
 
 	iface = PURPLE_PROTOCOL_ROSTER_GET_IFACE(roster);
 	if(iface != NULL && iface->add_finish != NULL) {
 		return iface->add_finish(roster, result, error);
 	}
+
+	g_warning("purple_protocol_roster_add_finish called without calling "
+	          "purple_protocol_roster_add_async");
 
 	return FALSE;
 }
@@ -93,8 +104,11 @@ purple_protocol_roster_update_async(PurpleProtocolRoster *roster,
 		iface->update_async(roster, account, contact, cancellable, callback,
 		                    data);
 	} else {
-		g_warning("%s does not implement the update_async method",
-		          G_OBJECT_TYPE_NAME(roster));
+		g_task_report_new_error(G_OBJECT(roster), callback, data,
+		                        purple_protocol_roster_update_async,
+		                        PURPLE_PROTOCOL_ROSTER_ERROR, 0,
+		                        "%s does not implement the update_async method",
+		                        G_OBJECT_TYPE_NAME(roster));
 	}
 }
 
@@ -105,11 +119,19 @@ purple_protocol_roster_update_finish(PurpleProtocolRoster *roster,
 	PurpleProtocolRosterInterface *iface = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_ROSTER(roster), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	if(g_async_result_is_tagged(result, purple_protocol_roster_update_async)) {
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
 
 	iface = PURPLE_PROTOCOL_ROSTER_GET_IFACE(roster);
 	if(iface != NULL && iface->update_finish != NULL) {
 		return iface->update_finish(roster, result, error);
 	}
+
+	g_warning("purple_protocol_roster_update_finish called without calling "
+	          "purple_protocol_roster_update_async");
 
 	return FALSE;
 }
@@ -132,8 +154,11 @@ purple_protocol_roster_remove_async(PurpleProtocolRoster *roster,
 		iface->remove_async(roster, account, contact, cancellable, callback,
 		                    data);
 	} else {
-		g_warning("%s does not implement the remove_async method",
-		          G_OBJECT_TYPE_NAME(roster));
+		g_task_report_new_error(G_OBJECT(roster), callback, data,
+		                        purple_protocol_roster_remove_async,
+		                        PURPLE_PROTOCOL_ROSTER_ERROR, 0,
+		                        "%s does not implement the remove_async method",
+		                        G_OBJECT_TYPE_NAME(roster));
 	}
 }
 
@@ -144,11 +169,19 @@ purple_protocol_roster_remove_finish(PurpleProtocolRoster *roster,
 	PurpleProtocolRosterInterface *iface = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_ROSTER(roster), FALSE);
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	if(g_async_result_is_tagged(result, purple_protocol_roster_remove_async)) {
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
 
 	iface = PURPLE_PROTOCOL_ROSTER_GET_IFACE(roster);
 	if(iface != NULL && iface->remove_finish != NULL) {
 		return iface->remove_finish(roster, result, error);
 	}
+
+	g_warning("purple_protocol_roster_remove_finish called without calling "
+	          "purple_protocol_roster_remove_async");
 
 	return FALSE;
 }

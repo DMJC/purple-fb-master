@@ -85,78 +85,125 @@ test_purple_protocol_roster_empty_class_init(G_GNUC_UNUSED TestPurpleProtocolRos
  * TestProtocolRosterEmpty Tests
  *****************************************************************************/
 static void
+test_purple_protocol_roster_empty_add_cb(GObject *source, GAsyncResult *result,
+                                         G_GNUC_UNUSED gpointer data)
+{
+	GError *error = NULL;
+	gboolean success = FALSE;
+
+	g_assert_true(PURPLE_IS_PROTOCOL_ROSTER(source));
+	g_assert_true(G_IS_ASYNC_RESULT(result));
+
+	success = purple_protocol_roster_add_finish(PURPLE_PROTOCOL_ROSTER(source),
+	                                            result, &error);
+	g_assert_error(error, PURPLE_PROTOCOL_ROSTER_ERROR, 0);
+	g_clear_error(&error);
+	g_assert_false(success);
+}
+
+static void
 test_purple_protocol_roster_empty_add(void) {
-	if(g_test_subprocess()) {
-		PurpleAccount *account = NULL;
-		PurpleContact *contact = NULL;
-		PurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleProtocolRoster *roster = NULL;
 
-		roster = g_object_new(test_purple_protocol_roster_empty_get_type(),
-		                      NULL);
+	roster = g_object_new(test_purple_protocol_roster_empty_get_type(),
+	                      NULL);
 
-		account = purple_account_new("test", "test");
-		contact = purple_contact_new(account, NULL);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-		purple_protocol_roster_add_async(roster, account, contact, NULL, NULL,
-		                                 NULL);
+	purple_protocol_roster_add_async(roster, account, contact, NULL,
+	                                 test_purple_protocol_roster_empty_add_cb,
+	                                 NULL);
 
-		g_clear_object(&roster);
-		g_clear_object(&account);
-		g_clear_object(&contact);
-	}
+	g_main_context_iteration(NULL, FALSE);
 
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolRosterEmpty*add_async*");
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
+}
+
+static void
+test_purple_protocol_roster_empty_update_cb(GObject *source,
+                                            GAsyncResult *result,
+                                            G_GNUC_UNUSED gpointer data)
+{
+	GError *error = NULL;
+	gboolean success = FALSE;
+
+	g_assert_true(PURPLE_IS_PROTOCOL_ROSTER(source));
+	g_assert_true(G_IS_ASYNC_RESULT(result));
+
+	success = purple_protocol_roster_update_finish(PURPLE_PROTOCOL_ROSTER(source),
+	                                               result, &error);
+	g_assert_error(error, PURPLE_PROTOCOL_ROSTER_ERROR, 0);
+	g_clear_error(&error);
+	g_assert_false(success);
 }
 
 static void
 test_purple_protocol_roster_empty_update(void) {
-	if(g_test_subprocess()) {
-		PurpleAccount *account = NULL;
-		PurpleContact *contact = NULL;
-		PurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleProtocolRoster *roster = NULL;
 
-		roster = g_object_new(test_purple_protocol_roster_empty_get_type(),
-		                      NULL);
+	roster = g_object_new(test_purple_protocol_roster_empty_get_type(),
+	                      NULL);
 
-		account = purple_account_new("test", "test");
-		contact = purple_contact_new(account, NULL);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-		purple_protocol_roster_update_async(roster, account, contact, NULL,
-		                                    NULL, NULL);
+	purple_protocol_roster_update_async(roster, account, contact, NULL,
+	                                    test_purple_protocol_roster_empty_update_cb,
+	                                    NULL);
 
-		g_clear_object(&roster);
-		g_clear_object(&account);
-		g_clear_object(&contact);
-	}
+	g_main_context_iteration(NULL, FALSE);
 
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolRosterEmpty*update_async*");
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
+}
+
+static void
+test_purple_protocol_roster_empty_remove_cb(GObject *source,
+                                            GAsyncResult *result,
+                                            G_GNUC_UNUSED gpointer data)
+{
+	GError *error = NULL;
+	gboolean success = FALSE;
+
+	g_assert_true(PURPLE_IS_PROTOCOL_ROSTER(source));
+	g_assert_true(G_IS_ASYNC_RESULT(result));
+
+	success = purple_protocol_roster_remove_finish(PURPLE_PROTOCOL_ROSTER(source),
+	                                               result, &error);
+	g_assert_error(error, PURPLE_PROTOCOL_ROSTER_ERROR, 0);
+	g_clear_error(&error);
+	g_assert_false(success);
 }
 
 static void
 test_purple_protocol_roster_empty_remove(void) {
-	if(g_test_subprocess()) {
-		PurpleAccount *account = NULL;
-		PurpleContact *contact = NULL;
-		PurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
+	PurpleProtocolRoster *roster = NULL;
 
-		roster = g_object_new(test_purple_protocol_roster_empty_get_type(),
-		                      NULL);
+	roster = g_object_new(test_purple_protocol_roster_empty_get_type(),
+	                      NULL);
 
-		account = purple_account_new("test", "test");
-		contact = purple_contact_new(account, NULL);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-		purple_protocol_roster_remove_async(roster, account, contact, NULL,
-		                                    NULL, NULL);
+	purple_protocol_roster_remove_async(roster, account, contact, NULL,
+	                                    test_purple_protocol_roster_empty_remove_cb,
+	                                    NULL);
 
-		g_clear_object(&roster);
-		g_clear_object(&account);
-		g_clear_object(&contact);
-	}
+	g_main_context_iteration(NULL, FALSE);
 
-	g_test_trap_subprocess(NULL, 0, 0);
-	g_test_trap_assert_stderr("*Purple-WARNING*TestPurpleProtocolRosterEmpty*remove_async*");
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
 }
 
 /******************************************************************************
@@ -587,6 +634,8 @@ main(gint argc, gchar **argv) {
 	gint ret = 0;
 
 	g_test_init(&argc, &argv, NULL);
+
+	g_test_set_nonfatal_assertions();
 
 	test_ui_purple_init();
 
