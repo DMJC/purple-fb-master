@@ -101,19 +101,11 @@ purple_protocol_conversation_create_conversation_async(PurpleProtocolConversatio
 		iface->create_conversation_async(protocol, account, details,
 		                                 cancellable, callback, data);
 	} else {
-		GTask *task = NULL;
-
-		task = g_task_new(protocol, cancellable, callback, data);
-		g_task_return_new_error(task, PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
+		g_task_report_new_error(G_OBJECT(protocol), callback, data,
+		                        purple_protocol_conversation_create_conversation_async,
+		                        PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
 		                        "%s does not implement create_conversation_async",
 		                        G_OBJECT_TYPE_NAME(protocol));
-		g_task_set_source_tag(task,
-		                      purple_protocol_conversation_create_conversation_async);
-
-		/* details is transfer full and has already been null checked. */
-		g_object_unref(details);
-
-		g_clear_object(&task);
 	}
 }
 
@@ -127,25 +119,22 @@ purple_protocol_conversation_create_conversation_finish(PurpleProtocolConversati
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
 	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
 
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_conversation_create_conversation_async))
+	{
+		return g_task_propagate_pointer(G_TASK(result), error);
+	}
+
 	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
 	if(iface != NULL && iface->create_conversation_finish != NULL) {
 		return iface->create_conversation_finish(protocol, result, error);
 	}
 
-	if(G_IS_TASK(result)) {
-		GTask *task = G_TASK(result);
-		gpointer source = NULL;
+	g_warning("purple_protocol_conversation_create_conversation_finish called "
+	          "without calling "
+	          "purple_protocol_conversation_create_conversation_async");
 
-		source = g_task_get_source_tag(task);
-		if(source == purple_protocol_conversation_create_conversation_async) {
-			return g_task_propagate_pointer(task, error);
-		} else {
-			g_warning("%s does not implement create_conversation_finish",
-			          G_OBJECT_TYPE_NAME(protocol));
-		}
-	}
-
-	return FALSE;
+	return NULL;
 }
 
 gboolean
@@ -187,16 +176,11 @@ purple_protocol_conversation_leave_conversation_async(PurpleProtocolConversation
 		iface->leave_conversation_async(protocol, conversation, cancellable,
 		                                callback, data);
 	} else {
-		GTask *task = NULL;
-
-		task = g_task_new(protocol, cancellable, callback, data);
-		g_task_return_new_error(task, PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
+		g_task_report_new_error(G_OBJECT(protocol), callback, data,
+		                        purple_protocol_conversation_leave_conversation_async,
+		                        PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
 		                        "%s does not implement leave_conversation_async",
 		                        G_OBJECT_TYPE_NAME(protocol));
-		g_task_set_source_tag(task,
-		                      purple_protocol_conversation_leave_conversation_async);
-
-		g_clear_object(&task);
 	}
 }
 
@@ -210,23 +194,21 @@ purple_protocol_conversation_leave_conversation_finish(PurpleProtocolConversatio
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
 	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
 
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_conversation_leave_conversation_async))
+	{
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
+
 	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
 	if(iface != NULL && iface->leave_conversation_finish != NULL) {
 		return iface->leave_conversation_finish(protocol, result, error);
 	}
 
-	if(G_IS_TASK(result)) {
-		GTask *task = G_TASK(result);
-		gpointer source = NULL;
+	g_warning("purple_protocol_conversation_leave_conversation_finish called "
+	          "without calling "
+	          "purple_protocol_conversation_set_avatar_async");
 
-		source = g_task_get_source_tag(task);
-		if(source == purple_protocol_conversation_leave_conversation_async) {
-			return g_task_propagate_boolean(task, error);
-		} else {
-			g_warning("%s does not implement leave_conversation_finish",
-			          G_OBJECT_TYPE_NAME(protocol));
-		}
-	}
 
 	return FALSE;
 }
@@ -250,8 +232,11 @@ purple_protocol_conversation_send_message_async(PurpleProtocolConversation *prot
 		iface->send_message_async(protocol, conversation, message, cancellable,
 		                          callback, data);
 	} else {
-		g_warning("%s does not implement send_message_async",
-		          G_OBJECT_TYPE_NAME(protocol));
+		g_task_report_new_error(G_OBJECT(protocol), callback, data,
+		                        purple_protocol_conversation_send_message_async,
+		                        PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
+		                        "%s does not implement send_message_async",
+		                        G_OBJECT_TYPE_NAME(protocol));
 	}
 }
 
@@ -265,13 +250,21 @@ purple_protocol_conversation_send_message_finish(PurpleProtocolConversation *pro
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
 	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
 
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_conversation_send_message_async))
+	{
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
+
 	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
 	if(iface != NULL && iface->send_message_finish != NULL) {
 		return iface->send_message_finish(protocol, result, error);
 	}
 
-	g_warning("%s does not implement send_message_finish",
-	          G_OBJECT_TYPE_NAME(protocol));
+	g_warning("purple_protocol_conversation_send_message_finish called "
+	          "without calling "
+	          "purple_protocol_conversation_send_message_async");
+
 
 	return FALSE;
 }
@@ -294,8 +287,11 @@ purple_protocol_conversation_set_topic_async(PurpleProtocolConversation *protoco
 		iface->set_topic_async(protocol, conversation, topic, cancellable,
 		                       callback, data);
 	} else {
-		g_warning("%s does not implement set_topic_async",
-		          G_OBJECT_TYPE_NAME(protocol));
+		g_task_report_new_error(G_OBJECT(protocol), callback, data,
+		                        purple_protocol_conversation_set_topic_async,
+		                        PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
+		                        "%s does not implement set_topic_async",
+		                        G_OBJECT_TYPE_NAME(protocol));
 	}
 }
 
@@ -309,13 +305,19 @@ purple_protocol_conversation_set_topic_finish(PurpleProtocolConversation *protoc
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
 	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
 
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_conversation_set_topic_async))
+	{
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
+
 	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
 	if(iface != NULL && iface->set_topic_finish != NULL) {
 		return iface->set_topic_finish(protocol, result, error);
-	} else {
-		g_warning("%s does not implement set_topic_finish",
-		          G_OBJECT_TYPE_NAME(protocol));
 	}
+
+	g_warning("purple_protocol_conversation_set_topic_finish called without "
+	          "calling purple_protocol_conversation_set_topic_async");
 
 	return FALSE;
 }
@@ -359,8 +361,11 @@ purple_protocol_conversation_join_channel_async(PurpleProtocolConversation *prot
 		iface->join_channel_async(protocol, account, details, cancellable,
 		                          callback, data);
 	} else {
-		g_warning("%s does not implement join_channel_async",
-		          G_OBJECT_TYPE_NAME(protocol));
+		g_task_report_new_error(G_OBJECT(protocol), callback, data,
+		                        purple_protocol_conversation_join_channel_async,
+		                        PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
+		                        "%s does not implement join_channel_async",
+		                        G_OBJECT_TYPE_NAME(protocol));
 	}
 }
 
@@ -374,13 +379,20 @@ purple_protocol_conversation_join_channel_finish(PurpleProtocolConversation *pro
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
 	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
 
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_conversation_join_channel_async))
+	{
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
+
 	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
 	if(iface != NULL && iface->join_channel_finish != NULL) {
 		return iface->join_channel_finish(protocol, result, error);
 	}
 
-	g_warning("%s does not implement join_channel_finish",
-	          G_OBJECT_TYPE_NAME(protocol));
+	g_warning("purple_protocol_conversation_join_channel_finish called "
+	          "without calling "
+	          "purple_protocol_conversation_join_channel_async");
 
 	return FALSE;
 }
@@ -403,8 +415,11 @@ purple_protocol_conversation_set_avatar_async(PurpleProtocolConversation *protoc
 		iface->set_avatar_async(protocol, conversation, avatar, cancellable,
 		                        callback, data);
 	} else {
-		g_warning("%s does not implement set_avatar_async",
-		          G_OBJECT_TYPE_NAME(protocol));
+		g_task_report_new_error(G_OBJECT(protocol), callback, data,
+		                        purple_protocol_conversation_set_avatar_async,
+		                        PURPLE_PROTOCOL_CONVERSATION_DOMAIN, 0,
+		                        "%s does not implement set_avatar_async",
+		                        G_OBJECT_TYPE_NAME(protocol));
 	}
 }
 
@@ -418,13 +433,19 @@ purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *proto
 	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
 	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
 
+	if(g_async_result_is_tagged(result,
+	                            purple_protocol_conversation_set_avatar_async))
+	{
+		return g_task_propagate_boolean(G_TASK(result), error);
+	}
+
 	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
 	if(iface != NULL && iface->set_avatar_finish != NULL) {
 		return iface->set_avatar_finish(protocol, result, error);
 	}
 
-	g_warning("%s does not implement set_avatar_finish",
-	          G_OBJECT_TYPE_NAME(protocol));
+	g_warning("purple_protocol_conversation_set_avatar_finish called without "
+	          "calling purple_protocol_conversation_set_avatar_async");
 
 	return FALSE;
 }
