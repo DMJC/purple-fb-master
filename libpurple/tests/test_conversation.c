@@ -607,6 +607,7 @@ test_purple_conversation_generate_title_empty(void) {
 
 	purple_conversation_set_title(conversation, "test");
 	title = purple_conversation_get_title(conversation);
+	g_assert_cmpstr(title, ==, "test");
 
 	/* There are no members in this conversation, so calling generate_title
 	 * doesn't change the title.
