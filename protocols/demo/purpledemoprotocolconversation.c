@@ -237,7 +237,7 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
 		                                  PURPLE_CONTACT_INFO(contact), NULL))
 		{
 			PurpleDemoProtocolIMInfo *info = g_new(PurpleDemoProtocolIMInfo, 1);
-			const char *author = purple_message_get_author(message);
+			const char *author = purple_message_get_author_name(message);
 			const char *contents = NULL;
 
 			if(purple_strequal(author, "Hades")) {

@@ -227,7 +227,7 @@ pidgin_conversation_get_author_attributes(G_GNUC_UNUSED GObject *self,
 
 	author = purple_message_get_author_alias(message);
 	if(purple_strempty(author)) {
-		author = purple_message_get_author(message);
+		author = purple_message_get_author_name(message);
 	}
 
 	custom_color = purple_message_get_author_name_color(message);

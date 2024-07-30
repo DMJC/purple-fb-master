@@ -430,7 +430,7 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
 		                  g_free);
 	}
 	sqlite3_bind_text(prepared_statement,
-	                  5, purple_message_get_author(message), -1,
+	                  5, purple_message_get_author_name(message), -1,
 	                  SQLITE_STATIC);
 	sqlite3_bind_text(prepared_statement,
 	                  6, purple_message_get_author_name_color(message), -1,

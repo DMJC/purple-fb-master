@@ -32,7 +32,7 @@
  * Helpers
  *****************************************************************************/
 static gboolean
-purple_history_query(const gchar *query, GError **error) {
+purple_history_query(const char *query, GError **error) {
 	PurpleHistoryManager *manager = purple_history_manager_get_default();
 	GList *results = NULL;
 
@@ -45,7 +45,7 @@ purple_history_query(const gchar *query, GError **error) {
 	while(results != NULL) {
 		PurpleMessage *message = PURPLE_MESSAGE(results->data);
 
-		g_printf("%s: %s\n", purple_message_get_author(message),
+		g_printf("%s: %s\n", purple_message_get_author_name(message),
 		         purple_message_get_contents(message));
 
 		g_clear_object(&message);
@@ -57,7 +57,7 @@ purple_history_query(const gchar *query, GError **error) {
 
 G_GNUC_UNUSED
 static gboolean
-purple_history_remove(const gchar *query, GError **error) {
+purple_history_remove(const char *query, GError **error) {
 	PurpleHistoryManager *manager = purple_history_manager_get_default();
 	gboolean success = FALSE;
 
@@ -77,12 +77,12 @@ purple_history_remove(const gchar *query, GError **error) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	GError *error = NULL;
 	GOptionContext *ctx = NULL;
 	GOptionGroup *group = NULL;
-	gint exit_code = EXIT_SUCCESS;
+	int exit_code = EXIT_SUCCESS;
 
 	ctx = g_option_context_new(_("QUERY"));
 	g_option_context_set_help_enabled(ctx, TRUE);
@@ -105,7 +105,7 @@ main(gint argc, gchar *argv[]) {
 
 	purple_history_manager_startup(NULL, NULL);
 
-	for(gint i = 1; i < argc; i++) {
+	for(int i = 1; i < argc; i++) {
 		if(argv[i] == NULL || *argv[i] == '\0') {
 			continue;
 		}
