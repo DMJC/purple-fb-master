@@ -370,7 +370,7 @@ endif
 #######################################################################
 # Check for GPlugin
 #######################################################################
-gplugin_version = ['>=0.43.0', '<0.44.0']
+gplugin_version = ['>=0.44.0', '<0.45.0']
 gplugin_dep = dependency('gplugin',
 	version : gplugin_version,
 	fallback : ['gplugin', 'gplugin_dep'])
