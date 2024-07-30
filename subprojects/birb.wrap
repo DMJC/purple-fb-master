@@ -1,4 +1,4 @@
 [wrap-hg]
 directory = birb
 url = https://keep.imfreedom.org/birb/birb/
-revision = v0.1
+revision = v0.2.0

@@ -1,4 +1,4 @@
 [wrap-hg]
 directory = hasl
 url = https://keep.imfreedom.org/hasl/hasl/
-revision = 16568a4d6a41
+revision = v0.3.1
