@@ -698,29 +698,12 @@ purple_message_set_delivered_at(PurpleMessage *message, GDateTime *datetime) {
 
 	obj = G_OBJECT(message);
 
-	if(datetime == NULL) {
-		if(message->delivered_at == NULL) {
-			return;
-		}
-
-		g_clear_pointer(&message->delivered_at, g_date_time_unref);
-	} else {
-		if(message->delivered_at != NULL) {
-			if(g_date_time_equal(message->delivered_at, datetime)) {
-				return;
-			}
-
-			g_clear_pointer(&message->delivered_at, g_date_time_unref);
-			message->delivered_at = g_date_time_ref(datetime);
-		} else {
-			message->delivered_at = g_date_time_ref(datetime);
-		}
+	if(birb_date_time_set(&message->delivered_at, datetime)) {
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_DELIVERED]);
+		g_object_notify_by_pspec(obj, properties[PROP_DELIVERED_AT]);
+		g_object_thaw_notify(obj);
 	}
-
-	g_object_freeze_notify(obj);
-	g_object_notify_by_pspec(obj, properties[PROP_DELIVERED]);
-	g_object_notify_by_pspec(obj, properties[PROP_DELIVERED_AT]);
-	g_object_thaw_notify(obj);
 }
 
 gboolean
@@ -759,29 +742,12 @@ purple_message_set_edited_at(PurpleMessage *message, GDateTime *datetime) {
 
 	obj = G_OBJECT(message);
 
-	if(datetime == NULL) {
-		if(message->edited_at == NULL) {
-			return;
-		}
-
-		g_clear_pointer(&message->edited_at, g_date_time_unref);
-	} else {
-		if(message->edited_at != NULL) {
-			if(g_date_time_equal(message->edited_at, datetime)) {
-				return;
-			}
-
-			g_clear_pointer(&message->edited_at, g_date_time_unref);
-			message->edited_at = g_date_time_ref(datetime);
-		} else {
-			message->edited_at = g_date_time_ref(datetime);
-		}
+	if(birb_date_time_set(&message->edited_at, datetime)) {
+		g_object_freeze_notify(obj);
+		g_object_notify_by_pspec(obj, properties[PROP_EDITED]);
+		g_object_notify_by_pspec(obj, properties[PROP_EDITED_AT]);
+		g_object_thaw_notify(obj);
 	}
-
-	g_object_freeze_notify(obj);
-	g_object_notify_by_pspec(obj, properties[PROP_EDITED]);
-	g_object_notify_by_pspec(obj, properties[PROP_EDITED_AT]);
-	g_object_thaw_notify(obj);
 }
 
 GError *
@@ -893,12 +859,9 @@ void
 purple_message_set_timestamp(PurpleMessage *message, GDateTime *timestamp) {
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
 
-	g_clear_pointer(&message->timestamp, g_date_time_unref);
-	if(timestamp != NULL) {
-		message->timestamp = g_date_time_ref(timestamp);
+	if(birb_date_time_set(&message->timestamp, timestamp)) {
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_TIMESTAMP]);
 	}
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_TIMESTAMP]);
 }
 
 void
