@@ -22,7 +22,7 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "purpleauthorizationrequestnotification.h"
+#include "purplenotificationauthorizationrequest.h"
 
 #include "util.h"
 
@@ -33,14 +33,14 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, 0};
 
-struct _PurpleAuthorizationRequestNotification {
+struct _PurpleNotificationAuthorizationRequest {
 	PurpleNotification parent;
 
 	PurpleAuthorizationRequest *authorization_request;
 };
 
 static void
-purple_authorization_request_notification_request_changed_cb(GObject *obj,
+purple_notification_authorization_request_request_changed_cb(GObject *obj,
                                                              GParamSpec *pspec,
                                                              gpointer data);
 
@@ -48,7 +48,7 @@ purple_authorization_request_notification_request_changed_cb(GObject *obj,
  * Helpers
  *****************************************************************************/
 static void
-purple_authorization_request_notification_update(PurpleAuthorizationRequestNotification *auth_notification)
+purple_notification_authorization_request_update(PurpleNotificationAuthorizationRequest *auth_notification)
 {
 	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
@@ -79,18 +79,18 @@ purple_authorization_request_notification_update(PurpleAuthorizationRequestNotif
 }
 
 static void
-purple_authorization_request_notification_set_request(PurpleAuthorizationRequestNotification *notification,
+purple_notification_authorization_request_set_request(PurpleNotificationAuthorizationRequest *notification,
                                                       PurpleAuthorizationRequest *request)
 {
-	g_return_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST_NOTIFICATION(notification));
+	g_return_if_fail(PURPLE_IS_NOTIFICATION_AUTHORIZATION_REQUEST(notification));
 
 	if(g_set_object(&notification->authorization_request, request)) {
 		if(PURPLE_IS_AUTHORIZATION_REQUEST(request)) {
 			g_signal_connect_object(request, "notify",
-			                        G_CALLBACK(purple_authorization_request_notification_request_changed_cb),
+			                        G_CALLBACK(purple_notification_authorization_request_request_changed_cb),
 			                        notification, 0);
 
-			purple_authorization_request_notification_update(notification);
+			purple_notification_authorization_request_update(notification);
 		}
 
 		g_object_notify_by_pspec(G_OBJECT(notification),
@@ -102,45 +102,45 @@ purple_authorization_request_notification_set_request(PurpleAuthorizationRequest
  * Callbacks
  *****************************************************************************/
 static void
-purple_authorization_request_notification_request_changed_cb(G_GNUC_UNUSED GObject *obj,
+purple_notification_authorization_request_request_changed_cb(G_GNUC_UNUSED GObject *obj,
                                                              G_GNUC_UNUSED GParamSpec *pspec,
                                                              gpointer data)
 {
-	purple_authorization_request_notification_update(data);
+	purple_notification_authorization_request_update(data);
 }
 
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
-G_DEFINE_FINAL_TYPE(PurpleAuthorizationRequestNotification,
-                    purple_authorization_request_notification,
+G_DEFINE_FINAL_TYPE(PurpleNotificationAuthorizationRequest,
+                    purple_notification_authorization_request,
                     PURPLE_TYPE_NOTIFICATION)
 
 static void
-purple_authorization_request_notification_finalize(GObject *object) {
-	PurpleAuthorizationRequestNotification *notification = NULL;
+purple_notification_authorization_request_finalize(GObject *object) {
+	PurpleNotificationAuthorizationRequest *notification = NULL;
 
-	notification = PURPLE_AUTHORIZATION_REQUEST_NOTIFICATION(object);
+	notification = PURPLE_NOTIFICATION_AUTHORIZATION_REQUEST(object);
 
 	g_clear_object(&notification->authorization_request);
 
-	G_OBJECT_CLASS(purple_authorization_request_notification_parent_class)->finalize(object);
+	G_OBJECT_CLASS(purple_notification_authorization_request_parent_class)->finalize(object);
 }
 
 static void
-purple_authorization_request_notification_get_property(GObject *obj,
+purple_notification_authorization_request_get_property(GObject *obj,
                                                        guint param_id,
                                                        GValue *value,
                                                        GParamSpec *pspec)
 {
-	PurpleAuthorizationRequestNotification *notification = NULL;
+	PurpleNotificationAuthorizationRequest *notification = NULL;
 
-	notification = PURPLE_AUTHORIZATION_REQUEST_NOTIFICATION(obj);
+	notification = PURPLE_NOTIFICATION_AUTHORIZATION_REQUEST(obj);
 
 	switch(param_id) {
 	case PROP_AUTHORIZATION_REQUEST:
 		g_value_set_object(value,
-		                   purple_authorization_request_notification_get_request(notification));
+		                   purple_notification_authorization_request_get_request(notification));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -149,18 +149,18 @@ purple_authorization_request_notification_get_property(GObject *obj,
 }
 
 static void
-purple_authorization_request_notification_set_property(GObject *obj,
+purple_notification_authorization_request_set_property(GObject *obj,
                                                        guint param_id,
                                                        const GValue *value,
                                                        GParamSpec *pspec)
 {
-	PurpleAuthorizationRequestNotification *notification = NULL;
+	PurpleNotificationAuthorizationRequest *notification = NULL;
 
-	notification = PURPLE_AUTHORIZATION_REQUEST_NOTIFICATION(obj);
+	notification = PURPLE_NOTIFICATION_AUTHORIZATION_REQUEST(obj);
 
 	switch(param_id) {
 	case PROP_AUTHORIZATION_REQUEST:
-		purple_authorization_request_notification_set_request(notification,
+		purple_notification_authorization_request_set_request(notification,
 		                                                      g_value_get_object(value));
 		break;
 	default:
@@ -170,21 +170,21 @@ purple_authorization_request_notification_set_property(GObject *obj,
 }
 
 static void
-purple_authorization_request_notification_init(G_GNUC_UNUSED PurpleAuthorizationRequestNotification *notification)
+purple_notification_authorization_request_init(G_GNUC_UNUSED PurpleNotificationAuthorizationRequest *notification)
 {
 }
 
 static void
-purple_authorization_request_notification_class_init(PurpleAuthorizationRequestNotificationClass *klass)
+purple_notification_authorization_request_class_init(PurpleNotificationAuthorizationRequestClass *klass)
 {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
-	obj_class->finalize = purple_authorization_request_notification_finalize;
-	obj_class->get_property = purple_authorization_request_notification_get_property;
-	obj_class->set_property = purple_authorization_request_notification_set_property;
+	obj_class->finalize = purple_notification_authorization_request_finalize;
+	obj_class->get_property = purple_notification_authorization_request_get_property;
+	obj_class->set_property = purple_notification_authorization_request_set_property;
 
 	/**
-	 * PurpleAuthorizationRequestNotification:authorization-request:
+	 * PurpleNotificationAuthorizationRequest:authorization-request:
 	 *
 	 * The [class@AuthorizationRequest] that this notification was created for.
 	 *
@@ -203,7 +203,7 @@ purple_authorization_request_notification_class_init(PurpleAuthorizationRequestN
  * Public API
  *****************************************************************************/
 PurpleNotification *
-purple_authorization_request_notification_new(PurpleAuthorizationRequest *request)
+purple_notification_authorization_request_new(PurpleAuthorizationRequest *request)
 {
 	PurpleAccount *account = NULL;
 
@@ -212,16 +212,16 @@ purple_authorization_request_notification_new(PurpleAuthorizationRequest *reques
 	account = purple_authorization_request_get_account(request);
 
 	return g_object_new(
-	    PURPLE_TYPE_AUTHORIZATION_REQUEST_NOTIFICATION,
+	    PURPLE_TYPE_NOTIFICATION_AUTHORIZATION_REQUEST,
 	    "account", account,
 	    "authorization-request", request,
 	    NULL);
 }
 
 PurpleAuthorizationRequest *
-purple_authorization_request_notification_get_request(PurpleAuthorizationRequestNotification *notification)
+purple_notification_authorization_request_get_request(PurpleNotificationAuthorizationRequest *notification)
 {
-	g_return_val_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST_NOTIFICATION(notification),
+	g_return_val_if_fail(PURPLE_IS_NOTIFICATION_AUTHORIZATION_REQUEST(notification),
 	                     NULL);
 
 	return notification->authorization_request;

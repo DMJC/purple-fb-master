@@ -24,8 +24,8 @@
 # error "only <purple.h> may be included directly"
 #endif
 
-#ifndef PURPLE_AUTHORIZATION_REQUEST_NOTIFICATION_H
-#define PURPLE_AUTHORIZATION_REQUEST_NOTIFICATION_H
+#ifndef PURPLE_NOTIFICATION_AUTHORIZATION_REQUEST_H
+#define PURPLE_NOTIFICATION_AUTHORIZATION_REQUEST_H
 
 #include <glib.h>
 #include <glib-object.h>
@@ -37,23 +37,23 @@
 G_BEGIN_DECLS
 
 /**
- * PurpleAuthorizationRequestNotification:
+ * PurpleNotificationAuthorizationRequest:
  *
  * A [class@Notification] for [class@AuthorizationRequest]s.
  *
  * Since: 3.0
  */
 
-#define PURPLE_TYPE_AUTHORIZATION_REQUEST_NOTIFICATION (purple_authorization_request_notification_get_type())
+#define PURPLE_TYPE_NOTIFICATION_AUTHORIZATION_REQUEST (purple_notification_authorization_request_get_type())
 
 PURPLE_AVAILABLE_IN_3_0
-G_DECLARE_FINAL_TYPE(PurpleAuthorizationRequestNotification,
-                     purple_authorization_request_notification,
-                     PURPLE, AUTHORIZATION_REQUEST_NOTIFICATION,
+G_DECLARE_FINAL_TYPE(PurpleNotificationAuthorizationRequest,
+                     purple_notification_authorization_request,
+                     PURPLE, NOTIFICATION_AUTHORIZATION_REQUEST,
                      PurpleNotification)
 
 /**
- * purple_authorization_request_notification_new:
+ * purple_notification_authorization_request_new:
  * @request: The authorization request instance.
  *
  * Creates a new [class@Notification] for @request.
@@ -63,10 +63,10 @@ G_DECLARE_FINAL_TYPE(PurpleAuthorizationRequestNotification,
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleNotification *purple_authorization_request_notification_new(PurpleAuthorizationRequest *request);
+PurpleNotification *purple_notification_authorization_request_new(PurpleAuthorizationRequest *request);
 
 /**
- * purple_authorization_request_notification_get_request:
+ * purple_notification_authorization_request_get_request:
  * @notification: The instance.
  *
  * Gets the [class@AuthorizationRequest] for @notification.
@@ -76,8 +76,8 @@ PurpleNotification *purple_authorization_request_notification_new(PurpleAuthoriz
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleAuthorizationRequest *purple_authorization_request_notification_get_request(PurpleAuthorizationRequestNotification *notification);
+PurpleAuthorizationRequest *purple_notification_authorization_request_get_request(PurpleNotificationAuthorizationRequest *notification);
 
 G_END_DECLS
 
-#endif /* PURPLE_AUTHORIZATION_REQUEST_NOTIFICATION_H */
+#endif /* PURPLE_NOTIFICATION_AUTHORIZATION_REQUEST_H */
