@@ -29,6 +29,8 @@
 #include "notify.h"
 #include "prefs.h"
 #include "purplenoopcredentialprovider.h"
+#include "purplenotification.h"
+#include "purplenotificationmanager.h"
 #include "purpleprivate.h"
 #include "signals.h"
 #include "util.h"
@@ -144,15 +146,25 @@ purple_credential_manager_core_init_cb(gpointer data) {
 		g_object_unref(settings);
 
 		if(!purple_credential_manager_set_active(manager, id, &error)) {
+			PurpleNotification *notification = NULL;
+			PurpleNotificationManager *manager = NULL;
+
 			g_warning("Failed to make %s the active credential provider : %s",
 			          id, error != NULL ? error->message : "unknown error");
 
-			purple_notify_error(NULL, _("Credential Manager"),
-			                    _("Failed to load the selected credential "
-			                      "provider."),
-			                    _("Check your system configuration or select "
-			                      "another one in the preferences dialog."),
-			                    NULL);
+			notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
+			                                       NULL, NULL, NULL);
+			purple_notification_set_title(notification,
+			                              _("Failed to load the selected "
+			                                "credential provider."));
+			purple_notification_set_subtitle(notification,
+			                                 _("Check your system "
+			                                   "configuration or select "
+			                                   "another one in preferences"));
+
+			manager = purple_notification_manager_get_default();
+			purple_notification_manager_add(manager, notification);
+			g_clear_object(&notification);
 		}
 
 		g_free(id);
