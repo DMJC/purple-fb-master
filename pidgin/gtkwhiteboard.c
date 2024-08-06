@@ -425,8 +425,6 @@ pidgin_whiteboard_save_response(GObject *obj, GAsyncResult *result,
 		purple_debug_info("gtkwhiteboard", "whiteboard saved to \"%s\"",
 		                  filename);
 	} else {
-		purple_notify_error(NULL, _("Whiteboard"),
-		                    _("Unable to save the file"), NULL, NULL);
 		purple_debug_error("gtkwhiteboard",
 		                   "whiteboard couldn't be saved to \"%s\"", filename);
 	}

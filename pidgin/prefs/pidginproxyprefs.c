@@ -102,7 +102,8 @@ proxy_row_activated_cb(G_GNUC_UNUSED AdwActionRow *row, gpointer data)
 		return;
 	}
 
-	purple_notify_error(NULL, NULL, _("Cannot start proxy configuration program."), err->message, NULL);
+	g_warning(_("Cannot start proxy configuration program: %s"), err->message);
+
 	g_error_free(err);
 }
 
