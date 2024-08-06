@@ -4,7 +4,6 @@ endif
 
 libpidgin_SOURCES = [
 	'gtkrequest.c',
-	'gtkutils.c',
 	'gtkwhiteboard.c',
 	'libpidgin.c',
 	'pidginabout.c',
@@ -53,7 +52,6 @@ libpidgin_SOURCES = [
 
 libpidgin_headers = [
 	'gtkrequest.h',
-	'gtkutils.h',
 	'gtkwhiteboard.h',
 	'pidginabout.h',
 	'pidginaccountchooser.h',

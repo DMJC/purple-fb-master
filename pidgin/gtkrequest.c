@@ -24,7 +24,6 @@
 #include <purple.h>
 
 #include "gtkrequest.h"
-#include "gtkutils.h"
 #include "pidginaccountdisplay.h"
 #include "pidginaccountfilterconnected.h"
 #include "pidginaccountrow.h"
@@ -959,8 +958,6 @@ pidgin_request_fields(const char *title, const char *primary,
 	g_object_unref(datasheet_buttons_sg);
 
 	g_object_bind_property(page, "valid", data->ok_button, "sensitive", 0);
-
-	pidgin_auto_parent_window(win);
 
 	gtk_widget_set_visible(win, TRUE);
 

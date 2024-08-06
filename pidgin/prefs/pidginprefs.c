@@ -34,7 +34,6 @@
 
 #include "pidginprefs.h"
 #include "pidginprefsinternal.h"
-#include "gtkutils.h"
 #include "pidgincore.h"
 #if 0
 #include "pidginvvprefs.h"

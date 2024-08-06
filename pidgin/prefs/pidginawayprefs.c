@@ -27,7 +27,6 @@
 #include <adwaita.h>
 
 #include "pidginawayprefs.h"
-#include "gtkutils.h"
 #include "pidginiconname.h"
 #include "pidginprefsinternal.h"
 

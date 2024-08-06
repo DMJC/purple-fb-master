@@ -34,7 +34,6 @@
 #include <purple.h>
 
 #include "gtkwhiteboard.h"
-#include "gtkutils.h"
 
 #define UI_DATA "pidgin-ui-data"
 #define PIDGIN_TYPE_WHITEBOARD (pidgin_whiteboard_get_type())

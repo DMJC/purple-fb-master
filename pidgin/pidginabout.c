@@ -37,7 +37,6 @@
 #endif
 
 #include "package_revision.h"
-#include "gtkutils.h"
 #include "pidgincore.h"
 #include "pidginresources.h"
 

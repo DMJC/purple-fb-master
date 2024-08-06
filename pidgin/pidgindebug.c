@@ -28,7 +28,6 @@
 
 #include <purple.h>
 
-#include "gtkutils.h"
 #include "pidginapplication.h"
 #include "pidgincore.h"
 #include "pidgindebug.h"
