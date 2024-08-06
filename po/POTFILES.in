@@ -5,7 +5,6 @@ libpurple/core.c
 libpurple/debug.c
 libpurple/image.c
 libpurple/network.c
-libpurple/notify.c
 libpurple/plugins/autoaccept/autoaccept.c
 libpurple/plugins.c
 libpurple/plugins/idle/idle.c

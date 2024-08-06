@@ -24,7 +24,6 @@
 
 #include "connection.h"
 #include "debug.h"
-#include "notify.h"
 #include "prefs.h"
 #include "proxy.h"
 #include "purpleaccount.h"
@@ -850,7 +849,6 @@ purple_connection_disconnect(PurpleConnection *connection, GError **error) {
 
 	purple_account_request_close_with_account(priv->account);
 	purple_request_close_with_handle(connection);
-	purple_notify_close_with_handle(connection);
 
 	connections_connected = g_list_remove(connections_connected, connection);
 	if(connections_connected == NULL) {

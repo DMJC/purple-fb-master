@@ -22,10 +22,10 @@
 
 #include "purpleprotocol.h"
 
-#include "notify.h"
 #include "prefs.h"
 #include "purpleaccountmanager.h"
 #include "purpleenums.h"
+#include "request.h"
 #include "signals.h"
 
 enum {
@@ -263,7 +263,6 @@ purple_protocol_finalize(GObject *object) {
 	 * clean up?  I kind of want to delete them... - gk 2021-03-03
 	 */
 	purple_request_close_with_handle(protocol);
-	purple_notify_close_with_handle(protocol);
 
 	purple_signals_disconnect_by_handle(protocol);
 	purple_signals_unregister_by_instance(protocol);

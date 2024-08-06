@@ -6,7 +6,6 @@ purple_coresources = [
 	'debug.c',
 	'image.c',
 	'network.c',
-	'notify.c',
 	'plugins.c',
 	'prefs.c',
 	'proxy.c',
@@ -96,7 +95,6 @@ purple_coreheaders = [
 	'debug.h',
 	'image.h',
 	'network.h',
-	'notify.h',
 	'plugins.h',
 	'prefs.h',
 	'proxy.h',
@@ -226,7 +224,6 @@ endif
 purple_enumheaders = [
 	'connection.h',
 	'debug.h',
-	'notify.h',
 	'plugins.h',
 	'purpleaccount.h',
 	'purpleconnectionerrorinfo.h',

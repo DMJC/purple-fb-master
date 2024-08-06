@@ -26,7 +26,6 @@
 #include "core.h"
 #include "debug.h"
 #include "network.h"
-#include "notify.h"
 #include "prefs.h"
 #include "purpleaccountmanager.h"
 #include "purpleconversationmanager.h"
@@ -487,7 +486,6 @@ purple_accounts_delete(PurpleAccount *account)
 	 */
 	purple_account_set_enabled(account, FALSE);
 
-	purple_notify_close_with_handle(account);
 	purple_request_close_with_handle(account);
 
 	manager = purple_account_manager_get_default();

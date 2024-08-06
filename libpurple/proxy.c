@@ -23,7 +23,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "debug.h"
-#include "notify.h"
 #include "prefs.h"
 #include "proxy.h"
 #include "purplegio.h"

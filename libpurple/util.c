@@ -30,7 +30,6 @@
 
 #include "core.h"
 #include "debug.h"
-#include "notify.h"
 #include "prefs.h"
 #include "purpleaccountmanager.h"
 #include "purpleconversation.h"

@@ -26,12 +26,12 @@
 
 #include "core.h"
 #include "debug.h"
-#include "notify.h"
 #include "plugins.h"
 #include "prefs.h"
 #include "purpleenums.h"
 #include "purplenotification.h"
 #include "purplenotificationmanager.h"
+#include "request.h"
 #include "signals.h"
 #include "util.h"
 #ifdef _WIN32
@@ -130,7 +130,6 @@ plugin_unloaded_cb(G_GNUC_UNUSED GObject *manager, PurplePlugin *plugin)
 
 	/* cancel any pending dialogs the plugin has */
 	purple_request_close_with_handle(plugin);
-	purple_notify_close_with_handle(plugin);
 
 	purple_signals_disconnect_by_handle(plugin);
 	purple_signals_unregister_by_instance(plugin);

@@ -23,7 +23,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "glibcompat.h"
-#include "notify.h"
 #include "purplemarkup.h"
 #include "request.h"
 #include "debug.h"
@@ -807,7 +806,6 @@ purple_request_close_info(PurpleRequestInfo *info)
 
 	ops = purple_request_get_ui_ops();
 
-	purple_notify_close_with_handle(info->ui_handle);
 	purple_request_close_with_handle(info->ui_handle);
 
 	if (ops != NULL && ops->close_request != NULL)

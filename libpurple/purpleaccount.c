@@ -28,7 +28,6 @@
 #include "core.h"
 #include "debug.h"
 #include "network.h"
-#include "notify.h"
 #include "prefs.h"
 #include "purpleaddcontactrequest.h"
 #include "purpleconversationmanager.h"

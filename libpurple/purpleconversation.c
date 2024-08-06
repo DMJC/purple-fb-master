@@ -25,7 +25,6 @@
 #include "purpleconversation.h"
 
 #include "debug.h"
-#include "notify.h"
 #include "purpleconversationmanager.h"
 #include "purpleconversationmember.h"
 #include "purpleenums.h"
