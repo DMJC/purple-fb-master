@@ -28,7 +28,6 @@
 #include "pidginaccountfilterconnected.h"
 #include "pidginaccountrow.h"
 #include "pidgincore.h"
-#include "pidgintextbuffer.h"
 
 #include <gdk/gdkkeysyms.h>
 

@@ -1,5 +1,4 @@
 BROADWAY_TESTS = [
-	'text_buffer',
 ]
 
 TEST_WRAPPER = find_program('./test-wrapper.py', required: true)

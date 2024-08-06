@@ -39,7 +39,6 @@ libpidgin_SOURCES = [
 	'pidginpluginsmenu.c',
 	'pidginpresenceicon.c',
 	'pidginprotocolchooser.c',
-	'pidgintextbuffer.c',
 	'pidginui.c',
 	'prefs/pidginprefs.c',
 	'prefs/pidginawayprefs.c',
@@ -87,7 +86,6 @@ libpidgin_headers = [
 	'pidginpluginsmenu.h',
 	'pidginpresenceicon.h',
 	'pidginprotocolchooser.h',
-	'pidgintextbuffer.h',
 	'pidginui.h',
 	'pidginversion.h',
 ]
