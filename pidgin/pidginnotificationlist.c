@@ -50,17 +50,6 @@ struct _PidginNotificationList {
 /******************************************************************************
  * Helpers
  *****************************************************************************/
-static gboolean
-pidgin_notification_gpointer_to_char(G_GNUC_UNUSED GBinding *binding,
-                                     const GValue *from_value,
-                                     GValue *to_value,
-                                     G_GNUC_UNUSED gpointer user_data)
-{
-	g_value_set_string(to_value, (char *)g_value_get_pointer(from_value));
-
-	return TRUE;
-}
-
 static GtkWidget *
 pidgin_notification_list_unknown_notification(PurpleNotification *notification) {
 	GtkWidget *widget = NULL;
@@ -99,12 +88,8 @@ pidgin_notification_generic_new(PurpleNotification *notification) {
 
 	g_object_bind_property(notification, "title", row, "title",
 	                       G_BINDING_SYNC_CREATE);
-	g_object_bind_property_full(notification, "data", row, "subtitle",
-	                            G_BINDING_SYNC_CREATE,
-	                            pidgin_notification_gpointer_to_char,
-	                            NULL,
-	                            NULL,
-	                            NULL);
+	g_object_bind_property(notification, "subtitle", row, "subtitle",
+	                       G_BINDING_SYNC_CREATE);
 
 	return row;
 }
