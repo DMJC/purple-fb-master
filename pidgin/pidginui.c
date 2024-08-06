@@ -30,7 +30,6 @@
 
 #include "pidginui.h"
 
-#include "gtknotify.h"
 #include "gtkrequest.h"
 #include "gtkwhiteboard.h"
 #include "pidgincore.h"
@@ -123,12 +122,10 @@ pidgin_ui_start(G_GNUC_UNUSED PurpleUi *ui, G_GNUC_UNUSED GError **error) {
 	                                pidgin_ui_protocol_foreach_theme_cb, NULL);
 
 	/* Set the UI operation structures. */
-	purple_notify_set_ui_ops(pidgin_notify_get_ui_ops());
 	purple_request_set_ui_ops(pidgin_request_get_ui_ops());
 	purple_whiteboard_set_ui_ops(pidgin_whiteboard_get_ui_ops());
 
 	pidgin_request_init();
-	pidgin_notify_init();
 
 	return TRUE;
 }
@@ -138,7 +135,6 @@ pidgin_ui_stop(G_GNUC_UNUSED PurpleUi *ui) {
 	/* Be sure to close all windows that are not attached to anything
 	 * (e.g., the debug window), or they may access things after they are
 	 * shut down. */
-	pidgin_notify_uninit();
 	pidgin_request_uninit();
 	pidgin_debug_window_hide();
 	pidgin_debug_uninit();
