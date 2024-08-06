@@ -134,6 +134,7 @@ pidgin_conversation_escape_topic(G_GNUC_UNUSED GObject *self,
 static void
 pidgin_conversation_send_message(PidginConversation *conversation) {
 	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
 	PurpleMessage *message = NULL;
 	GtkTextBuffer *buffer = NULL;
 	GtkTextIter start;
@@ -150,8 +151,8 @@ pidgin_conversation_send_message(PidginConversation *conversation) {
 	contents = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
 
 	/* Create the message. */
-	message = purple_message_new_outgoing(purple_account_get_username(account),
-	                                      contents, 0);
+	info = purple_account_get_contact_info(account);
+	message = purple_message_new(info, contents);
 
 	/* Send the message and clean up. We don't worry about the callback as we
 	 * don't have anything to do in it right now.
