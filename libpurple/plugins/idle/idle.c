@@ -194,7 +194,6 @@ purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
 
 	if (idled_accts == NULL)
 	{
-		purple_notify_info(NULL, NULL, _("None of your accounts are idle."), NULL, NULL);
 		return;
 	}
 

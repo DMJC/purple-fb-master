@@ -248,9 +248,8 @@ request_password_ok_cb(PurpleAccount *account, PurpleRequestPage *page) {
 	remember = purple_request_page_get_bool(page, "remember");
 
 	if(purple_strempty(entry)) {
-		purple_notify_error(account, NULL,
-		                    _("Password is required to sign on."), NULL,
-		                    purple_request_cpar_from_account(account));
+		g_warning(_("Password is required to sign on for '%s'."),
+		          account->username);
 		return;
 	}
 
@@ -1118,13 +1117,27 @@ purple_account_connect(PurpleAccount *account)
 
 	protocol = purple_account_get_protocol(account);
 	if(protocol == NULL) {
-		gchar *message;
+		PurpleNotification *notification = NULL;
+		PurpleNotificationManager *manager = NULL;
+		char *value = NULL;
 
-		message = g_strdup_printf(_("Missing protocol for %s"),
-		                          account->username);
-		purple_notify_error(account, _("Connection Error"), message,
-		                    NULL, purple_request_cpar_from_account(account));
-		g_free(message);
+		notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
+		                                       account, NULL, NULL);
+
+		value = g_strdup_printf(_("Failed to load account '%s'"),
+		                        account->username);
+		purple_notification_set_title(notification, value);
+		g_free(value);
+
+		value = g_strdup_printf(_("Failed to find a protocol with id '%s'"),
+		                        account->protocol_id);
+		purple_notification_set_subtitle(notification, value);
+		g_free(value);
+
+		manager = purple_notification_manager_get_default();
+		purple_notification_manager_add(manager, notification);
+		g_clear_object(&notification);
+
 		return;
 	}
 

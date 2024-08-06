@@ -828,7 +828,9 @@ purple_xmlnode_from_str(const char *str, gssize size)
 }
 
 PurpleXmlNode *
-purple_xmlnode_from_file(const char *dir, const char *filename, const char *description, const char *process)
+purple_xmlnode_from_file(const char *dir, const char *filename,
+                         G_GNUC_UNUSED const char *description,
+                         const char *process)
 {
 	gchar *filename_full;
 	GError *error = NULL;
@@ -879,14 +881,7 @@ purple_xmlnode_from_file(const char *dir, const char *filename, const char *desc
 
 	/* If we could not parse the file then show the user an error message */
 	if (node == NULL) {
-		gchar *title, *msg;
-		title = g_strdup_printf(_("Error Reading %s"), filename);
-		msg = g_strdup_printf(_("An error was encountered reading your "
-					"%s.  The file has not been loaded, and the old file "
-					"has been renamed to %s~."), description, filename_full);
-		purple_notify_error(NULL, NULL, title, msg, NULL);
-		g_free(title);
-		g_free(msg);
+		g_warning("failed to read %s", filename);
 	}
 
 	g_free(filename_full);
