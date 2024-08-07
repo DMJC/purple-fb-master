@@ -1337,20 +1337,6 @@ purple_conversation_write_message(PurpleConversation *conversation,
 }
 
 void
-purple_conversation_write_system_message(PurpleConversation *conversation,
-                                         const char *message,
-                                         PurpleMessageFlags flags)
-{
-	PurpleMessage *pmsg = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
-
-	pmsg = purple_message_new_system(message, flags);
-	purple_conversation_write_message(conversation, pmsg);
-	g_clear_object(&pmsg);
-}
-
-void
 purple_conversation_send_message_async(PurpleConversation *conversation,
                                        PurpleMessage *message,
                                        GCancellable *cancellable,
@@ -1410,28 +1396,6 @@ purple_conversation_has_focus(PurpleConversation *conversation) {
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 
 	return ret;
-}
-
-gboolean
-purple_conversation_present_error(const char *who, PurpleAccount *account,
-                                  const char *what)
-{
-	PurpleConversation *conversation = NULL;
-	PurpleConversationManager *manager = NULL;
-
-	g_return_val_if_fail(who != NULL, FALSE);
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), FALSE);
-	g_return_val_if_fail(what != NULL, FALSE);
-
-	manager = purple_conversation_manager_get_default();
-	conversation = purple_conversation_manager_find(manager, account, who);
-	if(PURPLE_IS_CONVERSATION(conversation)) {
-		purple_conversation_write_system_message(conversation, what,
-		                                         PURPLE_MESSAGE_ERROR);
-		return TRUE;
-	}
-
-	return FALSE;
 }
 
 gboolean

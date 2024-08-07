@@ -348,19 +348,6 @@ PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_write_message(PurpleConversation *conversation, PurpleMessage *message);
 
 /**
- * purple_conversation_write_system_message:
- * @conversation: The conversation.
- * @message: The message to write.
- * @flags: The message flags (you don't need to set %PURPLE_MESSAGE_SYSTEM.
- *
- * Writes a system message to a chat or an IM.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_conversation_write_system_message(PurpleConversation *conversation, const char *message, PurpleMessageFlags flags);
-
-/**
  * purple_conversation_send_message_async:
  * @conversation: The conversation.
  * @message: The message to send.
@@ -434,26 +421,6 @@ PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conve
  */
 PURPLE_AVAILABLE_IN_ALL
 gboolean purple_conversation_has_focus(PurpleConversation *conversation);
-
-/**
- * purple_conversation_present_error:
- * @who:     The user this error is about
- * @account: The account this error is on
- * @what:    The error
- *
- * Presents an IM-error to the user
- *
- * This is a helper function to find a conversation, write an error to it, and
- * raise the window.  If a conversation with this user doesn't already exist,
- * the function will return FALSE and the calling function can attempt to present
- * the error another way (purple_notify_error, most likely)
- *
- * Returns:        TRUE if the error was presented, else FALSE
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-gboolean purple_conversation_present_error(const char *who, PurpleAccount *account, const char *what);
 
 /**
  * purple_conversation_get_age_restricted:
