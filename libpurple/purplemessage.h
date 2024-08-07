@@ -557,6 +557,31 @@ PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_notice(PurpleMessage *message, gboolean notice);
 
 /**
+ * purple_message_get_system:
+ * @message: The instance.
+ *
+ * Gets whether or not @message is a system message.
+ *
+ * Returns: %TRUE if @message is a system message, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_message_get_system(PurpleMessage *message);
+
+/**
+ * purple_message_set_system:
+ * @message: The instance.
+ * @system: %TRUE to mark @message as a system message.
+ *
+ * Sets whether or not @message is a system message.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_message_set_system(PurpleMessage *message, gboolean system);
+
+/**
  * purple_message_get_timestamp:
  * @message: The message.
  *

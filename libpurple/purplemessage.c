@@ -36,9 +36,11 @@ struct _PurpleMessage {
 	char *author_alias;
 
 	char *contents;
-	gboolean action;
-	gboolean event;
-	gboolean notice;
+
+	guint action : 1;
+	guint event : 1;
+	guint notice : 1;
+	guint system : 1;
 
 	GDateTime *timestamp;
 	PurpleMessageFlags flags;
@@ -68,6 +70,7 @@ enum {
 	PROP_FLAGS,
 	PROP_ID,
 	PROP_NOTICE,
+	PROP_SYSTEM,
 	PROP_TIMESTAMP,
 	N_PROPERTIES,
 };
@@ -144,6 +147,9 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 	case PROP_NOTICE:
 		g_value_set_boolean(value, purple_message_get_notice(message));
 		break;
+	case PROP_SYSTEM:
+		g_value_set_boolean(value, purple_message_get_system(message));
+		break;
 	case PROP_TIMESTAMP:
 		g_value_set_boxed(value, purple_message_get_timestamp(message));
 		break;
@@ -203,6 +209,9 @@ purple_message_set_property(GObject *object, guint param_id,
 		break;
 	case PROP_NOTICE:
 		purple_message_set_notice(message, g_value_get_boolean(value));
+		break;
+	case PROP_SYSTEM:
+		purple_message_set_system(message, g_value_get_boolean(value));
 		break;
 	case PROP_TIMESTAMP:
 		purple_message_set_timestamp(message, g_value_get_boxed(value));
@@ -454,6 +463,20 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
+	 * PurpleMessage:system:
+	 *
+	 * Whether or not this is a system message.
+	 *
+	 * System messages are used to present errors and warnings to the user.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_SYSTEM] = g_param_spec_boolean(
+		"system", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
 	 * PurpleMessage:timestamp:
 	 *
 	 * The timestamp of the message.
@@ -565,6 +588,7 @@ purple_message_new_system(const char *contents, PurpleMessageFlags flags) {
 		"contents", contents,
 		"timestamp", dt,
 		"flags", flags,
+		"system", TRUE,
 		NULL);
 
 	g_date_time_unref(dt);
@@ -839,6 +863,24 @@ purple_message_set_notice(PurpleMessage *message, gboolean notice) {
 		message->notice = notice;
 
 		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_NOTICE]);
+	}
+}
+
+gboolean
+purple_message_get_system(PurpleMessage *message) {
+	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), FALSE);
+
+	return message->system;
+}
+
+void
+purple_message_set_system(PurpleMessage *message, gboolean system) {
+	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	if(message->system != system) {
+		message->system = system;
+
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_SYSTEM]);
 	}
 }
 

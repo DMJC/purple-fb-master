@@ -56,6 +56,7 @@ test_purple_message_properties(void) {
 	gboolean edited = FALSE;
 	gboolean event = FALSE;
 	gboolean notice = FALSE;
+	gboolean system = FALSE;
 
 	timestamp = g_date_time_new_from_unix_utc(911347200);
 	error = g_error_new(g_quark_from_static_string("test-message"), 0,
@@ -79,6 +80,7 @@ test_purple_message_properties(void) {
 		"flags", PURPLE_MESSAGE_SYSTEM,
 		"id", "id",
 		"notice", TRUE,
+		"system", TRUE,
 		"timestamp", timestamp,
 		NULL);
 
@@ -98,6 +100,7 @@ test_purple_message_properties(void) {
 		"flags", &flags,
 		"id", &id,
 		"notice", &notice,
+		"system", &system,
 		"timestamp", &timestamp1,
 		NULL);
 
@@ -135,6 +138,8 @@ test_purple_message_properties(void) {
 	g_clear_pointer(&id, g_free);
 
 	g_assert_true(notice);
+
+	g_assert_true(system);
 
 	g_assert_true(g_date_time_equal(timestamp1, timestamp));
 	g_clear_pointer(&timestamp, g_date_time_unref);
