@@ -406,13 +406,6 @@ docs_dir = get_option('prefix') / get_option('datadir') / 'doc'
 #######################################################################
 # Random Stuff
 #######################################################################
-if ['debug', 'debugoptimize'].contains(get_option('buildtype'))
-	enable_debug = true
-else
-	enable_debug = get_option('console-logging')
-endif
-conf.set('DEBUG', enable_debug)
-
 # So that purpleconfig.h may be found.
 toplevel_inc = include_directories('.')
 
@@ -471,7 +464,6 @@ summary({
     'Enable Introspection': enable_introspection,
     'Generate documentation': get_option('doc'),
     'Has you': true,
-    'Print debugging messages': enable_debug,
 }, section: 'Miscellaneous', bool_yn: true)
 
 if pidgin3path.found()

@@ -7,14 +7,8 @@ option('devenv-config-dir', type : 'string',
 option('doc', type : 'boolean', value : false,
        description : 'build documentation with gtk-doc')
 
-option('extraversion', type : 'string',
-       description : 'extra version number to be displayed in Help->About and --help (for packagers)')
-
 option('introspection', type : 'boolean', value : true,
        description : 'build introspection data')
-
-option('build-dependencies', type : 'boolean', value : false,
-       description : 'enable the use of subprojects to build missing dependencies.')
 
 ##############################################################################
 # Libpurple Options
@@ -34,14 +28,8 @@ option('avahi', type : 'feature',
 option('dynamic-prpls', type : 'string', value: 'all',
        description : 'specify which protocols to build dynamically')
 
-option('libgadu', type : 'feature',
-       description : 'compile with libgadu (required for GaduGadu support)')
-
 ##############################################################################
 # Pidgin Options
-
-option('console-logging', type : 'boolean', value : false,
-       description : 'compile with console logging support')
 
 option('gtkui', type : 'boolean', value : true,
        description : 'compile with GTK+ user interface')
