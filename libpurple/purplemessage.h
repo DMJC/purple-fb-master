@@ -700,6 +700,21 @@ void purple_message_foreach_attachment(PurpleMessage *message, PurpleAttachmentF
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_clear_attachments(PurpleMessage *message);
 
+/**
+ * purple_message_compare_timestamp:
+ * @message1: (transfer none) (nullable): The first instance.
+ * @message2: (transfer none) (nullable): The second instance.
+ *
+ * Compare two [class@Message] objects.
+ *
+ * Returns: -1, 0 or 1 if the timestamp of @message1 is *less than*, *equal to*
+ *          or *greater than* the timestamp of @message2.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+int purple_message_compare_timestamp(PurpleMessage *message1, PurpleMessage *message2);
+
 G_END_DECLS
 
 #endif /* PURPLE_MESSAGE_H */

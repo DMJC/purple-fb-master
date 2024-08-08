@@ -986,3 +986,21 @@ purple_message_clear_attachments(PurpleMessage *message) {
 	g_hash_table_remove_all(message->attachments);
 }
 
+int
+purple_message_compare_timestamp(PurpleMessage *message1,
+                                 PurpleMessage *message2)
+{
+	if(message1 == message2) {
+		return 0;
+	}
+
+	if(message1 == NULL) {
+		return -1;
+	}
+
+	if(message2 == NULL) {
+		return 1;
+	}
+
+	return birb_date_time_compare(message1->timestamp, message2->timestamp);
+}

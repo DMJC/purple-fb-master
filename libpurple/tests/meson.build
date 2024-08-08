@@ -23,6 +23,7 @@ PROGS = [
     'markup',
     'menu',
     'message',
+    'messages',
     'notification',
     'notification_authorization_request',
     'notification_manager',
