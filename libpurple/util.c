@@ -89,15 +89,6 @@ purple_util_write_data_to_file_common(const char *dir, const char *filename, con
 }
 
 gboolean
-purple_util_write_data_to_cache_file(const char *filename, const char *data, gssize size)
-{
-	const char *cache_dir = purple_cache_dir();
-	gboolean ret = purple_util_write_data_to_file_common(cache_dir, filename, data, size);
-
-	return ret;
-}
-
-gboolean
 purple_util_write_data_to_config_file(const char *filename, const char *data, gssize size)
 {
 	const char *config_dir = purple_config_dir();
@@ -106,31 +97,10 @@ purple_util_write_data_to_config_file(const char *filename, const char *data, gs
 	return ret;
 }
 
-gboolean
-purple_util_write_data_to_data_file(const char *filename, const char *data, gssize size)
-{
-	const char *data_dir = purple_data_dir();
-	gboolean ret = purple_util_write_data_to_file_common(data_dir, filename, data, size);
-
-	return ret;
-}
-
-PurpleXmlNode *
-purple_util_read_xml_from_cache_file(const char *filename, const char *description)
-{
-	return purple_xmlnode_from_file(purple_cache_dir(), filename, description, "util");
-}
-
 PurpleXmlNode *
 purple_util_read_xml_from_config_file(const char *filename, const char *description)
 {
 	return purple_xmlnode_from_file(purple_config_dir(), filename, description, "util");
-}
-
-PurpleXmlNode *
-purple_util_read_xml_from_data_file(const char *filename, const char *description)
-{
-	return purple_xmlnode_from_file(purple_data_dir(), filename, description, "util");
 }
 
 gboolean
@@ -152,31 +122,6 @@ purple_running_gnome(void)
 	tmp = (gchar *)g_getenv("GNOME_DESKTOP_SESSION_ID");
 
 	return ((tmp != NULL) && (*tmp != '\0'));
-#else
-	return FALSE;
-#endif
-}
-
-gboolean
-purple_running_kde(void)
-{
-#ifndef _WIN32
-	gchar *tmp = g_find_program_in_path("kfmclient");
-	const char *session;
-
-	if (tmp == NULL)
-		return FALSE;
-	g_free(tmp);
-
-	session = g_getenv("KDE_FULL_SESSION");
-	if (purple_strequal(session, "true"))
-		return TRUE;
-
-	/* If you run Purple from Konsole under !KDE, this will provide a
-	 * a false positive.  Since we do the GNOME checks first, this is
-	 * only a problem if you're running something !(KDE || GNOME) and
-	 * you run Purple from Konsole. This really shouldn't be a problem. */
-	return ((g_getenv("KDEDIR") != NULL) || g_getenv("KDEDIRS") != NULL);
 #else
 	return FALSE;
 #endif
@@ -217,60 +162,6 @@ purple_normalize(PurpleAccount *account, const char *str)
 	return ret;
 }
 
-gboolean
-purple_validate(PurpleProtocol *protocol, const char *str)
-{
-	const char *normalized;
-
-	g_return_val_if_fail(protocol != NULL, FALSE);
-	g_return_val_if_fail(str != NULL, FALSE);
-
-	if (str[0] == '\0')
-		return FALSE;
-
-	if (!PURPLE_PROTOCOL_IMPLEMENTS(protocol, CLIENT, normalize))
-		return TRUE;
-
-	normalized = purple_protocol_client_normalize(PURPLE_PROTOCOL_CLIENT(protocol),
-	                                              NULL, str);
-
-	return (NULL != normalized);
-}
-
-gchar *
-purple_strdup_withhtml(const gchar *src)
-{
-	gulong destsize, i, j;
-	gchar *dest;
-
-	g_return_val_if_fail(src != NULL, NULL);
-
-	/* New length is (length of src) + (number of \n's * 3) - (number of \r's) + 1 */
-	destsize = 1;
-	for (i = 0; src[i] != '\0'; i++)
-	{
-		if (src[i] == '\n')
-			destsize += 4;
-		else if (src[i] != '\r')
-			destsize++;
-	}
-
-	dest = g_malloc(destsize);
-
-	/* Copy stuff, ignoring \r's, because they are dumb */
-	for (i = 0, j = 0; src[i] != '\0'; i++) {
-		if (src[i] == '\n') {
-			strcpy(&dest[j], "<BR>");
-			j += 4;
-		} else if (src[i] != '\r')
-			dest[j++] = src[i];
-	}
-
-	dest[destsize-1] = '\0';
-
-	return dest;
-}
-
 void
 purple_str_strip_char(char *text, char thechar)
 {
@@ -283,22 +174,6 @@ purple_str_strip_char(char *text, char thechar)
 			text[j++] = text[i];
 
 	text[j] = '\0';
-}
-
-void
-purple_util_chrreplace(char *string, char delimiter,
-					 char replacement)
-{
-	int i = 0;
-
-	g_return_if_fail(string != NULL);
-
-	while (string[i] != '\0')
-	{
-		if (string[i] == delimiter)
-			string[i] = replacement;
-		i++;
-	}
 }
 
 gchar *
@@ -315,78 +190,6 @@ purple_strreplace(const char *string, const char *delimiter,
 	split = g_strsplit(string, delimiter, 0);
 	ret = g_strjoinv(replacement, split);
 	g_strfreev(split);
-
-	return ret;
-}
-
-char *
-purple_str_seconds_to_string(guint secs)
-{
-	char *ret = NULL;
-	guint days, hrs, mins;
-
-	if(secs < 60) {
-		const char *format;
-
-		format = dngettext(GETTEXT_PACKAGE, "%d second", "%d seconds", secs);
-
-		return g_strdup_printf(format, secs);
-	}
-
-	days = secs / (60 * 60 * 24);
-	secs = secs % (60 * 60 * 24);
-	hrs  = secs / (60 * 60);
-	secs = secs % (60 * 60);
-	mins = secs / 60;
-	/* secs = secs % 60; */
-
-	if(days > 0) {
-		const char *format;
-
-		format = dngettext(GETTEXT_PACKAGE, "%d day", "%d days", days);
-
-		ret = g_strdup_printf(format, days);
-	}
-
-	if(hrs > 0) {
-		if(ret != NULL) {
-			char *tmp = NULL;
-			const char *format;
-
-			format = dngettext(GETTEXT_PACKAGE, "%s, %d hour", "%s, %d hours",
-			                   hrs);
-
-			tmp = g_strdup_printf(format, ret, hrs);
-			g_free(ret);
-			ret = tmp;
-		} else {
-			const char *format;
-
-			format = dngettext(GETTEXT_PACKAGE, "%d hour", "%d hours", hrs);
-
-			ret = g_strdup_printf(format, hrs);
-		}
-	}
-
-	if(mins > 0) {
-		if (ret != NULL) {
-			char *tmp;
-			const char *format;
-
-			format = dngettext(GETTEXT_PACKAGE, "%s, %d minute",
-			                   "%s, %d minutes", mins);
-			tmp = g_strdup_printf(format, ret, mins);
-			g_free(ret);
-			ret = tmp;
-		} else {
-			const char *format;
-
-			format = dngettext(GETTEXT_PACKAGE, "%d minute", "%d minutes",
-			                   mins);
-
-			ret = g_strdup_printf(format, mins);
-		}
-	}
 
 	return ret;
 }
@@ -540,44 +343,6 @@ void purple_got_protocol_handler_uri(const char *uri)
 	g_clear_pointer(&params, g_hash_table_destroy);
 }
 
-const char *
-purple_url_encode(const char *str)
-{
-	const char *iter;
-	static char buf[BUF_LEN];
-	char utf_char[6];
-	guint i, j = 0;
-
-	g_return_val_if_fail(str != NULL, NULL);
-	g_return_val_if_fail(g_utf8_validate(str, -1, NULL), NULL);
-
-	iter = str;
-	for (; *iter && j < (BUF_LEN - 1) ; iter = g_utf8_next_char(iter)) {
-		gunichar c = g_utf8_get_char(iter);
-		/* If the character is an ASCII character and is alphanumeric
-		 * no need to escape */
-		if (c < 128 && (isalnum(c) || c == '-' || c == '.' || c == '_' || c == '~')) {
-			buf[j++] = c;
-		} else {
-			int bytes = g_unichar_to_utf8(c, utf_char);
-			for (i = 0; (int)i < bytes; i++) {
-				if (j > (BUF_LEN - 4))
-					break;
-				if (i >= sizeof(utf_char)) {
-					g_warn_if_reached();
-					break;
-				}
-				sprintf(buf + j, "%%%02X", utf_char[i] & 0xff);
-				j += 3;
-			}
-		}
-	}
-
-	buf[j] = '\0';
-
-	return buf;
-}
-
 /* Originally lifted from
  * http://www.oreillynet.com/pub/a/network/excerpt/spcookbook_chap03/index3.html
  * ... and slightly modified to be a bit more rfc822 compliant
@@ -666,48 +431,6 @@ purple_utf8_try_convert(const char *str)
 	return NULL;
 }
 
-gchar *
-purple_utf8_strip_unprintables(const gchar *str)
-{
-	gchar *workstr, *iter;
-	const gchar *bad;
-
-	if (str == NULL)
-		/* Act like g_strdup */
-		return NULL;
-
-	if (!g_utf8_validate(str, -1, &bad)) {
-		purple_debug_error("util", "purple_utf8_strip_unprintables(%s) failed; "
-		                           "first bad character was %02x (%c)\n",
-		                   str, *bad, *bad);
-		g_return_val_if_reached(NULL);
-	}
-
-	workstr = iter = g_new(gchar, strlen(str) + 1);
-	while (*str) {
-		gunichar ch = g_utf8_get_char(str);
-		gchar *next = g_utf8_next_char(str);
-		/*
-		 * Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
-		 *          [#x10000-#x10FFFF]
-		 */
-		if ((ch == '\t' || ch == '\n' || ch == '\r') ||
-				(ch >= 0x20 && ch <= 0xD7FF) ||
-				(ch >= 0xE000 && ch <= 0xFFFD) ||
-				(ch >= 0x10000 && ch <= 0x10FFFF)) {
-			memcpy(iter, str, next - str);
-			iter += (next - str);
-		}
-
-		str = next;
-	}
-
-	/* nul-terminate the new string */
-	*iter = '\0';
-
-	return workstr;
-}
-
 int
 purple_utf8_strcasecmp(const char *a, const char *b)
 {
@@ -736,110 +459,6 @@ purple_utf8_strcasecmp(const char *a, const char *b)
 	g_free(b_norm);
 
 	return ret;
-}
-
-/* previously conversation::find_nick() */
-gboolean
-purple_utf8_has_word(const char *haystack, const char *needle)
-{
-	char *hay, *pin, *p;
-	const char *start, *prev_char;
-	gunichar before, after;
-	int n;
-	gboolean ret = FALSE;
-
-	start = hay = g_utf8_strdown(haystack, -1);
-
-	pin = g_utf8_strdown(needle, -1);
-	n = strlen(pin);
-
-	while ((p = strstr(start, pin)) != NULL) {
-		prev_char = g_utf8_find_prev_char(hay, p);
-		before = -2;
-		if (prev_char) {
-			before = g_utf8_get_char(prev_char);
-		}
-		after = g_utf8_get_char_validated(p + n, - 1);
-
-		if ((p == hay ||
-				/* The character before is a reasonable guess for a word boundary
-				   ("!g_unichar_isalnum()" is not a valid way to determine word
-				    boundaries, but it is the only reasonable thing to do here),
-				   and isn't the '&' from a "&amp;" or some such entity*/
-				(before != (gunichar)-2 && !g_unichar_isalnum(before) && *(p - 1) != '&'))
-				&& after != (gunichar)-2 && !g_unichar_isalnum(after)) {
-			ret = TRUE;
-			break;
-		}
-		start = p + 1;
-	}
-
-	g_free(pin);
-	g_free(hay);
-
-	return ret;
-}
-
-
-char *purple_text_strip_mnemonic(const char *in)
-{
-	char *out;
-	char *a;
-	char *a0;
-	const char *b;
-
-	g_return_val_if_fail(in != NULL, NULL);
-
-	out = g_malloc(strlen(in)+1);
-	a = out;
-	b = in;
-
-	a0 = a; /* The last non-space char seen so far, or the first char */
-
-	while(*b) {
-		if(*b == '_') {
-			if(a > out && b > in && *(b-1) == '(' && *(b+1) && !(*(b+1) & 0x80) && *(b+2) == ')') {
-				/* Detected CJK style shortcut (Bug 875311) */
-				a = a0;	/* undo the left parenthesis */
-				b += 3;	/* and skip the whole mess */
-			} else if(*(b+1) == '_') {
-				*(a++) = '_';
-				b += 2;
-				a0 = a;
-			} else {
-				b++;
-			}
-		/* We don't want to corrupt the middle of UTF-8 characters */
-		} else if (!(*b & 0x80)) {	/* other 1-byte char */
-			if (*b != ' ')
-				a0 = a;
-			*(a++) = *(b++);
-		} else {
-			/* Multibyte utf8 char, don't look for _ inside these */
-			int n = 0;
-			int i;
-			if ((*b & 0xe0) == 0xc0) {
-				n = 2;
-			} else if ((*b & 0xf0) == 0xe0) {
-				n = 3;
-			} else if ((*b & 0xf8) == 0xf0) {
-				n = 4;
-			} else if ((*b & 0xfc) == 0xf8) {
-				n = 5;
-			} else if ((*b & 0xfe) == 0xfc) {
-				n = 6;
-			} else {		/* Illegal utf8 */
-				n = 1;
-			}
-			a0 = a; /* unless we want to delete CJK spaces too */
-			for (i = 0; i < n && *b; i += 1) {
-				*(a++) = *(b++);
-			}
-		}
-	}
-	*a = '\0';
-
-	return out;
 }
 
 /* this is almost identical to purple_url_encode (hence purple_url_decode
@@ -888,40 +507,4 @@ purple_escape_filename(const char *str)
 	buf[j] = '\0';
 
 	return buf;
-}
-
-GValue *
-purple_value_new(GType type)
-{
-	GValue *ret;
-
-	g_return_val_if_fail(type != G_TYPE_NONE, NULL);
-
-	ret = g_new0(GValue, 1);
-	g_value_init(ret, type);
-
-	return ret;
-}
-
-GValue *
-purple_value_dup(GValue *value)
-{
-	GValue *ret;
-
-	g_return_val_if_fail(value != NULL, NULL);
-
-	ret = g_new0(GValue, 1);
-	g_value_init(ret, G_VALUE_TYPE(value));
-	g_value_copy(value, ret);
-
-	return ret;
-}
-
-void
-purple_value_free(GValue *value)
-{
-	g_return_if_fail(value != NULL);
-
-	g_value_unset(value);
-	g_free(value);
 }

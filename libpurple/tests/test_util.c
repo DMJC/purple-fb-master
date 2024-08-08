@@ -40,26 +40,6 @@ test_util_filename_escape(void) {
 }
 
 /******************************************************************************
- * text_strip tests
- *****************************************************************************/
-static void
-test_util_text_strip_mnemonic(void) {
-	char *result = NULL;
-
-	result = purple_text_strip_mnemonic("");
-	g_assert_cmpstr("", ==, result);
-	g_free(result);
-
-	result = purple_text_strip_mnemonic("foo");
-	g_assert_cmpstr("foo", ==, result);
-	g_free(result);
-
-	result = purple_text_strip_mnemonic("_foo");
-	g_assert_cmpstr("foo", ==, result);
-	g_free(result);
-}
-
-/******************************************************************************
  * email tests
  *****************************************************************************/
 /*
@@ -136,77 +116,6 @@ test_util_email_is_invalid(void) {
 }
 
 /******************************************************************************
- * UTF8 tests
- *****************************************************************************/
-typedef struct {
-	gchar *input;
-	gchar *output;
-} UTF8TestData;
-
-static void
-test_util_utf8_strip_unprintables(void) {
-	gint i;
-	UTF8TestData data[] = {
-		{
-			/* \t, \n, \r, space */
-			"ab \tcd\nef\r   ",
-			"ab \tcd\nef\r   ",
-		}, {
-			/* ASCII control characters (stripped) */
-			"\x01\x02\x03\x04\x05\x06\x07\x08\x0B\x0C\x0E\x0F\x10 aaaa "
-			"\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F",
-			" aaaa ",
-		}, {
-			/* Basic ASCII */
-			"Foobar",
-			"Foobar",
-		}, {
-			/* 0xE000 - 0xFFFD (UTF-8 encoded) */
-			/* U+F1F7 */
-			"aaaa\xef\x87\xb7",
-			"aaaa\xef\x87\xb7",
-		}, {
-			/* U+FEFF (should not be stripped) */
-			"aaaa\xef\xbb\xbf",
-			"aaaa\xef\xbb\xbf",
-		}, {
-			/* U+FFFE (should be stripped) */
-			"aaaa\xef\xbf\xbe",
-			"aaaa",
-		}, {
-			NULL,
-			NULL,
-		}
-	};
-
-	for(i = 0; ; i++) {
-		gchar *result = purple_utf8_strip_unprintables(data[i].input);
-
-		g_assert_cmpstr(data[i].output, ==, result);
-
-		g_free(result);
-
-		/* NULL as input is a valid test, but it's the last test, so we break
-		 * after it.
-		 */
-		if(data[i].input == NULL)
-			break;
-	}
-}
-
-/******************************************************************************
- * strdup_withhtml tests
- *****************************************************************************/
-static void
-test_util_strdup_withhtml(void) {
-	gchar *result = purple_strdup_withhtml("hi\r\nthere\n");
-
-	g_assert_cmpstr("hi<BR>there<BR>", ==, result);
-
-	g_free(result);
-}
-
-/******************************************************************************
  * MAIN
  *****************************************************************************/
 gint
@@ -216,19 +125,10 @@ main(gint argc, gchar **argv) {
 	g_test_add_func("/util/filename/escape",
 	                test_util_filename_escape);
 
-	g_test_add_func("/util/mnemonic/strip",
-	                test_util_text_strip_mnemonic);
-
 	g_test_add_func("/util/email/is valid",
 	                test_util_email_is_valid);
 	g_test_add_func("/util/email/is invalid",
 	                test_util_email_is_invalid);
-
-	g_test_add_func("/util/utf8/strip unprintables",
-	                test_util_utf8_strip_unprintables);
-
-	g_test_add_func("/util/test_strdup_withhtml",
-	                test_util_strdup_withhtml);
 
 	return g_test_run();
 }
