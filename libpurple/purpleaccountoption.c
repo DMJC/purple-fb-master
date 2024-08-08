@@ -34,14 +34,14 @@ struct _PurpleAccountOption
 {
 	PurplePrefType type;    /* The type of value.                     */
 
-	gchar *text;            /* The text that will appear to the user. */
-	gchar *pref_name;       /* The name of the associated preference. */
+	char *text;            /* The text that will appear to the user. */
+	char *pref_name;       /* The name of the associated preference. */
 
 	union
 	{
 		gboolean boolean;   /* The default boolean value.             */
-		gint integer;       /* The default integer value.             */
-		gchar *string;      /* The default string value.              */
+		int integer;       /* The default integer value.             */
+		char *string;      /* The default string value.              */
 		GList *list;        /* The default list value.                */
 
 	} default_value;

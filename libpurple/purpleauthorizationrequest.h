@@ -65,7 +65,7 @@ G_DECLARE_FINAL_TYPE(PurpleAuthorizationRequest, purple_authorization_request,
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleAuthorizationRequest *purple_authorization_request_new(PurpleAccount *account, const gchar *username);
+PurpleAuthorizationRequest *purple_authorization_request_new(PurpleAccount *account, const char *username);
 
 /**
  * purple_authorization_request_get_account:
@@ -91,7 +91,7 @@ PurpleAccount *purple_authorization_request_get_account(PurpleAuthorizationReque
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_authorization_request_get_username(PurpleAuthorizationRequest *request);
+const char *purple_authorization_request_get_username(PurpleAuthorizationRequest *request);
 
 /**
  * purple_authorization_request_set_alias:
@@ -104,7 +104,7 @@ const gchar *purple_authorization_request_get_username(PurpleAuthorizationReques
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_authorization_request_set_alias(PurpleAuthorizationRequest *request, const gchar *alias);
+void purple_authorization_request_set_alias(PurpleAuthorizationRequest *request, const char *alias);
 
 /**
  * purple_authorization_request_get_alias:
@@ -117,7 +117,7 @@ void purple_authorization_request_set_alias(PurpleAuthorizationRequest *request,
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_authorization_request_get_alias(PurpleAuthorizationRequest *request);
+const char *purple_authorization_request_get_alias(PurpleAuthorizationRequest *request);
 
 /**
  * purple_authorization_request_set_message:
@@ -130,7 +130,7 @@ const gchar *purple_authorization_request_get_alias(PurpleAuthorizationRequest *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_authorization_request_set_message(PurpleAuthorizationRequest *request, const gchar *message);
+void purple_authorization_request_set_message(PurpleAuthorizationRequest *request, const char *message);
 
 /**
  * purple_authorization_request_get_message:
@@ -143,7 +143,7 @@ void purple_authorization_request_set_message(PurpleAuthorizationRequest *reques
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_authorization_request_get_message(PurpleAuthorizationRequest *request);
+const char *purple_authorization_request_get_message(PurpleAuthorizationRequest *request);
 
 /**
  * purple_authorization_request_set_add:
@@ -202,7 +202,7 @@ void purple_authorization_request_accept(PurpleAuthorizationRequest *request);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_authorization_request_deny(PurpleAuthorizationRequest *request, const gchar *message);
+void purple_authorization_request_deny(PurpleAuthorizationRequest *request, const char *message);
 
 G_END_DECLS
 

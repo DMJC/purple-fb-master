@@ -65,7 +65,7 @@ G_DECLARE_FINAL_TYPE(PurpleAddContactRequest, purple_add_contact_request,
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleAddContactRequest *purple_add_contact_request_new(PurpleAccount *account, const gchar *username);
+PurpleAddContactRequest *purple_add_contact_request_new(PurpleAccount *account, const char *username);
 
 /**
  * purple_add_contact_request_get_account:
@@ -91,7 +91,7 @@ PurpleAccount *purple_add_contact_request_get_account(PurpleAddContactRequest *r
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_add_contact_request_get_username(PurpleAddContactRequest *request);
+const char *purple_add_contact_request_get_username(PurpleAddContactRequest *request);
 
 /**
  * purple_add_contact_request_set_alias:
@@ -104,7 +104,7 @@ const gchar *purple_add_contact_request_get_username(PurpleAddContactRequest *re
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_add_contact_request_set_alias(PurpleAddContactRequest *request, const gchar *alias);
+void purple_add_contact_request_set_alias(PurpleAddContactRequest *request, const char *alias);
 
 /**
  * purple_add_contact_request_get_alias:
@@ -117,7 +117,7 @@ void purple_add_contact_request_set_alias(PurpleAddContactRequest *request, cons
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_add_contact_request_get_alias(PurpleAddContactRequest *request);
+const char *purple_add_contact_request_get_alias(PurpleAddContactRequest *request);
 
 /**
  * purple_add_contact_request_set_message:
@@ -130,7 +130,7 @@ const gchar *purple_add_contact_request_get_alias(PurpleAddContactRequest *reque
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-void purple_add_contact_request_set_message(PurpleAddContactRequest *request, const gchar *message);
+void purple_add_contact_request_set_message(PurpleAddContactRequest *request, const char *message);
 
 /**
  * purple_add_contact_request_get_message:
@@ -143,7 +143,7 @@ void purple_add_contact_request_set_message(PurpleAddContactRequest *request, co
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-const gchar *purple_add_contact_request_get_message(PurpleAddContactRequest *request);
+const char *purple_add_contact_request_get_message(PurpleAddContactRequest *request);
 
 /**
  * purple_add_contact_request_add:

@@ -114,8 +114,6 @@ enum {
 };
 static guint signals[N_SIGNALS] = {0, };
 
-G_DEFINE_FINAL_TYPE(PurpleAccount, purple_account, G_TYPE_OBJECT);
-
 /******************************************************************************
  * Helpers
  *****************************************************************************/
@@ -209,19 +207,19 @@ request_password_write_cb(GObject *obj, GAsyncResult *res, gpointer data) {
 	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(obj);
 	PurpleAccount *account = PURPLE_ACCOUNT(data);
 	GError *error = NULL;
-	gchar *password = NULL;
+	char *password = NULL;
 
 	/* We stash the password on the account to get it to this call back... It's
 	 * kind of gross but shouldn't be a big deal because any plugin has access
 	 * to the credential store, so it's not really a security leak.
 	 */
-	password = (gchar *)g_object_get_data(G_OBJECT(account), "_tmp_password");
+	password = (char *)g_object_get_data(G_OBJECT(account), "_tmp_password");
 	g_object_set_data(G_OBJECT(account), "_tmp_password", NULL);
 
 	if(!purple_credential_manager_write_password_finish(manager, res, &error))
 	{
 		PurpleContactInfo *info = PURPLE_CONTACT_INFO(account);
-		const gchar *name = purple_contact_info_get_name_for_display(info);
+		const char *name = purple_contact_info_get_name_for_display(info);
 
 		/* we can't error an account without a connection, so we just drop a
 		 * debug message for now and continue to connect the account.
@@ -291,7 +289,7 @@ purple_account_connect_got_password_cb(GObject *obj, GAsyncResult *res,
 	PurpleProtocol *protocol = NULL;
 	PurpleProtocolOptions options;
 	GError *error = NULL;
-	gchar *password = NULL;
+	char *password = NULL;
 	gboolean require_password = TRUE;
 
 	password = purple_credential_manager_read_password_finish(manager, res,
@@ -543,7 +541,7 @@ setting_to_xmlnode(gpointer key, gpointer value, gpointer user_data)
 PurpleXmlNode *
 _purple_account_to_xmlnode(PurpleAccount *account) {
 	PurpleXmlNode *node, *child;
-	gchar *data = NULL;
+	char *data = NULL;
 	const char *tmp;
 	PurpleProxyInfo *proxy_info;
 
@@ -602,6 +600,8 @@ _purple_account_to_xmlnode(PurpleAccount *account) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_FINAL_TYPE(PurpleAccount, purple_account, G_TYPE_OBJECT);
+
 static void
 purple_account_set_property(GObject *obj, guint param_id, const GValue *value,
                             GParamSpec *pspec)
@@ -792,8 +792,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
-		"id", "id",
-		"A unique identifier for the account.",
+		"id", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
@@ -805,8 +804,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_USERNAME] = g_param_spec_string(
-		"username", "username",
-		"The username for the account.",
+		"username", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
@@ -822,8 +820,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_CONTACT_INFO] = g_param_spec_object(
-		"contact-info", "contact-info",
-		"The contact info for the account.",
+		"contact-info", NULL, NULL,
 		PURPLE_TYPE_CONTACT_INFO,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -837,8 +834,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_REQUIRE_PASSWORD] = g_param_spec_boolean(
-		"require-password", "require-password",
-		"Whether or not to require a password for this account.",
+		"require-password", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -850,8 +846,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_USER_INFO] = g_param_spec_string(
-		"user-info", "user-info",
-		"Detailed user information for the account.",
+		"user-info", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -863,8 +858,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_BUDDY_ICON_PATH] = g_param_spec_string(
-		"buddy-icon-path", "buddy-icon-path",
-		"Path to the buddyicon for the account.",
+		"buddy-icon-path", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -876,8 +870,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ENABLED] = g_param_spec_boolean(
-		"enabled", "enabled",
-		"Whether the account is enabled or not.",
+		"enabled", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -890,8 +883,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_REMEMBER_PASSWORD] = g_param_spec_boolean(
-		"remember-password", "remember-password",
-		"Whether to remember and store the password for this account.",
+		"remember-password", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -904,8 +896,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_CONNECTION] = g_param_spec_object(
-		"connection", "connection",
-		"The connection for the account.",
+		"connection", NULL, NULL,
 		PURPLE_TYPE_CONNECTION,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -917,8 +908,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_PROTOCOL_ID] = g_param_spec_string(
-		"protocol-id", "protocol-id",
-		"ID of the protocol that is responsible for the account.",
+		"protocol-id", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -930,8 +920,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_PROXY_INFO] = g_param_spec_object(
-		"proxy-info", "proxy-info",
-		"The PurpleProxyInfo for this account.",
+		"proxy-info", NULL, NULL,
 		PURPLE_TYPE_PROXY_INFO,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -948,8 +937,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ERROR] = g_param_spec_boxed(
-		"error", "error",
-		"The connection error info of the account",
+		"error", NULL, NULL,
 		PURPLE_TYPE_CONNECTION_ERROR_INFO,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -961,8 +949,7 @@ purple_account_class_init(PurpleAccountClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_CONNECTED] = g_param_spec_boolean(
-		"connected", "connected",
-		"Whether or not the account is connected.",
+		"connected", NULL, NULL,
 		FALSE,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -1056,7 +1043,7 @@ purple_account_set_enabled_plain(PurpleAccount *account, gboolean enabled) {
  * Public API
  *****************************************************************************/
 PurpleAccount *
-purple_account_new(const gchar *username, const gchar *protocol_id) {
+purple_account_new(const char *username, const char *protocol_id) {
 	g_return_val_if_fail(username != NULL, NULL);
 	g_return_val_if_fail(protocol_id != NULL, NULL);
 
@@ -1193,8 +1180,8 @@ void
 purple_account_request_password(PurpleAccount *account, GCallback ok_cb,
                                 GCallback cancel_cb, void *user_data)
 {
-	gchar *primary;
-	const gchar *username;
+	char *primary;
+	const char *username;
 	PurpleRequestGroup *group;
 	PurpleRequestField *field;
 	PurpleRequestPage *page;

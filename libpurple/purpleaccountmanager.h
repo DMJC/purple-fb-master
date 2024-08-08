@@ -175,7 +175,7 @@ GList *purple_account_manager_get_connected(PurpleAccountManager *manager);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleAccount *purple_account_manager_find_by_id(PurpleAccountManager *manager, const gchar *id);
+PurpleAccount *purple_account_manager_find_by_id(PurpleAccountManager *manager, const char *id);
 
 /**
  * purple_account_manager_find:
@@ -191,7 +191,7 @@ PurpleAccount *purple_account_manager_find_by_id(PurpleAccountManager *manager, 
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleAccount *purple_account_manager_find(PurpleAccountManager *manager, const gchar *username, const gchar *protocol_id);
+PurpleAccount *purple_account_manager_find(PurpleAccountManager *manager, const char *username, const char *protocol_id);
 
 /**
  * purple_account_manager_find_custom:

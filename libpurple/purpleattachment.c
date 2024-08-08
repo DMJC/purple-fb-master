@@ -28,15 +28,13 @@ struct _PurpleAttachment {
 	GObject parent;
 
 	guint64 id;
-	gchar *content_type;
+	char *content_type;
 
-	gchar *local_uri;
-	gchar *remote_uri;
+	char *local_uri;
+	char *remote_uri;
 
 	guint64 size;
 };
-
-G_DEFINE_FINAL_TYPE(PurpleAttachment, purple_attachment, G_TYPE_OBJECT);
 
 enum {
 	PROP_0 = 0,
@@ -54,7 +52,7 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
  *****************************************************************************/
 static void
 purple_attachment_set_content_type(PurpleAttachment *attachment,
-                                    const gchar *content_type)
+                                   const char *content_type)
 {
 	if(g_set_str(&attachment->content_type, content_type)) {
 		g_object_notify_by_pspec(G_OBJECT(attachment),
@@ -65,55 +63,65 @@ purple_attachment_set_content_type(PurpleAttachment *attachment,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_FINAL_TYPE(PurpleAttachment, purple_attachment, G_TYPE_OBJECT);
+
 static void
-purple_attachment_get_property(GObject *obj, guint prop_id, GValue *value, GParamSpec *pspec) {
+purple_attachment_get_property(GObject *obj, guint prop_id, GValue *value,
+                               GParamSpec *pspec)
+{
 	PurpleAttachment *attachment = PURPLE_ATTACHMENT(obj);
 
 	switch(prop_id) {
-		case PROP_ID:
-			g_value_set_uint64(value, purple_attachment_get_id(attachment));
-			break;
-		case PROP_CONTENT_TYPE:
-			g_value_set_string(value, purple_attachment_get_content_type(attachment));
-			break;
-		case PROP_LOCAL_URI:
-			g_value_set_string(value, purple_attachment_get_local_uri(attachment));
-			break;
-		case PROP_REMOTE_URI:
-			g_value_set_string(value, purple_attachment_get_remote_uri(attachment));
-			break;
-		case PROP_SIZE:
-			g_value_set_uint64(value, purple_attachment_get_size(attachment));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
-			break;
+	case PROP_ID:
+		g_value_set_uint64(value, purple_attachment_get_id(attachment));
+		break;
+	case PROP_CONTENT_TYPE:
+		g_value_set_string(value,
+		                   purple_attachment_get_content_type(attachment));
+		break;
+	case PROP_LOCAL_URI:
+		g_value_set_string(value, purple_attachment_get_local_uri(attachment));
+		break;
+	case PROP_REMOTE_URI:
+		g_value_set_string(value,
+		                   purple_attachment_get_remote_uri(attachment));
+		break;
+	case PROP_SIZE:
+		g_value_set_uint64(value, purple_attachment_get_size(attachment));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
+		break;
 	}
 }
 
 static void
-purple_attachment_set_property(GObject *obj, guint prop_id, const GValue *value, GParamSpec *pspec) {
+purple_attachment_set_property(GObject *obj, guint prop_id,
+                               const GValue *value, GParamSpec *pspec)
+{
 	PurpleAttachment *attachment = PURPLE_ATTACHMENT(obj);
 
 	switch(prop_id) {
-		case PROP_ID:
-			purple_attachment_set_id(attachment, g_value_get_uint64(value));
-			break;
-		case PROP_CONTENT_TYPE:
-			purple_attachment_set_content_type(attachment, g_value_get_string(value));
-			break;
-		case PROP_LOCAL_URI:
-			purple_attachment_set_local_uri(attachment, g_value_get_string(value));
-			break;
-		case PROP_REMOTE_URI:
-			purple_attachment_set_remote_uri(attachment, g_value_get_string(value));
-			break;
-		case PROP_SIZE:
-			purple_attachment_set_size(attachment, g_value_get_uint64(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
-			break;
+	case PROP_ID:
+		purple_attachment_set_id(attachment, g_value_get_uint64(value));
+		break;
+	case PROP_CONTENT_TYPE:
+		purple_attachment_set_content_type(attachment,
+		                                   g_value_get_string(value));
+		break;
+	case PROP_LOCAL_URI:
+		purple_attachment_set_local_uri(attachment, g_value_get_string(value));
+		break;
+	case PROP_REMOTE_URI:
+		purple_attachment_set_remote_uri(attachment,
+		                                 g_value_get_string(value));
+		break;
+	case PROP_SIZE:
+		purple_attachment_set_size(attachment, g_value_get_uint64(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, prop_id, pspec);
+		break;
 	}
 }
 
@@ -148,8 +156,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_uint64(
-		"id", "id",
-		"The identifier of the attachment.",
+		"id", NULL, NULL,
 		0, G_MAXUINT64, 0,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -162,8 +169,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_CONTENT_TYPE] = g_param_spec_string(
-		"content-type", "content-type",
-		"The content type of the attachment.",
+		"content-type", NULL, NULL,
 		"application/octet-stream",
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -176,8 +182,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_LOCAL_URI] = g_param_spec_string(
-		"local-uri", "local-uri",
-		"The local URI of the attachment.",
+		"local-uri", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -190,8 +195,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_REMOTE_URI] = g_param_spec_string(
-		"remote-uri", "remote-uri",
-		"The remote URI of the attachment.",
+		"remote-uri", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -203,8 +207,7 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_SIZE] = g_param_spec_uint64(
-		"size", "size",
-		"The file size of the attachment in bytes.",
+		"size", NULL, NULL,
 		0, G_MAXUINT64, 0,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -214,9 +217,8 @@ purple_attachment_class_init(PurpleAttachmentClass *klass) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
-
 PurpleAttachment *
-purple_attachment_new(guint64 id, const gchar *content_type) {
+purple_attachment_new(guint64 id, const char *content_type) {
 	g_return_val_if_fail(content_type != NULL, NULL);
 
 	return g_object_new(
@@ -253,14 +255,14 @@ purple_attachment_set_id(PurpleAttachment *attachment, guint64 id) {
 	g_object_notify_by_pspec(G_OBJECT(attachment), properties[PROP_ID]);
 }
 
-const gchar *
+const char *
 purple_attachment_get_content_type(PurpleAttachment *attachment) {
 	g_return_val_if_fail(PURPLE_IS_ATTACHMENT(attachment), NULL);
 
 	return attachment->content_type;
 }
 
-const gchar *
+const char *
 purple_attachment_get_local_uri(PurpleAttachment *attachment) {
 	g_return_val_if_fail(PURPLE_IS_ATTACHMENT(attachment), NULL);
 
@@ -269,7 +271,7 @@ purple_attachment_get_local_uri(PurpleAttachment *attachment) {
 
 void
 purple_attachment_set_local_uri(PurpleAttachment *attachment,
-                                 const gchar *local_uri)
+                                const char *local_uri)
 {
 	g_return_if_fail(PURPLE_IS_ATTACHMENT(attachment));
 
@@ -280,7 +282,7 @@ purple_attachment_set_local_uri(PurpleAttachment *attachment,
 	g_free(attachment->local_uri);
 
 	if(local_uri != NULL) {
-		gchar *scheme = g_uri_parse_scheme(local_uri);
+		char *scheme = g_uri_parse_scheme(local_uri);
 		if(scheme == NULL) {
 			attachment->local_uri = g_filename_to_uri(local_uri, NULL, NULL);
 		} else {
@@ -294,7 +296,7 @@ purple_attachment_set_local_uri(PurpleAttachment *attachment,
 	g_object_notify_by_pspec(G_OBJECT(attachment), properties[PROP_LOCAL_URI]);
 }
 
-const gchar *
+const char *
 purple_attachment_get_remote_uri(PurpleAttachment *attachment) {
 	g_return_val_if_fail(PURPLE_IS_ATTACHMENT(attachment), NULL);
 
@@ -303,7 +305,7 @@ purple_attachment_get_remote_uri(PurpleAttachment *attachment) {
 
 void
 purple_attachment_set_remote_uri(PurpleAttachment *attachment,
-                                  const gchar *remote_uri)
+                                 const char *remote_uri)
 {
 	g_return_if_fail(PURPLE_IS_ATTACHMENT(attachment));
 
@@ -329,7 +331,7 @@ purple_attachment_set_size(PurpleAttachment *attachment, guint64 size) {
 	g_object_notify_by_pspec(G_OBJECT(attachment), properties[PROP_SIZE]);
 }
 
-gchar *
+char *
 purple_attachment_get_filename(PurpleAttachment *attachment) {
 	g_return_val_if_fail(PURPLE_IS_ATTACHMENT(attachment), NULL);
 

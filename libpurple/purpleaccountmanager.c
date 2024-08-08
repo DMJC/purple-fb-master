@@ -238,8 +238,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ITEM_TYPE] = g_param_spec_gtype(
-		"item-type", "item-type",
-		"The type of the contained items.",
+		"item-type", NULL, NULL,
 		G_TYPE_OBJECT,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -251,8 +250,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_N_ITEMS] = g_param_spec_uint(
-		"n-items", "n-items",
-		"The number of contained items.",
+		"n-items", NULL, NULL,
 		0, G_MAXUINT, 0,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -274,8 +272,7 @@ purple_account_manager_class_init(PurpleAccountManagerClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ONLINE] = g_param_spec_boolean(
-		"online", "online",
-		"Whether or not known accounts are online or offline.",
+		"online", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -648,7 +645,7 @@ purple_account_manager_reorder(PurpleAccountManager *manager,
 
 PurpleAccount *
 purple_account_manager_find_by_id(PurpleAccountManager *manager,
-                                  const gchar *id)
+                                  const char *id)
 {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT_MANAGER(manager), NULL);
 	g_return_val_if_fail(id != NULL, NULL);

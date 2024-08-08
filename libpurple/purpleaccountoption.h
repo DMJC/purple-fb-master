@@ -68,7 +68,7 @@ GType purple_account_option_get_type(void);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-PurpleAccountOption *purple_account_option_new(PurplePrefType type, const gchar *text, const gchar *pref_name);
+PurpleAccountOption *purple_account_option_new(PurplePrefType type, const char *text, const char *pref_name);
 
 /**
  * purple_account_option_copy:
@@ -96,7 +96,7 @@ PurpleAccountOption *purple_account_option_copy(PurpleAccountOption *option);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-PurpleAccountOption *purple_account_option_bool_new(const gchar *text, const gchar *pref_name, gboolean default_value);
+PurpleAccountOption *purple_account_option_bool_new(const char *text, const char *pref_name, gboolean default_value);
 
 /**
  * purple_account_option_int_new:
@@ -111,7 +111,7 @@ PurpleAccountOption *purple_account_option_bool_new(const gchar *text, const gch
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-PurpleAccountOption *purple_account_option_int_new(const gchar *text, const gchar *pref_name, gint default_value);
+PurpleAccountOption *purple_account_option_int_new(const char *text, const char *pref_name, int default_value);
 
 /**
  * purple_account_option_string_new:
@@ -126,7 +126,7 @@ PurpleAccountOption *purple_account_option_int_new(const gchar *text, const gcha
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-PurpleAccountOption *purple_account_option_string_new(const gchar *text, const gchar *pref_name, const gchar *default_value);
+PurpleAccountOption *purple_account_option_string_new(const char *text, const char *pref_name, const char *default_value);
 
 /**
  * purple_account_option_list_new:
@@ -149,7 +149,7 @@ PurpleAccountOption *purple_account_option_string_new(const gchar *text, const g
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-PurpleAccountOption *purple_account_option_list_new(const gchar *text, const gchar *pref_name, GList *list);
+PurpleAccountOption *purple_account_option_list_new(const char *text, const char *pref_name, GList *list);
 
 /**
  * purple_account_option_destroy:
@@ -184,7 +184,7 @@ void purple_account_option_set_default_bool(PurpleAccountOption *option, gboolea
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_account_option_set_default_int(PurpleAccountOption *option, gint value);
+void purple_account_option_set_default_int(PurpleAccountOption *option, int value);
 
 /**
  * purple_account_option_set_default_string:
@@ -196,7 +196,7 @@ void purple_account_option_set_default_int(PurpleAccountOption *option, gint val
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_account_option_set_default_string(PurpleAccountOption *option, const gchar *value);
+void purple_account_option_set_default_string(PurpleAccountOption *option, const char *value);
 
 /**
  * purple_account_option_string_set_masked:
@@ -257,7 +257,7 @@ void purple_account_option_set_list(PurpleAccountOption *option, GList *values);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-void purple_account_option_add_list_item(PurpleAccountOption *option, const gchar *key, const gchar *value);
+void purple_account_option_add_list_item(PurpleAccountOption *option, const char *key, const char *value);
 
 /**
  * purple_account_option_get_pref_type:
@@ -283,7 +283,7 @@ PurplePrefType purple_account_option_get_pref_type(const PurpleAccountOption *op
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-const gchar *purple_account_option_get_text(const PurpleAccountOption *option);
+const char *purple_account_option_get_text(const PurpleAccountOption *option);
 
 /**
  * purple_account_option_get_setting:
@@ -298,7 +298,7 @@ const gchar *purple_account_option_get_text(const PurpleAccountOption *option);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-const gchar *purple_account_option_get_setting(const PurpleAccountOption *option);
+const char *purple_account_option_get_setting(const PurpleAccountOption *option);
 
 /**
  * purple_account_option_get_default_bool:
@@ -324,7 +324,7 @@ gboolean purple_account_option_get_default_bool(const PurpleAccountOption *optio
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-gint purple_account_option_get_default_int(const PurpleAccountOption *option);
+int purple_account_option_get_default_int(const PurpleAccountOption *option);
 
 /**
  * purple_account_option_get_default_string:
@@ -337,7 +337,7 @@ gint purple_account_option_get_default_int(const PurpleAccountOption *option);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-const gchar *purple_account_option_get_default_string(const PurpleAccountOption *option);
+const char *purple_account_option_get_default_string(const PurpleAccountOption *option);
 
 /**
  * purple_account_option_get_default_list_value:
@@ -350,7 +350,7 @@ const gchar *purple_account_option_get_default_string(const PurpleAccountOption 
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-const gchar *purple_account_option_get_default_list_value(const PurpleAccountOption *option);
+const char *purple_account_option_get_default_list_value(const PurpleAccountOption *option);
 
 /**
  * purple_account_option_string_get_masked:

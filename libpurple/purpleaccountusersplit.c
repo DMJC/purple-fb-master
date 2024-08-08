@@ -26,9 +26,9 @@
  * Structs
  *****************************************************************************/
 struct _PurpleAccountUserSplit {
-	gchar *text;
-	gchar *default_value;
-	gchar  field_sep;
+	char *text;
+	char *default_value;
+	char  field_sep;
 	gboolean reverse;
 	gboolean constant;
 };
@@ -44,7 +44,7 @@ G_DEFINE_BOXED_TYPE(
 );
 
 PurpleAccountUserSplit *
-purple_account_user_split_new(const gchar *text, const gchar *default_value, gchar sep)
+purple_account_user_split_new(const char *text, const char *default_value, char sep)
 {
 	PurpleAccountUserSplit *split;
 
@@ -84,7 +84,7 @@ purple_account_user_split_destroy(PurpleAccountUserSplit *split)
 	g_free(split);
 }
 
-const gchar *
+const char *
 purple_account_user_split_get_text(PurpleAccountUserSplit *split)
 {
 	g_return_val_if_fail(split != NULL, NULL);
@@ -92,7 +92,7 @@ purple_account_user_split_get_text(PurpleAccountUserSplit *split)
 	return split->text;
 }
 
-const gchar *
+const char *
 purple_account_user_split_get_default_value(PurpleAccountUserSplit *split)
 {
 	g_return_val_if_fail(split != NULL, NULL);

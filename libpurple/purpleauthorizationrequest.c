@@ -27,9 +27,9 @@ struct _PurpleAuthorizationRequest {
 
 	PurpleAccount *account;
 
-	gchar *username;
-	gchar *alias;
-	gchar *message;
+	char *username;
+	char *alias;
+	char *message;
 	gboolean add;
 
 	/* This tracks whether _accept or _deny have been called. */
@@ -54,9 +54,6 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_FINAL_TYPE(PurpleAuthorizationRequest, purple_authorization_request,
-                    G_TYPE_OBJECT)
-
 /******************************************************************************
  * Helpers
  *****************************************************************************/
@@ -74,7 +71,7 @@ purple_authorization_request_set_account(PurpleAuthorizationRequest *request,
 
 static void
 purple_authorization_request_set_username(PurpleAuthorizationRequest *request,
-                                          const gchar *username)
+                                          const char *username)
 {
 	g_return_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(request));
 
@@ -86,6 +83,9 @@ purple_authorization_request_set_username(PurpleAuthorizationRequest *request,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_FINAL_TYPE(PurpleAuthorizationRequest, purple_authorization_request,
+                    G_TYPE_OBJECT)
+
 static void
 purple_authorization_request_get_property(GObject *obj, guint param_id,
                                           GValue *value, GParamSpec *pspec)
@@ -93,29 +93,29 @@ purple_authorization_request_get_property(GObject *obj, guint param_id,
 	PurpleAuthorizationRequest *request = PURPLE_AUTHORIZATION_REQUEST(obj);
 
 	switch(param_id) {
-		case PROP_ACCOUNT:
-			g_value_set_object(value,
-			                   purple_authorization_request_get_account(request));
-			break;
-		case PROP_USERNAME:
-			g_value_set_string(value,
-			                   purple_authorization_request_get_username(request));
-			break;
-		case PROP_ALIAS:
-			g_value_set_string(value,
-			                   purple_authorization_request_get_alias(request));
-			break;
-		case PROP_MESSAGE:
-			g_value_set_string(value,
-			                   purple_authorization_request_get_message(request));
-			break;
-		case PROP_ADD:
-			g_value_set_boolean(value,
-			                    purple_authorization_request_get_add(request));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ACCOUNT:
+		g_value_set_object(value,
+		                   purple_authorization_request_get_account(request));
+		break;
+	case PROP_USERNAME:
+		g_value_set_string(value,
+		                   purple_authorization_request_get_username(request));
+		break;
+	case PROP_ALIAS:
+		g_value_set_string(value,
+		                   purple_authorization_request_get_alias(request));
+		break;
+	case PROP_MESSAGE:
+		g_value_set_string(value,
+		                   purple_authorization_request_get_message(request));
+		break;
+	case PROP_ADD:
+		g_value_set_boolean(value,
+		                    purple_authorization_request_get_add(request));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -127,29 +127,29 @@ purple_authorization_request_set_property(GObject *obj, guint param_id,
 	PurpleAuthorizationRequest *request = PURPLE_AUTHORIZATION_REQUEST(obj);
 
 	switch(param_id) {
-		case PROP_ACCOUNT:
-			purple_authorization_request_set_account(request,
-			                                         g_value_get_object(value));
-			break;
-		case PROP_USERNAME:
-			purple_authorization_request_set_username(request,
-			                                          g_value_get_string(value));
-			break;
-		case PROP_ALIAS:
-			purple_authorization_request_set_alias(request,
-			                                       g_value_get_string(value));
-			break;
-		case PROP_MESSAGE:
-			purple_authorization_request_set_message(request,
-			                                         g_value_get_string(value));
-			break;
-		case PROP_ADD:
-			purple_authorization_request_set_add(request,
-			                                     g_value_get_boolean(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ACCOUNT:
+		purple_authorization_request_set_account(request,
+		                                         g_value_get_object(value));
+		break;
+	case PROP_USERNAME:
+		purple_authorization_request_set_username(request,
+		                                          g_value_get_string(value));
+		break;
+	case PROP_ALIAS:
+		purple_authorization_request_set_alias(request,
+		                                       g_value_get_string(value));
+		break;
+	case PROP_MESSAGE:
+		purple_authorization_request_set_message(request,
+		                                         g_value_get_string(value));
+		break;
+	case PROP_ADD:
+		purple_authorization_request_set_add(request,
+		                                     g_value_get_boolean(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -187,6 +187,69 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 	obj_class->set_property = purple_authorization_request_set_property;
 	obj_class->dispose = purple_authorization_request_dispose;
 	obj_class->finalize = purple_authorization_request_finalize;
+
+	/**
+	 * PurpleAuthorizationRequest:account:
+	 *
+	 * The account that this authorization request is for.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ACCOUNT] = g_param_spec_object(
+		"account", NULL, NULL,
+		PURPLE_TYPE_ACCOUNT,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAuthorizationRequest:username:
+	 *
+	 * The username of the remote user that is requesting authorization.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_USERNAME] = g_param_spec_string(
+		"username", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAuthorizationRequest:alias:
+	 *
+	 * The alias of the remote user that is requesting authorization.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ALIAS] = g_param_spec_string(
+		"alias", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAuthorizationRequest:message:
+	 *
+	 * The optional message sent from the remote user.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_MESSAGE] = g_param_spec_string(
+		"message", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleAuthorizationRequest:add:
+	 *
+	 * Whether or not the user interface should ask the end user to add the
+	 * remote user after accepting the end user's friend request.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ADD] = g_param_spec_boolean(
+		"add", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
 	 * PurpleAuthorizationRequest::accepted:
@@ -229,81 +292,13 @@ purple_authorization_request_class_init(PurpleAuthorizationRequestClass *klass)
 		G_TYPE_NONE,
 		1,
 		G_TYPE_STRING);
-
-	/**
-	 * PurpleAuthorizationRequest:account:
-	 *
-	 * The account that this authorization request is for.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_ACCOUNT] = g_param_spec_object(
-		"account", "account",
-		"The account for this authorization request",
-		PURPLE_TYPE_ACCOUNT,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleAuthorizationRequest:username:
-	 *
-	 * The username of the remote user that is requesting authorization.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_USERNAME] = g_param_spec_string(
-		"username", "username",
-		"The username of the remote user that is requesting authorization",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleAuthorizationRequest:alias:
-	 *
-	 * The alias of the remote user that is requesting authorization.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_ALIAS] = g_param_spec_string(
-		"alias", "alias",
-		"The alias of the remote user that is requesting authorization",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleAuthorizationRequest:message:
-	 *
-	 * The optional message sent from the remote user.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_MESSAGE] = g_param_spec_string(
-		"message", "message",
-		"The optional message sent by the remote user",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleAuthorizationRequest:add:
-	 *
-	 * Whether or not the user interface should ask the end user to add the
-	 * remote user after accepting the end user's friend request.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_ADD] = g_param_spec_boolean(
-		"add", "add",
-		"Whether or not to add the remote user back",
-		FALSE,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 }
 
 /******************************************************************************
  * Public API
  *****************************************************************************/
 PurpleAuthorizationRequest *
-purple_authorization_request_new(PurpleAccount *account, const gchar *username)
+purple_authorization_request_new(PurpleAccount *account, const char *username)
 {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 	g_return_val_if_fail(username != NULL, NULL);
@@ -322,7 +317,7 @@ purple_authorization_request_get_account(PurpleAuthorizationRequest *request) {
 	return request->account;
 }
 
-const gchar *
+const char *
 purple_authorization_request_get_username(PurpleAuthorizationRequest *request)
 {
 	g_return_val_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(request), NULL);
@@ -332,7 +327,7 @@ purple_authorization_request_get_username(PurpleAuthorizationRequest *request)
 
 void
 purple_authorization_request_set_alias(PurpleAuthorizationRequest *request,
-                                       const gchar *alias)
+                                       const char *alias)
 {
 	g_return_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(request));
 
@@ -341,7 +336,7 @@ purple_authorization_request_set_alias(PurpleAuthorizationRequest *request,
 	}
 }
 
-const gchar *
+const char *
 purple_authorization_request_get_alias(PurpleAuthorizationRequest *request) {
 	g_return_val_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(request), NULL);
 
@@ -350,7 +345,7 @@ purple_authorization_request_get_alias(PurpleAuthorizationRequest *request) {
 
 void
 purple_authorization_request_set_message(PurpleAuthorizationRequest *request,
-                                         const gchar *message)
+                                         const char *message)
 {
 	g_return_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(request));
 
@@ -359,7 +354,7 @@ purple_authorization_request_set_message(PurpleAuthorizationRequest *request,
 	}
 }
 
-const gchar *
+const char *
 purple_authorization_request_get_message(PurpleAuthorizationRequest *request) {
 	g_return_val_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(request), NULL);
 
@@ -398,7 +393,7 @@ purple_authorization_request_accept(PurpleAuthorizationRequest *request) {
 
 void
 purple_authorization_request_deny(PurpleAuthorizationRequest *request,
-                                  const gchar *message)
+                                  const char *message)
 {
 	g_return_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(request));
 

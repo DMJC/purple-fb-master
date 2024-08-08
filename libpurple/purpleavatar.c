@@ -46,8 +46,6 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_FINAL_TYPE(PurpleAvatar, purple_avatar, G_TYPE_OBJECT)
-
 /******************************************************************************
  * Helpers
  *****************************************************************************/
@@ -89,6 +87,8 @@ purple_avatar_new_common(const char *filename, GdkPixbufAnimation *animation) {
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_FINAL_TYPE(PurpleAvatar, purple_avatar, G_TYPE_OBJECT)
+
 static void
 purple_avatar_get_property(GObject *obj, guint param_id, GValue *value,
                            GParamSpec *pspec)
@@ -96,24 +96,24 @@ purple_avatar_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleAvatar *avatar = PURPLE_AVATAR(obj);
 
 	switch(param_id) {
-		case PROP_FILENAME:
-			g_value_set_string(value, purple_avatar_get_filename(avatar));
-			break;
-		case PROP_PIXBUF:
-			g_value_set_object(value, purple_avatar_get_pixbuf(avatar));
-			break;
-		case PROP_ANIMATED:
-			g_value_set_boolean(value, purple_avatar_get_animated(avatar));
-			break;
-		case PROP_ANIMATION:
-			g_value_set_object(value, purple_avatar_get_animation(avatar));
-			break;
-		case PROP_TAGS:
-			g_value_set_object(value, purple_avatar_get_tags(avatar));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_FILENAME:
+		g_value_set_string(value, purple_avatar_get_filename(avatar));
+		break;
+	case PROP_PIXBUF:
+		g_value_set_object(value, purple_avatar_get_pixbuf(avatar));
+		break;
+	case PROP_ANIMATED:
+		g_value_set_boolean(value, purple_avatar_get_animated(avatar));
+		break;
+	case PROP_ANIMATION:
+		g_value_set_object(value, purple_avatar_get_animation(avatar));
+		break;
+	case PROP_TAGS:
+		g_value_set_object(value, purple_avatar_get_tags(avatar));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -124,12 +124,12 @@ purple_avatar_set_property(GObject *obj, guint param_id, const GValue *value,
 	PurpleAvatar *avatar = PURPLE_AVATAR(obj);
 
 	switch(param_id) {
-		case PROP_FILENAME:
-			purple_avatar_set_filename(avatar, g_value_get_string(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_FILENAME:
+		purple_avatar_set_filename(avatar, g_value_get_string(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -166,8 +166,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_FILENAME] = g_param_spec_string(
-		"filename", "filename",
-		"The filename to save/load the avatar from.",
+		"filename", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -181,8 +180,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_PIXBUF] = g_param_spec_object(
-		"pixbuf", "pixbuf",
-		"The pixbuf of the avatar.",
+		"pixbuf", NULL, NULL,
 		GDK_TYPE_PIXBUF,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -194,8 +192,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ANIMATED] = g_param_spec_boolean(
-		"animated", "animated",
-		"Whether or not the avatar is animated.",
+		"animated", NULL, NULL,
 		FALSE,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -208,8 +205,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ANIMATION] = g_param_spec_object(
-		"animation", "animation",
-		"The animation of the avatar.",
+		"animation", NULL, NULL,
 		GDK_TYPE_PIXBUF_ANIMATION,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -221,8 +217,7 @@ purple_avatar_class_init(PurpleAvatarClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_TAGS] = g_param_spec_object(
-		"tags", "tags",
-		"The tags for the avatar.",
+		"tags", NULL, NULL,
 		PURPLE_TYPE_TAGS,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 

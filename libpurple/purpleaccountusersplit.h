@@ -64,7 +64,7 @@ GType purple_account_user_split_get_type(void);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-PurpleAccountUserSplit *purple_account_user_split_new(const gchar *text, const gchar *default_value, gchar sep);
+PurpleAccountUserSplit *purple_account_user_split_new(const char *text, const char *default_value, char sep);
 
 /**
  * purple_account_user_split_copy:
@@ -101,7 +101,7 @@ void purple_account_user_split_destroy(PurpleAccountUserSplit *split);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-const gchar *purple_account_user_split_get_text(PurpleAccountUserSplit *split);
+const char *purple_account_user_split_get_text(PurpleAccountUserSplit *split);
 
 /**
  * purple_account_user_split_get_default_value:
@@ -114,7 +114,7 @@ const gchar *purple_account_user_split_get_text(PurpleAccountUserSplit *split);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-const gchar *purple_account_user_split_get_default_value(PurpleAccountUserSplit *split);
+const char *purple_account_user_split_get_default_value(PurpleAccountUserSplit *split);
 
 /**
  * purple_account_user_split_get_separator:
@@ -127,7 +127,7 @@ const gchar *purple_account_user_split_get_default_value(PurpleAccountUserSplit 
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-gchar purple_account_user_split_get_separator(PurpleAccountUserSplit *split);
+char purple_account_user_split_get_separator(PurpleAccountUserSplit *split);
 
 /**
  * purple_account_user_split_get_reverse:
