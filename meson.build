@@ -440,7 +440,9 @@ endif
 
 # doc alias target, depends on doc_targets defined above and populated in sub
 # directories.
-alias_target('doc', doc_targets)
+if doc_targets.length() > 0
+	alias_target('doc', doc_targets)
+endif
 
 summary({
     'prefix': get_option('prefix'),
