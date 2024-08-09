@@ -914,6 +914,31 @@ const char *purple_conversation_get_alias(PurpleConversation *conversation);
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_alias(PurpleConversation *conversation, const char *alias);
 
+/**
+ * purple_conversation_get_needs_attention:
+ * @conversation: The instance.
+ *
+ * Gets whether or not @conversation needs attention.
+ *
+ * Returns: %TRUE if @conversation needs attention, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_conversation_get_needs_attention(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_needs_attention:
+ * @conversation: The instance.
+ * @needs_attention: %TRUE to mark @conversation as needing attention.
+ *
+ * Marks @conversation as needing attention or not.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_conversation_set_needs_attention(PurpleConversation *conversation, gboolean needs_attention);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONVERSATION_H */

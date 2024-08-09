@@ -70,6 +70,7 @@ test_purple_conversation_properties(void) {
 	char *user_nickname = NULL;
 	gboolean age_restricted = FALSE;
 	gboolean favorite = FALSE;
+	gboolean needs_attention = FALSE;
 
 	account = g_object_new(
 		PURPLE_TYPE_ACCOUNT,
@@ -100,6 +101,7 @@ test_purple_conversation_properties(void) {
 		"features", PURPLE_CONNECTION_FLAG_HTML,
 		"id", "id1",
 		"name", "name1",
+		"needs-attention", TRUE,
 		"title", "test conversation",
 		"topic", "the topic...",
 		"topic-author", topic_author,
@@ -123,6 +125,7 @@ test_purple_conversation_properties(void) {
 		"id", &id,
 		"members", &members,
 		"name", &name,
+		"needs-attention", &needs_attention,
 		"tags", &tags,
 		"title", &title,
 		"title-for-display", &title_for_display,
@@ -170,6 +173,8 @@ test_purple_conversation_properties(void) {
 
 	g_assert_cmpstr(name, ==, "name1");
 	g_clear_pointer(&name, g_free);
+
+	g_assert_true(needs_attention);
 
 	g_assert_true(PURPLE_IS_TAGS(tags));
 	g_clear_object(&tags);

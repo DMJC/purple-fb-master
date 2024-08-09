@@ -66,6 +66,7 @@ struct _PurpleConversation {
 	GListStore *members;
 
 	GListStore *messages;
+	gboolean needs_attention;
 };
 
 enum {
@@ -95,6 +96,7 @@ enum {
 	PROP_TAGS,
 	PROP_MEMBERS,
 	PROP_MESSAGES,
+	PROP_NEEDS_ATTENTION,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -411,6 +413,10 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 		purple_conversation_set_federated(conversation,
 		                                  g_value_get_boolean(value));
 		break;
+	case PROP_NEEDS_ATTENTION:
+		purple_conversation_set_needs_attention(conversation,
+		                                        g_value_get_boolean(value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 		break;
@@ -517,6 +523,10 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 	case PROP_MESSAGES:
 		g_value_set_object(value,
 		                   purple_conversation_get_messages(conversation));
+		break;
+	case PROP_NEEDS_ATTENTION:
+		g_value_set_boolean(value,
+		                    purple_conversation_get_needs_attention(conversation));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -994,6 +1004,21 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"All of the messages in this conversation's history.",
 		G_TYPE_LIST_MODEL,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:needs-attention:
+	 *
+	 * Whether or not the conversation needs attention.
+	 *
+	 * This could be because there are new messages or the user has been
+	 * kicked from the room, or something else.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_NEEDS_ATTENTION] = g_param_spec_boolean(
+		"needs-attention", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
@@ -1819,5 +1844,26 @@ purple_conversation_set_alias(PurpleConversation *conversation,
 		g_object_notify_by_pspec(obj, properties[PROP_ALIAS]);
 		g_object_notify_by_pspec(obj, properties[PROP_TITLE_FOR_DISPLAY]);
 		g_object_thaw_notify(obj);
+	}
+}
+
+gboolean
+purple_conversation_get_needs_attention(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	return conversation->needs_attention;
+}
+
+void
+purple_conversation_set_needs_attention(PurpleConversation *conversation,
+                                        gboolean needs_attention)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	if(conversation->needs_attention != needs_attention) {
+		conversation->needs_attention = needs_attention;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_NEEDS_ATTENTION]);
 	}
 }
