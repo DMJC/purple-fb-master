@@ -130,38 +130,6 @@ purple_running_gnome(void)
 /**************************************************************************
  * String Functions
  **************************************************************************/
-const char *
-purple_normalize(PurpleAccount *account, const char *str)
-{
-	const char *ret = NULL;
-	static char buf[BUF_LEN];
-
-	/* This should prevent a crash if purple_normalize gets called with NULL str, see #10115 */
-	g_return_val_if_fail(str != NULL, "");
-
-	if (account != NULL)
-	{
-		PurpleProtocol *protocol = purple_account_get_protocol(account);
-
-		if(PURPLE_IS_PROTOCOL_CLIENT(protocol)) {
-			ret = purple_protocol_client_normalize(PURPLE_PROTOCOL_CLIENT(protocol), account, str);
-		}
-	}
-
-	if (ret == NULL)
-	{
-		char *tmp;
-
-		tmp = g_utf8_normalize(str, -1, G_NORMALIZE_DEFAULT);
-		g_snprintf(buf, sizeof(buf), "%s", tmp);
-		g_free(tmp);
-
-		ret = buf;
-	}
-
-	return ret;
-}
-
 void
 purple_str_strip_char(char *text, char thechar)
 {

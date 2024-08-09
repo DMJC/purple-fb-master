@@ -671,10 +671,8 @@ purple_account_manager_find(PurpleAccountManager *manager,
 
 	for(guint index = 0; index < manager->accounts->len; index++) {
 		PurpleAccount *account = g_ptr_array_index(manager->accounts, index);
-		char *normalized = NULL;
 		const char *existing_protocol_id = NULL;
 		const char *existing_username = NULL;
-		const char *existing_normalized = NULL;
 
 		/* Check if the protocol id matches what the user asked for. */
 		existing_protocol_id = purple_account_get_protocol_id(account);
@@ -684,15 +682,9 @@ purple_account_manager_find(PurpleAccountManager *manager,
 
 		/* Finally verify the username. */
 		existing_username = purple_account_get_username(account);
-		normalized = g_strdup(purple_normalize(account, username));
-		existing_normalized = purple_normalize(account, existing_username);
-
-		if(purple_strequal(existing_normalized, normalized)) {
-			g_free(normalized);
-
+		if(purple_strequal(existing_username, username)) {
 			return g_object_ref(account);
 		}
-		g_free(normalized);
 	}
 
 	return NULL;

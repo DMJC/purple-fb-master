@@ -163,29 +163,6 @@ purple_strempty(const char *str) {
 }
 
 /**
- * purple_normalize:
- * @account:  The account the string belongs to, or NULL if you do
- *                 not know the account.  If you use NULL, the string
- *                 will still be normalized, but if the protocol uses a
- *                 custom normalization function then the string may
- *                 not be normalized correctly.
- * @str:      The string to normalize.
- *
- * Normalizes a string, so that it is suitable for comparison.
- *
- * The returned string will point to a static buffer, so if the
- * string is intended to be kept long-term, you <emphasis>must</emphasis>
- * g_strdup() it. Also, calling normalize() twice in the same line
- * will lead to problems.
- *
- * Returns: A pointer to the normalized version stored in a static buffer.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-const char *purple_normalize(PurpleAccount *account, const char *str);
-
-/**
  * purple_str_strip_char:
  * @str:     The string to strip characters from.
  * @thechar: The character to strip from the given string.
