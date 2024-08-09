@@ -74,6 +74,10 @@ package_revision = vcs_tag(
     output : 'package_revision.h',
     fallback : meson.project_version())
 
+# Global variable for doc targets to add themselves to which we use for the
+# doc alias below.
+doc_targets = []
+
 # For running `meson devenv`.
 devenv = environment()
 
@@ -433,6 +437,10 @@ if meson.backend() == 'ninja'
 	run_target('turtles',
 		command : ['ninja', '-C', '@BUILD_ROOT@', 'pidgin3-pot', 'all', 'test'])
 endif
+
+# doc alias target, depends on doc_targets defined above and populated in sub
+# directories.
+alias_target('doc', doc_targets)
 
 summary({
     'prefix': get_option('prefix'),

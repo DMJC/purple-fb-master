@@ -241,3 +241,5 @@ endif
 subdir('data')
 subdir('plugins')
 subdir('tests')
+subdir('reference')
+

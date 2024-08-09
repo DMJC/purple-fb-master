@@ -1,18 +1,22 @@
-pidgin_doc_content_files = [
+libpurple_doc_content_files = [
+	'contributing.md',
+	'signals_connection.md',
+	'signals_core.md',
+	'tut_c_plugins.md',
 ]
 
 if get_option('doc')
-	pidgin_toml = configure_file(
-		input : 'pidgin.toml.in',
-		output : 'pidgin.toml',
+	libpurple_toml = configure_file(
+		input : 'libpurple.toml.in',
+		output : 'libpurple.toml',
 		configuration : version_conf,
 		install : true,
-		install_dir : docs_dir / 'pidgin',
+		install_dir : docs_dir / 'libpurple',
 	)
 
-	pidgin_doc = custom_target('pidgin-doc',
-		input : [ pidgin_toml, pidgin_gir[0] ],
-		output : 'pidgin',
+	libpurple_doc = custom_target('libpurple-doc',
+		input : [ libpurple_toml, libpurple_gir[0] ],
+		output : 'libpurple',
 		command : [
 			gidocgen,
 			'generate',
@@ -24,12 +28,9 @@ if get_option('doc')
 			'--content-dir=@0@'.format(meson.current_source_dir()),
 			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/birb/birb'),
 			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/gplugin/gplugin'),
-			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/gplugin/gplugin-gtk4'),
-			'--add-include-path=@0@'.format(meson.project_build_root() / 'libpurple'),
 			'@INPUT1@'
 		],
-		depends: [ libpurple_gir[0] ],
-		depend_files : [ pidgin_doc_content_files ],
+		depend_files : [ libpurple_doc_content_files ],
 		build_by_default : true,
 		install : true,
 		install_dir : docs_dir,
@@ -39,14 +40,15 @@ if get_option('doc')
 		gidocgen,
 		args: [
 			'check',
-			'--config', pidgin_toml,
+			'--config', libpurple_toml,
 			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/birb/birb'),
 			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/gplugin/gplugin'),
-			'--add-include-path=@0@'.format(meson.global_build_root() / 'subprojects/gplugin/gplugin-gtk4'),
-			'--add-include-path=@0@'.format(meson.project_build_root() / 'libpurple'),
-			pidgin_gir[0],
+			libpurple_gir[0],
 		],
-		depends: [libpurple_gir[0], pidgin_gir[0]],
+		depends: libpurple_gir[0],
+		verbose: true,
 	)
+
+	doc_targets += libpurple_doc
 endif
 

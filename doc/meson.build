@@ -1,5 +1,3 @@
-subdir('reference')
-
 if ENABLE_GTK
 	configure_file(
 	    input : 'pidgin3.1.in',
