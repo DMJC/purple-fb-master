@@ -20,8 +20,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -30,9 +28,9 @@ test_purple_notification_manager_increment_cb(G_GNUC_UNUSED PurpleNotificationMa
                                               G_GNUC_UNUSED PurpleNotification *notification,
                                               gpointer data)
 {
-	gint *called = data;
+	guint *counter = data;
 
-	*called = *called + 1;
+	*counter = *counter + 1;
 }
 
 static void
@@ -40,32 +38,20 @@ test_purple_notification_manager_unread_count_cb(G_GNUC_UNUSED GObject *obj,
                                                  G_GNUC_UNUSED GParamSpec *pspec,
                                                  gpointer data)
 {
-	gint *called = data;
+	guint *counter = data;
 
-	*called = *called + 1;
+	*counter = *counter + 1;
 }
 
 /******************************************************************************
  * Tests
  *****************************************************************************/
 static void
-test_purple_notification_manager_get_default(void) {
-	PurpleNotificationManager *manager1 = NULL, *manager2 = NULL;
-
-	manager1 = purple_notification_manager_get_default();
-	g_assert_true(PURPLE_IS_NOTIFICATION_MANAGER(manager1));
-
-	manager2 = purple_notification_manager_get_default();
-	g_assert_true(PURPLE_IS_NOTIFICATION_MANAGER(manager2));
-
-	g_assert_true(manager1 == manager2);
-}
-
-static void
 test_purple_notification_manager_add_remove(void) {
 	PurpleNotificationManager *manager = NULL;
 	PurpleNotification *notification = NULL;
-	gint added_called = 0, removed_called = 0;
+	guint added_called = 0;
+	guint removed_called = 0;
 	guint unread_count = 0;
 
 	manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
@@ -88,25 +74,25 @@ test_purple_notification_manager_add_remove(void) {
 	purple_notification_manager_add(manager, notification);
 
 	/* Make sure the added signal was called. */
-	g_assert_cmpint(added_called, ==, 1);
+	g_assert_cmpuint(added_called, ==, 1);
 
 	/* Verify that the unread count is 1. */
 	unread_count = purple_notification_manager_get_unread_count(manager);
-	g_assert_cmpint(unread_count, ==, 1);
+	g_assert_cmpuint(unread_count, ==, 1);
 
 	/* Remove the notification. */
 	purple_notification_manager_remove(manager, notification);
-	g_assert_cmpint(removed_called, ==, 1);
+	g_assert_cmpuint(removed_called, ==, 1);
 
 	/* Verify that the unread count is now 0. */
 	unread_count = purple_notification_manager_get_unread_count(manager);
-	g_assert_cmpint(unread_count, ==, 0);
+	g_assert_cmpuint(unread_count, ==, 0);
 
 	/* After removal from the manager, nothing else should know about this. */
 	g_assert_finalize_object(notification);
 
 	/* Clean up the manager. */
-	g_clear_object(&manager);
+	g_assert_finalize_object(manager);
 }
 
 static void
@@ -127,8 +113,10 @@ test_purple_notification_manager_double_add(void) {
 		 * that causes the subprocess to exit. This is left to avoid a false
 		 * positive in static analysis.
 		 */
-		g_clear_object(&notification);
-		g_clear_object(&manager);
+		g_assert_finalize_object(notification);
+		g_assert_finalize_object(manager);
+
+		g_assert_not_reached();
 	}
 
 	g_test_trap_subprocess(NULL, 0, 0);
@@ -139,7 +127,7 @@ static void
 test_purple_notification_manager_double_remove(void) {
 	PurpleNotificationManager *manager = NULL;
 	PurpleNotification *notification = NULL;
-	gint removed_called = 0;
+	guint removed_called = 0;
 
 	manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
 	g_signal_connect(manager, "removed",
@@ -154,10 +142,10 @@ test_purple_notification_manager_double_remove(void) {
 	purple_notification_manager_remove(manager, notification);
 	purple_notification_manager_remove(manager, notification);
 
-	g_assert_cmpint(removed_called, ==, 1);
+	g_assert_cmpuint(removed_called, ==, 1);
 
 	g_assert_finalize_object(notification);
-	g_clear_object(&manager);
+	g_assert_finalize_object(manager);
 }
 
 static void
@@ -193,8 +181,8 @@ test_purple_notification_manager_remove_with_account_simple(void) {
 	purple_notification_manager_clear(manager);
 	g_clear_object(&notification);
 
-	g_clear_object(&manager);
-	g_clear_object(&account);
+	g_assert_finalize_object(manager);
+	g_assert_finalize_object(account);
 }
 
 static void
@@ -203,8 +191,7 @@ test_purple_notification_manager_remove_with_account_mixed(void) {
 	PurpleNotification *notification = NULL;
 	PurpleAccount *accounts[3];
 	GListModel *model = NULL;
-	gint pattern[] = {0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 0, 1, 0, 0, -1};
-	gint i = 0;
+	int pattern[] = {0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 0, 1, 0, 0, -1};
 
 	manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
 	model = G_LIST_MODEL(manager);
@@ -214,7 +201,7 @@ test_purple_notification_manager_remove_with_account_mixed(void) {
 	accounts[2] = purple_account_new("account3", "account3");
 
 	/* Add our notifications. */
-	for(i = 0; pattern[i] >= 0; i++) {
+	for(int i = 0; pattern[i] >= 0; i++) {
 		notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
 		                                       accounts[pattern[i]], NULL,
 		                                       NULL);
@@ -236,10 +223,10 @@ test_purple_notification_manager_remove_with_account_mixed(void) {
 	purple_notification_manager_remove_with_account(manager, accounts[2], TRUE);
 	g_assert_cmpuint(0, ==, g_list_model_get_n_items(model));
 
-	g_clear_object(&manager);
-	g_clear_object(&accounts[0]);
-	g_clear_object(&accounts[1]);
-	g_clear_object(&accounts[2]);
+	g_assert_finalize_object(manager);
+	g_assert_finalize_object(accounts[0]);
+	g_assert_finalize_object(accounts[1]);
+	g_assert_finalize_object(accounts[2]);
 }
 
 static void
@@ -323,15 +310,17 @@ test_purple_notification_manager_remove_with_account_all(void) {
 	purple_notification_manager_clear(manager);
 	g_assert_cmpuint(0, ==, g_list_model_get_n_items(model));
 
-	g_clear_object(&manager);
-	g_clear_object(&account);
+	g_assert_finalize_object(manager);
+	g_assert_finalize_object(account);
 }
 
 static void
 test_purple_notification_manager_read_propagation(void) {
 	PurpleNotificationManager *manager = NULL;
 	PurpleNotification *notification = NULL;
-	gint read_called = 0, unread_called = 0, unread_count_called = 0;
+	guint read_called = 0;
+	guint unread_called = 0;
+	guint unread_count_called = 0;
 
 	/* Create the manager. */
 	manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
@@ -355,49 +344,41 @@ test_purple_notification_manager_read_propagation(void) {
 	purple_notification_manager_add(manager, notification);
 
 	/* Verify that the read and unread signals were not yet emitted. */
-	g_assert_cmpint(read_called, ==, 0);
-	g_assert_cmpint(unread_called, ==, 0);
+	g_assert_cmpuint(read_called, ==, 0);
+	g_assert_cmpuint(unread_called, ==, 0);
 
 	/* Verify that the unread_count property changed. */
-	g_assert_cmpint(unread_count_called, ==, 1);
+	g_assert_cmpuint(unread_count_called, ==, 1);
 
 	/* Now mark the notification as read. */
 	purple_notification_set_read(notification, TRUE);
 
-	g_assert_cmpint(read_called, ==, 1);
-	g_assert_cmpint(unread_called, ==, 0);
+	g_assert_cmpuint(read_called, ==, 1);
+	g_assert_cmpuint(unread_called, ==, 0);
 
-	g_assert_cmpint(unread_count_called, ==, 2);
+	g_assert_cmpuint(unread_count_called, ==, 2);
 
 	/* Now mark the notification as unread. */
 	purple_notification_set_read(notification, FALSE);
 
-	g_assert_cmpint(read_called, ==, 1);
-	g_assert_cmpint(unread_called, ==, 1);
+	g_assert_cmpuint(read_called, ==, 1);
+	g_assert_cmpuint(unread_called, ==, 1);
 
-	g_assert_cmpint(unread_count_called, ==, 3);
+	g_assert_cmpuint(unread_count_called, ==, 3);
 
 	/* Cleanup. */
-	g_clear_object(&manager);
+	g_assert_finalize_object(manager);
 	g_assert_finalize_object(notification);
 }
 
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	GMainLoop *loop = NULL;
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
-	test_ui_purple_init();
-
-	loop = g_main_loop_new(NULL, FALSE);
-
-	g_test_add_func("/notification-manager/get-default",
-	                test_purple_notification_manager_get_default);
 	g_test_add_func("/notification-manager/add-remove",
 	                test_purple_notification_manager_add_remove);
 	g_test_add_func("/notification-manager/double-add",
@@ -415,11 +396,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/notification-manager/read-propagation",
 	                test_purple_notification_manager_read_propagation);
 
-	ret = g_test_run();
-
-	g_main_loop_unref(loop);
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }
