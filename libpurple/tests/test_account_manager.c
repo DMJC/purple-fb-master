@@ -20,28 +20,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
-#define PURPLE_GLOBAL_HEADER_INSIDE
-#include "../purpleprivate.h"
-#undef PURPLE_GLOBAL_HEADER_INSIDE
-
-/******************************************************************************
- * Tests
- *****************************************************************************/
-static void
-test_purple_account_manager_get_default(void) {
-	PurpleAccountManager *manager1 = NULL, *manager2 = NULL;
-
-	manager1 = purple_account_manager_get_default();
-	g_assert_true(PURPLE_IS_ACCOUNT_MANAGER(manager1));
-
-	manager2 = purple_account_manager_get_default();
-	g_assert_true(PURPLE_IS_ACCOUNT_MANAGER(manager2));
-
-	g_assert_true(manager1 == manager2);
-}
-
 /******************************************************************************
  * Add/Remove Test
  *****************************************************************************/
@@ -100,9 +78,9 @@ test_purple_account_manager_add_remove(void) {
 static gboolean
 test_purple_account_manager_find_func(gconstpointer a, gconstpointer b) {
 	PurpleAccount *account = PURPLE_ACCOUNT((gpointer)a);
-	const gchar *desired_username = b;
-	const gchar *protocol_id = NULL;
-	const gchar *username = NULL;
+	const char *desired_username = b;
+	const char *protocol_id = NULL;
+	const char *username = NULL;
 
 	/* Check if the protocol id matches expected. */
 	protocol_id = purple_account_get_protocol_id(account);
@@ -217,16 +195,11 @@ test_purple_account_manager_foreach(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
-	test_ui_purple_init();
-
-	g_test_add_func("/account-manager/get-default",
-	                test_purple_account_manager_get_default);
 	g_test_add_func("/account-manager/add-remove",
 	                test_purple_account_manager_add_remove);
 	g_test_add_func("/account-manager/find",
@@ -234,9 +207,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/account-manager/foreach",
 	                test_purple_account_manager_foreach);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

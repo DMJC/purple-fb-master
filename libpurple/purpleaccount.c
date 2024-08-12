@@ -1453,8 +1453,11 @@ purple_account_get_protocol(PurpleAccount *account) {
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 
 	manager = purple_protocol_manager_get_default();
+	if(manager != NULL) {
+		return purple_protocol_manager_find(manager, account->protocol_id);
+	}
 
-	return purple_protocol_manager_find(manager, account->protocol_id);
+	return NULL;
 }
 
 const char *
