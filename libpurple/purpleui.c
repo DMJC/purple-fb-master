@@ -139,27 +139,27 @@ purple_ui_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleUi *ui = PURPLE_UI(obj);
 
 	switch(param_id) {
-		case PROP_ID:
-			g_value_set_string(value, purple_ui_get_id(ui));
-			break;
-		case PROP_NAME:
-			g_value_set_string(value, purple_ui_get_name(ui));
-			break;
-		case PROP_VERSION:
-			g_value_set_string(value, purple_ui_get_version(ui));
-			break;
-		case PROP_WEBSITE:
-			g_value_set_string(value, purple_ui_get_website(ui));
-			break;
-		case PROP_SUPPORT_WEBSITE:
-			g_value_set_string(value, purple_ui_get_support_website(ui));
-			break;
-		case PROP_CLIENT_TYPE:
-			g_value_set_string(value, purple_ui_get_client_type(ui));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		g_value_set_string(value, purple_ui_get_id(ui));
+		break;
+	case PROP_NAME:
+		g_value_set_string(value, purple_ui_get_name(ui));
+		break;
+	case PROP_VERSION:
+		g_value_set_string(value, purple_ui_get_version(ui));
+		break;
+	case PROP_WEBSITE:
+		g_value_set_string(value, purple_ui_get_website(ui));
+		break;
+	case PROP_SUPPORT_WEBSITE:
+		g_value_set_string(value, purple_ui_get_support_website(ui));
+		break;
+	case PROP_CLIENT_TYPE:
+		g_value_set_string(value, purple_ui_get_client_type(ui));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -170,27 +170,27 @@ purple_ui_set_property(GObject *obj, guint param_id, const GValue *value,
 	PurpleUi *ui = PURPLE_UI(obj);
 
 	switch(param_id) {
-		case PROP_ID:
-			purple_ui_set_id(ui, g_value_get_string(value));
-			break;
-		case PROP_NAME:
-			purple_ui_set_name(ui, g_value_get_string(value));
-			break;
-		case PROP_VERSION:
-			purple_ui_set_version(ui, g_value_get_string(value));
-			break;
-		case PROP_WEBSITE:
-			purple_ui_set_website(ui, g_value_get_string(value));
-			break;
-		case PROP_SUPPORT_WEBSITE:
-			purple_ui_set_support_website(ui, g_value_get_string(value));
-			break;
-		case PROP_CLIENT_TYPE:
-			purple_ui_set_client_type(ui, g_value_get_string(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		purple_ui_set_id(ui, g_value_get_string(value));
+		break;
+	case PROP_NAME:
+		purple_ui_set_name(ui, g_value_get_string(value));
+		break;
+	case PROP_VERSION:
+		purple_ui_set_version(ui, g_value_get_string(value));
+		break;
+	case PROP_WEBSITE:
+		purple_ui_set_website(ui, g_value_get_string(value));
+		break;
+	case PROP_SUPPORT_WEBSITE:
+		purple_ui_set_support_website(ui, g_value_get_string(value));
+		break;
+	case PROP_CLIENT_TYPE:
+		purple_ui_set_client_type(ui, g_value_get_string(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -229,8 +229,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
-		"id", "id",
-		"The identifier of the user interface",
+		"id", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -243,8 +242,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_NAME] = g_param_spec_string(
-		"name", "name",
-		"The name of the user interface",
+		"name", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -256,8 +254,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_VERSION] = g_param_spec_string(
-		"version", "version",
-		"The version of the user interface",
+		"version", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -269,8 +266,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_WEBSITE] = g_param_spec_string(
-		"website", "website",
-		"The website of the user interface",
+		"website", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -284,8 +280,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_SUPPORT_WEBSITE] = g_param_spec_string(
-		"support-website", "support-website",
-		"The support website of the user interface",
+		"support-website", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -298,8 +293,7 @@ purple_ui_class_init(PurpleUiClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_CLIENT_TYPE] = g_param_spec_string(
-		"client-type", "client-type",
-		"The client type of the user interface",
+		"client-type", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
