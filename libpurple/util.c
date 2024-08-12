@@ -35,7 +35,6 @@
 #include "purpleconversation.h"
 #include "purplepath.h"
 #include "purpleprotocol.h"
-#include "purpleprotocolclient.h"
 #include "signals.h"
 #include "util.h"
 

@@ -35,7 +35,6 @@
 #include "purplenotification.h"
 #include "purplenotificationmanager.h"
 #include "purpleprivate.h"
-#include "purpleprotocolclient.h"
 #include "purpleprotocolmanager.h"
 #include "purpleprotocolserver.h"
 #include "request.h"
