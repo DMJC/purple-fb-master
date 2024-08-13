@@ -394,7 +394,7 @@ pidgin_whiteboard_button_clear_press(G_GNUC_UNUSED GtkWidget *widget,
 	                 G_CALLBACK(pidgin_whiteboard_clear_response), gtkwb);
 
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-	gtk_window_present_with_time(GTK_WINDOW(dialog), GDK_CURRENT_TIME);
+	gtk_window_present(GTK_WINDOW(dialog));
 }
 
 static void

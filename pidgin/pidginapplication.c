@@ -128,7 +128,7 @@ pidgin_application_present_transient_window(PidginApplication *application,
 
 	gtk_window_set_transient_for(window, active_window);
 
-	gtk_window_present_with_time(window, GDK_CURRENT_TIME);
+	gtk_window_present(window);
 }
 
 static void
@@ -741,7 +741,7 @@ pidgin_application_startup(GApplication *application) {
 		                 G_CALLBACK(pidgin_application_error_reponse_cb),
 		                 application);
 
-		gtk_window_present_with_time(GTK_WINDOW(message), GDK_CURRENT_TIME);
+		gtk_window_present(GTK_WINDOW(message));
 
 		return;
 	}

@@ -850,7 +850,7 @@ pidgin_debug_window_show(void)
 		gtk_window_set_transient_for(GTK_WINDOW(debug_win), parent);
 	}
 
-	gtk_window_present_with_time(GTK_WINDOW(debug_win), GDK_CURRENT_TIME);
+	gtk_window_present(GTK_WINDOW(debug_win));
 
 	purple_prefs_set_bool(PIDGIN_PREFS_ROOT "/debug/enabled", TRUE);
 }
