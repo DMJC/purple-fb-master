@@ -136,7 +136,7 @@ purple_core_init(PurpleUi *ui, GError **error) {
 
 	purple_protocol_manager_startup();
 
-	purple_credential_manager_startup(); /* before accounts */
+	purple_credential_manager_startup(core); /* before accounts */
 
 	/* Since plugins get probed so early we should probably initialize their
 	 * subsystem right away too.
@@ -233,7 +233,7 @@ purple_core_quit(void)
 	/* after plugins */
 	purple_contact_manager_shutdown();
 	purple_account_manager_shutdown();
-	purple_credential_manager_shutdown();
+	purple_credential_manager_shutdown(core);
 	purple_protocol_manager_shutdown();
 
 	purple_notification_manager_shutdown();

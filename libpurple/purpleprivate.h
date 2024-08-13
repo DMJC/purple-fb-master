@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
+#include "core.h"
 #include "accounts.h"
 #include "connection.h"
 #include "purplecredentialprovider.h"
@@ -153,23 +154,26 @@ void purple_conversation_manager_shutdown(void);
 
 /**
  * purple_credential_manager_startup:
+ * @core: The core instance.
  *
- * Starts up the credential manager by creating the default instance.
+ * Starts up the credential manager by creating the default instance for @core.
  *
  * Since: 3.0
  */
 G_GNUC_INTERNAL
-void purple_credential_manager_startup(void);
+void purple_credential_manager_startup(PurpleCore *core);
 
 /**
  * purple_credential_manager_shutdown:
+ * @core: The core instance.
  *
- * Shuts down the credential manager by destroying the default instance.
+ * Shuts down the credential manager by destroying the default instance for
+ * @core.
  *
  * Since: 3.0
  */
 G_GNUC_INTERNAL
-void purple_credential_manager_shutdown(void);
+void purple_credential_manager_shutdown(PurpleCore *core);
 
 /**
  * purple_protocol_manager_startup:

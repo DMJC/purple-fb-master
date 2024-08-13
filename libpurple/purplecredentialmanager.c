@@ -48,6 +48,8 @@ struct _PurpleCredentialManager {
 	GHashTable *providers;
 
 	PurpleCredentialProvider *active;
+
+	GSettings *settings;
 };
 
 G_DEFINE_FINAL_TYPE(PurpleCredentialManager, purple_credential_manager,
@@ -135,14 +137,10 @@ purple_credential_manager_core_init_cb(gpointer data) {
 	PurpleCredentialManager *manager = PURPLE_CREDENTIAL_MANAGER(data);
 
 	if(!PURPLE_IS_CREDENTIAL_PROVIDER(manager->active)) {
-		GSettings *settings = NULL;
 		GError *error = NULL;
 		char *id = NULL;
 
-		settings = g_settings_new_with_backend("im.pidgin.Purple.Credentials",
-		                                       purple_core_get_settings_backend());
-		id = g_settings_get_string(settings, "active-provider");
-		g_object_unref(settings);
+		id = g_settings_get_string(manager->settings, "active-provider");
 
 		if(!purple_credential_manager_set_active(manager, id, &error)) {
 			PurpleNotification *notification = NULL;
@@ -182,6 +180,7 @@ purple_credential_manager_finalize(GObject *obj) {
 
 	g_clear_pointer(&manager->providers, g_hash_table_destroy);
 	g_clear_object(&manager->active);
+	g_clear_object(&manager->settings);
 
 	G_OBJECT_CLASS(purple_credential_manager_parent_class)->finalize(obj);
 }
@@ -190,13 +189,6 @@ static void
 purple_credential_manager_init(PurpleCredentialManager *manager) {
 	manager->providers = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	                                           g_object_unref);
-
-	/* Connect to the core-initialized signal so we can alert the user if we
-	 * were unable to find their credential provider.
-	 */
-	purple_signal_connect(purple_get_core(), "core-initialized", manager,
-	                      G_CALLBACK(purple_credential_manager_core_init_cb),
-	                      manager);
 }
 
 static void
@@ -282,11 +274,23 @@ purple_credential_manager_class_init(PurpleCredentialManagerClass *klass) {
 static PurpleCredentialProvider *noop = NULL;
 
 void
-purple_credential_manager_startup(void) {
+purple_credential_manager_startup(PurpleCore *core) {
 	if(default_manager == NULL) {
 		GError *error = NULL;
+		gpointer backend;
 
 		default_manager = g_object_new(PURPLE_TYPE_CREDENTIAL_MANAGER, NULL);
+
+		backend = purple_core_get_settings_backend();
+		default_manager->settings = g_settings_new_with_backend("im.pidgin.Purple.Credentials",
+		                                                        backend);
+
+		/* Connect to the core-initialized signal so we can alert the user if
+		 * we were unable to find their credential provider.
+		 */
+		purple_signal_connect(core, "core-initialized", default_manager,
+		                      G_CALLBACK(purple_credential_manager_core_init_cb),
+		                      default_manager);
 
 		noop = purple_noop_credential_provider_new();
 		if(!purple_credential_manager_register(default_manager, noop, &error)) {
@@ -299,7 +303,7 @@ purple_credential_manager_startup(void) {
 }
 
 void
-purple_credential_manager_shutdown(void) {
+purple_credential_manager_shutdown(G_GNUC_UNUSED PurpleCore *core) {
 	if(PURPLE_IS_CREDENTIAL_MANAGER(default_manager)) {
 		guint size = 0;
 
@@ -370,20 +374,18 @@ purple_credential_manager_register(PurpleCredentialManager *manager,
 	 * registered provider has the id of the stored provider in preferences.
 	 * If it is, go ahead and make it the active provider.
 	 */
-	if(!PURPLE_IS_CREDENTIAL_PROVIDER(manager->active)) {
-		GSettings *settings = NULL;
+	if(!PURPLE_IS_CREDENTIAL_PROVIDER(manager->active) &&
+	   G_IS_SETTINGS(manager->settings))
+	{
 		char *wanted = NULL;
 
-		settings = g_settings_new_with_backend("im.pidgin.Purple.Credentials",
-		                                       purple_core_get_settings_backend());
-		wanted = g_settings_get_string(settings, "active-provider");
+		wanted = g_settings_get_string(manager->settings, "active-provider");
 
 		if(purple_strequal(wanted, id)) {
 			purple_credential_manager_set_active(manager, id, error);
 		}
 
 		g_free(wanted);
-		g_object_unref(settings);
 	}
 
 	return TRUE;
@@ -426,7 +428,6 @@ purple_credential_manager_set_active(PurpleCredentialManager *manager,
                                      const char *id, GError **error)
 {
 	PurpleCredentialProvider *previous = NULL, *provider = NULL;
-	GSettings *settings = NULL;
 
 	g_return_val_if_fail(PURPLE_IS_CREDENTIAL_MANAGER(manager), FALSE);
 
@@ -464,13 +465,8 @@ purple_credential_manager_set_active(PurpleCredentialManager *manager,
 	 * a NULL id means we're shutting down and thus shouldn't update the
 	 * setting.
 	 */
-	if(id != NULL) {
-		settings = g_settings_new_with_backend("im.pidgin.Purple.Credentials",
-		                                       purple_core_get_settings_backend());
-
-		g_settings_set_string(settings, "active-provider", id);
-
-		g_object_unref(settings);
+	if(id != NULL && G_IS_SETTINGS(manager->settings)) {
+		g_settings_set_string(manager->settings, "active-provider", id);
 	}
 
 	purple_debug_info("credential-manager", "set active provider to '%s'", id);
