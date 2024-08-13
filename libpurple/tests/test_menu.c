@@ -21,8 +21,8 @@
 #include <purple.h>
 
 typedef struct {
-	const gchar *dynamic_target;
-	const gchar *target;
+	const char *dynamic_target;
+	const char *target;
 } TestPurpleMenuItemData;
 
 typedef struct {
@@ -33,7 +33,7 @@ typedef struct {
  * Helpers
  *****************************************************************************/
 static TestPurpleMenuItemData *
-test_purple_menu_item_new(const gchar *dynamic_target, const gchar *target) {
+test_purple_menu_item_new(const char *dynamic_target, const char *target) {
 	TestPurpleMenuItemData *data = g_new(TestPurpleMenuItemData, 1);
 
 	data->dynamic_target = dynamic_target;
@@ -43,10 +43,10 @@ test_purple_menu_item_new(const gchar *dynamic_target, const gchar *target) {
 }
 
 static void
-test_purple_menu_items_func(GMenuModel *model, gint index, gpointer data) {
+test_purple_menu_items_func(GMenuModel *model, int index, gpointer data) {
 	TestPurpleMenuItemData *item = NULL;
 	TestPurpleMenuWalkData *walk_data = data;
-	gchar *actual = NULL;
+	char *actual = NULL;
 	gboolean found = FALSE;
 
 	/* Set item to the first item in the list. */
@@ -240,9 +240,10 @@ test_purple_menu_multiple_mixed(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/menu/single/no-dynamic-target",
 	                test_purple_menu_single_no_dynamic_target);

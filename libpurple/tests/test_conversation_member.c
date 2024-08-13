@@ -225,9 +225,10 @@ test_purple_conversation_member_typing_state_timeout(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/conversation-member/new",
 	                test_purple_conversation_member_new);

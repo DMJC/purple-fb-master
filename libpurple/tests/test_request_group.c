@@ -28,16 +28,16 @@ test_request_group_valid_changed_cb(G_GNUC_UNUSED GObject *obj,
                                     G_GNUC_UNUSED GParamSpec *pspec,
                                     gpointer data)
 {
-	gint *called = data;
+	guint *called = data;
 
-	*called += 1;
+	*called = *called + 1;
 }
 
 static void
 test_request_group_valid(void) {
 	PurpleRequestGroup *group = NULL;
 	PurpleRequestField *field1 = NULL, *field2 = NULL, *field3 = NULL;
-	gint called = 0;
+	guint called = 0;
 
 	group = purple_request_group_new("test-group");
 	g_signal_connect(group, "notify::valid",
@@ -51,20 +51,20 @@ test_request_group_valid(void) {
 	field1 = purple_request_field_int_new("test-int", "Test int", 50, 0, 100);
 	purple_request_group_add_field(group, field1);
 	g_assert_true(purple_request_group_is_valid(group));
-	g_assert_cmpint(called, ==, 0);
+	g_assert_cmpuint(called, ==, 0);
 
 	/* Making the field invalid makes the group invalid. */
 	called = 0;
 	purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field1), -42);
 	g_assert_false(purple_request_group_is_valid(group));
-	g_assert_cmpint(called, ==, 1);
+	g_assert_cmpuint(called, ==, 1);
 
 	/* Adding an invalid field keeps the group invalid. */
 	called = 0;
 	field2 = purple_request_field_int_new("invalid", "Invalid", -42, 0, 100);
 	purple_request_group_add_field(group, field2);
 	g_assert_false(purple_request_group_is_valid(group));
-	g_assert_cmpint(called, ==, 0);
+	g_assert_cmpuint(called, ==, 0);
 
 	/* Adding a valid field to an already invalid group does not change it to
 	 * valid accidentally. */
@@ -72,20 +72,20 @@ test_request_group_valid(void) {
 	field3 = purple_request_field_int_new("valid", "Valid", 42, 0, 100);
 	purple_request_group_add_field(group, field3);
 	g_assert_false(purple_request_group_is_valid(group));
-	g_assert_cmpint(called, ==, 0);
+	g_assert_cmpuint(called, ==, 0);
 
 	/* Making one field valid while others are still invalid keeps the group
 	 * invalid. */
 	called = 0;
 	purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field1), 42);
 	g_assert_false(purple_request_group_is_valid(group));
-	g_assert_cmpint(called, ==, 0);
+	g_assert_cmpuint(called, ==, 0);
 
 	/* Making last invalid field valid makes the group valid again. */
 	called = 0;
 	purple_request_field_int_set_value(PURPLE_REQUEST_FIELD_INT(field2), 42);
 	g_assert_true(purple_request_group_is_valid(group));
-	g_assert_cmpint(called, ==, 1);
+	g_assert_cmpuint(called, ==, 1);
 
 	g_object_unref(group);
 }
@@ -93,9 +93,10 @@ test_request_group_valid(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/request-group/valid", test_request_group_valid);
 

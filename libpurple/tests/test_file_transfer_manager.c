@@ -20,8 +20,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Add/Remove Test
  *****************************************************************************/
@@ -153,15 +151,10 @@ test_purple_file_transfer_manager_propagates_notify(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
-
 	g_test_set_nonfatal_assertions();
-
-	test_ui_purple_init();
 
 	g_test_add_func("/file-transfer-manager/add-remove",
 	                test_purple_file_transfer_manager_add_remove);
@@ -169,9 +162,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/file-transfer-manager/propagates-notify",
 	                test_purple_file_transfer_manager_propagates_notify);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

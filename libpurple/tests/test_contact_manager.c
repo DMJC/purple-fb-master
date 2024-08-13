@@ -22,8 +22,6 @@
 
 #include <birb.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -40,19 +38,6 @@ test_purple_contact_manager_increment_cb(G_GNUC_UNUSED PurpleContactManager *man
 /******************************************************************************
  * Tests
  *****************************************************************************/
-static void
-test_purple_contact_manager_get_default(void) {
-	PurpleContactManager *manager1 = NULL, *manager2 = NULL;
-
-	manager1 = purple_contact_manager_get_default();
-	g_assert_true(PURPLE_IS_CONTACT_MANAGER(manager1));
-
-	manager2 = purple_contact_manager_get_default();
-	g_assert_true(PURPLE_IS_CONTACT_MANAGER(manager2));
-
-	g_assert_true(manager1 == manager2);
-}
-
 static void
 test_purple_contact_manager_add_remove(void) {
 	PurpleAccount *account = NULL;
@@ -439,16 +424,11 @@ test_purple_contact_manager_propagate_populate_menu(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
-	test_ui_purple_init();
-
-	g_test_add_func("/contact-manager/get-default",
-	                test_purple_contact_manager_get_default);
 	g_test_add_func("/contact-manager/add-remove",
 	                test_purple_contact_manager_add_remove);
 	g_test_add_func("/contact-manager/double-add",
@@ -472,9 +452,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/contact-manager/propagate-populate-menu",
 	                test_purple_contact_manager_propagate_populate_menu);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

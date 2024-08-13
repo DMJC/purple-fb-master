@@ -95,18 +95,14 @@ test_key_value_pair_copy_allocated(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar **argv) {
+int
+main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
-
 	g_test_set_nonfatal_assertions();
 
-	g_test_add_func("/key-value-pair/new",
-	                test_key_value_pair_new);
-	g_test_add_func("/key-value-pair/new-full",
-	                test_key_value_pair_new_full);
-	g_test_add_func("/key-value-pair/copy",
-	                test_key_value_pair_copy);
+	g_test_add_func("/key-value-pair/new", test_key_value_pair_new);
+	g_test_add_func("/key-value-pair/new-full", test_key_value_pair_new_full);
+	g_test_add_func("/key-value-pair/copy", test_key_value_pair_copy);
 	g_test_add_func("/key-value-pair/copy-allocated",
 	                test_key_value_pair_copy_allocated);
 	g_test_add_func("/key-value-pair/copy-allocated/subprocess",

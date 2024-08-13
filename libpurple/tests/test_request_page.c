@@ -119,16 +119,16 @@ test_request_page_valid_changed_cb(G_GNUC_UNUSED GObject *obj,
                                    G_GNUC_UNUSED GParamSpec *pspec,
                                    gpointer data)
 {
-	gint *called = data;
+	guint *called = data;
 
-	*called += 1;
+	*called = *called + 1;
 }
 
 static void
 test_request_page_valid(void) {
 	PurpleRequestPage *page = NULL;
 	PurpleRequestGroup *group1 = NULL, *group2 = NULL, *group3 = NULL;
-	gint called = FALSE;
+	guint called = 0;
 
 	page = purple_request_page_new();
 	g_signal_connect(page, "notify::valid",
@@ -142,20 +142,20 @@ test_request_page_valid(void) {
 	group1 = test_request_page_new_valid_group("group1");
 	purple_request_page_add_group(page, group1);
 	g_assert_true(purple_request_page_is_valid(page));
-	g_assert_cmpint(called, ==, 0);
+	g_assert_cmpuint(called, ==, 0);
 
 	/* Making the group invalid makes the page invalid. */
 	called = 0;
 	test_request_page_make_group_invalid(group1);
 	g_assert_false(purple_request_page_is_valid(page));
-	g_assert_cmpint(called, ==, 1);
+	g_assert_cmpuint(called, ==, 1);
 
 	/* Adding an invalid group keeps the page invalid. */
 	called = 0;
 	group2 = test_request_page_new_invalid_group("group2");
 	purple_request_page_add_group(page, group2);
 	g_assert_false(purple_request_page_is_valid(page));
-	g_assert_cmpint(called, ==, 0);
+	g_assert_cmpuint(called, ==, 0);
 
 	/* Adding a valid group to an already invalid page does not change it to
 	 * valid accidentally. */
@@ -163,20 +163,20 @@ test_request_page_valid(void) {
 	group3 = test_request_page_new_valid_group("group3");
 	purple_request_page_add_group(page, group3);
 	g_assert_false(purple_request_page_is_valid(page));
-	g_assert_cmpint(called, ==, 0);
+	g_assert_cmpuint(called, ==, 0);
 
 	/* Making one group valid while others are still invalid keeps the group
 	 * invalid. */
 	called = 0;
 	test_request_page_make_group_valid(group1);
 	g_assert_false(purple_request_page_is_valid(page));
-	g_assert_cmpint(called, ==, 0);
+	g_assert_cmpuint(called, ==, 0);
 
 	/* Making last invalid group valid makes the page valid again. */
 	called = 0;
 	test_request_page_make_group_valid(group2);
 	g_assert_true(purple_request_page_is_valid(page));
-	g_assert_cmpint(called, ==, 1);
+	g_assert_cmpuint(called, ==, 1);
 
 	g_object_unref(page);
 }
@@ -184,9 +184,10 @@ test_request_page_valid(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/request-page/valid", test_request_page_valid);
 

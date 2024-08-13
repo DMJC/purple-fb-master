@@ -76,6 +76,7 @@ test_purple_create_conversation_details_properties(void) {
 int
 main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/create-conversation-details/new",
 	                test_purple_create_conversation_details_new);

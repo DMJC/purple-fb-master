@@ -20,8 +20,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -29,27 +27,27 @@ static void
 test_purple_authorization_request_accepted_counter_cb(G_GNUC_UNUSED PurpleAuthorizationRequest *request,
                                                       gpointer data)
 {
-	gint *counter = data;
+	guint *counter = data;
 
 	*counter = *counter + 1;
 }
 
 static void
 test_purple_authorization_request_denied_counter_cb(G_GNUC_UNUSED PurpleAuthorizationRequest *request,
-                                                    G_GNUC_UNUSED const gchar *message,
+                                                    G_GNUC_UNUSED const char *message,
                                                     gpointer data)
 {
-	gint *counter = data;
+	guint *counter = data;
 
 	*counter = *counter + 1;
 }
 
 static void
 test_purple_authorization_request_denied_message_cb(G_GNUC_UNUSED PurpleAuthorizationRequest *request,
-                                                    const gchar *message,
+                                                    const char *message,
                                                     gpointer data)
 {
-	gchar *expected = data;
+	char *expected = data;
 
 	g_assert_cmpstr(message, ==, expected);
 }
@@ -61,7 +59,7 @@ static void
 test_purple_authorization_request_new(void) {
 	PurpleAccount *account1 = NULL, *account2 = NULL;
 	PurpleAuthorizationRequest *request = NULL;
-	const gchar *username = NULL;
+	const char *username = NULL;
 
 	account1 = purple_account_new("test", "test");
 
@@ -120,7 +118,7 @@ test_purple_authorization_request_accept(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
 		PurpleAuthorizationRequest *request = NULL;
-		gint counter = 0;
+		guint counter = 0;
 
 		account = purple_account_new("test", "test");
 		request = purple_authorization_request_new(account, "username");
@@ -133,11 +131,11 @@ test_purple_authorization_request_accept(void) {
 
 		/* Accept the request and verify that the callback was called. */
 		purple_authorization_request_accept(request);
-		g_assert_cmpint(counter, ==, 1);
+		g_assert_cmpuint(counter, ==, 1);
 
 		/* Accept the request again to trigger the critical. */
 		purple_authorization_request_accept(request);
-		g_assert_cmpint(counter, ==, 1);
+		g_assert_cmpuint(counter, ==, 1);
 
 		/* Cleanup. */
 		g_clear_object(&account);
@@ -153,7 +151,7 @@ test_purple_authorization_request_accept_deny(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
 		PurpleAuthorizationRequest *request = NULL;
-		gint counter = 0;
+		guint counter = 0;
 
 		account = purple_account_new("test", "test");
 		request = purple_authorization_request_new(account, "username");
@@ -169,11 +167,11 @@ test_purple_authorization_request_accept_deny(void) {
 
 		/* Accept the request and verify that the callback was called. */
 		purple_authorization_request_accept(request);
-		g_assert_cmpint(counter, ==, 1);
+		g_assert_cmpuint(counter, ==, 1);
 
 		/* Deny the request to trigger the critical. */
 		purple_authorization_request_deny(request, NULL);
-		g_assert_cmpint(counter, ==, 1);
+		g_assert_cmpuint(counter, ==, 1);
 
 		/* Cleanup. */
 		g_clear_object(&account);
@@ -189,7 +187,7 @@ test_purple_authorization_request_deny(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
 		PurpleAuthorizationRequest *request = NULL;
-		gint counter = 0;
+		guint counter = 0;
 
 		account = purple_account_new("test", "test");
 		request = purple_authorization_request_new(account, "username");
@@ -202,11 +200,11 @@ test_purple_authorization_request_deny(void) {
 
 		/* Deny the request and verify that the callback was called. */
 		purple_authorization_request_deny(request, NULL);
-		g_assert_cmpint(counter, ==, 1);
+		g_assert_cmpuint(counter, ==, 1);
 
 		/* Deny the request again to trigger the critical. */
 		purple_authorization_request_deny(request, NULL);
-		g_assert_cmpint(counter, ==, 1);
+		g_assert_cmpuint(counter, ==, 1);
 
 		/* Cleanup. */
 		g_clear_object(&account);
@@ -222,7 +220,7 @@ test_purple_authorization_request_deny_accept(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
 		PurpleAuthorizationRequest *request = NULL;
-		gint counter = 0;
+		guint counter = 0;
 
 		account = purple_account_new("test", "test");
 		request = purple_authorization_request_new(account, "username");
@@ -238,11 +236,11 @@ test_purple_authorization_request_deny_accept(void) {
 
 		/* Deny the request and verify that the callback was called. */
 		purple_authorization_request_deny(request, NULL);
-		g_assert_cmpint(counter, ==, 1);
+		g_assert_cmpuint(counter, ==, 1);
 
 		/* Deny the request again to trigger the critical. */
 		purple_authorization_request_accept(request);
-		g_assert_cmpint(counter, ==, 1);
+		g_assert_cmpuint(counter, ==, 1);
 
 		/* Cleanup. */
 		g_clear_object(&account);
@@ -300,13 +298,10 @@ test_purple_authorization_request_deny_message_non_null(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
-
-	test_ui_purple_init();
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/request-authorization/new",
 	                test_purple_authorization_request_new);
@@ -327,9 +322,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/request-authorization/deny-message/non-null",
 	                test_purple_authorization_request_deny_message_non_null);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

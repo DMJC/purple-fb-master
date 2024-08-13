@@ -58,9 +58,9 @@ static void
 _test_image(PurpleImage *image,
             const guint8 *edata,
             gsize elen,
-            const gchar *path,
-            const gchar *ext,
-            const gchar *mimetype)
+            const char *path,
+            const char *ext,
+            const char *mimetype)
 {
 	GBytes *bytes = NULL;
 	const guint8 *adata = NULL;
@@ -79,7 +79,7 @@ _test_image(PurpleImage *image,
 	if(path != NULL) {
 		g_assert_cmpstr(purple_image_get_path(image), ==, path);
 	} else {
-		const gchar *apath = purple_image_get_path(image);
+		const char *apath = purple_image_get_path(image);
 
 		g_assert(apath);
 		g_assert_cmpstr(apath, !=, "");
@@ -133,8 +133,8 @@ static void
 test_image_new_from_file(void) {
 	PurpleImage *image = NULL;
 	GError *error = NULL;
-	gchar *path = NULL;
-	gchar *edata = NULL;
+	char *path = NULL;
+	char *edata = NULL;
 	gsize elen;
 
 	path = g_build_filename(TEST_DATA_DIR, "test-image.png", NULL);
@@ -160,10 +160,9 @@ test_image_new_from_file(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar **argv) {
+int
+main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
-
 	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/image/new-from-bytes", test_image_new_from_bytes);

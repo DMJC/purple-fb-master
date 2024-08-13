@@ -62,9 +62,10 @@ test_purple_strmatches_iterates_correctly(void) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
-gint
-main(gint argc, gchar **argv) {
+int
+main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/strmatches/null", test_purple_strmatches_null);
 	g_test_add_func("/strmatches/adjacent", test_purple_strmatches_adjacent);

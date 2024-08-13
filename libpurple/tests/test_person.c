@@ -20,8 +20,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -353,7 +351,7 @@ test_purple_person_contacts_multiple(void) {
 	PurplePerson *person = NULL;
 	GPtrArray *infos = NULL;
 	guint n_items = 0;
-	const gint n_infos = 5;
+	const int n_infos = 5;
 	gboolean changed = FALSE;
 
 	person = purple_person_new();
@@ -361,9 +359,9 @@ test_purple_person_contacts_multiple(void) {
 	                 G_CALLBACK(test_purple_person_items_changed_cb), &changed);
 
 	infos = g_ptr_array_new_full(n_infos, g_object_unref);
-	for(gint i = 0; i < n_infos; i++) {
+	for(int i = 0; i < n_infos; i++) {
 		PurpleContactInfo *info = NULL;
-		gchar *username = NULL;
+		char *username = NULL;
 
 		changed = FALSE;
 
@@ -387,7 +385,7 @@ test_purple_person_contacts_multiple(void) {
 		g_assert_true(changed);
 	}
 
-	for(gint i = 0; i < n_infos; i++) {
+	for(int i = 0; i < n_infos; i++) {
 		PurpleContactInfo *info = g_ptr_array_index(infos, i);
 		gboolean removed = FALSE;
 
@@ -455,7 +453,7 @@ test_purple_person_priority_multiple_with_change(void) {
 	PurplePerson *person = NULL;
 	PurplePresence *sorted_presence = NULL;
 	guint called = 0;
-	gint n_infos = 5;
+	int n_infos = 5;
 	guint n_items = 0;
 
 	/* This unit test is a bit complicated, but it adds 5 contact infos to a
@@ -476,9 +474,9 @@ test_purple_person_priority_multiple_with_change(void) {
 	g_assert_null(priority);
 
 	/* Create and add all contact infos. */
-	for(gint i = 0; i < n_infos; i++) {
+	for(int i = 0; i < n_infos; i++) {
 		PurpleContactInfo *info = NULL;
-		gchar *username = NULL;
+		char *username = NULL;
 
 		/* Set called to 0 as it shouldn't be called as the priority contact
 		 * info shouldn't change except for the first index.
@@ -589,13 +587,10 @@ test_purple_person_matches_contact_info(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
-
-	test_ui_purple_init();
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/person/new",
 	                test_purple_person_new);
@@ -636,9 +631,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/person/matches/contact_info",
 	                test_purple_person_matches_contact_info);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

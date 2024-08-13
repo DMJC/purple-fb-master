@@ -21,8 +21,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Tests
  *****************************************************************************/
@@ -176,13 +174,10 @@ test_file_transfer_properties(gconstpointer data) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
-
-	test_ui_purple_init();
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_data_func("/file-transfer/new/send", argv[0],
 	                     test_purple_file_transfer_new_send);
@@ -191,9 +186,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_data_func("/file-transfer/properties", argv[0],
 	                     test_file_transfer_properties);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

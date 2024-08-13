@@ -66,7 +66,7 @@ static void
 test_purple_tags_lookup_exists(void) {
 	PurpleTags *tags = NULL;
 	gboolean found = FALSE;
-	const gchar *value = NULL;
+	const char *value = NULL;
 	guint counter = 0;
 
 	tags = purple_tags_new();
@@ -102,7 +102,7 @@ static void
 test_purple_tags_lookup_non_existent(void) {
 	PurpleTags *tags = purple_tags_new();
 	gboolean found = FALSE;
-	const gchar *value;
+	const char *value;
 
 	value = purple_tags_lookup(tags, "foo", &found);
 	g_assert_null(value);
@@ -393,7 +393,7 @@ test_purple_tags_remove_all_multiple(void) {
 static void
 test_purple_tags_get_single(void) {
 	PurpleTags *tags = purple_tags_new();
-	const gchar *value = NULL;
+	const char *value = NULL;
 
 	purple_tags_add(tags, "tag1:purple");
 	value = purple_tags_get(tags, "tag1");
@@ -406,7 +406,7 @@ test_purple_tags_get_single(void) {
 static void
 test_purple_tags_get_multiple(void) {
 	PurpleTags *tags = purple_tags_new();
-	const gchar *value = NULL;
+	const char *value = NULL;
 
 	purple_tags_add(tags, "tag1:purple");
 	purple_tags_add(tags, "tag1:pink");
@@ -422,9 +422,9 @@ static void
 test_purple_tags_get_all(void) {
 	PurpleTags *tags = purple_tags_new();
 	GList *all_tags = NULL;
-	const gchar *values[] = {"foo", "bar", "baz", "qux", "quux", NULL};
-	gint i = 0;
-	gint len = 0;
+	const char *values[] = {"foo", "bar", "baz", "qux", "quux", NULL};
+	int i = 0;
+	int len = 0;
 
 	for(i = 0; values[i] != NULL; i++) {
 		purple_tags_add(tags, values[i]);
@@ -435,7 +435,7 @@ test_purple_tags_get_all(void) {
 	i = 0;
 
 	for(GList *l = all_tags; l != NULL; l = l->next) {
-		const gchar *value = l->data;
+		const char *value = l->data;
 
 		g_assert_cmpint(i, <, len);
 		g_assert_cmpstr(value, ==, values[i]);
@@ -492,7 +492,7 @@ test_purple_tags_get_all_with_name(void) {
 static void
 test_purple_tags_to_string_single(void) {
 	PurpleTags *tags = purple_tags_new();
-	gchar *value = NULL;
+	char *value = NULL;
 
 	purple_tags_add(tags, "foo");
 	value = purple_tags_to_string(tags, NULL);
@@ -507,7 +507,7 @@ test_purple_tags_to_string_single(void) {
 static void
 test_purple_tags_to_string_multiple_with_separator(void) {
 	PurpleTags *tags = purple_tags_new();
-	gchar *value = NULL;
+	char *value = NULL;
 
 	purple_tags_add(tags, "foo");
 	purple_tags_add(tags, "bar");
@@ -524,7 +524,7 @@ test_purple_tags_to_string_multiple_with_separator(void) {
 static void
 test_purple_tags_to_string_multiple_with_null_separator(void) {
 	PurpleTags *tags = purple_tags_new();
-	gchar *value = NULL;
+	char *value = NULL;
 
 	purple_tags_add(tags, "foo");
 	purple_tags_add(tags, "bar");
@@ -641,9 +641,10 @@ test_purple_tag_contains_none(void) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
-gint
-main(gint argc, gchar **argv) {
+int
+main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/tags/exists", test_purple_tags_exists);
 

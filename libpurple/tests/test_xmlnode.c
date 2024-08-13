@@ -134,9 +134,10 @@ test_strip_prefixes(void) {
 	purple_xmlnode_free(xml);
 }
 
-gint
-main(gint argc, gchar **argv) {
+int
+main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/xmlnode/billion_laughs_attack",
 	                test_xmlnode_billion_laughs_attack);

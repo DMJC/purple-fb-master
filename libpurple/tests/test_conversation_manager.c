@@ -20,8 +20,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -366,13 +364,10 @@ test_purple_conversation_manager_find_dm_does_not_exist(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
-
-	test_ui_purple_init();
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/conversation-manager/new/null",
 	                test_purple_conversation_manager_new_null);
@@ -394,9 +389,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/conversation-manager/find-dm/does-not-exist",
 	                test_purple_conversation_manager_find_dm_does_not_exist);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

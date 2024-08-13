@@ -472,9 +472,10 @@ test_purple_saved_presence_matches_none(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/saved-presence/properties",
 	                test_purple_saved_presence_properties);

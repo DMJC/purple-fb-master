@@ -46,7 +46,7 @@ test_util_filename_escape(void) {
  * Many of the valid and invalid email addresses lised below are from
  * http://fightingforalostcause.net/misc/2006/compare-email-regex.php
  */
-const gchar *valid_emails[] = {
+const char *valid_emails[] = {
 	"purple-devel@lists.sf.net",
 	"l3tt3rsAndNumb3rs@domain.com",
 	"has-dash@domain.com",
@@ -79,7 +79,7 @@ test_util_email_is_valid(void) {
 		g_assert_true(purple_email_is_valid(valid_emails[i]));
 }
 
-const gchar *invalid_emails[] = {
+const char *invalid_emails[] = {
 	"purple-devel@@lists.sf.net",
 	"purple@devel@lists.sf.net",
 	"purple-devel@list..sf.net",
@@ -118,9 +118,10 @@ test_util_email_is_invalid(void) {
 /******************************************************************************
  * MAIN
  *****************************************************************************/
-gint
-main(gint argc, gchar **argv) {
+int
+main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/util/filename/escape",
 	                test_util_filename_escape);

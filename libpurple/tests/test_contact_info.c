@@ -22,8 +22,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Tests
  *****************************************************************************/
@@ -525,13 +523,10 @@ test_purple_contact_info_get_menu(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
-
-	test_ui_purple_init();
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/contact-info/new",
 	                test_purple_contact_info_new);
@@ -581,9 +576,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/contact-info/get_menu",
 	                test_purple_contact_info_get_menu);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

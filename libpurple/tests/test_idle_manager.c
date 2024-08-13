@@ -176,9 +176,10 @@ test_purple_idle_manager_multiple_sources(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
+int
 main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/idle-manager/new", test_purple_idle_manager_new);
 	g_test_add_func("/idle-manager/single-source",

@@ -41,7 +41,7 @@ test_purple_notification_new(void) {
 	PurpleNotification *notification = NULL;
 	PurpleNotificationType type = PURPLE_NOTIFICATION_TYPE_UNKNOWN;
 	GDateTime *created_timestamp = NULL;
-	const gchar *id = NULL;
+	const char *id = NULL;
 
 	account1 = purple_account_new("test", "test");
 
@@ -161,11 +161,8 @@ test_purple_notification_properties(void) {
  *****************************************************************************/
 int
 main(int argc, char *argv[]) {
-	int ret = 0;
-
 	g_test_init(&argc, &argv, NULL);
-
-	test_ui_purple_init();
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/notification/new",
 	                test_purple_notification_new);
@@ -174,9 +171,5 @@ main(int argc, char *argv[]) {
 	g_test_add_func("/notification/properties",
 	                test_purple_notification_properties);
 
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }

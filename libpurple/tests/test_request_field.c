@@ -152,7 +152,7 @@ test_request_field_validator_is_even(PurpleRequestField *field, char **errmsg,
                                      G_GNUC_UNUSED gpointer data)
 {
 	gboolean *called = data;
-	gint value;
+	int value;
 
 	*called = TRUE;
 	g_return_val_if_fail(PURPLE_IS_REQUEST_FIELD_INT(field), FALSE);
@@ -235,9 +235,10 @@ test_request_field_required_validity(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/request-field/filled-string",
 	                test_request_field_filled_string);

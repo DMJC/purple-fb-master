@@ -25,14 +25,14 @@
 #include <purple.h>
 
 typedef struct {
-	gchar *markup;
-	gchar *xhtml;
-	gchar *plaintext;
+	char *markup;
+	char *xhtml;
+	char *plaintext;
 } MarkupTestData;
 
 static void
 test_purple_markup_html_to_xhtml(void) {
-	gint i;
+	int i;
 	MarkupTestData data[] = {
 		{
 			"<a>",
@@ -208,7 +208,7 @@ test_purple_markup_html_to_xhtml(void) {
 	};
 
 	for(i = 0; data[i].markup; i++) {
-		gchar *xhtml = NULL, *plaintext = NULL;
+		char *xhtml = NULL, *plaintext = NULL;
 
 		purple_markup_html_to_xhtml(data[i].markup, &xhtml, &plaintext);
 
@@ -279,9 +279,10 @@ test_purple_markup_strip_html(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar **argv) {
+int
+main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/util/markup/html-to-xhtml",
 	                test_purple_markup_html_to_xhtml);
