@@ -49,8 +49,6 @@ struct _PurpleConversation {
 	char *title;
 	gboolean title_generated;
 
-	PurpleConnectionFlags features;
-
 	gboolean age_restricted;
 	char *description;
 	char *topic;
@@ -81,7 +79,6 @@ enum {
 	PROP_TITLE,
 	PROP_TITLE_FOR_DISPLAY,
 	PROP_TITLE_GENERATED,
-	PROP_FEATURES,
 	PROP_AGE_RESTRICTED,
 	PROP_DESCRIPTION,
 	PROP_TOPIC,
@@ -366,10 +363,6 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 	case PROP_TITLE:
 		purple_conversation_set_title(conversation, g_value_get_string(value));
 		break;
-	case PROP_FEATURES:
-		purple_conversation_set_features(conversation,
-		                                 g_value_get_flags(value));
-		break;
 	case PROP_AGE_RESTRICTED:
 		purple_conversation_set_age_restricted(conversation,
 		                                       g_value_get_boolean(value));
@@ -466,10 +459,6 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 		g_value_set_boolean(value,
 		                    purple_conversation_get_title_generated(conversation));
 		break;
-	case PROP_FEATURES:
-		g_value_set_flags(value,
-		                  purple_conversation_get_features(conversation));
-		break;
 	case PROP_AGE_RESTRICTED:
 		g_value_set_boolean(value,
 		                    purple_conversation_get_age_restricted(conversation));
@@ -544,8 +533,6 @@ purple_conversation_init(PurpleConversation *conversation) {
 static void
 purple_conversation_constructed(GObject *object) {
 	PurpleConversation *conversation = PURPLE_CONVERSATION(object);
-	PurpleAccount *account;
-	PurpleConnection *gc;
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->constructed(object);
 
@@ -559,19 +546,6 @@ purple_conversation_constructed(GObject *object) {
 			purple_conversation_set_title_generated(conversation, TRUE);
 		}
 	}
-
-	g_object_get(object, "account", &account, NULL);
-	gc = purple_account_get_connection(account);
-
-	/* Check if we have a connection before we use it. The unit tests are one
-	 * case where we will not have a connection.
-	 */
-	if(PURPLE_IS_CONNECTION(gc)) {
-		purple_conversation_set_features(conversation,
-		                                 purple_connection_get_flags(gc));
-	}
-
-	g_object_unref(account);
 }
 
 static void
@@ -768,20 +742,6 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		"Whether or not the current title was generated.",
 		FALSE,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleConversation:features:
-	 *
-	 * The features that this conversation supports.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_FEATURES] = g_param_spec_flags(
-		"features", "Connection features",
-		"The connection features of the conversation.",
-		PURPLE_TYPE_CONNECTION_FLAGS,
-		0,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversation:age-restricted:
@@ -1129,27 +1089,6 @@ purple_conversation_present(PurpleConversation *conversation) {
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
 	g_signal_emit(conversation, signals[SIG_PRESENT], 0);
-}
-
-void
-purple_conversation_set_features(PurpleConversation *conversation,
-                                 PurpleConnectionFlags features)
-{
-	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
-
-	if(conversation->features != features) {
-		conversation->features = features;
-
-		g_object_notify_by_pspec(G_OBJECT(conversation),
-		                         properties[PROP_FEATURES]);
-	}
-}
-
-PurpleConnectionFlags
-purple_conversation_get_features(PurpleConversation *conversation) {
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), 0);
-
-	return conversation->features;
 }
 
 const char *

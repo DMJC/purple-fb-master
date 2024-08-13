@@ -46,7 +46,6 @@ test_purple_conversation_properties(void) {
 	PurpleAccount *account1 = NULL;
 	PurpleAvatar *avatar = NULL;
 	PurpleAvatar *avatar1 = NULL;
-	PurpleConnectionFlags features = 0;
 	PurpleContactInfo *creator = NULL;
 	PurpleContactInfo *creator1 = NULL;
 	PurpleContactInfo *topic_author = NULL;
@@ -98,7 +97,6 @@ test_purple_conversation_properties(void) {
 		"creator", creator,
 		"description", "to describe or not to describe...",
 		"favorite", TRUE,
-		"features", PURPLE_CONNECTION_FLAG_HTML,
 		"id", "id1",
 		"name", "name1",
 		"needs-attention", TRUE,
@@ -120,7 +118,6 @@ test_purple_conversation_properties(void) {
 		"creator", &creator1,
 		"description", &description,
 		"favorite", &favorite,
-		"features", &features,
 		"global-id", &global_id,
 		"id", &id,
 		"members", &members,
@@ -159,8 +156,6 @@ test_purple_conversation_properties(void) {
 	g_clear_pointer(&description, g_free);
 
 	g_assert_true(favorite);
-
-	g_assert_cmpint(features, ==, PURPLE_CONNECTION_FLAG_HTML);
 
 	g_assert_cmpstr(global_id, ==, "test-id1");
 	g_clear_pointer(&global_id, g_free);

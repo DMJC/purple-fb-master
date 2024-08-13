@@ -169,13 +169,12 @@ test_purple_conversation_manager_signal_conversation_changed(void) {
 	purple_conversation_manager_register(manager, conversation);
 
 	/* Set the features and title of the conversation, and verify our counters. */
-	purple_conversation_set_features(conversation, PURPLE_CONNECTION_FLAG_NO_IMAGES);
 	purple_conversation_set_title(conversation, "A place for kool kats");
 
 	/* The title also notifies for the title-for-display property which is why
-	 * we get 3 callbacks called instead of just 2.
+	 * we get 2 callbacks called instead of just 1.
 	 */
-	g_assert_cmpuint(counter, ==, 3);
+	g_assert_cmpuint(counter, ==, 2);
 	g_assert_cmpuint(detailed_counter, ==, 1);
 
 	/* Unregister the conversation, to make sure signals are no longer

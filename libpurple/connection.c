@@ -47,7 +47,6 @@ typedef struct {
 	GCancellable *cancellable;
 
 	PurpleProtocol *protocol;     /* The protocol.                     */
-	PurpleConnectionFlags flags;  /* Connection flags.                 */
 
 	PurpleConnectionState state;  /* The connection state.             */
 
@@ -76,7 +75,6 @@ enum {
 	PROP_ID,
 	PROP_CANCELLABLE,
 	PROP_PROTOCOL,
-	PROP_FLAGS,
 	PROP_STATE,
 	PROP_ACCOUNT,
 	PROP_PASSWORD,
@@ -159,21 +157,6 @@ purple_connection_set_state(PurpleConnection *connection,
 }
 
 void
-purple_connection_set_flags(PurpleConnection *connection,
-                            PurpleConnectionFlags flags)
-{
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	priv = purple_connection_get_instance_private(connection);
-
-	priv->flags = flags;
-
-	g_object_notify_by_pspec(G_OBJECT(connection), properties[PROP_FLAGS]);
-}
-
-void
 purple_connection_set_display_name(PurpleConnection *connection,
                                    const gchar *name)
 {
@@ -199,17 +182,6 @@ purple_connection_get_state(PurpleConnection *connection) {
 	priv = purple_connection_get_instance_private(connection);
 
 	return priv->state;
-}
-
-PurpleConnectionFlags
-purple_connection_get_flags(PurpleConnection *connection) {
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), 0);
-
-	priv = purple_connection_get_instance_private(connection);
-
-	return priv->flags;
 }
 
 PurpleAccount *
@@ -518,9 +490,6 @@ purple_connection_set_property(GObject *obj, guint param_id,
 		case PROP_PROTOCOL:
 			priv->protocol = g_value_get_object(value);
 			break;
-		case PROP_FLAGS:
-			purple_connection_set_flags(connection, g_value_get_flags(value));
-			break;
 		case PROP_STATE:
 			purple_connection_set_state(connection, g_value_get_enum(value));
 			break;
@@ -559,9 +528,6 @@ purple_connection_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_PROTOCOL:
 			g_value_set_object(value,
 			                   purple_connection_get_protocol(connection));
-			break;
-		case PROP_FLAGS:
-			g_value_set_flags(value, purple_connection_get_flags(connection));
 			break;
 		case PROP_STATE:
 			g_value_set_enum(value, purple_connection_get_state(connection));
@@ -700,19 +666,6 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 		"The protocol that the connection is using.",
 		PURPLE_TYPE_PROTOCOL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleConnection:flags:
-	 *
-	 * The flags for this connection.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_FLAGS] = g_param_spec_flags(
-		"flags", "Connection flags",
-		"The flags of the connection.",
-		PURPLE_TYPE_CONNECTION_FLAGS, 0,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConnection:state:

@@ -384,31 +384,6 @@ void purple_conversation_send_message_async(PurpleConversation *conversation, Pu
 gboolean purple_conversation_send_message_finish(PurpleConversation *conversation, GAsyncResult *result, GError **error);
 
 /**
- * purple_conversation_set_features:
- * @conversation: The conversation
- * @features: Bitset defining supported features
- *
- * Set the features as supported for the given conversation.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_conversation_set_features(PurpleConversation *conversation, PurpleConnectionFlags features);
-
-/**
- * purple_conversation_get_features:
- * @conversation: The conversation
- *
- * Get the features supported by the given conversation.
- *
- * Returns: The flags.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-PurpleConnectionFlags purple_conversation_get_features(PurpleConversation *conversation);
-
-/**
  * purple_conversation_has_focus:
  * @conversation: The conversation.
  *

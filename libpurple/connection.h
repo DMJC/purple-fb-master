@@ -45,40 +45,6 @@ G_DECLARE_DERIVABLE_TYPE(PurpleConnection, purple_connection, PURPLE,
 #define PURPLE_ASSERT_CONNECTION_IS_VALID(gc) \
 	_purple_assert_connection_is_valid(gc, __FILE__, __LINE__)
 
-
-/**
- * PurpleConnectionFlags:
- * @PURPLE_CONNECTION_FLAG_HTML: Connection sends/receives in 'HTML'
- * @PURPLE_CONNECTION_FLAG_NO_BGCOLOR: Connection does not send/receive
- *                                     background colors
- * @PURPLE_CONNECTION_FLAG_AUTO_RESP: Send auto responses when away
- * @PURPLE_CONNECTION_FLAG_FORMATTING_WBFO: The text buffer must be formatted
- *                                          as a whole
- * @PURPLE_CONNECTION_FLAG_NO_NEWLINES: No new lines are allowed in outgoing
- *                                      messages
- * @PURPLE_CONNECTION_FLAG_NO_FONTSIZE: Connection does not send/receive font
- *                                      sizes
- * @PURPLE_CONNECTION_FLAG_NO_URLDESC: Connection does not support descriptions
- *                                     with links
- * @PURPLE_CONNECTION_FLAG_NO_IMAGES: Connection does not support sending of
- *                                    images
- *
- * Flags to change behavior of the client for a given connection.
- *
- * Since: 2.0
- */
-typedef enum /*< flags >*/
-{
-	PURPLE_CONNECTION_FLAG_HTML PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0001,
-	PURPLE_CONNECTION_FLAG_NO_BGCOLOR PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0002,
-	PURPLE_CONNECTION_FLAG_AUTO_RESP PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0004,
-	PURPLE_CONNECTION_FLAG_FORMATTING_WBFO PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0008,
-	PURPLE_CONNECTION_FLAG_NO_NEWLINES PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0010,
-	PURPLE_CONNECTION_FLAG_NO_FONTSIZE PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0020,
-	PURPLE_CONNECTION_FLAG_NO_URLDESC PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0040,
-	PURPLE_CONNECTION_FLAG_NO_IMAGES PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 0x0080,
-} PurpleConnectionFlags;
-
 /**
  * PurpleConnectionState:
  * @PURPLE_CONNECTION_STATE_DISCONNECTED: Disconnected
@@ -183,18 +149,6 @@ PURPLE_AVAILABLE_IN_ALL
 void purple_connection_set_state(PurpleConnection *gc, PurpleConnectionState state);
 
 /**
- * purple_connection_set_flags:
- * @gc:    The connection.
- * @flags: The flags.
- *
- * Sets the connection flags.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_connection_set_flags(PurpleConnection *gc, PurpleConnectionFlags flags);
-
-/**
  * purple_connection_set_display_name:
  * @gc:   The connection.
  * @name: The displayed name.
@@ -218,19 +172,6 @@ void purple_connection_set_display_name(PurpleConnection *gc, const char *name);
  */
 PURPLE_AVAILABLE_IN_ALL
 PurpleConnectionState purple_connection_get_state(PurpleConnection *gc);
-
-/**
- * purple_connection_get_flags:
- * @gc: The connection.
- *
- * Returns the connection flags.
- *
- * Returns: The connection flags.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleConnectionFlags purple_connection_get_flags(PurpleConnection *gc);
 
 /**
  * PURPLE_CONNECTION_IS_CONNECTED:
