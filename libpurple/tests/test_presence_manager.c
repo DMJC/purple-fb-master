@@ -187,9 +187,10 @@ test_purple_presence_manager_persistence(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/presence-manager/new",
 	                test_purple_presence_manager_new);

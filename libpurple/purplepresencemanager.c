@@ -450,8 +450,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ITEM_TYPE] = g_param_spec_gtype(
-		"item-type", "item-type",
-		"The type of the contained items.",
+		"item-type", NULL, NULL,
 		G_TYPE_OBJECT,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -463,8 +462,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_N_ITEMS] = g_param_spec_uint(
-		"n-items", "n-items",
-		"The number of contained items.",
+		"n-items", NULL, NULL,
 		0, G_MAXUINT, 0,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
@@ -477,8 +475,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_PATH] = g_param_spec_string(
-		"path", "path",
-		"The directory path where settings should be stored.",
+		"path", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
@@ -490,8 +487,7 @@ purple_presence_manager_class_init(PurplePresenceManagerClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_ACTIVE] = g_param_spec_object(
-		"active-presence", "active-presence",
-		"The active presence.",
+		"active-presence", NULL, NULL,
 		PURPLE_TYPE_SAVED_PRESENCE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
