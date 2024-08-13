@@ -24,30 +24,8 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
-/******************************************************************************
- * Globals
- *****************************************************************************/
-
-/* Since we're using GTask to test asynchronous functions, we need to use a
- * main loop.
- */
-static GMainLoop *loop = NULL;
-
-#define TEST_PURPLE_PROTOCOL_ROSTER_DOMAIN (g_quark_from_static_string("test-protocol-roster"))
-
-/******************************************************************************
- * Helpers
- *****************************************************************************/
-static gboolean
-test_purple_protocol_roster_timeout_cb(gpointer data) {
-	g_main_loop_quit(data);
-
-	g_warning("timed out waiting for the callback function to be called");
-
-	return G_SOURCE_REMOVE;
-}
+#define TEST_PURPLE_PROTOCOL_ROSTER_DOMAIN \
+	(g_quark_from_static_string("test-protocol-roster"))
 
 /******************************************************************************
  * TestProtocolRosterEmpty implementation
@@ -364,11 +342,10 @@ test_purple_protocol_roster_class_init(G_GNUC_UNUSED TestPurpleProtocolRosterCla
  *****************************************************************************/
 static void
 test_purple_protocol_roster_add_cb(GObject *obj, GAsyncResult *res,
-                                   gpointer data)
+                                   G_GNUC_UNUSED gpointer data)
 {
 	TestPurpleProtocolRoster *test_roster = TEST_PURPLE_PROTOCOL_ROSTER(obj);
 	PurpleProtocolRoster *roster = PURPLE_PROTOCOL_ROSTER(obj);
-	PurpleContact *contact = data;
 	GError *error = NULL;
 	gboolean result = FALSE;
 
@@ -381,40 +358,25 @@ test_purple_protocol_roster_add_cb(GObject *obj, GAsyncResult *res,
 		g_assert_no_error(error);
 		g_assert_true(result);
 	}
-
-	g_clear_object(&contact);
-
-	g_main_loop_quit(loop);
-}
-
-static gboolean
-test_purple_protocol_roster_add_idle(gpointer data) {
-	PurpleProtocolRoster *roster = data;
-	PurpleAccount *account = NULL;
-	PurpleContact *contact = NULL;
-
-	account = purple_account_new("test", "test");
-	contact = purple_contact_new(account, NULL);
-
-	purple_protocol_roster_add_async(roster, account, contact, NULL,
-	                                 test_purple_protocol_roster_add_cb,
-	                                 contact);
-
-	g_clear_object(&account);
-
-	return G_SOURCE_REMOVE;
 }
 
 static void
 test_purple_protocol_roster_add(void) {
 	TestPurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
 
 	roster = g_object_new(test_purple_protocol_roster_get_type(), NULL);
 
-	g_idle_add(test_purple_protocol_roster_add_idle, roster);
-	g_timeout_add_seconds(10, test_purple_protocol_roster_timeout_cb, loop);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-	g_main_loop_run(loop);
+	purple_protocol_roster_add_async(PURPLE_PROTOCOL_ROSTER(roster), account,
+	                                 contact, NULL,
+	                                 test_purple_protocol_roster_add_cb,
+	                                 NULL);
+
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_true(roster->add_async);
 	g_assert_true(roster->add_finish);
@@ -423,20 +385,29 @@ test_purple_protocol_roster_add(void) {
 	g_assert_false(roster->remove_async);
 	g_assert_false(roster->remove_finish);
 
-	g_clear_object(&roster)
-;}
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
+}
 
 static void
 test_purple_protocol_roster_add_error(void) {
 	TestPurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
 
 	roster = g_object_new(test_purple_protocol_roster_get_type(), NULL);
 	roster->should_error = TRUE;
 
-	g_idle_add(test_purple_protocol_roster_add_idle, roster);
-	g_timeout_add_seconds(10, test_purple_protocol_roster_timeout_cb, loop);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-	g_main_loop_run(loop);
+	purple_protocol_roster_add_async(PURPLE_PROTOCOL_ROSTER(roster), account,
+	                                 contact, NULL,
+	                                 test_purple_protocol_roster_add_cb,
+	                                 NULL);
+
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_true(roster->add_async);
 	g_assert_true(roster->add_finish);
@@ -445,19 +416,20 @@ test_purple_protocol_roster_add_error(void) {
 	g_assert_false(roster->remove_async);
 	g_assert_false(roster->remove_finish);
 
-	g_clear_object(&roster)
-;}
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
+}
 
 /******************************************************************************
  * TestProtocolRoster Update test
  *****************************************************************************/
 static void
 test_purple_protocol_roster_update_cb(GObject *obj, GAsyncResult *res,
-                                      gpointer data)
+                                      G_GNUC_UNUSED gpointer data)
 {
 	TestPurpleProtocolRoster *test_roster = TEST_PURPLE_PROTOCOL_ROSTER(obj);
 	PurpleProtocolRoster *roster = PURPLE_PROTOCOL_ROSTER(obj);
-	PurpleContact *contact = data;
 	GError *error = NULL;
 	gboolean result = FALSE;
 
@@ -470,40 +442,25 @@ test_purple_protocol_roster_update_cb(GObject *obj, GAsyncResult *res,
 		g_assert_no_error(error);
 		g_assert_true(result);
 	}
-
-	g_clear_object(&contact);
-
-	g_main_loop_quit(loop);
-}
-
-static gboolean
-test_purple_protocol_roster_update_idle(gpointer data) {
-	PurpleProtocolRoster *roster = data;
-	PurpleAccount *account = NULL;
-	PurpleContact *contact = NULL;
-
-	account = purple_account_new("test", "test");
-	contact = purple_contact_new(account, NULL);
-
-	purple_protocol_roster_update_async(roster, account, contact, NULL,
-	                                    test_purple_protocol_roster_update_cb,
-	                                    contact);
-
-	g_clear_object(&account);
-
-	return G_SOURCE_REMOVE;
 }
 
 static void
 test_purple_protocol_roster_update(void) {
 	TestPurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
 
 	roster = g_object_new(test_purple_protocol_roster_get_type(), NULL);
 
-	g_idle_add(test_purple_protocol_roster_update_idle, roster);
-	g_timeout_add_seconds(10, test_purple_protocol_roster_timeout_cb, loop);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-	g_main_loop_run(loop);
+	purple_protocol_roster_update_async(PURPLE_PROTOCOL_ROSTER(roster),
+	                                    account, contact, NULL,
+	                                    test_purple_protocol_roster_update_cb,
+	                                    NULL);
+
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_false(roster->add_async);
 	g_assert_false(roster->add_finish);
@@ -512,20 +469,29 @@ test_purple_protocol_roster_update(void) {
 	g_assert_false(roster->remove_async);
 	g_assert_false(roster->remove_finish);
 
-	g_clear_object(&roster)
-;}
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
+}
 
 static void
 test_purple_protocol_roster_update_error(void) {
 	TestPurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
 
 	roster = g_object_new(test_purple_protocol_roster_get_type(), NULL);
 	roster->should_error = TRUE;
 
-	g_idle_add(test_purple_protocol_roster_update_idle, roster);
-	g_timeout_add_seconds(10, test_purple_protocol_roster_timeout_cb, loop);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-	g_main_loop_run(loop);
+	purple_protocol_roster_update_async(PURPLE_PROTOCOL_ROSTER(roster),
+	                                    account, contact, NULL,
+	                                    test_purple_protocol_roster_update_cb,
+	                                    NULL);
+
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_false(roster->add_async);
 	g_assert_false(roster->add_finish);
@@ -534,19 +500,20 @@ test_purple_protocol_roster_update_error(void) {
 	g_assert_false(roster->remove_async);
 	g_assert_false(roster->remove_finish);
 
-	g_clear_object(&roster)
-;}
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
+}
 
 /******************************************************************************
  * TestProtocolRoster Remove test
  *****************************************************************************/
 static void
 test_purple_protocol_roster_remove_cb(GObject *obj, GAsyncResult *res,
-                                      gpointer data)
+                                      G_GNUC_UNUSED gpointer data)
 {
 	TestPurpleProtocolRoster *test_roster = TEST_PURPLE_PROTOCOL_ROSTER(obj);
 	PurpleProtocolRoster *roster = PURPLE_PROTOCOL_ROSTER(obj);
-	PurpleContact *contact = data;
 	GError *error = NULL;
 	gboolean result = FALSE;
 
@@ -559,40 +526,25 @@ test_purple_protocol_roster_remove_cb(GObject *obj, GAsyncResult *res,
 		g_assert_no_error(error);
 		g_assert_true(result);
 	}
-
-	g_clear_object(&contact);
-
-	g_main_loop_quit(loop);
-}
-
-static gboolean
-test_purple_protocol_roster_remove_idle(gpointer data) {
-	PurpleProtocolRoster *roster = data;
-	PurpleAccount *account = NULL;
-	PurpleContact *contact = NULL;
-
-	account = purple_account_new("test", "test");
-	contact = purple_contact_new(account, NULL);
-
-	purple_protocol_roster_remove_async(roster, account, contact, NULL,
-	                                    test_purple_protocol_roster_remove_cb,
-	                                    contact);
-
-	g_clear_object(&account);
-
-	return G_SOURCE_REMOVE;
 }
 
 static void
 test_purple_protocol_roster_remove(void) {
 	TestPurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
 
 	roster = g_object_new(test_purple_protocol_roster_get_type(), NULL);
 
-	g_idle_add(test_purple_protocol_roster_remove_idle, roster);
-	g_timeout_add_seconds(10, test_purple_protocol_roster_timeout_cb, loop);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-	g_main_loop_run(loop);
+	purple_protocol_roster_remove_async(PURPLE_PROTOCOL_ROSTER(roster),
+	                                    account, contact, NULL,
+	                                    test_purple_protocol_roster_remove_cb,
+	                                    contact);
+
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_false(roster->add_async);
 	g_assert_false(roster->add_finish);
@@ -601,20 +553,29 @@ test_purple_protocol_roster_remove(void) {
 	g_assert_true(roster->remove_async);
 	g_assert_true(roster->remove_finish);
 
-	g_clear_object(&roster)
-;}
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
+}
 
 static void
 test_purple_protocol_roster_remove_error(void) {
 	TestPurpleProtocolRoster *roster = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContact *contact = NULL;
 
 	roster = g_object_new(test_purple_protocol_roster_get_type(), NULL);
 	roster->should_error = TRUE;
 
-	g_idle_add(test_purple_protocol_roster_remove_idle, roster);
-	g_timeout_add_seconds(10, test_purple_protocol_roster_timeout_cb, loop);
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
 
-	g_main_loop_run(loop);
+	purple_protocol_roster_remove_async(PURPLE_PROTOCOL_ROSTER(roster),
+	                                    account, contact, NULL,
+	                                    test_purple_protocol_roster_remove_cb,
+	                                    contact);
+
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_false(roster->add_async);
 	g_assert_false(roster->add_finish);
@@ -623,23 +584,18 @@ test_purple_protocol_roster_remove_error(void) {
 	g_assert_true(roster->remove_async);
 	g_assert_true(roster->remove_finish);
 
-	g_clear_object(&roster)
-;}
+	g_clear_object(&account);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(roster);
+}
 
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar **argv) {
-	gint ret = 0;
-
+int
+main(int argc, char **argv) {
 	g_test_init(&argc, &argv, NULL);
-
 	g_test_set_nonfatal_assertions();
-
-	test_ui_purple_init();
-
-	loop = g_main_loop_new(NULL, FALSE);
 
 	g_test_add_func("/protocol-roster/empty/add",
 	                test_purple_protocol_roster_empty_add);
@@ -660,11 +616,5 @@ main(gint argc, gchar **argv) {
 	g_test_add_func("/protocol-roster/remove-error",
 	                test_purple_protocol_roster_remove_error);
 
-	ret = g_test_run();
-
-	g_main_loop_unref(loop);
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }
