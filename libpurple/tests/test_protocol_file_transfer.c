@@ -24,30 +24,8 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
-/******************************************************************************
- * Globals
- *****************************************************************************/
-
-/* Since we're using GTask to test asynchronous functions, we need to use a
- * main loop.
- */
-static GMainLoop *loop = NULL;
-
-#define TEST_PURPLE_PROTOCOL_FILE_TRANSFER_DOMAIN (g_quark_from_static_string("test-protocol-file-transfer"))
-
-/******************************************************************************
- * Helpers
- *****************************************************************************/
-static gboolean
-test_purple_protocol_file_transfer_timeout_cb(gpointer data) {
-	g_main_loop_quit(data);
-
-	g_warning("timed out waiting for the callback function to be called");
-
-	return G_SOURCE_REMOVE;
-}
+#define TEST_PURPLE_PROTOCOL_FILE_TRANSFER_DOMAIN \
+	(g_quark_from_static_string("test-protocol-file-transfer"))
 
 /******************************************************************************
  * TestProtocolFileTransferEmpty implementation
@@ -313,10 +291,9 @@ test_purple_protocol_file_transfer_class_init(G_GNUC_UNUSED TestPurpleProtocolFi
  *****************************************************************************/
 static void
 test_purple_protocol_file_transfer_send_cb(GObject *obj, GAsyncResult *res,
-                                           gpointer data)
+                                           G_GNUC_UNUSED gpointer data)
 {
 	TestPurpleProtocolFileTransfer *test_protocol_file_transfer = NULL;
-	PurpleFileTransfer *transfer = data;
 	PurpleProtocolFileTransfer *protocol_file_transfer = NULL;
 	GError *error = NULL;
 	gboolean result = FALSE;
@@ -335,64 +312,50 @@ test_purple_protocol_file_transfer_send_cb(GObject *obj, GAsyncResult *res,
 		g_assert_no_error(error);
 		g_assert_true(result);
 	}
-
-	g_clear_object(&transfer);
-
-	g_main_loop_quit(loop);
 }
 
-static gboolean
-test_purple_protocol_file_transfer_send_idle(gpointer data) {
+static void
+test_purple_protocol_file_transfer_send_normal(gconstpointer data) {
+	TestPurpleProtocolFileTransfer *protocol_file_transfer = NULL;
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *remote = NULL;
 	PurpleFileTransfer *transfer = NULL;
-	PurpleProtocolFileTransfer *protocol_file_transfer = data;
 	GFile *local_file = NULL;
-	const char *filename = NULL;
+	const char *filename = data;
 
-	filename = g_object_get_data(G_OBJECT(protocol_file_transfer), "filename");
+	protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_get_type(),
+	                                      NULL);
 
 	account = purple_account_new("test", "test");
 	remote = purple_contact_info_new(NULL);
 	local_file = g_file_new_for_path(filename);
 
 	transfer = purple_file_transfer_new_send(account, remote, local_file);
-	g_clear_object(&account);
-	g_clear_object(&remote);
-	g_clear_object(&local_file);
 
-	purple_protocol_file_transfer_send_async(protocol_file_transfer, transfer,
+	purple_protocol_file_transfer_send_async(PURPLE_PROTOCOL_FILE_TRANSFER(protocol_file_transfer),
+	                                         transfer,
 	                                         test_purple_protocol_file_transfer_send_cb,
-	                                         transfer);
+	                                         NULL);
 
-	return G_SOURCE_REMOVE;
-}
-
-static void
-test_purple_protocol_file_transfer_send_normal(gconstpointer data) {
-	TestPurpleProtocolFileTransfer *protocol_file_transfer = NULL;
-	const char *filename = data;
-
-	protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_get_type(),
-	                                      NULL);
-	g_object_set_data(G_OBJECT(protocol_file_transfer), "filename",
-	                  (gpointer)filename);
-
-	g_idle_add(test_purple_protocol_file_transfer_send_idle,
-	           protocol_file_transfer);
-	g_timeout_add_seconds(10, test_purple_protocol_file_transfer_timeout_cb, loop);
-
-	g_main_loop_run(loop);
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_cmpuint(protocol_file_transfer->send_async, ==, 1);
 	g_assert_cmpuint(protocol_file_transfer->send_finish, ==, 1);
 
-	g_clear_object(&protocol_file_transfer);
+	g_clear_object(&account);
+	g_assert_finalize_object(transfer);
+	g_assert_finalize_object(remote);
+	g_assert_finalize_object(local_file);
+	g_assert_finalize_object(protocol_file_transfer);
 }
 
 static void
 test_purple_protocol_file_transfer_send_error_normal(gconstpointer data) {
 	TestPurpleProtocolFileTransfer *protocol_file_transfer = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *remote = NULL;
+	PurpleFileTransfer *transfer = NULL;
+	GFile *local_file = NULL;
 	const char *filename = data;
 
 	protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_get_type(),
@@ -401,16 +364,27 @@ test_purple_protocol_file_transfer_send_error_normal(gconstpointer data) {
 	                  (gpointer)filename);
 	protocol_file_transfer->should_error = TRUE;
 
-	g_idle_add(test_purple_protocol_file_transfer_send_idle,
-	           protocol_file_transfer);
-	g_timeout_add_seconds(10, test_purple_protocol_file_transfer_timeout_cb, loop);
+	account = purple_account_new("test", "test");
+	remote = purple_contact_info_new(NULL);
+	local_file = g_file_new_for_path(filename);
 
-	g_main_loop_run(loop);
+	transfer = purple_file_transfer_new_send(account, remote, local_file);
+
+	purple_protocol_file_transfer_send_async(PURPLE_PROTOCOL_FILE_TRANSFER(protocol_file_transfer),
+	                                         transfer,
+	                                         test_purple_protocol_file_transfer_send_cb,
+	                                         NULL);
+
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_cmpuint(protocol_file_transfer->send_async, ==, 1);
 	g_assert_cmpuint(protocol_file_transfer->send_finish, ==, 1);
 
-	g_clear_object(&protocol_file_transfer);
+	g_clear_object(&account);
+	g_assert_finalize_object(transfer);
+	g_assert_finalize_object(remote);
+	g_assert_finalize_object(local_file);
+	g_assert_finalize_object(protocol_file_transfer);
 }
 
 /******************************************************************************
@@ -418,10 +392,9 @@ test_purple_protocol_file_transfer_send_error_normal(gconstpointer data) {
  *****************************************************************************/
 static void
 test_purple_protocol_file_transfer_receive_cb(GObject *obj, GAsyncResult *res,
-                                              gpointer data)
+                                              G_GNUC_UNUSED gpointer data)
 {
 	TestPurpleProtocolFileTransfer *test_protocol_file_transfer = NULL;
-	PurpleFileTransfer *transfer = data;
 	PurpleProtocolFileTransfer *protocol_file_transfer = NULL;
 	GError *error = NULL;
 	gboolean result = FALSE;
@@ -440,89 +413,80 @@ test_purple_protocol_file_transfer_receive_cb(GObject *obj, GAsyncResult *res,
 		g_assert_no_error(error);
 		g_assert_true(result);
 	}
-
-	g_clear_object(&transfer);
-
-	g_main_loop_quit(loop);
 }
 
-static gboolean
-test_purple_protocol_file_transfer_receive_idle(gpointer data) {
+static void
+test_purple_protocol_file_transfer_receive_normal(void) {
+	TestPurpleProtocolFileTransfer *protocol_file_transfer = NULL;
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *remote = NULL;
 	PurpleFileTransfer *transfer = NULL;
-	PurpleProtocolFileTransfer *protocol_file_transfer = data;
+
+	protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_get_type(),
+	                                      NULL);
 
 	account = purple_account_new("test", "test");
 	remote = purple_contact_info_new(NULL);
 
 	transfer = purple_file_transfer_new_receive(account, remote, "file.png",
 	                                            0);
-	g_clear_object(&account);
-	g_clear_object(&remote);
 
-	purple_protocol_file_transfer_receive_async(protocol_file_transfer, transfer,
+	purple_protocol_file_transfer_receive_async(PURPLE_PROTOCOL_FILE_TRANSFER(protocol_file_transfer),
+	                                            transfer,
 	                                            test_purple_protocol_file_transfer_receive_cb,
-	                                            transfer);
+	                                            NULL);
 
-	return G_SOURCE_REMOVE;
-}
-
-static void
-test_purple_protocol_file_transfer_receive_normal(void) {
-	TestPurpleProtocolFileTransfer *protocol_file_transfer = NULL;
-
-	protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_get_type(),
-	                                      NULL);
-
-	g_idle_add(test_purple_protocol_file_transfer_receive_idle,
-	           protocol_file_transfer);
-	g_timeout_add_seconds(10, test_purple_protocol_file_transfer_timeout_cb,
-	                      loop);
-
-	g_main_loop_run(loop);
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_cmpuint(protocol_file_transfer->receive_async, ==, 1);
 	g_assert_cmpuint(protocol_file_transfer->receive_finish, ==, 1);
 
-	g_clear_object(&protocol_file_transfer);
+	g_clear_object(&account);
+	g_assert_finalize_object(transfer);
+	g_assert_finalize_object(remote);
+	g_assert_finalize_object(protocol_file_transfer);
 }
 
 static void
 test_purple_protocol_file_transfer_receive_error_normal(void) {
 	TestPurpleProtocolFileTransfer *protocol_file_transfer = NULL;
+	PurpleAccount *account = NULL;
+	PurpleContactInfo *remote = NULL;
+	PurpleFileTransfer *transfer = NULL;
 
 	protocol_file_transfer = g_object_new(test_purple_protocol_file_transfer_get_type(),
 	                                      NULL);
 	protocol_file_transfer->should_error = TRUE;
 
-	g_idle_add(test_purple_protocol_file_transfer_receive_idle,
-	           protocol_file_transfer);
-	g_timeout_add_seconds(10, test_purple_protocol_file_transfer_timeout_cb,
-	                      loop);
+	account = purple_account_new("test", "test");
+	remote = purple_contact_info_new(NULL);
 
-	g_main_loop_run(loop);
+	transfer = purple_file_transfer_new_receive(account, remote, "file.png",
+	                                            0);
+
+	purple_protocol_file_transfer_receive_async(PURPLE_PROTOCOL_FILE_TRANSFER(protocol_file_transfer),
+	                                            transfer,
+	                                            test_purple_protocol_file_transfer_receive_cb,
+	                                            NULL);
+
+	g_main_context_iteration(NULL, FALSE);
 
 	g_assert_cmpuint(protocol_file_transfer->receive_async, ==, 1);
 	g_assert_cmpuint(protocol_file_transfer->receive_finish, ==, 1);
 
-	g_clear_object(&protocol_file_transfer);
+	g_clear_object(&account);
+	g_assert_finalize_object(transfer);
+	g_assert_finalize_object(remote);
+	g_assert_finalize_object(protocol_file_transfer);
 }
 
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
+int
 main(int argc, char **argv) {
-	int ret = 0;
-
 	g_test_init(&argc, &argv, NULL);
-
 	g_test_set_nonfatal_assertions();
-
-	test_ui_purple_init();
-
-	loop = g_main_loop_new(NULL, FALSE);
 
 	g_test_add_data_func("/protocol-contacts/empty/send", argv[0],
 	                     test_purple_protocol_file_transfer_empty_send);
@@ -538,11 +502,5 @@ main(int argc, char **argv) {
 	g_test_add_func("/protocol-contacts/normal/receive-error",
 	                test_purple_protocol_file_transfer_receive_error_normal);
 
-	ret = g_test_run();
-
-	g_main_loop_unref(loop);
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }
