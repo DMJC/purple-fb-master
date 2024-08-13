@@ -112,9 +112,10 @@ test_purple_presence_properties(void) {
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/presence/new", test_purple_presence_new);
 	g_test_add_func("/presence/properties", test_purple_presence_properties);

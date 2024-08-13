@@ -58,11 +58,11 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-G_DEFINE_FINAL_TYPE(PurplePresence, purple_presence, G_TYPE_OBJECT)
-
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_FINAL_TYPE(PurplePresence, purple_presence, G_TYPE_OBJECT)
+
 static void
 purple_presence_set_property(GObject *obj, guint param_id, const GValue *value,
                              GParamSpec *pspec)
@@ -70,34 +70,34 @@ purple_presence_set_property(GObject *obj, guint param_id, const GValue *value,
 	PurplePresence *presence = PURPLE_PRESENCE(obj);
 
 	switch (param_id) {
-		case PROP_IDLE:
-			purple_presence_set_idle(presence, g_value_get_boolean(value));
-			break;
-		case PROP_IDLE_TIME:
-			purple_presence_set_idle_time(presence, g_value_get_boxed(value));
-			break;
-		case PROP_LOGIN_TIME:
-			purple_presence_set_login_time(presence, g_value_get_boxed(value));
-			break;
-		case PROP_PRIMITIVE:
-			purple_presence_set_primitive(presence, g_value_get_enum(value));
-			break;
-		case PROP_MESSAGE:
-			purple_presence_set_message(presence, g_value_get_string(value));
-			break;
-		case PROP_EMOJI:
-			purple_presence_set_emoji(presence, g_value_get_string(value));
-			break;
-		case PROP_MOBILE:
-			purple_presence_set_mobile(presence, g_value_get_boolean(value));
-			break;
-		case PROP_NOTIFICATIONS_DISABLED:
-			purple_presence_set_notifications_disabled(presence,
-			                                           g_value_get_boolean(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_IDLE:
+		purple_presence_set_idle(presence, g_value_get_boolean(value));
+		break;
+	case PROP_IDLE_TIME:
+		purple_presence_set_idle_time(presence, g_value_get_boxed(value));
+		break;
+	case PROP_LOGIN_TIME:
+		purple_presence_set_login_time(presence, g_value_get_boxed(value));
+		break;
+	case PROP_PRIMITIVE:
+		purple_presence_set_primitive(presence, g_value_get_enum(value));
+		break;
+	case PROP_MESSAGE:
+		purple_presence_set_message(presence, g_value_get_string(value));
+		break;
+	case PROP_EMOJI:
+		purple_presence_set_emoji(presence, g_value_get_string(value));
+		break;
+	case PROP_MOBILE:
+		purple_presence_set_mobile(presence, g_value_get_boolean(value));
+		break;
+	case PROP_NOTIFICATIONS_DISABLED:
+		purple_presence_set_notifications_disabled(presence,
+		                                           g_value_get_boolean(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -108,34 +108,34 @@ purple_presence_get_property(GObject *obj, guint param_id, GValue *value,
 	PurplePresence *presence = PURPLE_PRESENCE(obj);
 
 	switch (param_id) {
-		case PROP_IDLE:
-			g_value_set_boolean(value, purple_presence_is_idle(presence));
-			break;
-		case PROP_IDLE_TIME:
-			g_value_set_boxed(value, purple_presence_get_idle_time(presence));
-			break;
-		case PROP_LOGIN_TIME:
-			g_value_set_boxed(value, purple_presence_get_login_time(presence));
-			break;
-		case PROP_PRIMITIVE:
-			g_value_set_enum(value, purple_presence_get_primitive(presence));
-			break;
-		case PROP_MESSAGE:
-			g_value_set_string(value, purple_presence_get_message(presence));
-			break;
-		case PROP_EMOJI:
-			g_value_set_string(value, purple_presence_get_emoji(presence));
-			break;
-		case PROP_MOBILE:
-			g_value_set_boolean(value, purple_presence_get_mobile(presence));
-			break;
-		case PROP_NOTIFICATIONS_DISABLED:
-			g_value_set_boolean(value,
-			                    purple_presence_get_notifications_disabled(presence));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_IDLE:
+		g_value_set_boolean(value, purple_presence_is_idle(presence));
+		break;
+	case PROP_IDLE_TIME:
+		g_value_set_boxed(value, purple_presence_get_idle_time(presence));
+		break;
+	case PROP_LOGIN_TIME:
+		g_value_set_boxed(value, purple_presence_get_login_time(presence));
+		break;
+	case PROP_PRIMITIVE:
+		g_value_set_enum(value, purple_presence_get_primitive(presence));
+		break;
+	case PROP_MESSAGE:
+		g_value_set_string(value, purple_presence_get_message(presence));
+		break;
+	case PROP_EMOJI:
+		g_value_set_string(value, purple_presence_get_emoji(presence));
+		break;
+	case PROP_MOBILE:
+		g_value_set_boolean(value, purple_presence_get_mobile(presence));
+		break;
+	case PROP_NOTIFICATIONS_DISABLED:
+		g_value_set_boolean(value,
+		                    purple_presence_get_notifications_disabled(presence));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -172,8 +172,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_IDLE] = g_param_spec_boolean(
-		"idle", "idle",
-		"Whether the presence is in idle state.",
+		"idle", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -185,8 +184,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_IDLE_TIME] = g_param_spec_boxed(
-		"idle-time", "idle-time",
-		"The idle time of the presence",
+		"idle-time", NULL, NULL,
 		G_TYPE_DATE_TIME,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -198,8 +196,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_LOGIN_TIME] = g_param_spec_boxed(
-		"login-time", "login-time",
-		"The login time of the presence.",
+		"login-time", NULL, NULL,
 		G_TYPE_DATE_TIME,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -211,8 +208,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_PRIMITIVE] = g_param_spec_enum(
-		"primitive", "primitive",
-		"The primitive for the presence",
+		"primitive", NULL, NULL,
 		PURPLE_TYPE_PRESENCE_PRIMITIVE,
 		PURPLE_PRESENCE_PRIMITIVE_OFFLINE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
@@ -225,8 +221,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_MESSAGE] = g_param_spec_string(
-		"message", "message",
-		"The status message",
+		"message", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -238,8 +233,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_EMOJI] = g_param_spec_string(
-		"emoji", "emoji",
-		"The emoji for the presence.",
+		"emoji", NULL, NULL,
 		NULL,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -251,8 +245,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_MOBILE] = g_param_spec_boolean(
-		"mobile", "mobile",
-		"Whether or not the presence is on a mobile device.",
+		"mobile", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -268,8 +261,7 @@ purple_presence_class_init(PurplePresenceClass *klass) {
 	 * Since: 3.0
 	 */
 	properties[PROP_NOTIFICATIONS_DISABLED] = g_param_spec_boolean(
-		"notifications-disabled", "notifications-disabled",
-		"Whether or not this presence has notifications disabled.",
+		"notifications-disabled", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -309,6 +301,8 @@ purple_presence_set_idle(PurplePresence *presence, gboolean idle) {
 	}
 
 	purple_presence_set_idle_time(presence, idle_time);
+
+	g_clear_pointer(&idle_time, g_date_time_unref);
 }
 
 void
@@ -372,15 +366,12 @@ purple_presence_get_login_time(PurplePresence *presence) {
 	return presence->login_time;
 }
 
-gint
+int
 purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
 	PurplePresencePrimitive primitive1 = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
 	PurplePresencePrimitive primitive2 = PURPLE_PRESENCE_PRIMITIVE_OFFLINE;
 	GDateTime *idle1 = NULL;
 	GDateTime *idle2 = NULL;
-	GDateTime *now = NULL;
-	GTimeSpan diff1 = 0;
-	GTimeSpan diff2 = 0;
 
 	if(presence1 == presence2) {
 		return 0;
@@ -406,26 +397,7 @@ purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2) {
 	idle1 = purple_presence_get_idle_time(presence1);
 	idle2 = purple_presence_get_idle_time(presence2);
 
-	if(idle1 == NULL && idle2 == NULL) {
-		return 0;
-	} else if(idle1 == NULL && idle2 != NULL) {
-		return -1;
-	} else if(idle1 != NULL && idle2 == NULL) {
-		return 1;
-	}
-
-	now = g_date_time_new_now_local();
-	diff1 = g_date_time_difference(now, idle1);
-	diff2 = g_date_time_difference(now, idle2);
-	g_date_time_unref(now);
-
-	if(diff1 > diff2) {
-		return 1;
-	} else if (diff1 < diff2) {
-		return -1;
-	}
-
-	return 0;
+	return birb_date_time_compare(idle1, idle2);
 }
 
 PurplePresencePrimitive
@@ -524,29 +496,29 @@ purple_presence_set_notifications_disabled(PurplePresence *presence,
 const char *
 purple_presence_primitive_to_string(PurplePresencePrimitive primitive) {
 	switch(primitive) {
-		case PURPLE_PRESENCE_PRIMITIVE_OFFLINE:
-			return _("Offline");
-			break;
-		case PURPLE_PRESENCE_PRIMITIVE_AVAILABLE:
-			return _("Available");
-			break;
-		case PURPLE_PRESENCE_PRIMITIVE_IDLE:
-			return _("Idle");
-			break;
-		case PURPLE_PRESENCE_PRIMITIVE_INVISIBLE:
-			return _("Invisible");
-			break;
-		case PURPLE_PRESENCE_PRIMITIVE_AWAY:
-			return _("Away");
-			break;
-		case PURPLE_PRESENCE_PRIMITIVE_DO_NOT_DISTURB:
-			return _("Do not disturb");
-			break;
-		case PURPLE_PRESENCE_PRIMITIVE_STREAMING:
-			return _("Streaming");
-			break;
-		default:
-			return _("Unknown");
-			break;
+	case PURPLE_PRESENCE_PRIMITIVE_OFFLINE:
+		return _("Offline");
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_AVAILABLE:
+		return _("Available");
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_IDLE:
+		return _("Idle");
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_INVISIBLE:
+		return _("Invisible");
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_AWAY:
+		return _("Away");
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_DO_NOT_DISTURB:
+		return _("Do not disturb");
+		break;
+	case PURPLE_PRESENCE_PRIMITIVE_STREAMING:
+		return _("Streaming");
+		break;
+	default:
+		return _("Unknown");
+		break;
 	}
 }

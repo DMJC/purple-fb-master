@@ -50,8 +50,6 @@
  * Since: 2.0
  */
 
-typedef struct _PurplePresence PurplePresence;
-
 /**
  * PurplePresencePrimitive:
  * @PURPLE_PRESENCE_PRIMITIVE_OFFLINE: The presence is offline or otherwise
@@ -228,7 +226,7 @@ GDateTime *purple_presence_get_login_time(PurplePresence *presence);
  * Since: 2.0
  */
 PURPLE_AVAILABLE_IN_ALL
-gint purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2);
+int purple_presence_compare(PurplePresence *presence1, PurplePresence *presence2);
 
 /**
  * purple_presence_get_primitive:
