@@ -259,16 +259,6 @@ purple_protocol_finalize(GObject *object) {
 	g_clear_pointer(&priv->icon_search_path, g_free);
 	g_clear_pointer(&priv->icon_resource_path, g_free);
 
-	/* these seem to be fallbacks if the subclass protocol doesn't do it's own
-	 * clean up?  I kind of want to delete them... - gk 2021-03-03
-	 */
-	purple_request_close_with_handle(protocol);
-
-	purple_signals_disconnect_by_handle(protocol);
-	purple_signals_unregister_by_instance(protocol);
-
-	purple_prefs_disconnect_by_handle(protocol);
-
 	G_OBJECT_CLASS(purple_protocol_parent_class)->finalize(object);
 }
 

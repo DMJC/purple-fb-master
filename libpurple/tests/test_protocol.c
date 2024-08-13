@@ -20,17 +20,6 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
-/******************************************************************************
- * Globals
- *****************************************************************************/
-
-/* Since we're using GTask to test asynchronous functions, we need to use a
- * main loop.
- */
-static GMainLoop *loop = NULL;
-
 #define TEST_PROTOCOL_DOMAIN (g_quark_from_static_string("test-protocol"))
 
 /******************************************************************************
@@ -132,18 +121,9 @@ test_purple_protocol_new(gboolean result, GError *error) {
 /******************************************************************************
  * TestPurpleProtocol->can_connect Tests
  *****************************************************************************/
-static gboolean
-test_purple_protocol_timeout_cb(gpointer data) {
-	g_main_loop_quit((GMainLoop *)data);
-
-	g_warning("timed out waiting for the callback function to be called");
-
-	return FALSE;
-}
-
 static void
 test_purple_protocol_can_connect_cb(GObject *obj, GAsyncResult *res,
-                                    gpointer data)
+                                    G_GNUC_UNUSED gpointer data)
 {
 	PurpleProtocol *protocol = PURPLE_PROTOCOL(obj);
 	TestPurpleProtocol *test_protocol = TEST_PURPLE_PROTOCOL(protocol);
@@ -151,8 +131,6 @@ test_purple_protocol_can_connect_cb(GObject *obj, GAsyncResult *res,
 	gboolean result = FALSE;
 
 	result = purple_protocol_can_connect_finish(protocol, res, &error);
-
-	g_main_loop_quit(loop);
 
 	if(test_protocol->error != NULL) {
 		g_assert_error(error, TEST_PROTOCOL_DOMAIN, 0);
@@ -162,75 +140,81 @@ test_purple_protocol_can_connect_cb(GObject *obj, GAsyncResult *res,
 	}
 
 	g_assert_true(result == test_protocol->result);
-
-	/* This is the account that we need to unref. */
-	g_object_unref(data);
-}
-
-static gboolean
-test_purple_protocol_can_connect_idle(gpointer data) {
-	PurpleProtocol *p = PURPLE_PROTOCOL(data);
-	PurpleAccount *account = NULL;
-
-	account = purple_account_new("test", "test");
-
-	purple_protocol_can_connect_async(p, account, NULL,
-	                                  test_purple_protocol_can_connect_cb,
-	                                  account);
-
-	return G_SOURCE_REMOVE;
-}
-
-static void
-test_purple_protocol_can_connect(TestPurpleProtocol *test_protocol) {
-	g_idle_add(test_purple_protocol_can_connect_idle, test_protocol);
-	g_timeout_add_seconds(100, test_purple_protocol_timeout_cb, loop);
-
-	g_main_loop_run(loop);
-
-	g_assert_true(test_protocol->can_connect_async);
-	g_assert_true(test_protocol->can_connect_finish);
-
-	g_object_unref(test_protocol);
 }
 
 static void
 test_purple_protocol_can_connect_error(void) {
 	TestPurpleProtocol *protocol = NULL;
+	PurpleAccount *account = NULL;
 	GError *error = NULL;
 
 	error = g_error_new(TEST_PROTOCOL_DOMAIN, 0, "no network");
 	protocol = test_purple_protocol_new(FALSE, error);
 
-	test_purple_protocol_can_connect(protocol);
+	account = purple_account_new("test", "test");
+
+	purple_protocol_can_connect_async(PURPLE_PROTOCOL(protocol), account, NULL,
+	                                  test_purple_protocol_can_connect_cb,
+	                                  NULL);
+
+	g_main_context_iteration(NULL, FALSE);
+
+	g_assert_true(protocol->can_connect_async);
+	g_assert_true(protocol->can_connect_finish);
+
+	g_assert_finalize_object(protocol);
+	g_clear_object(&account);
 }
 
 static void
 test_purple_protocol_can_connect_false(void) {
-	TestPurpleProtocol *test_protocol = test_purple_protocol_new(FALSE, NULL);
+	TestPurpleProtocol *protocol = NULL;
+	PurpleAccount *account = NULL;
 
-	test_purple_protocol_can_connect(test_protocol);
+	protocol = test_purple_protocol_new(FALSE, NULL);
+	account = purple_account_new("test", "test");
+
+	purple_protocol_can_connect_async(PURPLE_PROTOCOL(protocol), account, NULL,
+	                                  test_purple_protocol_can_connect_cb,
+	                                  NULL);
+
+	g_main_context_iteration(NULL, FALSE);
+
+	g_assert_true(protocol->can_connect_async);
+	g_assert_true(protocol->can_connect_finish);
+
+	g_assert_finalize_object(protocol);
+	g_clear_object(&account);
 }
 
 static void
 test_purple_protocol_can_connect_true(void) {
-	TestPurpleProtocol *test_protocol = test_purple_protocol_new(TRUE, NULL);
+	TestPurpleProtocol *protocol = NULL;
+	PurpleAccount *account = NULL;
 
-	test_purple_protocol_can_connect(test_protocol);
+	protocol = test_purple_protocol_new(TRUE, NULL);
+	account = purple_account_new("test", "test");
+
+	purple_protocol_can_connect_async(PURPLE_PROTOCOL(protocol), account, NULL,
+	                                  test_purple_protocol_can_connect_cb,
+	                                  NULL);
+
+	g_main_context_iteration(NULL, FALSE);
+
+	g_assert_true(protocol->can_connect_async);
+	g_assert_true(protocol->can_connect_finish);
+
+	g_assert_finalize_object(protocol);
+	g_clear_object(&account);
 }
 
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
-
-	test_ui_purple_init();
-
-	loop = g_main_loop_new(NULL, FALSE);
+	g_test_set_nonfatal_assertions();
 
 	g_test_add_func("/protocol/can-connect/error",
 	                test_purple_protocol_can_connect_error);
@@ -239,11 +223,5 @@ main(gint argc, gchar *argv[]) {
 	g_test_add_func("/protocol/can-connect/true",
 	                test_purple_protocol_can_connect_true);
 
-	ret = g_test_run();
-
-	g_main_loop_unref(loop);
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }
