@@ -153,29 +153,41 @@ test_purple_conversation_member_name_for_display(void) {
  * Typing State Timeout
  *****************************************************************************/
 static void
-test_purple_conversation_manager_timeout_notify(G_GNUC_UNUSED GObject *obj,
+test_purple_conversation_manager_timeout_notify(GObject *obj,
                                                 G_GNUC_UNUSED GParamSpec *pspec,
                                                 gpointer data)
 {
-	GMainLoop *loop = data;
+	PurpleConversationMember *member = NULL;
+	PurpleTypingState state = PURPLE_TYPING_STATE_NONE;
+	gboolean *done = data;
 	static guint count = 0;
 
-	/* Increment count each time we're called. We're expecting to be called
-	 * twice, so after that quit the main loop.
-	 */
+	g_assert_true(PURPLE_IS_CONVERSATION_MEMBER(obj));
+	member = PURPLE_CONVERSATION_MEMBER(obj);
+
+	state = purple_conversation_member_get_typing_state(member);
+	if(count == 0) {
+		g_assert_cmpuint(state, ==, PURPLE_TYPING_STATE_TYPING);
+	} else if(count == 1) {
+		g_assert_cmpuint(state, ==, PURPLE_TYPING_STATE_NONE);
+	} else {
+		g_assert_not_reached();
+	}
+
+	/* Increment count each time we're called. */
 	count++;
 	if(count >= 2) {
-		g_main_loop_quit(loop);
+		*done = TRUE;
 	}
 }
 
 static gboolean
-test_purple_conversation_manager_timeout_fail_safe(gpointer data) {
-	GMainLoop *loop = data;
+test_purple_conversation_member_typing_state_fail_safe(gpointer data) {
+	gboolean *done = data;
 
-	g_warning("fail safe triggered");
+	g_assert_not_reached();
 
-	g_main_loop_quit(loop);
+	*done = TRUE;
 
 	return G_SOURCE_REMOVE;
 }
@@ -185,10 +197,7 @@ test_purple_conversation_member_typing_state_timeout(void) {
 	PurpleContactInfo *info = NULL;
 	PurpleConversationMember *member = NULL;
 	PurpleTypingState typing_state = PURPLE_TYPING_STATE_TYPING;
-	GMainLoop *loop = NULL;
-
-	/* Create the main loop as we'll need it to let the timeout fire. */
-	loop = g_main_loop_new(NULL, FALSE);
+	gboolean done = FALSE;
 
 	/* Create the member and add a notify callback on the typing-state property
 	 * so we can check it and exit the main loop.
@@ -197,21 +206,20 @@ test_purple_conversation_member_typing_state_timeout(void) {
 	member = purple_conversation_member_new(info);
 	g_signal_connect(member, "notify::typing-state",
 	                 G_CALLBACK(test_purple_conversation_manager_timeout_notify),
-	                 loop);
+	                 &done);
 
 	/* Set the state to typing with a timeout of 1 second. */
 	purple_conversation_member_set_typing_state(member,
 	                                            PURPLE_TYPING_STATE_TYPING, 1);
 
-	/* Add a fail safe timeout at 2 seconds to make sure the test won't get
-	 * stuck waiting forever.
-	 */
+	/* We add a fail safe to set done after 2 seconds. */
 	g_timeout_add_seconds(2,
-	                      test_purple_conversation_manager_timeout_fail_safe,
-	                      loop);
+	                      test_purple_conversation_member_typing_state_fail_safe,
+	                      &done);
 
-	/* Run the main loop and let the timeouts fire. */
-	g_main_loop_run(loop);
+	while(!done) {
+		g_main_context_iteration(NULL, FALSE);
+	}
 
 	/* Verify that our state got reset back to PURPLE_TYPING_STATE_NONE. */
 	typing_state = purple_conversation_member_get_typing_state(member);
