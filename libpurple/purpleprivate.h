@@ -64,35 +64,6 @@ G_GNUC_INTERNAL
 gboolean _purple_connection_wants_to_die(PurpleConnection *gc);
 
 /**
- * _purple_statuses_get_primitive_scores:
- *
- * Note: This function should only be called by
- *       purple_buddy_presence_compute_score() in presence.c.
- *
- * Returns: The primitive scores array from status.c.
- */
-G_GNUC_INTERNAL
-int *_purple_statuses_get_primitive_scores(void);
-
-/**
- * _purple_conversation_write_common:
- * @conv:    The conversation.
- * @msg:     The message.
- *
- * Writes to a conversation window.
- *
- * This function should not be used to write IM or chat messages. Use
- * purple_conversation_write_message() instead. This function will
- * most likely call this anyway, but it may do it's own formatting,
- * sound playback, etc. depending on whether the conversation is a chat or an
- * IM.
- *
- * See purple_conversation_write_message().
- */
-G_GNUC_INTERNAL
-void _purple_conversation_write_common(PurpleConversation *conv, PurpleMessage *msg);
-
-/**
  * purple_account_manager_startup:
  *
  * Starts up the account manager by creating the default instance.
@@ -251,16 +222,6 @@ gboolean purple_history_adapter_activate(PurpleHistoryAdapter *adapter, GError *
  */
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_history_adapter_deactivate(PurpleHistoryAdapter *adapter, GError **error);
-
-/**
- * purple_media_manager_shutdown:
- *
- * Shuts down the media manager by destroying the default instance.
- *
- * Since: 3.0
- */
-G_GNUC_INTERNAL
-void purple_media_manager_shutdown(void);
 
 /**
  * purple_notification_manager_startup:
