@@ -20,16 +20,14 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
- * Helpers
+ * Callbacks
  *****************************************************************************/
 static void
-test_purple_notification_destroy_data_callback(gpointer data) {
-	gboolean *called = data;
+test_purple_notification_destroy_data_cb(gpointer data) {
+	guint *counter = data;
 
-	*called = TRUE;
+	*counter = *counter + 1;
 }
 
 /******************************************************************************
@@ -37,7 +35,8 @@ test_purple_notification_destroy_data_callback(gpointer data) {
  *****************************************************************************/
 static void
 test_purple_notification_new(void) {
-	PurpleAccount *account1 = NULL, *account2 = NULL;
+	PurpleAccount *account1 = NULL;
+	PurpleAccount *account2 = NULL;
 	PurpleNotification *notification = NULL;
 	PurpleNotificationType type = PURPLE_NOTIFICATION_TYPE_UNKNOWN;
 	GDateTime *created_timestamp = NULL;
@@ -70,32 +69,29 @@ test_purple_notification_new(void) {
 	created_timestamp = purple_notification_get_created_timestamp(notification);
 	g_assert_nonnull(created_timestamp);
 
-	/* Unref it to destroy it. */
-	g_clear_object(&notification);
-
-	/* Clean up the account. */
 	g_clear_object(&account1);
+	g_assert_finalize_object(notification);
 }
 
 static void
 test_purple_notification_destroy_data_func(void) {
 	PurpleNotification *notification = NULL;
-	gboolean called = FALSE;
+	guint counter = 0;
 
 	/* Create the notification. */
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
 	                                       NULL,
-	                                       &called,
-	                                       test_purple_notification_destroy_data_callback);
+	                                       &counter,
+	                                       test_purple_notification_destroy_data_cb);
 
 	/* Sanity check. */
 	g_assert_true(PURPLE_IS_NOTIFICATION(notification));
 
 	/* Unref it to force the destroy callback to be called. */
-	g_clear_object(&notification);
+	g_assert_finalize_object(notification);
 
 	/* Make sure the callback was called. */
-	g_assert_true(called);
+	g_assert_cmpuint(counter, ==, 1);
 }
 
 static void
@@ -151,9 +147,9 @@ test_purple_notification_properties(void) {
 
 	g_assert_true(interactive);
 
-	g_assert_finalize_object(notification);
-
 	g_date_time_unref(created_timestamp);
+
+	g_assert_finalize_object(notification);
 }
 
 /******************************************************************************
