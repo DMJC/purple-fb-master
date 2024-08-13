@@ -20,41 +20,30 @@
 
 #include <purple.h>
 
-#include "test_ui.h"
-
 /******************************************************************************
  * Tests
  *****************************************************************************/
 static void
-test_purple_whiteboard_manager_get_default(void) {
-	PurpleWhiteboardManager *manager1 = NULL, *manager2 = NULL;
+test_purple_whiteboard_manager_new(void) {
+	PurpleWhiteboardManager *manager = NULL;
 
-	manager1 = purple_whiteboard_manager_get_default();
-	g_assert_true(PURPLE_IS_WHITEBOARD_MANAGER(manager1));
+	manager = g_object_new(PURPLE_TYPE_WHITEBOARD_MANAGER, NULL);
 
-	manager2 = purple_whiteboard_manager_get_default();
-	g_assert_true(PURPLE_IS_WHITEBOARD_MANAGER(manager2));
+	g_assert_true(PURPLE_IS_WHITEBOARD_MANAGER(manager));
 
-	g_assert_true(manager1 == manager2);
+	g_assert_finalize_object(manager);
 }
 
 /******************************************************************************
  * Main
  *****************************************************************************/
-gint
-main(gint argc, gchar *argv[]) {
-	gint ret = 0;
-
+int
+main(int argc, char *argv[]) {
 	g_test_init(&argc, &argv, NULL);
+	g_test_set_nonfatal_assertions();
 
-	test_ui_purple_init();
+	g_test_add_func("/whiteboard-manager/new",
+	                test_purple_whiteboard_manager_new);
 
-	g_test_add_func("/whiteboard-manager/get-default",
-	                test_purple_whiteboard_manager_get_default);
-
-	ret = g_test_run();
-
-	test_ui_purple_uninit();
-
-	return ret;
+	return g_test_run();
 }
