@@ -235,17 +235,6 @@ gboolean purple_strmatches(const char *pattern, const char *str);
 /**************************************************************************/
 
 /**
- * purple_got_protocol_handler_uri:
- * @uri: The uri.
- *
- * Parses @uri and emits the uri-handler core signal.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_got_protocol_handler_uri(const char *uri);
-
-/**
  * purple_email_is_valid:
  * @address: The email address to validate.
  *

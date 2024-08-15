@@ -110,13 +110,6 @@ purple_core_init(PurpleUi *ui, GError **error) {
 
 	purple_util_init();
 
-	purple_signal_register(core, "uri-handler",
-		purple_marshal_BOOLEAN__POINTER_POINTER_POINTER,
-		G_TYPE_BOOLEAN, 3,
-		G_TYPE_STRING, /* Protocol */
-		G_TYPE_STRING, /* Command */
-		G_TYPE_POINTER); /* Parameters (GHashTable *) */
-
 	purple_signal_register(core, "core-initialized", purple_marshal_VOID,
 		G_TYPE_NONE, 0);
 
