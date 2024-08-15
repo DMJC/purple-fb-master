@@ -1,25 +1,23 @@
 /*
- * idle.c - I'dle Mak'er plugin for Purple
- *
- * This file is part of Purple.
+ * Purple - Internet Messaging Library
+ * Copyright (C) Pidgin Developers <devel@pidgin.im>
  *
  * Purple is the legal property of its developers, whose names are too numerous
- * to list here.  Please refer to the COPYRIGHT file distributed with this
+ * to list here. Please refer to the COPYRIGHT file distributed with this
  * source distribution.
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * You should have received a copy of the GNU General Public License along with
+ * this library; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <glib/gi18n-lib.h>
@@ -29,231 +27,64 @@
 
 #include <purple.h>
 
-/* This plugin no longer depends on gtk */
-#define IDLE_PLUGIN_ID "core-idle"
+/******************************************************************************
+ * Helpers
+ *****************************************************************************/
+static void
+purple_idle_unset(void) {
+	PurpleIdleManager *manager = NULL;
 
-static GList *idled_accts = NULL;
+	manager = purple_idle_manager_get_default();
 
-static gboolean
-unidle_filter(PurpleAccount *acct, G_GNUC_UNUSED gpointer data)
-{
-	if (g_list_find(idled_accts, acct))
-		return TRUE;
-
-	return FALSE;
-}
-
-static gboolean
-idleable_filter(PurpleAccount *account, G_GNUC_UNUSED gpointer data)
-{
-	PurpleProtocol *protocol;
-
-	protocol = purple_account_get_protocol(account);
-	g_return_val_if_fail(protocol != NULL, FALSE);
-
-	return PURPLE_PROTOCOL_IMPLEMENTS(protocol, SERVER, set_idle);
+	purple_idle_manager_set_source(manager, "idle-maker", NULL);
 }
 
 static void
-set_idle_time(PurpleAccount *acct, int mins_idle) {
-	PurpleConnection *gc = purple_account_get_connection(acct);
-	PurplePresence *presence = purple_account_get_presence(acct);
-	GDateTime *idle_since = NULL;
+purple_idle_set(gint32 minutes) {
+	PurpleIdleManager *manager = NULL;
+	GDateTime *now = NULL;
+	GDateTime *idled_at = NULL;
 
-	if(!gc) {
-		return;
-	}
+	now = g_date_time_new_now_utc();
+	idled_at = g_date_time_add_minutes(now, -1 * minutes);
 
-	purple_debug_info("idle", "setting idle time for %s to %d\n",
-	                  purple_account_get_username(acct), mins_idle);
+	manager = purple_idle_manager_get_default();
+	purple_idle_manager_set_source(manager, "idle-maker", idled_at);
 
-	if(mins_idle > 0) {
-		GDateTime *now = g_date_time_new_now_local();
-		idle_since = g_date_time_add_minutes(now, -1 * mins_idle);
-		g_date_time_unref(now);
-	}
-
-	purple_presence_set_idle_time(presence, idle_since);
-
-	g_clear_pointer(&idle_since, g_date_time_unref);
-}
-
-static void
-set_idle_time_cb(gpointer data, gpointer user_data) {
-	set_idle_time(data, GPOINTER_TO_INT(user_data));
-}
-
-static void
-idle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
-	PurpleAccount *acct = purple_request_page_get_account(page, "acct");
-	int tm = purple_request_page_get_integer(page, "mins");
-
-	/* only add the account to the GList if it's not already been idled */
-	if(!unidle_filter(acct, NULL)) {
-		purple_debug_misc("idle", "%s hasn't been idled yet; adding to list.",
-		                  purple_account_get_username(acct));
-		idled_accts = g_list_append(idled_accts, acct);
-	}
-
-	set_idle_time(acct, tm);
-}
-
-static void
-idle_all_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
-	PurpleAccountManager *manager = NULL;
-	PurpleAccount *acct = NULL;
-	GList *list, *iter;
-	int tm = purple_request_page_get_integer(page, "mins");
-
-	manager = purple_account_manager_get_default();
-	list = purple_account_manager_get_enabled(manager);
-	for(iter = list; iter; iter = iter->next) {
-		acct = (PurpleAccount *)(iter->data);
-
-		if(acct && idleable_filter(acct, NULL)) {
-			purple_debug_misc("idle", "Idling %s.\n",
-			                  purple_account_get_username(acct));
-
-			set_idle_time(acct, tm);
-
-			if(!g_list_find(idled_accts, acct))
-				idled_accts = g_list_append(idled_accts, acct);
-		}
-	}
-
-	g_list_free(list);
-}
-
-static void
-unidle_action_ok(G_GNUC_UNUSED gpointer data, PurpleRequestPage *page) {
-	PurpleAccount *acct = purple_request_page_get_account(page, "acct");
-
-	set_idle_time(acct, 0); /* unidle the account */
-
-	/* once the account has been unidled it shouldn't be in the list */
-	idled_accts = g_list_remove(idled_accts, acct);
-}
-
-static void
-signing_off_cb(PurpleConnection *gc, G_GNUC_UNUSED gpointer data)
-{
-	PurpleAccount *account;
-
-	account = purple_connection_get_account(gc);
-	idled_accts = g_list_remove(idled_accts, account);
+	g_clear_pointer(&idled_at, g_date_time_unref);
+	g_clear_pointer(&now, g_date_time_unref);
 }
 
 /******************************************************************************
  * Actions
  *****************************************************************************/
 static void
-purple_idle_set_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
-                                  G_GNUC_UNUSED GVariant *parameter,
-                                  gpointer data)
+purple_idle_set_cb(G_GNUC_UNUSED GSimpleAction *action, GVariant *parameter,
+                   G_GNUC_UNUSED gpointer data)
 {
-	/* Use the super fancy request API */
+	gint32 minutes = 0;
 
-	PurpleRequestPage *request;
-	PurpleRequestGroup *group;
-	PurpleRequestField *field;
-	PurpleRequestFieldAccount *afield;
+	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_INT32)) {
+		g_warning("unknown parameter type (%s)",
+		          g_variant_get_type_string(parameter));
 
-	group = purple_request_group_new(NULL);
-
-	field = purple_request_field_account_new("acct", _("Account"), NULL);
-	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
-	purple_request_field_account_set_filter(afield, idleable_filter, NULL, NULL);
-	purple_request_field_account_set_show_all(afield, FALSE);
-	purple_request_group_add_field(group, field);
-
-	field = purple_request_field_int_new("mins", _("Minutes"), 10, 0, 9999);
-	purple_request_group_add_field(group, field);
-
-	request = purple_request_page_new();
-	purple_request_page_add_group(request, group);
-
-	purple_request_fields(data,
-			N_("I'dle Mak'er"),
-			_("Set Account Idle Time"),
-			NULL,
-			request,
-			_("_Set"), G_CALLBACK(idle_action_ok),
-			_("_Cancel"), NULL,
-			NULL, NULL);
-}
-
-static void
-purple_idle_unset_account_idle_time(G_GNUC_UNUSED GSimpleAction *action,
-                                    G_GNUC_UNUSED GVariant *parameter,
-                                    gpointer data)
-{
-	PurpleRequestPage *request;
-	PurpleRequestGroup *group;
-	PurpleRequestField *field;
-	PurpleRequestFieldAccount *afield;
-
-	if (idled_accts == NULL)
-	{
 		return;
 	}
 
-	group = purple_request_group_new(NULL);
+	minutes = g_variant_get_int32(parameter);
+	if(minutes < 0) {
+		minutes = g_random_int_range(1, 1337);
+	}
 
-	field = purple_request_field_account_new("acct", _("Account"), NULL);
-	afield = PURPLE_REQUEST_FIELD_ACCOUNT(field);
-	purple_request_field_account_set_filter(afield, unidle_filter, NULL, NULL);
-	purple_request_field_account_set_show_all(afield, FALSE);
-	purple_request_group_add_field(group, field);
-
-	request = purple_request_page_new();
-	purple_request_page_add_group(request, group);
-
-	purple_request_fields(data,
-			N_("I'dle Mak'er"),
-			_("Unset Account Idle Time"),
-			NULL,
-			request,
-			_("_Unset"), G_CALLBACK(unidle_action_ok),
-			_("_Cancel"), NULL,
-			NULL, NULL);
+	purple_idle_set(minutes);
 }
 
 static void
-purple_idle_set_all_accounts_idle_time(G_GNUC_UNUSED GSimpleAction *action,
-                                       G_GNUC_UNUSED GVariant *parameter,
-                                       gpointer data)
+purple_idle_unset_cb(G_GNUC_UNUSED GSimpleAction *action,
+                  G_GNUC_UNUSED GVariant *parameter,
+                  G_GNUC_UNUSED gpointer data)
 {
-	PurpleRequestPage *request;
-	PurpleRequestGroup *group;
-	PurpleRequestField *field;
-
-	group = purple_request_group_new(NULL);
-
-	field = purple_request_field_int_new("mins", _("Minutes"), 10, 0, 9999);
-	purple_request_group_add_field(group, field);
-
-	request = purple_request_page_new();
-	purple_request_page_add_group(request, group);
-
-	purple_request_fields(data,
-			N_("I'dle Mak'er"),
-			_("Set Idle Time for All Accounts"),
-			NULL,
-			request,
-			_("_Set"), G_CALLBACK(idle_all_action_ok),
-			_("_Cancel"), NULL,
-			NULL, NULL);
-}
-
-static void
-purple_idle_unset_all_accounts_idle_time(G_GNUC_UNUSED GSimpleAction *action,
-                                         G_GNUC_UNUSED GVariant *parameter,
-                                         G_GNUC_UNUSED gpointer data)
-{
-	/* freeing the list here will cause segfaults if the user idles an account
-	 * after the list is freed */
-	g_list_foreach(idled_accts, set_idle_time_cb, GINT_TO_POINTER(0));
-	g_clear_list(&idled_accts, NULL);
+	purple_idle_unset();
 }
 
 /******************************************************************************
@@ -265,22 +96,18 @@ idle_query(G_GNUC_UNUSED GError **error)
 	GSimpleActionGroup *group = NULL;
 	GActionEntry entries[] = {
 		{
-			.name = "set-account-idle-time",
-			.activate = purple_idle_set_account_idle_time,
+			.name = "set-idle-time",
+			.activate = purple_idle_set_cb,
+			.parameter_type = "i",
 		}, {
-			.name = "unset-account-idle-time",
-			.activate = purple_idle_unset_account_idle_time,
-		}, {
-			.name = "set-all-accounts-idle-time",
-			.activate = purple_idle_set_all_accounts_idle_time,
-		}, {
-			.name = "unset-all-accounts-idle-time",
-			.activate = purple_idle_unset_all_accounts_idle_time,
+			.name = "unset-idle-time",
+			.activate = purple_idle_unset_cb,
 		}
 	};
 	GMenu *menu = NULL;
+	GMenuItem *item = NULL;
 	const gchar * const authors[] = {
-		"Eric Warmenhoven <eric@warmenhoven.org>",
+		"Pidgin Developers",
 		NULL
 	};
 
@@ -289,48 +116,63 @@ idle_query(G_GNUC_UNUSED GError **error)
 	                                G_N_ELEMENTS(entries), NULL);
 
 	menu = g_menu_new();
-	g_menu_append(menu, _("Set Account Idle Time"), "set-account-idle-time");
-	g_menu_append(menu, _("Unset Account Idle Time"),
-	              "unset-account-idle-time");
-	g_menu_append(menu, _("Set Idle Time for All Accounts"),
-	              "set-all-accounts-idle-time");
-	g_menu_append(menu, _("Unset Idle Time for All Idled Accounts"),
-	              "unset-all-accounts-idle-time");
+
+	/* Since we have targets, we need build the menu the verbose way. */
+	item = g_menu_item_new(_("Set idle to 5 minutes"), NULL);
+	g_menu_item_set_action_and_target(item, "set-idle-time", "i", 5);
+	g_menu_append_item(menu, item);
+	g_object_unref(item);
+
+	item = g_menu_item_new(_("Set idle to 10 minutes"), NULL);
+	g_menu_item_set_action_and_target(item, "set-idle-time", "i", 10);
+	g_menu_append_item(menu, item);
+	g_object_unref(item);
+
+	item = g_menu_item_new(_("Set idle to 15 minutes"), NULL);
+	g_menu_item_set_action_and_target(item, "set-idle-time", "i", 15);
+	g_menu_append_item(menu, item);
+	g_object_unref(item);
+
+	item = g_menu_item_new(_("Set idle to random time"), NULL);
+	g_menu_item_set_action_and_target(item, "set-idle-time", "i", -1);
+	g_menu_append_item(menu, item);
+	g_object_unref(item);
+
+	g_menu_append(menu, _("Unset idle time"), "unset-idle-time");
 
 	return purple_plugin_info_new(
-		"id",           IDLE_PLUGIN_ID,
-		/* This is a cultural reference.  Dy'er Mak'er is a song by Led Zeppelin.
-		   If that doesn't translate well into your language, drop the 's before translating. */
-		"name",         N_("I'dle Mak'er"),
-		"version",      DISPLAY_VERSION,
-		"category",     N_("Utility"),
-		"summary",      N_("Allows you to hand-configure how long you've been idle"),
-		"description",  N_("Allows you to hand-configure how long you've been idle"),
-		"authors",      authors,
-		"website",      PURPLE_WEBSITE,
-		"abi-version",  PURPLE_ABI_VERSION,
+		"id", "core-idle",
+
+		/* TRANSLATORS: This is a cultural reference.  Dy'er Mak'er is a song
+	     * by Led Zeppelin. If that doesn't translate well into your language,
+	     * drop the 's before translating.
+	     */
+		"name", N_("I'dle Mak'er"),
+		"version", DISPLAY_VERSION,
+		"category", N_("Utility"),
+		"summary", N_("Allows you to set how long you've been idle"),
+		"description", N_("Allows you set how long you've been idle"),
+		"authors", authors,
+		"website", PURPLE_WEBSITE,
+		"abi-version", PURPLE_ABI_VERSION,
 		"action-group", group,
-		"action-menu",  menu,
+		"action-menu", menu,
 		NULL
 	);
 }
 
 static gboolean
-idle_load(GPluginPlugin *plugin, G_GNUC_UNUSED GError **error)
-{
-	purple_signal_connect(purple_connections_get_handle(), "signing-off",
-						plugin,
-						G_CALLBACK(signing_off_cb), NULL);
-
+idle_load(G_GNUC_UNUSED GPluginPlugin *plugin, G_GNUC_UNUSED GError **error) {
 	return TRUE;
 }
 
 static gboolean
-idle_unload(G_GNUC_UNUSED GPluginPlugin *plugin,
-            G_GNUC_UNUSED gboolean shutdown,
+idle_unload(G_GNUC_UNUSED GPluginPlugin *plugin, gboolean shutdown,
             G_GNUC_UNUSED GError **error)
 {
-	purple_idle_unset_all_accounts_idle_time(NULL, NULL, NULL);
+	if(!shutdown) {
+		purple_idle_unset();
+	}
 
 	return TRUE;
 }
