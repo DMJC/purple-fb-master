@@ -800,30 +800,6 @@ pidgin_application_activate(G_GNUC_UNUSED GApplication *application) {
 }
 
 static gint
-pidgin_application_command_line(GApplication *application,
-                                GApplicationCommandLine *cmdline)
-{
-	gchar **argv = NULL;
-	gint argc = 0, i = 0;
-
-	argv = g_application_command_line_get_arguments(cmdline, &argc);
-
-	if(argc == 1) {
-		/* No arguments, just activate */
-		g_application_activate(application);
-	}
-
-	/* Start at 1 to skip the executable name */
-	for (i = 1; i < argc; i++) {
-		purple_got_protocol_handler_uri(argv[i]);
-	}
-
-	g_strfreev(argv);
-
-	return 0;
-}
-
-static gint
 pidgin_application_handle_local_options(G_GNUC_UNUSED GApplication *application,
                                         GVariantDict *options)
 {
@@ -893,7 +869,6 @@ pidgin_application_class_init(PidginApplicationClass *klass) {
 
 	app_class->startup = pidgin_application_startup;
 	app_class->activate = pidgin_application_activate;
-	app_class->command_line = pidgin_application_command_line;
 	app_class->handle_local_options = pidgin_application_handle_local_options;
 
 	gtk_app_class->window_added = pidgin_application_window_added;
@@ -907,8 +882,7 @@ pidgin_application_new(void) {
 	return g_object_new(
 		PIDGIN_TYPE_APPLICATION,
 		"application-id", "im.pidgin.Pidgin3",
-		"flags", G_APPLICATION_CAN_OVERRIDE_APP_ID |
-		         G_APPLICATION_HANDLES_COMMAND_LINE,
+		"flags", G_APPLICATION_CAN_OVERRIDE_APP_ID,
 		"register-session", TRUE,
 		NULL);
 }

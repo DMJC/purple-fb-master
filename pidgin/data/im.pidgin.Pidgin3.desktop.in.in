@@ -11,5 +11,4 @@ StartupNotify=true
 Terminal=false
 Type=Application
 Categories=GTK;Network;InstantMessaging;
-MimeType=x-scheme-handler/gg;x-scheme-handler/irc;x-scheme-handler/sip;x-scheme-handler/xmpp;
 @USES_MM_CHAT_SECTION@
