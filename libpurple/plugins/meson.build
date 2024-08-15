@@ -1,4 +1,5 @@
 subdir('autoaccept')
+subdir('hello-world')
 subdir('idle')
 subdir('joinpart')
 subdir('keychain-access')
