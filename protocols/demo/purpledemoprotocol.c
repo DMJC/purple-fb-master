@@ -78,6 +78,7 @@ purple_demo_protocol_class_init(PurpleDemoProtocolClass *klass) {
 	PurpleProtocolClass *protocol_class = PURPLE_PROTOCOL_CLASS(klass);
 
 	protocol_class->create_connection = purple_demo_protocol_create_connection;
+	protocol_class->get_action_menu = purple_demo_protocol_get_action_menu;
 }
 
 /******************************************************************************

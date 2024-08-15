@@ -602,3 +602,27 @@ purple_demo_protocol_actions_init(PurpleProtocolActionsInterface *iface) {
 	iface->get_action_group = purple_demo_protocol_get_action_group;
 	iface->get_menu = purple_demo_protocol_get_menu;
 }
+
+BirbActionMenu *
+purple_demo_protocol_get_action_menu(G_GNUC_UNUSED PurpleProtocol *protocol,
+                                     G_GNUC_UNUSED PurpleAccount *account)
+{
+	BirbActionMenu *action_menu = NULL;
+	GActionGroup *group = NULL;
+	GMenu *menu = NULL;
+	GMenu *section = NULL;
+
+	action_menu = birb_action_menu_new();
+
+	group = purple_demo_protocol_get_action_group(NULL, NULL);
+	birb_action_menu_add_action_group(action_menu, "prpl-demo", group);
+	g_clear_object(&group);
+
+	menu = birb_action_menu_get_menu(action_menu);
+
+	section = purple_demo_protocol_get_menu(NULL, NULL);
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_clear_object(&section);
+
+	return action_menu;
+}

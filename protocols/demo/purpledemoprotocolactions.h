@@ -21,8 +21,15 @@
 
 #include <glib.h>
 
+#include <birb.h>
+
 #include <purple.h>
 
 G_GNUC_INTERNAL void purple_demo_protocol_actions_init(PurpleProtocolActionsInterface *iface);
+
+/* This temporarily here until we're ready to remove the protocol actions
+ * implementation.
+ */
+G_GNUC_INTERNAL BirbActionMenu *purple_demo_protocol_get_action_menu(PurpleProtocol *protocol, PurpleAccount *account);
 
 #endif /* PURPLE_DEMO_PROTOCOL_ACTIONS_H */
