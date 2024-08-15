@@ -32,6 +32,8 @@
 
 #include <gio/gio.h>
 
+#include <birb.h>
+
 #include "purpleversion.h"
 
 #define PURPLE_TYPE_PROTOCOL (purple_protocol_get_type())
@@ -145,6 +147,8 @@ struct _PurpleProtocolClass {
 	gboolean (*can_connect_finish)(PurpleProtocol *protocol, GAsyncResult *result, GError **error);
 
 	PurpleConnection *(*create_connection)(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
+
+	BirbActionMenu *(*get_action_menu)(PurpleProtocol *protocol, PurpleAccount *account);
 
 	/*< private >*/
 	gpointer reserved[4];
@@ -319,6 +323,20 @@ gboolean purple_protocol_can_connect_finish(PurpleProtocol *protocol, GAsyncResu
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConnection *purple_protocol_create_connection(PurpleProtocol *protocol, PurpleAccount *account, const char *password, GError **error);
+
+/**
+ * purple_protocol_get_action_menu:
+ * @protocol: The instance.
+ * @account: The account.
+ *
+ * Gets a [class@Birb.ActionMenu] for @account.
+ *
+ * Returns: (transfer full) (nullable): The new action menu or %NULL.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+BirbActionMenu *purple_protocol_get_action_menu(PurpleProtocol *protocol, PurpleAccount *account);
 
 /**
  * purple_protocol_get_icon_name:

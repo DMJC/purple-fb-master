@@ -375,6 +375,23 @@ purple_protocol_class_init(PurpleProtocolClass *klass) {
 /******************************************************************************
  * Public API
  *****************************************************************************/
+BirbActionMenu *
+purple_protocol_get_action_menu(PurpleProtocol *protocol,
+                                PurpleAccount *account)
+{
+	PurpleProtocolClass *klass = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL(protocol), NULL);
+	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
+
+	klass = PURPLE_PROTOCOL_GET_CLASS(protocol);
+	if(klass != NULL && klass->get_action_menu != NULL) {
+		return klass->get_action_menu(protocol, account);
+	}
+
+	return NULL;
+}
+
 const gchar *
 purple_protocol_get_id(PurpleProtocol *protocol) {
 	PurpleProtocolPrivate *priv = NULL;

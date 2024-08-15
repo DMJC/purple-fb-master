@@ -18,6 +18,8 @@
 
 #include <glib.h>
 
+#include <birb.h>
+
 #include <purple.h>
 
 #define TEST_PROTOCOL_DOMAIN (g_quark_from_static_string("test-protocol"))
@@ -77,6 +79,16 @@ test_purple_protocol_can_connect_finish(PurpleProtocol *protocol,
 	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
+static BirbActionMenu *
+test_purple_protocol_get_action_menu(PurpleProtocol *protocol,
+                                     PurpleAccount *account)
+{
+	g_assert_true(PURPLE_IS_PROTOCOL(protocol));
+	g_assert_true(PURPLE_IS_ACCOUNT(account));
+
+	return birb_action_menu_new();
+}
+
 static void
 test_purple_protocol_finalize(GObject *obj) {
 	TestPurpleProtocol *protocol = TEST_PURPLE_PROTOCOL(obj);
@@ -100,6 +112,7 @@ test_purple_protocol_class_init(TestPurpleProtocolClass *klass)
 
 	protocol_class->can_connect_async = test_purple_protocol_can_connect_async;
 	protocol_class->can_connect_finish = test_purple_protocol_can_connect_finish;
+	protocol_class->get_action_menu = test_purple_protocol_get_action_menu;
 }
 
 static TestPurpleProtocol *
@@ -208,6 +221,28 @@ test_purple_protocol_can_connect_true(void) {
 	g_clear_object(&account);
 }
 
+static void
+test_purple_protocol_get_action_menu_valid(void) {
+	PurpleProtocol *protocol = NULL;
+	PurpleAccount *account = NULL;
+	BirbActionMenu *action_menu = NULL;
+
+	protocol = g_object_new(
+		TEST_PURPLE_TYPE_PROTOCOL,
+		"id", "test-provider",
+		"name", "Test Provider",
+		NULL);
+
+	account = purple_account_new("test", "test");
+
+	action_menu = purple_protocol_get_action_menu(protocol, account);
+	g_assert_true(BIRB_IS_ACTION_MENU(action_menu));
+	g_clear_object(&action_menu);
+
+	g_clear_object(&account);
+	g_assert_finalize_object(protocol);
+}
+
 /******************************************************************************
  * Main
  *****************************************************************************/
@@ -222,6 +257,8 @@ main(int argc, char *argv[]) {
 	                test_purple_protocol_can_connect_false);
 	g_test_add_func("/protocol/can-connect/true",
 	                test_purple_protocol_can_connect_true);
+	g_test_add_func("/protocol/get-action-menu/valid",
+	                test_purple_protocol_get_action_menu_valid);
 
 	return g_test_run();
 }
