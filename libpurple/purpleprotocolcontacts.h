@@ -208,9 +208,6 @@ GActionGroup *purple_protocol_contacts_get_actions(PurpleProtocolContacts *proto
  *
  * Gets a [class@Gio.MenuModel] for @info.
  *
- * This menu will have at least the action groups from [iface@ProtocolActions]
- * and [iface@ProtocolContacts] available to it.
- *
  * Returns: (transfer full): The menu model or %NULL.
  *
  * Since: 3.0

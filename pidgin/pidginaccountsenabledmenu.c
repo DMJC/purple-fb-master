@@ -181,15 +181,6 @@ pidgin_accounts_enabled_menu_account_disconnected_cb(G_GNUC_UNUSED PurpleAccount
 	}
 }
 
-static void
-pidgin_accounts_enabled_menu_actions_changed_cb(G_GNUC_UNUSED PurpleProtocolManager *manager,
-                                                G_GNUC_UNUSED PurpleProtocol *protocol,
-                                                PurpleAccount *account,
-                                                gpointer data)
-{
-	pidgin_accounts_enabled_menu_update(data, account);
-}
-
 /******************************************************************************
  * GMenuModel Implementation
  *****************************************************************************/
@@ -361,7 +352,6 @@ pidgin_accounts_enabled_menu_constructed(GObject *obj) {
 static void
 pidgin_accounts_enabled_menu_init(PidginAccountsEnabledMenu *menu) {
 	PurpleAccountManager *account_manager = NULL;
-	PurpleProtocolManager *protocol_manager = NULL;
 
 	menu->accounts = g_queue_new();
 
@@ -374,12 +364,6 @@ pidgin_accounts_enabled_menu_init(PidginAccountsEnabledMenu *menu) {
 	                        menu, 0);
 	g_signal_connect_object(account_manager, "account-disconnected",
 	                        G_CALLBACK(pidgin_accounts_enabled_menu_account_disconnected_cb),
-	                        menu, 0);
-
-	/* We also need to know when the protocol actions have changed. */
-	protocol_manager = purple_protocol_manager_get_default();
-	g_signal_connect_object(protocol_manager, "account-actions-changed",
-	                        G_CALLBACK(pidgin_accounts_enabled_menu_actions_changed_cb),
 	                        menu, 0);
 }
 
