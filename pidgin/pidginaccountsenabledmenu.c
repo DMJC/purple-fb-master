@@ -24,6 +24,8 @@
 
 #include <gtk/gtk.h>
 
+#include <birb.h>
+
 #include "pidginaccountsenabledmenu.h"
 
 #include "pidginapplication.h"
@@ -34,12 +36,29 @@ struct _PidginAccountsEnabledMenu {
 	GQueue *accounts;
 };
 
-G_DEFINE_FINAL_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
-                    G_TYPE_MENU_MODEL)
-
 /******************************************************************************
  * Helpers
  *****************************************************************************/
+static void
+pidgin_accounts_enabled_menu_foreach_add_action_groups(const char *prefix,
+                                                       GActionGroup *group,
+                                                       gpointer data)
+{
+	PidginApplication *application = data;
+
+	pidgin_application_add_action_group(application, prefix, group);
+}
+
+static void
+pidgin_accounts_enabled_menu_foreach_remove_action_groups(const char *prefix,
+                                                          G_GNUC_UNUSED GActionGroup *group,
+                                                          gpointer data)
+{
+	PidginApplication *application = data;
+
+	pidgin_application_add_action_group(application, prefix, NULL);
+}
+
 static void
 pidgin_accounts_enabled_menu_update(PidginAccountsEnabledMenu *menu,
                                     PurpleAccount *account)
@@ -55,22 +74,18 @@ pidgin_accounts_enabled_menu_update(PidginAccountsEnabledMenu *menu,
 
 	/* If the protocol has actions add them to the application windows. */
 	protocol = purple_account_get_protocol(account);
-	if(PURPLE_IS_PROTOCOL_ACTIONS(protocol)) {
-		PurpleProtocolActions *actions = PURPLE_PROTOCOL_ACTIONS(protocol);
-		PurpleConnection *connection = NULL;
-		GActionGroup *action_group = NULL;
+	if(PURPLE_IS_PROTOCOL(protocol)) {
+		BirbActionMenu *action_menu = NULL;
 
-		connection = purple_account_get_connection(account);
-		action_group = purple_protocol_actions_get_action_group(actions,
-		                                                        connection);
-		if(G_IS_ACTION_GROUP(action_group)) {
+		action_menu = purple_protocol_get_action_menu(protocol, account);
+		if(BIRB_IS_ACTION_MENU(action_menu)) {
 			GApplication *application = g_application_get_default();
-			const gchar *prefix = purple_protocol_actions_get_prefix(actions);
 
-			pidgin_application_add_action_group(PIDGIN_APPLICATION(application),
-			                                    prefix, action_group);
-			g_object_unref(action_group);
+			birb_action_menu_foreach_action_group(action_menu,
+			                                      pidgin_accounts_enabled_menu_foreach_add_action_groups,
+			                                      application);
 		}
+		g_clear_object(&action_menu);
 	}
 }
 
@@ -133,9 +148,8 @@ pidgin_accounts_enabled_menu_account_disconnected_cb(G_GNUC_UNUSED PurpleAccount
 	 * if so, remove the action group from the application windows.
 	 */
 	protocol = purple_account_get_protocol(account);
-	if(PURPLE_IS_PROTOCOL_ACTIONS(protocol)) {
+	if(PURPLE_IS_PROTOCOL(protocol)) {
 		PurpleAccountManager *manager = NULL;
-		PurpleProtocolActions *actions = PURPLE_PROTOCOL_ACTIONS(protocol);
 		GList *enabled_accounts = NULL;
 		gboolean found = FALSE;
 
@@ -156,10 +170,13 @@ pidgin_accounts_enabled_menu_account_disconnected_cb(G_GNUC_UNUSED PurpleAccount
 
 		if(!found) {
 			GApplication *application = g_application_get_default();
-			const gchar *prefix = purple_protocol_actions_get_prefix(actions);
+			BirbActionMenu *action_menu = NULL;
 
-			pidgin_application_add_action_group(PIDGIN_APPLICATION(application),
-			                                    prefix, NULL);
+			action_menu = purple_protocol_get_action_menu(protocol, account);
+			birb_action_menu_foreach_action_group(action_menu,
+			                                      pidgin_accounts_enabled_menu_foreach_remove_action_groups,
+			                                      application);
+			g_clear_object(&action_menu);
 		}
 	}
 }
@@ -275,15 +292,21 @@ pidgin_accounts_enabled_menu_get_item_links(GMenuModel *model, gint index,
 
 	/* Add the account actions if we have any. */
 	protocol = purple_account_get_protocol(account);
-	if(PURPLE_IS_PROTOCOL_ACTIONS(protocol)) {
-		PurpleProtocolActions *actions = PURPLE_PROTOCOL_ACTIONS(protocol);
-		GMenu *protocol_menu = NULL;
+	if(PURPLE_IS_PROTOCOL(protocol)) {
+		BirbActionMenu *action_menu = NULL;
 
-		protocol_menu = purple_protocol_actions_get_menu(actions, connection);
-		if(G_IS_MENU(protocol_menu)) {
-			g_menu_insert_section(submenu, 1, NULL,
-			                      G_MENU_MODEL(protocol_menu));
-			g_object_unref(protocol_menu);
+		action_menu = purple_protocol_get_action_menu(protocol, account);
+
+		if(BIRB_IS_ACTION_MENU(action_menu)) {
+			GMenu *protocol_menu = NULL;
+
+			protocol_menu = birb_action_menu_get_menu(action_menu);
+			if(G_IS_MENU(protocol_menu)) {
+				g_menu_insert_section(submenu, 1, NULL,
+				                      G_MENU_MODEL(protocol_menu));
+			}
+
+			g_clear_object(&action_menu);
 		}
 	}
 
@@ -298,6 +321,9 @@ pidgin_accounts_enabled_menu_get_item_links(GMenuModel *model, gint index,
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
+G_DEFINE_FINAL_TYPE(PidginAccountsEnabledMenu, pidgin_accounts_enabled_menu,
+                    G_TYPE_MENU_MODEL)
+
 static void
 pidgin_accounts_enabled_menu_dispose(GObject *obj) {
 	PidginAccountsEnabledMenu *menu = PIDGIN_ACCOUNTS_ENABLED_MENU(obj);
