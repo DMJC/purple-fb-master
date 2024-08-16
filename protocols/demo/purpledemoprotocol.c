@@ -58,8 +58,6 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	purple_demo_protocol,
 	PURPLE_TYPE_PROTOCOL,
 	G_TYPE_FLAG_FINAL,
-	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_ACTIONS,
-	                              purple_demo_protocol_actions_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CONTACTS,
 	                              purple_demo_protocol_contacts_init)
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CONVERSATION,

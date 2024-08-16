@@ -188,7 +188,6 @@ purple_demo_protocol_fatal_failure_action_activate(GSimpleAction *action,
 /******************************************************************************
  * Request API action implementations
  *****************************************************************************/
-
 static void
 purple_demo_protocol_request_fields_ok_cb(G_GNUC_UNUSED gpointer data,
                                           PurpleRequestPage *page)
@@ -506,17 +505,10 @@ purple_demo_protocol_generic_notification(G_GNUC_UNUSED GSimpleAction *action,
 }
 
 /******************************************************************************
- * PurpleProtocolActions Implementation
+ * Helpers
  *****************************************************************************/
-static const gchar *
-purple_demo_protocol_get_prefix(G_GNUC_UNUSED PurpleProtocolActions *actions) {
-	return "prpl-demo";
-}
-
 static GActionGroup *
-purple_demo_protocol_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *actions,
-                                      G_GNUC_UNUSED PurpleConnection *connection)
-{
+purple_demo_protocol_get_action_group(void) {
 	GSimpleActionGroup *group = NULL;
 	GActionEntry entries[] = {
 		{
@@ -551,9 +543,7 @@ purple_demo_protocol_get_action_group(G_GNUC_UNUSED PurpleProtocolActions *actio
 }
 
 static GMenu *
-purple_demo_protocol_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
-                              G_GNUC_UNUSED PurpleConnection *connection)
-{
+purple_demo_protocol_get_menu(void) {
 	GMenu *menu = NULL;
 	GMenuItem *item = NULL;
 
@@ -596,13 +586,9 @@ purple_demo_protocol_get_menu(G_GNUC_UNUSED PurpleProtocolActions *actions,
 	return menu;
 }
 
-void
-purple_demo_protocol_actions_init(PurpleProtocolActionsInterface *iface) {
-	iface->get_prefix = purple_demo_protocol_get_prefix;
-	iface->get_action_group = purple_demo_protocol_get_action_group;
-	iface->get_menu = purple_demo_protocol_get_menu;
-}
-
+/******************************************************************************
+ * Internal API
+ *****************************************************************************/
 BirbActionMenu *
 purple_demo_protocol_get_action_menu(G_GNUC_UNUSED PurpleProtocol *protocol,
                                      G_GNUC_UNUSED PurpleAccount *account)
@@ -614,13 +600,13 @@ purple_demo_protocol_get_action_menu(G_GNUC_UNUSED PurpleProtocol *protocol,
 
 	action_menu = birb_action_menu_new();
 
-	group = purple_demo_protocol_get_action_group(NULL, NULL);
+	group = purple_demo_protocol_get_action_group();
 	birb_action_menu_add_action_group(action_menu, "prpl-demo", group);
 	g_clear_object(&group);
 
 	menu = birb_action_menu_get_menu(action_menu);
 
-	section = purple_demo_protocol_get_menu(NULL, NULL);
+	section = purple_demo_protocol_get_menu();
 	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
 	g_clear_object(&section);
 
