@@ -146,6 +146,75 @@ purple_ircv3_message_handler_part(G_GNUC_UNUSED IbisClient *client,
 }
 
 gboolean
+purple_ircv3_message_handler_tagmsg(G_GNUC_UNUSED IbisClient *client,
+                                    G_GNUC_UNUSED const char *command,
+                                    IbisMessage *ibis_message, gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+	PurpleContact *contact = NULL;
+	PurpleConversation *conversation = NULL;
+	GStrv params = NULL;
+	IbisTags *tags = NULL;
+	const char *target = NULL;
+	const char *value = NULL;
+
+	params = ibis_message_get_params(ibis_message);
+	tags = ibis_message_get_tags(ibis_message);
+
+	if(params == NULL) {
+		g_warning("privmsg received with no parameters");
+
+		return FALSE;
+	}
+
+	if(g_strv_length(params) != 1) {
+		char *body = g_strjoinv(" ", params);
+		g_warning("unknown tagmsg message format: '%s'", body);
+		g_free(body);
+
+		return FALSE;
+	}
+
+	/* Find or create the contact. */
+	contact = purple_ircv3_connection_find_or_create_contact(connection,
+	                                                         ibis_message);
+
+	/* Find or create the conversation. */
+	target = params[0];
+	if(!purple_ircv3_connection_is_channel(connection, target)) {
+		target = purple_contact_info_get_id(PURPLE_CONTACT_INFO(contact));
+	}
+
+	conversation = purple_ircv3_connection_find_or_create_conversation(connection,
+	                                                                   target);
+
+	purple_ircv3_add_contact_to_conversation(contact, conversation);
+
+	/* Handle typing notifications. */
+	value = ibis_tags_lookup(tags, IBIS_TAG_TYPING);
+	if(!purple_strempty(value)) {
+		PurpleConversationMember *member = NULL;
+		PurpleTypingState state = PURPLE_TYPING_STATE_NONE;
+		guint timeout = 1;
+
+		member = purple_conversation_find_member(conversation,
+		                                         PURPLE_CONTACT_INFO(contact));
+
+		if(purple_strequal(value, IBIS_TYPING_ACTIVE)) {
+			state = PURPLE_TYPING_STATE_TYPING;
+			timeout = 6;
+		} else if(purple_strequal(value, IBIS_TYPING_PAUSED)) {
+			state = PURPLE_TYPING_STATE_PAUSED;
+			timeout = 30;
+		}
+
+		purple_conversation_member_set_typing_state(member, state, timeout);
+	}
+
+	return TRUE;
+}
+
+gboolean
 purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED IbisClient *client,
                                      const char *command,
                                      IbisMessage *ibis_message, gpointer data)

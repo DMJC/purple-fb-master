@@ -460,6 +460,9 @@ purple_ircv3_connection_add_message_handlers(PurpleIRCv3Connection *connection,
 	g_signal_connect_object(client, "message::" IBIS_MSG_NOTICE,
 	                        G_CALLBACK(purple_ircv3_message_handler_privmsg),
 	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_MSG_TAGMSG,
+	                        G_CALLBACK(purple_ircv3_message_handler_tagmsg),
+	                        connection, G_CONNECT_DEFAULT);
 
 	g_signal_connect_object(client, "message::" IBIS_MSG_JOIN,
 	                        G_CALLBACK(purple_ircv3_message_handler_join),
