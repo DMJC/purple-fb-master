@@ -28,6 +28,10 @@
 #include "purpleircv3core.h"
 #include "purpleircv3protocolconversation.h"
 
+struct _PurpleIRCv3Protocol {
+	PurpleProtocol parent;
+};
+
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
@@ -171,7 +175,7 @@ purple_ircv3_protocol_can_connect_async(PurpleProtocol *protocol,
 	GStrv parts = NULL;
 	GTask *task = NULL;
 	const char *username = NULL;
-	gint port = 0;
+	int port = 0;
 
 	task = g_task_new(protocol, cancellable, callback, data);
 
@@ -206,7 +210,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(
 	PurpleIRCv3Protocol,
 	purple_ircv3_protocol,
 	PURPLE_TYPE_PROTOCOL,
-	0,
+	G_TYPE_FLAG_FINAL,
 	G_IMPLEMENT_INTERFACE_DYNAMIC(PURPLE_TYPE_PROTOCOL_CONVERSATION,
 	                              purple_ircv3_protocol_conversation_init))
 

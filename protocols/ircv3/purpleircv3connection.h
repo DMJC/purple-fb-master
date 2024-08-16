@@ -45,16 +45,8 @@ G_BEGIN_DECLS
 #define PURPLE_IRCV3_TYPE_CONNECTION (purple_ircv3_connection_get_type())
 
 PURPLE_IRCV3_AVAILABLE_IN_ALL
-G_DECLARE_DERIVABLE_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
-                         PURPLE_IRCV3, CONNECTION, PurpleConnection)
-
-struct _PurpleIRCv3ConnectionClass {
-	/*< private >*/
-	PurpleConnectionClass parent;
-
-	/*< private >*/
-	gpointer reserved[8];
-};
+G_DECLARE_FINAL_TYPE(PurpleIRCv3Connection, purple_ircv3_connection,
+                     PURPLE_IRCV3, CONNECTION, PurpleConnection)
 
 /**
  * purple_ircv3_connection_register: (skip)

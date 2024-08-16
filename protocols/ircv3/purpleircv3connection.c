@@ -38,19 +38,21 @@ enum {
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
-typedef struct {
+struct _PurpleIRCv3Connection {
+	PurpleConnection parent;
+
 	IbisClient *client;
 
-	gchar *server_name;
+	char *server_name;
 
 	PurpleConversation *status_conversation;
-} PurpleIRCv3ConnectionPrivate;
+};
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(PurpleIRCv3Connection,
                                purple_ircv3_connection,
                                PURPLE_TYPE_CONNECTION,
-                               0,
-                               G_ADD_PRIVATE_DYNAMIC(PurpleIRCv3Connection))
+                               G_TYPE_FLAG_FINAL,
+                               {})
 
 static gboolean
 purple_ircv3_connection_unknown_message_cb(IbisClient *client,
@@ -67,12 +69,9 @@ purple_ircv3_connection_saslsuccess(IbisClient *client, const char *command,
  *****************************************************************************/
 static void
 purple_ircv3_connection_rejoin_channels(PurpleIRCv3Connection *connection) {
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	PurpleConversationManager *manager = NULL;
 	GList *conversations = NULL;
-
-	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
 	manager = purple_conversation_manager_get_default();
@@ -89,7 +88,7 @@ purple_ircv3_connection_rejoin_channels(PurpleIRCv3Connection *connection) {
 
 			message = ibis_message_new(IBIS_MSG_JOIN);
 			ibis_message_set_params(message, id, NULL);
-			ibis_client_write(priv->client, message);
+			ibis_client_write(connection->client, message);
 		}
 
 		conversations = g_list_delete_link(conversations, conversations);
@@ -100,12 +99,9 @@ static inline void
 purple_ircv3_connection_setup_sasl(PurpleIRCv3Connection *connection,
                                    PurpleAccount *account)
 {
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	HaslContext *hasl_context = NULL;
 	const char *value = NULL;
 	gboolean clear_text = FALSE;
-
-	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	hasl_context = hasl_context_new();
 
@@ -114,13 +110,14 @@ purple_ircv3_connection_setup_sasl(PurpleIRCv3Connection *connection,
 		hasl_context_set_username(hasl_context, value);
 	} else {
 		hasl_context_set_username(hasl_context,
-		                          ibis_client_get_nick(priv->client));
+		                          ibis_client_get_nick(connection->client));
 
 		/* Since the user doesn't have a SASL login name set, we'll listen for
 		 * IBIS_RPL_SASLSUCCESS and use that to set the login name to the
 		 * username in HASL which worked if the signal handler gets called.
 		 */
-		g_signal_connect_object(priv->client, "message::" IBIS_RPL_SASLSUCCESS,
+		g_signal_connect_object(connection->client,
+		                        "message::" IBIS_RPL_SASLSUCCESS,
 		                        G_CALLBACK(purple_ircv3_connection_saslsuccess),
 		                        connection, G_CONNECT_DEFAULT);
 	}
@@ -133,10 +130,11 @@ purple_ircv3_connection_setup_sasl(PurpleIRCv3Connection *connection,
 		hasl_context_set_allowed_mechanisms(hasl_context, value);
 	}
 
-	clear_text = purple_account_get_bool(account, "plain-sasl-in-clear", FALSE);
+	clear_text = purple_account_get_bool(account, "plain-sasl-in-clear",
+	                                     FALSE);
 	hasl_context_set_allow_clear_text(hasl_context, clear_text);
 
-	ibis_client_set_hasl_context(priv->client, hasl_context);
+	ibis_client_set_hasl_context(connection->client, hasl_context);
 	g_clear_object(&hasl_context);
 }
 
@@ -153,14 +151,11 @@ purple_ircv3_write_status_message(PurpleIRCv3Connection *connection,
                                   IbisMessage *ibis_message,
                                   gboolean show_command)
 {
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleContact *contact = NULL;
 	PurpleMessage *purple_message = NULL;
 	GString *str = NULL;
 	GStrv params = NULL;
 	char *body = NULL;
-
-	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	str = g_string_new("");
 
@@ -186,7 +181,7 @@ purple_ircv3_write_status_message(PurpleIRCv3Connection *connection,
 	                                    str->str);
 	g_string_free(str, TRUE);
 
-	purple_conversation_write_message(priv->status_conversation,
+	purple_conversation_write_message(connection->status_conversation,
 	                                  purple_message);
 	g_clear_object(&purple_message);
 }
@@ -224,7 +219,6 @@ purple_ircv3_wrote_message_echo_cb(G_GNUC_UNUSED IbisClient *client,
                                    IbisMessage *message, gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	PurpleContactInfo *contact = NULL;
 	PurpleMessage *purple_message = NULL;
@@ -232,14 +226,13 @@ purple_ircv3_wrote_message_echo_cb(G_GNUC_UNUSED IbisClient *client,
 	char *body = NULL;
 	const char *command = NULL;
 
-	priv = purple_ircv3_connection_get_instance_private(connection);
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
 	contact = purple_account_get_contact_info(account);
 
 	command = ibis_message_get_command(message);
 	params = ibis_message_get_params(message);
 	if(params != NULL) {
-		gchar *paramsv = g_strjoinv(" ", params);
+		char *paramsv = g_strjoinv(" ", params);
 		body = g_strdup_printf("%s %s", command, paramsv);
 		g_free(paramsv);
 	} else {
@@ -249,7 +242,7 @@ purple_ircv3_wrote_message_echo_cb(G_GNUC_UNUSED IbisClient *client,
 	purple_message = purple_message_new(PURPLE_CONTACT_INFO(contact), body);
 	g_clear_pointer(&body, g_free);
 
-	purple_conversation_write_message(priv->status_conversation,
+	purple_conversation_write_message(connection->status_conversation,
 	                                  purple_message);
 	g_clear_object(&purple_message);
 }
@@ -365,11 +358,8 @@ purple_ircv3_server_no_motd_handler(G_GNUC_UNUSED IbisClient *client,
                                     gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleMessage *purple_message = NULL;
 	const char *source = NULL;
-
-	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	source = ibis_message_get_source(message);
 
@@ -379,7 +369,7 @@ purple_ircv3_server_no_motd_handler(G_GNUC_UNUSED IbisClient *client,
 		"contents", _("no message of the day found"),
 		NULL);
 
-	purple_conversation_write_message(priv->status_conversation,
+	purple_conversation_write_message(connection->status_conversation,
 	                                  purple_message);
 	g_clear_object(&purple_message);
 
@@ -493,11 +483,8 @@ purple_ircv3_connection_unknown_message_cb(G_GNUC_UNUSED IbisClient *client,
                                            gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleMessage *purple_message = NULL;
 	char *contents = NULL;
-
-	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	contents = g_strdup_printf(_("unhandled message: '%s'"),
 	                           ibis_message_get_raw_message(message));
@@ -508,7 +495,7 @@ purple_ircv3_connection_unknown_message_cb(G_GNUC_UNUSED IbisClient *client,
 		"contents", contents,
 		NULL);
 
-	purple_conversation_write_message(priv->status_conversation,
+	purple_conversation_write_message(connection->status_conversation,
 	                                  purple_message);
 	g_clear_object(&purple_message);
 
@@ -574,7 +561,6 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
                                 GError **error)
 {
 	PurpleIRCv3Connection *connection = NULL;
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	GCancellable *cancellable = NULL;
 	IbisCapabilities *capabilities = NULL;
@@ -582,34 +568,34 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	GProxyResolver *resolver = NULL;
 	const char *password = NULL;
 	const char *value = NULL;
-	gint default_port = PURPLE_IRCV3_DEFAULT_TLS_PORT;
-	gint port = 0;
+	int default_port = PURPLE_IRCV3_DEFAULT_TLS_PORT;
+	int port = 0;
 	gboolean tls = TRUE;
 	gboolean require_password = FALSE;
 
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(purple_connection), FALSE);
 
 	connection = PURPLE_IRCV3_CONNECTION(purple_connection);
-	priv = purple_ircv3_connection_get_instance_private(connection);
 	account = purple_connection_get_account(purple_connection);
 
-	priv->client = ibis_client_new();
-	g_signal_connect_object(priv->client, "notify::connected",
+	connection->client = ibis_client_new();
+	g_signal_connect_object(connection->client, "notify::connected",
 	                        G_CALLBACK(purple_ircv3_connection_connect_cb),
 	                        connection, G_CONNECT_DEFAULT);
-	g_signal_connect_object(priv->client, "notify::error",
+	g_signal_connect_object(connection->client, "notify::error",
 	                        G_CALLBACK(purple_ircv3_connection_error_cb),
 	                        connection, G_CONNECT_DEFAULT);
-	purple_ircv3_connection_add_message_handlers(connection, priv->client);
+	purple_ircv3_connection_add_message_handlers(connection,
+	                                             connection->client);
 
-	ibis_client_set_nick(priv->client,
+	ibis_client_set_nick(connection->client,
 	                     purple_connection_get_display_name(purple_connection));
 
 	value = purple_account_get_string(account, "ident", NULL);
-	ibis_client_set_username(priv->client, value);
+	ibis_client_set_username(connection->client, value);
 
 	value = purple_account_get_string(account, "real-name", NULL);
-	ibis_client_set_realname(priv->client, value);
+	ibis_client_set_realname(connection->client, value);
 
 	password = purple_account_get_string(account, "server-password", NULL);
 
@@ -630,7 +616,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	cancellable = purple_connection_get_cancellable(purple_connection);
 
 	/* Connect to the ready signal of capabilities. */
-	capabilities = ibis_client_get_capabilities(priv->client);
+	capabilities = ibis_client_get_capabilities(connection->client);
 	g_signal_connect_object(capabilities, "ready",
 	                        G_CALLBACK(purple_ircv3_connection_capabilities_ready_cb),
 	                        connection, G_CONNECT_DEFAULT);
@@ -640,13 +626,13 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 		g_propagate_error(error, local_error);
 
 		g_clear_object(&resolver);
-		g_clear_object(&priv->client);
+		g_clear_object(&connection->client);
 
 		return FALSE;
 	}
 
-	ibis_client_connect(priv->client, priv->server_name, port, password, tls,
-	                    cancellable, resolver);
+	ibis_client_connect(connection->client, connection->server_name, port,
+	                    password, tls, cancellable, resolver);
 
 	return TRUE;
 }
@@ -656,16 +642,14 @@ purple_ircv3_connection_disconnect(PurpleConnection *purple_connection,
                                    G_GNUC_UNUSED GError **error)
 {
 	PurpleIRCv3Connection *connection = NULL;
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(purple_connection), FALSE);
 
 	connection = PURPLE_IRCV3_CONNECTION(purple_connection);
-	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	/* TODO: send QUIT command. */
 
-	g_clear_object(&priv->client);
+	g_clear_object(&connection->client);
 
 	return TRUE;
 }
@@ -693,12 +677,9 @@ purple_ircv3_connection_get_property(GObject *obj, guint param_id,
 static void
 purple_ircv3_connection_dispose(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 
-	priv = purple_ircv3_connection_get_instance_private(connection);
-
-	g_clear_object(&priv->client);
-	g_clear_object(&priv->status_conversation);
+	g_clear_object(&connection->client);
+	g_clear_object(&connection->status_conversation);
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->dispose(obj);
 }
@@ -706,11 +687,8 @@ purple_ircv3_connection_dispose(GObject *obj) {
 static void
 purple_ircv3_connection_finalize(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 
-	priv = purple_ircv3_connection_get_instance_private(connection);
-
-	g_clear_pointer(&priv->server_name, g_free);
+	g_clear_pointer(&connection->server_name, g_free);
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->finalize(obj);
 }
@@ -718,7 +696,6 @@ purple_ircv3_connection_finalize(GObject *obj) {
 static void
 purple_ircv3_connection_constructed(GObject *obj) {
 	PurpleIRCv3Connection *connection = PURPLE_IRCV3_CONNECTION(obj);
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleAccount *account = NULL;
 	PurpleConversationManager *conversation_manager = NULL;
 	char **userparts = NULL;
@@ -727,7 +704,6 @@ purple_ircv3_connection_constructed(GObject *obj) {
 
 	G_OBJECT_CLASS(purple_ircv3_connection_parent_class)->constructed(obj);
 
-	priv = purple_ircv3_connection_get_instance_private(connection);
 	account = purple_connection_get_account(PURPLE_CONNECTION(connection));
 
 	title = g_strdup_printf(_("status for %s"),
@@ -738,32 +714,32 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	userparts = g_strsplit(username, "@", 2);
 	purple_connection_set_display_name(PURPLE_CONNECTION(connection),
 	                                   userparts[0]);
-	priv->server_name = g_strdup(userparts[1]);
+	connection->server_name = g_strdup(userparts[1]);
 
 	/* Free the userparts vector. */
 	g_strfreev(userparts);
 
 	/* Check if we have an existing status conversation. */
 	conversation_manager = purple_conversation_manager_get_default();
-	priv->status_conversation = purple_conversation_manager_find_with_id(conversation_manager,
-	                                                                     account,
-	                                                                     priv->server_name);
+	connection->status_conversation = purple_conversation_manager_find_with_id(conversation_manager,
+	                                                                           account,
+	                                                                           connection->server_name);
 
-	if(!PURPLE_IS_CONVERSATION(priv->status_conversation)) {
+	if(!PURPLE_IS_CONVERSATION(connection->status_conversation)) {
 		/* Create our status conversation. */
-		priv->status_conversation = g_object_new(
+		connection->status_conversation = g_object_new(
 			PURPLE_TYPE_CONVERSATION,
 			"account", account,
-			"id", priv->server_name,
-			"name", priv->server_name,
+			"id", connection->server_name,
+			"name", connection->server_name,
 			"title", title,
 			NULL);
 
 			purple_conversation_manager_register(conversation_manager,
-			                                     priv->status_conversation);
+			                                     connection->status_conversation);
 	} else {
 		/* The conversation existed, so add a reference to it. */
-		g_object_ref(priv->status_conversation);
+		g_object_ref(connection->status_conversation);
 	}
 
 	g_clear_pointer(&title, g_free);
@@ -810,19 +786,7 @@ purple_ircv3_connection_class_init(PurpleIRCv3ConnectionClass *klass) {
  *****************************************************************************/
 void
 purple_ircv3_connection_register(GPluginNativePlugin *plugin) {
-	GObjectClass *hack = NULL;
-
 	purple_ircv3_connection_register_type(G_TYPE_MODULE(plugin));
-
-	/* Without this hack we get some warnings about no reference on this type
-	 * when generating the gir file. However, there are no changes to the
-	 * generated gir file with or without this hack, so this is purely to get
-	 * rid of the warnings.
-	 *
-	 * - GK 2023-08-21
-	 */
-	hack = g_type_class_ref(purple_ircv3_connection_get_type());
-	g_type_class_unref(hack);
 }
 
 /******************************************************************************
@@ -830,20 +794,15 @@ purple_ircv3_connection_register(GPluginNativePlugin *plugin) {
  *****************************************************************************/
 IbisClient *
 purple_ircv3_connection_get_client(PurpleIRCv3Connection *connection) {
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
-
 	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), NULL);
 
-	priv = purple_ircv3_connection_get_instance_private(connection);
-
-	return priv->client;
+	return connection->client;
 }
 
 void
 purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
                                            IbisMessage *ibis_message)
 {
-	PurpleIRCv3ConnectionPrivate *priv = NULL;
 	PurpleMessage *message = NULL;
 	GString *str = NULL;
 	GStrv params = NULL;
@@ -852,8 +811,6 @@ purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
 
 	g_return_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection));
 	g_return_if_fail(IBIS_IS_MESSAGE(ibis_message));
-
-	priv = purple_ircv3_connection_get_instance_private(connection);
 
 	command = ibis_message_get_command(ibis_message);
 
@@ -878,7 +835,8 @@ purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
 		NULL);
 	g_free(stripped);
 
-	purple_conversation_write_message(priv->status_conversation, message);
+	purple_conversation_write_message(connection->status_conversation,
+	                                  message);
 
 	g_clear_object(&message);
 }
