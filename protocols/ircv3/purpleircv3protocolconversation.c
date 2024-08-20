@@ -172,6 +172,48 @@ purple_ircv3_protocol_conversation_join_channel_finish(G_GNUC_UNUSED PurpleProto
 	return g_task_propagate_boolean(G_TASK(result), error);
 }
 
+static void
+purple_ircv3_protocol_conversation_send_typing(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
+                                               PurpleConversation *conversation,
+                                               PurpleTypingState state)
+{
+	PurpleIRCv3Connection *connection;
+	PurpleAccount *account = NULL;
+	PurpleConnection *purple_connection = NULL;
+	IbisClient *client = NULL;
+	IbisMessage *message = NULL;
+	IbisTags *tags = NULL;
+	const char *value = NULL;
+
+	if(state == PURPLE_TYPING_STATE_TYPING) {
+		value = IBIS_TYPING_ACTIVE;
+	} else if(state == PURPLE_TYPING_STATE_PAUSED) {
+		value = IBIS_TYPING_PAUSED;
+	} else if(state == PURPLE_TYPING_STATE_NONE) {
+		value = IBIS_TYPING_DONE;
+	}
+
+	if(value == NULL) {
+		return;
+	}
+
+	account = purple_conversation_get_account(conversation);
+	purple_connection = purple_account_get_connection(account);
+	connection = PURPLE_IRCV3_CONNECTION(purple_connection);
+
+	message = ibis_message_new(IBIS_MSG_TAGMSG);
+	ibis_message_set_params(message, purple_conversation_get_id(conversation),
+	                        NULL);
+
+	tags = ibis_tags_new();
+	ibis_message_set_tags(message, tags);
+	ibis_tags_add(tags, IBIS_TAG_TYPING, value);
+	g_clear_object(&tags);
+
+	client = purple_ircv3_connection_get_client(connection);
+	ibis_client_write(client, message);
+}
+
 void
 purple_ircv3_protocol_conversation_init(PurpleProtocolConversationInterface *iface) {
 	iface->send_message_async =
@@ -185,4 +227,7 @@ purple_ircv3_protocol_conversation_init(PurpleProtocolConversationInterface *ifa
 		purple_ircv3_protocol_conversation_join_channel_async;
 	iface->join_channel_finish =
 		purple_ircv3_protocol_conversation_join_channel_finish;
+
+	iface->send_typing  =
+		purple_ircv3_protocol_conversation_send_typing;
 }
