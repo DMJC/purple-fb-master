@@ -1379,10 +1379,6 @@ purple_conversation_write_message(PurpleConversation *conversation,
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 	g_return_if_fail(message != NULL);
 
-	if(purple_message_is_empty(message)) {
-		return;
-	}
-
 	if(!(purple_message_get_flags(message) & PURPLE_MESSAGE_NO_LOG)) {
 		GError *error = NULL;
 		PurpleHistoryManager *manager = NULL;
