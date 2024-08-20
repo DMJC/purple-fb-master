@@ -87,6 +87,7 @@ purple_demo_protocol_generate_conversation_id(PurpleAccount *account,
 	ret = g_strdup(g_checksum_get_string(checksum));
 
 	g_clear_pointer(&checksum, g_checksum_free);
+	g_clear_object(&sorted);
 
 	return ret;
 }
@@ -155,6 +156,7 @@ purple_demo_protocol_create_conversation_async(PurpleProtocolConversation *proto
 		purple_conversation_add_member(conversation, info, FALSE, NULL);
 		g_clear_object(&info);
 	}
+	g_clear_object(&details);
 
 	manager = purple_conversation_manager_get_default();
 	if(!purple_conversation_manager_register(manager, conversation)) {
