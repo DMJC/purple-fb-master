@@ -27,6 +27,8 @@
 #ifndef PURPLE_TYPING_H
 #define PURPLE_TYPING_H
 
+#include "purpleversion.h"
+
 /**
  * PurpleTypingState:
  * @PURPLE_TYPING_STATE_NONE: The user is not currently typing and has nothing

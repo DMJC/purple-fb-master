@@ -450,6 +450,21 @@ purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *proto
 	return FALSE;
 }
 
+gboolean
+purple_protocol_conversation_implements_send_typing(PurpleProtocolConversation *protocol)
+{
+	PurpleProtocolConversationInterface *iface = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_PROTOCOL_CONVERSATION(protocol), FALSE);
+
+	iface = PURPLE_PROTOCOL_CONVERSATION_GET_IFACE(protocol);
+	if(iface->send_typing != NULL) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 void
 purple_protocol_conversation_send_typing(PurpleProtocolConversation *protocol,
                                          PurpleConversation *conversation,

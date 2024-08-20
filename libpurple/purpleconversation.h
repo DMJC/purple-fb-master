@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpletyping.h"
 #include "purpleversion.h"
 
 /**
@@ -363,6 +364,8 @@ void purple_conversation_write_message(PurpleConversation *conversation, PurpleM
  *
  * You will need to call [method@Conversation.send_message_finish] from
  * @callback.
+ *
+ * This will also reset [property@Conversation:typing-state] to `none`.
  *
  * Since: 3.0
  */
@@ -913,6 +916,35 @@ gboolean purple_conversation_get_needs_attention(PurpleConversation *conversatio
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_needs_attention(PurpleConversation *conversation, gboolean needs_attention);
+
+/**
+ * purple_conversation_get_typing_state:
+ * @conversation: The instance.
+ *
+ * Gets the [enum@TypingState] for the libpurple user in @conversation.
+ *
+ * Returns: The typing state of the libpurple user.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleTypingState purple_conversation_get_typing_state(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_typing_state:
+ * @conversation: The instance.
+ * @typing_state: The new state.
+ *
+ * Sets the [enum@TypingState] of the libpurple user in @conversation to
+ * @typing_state.
+ *
+ * This will also call [method@ProtocolConversation.send_typing] if it is
+ * implemented.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_conversation_set_typing_state(PurpleConversation *conversation, PurpleTypingState typing_state);
 
 G_END_DECLS
 

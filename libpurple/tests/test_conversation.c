@@ -53,6 +53,7 @@ test_purple_conversation_properties(void) {
 	PurpleConversation *conversation = NULL;
 	PurpleConversationType type = PURPLE_CONVERSATION_TYPE_UNSET;
 	PurpleTags *tags = NULL;
+	PurpleTypingState typing_state;
 	GDateTime *created_on = NULL;
 	GDateTime *created_on1 = NULL;
 	GDateTime *topic_updated = NULL;
@@ -105,6 +106,7 @@ test_purple_conversation_properties(void) {
 		"topic-author", topic_author,
 		"topic-updated", topic_updated,
 		"type", PURPLE_CONVERSATION_TYPE_THREAD,
+		"typing-state", PURPLE_TYPING_STATE_TYPING,
 		"user-nickname", "knick-knack",
 		NULL);
 
@@ -130,6 +132,7 @@ test_purple_conversation_properties(void) {
 		"topic-author", &topic_author1,
 		"topic-updated", &topic_updated1,
 		"type", &type,
+		"typing-state", &typing_state,
 		"user-nickname", &user_nickname,
 		NULL);
 
@@ -191,6 +194,8 @@ test_purple_conversation_properties(void) {
 	g_clear_pointer(&topic_updated1, g_date_time_unref);
 
 	g_assert_cmpuint(type, ==, PURPLE_CONVERSATION_TYPE_THREAD);
+
+	g_assert_cmpuint(typing_state, ==, PURPLE_TYPING_STATE_TYPING);
 
 	g_assert_cmpstr(user_nickname, ==, "knick-knack");
 	g_clear_pointer(&user_nickname, g_free);

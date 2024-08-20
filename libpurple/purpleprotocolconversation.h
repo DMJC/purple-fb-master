@@ -402,6 +402,19 @@ PURPLE_AVAILABLE_IN_3_0
 gboolean purple_protocol_conversation_set_avatar_finish(PurpleProtocolConversation *protocol, GAsyncResult *result, GError **error);
 
 /**
+ * purple_protocol_conversation_implements_send_typing:
+ * @protocol: The instance.
+ *
+ * Checks if @protocol implements [vfunc@ProtocolConversation.send_typing].
+ *
+ * Returns: %TRUE if everything is implemented, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_protocol_conversation_implements_send_typing(PurpleProtocolConversation *protocol);
+
+/**
  * purple_protocol_conversation_send_typing:
  * @protocol: The instance.
  * @conversation: The conversation.

@@ -65,6 +65,9 @@ struct _PurpleConversation {
 
 	GListStore *messages;
 	gboolean needs_attention;
+
+	PurpleTypingState typing_state;
+	guint typing_state_source;
 };
 
 enum {
@@ -94,6 +97,7 @@ enum {
 	PROP_MEMBERS,
 	PROP_MESSAGES,
 	PROP_NEEDS_ATTENTION,
+	PROP_TYPING_STATE,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -187,9 +191,15 @@ purple_conversation_set_account(PurpleConversation *conversation,
 
 		if(PURPLE_IS_ACCOUNT(conversation->account)) {
 			PurpleContactInfo *info = NULL;
+			PurpleConversationMember *member = NULL;
 
 			info = purple_account_get_contact_info(account);
-			purple_conversation_add_member(conversation, info, FALSE, NULL);
+			member = purple_conversation_add_member(conversation, info, FALSE,
+			                                        NULL);
+
+			g_object_bind_property(conversation, "typing-state",
+			                       member, "typing-state",
+			                       G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 
 			g_signal_connect_object(account, "notify::connected",
 			                        G_CALLBACK(purple_conversation_account_connected_cb),
@@ -329,6 +339,60 @@ purple_conversation_account_connected_cb(GObject *obj,
 	}
 }
 
+/*
+ * purple_conversation_typing_state_typing_cb: (skip)
+ * @data: The conversation instance.
+ *
+ * If this callback manages to get called, it means the user has stopped typing
+ * and we need to change the typing state of the conversation to paused.
+ *
+ * There's some specific ordering we have to worry about because
+ * purple_conversation_set_typing_state will attempt to remove the source that
+ * called us even though we're going to exit cleanly after we call that
+ * function.
+ *
+ * To avoid this, we just set the typing_state_source to 0 which will make
+ * purple_conversation_set_typing_state not try to cancel the source.
+ */
+static gboolean
+purple_conversation_typing_state_typing_cb(gpointer data) {
+	PurpleConversation *conversation = data;
+
+	conversation->typing_state_source = 0;
+
+	purple_conversation_set_typing_state(conversation,
+	                                     PURPLE_TYPING_STATE_PAUSED);
+
+	return G_SOURCE_REMOVE;
+}
+
+/*
+ * purple_conversation_typing_state_paused_cb: (skip)
+ * @data: The conversation instance.
+ *
+ * If this callback manages to get called, it means the user has stopped typing
+ * some time ago, and we need to set the state to NONE.
+ *
+ * There's some specific ordering we have to worry about because
+ * purple_conversation_set_typing_state will attempt to remove the source that
+ * called us even though we're going to exit cleanly after we call that
+ * function.
+ *
+ * To avoid this, we just set the typing_state_source to 0 which will make
+ * purple_conversation_set_typing_state not try to cancel the source.
+ */
+static gboolean
+purple_conversation_typing_state_paused_cb(gpointer data) {
+	PurpleConversation *conversation = data;
+
+	conversation->typing_state_source = 0;
+
+	purple_conversation_set_typing_state(conversation,
+	                                     PURPLE_TYPING_STATE_NONE);
+
+	return G_SOURCE_REMOVE;
+}
+
 /**************************************************************************
  * GObject Implementation
  **************************************************************************/
@@ -409,6 +473,10 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 	case PROP_NEEDS_ATTENTION:
 		purple_conversation_set_needs_attention(conversation,
 		                                        g_value_get_boolean(value));
+		break;
+	case PROP_TYPING_STATE:
+		purple_conversation_set_typing_state(conversation,
+		                                     g_value_get_enum(value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -517,6 +585,10 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 		g_value_set_boolean(value,
 		                    purple_conversation_get_needs_attention(conversation));
 		break;
+	case PROP_TYPING_STATE:
+		g_value_set_enum(value,
+		                 purple_conversation_get_typing_state(conversation));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 		break;
@@ -558,6 +630,8 @@ purple_conversation_finalize(GObject *object) {
 	PurpleConversation *conversation = PURPLE_CONVERSATION(object);
 
 	purple_request_close_with_handle(conversation);
+
+	g_clear_handle_id(&conversation->typing_state_source, g_source_remove);
 
 	g_clear_object(&conversation->account);
 	g_clear_pointer(&conversation->id, g_free);
@@ -980,6 +1054,38 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConversation:typing-state:
+	 *
+	 * The [enum@TypingState] of the libpurple user in this conversation.
+	 *
+	 * When the property changes to `typing`, a timeout will be setup to change
+	 * the property to `paused` if the property hasn't been set to `typing`
+	 * again before the timeout expires.
+	 *
+	 * If the above timeout fires, the state will be changed to `paused`, and a
+	 * new timeout will be added that will reset the state to `none` if it
+	 * expires.
+	 *
+	 * This means that user interfaces should only ever need to set the state
+	 * to typing and should do so whenever the user types anything that could
+	 * be part of a message. Things like keyboard navigation and %commands
+	 * should not result in this property being changed.
+	 *
+	 * If the [class@Protocol] that this conversation belongs to implements
+	 * [iface@ProtocolConversation] and
+	 * [vfunc@ProtocolConversation.send_typing],
+	 * [vfunc@ProtocolConversation.send_typing] will be called when this
+	 * property is set even if the state hasn't changed.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_TYPING_STATE] = g_param_spec_enum(
+		"typing-state", NULL, NULL,
+		PURPLE_TYPE_TYPING_STATE,
+		PURPLE_TYPING_STATE_NONE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
@@ -1313,6 +1419,9 @@ purple_conversation_send_message_async(PurpleConversation *conversation,
 
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 	g_return_if_fail(PURPLE_IS_MESSAGE(message));
+
+	purple_conversation_set_typing_state(conversation,
+	                                     PURPLE_TYPING_STATE_NONE);
 
 	task = g_task_new(conversation, cancellable, callback, data);
 	g_task_set_source_tag(task, purple_conversation_send_message_async);
@@ -1804,5 +1913,74 @@ purple_conversation_set_needs_attention(PurpleConversation *conversation,
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_NEEDS_ATTENTION]);
+	}
+}
+
+PurpleTypingState
+purple_conversation_get_typing_state(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation),
+	                     PURPLE_TYPING_STATE_NONE);
+
+	return conversation->typing_state;
+}
+
+void
+purple_conversation_set_typing_state(PurpleConversation *conversation,
+                                     PurpleTypingState typing_state)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	/* Remove the old timeout because we have new activity. */
+	g_clear_handle_id(&conversation->typing_state_source, g_source_remove);
+
+	/* We set some default timeouts based on the state. If the new state is
+	 * TYPING, we use a 6 second timeout that will change the state to PAUSED.
+	 * When the state changes to PAUSED we will set a 30 second time that will
+	 * change the state to NONE.
+	 *
+	 * This allows the user interface to just tell libpurple when the user is
+	 * typing, and the rest happens automatically.
+	 */
+	if(typing_state == PURPLE_TYPING_STATE_TYPING) {
+		conversation->typing_state_source =
+			g_timeout_add_seconds(6,
+			                      purple_conversation_typing_state_typing_cb,
+			                      conversation);
+	} else if(typing_state == PURPLE_TYPING_STATE_PAUSED) {
+		conversation->typing_state_source =
+			g_timeout_add_seconds(30,
+			                      purple_conversation_typing_state_paused_cb,
+			                      conversation);
+	}
+
+	if(conversation->typing_state != typing_state) {
+		conversation->typing_state = typing_state;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_TYPING_STATE]);
+	}
+
+	/* Check if we have a protocol that implements
+	 * ProtocolConversation.send_typing and call it if it does.
+	 *
+	 * We do this after the notify above to make sure the user interface will
+	 * not be possibly blocked by the protocol.
+	 */
+	if(PURPLE_IS_ACCOUNT(conversation->account)) {
+		PurpleProtocol *protocol = NULL;
+
+		protocol = purple_account_get_protocol(conversation->account);
+		if(PURPLE_IS_PROTOCOL_CONVERSATION(protocol)) {
+			PurpleProtocolConversation *protocol_conversation = NULL;
+
+			protocol_conversation = PURPLE_PROTOCOL_CONVERSATION(protocol);
+
+			if(purple_protocol_conversation_implements_send_typing(protocol_conversation))
+			{
+				purple_protocol_conversation_send_typing(protocol_conversation,
+				                                         conversation,
+				                                         conversation->typing_state);
+			}
+		}
 	}
 }
