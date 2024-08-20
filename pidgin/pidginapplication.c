@@ -198,6 +198,19 @@ pidgin_application_populate_dynamic_menus(PidginApplication *application) {
 	g_menu_append_section(target, NULL, model);
 }
 
+static void
+pidgin_application_setup_debug(G_GNUC_UNUSED PidginApplication *application) {
+	pidgin_debug_init_handler();
+
+	if(purple_strequal(PURPLE_BUILD_BUILDTYPE, "debug") ||
+	   purple_strequal(PURPLE_BUILD_BUILDTYPE, "debugoptimized"))
+	{
+		pidgin_debug_set_print_enabled(TRUE);
+	} else {
+		pidgin_debug_set_print_enabled(opt_debug);
+	}
+}
+
 /******************************************************************************
  * Actions
  *****************************************************************************/
@@ -708,12 +721,7 @@ pidgin_application_startup(GApplication *application) {
 		}
 	}
 
-	pidgin_debug_init_handler();
-#ifdef DEBUG
-	pidgin_debug_set_print_enabled(TRUE);
-#else
-	pidgin_debug_set_print_enabled(opt_debug);
-#endif
+	pidgin_application_setup_debug(PIDGIN_APPLICATION(application));
 
 #ifdef _WIN32
 	winpidgin_init();
