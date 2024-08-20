@@ -151,9 +151,11 @@ purple_demo_protocol_create_conversation_async(PurpleProtocolConversation *proto
 
 	for(guint i = 0; i < g_list_model_get_n_items(participants); i++) {
 		PurpleContactInfo *info = NULL;
+		PurpleConversationMembers *members = NULL;
 
 		info = g_list_model_get_item(participants, i);
-		purple_conversation_add_member(conversation, info, FALSE, NULL);
+		members = purple_conversation_get_members(conversation);
+		purple_conversation_members_add_member(members, info, FALSE, NULL);
 		g_clear_object(&info);
 	}
 	g_clear_object(&details);
@@ -199,18 +201,20 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
 	if(purple_conversation_is_dm(conversation)) {
 		PurpleAccount *account = NULL;
 		PurpleContact *contact = NULL;
+		PurpleContactInfo *info = NULL;
 		PurpleContactManager *manager = NULL;
+		PurpleConversationMembers *members = NULL;
 
 		account = purple_conversation_get_account(conversation);
+		members = purple_conversation_get_members(conversation);
 
 		manager = purple_contact_manager_get_default();
 
 		/* Check if this dm is with echo. */
 		contact = purple_contact_manager_find_with_username(manager, account,
 		                                                    "Echo");
-		if(purple_conversation_has_member(conversation,
-		                                  PURPLE_CONTACT_INFO(contact), NULL))
-		{
+		info = PURPLE_CONTACT_INFO(contact);
+		if(purple_conversation_members_has_member(members, info, NULL)) {
 			PurpleDemoProtocolIMInfo *info = NULL;
 			PurpleMessageFlags flags;
 
@@ -235,9 +239,8 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
 		/* Check if this dm is with aegina. */
 		contact = purple_contact_manager_find_with_username(manager, account,
 		                                                    "Aegina");
-		if(purple_conversation_has_member(conversation,
-		                                  PURPLE_CONTACT_INFO(contact), NULL))
-		{
+		info = PURPLE_CONTACT_INFO(contact);
+		if(purple_conversation_members_has_member(members, info, NULL)) {
 			PurpleDemoProtocolIMInfo *info = g_new(PurpleDemoProtocolIMInfo, 1);
 			const char *author = purple_message_get_author_name(message);
 			const char *contents = NULL;
