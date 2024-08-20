@@ -1796,6 +1796,8 @@ void
 purple_conversation_set_typing_state(PurpleConversation *conversation,
                                      PurpleTypingState typing_state)
 {
+	gboolean send = FALSE;
+
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 
 	/* Remove the old timeout because we have new activity. */
@@ -1826,6 +1828,14 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_TYPING_STATE]);
+
+		/* The state changed so we need to send it. */
+		send = TRUE;
+	}
+
+	/* If the state is typing, we always send it. */
+	if(conversation->typing_state == PURPLE_TYPING_STATE_TYPING) {
+		send = TRUE;
 	}
 
 	/* Check if we have a protocol that implements
@@ -1834,7 +1844,7 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 	 * We do this after the notify above to make sure the user interface will
 	 * not be possibly blocked by the protocol.
 	 */
-	if(PURPLE_IS_ACCOUNT(conversation->account)) {
+	if(send && PURPLE_IS_ACCOUNT(conversation->account)) {
 		PurpleProtocol *protocol = NULL;
 
 		protocol = purple_account_get_protocol(conversation->account);
