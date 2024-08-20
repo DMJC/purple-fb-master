@@ -169,6 +169,33 @@ pidgin_conversation_send_message(PidginConversation *conversation) {
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
+static void
+pidgin_conversation_input_insert_text_cb(G_GNUC_UNUSED GtkTextBuffer *buffer,
+                                         G_GNUC_UNUSED const GtkTextIter *iter,
+                                         G_GNUC_UNUSED char *text,
+                                         G_GNUC_UNUSED int length,
+                                         gpointer data)
+{
+	PidginConversation *conversation = data;
+
+	purple_conversation_set_typing_state(conversation->conversation,
+	                                     PURPLE_TYPING_STATE_TYPING);
+}
+
+static void
+pidgin_conversation_input_delete_range_cb(GtkTextBuffer *buffer,
+                                          G_GNUC_UNUSED const GtkTextIter *start,
+                                          G_GNUC_UNUSED const GtkTextIter *end,
+                                          gpointer data)
+{
+	PidginConversation *conversation = data;
+
+	if(gtk_text_buffer_get_char_count(buffer) == 0) {
+		purple_conversation_set_typing_state(conversation->conversation,
+		                                     PURPLE_TYPING_STATE_NONE);
+	}
+}
+
 static gboolean
 pidgin_conversation_input_key_pressed_cb(G_GNUC_UNUSED GtkEventControllerKey *self,
                                          guint keyval,
@@ -511,6 +538,10 @@ pidgin_conversation_class_init(PidginConversationClass *klass) {
 
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_conversation_escape_topic);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_conversation_input_insert_text_cb);
+	gtk_widget_class_bind_template_callback(widget_class,
+	                                        pidgin_conversation_input_delete_range_cb);
 	gtk_widget_class_bind_template_callback(widget_class,
 	                                        pidgin_conversation_input_key_pressed_cb);
 	gtk_widget_class_bind_template_callback(widget_class,

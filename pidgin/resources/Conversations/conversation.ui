@@ -156,6 +156,12 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
             <property name="wrap-mode">word-char</property>
             <property name="input-purpose">free-form</property>
             <property name="input-hints">emoji|spellcheck|word-completion</property>
+            <property name="buffer">
+              <object class="GtkTextBuffer">
+                <signal name="delete-range" handler="pidgin_conversation_input_delete_range_cb" after="yes"/>
+                <signal name="insert-text" handler="pidgin_conversation_input_insert_text_cb"/>
+              </object>
+            </property>
             <child>
               <object class="GtkEventControllerKey">
                 <signal name="key-pressed" handler="pidgin_conversation_input_key_pressed_cb"/>
