@@ -405,120 +405,6 @@ test_purple_conversation_is_thread(void) {
 }
 
 /******************************************************************************
- * Membership tests and helpers
- *****************************************************************************/
-static void
-test_purple_conversation_membership_signal_cb(PurpleConversation *conversation,
-                                              PurpleConversationMember *member,
-                                              gboolean announce,
-                                              const char *message,
-                                              gpointer data)
-{
-	/* We use int's for called to make sure it was only called once. */
-	gint *called = data;
-
-	g_assert_true(PURPLE_IS_CONVERSATION(conversation));
-	g_assert_true(PURPLE_IS_CONVERSATION_MEMBER(member));
-	g_assert_true(announce);
-	g_assert_cmpstr(message, ==, "announcement message");
-
-	*called = *called + 1;
-}
-
-static void
-test_purple_conversation_members_add_remove(void) {
-	PurpleAccount *account = NULL;
-	PurpleContactInfo *info = NULL;
-	PurpleContactInfo *member_info = NULL;
-	PurpleConversation *conversation = NULL;
-	PurpleConversationManager *conversation_manager = NULL;
-	PurpleConversationMember *member = NULL;
-	PurpleConversationMember *member1 = NULL;
-	PurpleConversationMember *test_member = NULL;
-	gboolean removed = FALSE;
-	gint added_called = 0;
-	gint removed_called = 0;
-
-	/* Create our instances. The id is just a uuid 4 to help us avoid a
-	 * g_warning.
-	 */
-	info = purple_contact_info_new("745c50ba-1189-48d9-827c-051783026c96");
-	account = purple_account_new("test", "test");
-	conversation = g_object_new(
-		PURPLE_TYPE_CONVERSATION,
-		"account", account,
-		"name", "test-conversation",
-		NULL);
-
-	/* Make sure the account got added as a member. */
-	test_member = purple_conversation_find_member(conversation,
-	                                              purple_account_get_contact_info(account));
-	g_assert_nonnull(test_member);
-
-	/* Connect our signals. */
-	g_signal_connect(conversation, "member-added",
-	                 G_CALLBACK(test_purple_conversation_membership_signal_cb),
-	                 &added_called);
-	g_signal_connect(conversation, "member-removed",
-	                 G_CALLBACK(test_purple_conversation_membership_signal_cb),
-	                 &removed_called);
-
-	/* Add the member. */
-	member = purple_conversation_add_member(conversation, info, TRUE,
-	                                        "announcement message");
-	g_assert_cmpint(added_called, ==, 1);
-	g_assert_true(PURPLE_IS_CONVERSATION_MEMBER(member));
-
-	test_member = purple_conversation_find_member(conversation, info);
-	g_assert_true(member == test_member);
-
-	/* Add our own reference to the returned member as we use it later to
-	 * verify that double remove doesn't do anything.
-	 */
-	g_object_ref(member);
-
-	/* Try to add the member again, which would just return the existing
-	 * member and not emit the signal.
-	 */
-	member1 = purple_conversation_add_member(conversation, info, TRUE,
-	                                         "announcement message");
-	g_assert_cmpint(added_called, ==, 1);
-	g_assert_true(PURPLE_IS_CONVERSATION_MEMBER(member1));
-	g_assert_true(member1 == member);
-
-	/* Now remove the member and verify the signal was called. */
-	member_info = purple_conversation_member_get_contact_info(member);
-	removed = purple_conversation_remove_member(conversation, member_info,
-	                                            TRUE, "announcement message");
-	g_assert_true(removed);
-	g_assert_cmpint(removed_called, ==, 1);
-
-	test_member = purple_conversation_find_member(conversation, info);
-	g_assert_null(test_member);
-
-	/* Try to remove the member again and verify that nothing was removed and
-	 * that the signal wasn't emitted.
-	 */
-	member_info = purple_conversation_member_get_contact_info(member);
-	removed = purple_conversation_remove_member(conversation, member_info,
-	                                            TRUE, "announcement message");
-	g_assert_false(removed);
-	g_assert_cmpint(removed_called, ==, 1);
-
-	/* TODO: Conversations are automatically registered on construction for
-	 * legacy reasons, so we need to explicitly unregister to clean them up,
-	 * but this can go away once that stops happening. */
-	conversation_manager = purple_conversation_manager_get_default();
-	purple_conversation_manager_unregister(conversation_manager, conversation);
-
-	/* Clean up everything. */
-	g_clear_object(&info);
-	g_clear_object(&member);
-	g_clear_object(&account);
-	g_clear_object(&conversation);
-}
-
-/******************************************************************************
  * Message Tests
  *****************************************************************************/
 static void
@@ -736,9 +622,6 @@ main(gint argc, gchar *argv[]) {
 	                test_purple_conversation_is_channel);
 	g_test_add_func("/conversation/is-thread",
 	                test_purple_conversation_is_thread);
-
-	g_test_add_func("/conversation/members/add-remove",
-	                test_purple_conversation_members_add_remove);
 
 	g_test_add_func("/conversation/message/write-one",
 	                test_purple_conversation_message_write_one);
