@@ -34,15 +34,15 @@ static void
 purple_ircv3_add_contact_to_conversation(PurpleContact *contact,
                                          PurpleConversation *conversation)
 {
+	PurpleContactInfo *info = PURPLE_CONTACT_INFO(contact);
 	PurpleConversationMember *member = NULL;
+	PurpleConversationMembers *members = NULL;
 
-	member = purple_conversation_find_member(conversation,
-	                                         PURPLE_CONTACT_INFO(contact));
+	members = purple_conversation_get_members(conversation);
 
+	member = purple_conversation_members_find_member(members, info);
 	if(!PURPLE_IS_CONVERSATION_MEMBER(member)) {
-		purple_conversation_add_member(conversation,
-		                               PURPLE_CONTACT_INFO(contact),
-		                               TRUE, NULL);
+		purple_conversation_members_add_member(members, info, TRUE, NULL);
 	}
 }
 
@@ -97,6 +97,7 @@ purple_ircv3_message_handler_part(G_GNUC_UNUSED IbisClient *client,
 	PurpleContact *contact = NULL;
 	PurpleConversation *conversation = NULL;
 	PurpleConversationManager *manager = NULL;
+	PurpleConversationMembers *members = NULL;
 	GStrv params = NULL;
 	guint n_params = 0;
 	char *reason = NULL;
@@ -124,6 +125,8 @@ purple_ircv3_message_handler_part(G_GNUC_UNUSED IbisClient *client,
 		return TRUE;
 	}
 
+	members = purple_conversation_get_members(conversation);
+
 	/* We do want to find or create the contact, even on a part, because we
 	 * could have connected to a BNC and we weren't told about the contact yet.
 	 */
@@ -136,9 +139,9 @@ purple_ircv3_message_handler_part(G_GNUC_UNUSED IbisClient *client,
 		reason = g_strjoinv(" ", params + 1);
 	}
 
-	purple_conversation_remove_member(conversation,
-	                                  PURPLE_CONTACT_INFO(contact), TRUE,
-	                                  reason);
+	purple_conversation_members_remove_member(members,
+	                                          PURPLE_CONTACT_INFO(contact),
+	                                          TRUE, reason);
 
 	g_clear_pointer(&reason, g_free);
 
@@ -194,11 +197,13 @@ purple_ircv3_message_handler_tagmsg(G_GNUC_UNUSED IbisClient *client,
 	value = ibis_tags_lookup(tags, IBIS_TAG_TYPING);
 	if(!purple_strempty(value)) {
 		PurpleConversationMember *member = NULL;
+		PurpleConversationMembers *members = NULL;
 		PurpleTypingState state = PURPLE_TYPING_STATE_NONE;
 		guint timeout = 1;
 
-		member = purple_conversation_find_member(conversation,
-		                                         PURPLE_CONTACT_INFO(contact));
+		members = purple_conversation_get_members(conversation);
+		member = purple_conversation_members_find_member(members,
+		                                                 PURPLE_CONTACT_INFO(contact));
 
 		if(purple_strequal(value, IBIS_TYPING_ACTIVE)) {
 			state = PURPLE_TYPING_STATE_TYPING;
