@@ -261,6 +261,7 @@ test_purple_conversation_manager_find_dm_exists(void) {
 	PurpleConversation *conversation1 = NULL;
 	PurpleConversation *conversation2 = NULL;
 	PurpleConversationManager *manager = NULL;
+	PurpleConversationMembers *members = NULL;
 
 	manager = g_object_new(PURPLE_TYPE_CONVERSATION_MANAGER, NULL);
 
@@ -274,8 +275,11 @@ test_purple_conversation_manager_find_dm_exists(void) {
 		"type", PURPLE_CONVERSATION_TYPE_DM,
 		NULL);
 	purple_conversation_manager_register(manager, conversation1);
-	purple_conversation_add_member(conversation1, PURPLE_CONTACT_INFO(contact),
-	                               FALSE, NULL);
+	members = purple_conversation_get_members(conversation1);
+
+	purple_conversation_members_add_member(members,
+	                                       PURPLE_CONTACT_INFO(contact),
+	                                       FALSE, NULL);
 
 	conversation2 = purple_conversation_manager_find_dm(manager, contact);
 	g_assert_nonnull(conversation2);

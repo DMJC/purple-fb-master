@@ -492,6 +492,7 @@ purple_conversation_manager_find_dm(PurpleConversationManager *manager,
 	while(g_hash_table_iter_next(&iter, &key, NULL)) {
 		PurpleAccount *conversation_account = NULL;
 		PurpleConversation *conversation = key;
+		PurpleConversationMembers *members = NULL;
 
 		conversation_account = purple_conversation_get_account(conversation);
 		if(conversation_account != contact_account) {
@@ -502,7 +503,8 @@ purple_conversation_manager_find_dm(PurpleConversationManager *manager,
 			continue;
 		}
 
-		if(purple_conversation_has_member(conversation, info, NULL)) {
+		members = purple_conversation_get_members(conversation);
+		if(purple_conversation_members_has_member(members, info, NULL)) {
 			return conversation;
 		}
 	}

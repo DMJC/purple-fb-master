@@ -516,6 +516,7 @@ test_purple_conversation_generate_title_dm(void) {
 	PurpleAccount *account = NULL;
 	PurpleContact *contact = NULL;
 	PurpleConversation *conversation = NULL;
+	PurpleConversationMembers *members = NULL;
 	const char *title = NULL;
 
 	account = purple_account_new("test", "test");
@@ -524,14 +525,16 @@ test_purple_conversation_generate_title_dm(void) {
 		"account", account,
 		"type", PURPLE_CONVERSATION_TYPE_DM,
 		NULL);
+	members = purple_conversation_get_members(conversation);
 
 	title = purple_conversation_get_title(conversation);
 	g_assert_null(title);
 
 	contact = purple_contact_new(account, NULL);
 	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact), "Alice");
-	purple_conversation_add_member(conversation, PURPLE_CONTACT_INFO(contact),
-	                               FALSE, NULL);
+	purple_conversation_members_add_member(members,
+	                                       PURPLE_CONTACT_INFO(contact), FALSE,
+	                                       NULL);
 
 	title = purple_conversation_get_title(conversation);
 	g_assert_cmpstr(title, ==, "Alice");
@@ -553,6 +556,7 @@ test_purple_conversation_generate_title_group_dm(void) {
 	PurpleContact *contact2 = NULL;
 	PurpleContact *contact3 = NULL;
 	PurpleConversation *conversation = NULL;
+	PurpleConversationMembers *members = NULL;
 	const char *title = NULL;
 
 	account = purple_account_new("test", "test");
@@ -561,24 +565,28 @@ test_purple_conversation_generate_title_group_dm(void) {
 		"account", account,
 		"type", PURPLE_CONVERSATION_TYPE_GROUP_DM,
 		NULL);
+	members = purple_conversation_get_members(conversation);
 
 	title = purple_conversation_get_title(conversation);
 	g_assert_null(title);
 
 	contact1 = purple_contact_new(account, NULL);
 	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact1), "Alice");
-	purple_conversation_add_member(conversation, PURPLE_CONTACT_INFO(contact1),
-	                               FALSE, NULL);
+	purple_conversation_members_add_member(members,
+	                                       PURPLE_CONTACT_INFO(contact1),
+	                                       FALSE, NULL);
 
 	contact2 = purple_contact_new(account, NULL);
 	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact2), "Bob");
-	purple_conversation_add_member(conversation, PURPLE_CONTACT_INFO(contact2),
-	                               FALSE, NULL);
+	purple_conversation_members_add_member(members,
+	                                       PURPLE_CONTACT_INFO(contact2),
+	                                       FALSE, NULL);
 
 	contact3 = purple_contact_new(account, NULL);
 	purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact3), "Eve");
-	purple_conversation_add_member(conversation, PURPLE_CONTACT_INFO(contact3),
-	                               FALSE, NULL);
+	purple_conversation_members_add_member(members,
+	                                       PURPLE_CONTACT_INFO(contact3),
+	                                       FALSE, NULL);
 
 	title = purple_conversation_get_title(conversation);
 	g_assert_cmpstr(title, ==, "Alice, Bob, Eve");

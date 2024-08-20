@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purpleconversationmembers.h"
 #include "purpletyping.h"
 #include "purpleversion.h"
 
@@ -717,7 +718,7 @@ PurpleTags *purple_conversation_get_tags(PurpleConversation *conversation);
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-GListModel *purple_conversation_get_members(PurpleConversation *conversation);
+PurpleConversationMembers *purple_conversation_get_members(PurpleConversation *conversation);
 
 /**
  * purple_conversation_has_member:
@@ -734,7 +735,7 @@ GListModel *purple_conversation_get_members(PurpleConversation *conversation);
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_conversation_members_has_member)
 gboolean purple_conversation_has_member(PurpleConversation *conversation, PurpleContactInfo *info, guint *position);
 
 /**
@@ -750,7 +751,7 @@ gboolean purple_conversation_has_member(PurpleConversation *conversation, Purple
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_conversation_members_find_member)
 PurpleConversationMember *purple_conversation_find_member(PurpleConversation *conversation, PurpleContactInfo *info);
 
 /**
@@ -767,21 +768,16 @@ PurpleConversationMember *purple_conversation_find_member(PurpleConversation *co
  * > This method is intended to be called by a protocol plugin to directly
  * > manage the membership state of the @conversation.
  *
- * This will also emit the [signal@Purple.Conversation::member-added] signal if
- * an existing member was not found.
- *
- * The @announce and @message parameters will be used when emitting the
- * [signal@Purple.Conversation::member-added] signal. Announce and message are
- * meant for protocols to more properly define their behavior. For example, on
- * IRC you will typically be told when a user joins a chat but on Twitch this
- * isn't announced.
+ * Announce and message are meant for protocols to more properly define their
+ * behavior. For example, on IRC you will typically be told when a user joins a
+ * chat but on Twitch this isn't announced.
  *
  * Returns: (transfer none): The [class@Purple.ConversationMember] that was
  *          created or found.
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_conversation_members_add_member)
 PurpleConversationMember *purple_conversation_add_member(PurpleConversation *conversation, PurpleContactInfo *info, gboolean announce, const char *message);
 
 /**
@@ -792,9 +788,7 @@ PurpleConversationMember *purple_conversation_add_member(PurpleConversation *con
  * @message: (nullable): An optional message for the announcement.
  *
  * Attempts to remove @info from the collection of members in @conversation.
- * If found, @info is removed and the
- * [signal@Purple.Conversation::member-removed] signal is emitted with
- * @announce and @message as parameters.
+ * If found, @info is removed.
  *
  * > This method is intended to be called by a protocol plugin to directly
  * > manage the membership state of the @conversation.
@@ -804,7 +798,7 @@ PurpleConversationMember *purple_conversation_add_member(PurpleConversation *con
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_conversation_members_remove_member)
 gboolean purple_conversation_remove_member(PurpleConversation *conversation, PurpleContactInfo *info, gboolean announce, const char *message);
 
 /**

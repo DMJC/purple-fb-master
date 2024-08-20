@@ -61,7 +61,8 @@ struct _PurpleConversation {
 	gboolean online;
 	gboolean federated;
 	PurpleTags *tags;
-	GListStore *members;
+
+	PurpleConversationMembers *members;
 
 	GListStore *messages;
 	gboolean needs_attention;
@@ -104,8 +105,6 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 enum {
 	SIG_PRESENT,
-	SIG_MEMBER_ADDED,
-	SIG_MEMBER_REMOVED,
 	N_SIGNALS,
 };
 static guint signals[N_SIGNALS] = {0, };
@@ -182,7 +181,8 @@ purple_conversation_set_account(PurpleConversation *conversation,
 			PurpleContactInfo *info = NULL;
 
 			info = purple_account_get_contact_info(conversation->account);
-			purple_conversation_remove_member(conversation, info, FALSE, NULL);
+			purple_conversation_members_remove_member(conversation->members,
+			                                          info, FALSE, NULL);
 		}
 	}
 
@@ -194,8 +194,8 @@ purple_conversation_set_account(PurpleConversation *conversation,
 			PurpleConversationMember *member = NULL;
 
 			info = purple_account_get_contact_info(account);
-			member = purple_conversation_add_member(conversation, info, FALSE,
-			                                        NULL);
+			member = purple_conversation_members_add_member(conversation->members,
+			                                                info, FALSE, NULL);
 
 			g_object_bind_property(conversation, "typing-state",
 			                       member, "typing-state",
@@ -240,19 +240,6 @@ purple_conversation_set_federated(PurpleConversation *conversation,
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_FEDERATED]);
 	}
-}
-
-static gboolean
-purple_conversation_check_member_equal(gconstpointer a, gconstpointer b) {
-	PurpleConversationMember *member_a = (PurpleConversationMember *)a;
-	PurpleConversationMember *member_b = (PurpleConversationMember *)b;
-	PurpleContactInfo *info_a = NULL;
-	PurpleContactInfo *info_b = NULL;
-
-	info_a = purple_conversation_member_get_contact_info(member_a);
-	info_b = purple_conversation_member_get_contact_info(member_b);
-
-	return (purple_contact_info_compare(info_a, info_b) == 0);
 }
 
 static void
@@ -307,9 +294,11 @@ purple_conversation_send_message_async_cb(GObject *source,
  * Callbacks
  **************************************************************************/
 static void
-purple_conversation_member_name_changed_cb(G_GNUC_UNUSED GObject *source,
-                                           G_GNUC_UNUSED GParamSpec *pspec,
-                                           gpointer data)
+purple_conversation_members_item_changed_cb(G_GNUC_UNUSED GListModel *model,
+                                            G_GNUC_UNUSED guint position,
+                                            G_GNUC_UNUSED guint removed,
+                                            G_GNUC_UNUSED guint added,
+                                            gpointer data)
 {
 	PurpleConversation *conversation = data;
 
@@ -598,8 +587,12 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 static void
 purple_conversation_init(PurpleConversation *conversation) {
 	conversation->tags = purple_tags_new();
-	conversation->members = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
 	conversation->messages = g_list_store_new(PURPLE_TYPE_MESSAGE);
+
+	conversation->members = purple_conversation_members_new();
+	g_signal_connect_object(conversation->members, "items-changed",
+	                        G_CALLBACK(purple_conversation_members_item_changed_cb),
+	                        conversation, G_CONNECT_DEFAULT);
 }
 
 static void
@@ -1023,7 +1016,7 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	properties[PROP_MEMBERS] = g_param_spec_object(
 		"members", "members",
 		"The members that are currently in this conversation",
-		G_TYPE_LIST_MODEL,
+		PURPLE_TYPE_CONVERSATION_MEMBERS,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -1107,56 +1100,6 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		NULL,
 		G_TYPE_NONE,
 		0);
-
-	/**
-	 * PurpleConversation::member-added:
-	 * @conversation: The instance.
-	 * @member: The [class@Purple.ConversationMember] instance.
-	 * @announce: Whether or not this addition should be announced.
-	 * @message: (nullable): An optional message to use in the announcement.
-	 *
-	 * Emitted when a new member is added to this conversation.
-	 *
-	 * Since: 3.0
-	 */
-	signals[SIG_MEMBER_ADDED] = g_signal_new_class_handler(
-		"member-added",
-		G_OBJECT_CLASS_TYPE(klass),
-		G_SIGNAL_RUN_LAST,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		G_TYPE_NONE,
-		3,
-		PURPLE_TYPE_CONVERSATION_MEMBER,
-		G_TYPE_BOOLEAN,
-		G_TYPE_STRING);
-
-	/**
-	 * PurpleConversation::member-removed:
-	 * @conversation: The instance.
-	 * @member: The [class@Purple.ConversationMember] instance.
-	 * @announce: Whether or not this removal should be announced.
-	 * @message: (nullable): An optional message to use in the announcement.
-	 *
-	 * Emitted when member is removed from this conversation.
-	 *
-	 * Since: 3.0
-	 */
-	signals[SIG_MEMBER_REMOVED] = g_signal_new_class_handler(
-		"member-removed",
-		G_OBJECT_CLASS_TYPE(klass),
-		G_SIGNAL_RUN_LAST,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		G_TYPE_NONE,
-		3,
-		PURPLE_TYPE_CONVERSATION_MEMBER,
-		G_TYPE_BOOLEAN,
-		G_TYPE_STRING);
 }
 
 /******************************************************************************
@@ -1698,55 +1641,34 @@ purple_conversation_get_tags(PurpleConversation *conversation) {
 	return conversation->tags;
 }
 
-GListModel *
+PurpleConversationMembers *
 purple_conversation_get_members(PurpleConversation *conversation) {
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 
-	return G_LIST_MODEL(conversation->members);
+	return conversation->members;
 }
 
 gboolean
 purple_conversation_has_member(PurpleConversation *conversation,
                                PurpleContactInfo *info, guint *position)
 {
-	PurpleConversationMember *needle = NULL;
-	gboolean found = FALSE;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), FALSE);
 
-	needle = purple_conversation_member_new(info);
-	found = g_list_store_find_with_equal_func(conversation->members,
-	                                          needle,
-	                                          purple_conversation_check_member_equal,
-	                                          position);
-
-	g_clear_object(&needle);
-
-	return found;
+	return purple_conversation_members_has_member(conversation->members,
+	                                              info, position);
 }
 
 PurpleConversationMember *
 purple_conversation_find_member(PurpleConversation *conversation,
                                 PurpleContactInfo *info)
 {
-	PurpleConversationMember *member = NULL;
-	guint position = 0;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
 
-	if(purple_conversation_has_member(conversation, info, &position)) {
-		member = g_list_model_get_item(G_LIST_MODEL(conversation->members),
-		                               position);
+	return purple_conversation_members_find_member(conversation->members,
+	                                               info);
 
-		/* We don't return a reference, but get_item does, so we need to get
-		 * rid of that.
-		 */
-		g_object_unref(member);
-	}
-
-	return member;
 }
 
 PurpleConversationMember *
@@ -1754,35 +1676,11 @@ purple_conversation_add_member(PurpleConversation *conversation,
                                PurpleContactInfo *info, gboolean announce,
                                const char *message)
 {
-	PurpleConversationMember *member = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
 	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
 
-	member = purple_conversation_find_member(conversation, info);
-	if(PURPLE_IS_CONVERSATION_MEMBER(member)) {
-		return member;
-	}
-
-	member = purple_conversation_member_new(info);
-	g_list_store_append(conversation->members, member);
-
-	/* Add a callback for notify::name-for-display on info. */
-	g_signal_connect_object(info, "notify::name-for-display",
-	                        G_CALLBACK(purple_conversation_member_name_changed_cb),
-	                        conversation, G_CONNECT_DEFAULT);
-
-	/* Update the title if necessary. */
-	if(purple_conversation_get_title_generated(conversation)) {
-		purple_conversation_generate_title(conversation);
-	}
-
-	g_signal_emit(conversation, signals[SIG_MEMBER_ADDED], 0, member, announce,
-	              message);
-
-	g_object_unref(member);
-
-	return member;
+	return purple_conversation_members_add_member(conversation->members, info,
+	                                              announce, message);
 }
 
 gboolean
@@ -1790,37 +1688,11 @@ purple_conversation_remove_member(PurpleConversation *conversation,
                                   PurpleContactInfo *info, gboolean announce,
                                   const char *message)
 {
-	PurpleConversationMember *member = NULL;
-	guint position = 0;
-
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
 	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), FALSE);
 
-	if(!purple_conversation_has_member(conversation, info, &position)) {
-		return FALSE;
-	}
-
-	member = g_list_model_get_item(G_LIST_MODEL(conversation->members),
-	                               position);
-
-	g_list_store_remove(conversation->members, position);
-
-	/* Remove our signal handlers for the member. */
-	g_signal_handlers_disconnect_by_func(info,
-	                                     purple_conversation_member_name_changed_cb,
-	                                     conversation);
-
-	/* Update our title if necessary. */
-	if(purple_conversation_get_title_generated(conversation)) {
-		purple_conversation_generate_title(conversation);
-	}
-
-	g_signal_emit(conversation, signals[SIG_MEMBER_REMOVED], 0, member,
-	              announce, message);
-
-	g_clear_object(&member);
-
-	return TRUE;
+	return purple_conversation_members_remove_member(conversation->members,
+	                                                 info, announce, message);
 }
 
 GListModel *
