@@ -1648,53 +1648,6 @@ purple_conversation_get_members(PurpleConversation *conversation) {
 	return conversation->members;
 }
 
-gboolean
-purple_conversation_has_member(PurpleConversation *conversation,
-                               PurpleContactInfo *info, guint *position)
-{
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
-	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), FALSE);
-
-	return purple_conversation_members_has_member(conversation->members,
-	                                              info, position);
-}
-
-PurpleConversationMember *
-purple_conversation_find_member(PurpleConversation *conversation,
-                                PurpleContactInfo *info)
-{
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
-	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
-
-	return purple_conversation_members_find_member(conversation->members,
-	                                               info);
-
-}
-
-PurpleConversationMember *
-purple_conversation_add_member(PurpleConversation *conversation,
-                               PurpleContactInfo *info, gboolean announce,
-                               const char *message)
-{
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
-	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), NULL);
-
-	return purple_conversation_members_add_member(conversation->members, info,
-	                                              announce, message);
-}
-
-gboolean
-purple_conversation_remove_member(PurpleConversation *conversation,
-                                  PurpleContactInfo *info, gboolean announce,
-                                  const char *message)
-{
-	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
-	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(info), FALSE);
-
-	return purple_conversation_members_remove_member(conversation->members,
-	                                                 info, announce, message);
-}
-
 GListModel *
 purple_conversation_get_messages(PurpleConversation *conversation) {
 	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), NULL);
