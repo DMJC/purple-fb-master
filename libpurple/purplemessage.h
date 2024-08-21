@@ -105,58 +105,6 @@ PURPLE_AVAILABLE_IN_3_0
 PurpleMessage *purple_message_new(PurpleContactInfo *author, const char *contents);
 
 /**
- * purple_message_new_outgoing:
- * @author: The author.
- * @contents: The contents.
- * @flags: The #PurpleMessageFlags.
- *
- * Creates new outgoing message to @recipient.
- *
- * You don't need to set the #PURPLE_MESSAGE_SEND flag.  If the message is not
- * plain text be sure to call purple_message_set_content_type().
- *
- * Returns: (transfer full): The new #PurpleMessage instance.
- *
- * Since: 3.0
- */
-PURPLE_DEPRECATED_FOR(purple_message_new)
-PurpleMessage *purple_message_new_outgoing(const char *author, const char *contents, PurpleMessageFlags flags);
-
-/**
- * purple_message_new_incoming:
- * @who: Message's author.
- * @contents: The contents of a message.
- * @flags: The message flags.
- * @timestamp: The time of transmitting a message. May be 0 for a current time.
- *
- * Creates new incoming message (the user is the recipient).
- *
- * You don't need to set the #PURPLE_MESSAGE_RECV flag.
- *
- * Returns: the new #PurpleMessage.
- *
- * Since: 3.0
- */
-PURPLE_DEPRECATED_FOR(purple_message_new)
-PurpleMessage *purple_message_new_incoming(const char *who, const char *contents, PurpleMessageFlags flags, guint64 timestamp);
-
-/**
- * purple_message_new_system:
- * @contents: The contents of a message.
- * @flags: The message flags.
- *
- * Creates new system message.
- *
- * You don't need to set the #PURPLE_MESSAGE_SYSTEM flag.
- *
- * Returns: the new #PurpleMessage.
- *
- * Since: 3.0
- */
-PURPLE_DEPRECATED_FOR(purple_message_new)
-PurpleMessage *purple_message_new_system(const char *contents, PurpleMessageFlags flags);
-
-/**
  * purple_message_get_action:
  * @message: The instance.
  *
