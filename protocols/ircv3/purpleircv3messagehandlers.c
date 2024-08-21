@@ -149,7 +149,7 @@ purple_ircv3_message_handler_part(G_GNUC_UNUSED IbisClient *client,
 }
 
 gboolean
-purple_ircv3_message_handler_tagmsg(G_GNUC_UNUSED IbisClient *client,
+purple_ircv3_message_handler_tagmsg(IbisClient *client,
                                     G_GNUC_UNUSED const char *command,
                                     IbisMessage *ibis_message, gpointer data)
 {
@@ -184,7 +184,7 @@ purple_ircv3_message_handler_tagmsg(G_GNUC_UNUSED IbisClient *client,
 
 	/* Find or create the conversation. */
 	target = params[0];
-	if(!purple_ircv3_connection_is_channel(connection, target)) {
+	if(!ibis_client_is_channel(client, target)) {
 		target = purple_contact_info_get_id(PURPLE_CONTACT_INFO(contact));
 	}
 
@@ -220,8 +220,7 @@ purple_ircv3_message_handler_tagmsg(G_GNUC_UNUSED IbisClient *client,
 }
 
 gboolean
-purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED IbisClient *client,
-                                     const char *command,
+purple_ircv3_message_handler_privmsg(IbisClient *client, const char *command,
                                      IbisMessage *ibis_message, gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
@@ -257,7 +256,7 @@ purple_ircv3_message_handler_privmsg(G_GNUC_UNUSED IbisClient *client,
 
 	/* Find or create the conversation. */
 	target = params[0];
-	if(!purple_ircv3_connection_is_channel(connection, target)) {
+	if(!ibis_client_is_channel(client, target)) {
 		target = purple_contact_info_get_id(PURPLE_CONTACT_INFO(contact));
 	}
 

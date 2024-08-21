@@ -844,16 +844,6 @@ purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
 	g_clear_object(&message);
 }
 
-gboolean
-purple_ircv3_connection_is_channel(PurpleIRCv3Connection *connection,
-                                   const char *id)
-{
-	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), FALSE);
-	g_return_val_if_fail(id != NULL, FALSE);
-
-	return (id[0] == '#');
-}
-
 PurpleConversation *
 purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *connection,
                                                     const char *id)
@@ -873,7 +863,7 @@ purple_ircv3_connection_find_or_create_conversation(PurpleIRCv3Connection *conne
 	if(!PURPLE_IS_CONVERSATION(conversation)) {
 		PurpleConversationType type = PURPLE_CONVERSATION_TYPE_DM;
 
-		if(purple_ircv3_connection_is_channel(connection, id)) {
+		if(ibis_client_is_channel(connection->client, id)) {
 			type = PURPLE_CONVERSATION_TYPE_CHANNEL;
 		}
 

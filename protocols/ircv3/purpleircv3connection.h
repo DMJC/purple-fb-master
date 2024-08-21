@@ -97,23 +97,6 @@ PURPLE_IRCV3_AVAILABLE_IN_ALL
 void purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection, IbisMessage *message);
 
 /**
- * purple_ircv3_connection_is_channel:
- * @connection: The instance.
- * @id: The id to check.
- *
- * Checks if @id is a channel.
- *
- * Right now this just checks if @id starts with a `#` but in the future this
- * will be updated to check all channel prefixes that the connection supports.
- *
- * Returns: %TRUE if @id is a channel otherwise %FALSE.
- *
- * Since: 3.0
- */
-PURPLE_IRCV3_AVAILABLE_IN_ALL
-gboolean purple_ircv3_connection_is_channel(PurpleIRCv3Connection *connection, const char *id);
-
-/**
  * purple_ircv3_connection_find_or_create_conversation:
  * @connection: The instance.
  * @id: The id of the conversation.
