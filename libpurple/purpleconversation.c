@@ -69,6 +69,7 @@ struct _PurpleConversation {
 
 	PurpleTypingState typing_state;
 	guint typing_state_source;
+	GDateTime *last_typing;
 };
 
 enum {
@@ -624,8 +625,6 @@ purple_conversation_finalize(GObject *object) {
 
 	purple_request_close_with_handle(conversation);
 
-	g_clear_handle_id(&conversation->typing_state_source, g_source_remove);
-
 	g_clear_object(&conversation->account);
 	g_clear_pointer(&conversation->id, g_free);
 	g_clear_object(&conversation->avatar);
@@ -643,6 +642,9 @@ purple_conversation_finalize(GObject *object) {
 	g_clear_object(&conversation->tags);
 	g_clear_object(&conversation->members);
 	g_clear_object(&conversation->messages);
+
+	g_clear_handle_id(&conversation->typing_state_source, g_source_remove);
+	g_clear_pointer(&conversation->last_typing, g_date_time_unref);
 
 	G_OBJECT_CLASS(purple_conversation_parent_class)->finalize(object);
 }
@@ -1765,10 +1767,29 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 	 * typing, and the rest happens automatically.
 	 */
 	if(typing_state == PURPLE_TYPING_STATE_TYPING) {
+		GDateTime *now = NULL;
+
 		conversation->typing_state_source =
 			g_timeout_add_seconds(6,
 			                      purple_conversation_typing_state_typing_cb,
 			                      conversation);
+
+		/* Use local time because this is local to the user and we might want
+		 * to output this during debug or something, and a local time stamp
+		 * will make a lot more sense then.
+		 */
+		now = g_date_time_new_now_local();
+		if(conversation->last_typing != NULL) {
+			GTimeSpan difference = 0;
+
+			difference = g_date_time_difference(now, conversation->last_typing);
+
+			if(difference > 3 * G_TIME_SPAN_SECOND) {
+				send = TRUE;
+			}
+		}
+
+		conversation->last_typing = now;
 	} else if(typing_state == PURPLE_TYPING_STATE_PAUSED) {
 		conversation->typing_state_source =
 			g_timeout_add_seconds(30,
@@ -1783,11 +1804,6 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 		                         properties[PROP_TYPING_STATE]);
 
 		/* The state changed so we need to send it. */
-		send = TRUE;
-	}
-
-	/* If the state is typing, we always send it. */
-	if(conversation->typing_state == PURPLE_TYPING_STATE_TYPING) {
 		send = TRUE;
 	}
 
