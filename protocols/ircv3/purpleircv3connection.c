@@ -354,21 +354,17 @@ purple_ircv3_server_rpl_isupport(G_GNUC_UNUSED IbisClient *client,
 static gboolean
 purple_ircv3_server_no_motd_handler(G_GNUC_UNUSED IbisClient *client,
                                     G_GNUC_UNUSED const char *command,
-                                    IbisMessage *message,
+                                    IbisMessage *ibis_message,
                                     gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
+	PurpleContact *author = NULL;
 	PurpleMessage *purple_message = NULL;
-	const char *source = NULL;
 
-	source = ibis_message_get_source(message);
-
-	purple_message = g_object_new(
-		PURPLE_TYPE_MESSAGE,
-		"author", source,
-		"contents", _("no message of the day found"),
-		NULL);
-
+	author = purple_ircv3_connection_find_or_create_contact(connection,
+	                                                        ibis_message);
+	purple_message = purple_message_new(PURPLE_CONTACT_INFO(author),
+	                                    _("no message of the day found"));
 	purple_conversation_write_message(connection->status_conversation,
 	                                  purple_message);
 	g_clear_object(&purple_message);
@@ -482,22 +478,20 @@ purple_ircv3_connection_add_message_handlers(PurpleIRCv3Connection *connection,
 static gboolean
 purple_ircv3_connection_unknown_message_cb(G_GNUC_UNUSED IbisClient *client,
                                            G_GNUC_UNUSED const char *command,
-                                           IbisMessage *message,
+                                           IbisMessage *ibis_message,
                                            gpointer data)
 {
 	PurpleIRCv3Connection *connection = data;
+	PurpleContact *author = NULL;
 	PurpleMessage *purple_message = NULL;
 	char *contents = NULL;
 
+	author = purple_ircv3_connection_find_or_create_contact(connection,
+	                                                        ibis_message);
 	contents = g_strdup_printf(_("unhandled message: '%s'"),
-	                           ibis_message_get_raw_message(message));
+	                           ibis_message_get_raw_message(ibis_message));
 
-	purple_message = g_object_new(
-		PURPLE_TYPE_MESSAGE,
-		"author", ibis_message_get_source(message),
-		"contents", contents,
-		NULL);
-
+	purple_message = purple_message_new(PURPLE_CONTACT_INFO(author), contents);
 	purple_conversation_write_message(connection->status_conversation,
 	                                  purple_message);
 	g_clear_object(&purple_message);
@@ -806,7 +800,8 @@ void
 purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
                                            IbisMessage *ibis_message)
 {
-	PurpleMessage *message = NULL;
+	PurpleContact *author = NULL;
+	PurpleMessage *purple_message = NULL;
 	GString *str = NULL;
 	GStrv params = NULL;
 	char *stripped = NULL;
@@ -831,17 +826,15 @@ purple_ircv3_connection_add_status_message(PurpleIRCv3Connection *connection,
 	stripped = ibis_formatting_strip(str->str);
 	g_string_free(str, TRUE);
 
-	message = g_object_new(
-		PURPLE_TYPE_MESSAGE,
-		"author", ibis_message_get_source(ibis_message),
-		"contents", stripped,
-		NULL);
+	author = purple_ircv3_connection_find_or_create_contact(connection,
+	                                                        ibis_message);
+	purple_message = purple_message_new(PURPLE_CONTACT_INFO(author), stripped);
 	g_free(stripped);
 
 	purple_conversation_write_message(connection->status_conversation,
-	                                  message);
+	                                  purple_message);
 
-	g_clear_object(&message);
+	g_clear_object(&purple_message);
 }
 
 PurpleConversation *
