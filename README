@@ -18,6 +18,36 @@ See AUTHORS and COPYRIGHT for the list of contributors.
 
 ## Building
 
+There are two main ways you can build Pidgin. If you are on Linux you may use
+[Flatpak](https://www.flatpak.org/) to get going quickly. The other option is
+to do a normal build.
+
+### Flatpak
+
+Building with Flatpak is very straight forward. To get started you'll need to
+make sure that you have the `flatpak` and `flatpak-builder` packages installed
+for your distribution. You may find the official
+[Flatpak Setup page](https://flathub.org/setup) useful here, unfortunately they
+don't mention flatpak builder.
+
+Next, you'll need to make sure you have the org.gnome.Sdk installed. You can
+install it system wide or just for your user, but the command below will
+install for your user.
+
+```
+flatpak install --user org.gnome.Sdk//46
+```
+
+Finally, you can build and install Pidgin3 with this command:
+
+```
+flatpak-builder --user --force-clean build-flatpak --install im.pidgin.Pidgin3.yml
+```
+
+Once that's successful, you can run it with `flatpak run im.pidgin.Pidgin3`
+
+### Meson
+
 Pidgin uses [Meson](https://mesonbuild.com) as its build system. There is a
 long list of dependencies that is not currently documented here due to
 differences in package names across operating systems. We plan to fix this
@@ -45,8 +75,6 @@ If you have already run `meson setup` you can use `meson configure`:
 cd build
 meson configure -Ddebug=true
 ```
-
-## Installing/Running
 
 Previously while developing in our code base you would need to install
 everything to be able to run or test anything. With meson this is no longer the

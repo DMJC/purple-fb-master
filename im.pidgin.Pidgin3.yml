@@ -1,0 +1,89 @@
+id: im.pidgin.Pidgin3
+runtime: org.gnome.Platform
+runtime-version: '46'
+sdk: org.gnome.Sdk
+command: pidgin3
+separate-locales: false
+tags:
+  - dev
+modules:
+  - name: libidn
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/libidn/libidn-1.42.tar.gz
+        sha256: d6c199dcd806e4fe279360cb4b08349a0d39560ed548ffd1ccadda8cdecb4723
+  - name: birb
+    buildsystem: meson
+    config-opts:
+      - "-Ddoc=false"
+      - "--wrap-mode=nofallback"
+    sources:
+      - type: archive
+        archive-type: tar-xz
+        url: https://sourceforge.net/projects/pidgin/files/birb/0.2.0/birb-0.2.0-dev.tar.xz/download
+        sha256: b4c24426a6c9aeb959a7a8d60d31def8e90cfb17680c90a0cc54d582789ecc38
+  - name: hasl
+    buildsystem: meson
+    config-opts:
+      - "-Ddoc=false"
+      - "--wrap-mode=nofallback"
+    sources:
+      - type: archive
+        archive-type: tar-xz
+        url: https://sourceforge.net/projects/pidgin/files/hasl/0.3.1/hasl-0.3.1.tar.xz/download
+        sha256: 8d3e70fe19c679b335beb51127e1022aaa01b7e80100a5ccf149ee058c39981b
+  - name: ibis
+    buildsystem: meson
+    config-opts:
+      - "-Ddoc=false"
+      - "--wrap-mode=nofallback"
+    sources:
+      - type: archive
+        archive-type: tar-xz
+        url: https://sourceforge.net/projects/pidgin/files/ibis/0.6.0/ibis-0.6.0.tar.xz/download
+        sha256: 6e2fc0db2678ec5bdfcea218112895612c31b755a8f8aeab578929fd8c30f59f
+  - name: xeme
+    buildsystem: meson
+    config-opts:
+      - "-Ddoc=false"
+      - "--wrap-mode=nofallback"
+    sources:
+      - type: archive
+        archive-type: tar-gzip
+        url: https://keep.imfreedom.org/xeme/xeme/archive/5d0707ab10a2.tar.gz
+        sha256: eabb0f88fdc54775e9aab63d277d0d0cf54c456ee09580d45bd516d1117088da
+  - name: gplugin
+    buildsystem: meson
+    config-opts:
+      - "-Ddoc=false"
+      - "-Dlua=false"
+      - "-Dpython3=false"
+      - "--wrap-mode=nofallback"
+    sources:
+      - type: archive
+        archive-type: tar-xz
+        url: https://sourceforge.net/projects/pidgin/files/gplugin/0.44.0/gplugin-0.44.0.tar.xz/download
+        sha256: 082028aa97fd63f1a12c9a65fa6fd84b3c6fc87e0e6475577bb7d4cfe555a12b
+  - name: pidgin3
+    buildsystem: meson
+    config-opts:
+      - "-Ddoc=false"
+      - "--wrap-mode=nofallback"
+    sources:
+      - type: dir
+        path: .
+finish-args:
+  # X11 + XShm access
+  - "--share=ipc"
+  - "--socket=fallback-x11"
+  # Wayland access
+  - "--socket=wayland"
+  # GPU acceleration if needed
+  - "--device=dri"
+  # Needs to talk to the network:
+  - "--share=network"
+  # Needs to save files locally
+  - "--filesystem=xdg-documents"
+  # Audio
+  - "--socket=pulseaudio"

@@ -13,6 +13,8 @@
     <name>The Pidgin Team</name>
   </developer>
 
+  <translation type="gettext">pidgin</translation>
+
   <supports>
     <control>pointing</control>
     <control>keyboard</control>
@@ -32,6 +34,11 @@
       Pidgin is a chat client that puts all chat networks into a single user interface which means you can focus on talking with your friends instead of figuring out where to talk to them.
     </p>
   </description>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#794a85</color>
+    <color type="primary" scheme_preference="dark">#e15694</color>
+  </branding>
 
   <keywords>
     <keyword translate="no">Bonjour</keyword>
@@ -64,6 +71,41 @@
 
   <launchable type="desktop-id">im.pidgin.Pidgin3.desktop</launchable>
 
+  <screenshots>
+    <screenshot style="gnome" type="default">
+      <image>https://data.imfreedom.org/public/pidgin/screenshots/light/contacts.png</image>
+      <caption>Contact list</caption>
+    </screenshot>
+    <screenshot style="gnome">
+      <image>https://data.imfreedom.org/public/pidgin/screenshots/light/conversation.png</image>
+      <caption>Conversation</caption>
+    </screenshot>
+    <screenshot style="gnome">
+      <image>https://data.imfreedom.org/public/pidgin/screenshots/light/notifications.png</image>
+      <caption>Notifications</caption>
+    </screenshot>
+    <screenshot style="gnome">
+      <image>https://data.imfreedom.org/public/pidgin/screenshots/light/plugins.png</image>
+      <caption>Plugins</caption>
+    </screenshot>
+    <screenshot style="gnome:dark" type="default">
+      <image>https://data.imfreedom.org/public/pidgin/screenshots/dark/contacts.png</image>
+      <caption>Contact list</caption>
+    </screenshot>
+    <screenshot style="gnome:dark">
+      <image>https://data.imfreedom.org/public/pidgin/screenshots/dark/conversation.png</image>
+      <caption>Conversation</caption>
+    </screenshot>
+    <screenshot style="gnome:dark">
+      <image>https://data.imfreedom.org/public/pidgin/screenshots/dark/notifications.png</image>
+      <caption>Notifications</caption>
+    </screenshot>
+    <screenshot style="gnome:dark">
+      <image>https://data.imfreedom.org/public/pidgin/screenshots/dark/plugins.png</image>
+      <caption>Plugins</caption>
+    </screenshot>
+  </screenshots>
+
   <url type="bugtracker">https://issues.imfreedom.org/</url>
   <url type="contact">https://pidgin.im/contact/</url>
   <url type="contribute">https://docs.imfreedom.org/contributors-guide/</url>
@@ -80,16 +122,11 @@
     <content_attribute id="social-contacts">intense</content_attribute>
   </content_rating>
 
-  <!-- kudos come from GNOME Software and is non standard so appstreamcli
-       throws a warning about it.
-
-       https://github.com/endlessm/gnome-software/blob/master/doc/kudos.md
-    -->
-  <kudos>
-    <kudo>ModernToolkit</kudo>
-  </kudos>
-
   <releases>
+    <release version="3.0.0-experimental" date="2038-08-22" type="snapshot"/>
+    <release version="2.14.13" date="2024-02-23">
+      <url>https://sourceforge.net/projects/pidgin/files/Pidgin/2.14.13/</url>
+    </release>
     <release version="2.14.12" date="2022-12-31">
       <url>https://sourceforge.net/projects/pidgin/files/Pidgin/2.14.12/</url>
     </release>
@@ -377,6 +414,9 @@
     <release version="0.45" date="2001-10-04"/>
     <release version="0.44" date="2001-09-20"/>
     <release version="0.43" date="2001-09-06"/>
+    <!--
+      These cause issues with old versions of flatpak so we're just commenting
+      them out for now.
     <release version="0.11.0-pre15" date="2001-08-28"/>
     <release version="0.11.0-pre14" date="2001-06-17"/>
     <release version="0.11.0-pre13" date="2001-06-06"/>
@@ -390,6 +430,7 @@
     <release version="0.11.0-pre3" date="2000-12-15"/>
     <release version="0.11.0-pre2" date="2000-12-04"/>
     <release version="0.11.0-pre1" date="2000-12-03"/>
+    -->
     <release version="0.10.3" date="2000-10-09"/>
     <release version="0.10.2" date="2000-10-07"/>
     <release version="0.10.1" date="2000-09-15"/>
