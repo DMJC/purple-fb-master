@@ -224,12 +224,10 @@ pidgin_account_manager_row_remove_cb(G_GNUC_UNUSED GtkButton *self,
 	PidginAccountManagerRow *row = data;
 	GtkRoot *root = NULL;
 	AdwMessageDialog *dialog = NULL;
-	PurpleContactInfo *info = NULL;
 	const char *name = NULL;
 	char *protocol_name = NULL;
 
-	info = purple_account_get_contact_info(row->account);
-	name = purple_contact_info_get_name_for_display(info);
+	name = purple_account_get_username(row->account);
 	protocol_name = pidgin_account_manager_row_protocol_name_cb(NULL,
 	                                                            row->account,
 	                                                            NULL);
