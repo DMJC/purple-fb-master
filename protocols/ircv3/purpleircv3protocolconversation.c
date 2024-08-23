@@ -173,6 +173,59 @@ purple_ircv3_protocol_conversation_join_channel_finish(G_GNUC_UNUSED PurpleProto
 }
 
 static void
+purple_ircv3_protocol_conversation_leave_conversation_async(PurpleProtocolConversation *protocol,
+                                                            PurpleConversation *conversation,
+                                                            GCancellable *cancellable,
+                                                            GAsyncReadyCallback callback,
+                                                            gpointer data)
+{
+	GTask *task = NULL;
+
+	if(purple_conversation_is_channel(conversation)) {
+		PurpleIRCv3Connection *v3_connection = NULL;
+		PurpleAccount *account = NULL;
+		PurpleConnection *connection = NULL;
+		IbisClient *client = NULL;
+		IbisMessage *message = NULL;
+
+		account = purple_conversation_get_account(conversation);
+		connection = purple_account_get_connection(account);
+		v3_connection = PURPLE_IRCV3_CONNECTION(connection);
+		client = purple_ircv3_connection_get_client(v3_connection);
+
+		message = ibis_message_new(IBIS_MSG_PART);
+		ibis_message_set_params(message,
+		                        purple_conversation_get_id(conversation),
+		                        NULL);
+		ibis_client_write(client, message);
+	}
+
+	task = g_task_new(protocol, cancellable, callback, data);
+	g_task_set_source_tag(task,
+	                      purple_ircv3_protocol_conversation_leave_conversation_async);
+	g_task_return_boolean(task, TRUE);
+	g_clear_object(&task);
+}
+
+static gboolean
+purple_ircv3_protocol_conversation_leave_conversation_finish(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
+                                                             GAsyncResult *result,
+                                                             GError **error)
+{
+	g_return_val_if_fail(G_IS_ASYNC_RESULT(result), FALSE);
+
+	if(!g_async_result_is_tagged(result,
+	                             purple_ircv3_protocol_conversation_leave_conversation_async))
+	{
+		g_set_error_literal(error, PURPLE_IRCV3_DOMAIN, 0,
+		                    "result has unexpected tag");
+		return FALSE;
+	}
+
+	return g_task_propagate_boolean(G_TASK(result), error);
+}
+
+static void
 purple_ircv3_protocol_conversation_send_typing(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
                                                PurpleConversation *conversation,
                                                PurpleTypingState state)
@@ -227,6 +280,11 @@ purple_ircv3_protocol_conversation_init(PurpleProtocolConversationInterface *ifa
 		purple_ircv3_protocol_conversation_join_channel_async;
 	iface->join_channel_finish =
 		purple_ircv3_protocol_conversation_join_channel_finish;
+
+	iface->leave_conversation_async =
+		purple_ircv3_protocol_conversation_leave_conversation_async;
+	iface->leave_conversation_finish =
+		purple_ircv3_protocol_conversation_leave_conversation_finish;
 
 	iface->send_typing  =
 		purple_ircv3_protocol_conversation_send_typing;
