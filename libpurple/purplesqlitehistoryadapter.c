@@ -295,6 +295,7 @@ purple_sqlite_history_adapter_query(PurpleHistoryAdapter *adapter,
 	}
 
 	while(sqlite3_step(prepared_statement) == SQLITE_ROW) {
+		PurpleContactInfo *info = NULL;
 		PurpleMessage *message = NULL;
 		GDateTime *g_date_time = NULL;
 		const gchar *message_id = NULL;
@@ -312,16 +313,20 @@ purple_sqlite_history_adapter_query(PurpleHistoryAdapter *adapter,
 		timestamp = (const gchar *)sqlite3_column_text(prepared_statement, 5);
 		g_date_time = g_date_time_new_from_iso8601(timestamp, NULL);
 
-		message = g_object_new(PURPLE_TYPE_MESSAGE,
-		                       "id", message_id,
-		                       "author", author,
-		                       "author_name_color", author_name_color,
-		                       "author_alias", author_alias,
-		                       "contents", content,
-		                       "timestamp", g_date_time,
-		                       NULL);
+		/* This is gross but necessary until we finish rethinking history.
+		 * -- gk 2024-08-21
+		 */
+		info = purple_contact_info_new(author);
+		purple_contact_info_set_alias(info, author_alias);
+
+		message = purple_message_new(info, content);
+		purple_message_set_id(message, message_id);
+		purple_message_set_author_name_color(message, author_name_color);
+		purple_message_set_timestamp(message, g_date_time);
 
 		results = g_list_prepend(results, message);
+
+		g_clear_object(&info);
 	}
 
 	results = g_list_reverse(results);
