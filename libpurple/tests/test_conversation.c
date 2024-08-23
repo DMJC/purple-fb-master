@@ -410,6 +410,7 @@ test_purple_conversation_is_thread(void) {
 static void
 test_purple_conversation_message_write_one(void) {
 	PurpleAccount *account = NULL;
+	PurpleContactInfo *info = NULL;
 	PurpleConversation *conversation = NULL;
 	PurpleMessage *message = NULL;
 	GListModel *messages = NULL;
@@ -424,11 +425,8 @@ test_purple_conversation_message_write_one(void) {
 	g_assert_nonnull(messages);
 	g_assert_cmpuint(g_list_model_get_n_items(messages), ==, 0);
 
-	message = g_object_new(
-		PURPLE_TYPE_MESSAGE,
-		"contents", "hello world!",
-		NULL);
-
+	info = purple_account_get_contact_info(account);
+	message = purple_message_new(info, "hello world!");
 	purple_conversation_write_message(conversation, message);
 	g_assert_cmpuint(g_list_model_get_n_items(messages), ==, 1);
 

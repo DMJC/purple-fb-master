@@ -38,6 +38,8 @@ test_purple_message_notify_counter_cb(G_GNUC_UNUSED GObject *obj,
  *****************************************************************************/
 static void
 test_purple_message_properties(void) {
+	PurpleContactInfo *author = NULL;
+	PurpleContactInfo *author1 = NULL;
 	PurpleMessage *message = NULL;
 	PurpleMessageFlags flags = 0;
 	GDateTime *timestamp = NULL;
@@ -47,8 +49,6 @@ test_purple_message_properties(void) {
 	GError *error = NULL;
 	GError *error1 = NULL;
 	char *id = NULL;
-	char *author = NULL;
-	char *author_alias = NULL;
 	char *author_name_color = NULL;
 	char *contents = NULL;
 	gboolean action = FALSE;
@@ -62,6 +62,9 @@ test_purple_message_properties(void) {
 	error = g_error_new(g_quark_from_static_string("test-message"), 0,
 	                    "delivery failed");
 
+	author = purple_contact_info_new(NULL);
+	purple_contact_info_set_username(author, "author");
+
 	/* We don't set delivered-at here because delivered will set it for us so
 	 * it's impossible to check that here, which is why we have separate tests
 	 * to do that check. We do verify that delivered-at was set though.
@@ -69,8 +72,7 @@ test_purple_message_properties(void) {
 	message = g_object_new(
 		PURPLE_TYPE_MESSAGE,
 		"action", TRUE,
-		"author-alias", "alias",
-		"author-name", "author",
+		"author", author,
 		"author-name-color", "purple",
 		"contents", "Now that is a big door",
 		"delivered", TRUE,
@@ -87,8 +89,7 @@ test_purple_message_properties(void) {
 	g_object_get(
 		message,
 		"action", &action,
-		"author-alias", &author_alias,
-		"author-name", &author,
+		"author", &author1,
 		"author-name-color", &author_name_color,
 		"contents", &contents,
 		"delivered", &delivered,
@@ -106,11 +107,8 @@ test_purple_message_properties(void) {
 
 	g_assert_true(action);
 
-	g_assert_cmpstr(author, ==, "author");
-	g_clear_pointer(&author, g_free);
-
-	g_assert_cmpstr(author_alias, ==, "alias");
-	g_clear_pointer(&author_alias, g_free);
+	g_assert_true(author1 == author);
+	g_clear_object(&author1);
 
 	g_assert_cmpstr(author_name_color, ==, "purple");
 	g_clear_pointer(&author_name_color, g_free);
@@ -146,6 +144,7 @@ test_purple_message_properties(void) {
 	g_clear_pointer(&timestamp1, g_date_time_unref);
 
 	g_assert_finalize_object(message);
+	g_assert_finalize_object(author);
 }
 
 static void

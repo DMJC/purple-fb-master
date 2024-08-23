@@ -26,14 +26,15 @@
 #include "purpleenums.h"
 #include "purplemessage.h"
 #include "purpleprivate.h"
+#include "util.h"
 
 struct _PurpleMessage {
 	GObject parent;
 
 	char *id;
-	char *author_name;
+	PurpleContactInfo *author;
+
 	char *author_name_color;
-	char *author_alias;
 
 	char *contents;
 
@@ -82,12 +83,13 @@ G_DEFINE_FINAL_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
  * Helpers
  *****************************************************************************/
 static void
-purple_message_set_author_name(PurpleMessage *message, const char *author) {
-	if(g_set_str(&message->author_name, author)) {
+purple_message_set_author(PurpleMessage *message, PurpleContactInfo *author) {
+	if(g_set_object(&message->author, author)) {
 		GObject *obj = G_OBJECT(message);
 
 		g_object_freeze_notify(obj);
 		g_object_notify_by_pspec(obj, properties[PROP_AUTHOR]);
+		g_object_notify_by_pspec(obj, properties[PROP_AUTHOR_ALIAS]);
 		g_object_notify_by_pspec(obj, properties[PROP_AUTHOR_NAME]);
 		g_object_thaw_notify(obj);
 	}
@@ -107,11 +109,17 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 		g_value_set_boolean(value, purple_message_get_action(message));
 		break;
 	case PROP_AUTHOR:
+		g_value_set_object(value, purple_message_get_author(message));
+		break;
 	case PROP_AUTHOR_NAME:
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		g_value_set_string(value, purple_message_get_author_name(message));
+		G_GNUC_END_IGNORE_DEPRECATIONS
 		break;
 	case PROP_AUTHOR_ALIAS:
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		g_value_set_string(value, purple_message_get_author_alias(message));
+		G_GNUC_END_IGNORE_DEPRECATIONS
 		break;
 	case PROP_AUTHOR_NAME_COLOR:
 		g_value_set_string(value,
@@ -170,11 +178,7 @@ purple_message_set_property(GObject *object, guint param_id,
 		purple_message_set_action(message, g_value_get_boolean(value));
 		break;
 	case PROP_AUTHOR:
-	case PROP_AUTHOR_NAME:
-		purple_message_set_author_name(message, g_value_get_string(value));
-		break;
-	case PROP_AUTHOR_ALIAS:
-		purple_message_set_author_alias(message, g_value_get_string(value));
+		purple_message_set_author(message, g_value_get_object(value));
 		break;
 	case PROP_AUTHOR_NAME_COLOR:
 		purple_message_set_author_name_color(message,
@@ -227,9 +231,8 @@ purple_message_finalize(GObject *obj) {
 	PurpleMessage *message = PURPLE_MESSAGE(obj);
 
 	g_free(message->id);
-	g_free(message->author_name);
+	g_clear_object(&message->author);
 	g_free(message->author_name_color);
-	g_free(message->author_alias);
 	g_free(message->contents);
 
 	g_clear_error(&message->error);
@@ -279,12 +282,12 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 *
 	 * The author of the message.
 	 *
-	 * Deprecated: 3.0: This going to be repurposed once all uses are removed.
+	 * Since: 3.0
 	 */
-	properties[PROP_AUTHOR] = g_param_spec_string(
+	properties[PROP_AUTHOR] = g_param_spec_object(
 		"author", NULL, NULL,
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED);
+		PURPLE_TYPE_CONTACT_INFO,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleMessage:author-alias:
@@ -292,11 +295,13 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * The alias of the author.
 	 *
 	 * Since: 3.0
+	 *
+	 * Deprecated: 3.0: Use [property@Message:author] instead.
 	 */
 	properties[PROP_AUTHOR_ALIAS] = g_param_spec_string(
 		"author-alias", NULL, NULL,
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED);
 
 	/**
 	 * PurpleMessage:author-name:
@@ -307,11 +312,13 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	 * [property@Message:author]'s type can be changed in the near future.
 	 *
 	 * Since: 3.0
+	 *
+	 * Deprecated: 3.0: Use [property@Message:author] instead.
 	 */
 	properties[PROP_AUTHOR_NAME] = g_param_spec_string(
 		"author-name", NULL, NULL,
 		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED);
 
 	/**
 	 * PurpleMessage:author-name-color:
@@ -496,19 +503,12 @@ purple_message_class_init(PurpleMessageClass *klass) {
  *****************************************************************************/
 PurpleMessage *
 purple_message_new(PurpleContactInfo *author, const char *contents) {
-	const char *author_name = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_CONTACT_INFO(author), NULL);
 	g_return_val_if_fail(contents != NULL, NULL);
 
-	author_name = purple_contact_info_get_username(author);
-	if(author_name == NULL) {
-		author_name = purple_contact_info_get_id(author);
-	}
-
 	return g_object_new(
 		PURPLE_TYPE_MESSAGE,
-		"author-name", author_name,
+		"author", author,
 		"contents", contents,
 		NULL);
 }
@@ -531,18 +531,25 @@ purple_message_set_action(PurpleMessage *message, gboolean action) {
 	}
 }
 
-const char *
+PurpleContactInfo *
 purple_message_get_author(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
-	return purple_message_get_author_name(message);
+	return message->author;
 }
 
 const char *
 purple_message_get_author_name(PurpleMessage *message) {
+	const char *name = NULL;
+
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
-	return message->author_name;
+	name = purple_contact_info_get_username(message->author);
+	if(purple_strempty(name)) {
+		name = purple_contact_info_get_id(message->author);
+	}
+
+	return name;
 }
 
 void
@@ -564,27 +571,11 @@ purple_message_get_author_name_color(PurpleMessage *message) {
 	return message->author_name_color;
 }
 
-void
-purple_message_set_author_alias(PurpleMessage *message,
-                                const char *author_alias)
-{
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	if(g_set_str(&message->author_alias, author_alias)) {
-		g_object_notify_by_pspec(G_OBJECT(message),
-		                         properties[PROP_AUTHOR_ALIAS]);
-	}
-}
-
 const char *
 purple_message_get_author_alias(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
-	if(message->author_alias != NULL) {
-		return message->author_alias;
-	}
-
-	return message->author_name;
+	return purple_contact_info_get_alias(message->author);
 }
 
 void

@@ -143,8 +143,8 @@ void purple_message_set_action(PurpleMessage *message, gboolean action);
  *
  * Deprecated: 3.0: this is being repurposed in the future.
  */
-PURPLE_DEPRECATED_FOR(purple_message_get_author_name)
-const char *purple_message_get_author(PurpleMessage *message);
+PURPLE_AVAILABLE_IN_3_0
+PurpleContactInfo *purple_message_get_author(PurpleMessage *message);
 
 /**
  * purple_message_get_author_name:
@@ -156,7 +156,7 @@ const char *purple_message_get_author(PurpleMessage *message);
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_message_get_author)
 const char *purple_message_get_author_name(PurpleMessage *message);
 
 /**
@@ -196,21 +196,12 @@ void purple_message_set_author_name_color(PurpleMessage *message, const char *co
  * Returns: the @message author's alias.
  *
  * Since: 3.0
+ *
+ * Deprecated: 3.0: Use [property@ContactInfo:alias] on
+ *             [property@Message:author] instead.
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED
 const char *purple_message_get_author_alias(PurpleMessage *message);
-
-/**
- * purple_message_set_author_alias:
- * @message: The message.
- * @alias: The alias.
- *
- * Sets the alias of @message's author. You don't normally need to call this.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_message_set_author_alias(PurpleMessage *message, const char *alias);
 
 /**
  * purple_message_get_contents:
