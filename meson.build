@@ -432,6 +432,11 @@ if config_home == ''
 endif
 devenv.set('XDG_CONFIG_HOME', config_home)
 
+devenv.set('XDG_CACHE_HOME', meson.global_build_root() / 'cache')
+devenv.set('XDG_DATA_HOME', meson.global_build_root() / 'share')
+devenv.set('XDG_STATE_HOME', meson.global_build_root() / 'state')
+devenv.set('XDG_RUNTIME_DIR', meson.global_build_root() / 'run')
+
 meson.add_devenv(devenv)
 
 if meson.backend() == 'ninja'
