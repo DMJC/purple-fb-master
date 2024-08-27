@@ -71,6 +71,7 @@ test_purple_conversation_properties(void) {
 	gboolean age_restricted = FALSE;
 	gboolean favorite = FALSE;
 	gboolean needs_attention = FALSE;
+	gboolean logging = FALSE;
 
 	account = g_object_new(
 		PURPLE_TYPE_ACCOUNT,
@@ -99,6 +100,7 @@ test_purple_conversation_properties(void) {
 		"description", "to describe or not to describe...",
 		"favorite", TRUE,
 		"id", "id1",
+		"logging", TRUE,
 		"name", "name1",
 		"needs-attention", TRUE,
 		"title", "test conversation",
@@ -122,6 +124,7 @@ test_purple_conversation_properties(void) {
 		"favorite", &favorite,
 		"global-id", &global_id,
 		"id", &id,
+		"logging", &logging,
 		"members", &members,
 		"name", &name,
 		"needs-attention", &needs_attention,
@@ -168,6 +171,8 @@ test_purple_conversation_properties(void) {
 
 	g_assert_true(G_IS_LIST_MODEL(members));
 	g_clear_object(&members);
+
+	g_assert_true(logging);
 
 	g_assert_cmpstr(name, ==, "name1");
 	g_clear_pointer(&name, g_free);

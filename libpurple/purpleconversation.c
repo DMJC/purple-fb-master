@@ -70,6 +70,8 @@ struct _PurpleConversation {
 	PurpleTypingState typing_state;
 	guint typing_state_source;
 	GDateTime *last_typing;
+
+	gboolean logging;
 };
 
 enum {
@@ -100,6 +102,7 @@ enum {
 	PROP_MESSAGES,
 	PROP_NEEDS_ATTENTION,
 	PROP_TYPING_STATE,
+	PROP_LOGGING,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -468,6 +471,10 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 		purple_conversation_set_typing_state(conversation,
 		                                     g_value_get_enum(value));
 		break;
+	case PROP_LOGGING:
+		purple_conversation_set_logging(conversation,
+		                                g_value_get_boolean(value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 		break;
@@ -578,6 +585,10 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 	case PROP_TYPING_STATE:
 		g_value_set_enum(value,
 		                 purple_conversation_get_typing_state(conversation));
+		break;
+	case PROP_LOGGING:
+		g_value_set_boolean(value,
+		                    purple_conversation_get_logging(conversation));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -1081,6 +1092,18 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 		PURPLE_TYPING_STATE_NONE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+	/**
+	 * PurpleConversation:logging:
+	 *
+	 * Whether or not this conversation is currently being logged.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_LOGGING] = g_param_spec_boolean(
+		"logging", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
@@ -1324,7 +1347,7 @@ purple_conversation_write_message(PurpleConversation *conversation,
 	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
 	g_return_if_fail(message != NULL);
 
-	if(!(purple_message_get_flags(message) & PURPLE_MESSAGE_NO_LOG)) {
+	if(conversation->logging) {
 		GError *error = NULL;
 		PurpleHistoryManager *manager = NULL;
 		gboolean success = FALSE;
@@ -1829,5 +1852,26 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 				                                         conversation->typing_state);
 			}
 		}
+	}
+}
+
+gboolean
+purple_conversation_get_logging(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	return conversation->logging;
+}
+
+void
+purple_conversation_set_logging(PurpleConversation *conversation,
+                                gboolean logging)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	if(conversation->logging != logging) {
+		conversation->logging = logging;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_LOGGING]);
 	}
 }

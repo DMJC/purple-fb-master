@@ -859,6 +859,31 @@ PurpleTypingState purple_conversation_get_typing_state(PurpleConversation *conve
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_typing_state(PurpleConversation *conversation, PurpleTypingState typing_state);
 
+/**
+ * purple_conversation_get_logging:
+ * @conversation: The instance.
+ *
+ * Gets whether or not @conversation is currently being logged.
+ *
+ * Returns: %TRUE if @conversation is being logged, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_conversation_get_logging(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_logging:
+ * @conversation: The instance.
+ * @logging: The new logging state.
+ *
+ * Sets the logging state of @conversation to @logging.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_conversation_set_logging(PurpleConversation *conversation, gboolean logging);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONVERSATION_H */
