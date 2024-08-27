@@ -38,49 +38,6 @@ G_BEGIN_DECLS
 #define PURPLE_TYPE_MESSAGE purple_message_get_type()
 
 /**
- * PurpleMessageFlags:
- * @PURPLE_MESSAGE_SEND: Outgoing message.
- * @PURPLE_MESSAGE_RECV: Incoming message.
- * @PURPLE_MESSAGE_SYSTEM: System message.
- * @PURPLE_MESSAGE_AUTO_RESP: Auto response.
- * @PURPLE_MESSAGE_ACTIVE_ONLY: Hint to the UI that this message should not be
- *                              shown in conversations which are only open for
- *                              internal UI purposes (e.g. for contact-aware
- *                              conversations).
- * @PURPLE_MESSAGE_NICK: Contains your nick.
- * @PURPLE_MESSAGE_NO_LOG: Do not log.
- * @PURPLE_MESSAGE_ERROR: Error message.
- * @PURPLE_MESSAGE_DELAYED: Delayed message.
- * @PURPLE_MESSAGE_RAW: "Raw" message - don't apply formatting.
- * @PURPLE_MESSAGE_NOTIFY: Message is a notification.
- * @PURPLE_MESSAGE_NO_LINKIFY: Message should not be auto-linkified.
- *                             Since: 2.1
- * @PURPLE_MESSAGE_INVISIBLE: Message should not be displayed.
- *                            Since: 2.2
- * @PURPLE_MESSAGE_FORWARDED: The message has been forward to the recipient.
- *                            Since: 3.0
- *
- * Flags applicable to a message. Most will have send, recv or system.
- */
-typedef enum /*< flags >*/
-{
-	PURPLE_MESSAGE_SEND         = 1 << 0,
-	PURPLE_MESSAGE_RECV         = 1 << 1,
-	PURPLE_MESSAGE_SYSTEM       = 1 << 2,
-	PURPLE_MESSAGE_AUTO_RESP    = 1 << 3,
-	PURPLE_MESSAGE_ACTIVE_ONLY  = 1 << 4,
-	PURPLE_MESSAGE_NICK         = 1 << 5,
-	PURPLE_MESSAGE_NO_LOG       = 1 << 6,
-	PURPLE_MESSAGE_ERROR        = 1 << 7,
-	PURPLE_MESSAGE_DELAYED      = 1 << 8,
-	PURPLE_MESSAGE_RAW          = 1 << 9,
-	PURPLE_MESSAGE_NOTIFY       = 1 << 11,
-	PURPLE_MESSAGE_NO_LINKIFY PURPLE_AVAILABLE_ENUMERATOR_IN_2_1 = 1 << 12,
-	PURPLE_MESSAGE_INVISIBLE PURPLE_AVAILABLE_ENUMERATOR_IN_2_2 = 1 << 13,
-	PURPLE_MESSAGE_FORWARDED PURPLE_AVAILABLE_ENUMERATOR_IN_3_0 = 1 << 15,
-} PurpleMessageFlags;
-
-/**
  * PurpleMessage:
  *
  * #PurpleMessage represents any message passed between users in libpurple.
@@ -401,32 +358,6 @@ GError *purple_message_get_error(PurpleMessage *message);
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_message_set_error(PurpleMessage *message, GError *error);
-
-/**
- * purple_message_get_flags:
- * @message: The message.
- *
- * Returns the flags of a @message.
- *
- * Returns: the flags of a @message.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-PurpleMessageFlags purple_message_get_flags(PurpleMessage *message);
-
-/**
- * purple_message_set_flags:
- * @message: The message.
- * @flags: The message flags.
- *
- * Sets flags for @message. It shouldn't be in a conflict with a message type,
- * so use it carefully.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_message_set_flags(PurpleMessage *message, PurpleMessageFlags flags);
 
 /**
  * purple_message_get_id:

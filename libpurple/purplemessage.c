@@ -23,7 +23,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "debug.h"
-#include "purpleenums.h"
 #include "purplemessage.h"
 #include "purpleprivate.h"
 #include "util.h"
@@ -44,7 +43,6 @@ struct _PurpleMessage {
 	guint system : 1;
 
 	GDateTime *timestamp;
-	PurpleMessageFlags flags;
 
 	GError *error;
 
@@ -68,7 +66,6 @@ enum {
 	PROP_EDITED_AT,
 	PROP_ERROR,
 	PROP_EVENT,
-	PROP_FLAGS,
 	PROP_ID,
 	PROP_NOTICE,
 	PROP_SYSTEM,
@@ -146,9 +143,6 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 	case PROP_EVENT:
 		g_value_set_boolean(value, purple_message_get_event(message));
 		break;
-	case PROP_FLAGS:
-		g_value_set_flags(value, purple_message_get_flags(message));
-		break;
 	case PROP_ID:
 		g_value_set_string(value, purple_message_get_id(message));
 		break;
@@ -204,9 +198,6 @@ purple_message_set_property(GObject *object, guint param_id,
 		break;
 	case PROP_EVENT:
 		purple_message_set_event(message, g_value_get_boolean(value));
-		break;
-	case PROP_FLAGS:
-		purple_message_set_flags(message, g_value_get_flags(value));
 		break;
 	case PROP_ID:
 		purple_message_set_id(message, g_value_get_string(value));
@@ -427,18 +418,6 @@ purple_message_class_init(PurpleMessageClass *klass) {
 	properties[PROP_EVENT] = g_param_spec_boolean(
 		"event", NULL, NULL,
 		FALSE,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleMessage:flags:
-	 *
-	 * The #PurpleMessageFlags for the message.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_FLAGS] = g_param_spec_flags(
-		"flags", NULL, NULL,
-		PURPLE_TYPE_MESSAGE_FLAGS, 0,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
@@ -717,22 +696,6 @@ purple_message_set_event(PurpleMessage *message, gboolean event) {
 
 		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_EVENT]);
 	}
-}
-
-PurpleMessageFlags
-purple_message_get_flags(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), 0);
-
-	return message->flags;
-}
-
-void
-purple_message_set_flags(PurpleMessage *message, PurpleMessageFlags flags) {
-	g_return_if_fail(PURPLE_IS_MESSAGE(message));
-
-	message->flags = flags;
-
-	g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_FLAGS]);
 }
 
 const char *

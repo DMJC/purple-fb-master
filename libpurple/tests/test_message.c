@@ -41,7 +41,6 @@ test_purple_message_properties(void) {
 	PurpleContactInfo *author = NULL;
 	PurpleContactInfo *author1 = NULL;
 	PurpleMessage *message = NULL;
-	PurpleMessageFlags flags = 0;
 	GDateTime *timestamp = NULL;
 	GDateTime *timestamp1 = NULL;
 	GDateTime *delivered_at1 = NULL;
@@ -79,7 +78,6 @@ test_purple_message_properties(void) {
 		"edited", TRUE,
 		"error", error,
 		"event", TRUE,
-		"flags", PURPLE_MESSAGE_SYSTEM,
 		"id", "id",
 		"notice", TRUE,
 		"system", TRUE,
@@ -98,7 +96,6 @@ test_purple_message_properties(void) {
 		"edited-at", &edited_at1,
 		"error", &error1,
 		"event", &event,
-		"flags", &flags,
 		"id", &id,
 		"notice", &notice,
 		"system", &system,
@@ -129,8 +126,6 @@ test_purple_message_properties(void) {
 	g_clear_error(&error1);
 
 	g_assert_true(event);
-
-	g_assert_cmpint(flags, ==, PURPLE_MESSAGE_SYSTEM);
 
 	g_assert_cmpstr(id, ==, "id");
 	g_clear_pointer(&id, g_free);

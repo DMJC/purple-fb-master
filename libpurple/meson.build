@@ -230,7 +230,6 @@ purple_enumheaders = [
 	'purplecontactinfo.h',
 	'purpleconversation.h',
 	'purplefiletransfer.h',
-	'purplemessage.h',
 	'purplenotification.h',
 	'purpleplugininfo.h',
 	'purplepresence.h',
