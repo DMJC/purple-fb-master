@@ -56,8 +56,6 @@ enum {
 	PROP_0,
 	PROP_ACTION,
 	PROP_AUTHOR,
-	PROP_AUTHOR_ALIAS,
-	PROP_AUTHOR_NAME,
 	PROP_AUTHOR_NAME_COLOR,
 	PROP_CONTENTS,
 	PROP_DELIVERED,
@@ -82,13 +80,7 @@ G_DEFINE_FINAL_TYPE(PurpleMessage, purple_message, G_TYPE_OBJECT)
 static void
 purple_message_set_author(PurpleMessage *message, PurpleContactInfo *author) {
 	if(g_set_object(&message->author, author)) {
-		GObject *obj = G_OBJECT(message);
-
-		g_object_freeze_notify(obj);
-		g_object_notify_by_pspec(obj, properties[PROP_AUTHOR]);
-		g_object_notify_by_pspec(obj, properties[PROP_AUTHOR_ALIAS]);
-		g_object_notify_by_pspec(obj, properties[PROP_AUTHOR_NAME]);
-		g_object_thaw_notify(obj);
+		g_object_notify_by_pspec(G_OBJECT(message), properties[PROP_AUTHOR]);
 	}
 }
 
@@ -107,16 +99,6 @@ purple_message_get_property(GObject *object, guint param_id, GValue *value,
 		break;
 	case PROP_AUTHOR:
 		g_value_set_object(value, purple_message_get_author(message));
-		break;
-	case PROP_AUTHOR_NAME:
-		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-		g_value_set_string(value, purple_message_get_author_name(message));
-		G_GNUC_END_IGNORE_DEPRECATIONS
-		break;
-	case PROP_AUTHOR_ALIAS:
-		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-		g_value_set_string(value, purple_message_get_author_alias(message));
-		G_GNUC_END_IGNORE_DEPRECATIONS
 		break;
 	case PROP_AUTHOR_NAME_COLOR:
 		g_value_set_string(value,
@@ -279,37 +261,6 @@ purple_message_class_init(PurpleMessageClass *klass) {
 		"author", NULL, NULL,
 		PURPLE_TYPE_CONTACT_INFO,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleMessage:author-alias:
-	 *
-	 * The alias of the author.
-	 *
-	 * Since: 3.0
-	 *
-	 * Deprecated: 3.0: Use [property@Message:author] instead.
-	 */
-	properties[PROP_AUTHOR_ALIAS] = g_param_spec_string(
-		"author-alias", NULL, NULL,
-		NULL,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED);
-
-	/**
-	 * PurpleMessage:author-name:
-	 *
-	 * The name of author of the message.
-	 *
-	 * This is a temporary property that will be used to migrate to so that
-	 * [property@Message:author]'s type can be changed in the near future.
-	 *
-	 * Since: 3.0
-	 *
-	 * Deprecated: 3.0: Use [property@Message:author] instead.
-	 */
-	properties[PROP_AUTHOR_NAME] = g_param_spec_string(
-		"author-name", NULL, NULL,
-		NULL,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED);
 
 	/**
 	 * PurpleMessage:author-name-color:
@@ -517,20 +468,6 @@ purple_message_get_author(PurpleMessage *message) {
 	return message->author;
 }
 
-const char *
-purple_message_get_author_name(PurpleMessage *message) {
-	const char *name = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
-
-	name = purple_contact_info_get_username(message->author);
-	if(purple_strempty(name)) {
-		name = purple_contact_info_get_id(message->author);
-	}
-
-	return name;
-}
-
 void
 purple_message_set_author_name_color(PurpleMessage *message,
                                      const char *color)
@@ -548,13 +485,6 @@ purple_message_get_author_name_color(PurpleMessage *message) {
 	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
 
 	return message->author_name_color;
-}
-
-const char *
-purple_message_get_author_alias(PurpleMessage *message) {
-	g_return_val_if_fail(PURPLE_IS_MESSAGE(message), NULL);
-
-	return purple_contact_info_get_alias(message->author);
 }
 
 void
