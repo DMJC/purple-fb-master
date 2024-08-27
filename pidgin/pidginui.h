@@ -35,6 +35,8 @@
 
 G_BEGIN_DECLS
 
+#define PIDGIN_UI_ERROR (g_quark_from_static_string("pidgin-ui"))
+
 /**
  * PidginUi:
  *

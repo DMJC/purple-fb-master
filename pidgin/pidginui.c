@@ -197,6 +197,61 @@ pidgin_ui_get_presence_manager(G_GNUC_UNUSED PurpleUi *ui) {
 }
 
 /******************************************************************************
+ * OpenURI Implementation
+ *****************************************************************************/
+static void
+pidgin_ui_open_uri_cb(GObject *source, GAsyncResult *result, gpointer data) {
+	GError *error = NULL;
+	GTask *task = data;
+	gboolean success = FALSE;
+
+	success = gtk_uri_launcher_launch_finish(GTK_URI_LAUNCHER(source), result,
+	                                         &error);
+
+	if(!success) {
+		g_task_return_error(task, error);
+	} else {
+		g_task_return_boolean(task, success);
+	}
+
+	g_clear_object(&source);
+	g_clear_object(&task);
+}
+
+static void
+pidgin_ui_open_uri(PurpleUi *ui, const char *uri, GCancellable *cancellable,
+                   GAsyncReadyCallback callback, gpointer data)
+{
+	GTask *task = NULL;
+	GtkUriLauncher *launcher = NULL;
+
+	if(purple_strempty(uri)) {
+		g_task_report_new_error(ui, callback, data, pidgin_ui_open_uri,
+		                        PIDGIN_UI_ERROR, 0, _("No URI provided"));
+
+		return;
+	}
+
+	task = g_task_new(ui, cancellable, callback, data);
+	g_task_set_source_tag(task, pidgin_ui_open_uri);
+
+	launcher = gtk_uri_launcher_new(uri);
+
+	gtk_uri_launcher_launch(launcher, NULL, cancellable, pidgin_ui_open_uri_cb,
+	                        task);
+}
+
+static gboolean
+pidgin_ui_open_uri_finish(PurpleUi *ui, GAsyncResult *result, GError **error) {
+	g_return_val_if_fail(PIDGIN_IS_UI(ui), FALSE);
+
+	g_return_val_if_fail(g_async_result_is_tagged(result, pidgin_ui_open_uri),
+	                     FALSE);
+
+	return g_task_propagate_boolean(G_TASK(result), error);
+}
+
+/******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 static void
@@ -214,6 +269,9 @@ pidgin_ui_class_init(PidginUiClass *klass) {
 	ui_class->get_settings_backend = pidgin_ui_get_settings_backend;
 	ui_class->get_history_adapter = pidgin_ui_get_history_adapter;
 	ui_class->get_presence_manager = pidgin_ui_get_presence_manager;
+
+	ui_class->open_uri = pidgin_ui_open_uri;
+	ui_class->open_uri_finish = pidgin_ui_open_uri_finish;
 }
 
 /******************************************************************************

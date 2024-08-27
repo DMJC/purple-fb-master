@@ -444,11 +444,10 @@ pidgin_application_online_help(G_GNUC_UNUSED GSimpleAction *simple,
                                G_GNUC_UNUSED GVariant *parameter,
                                G_GNUC_UNUSED gpointer data)
 {
-	GtkUriLauncher *launcher = NULL;
+	PurpleUi *ui = NULL;
 
-	launcher = gtk_uri_launcher_new(PURPLE_WEBSITE "help");
-	gtk_uri_launcher_launch(launcher, NULL, NULL, NULL, NULL);
-	g_clear_object(&launcher);
+	ui = purple_core_get_ui();
+	purple_ui_open_uri(ui, PURPLE_WEBSITE "help", NULL, NULL, NULL);
 }
 
 static void
