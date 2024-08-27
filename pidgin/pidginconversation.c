@@ -243,19 +243,13 @@ pidgin_conversation_get_author_attributes(G_GNUC_UNUSED GObject *self,
                                           PurpleMessage *message,
                                           G_GNUC_UNUSED gpointer data)
 {
-	const char *author = NULL;
-	const char *custom_color = NULL;
 	GdkRGBA rgba;
 	PangoAttrList *attrs = NULL;
 	gboolean color_valid = FALSE;
+	const char *custom_color = NULL;
 
 	if(!PURPLE_IS_MESSAGE(message)) {
 		return NULL;
-	}
-
-	author = purple_message_get_author_alias(message);
-	if(purple_strempty(author)) {
-		author = purple_message_get_author_name(message);
 	}
 
 	custom_color = purple_message_get_author_name_color(message);
@@ -264,7 +258,13 @@ pidgin_conversation_get_author_attributes(G_GNUC_UNUSED GObject *self,
 	}
 
 	if(!color_valid) {
-		pidgin_color_calculate_for_text(author, &rgba);
+		PurpleContactInfo *author = NULL;
+		const char *name_for_display = NULL;
+
+		author = purple_message_get_author(message);
+		name_for_display = purple_contact_info_get_name_for_display(author);
+
+		pidgin_color_calculate_for_text(name_for_display, &rgba);
 		color_valid = TRUE;
 	}
 

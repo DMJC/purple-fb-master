@@ -40,8 +40,10 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
                 <child>
                   <object class="GtkLabel" id="author">
                     <binding name="label">
-                      <lookup name="author" type="PurpleMessage">
-                        <lookup name="item">GtkListItem</lookup>
+                      <lookup name="name-for-display" type="PurpleContactInfo">
+                        <lookup name="author" type="PurpleMessage">
+                          <lookup name="item">GtkListItem</lookup>
+                        </lookup>
                       </lookup>
                     </binding>
                     <binding name="attributes">
