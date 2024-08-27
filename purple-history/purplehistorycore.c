@@ -44,8 +44,9 @@ purple_history_query(const char *query, GError **error) {
 
 	while(results != NULL) {
 		PurpleMessage *message = PURPLE_MESSAGE(results->data);
+		PurpleContactInfo *author = purple_message_get_author(message);
 
-		g_printf("%s: %s\n", purple_message_get_author_name(message),
+		g_printf("%s: %s\n", purple_contact_info_get_name_for_display(author),
 		         purple_message_get_contents(message));
 
 		g_clear_object(&message);

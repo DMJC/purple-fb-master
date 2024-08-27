@@ -385,6 +385,7 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
                                     PurpleMessage *message, GError **error)
 {
 	PurpleAccount *account = NULL;
+	PurpleContactInfo *author = NULL;
 	PurpleSqliteHistoryAdapter *sqlite_adapter = NULL;
 	sqlite3_stmt *prepared_statement = NULL;
 	gchar *timestamp = NULL;
@@ -416,6 +417,7 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
 	}
 
 	account = purple_conversation_get_account(conversation);
+	author = purple_message_get_author(message);
 
 	sqlite3_bind_text(prepared_statement,
 	                  1, purple_account_get_protocol_name(account), -1,
@@ -435,13 +437,13 @@ purple_sqlite_history_adapter_write(PurpleHistoryAdapter *adapter,
 		                  g_free);
 	}
 	sqlite3_bind_text(prepared_statement,
-	                  5, purple_message_get_author_name(message), -1,
+	                  5, purple_contact_info_get_id(author), -1,
 	                  SQLITE_STATIC);
 	sqlite3_bind_text(prepared_statement,
 	                  6, purple_message_get_author_name_color(message), -1,
 	                  SQLITE_STATIC);
 	sqlite3_bind_text(prepared_statement,
-	                  7, purple_message_get_author_alias(message), -1,
+	                  7, purple_contact_info_get_alias(author), -1,
 	                  SQLITE_STATIC);
 	sqlite3_bind_text(prepared_statement,
 	                  8, purple_message_get_contents(message), -1,
