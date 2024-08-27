@@ -201,7 +201,7 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
 	if(purple_conversation_is_dm(conversation)) {
 		PurpleAccount *account = NULL;
 		PurpleContact *contact = NULL;
-		PurpleContactInfo *info = NULL;
+		PurpleContactInfo *contact_info = NULL;
 		PurpleContactManager *manager = NULL;
 		PurpleConversationMembers *members = NULL;
 
@@ -211,25 +211,17 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
 		manager = purple_contact_manager_get_default();
 
 		/* Check if this dm is with echo. */
-		contact = purple_contact_manager_find_with_username(manager, account,
-		                                                    "Echo");
-		info = PURPLE_CONTACT_INFO(contact);
-		if(purple_conversation_members_has_member(members, info, NULL)) {
+		contact = purple_contact_manager_find_with_id(manager, account,
+		                                              "echo");
+		contact_info = PURPLE_CONTACT_INFO(contact);
+		if(purple_conversation_members_has_member(members, contact_info, NULL))
+		{
 			PurpleDemoProtocolIMInfo *info = NULL;
-			PurpleMessageFlags flags;
-
-			flags = purple_message_get_flags(message);
-			flags &= ~PURPLE_MESSAGE_SEND;
-			flags |= PURPLE_MESSAGE_RECV;
+			const char *contents = purple_message_get_contents(message);
 
 			info = g_new(PurpleDemoProtocolIMInfo, 1);
 			info->conversation = g_object_ref(conversation);
-			info->message = g_object_new(
-				PURPLE_TYPE_MESSAGE,
-				"author", "Echo",
-				"flags", flags,
-				"contents", purple_message_get_contents(message),
-				NULL);
+			info->message = purple_message_new(contact_info, contents);
 
 			g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
 			                purple_demo_protocol_echo_im_cb, info,
@@ -237,15 +229,18 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
 		}
 
 		/* Check if this dm is with aegina. */
-		contact = purple_contact_manager_find_with_username(manager, account,
-		                                                    "Aegina");
-		info = PURPLE_CONTACT_INFO(contact);
-		if(purple_conversation_members_has_member(members, info, NULL)) {
+		contact = purple_contact_manager_find_with_id(manager, account,
+		                                              "aegina");
+		contact_info = PURPLE_CONTACT_INFO(contact);
+		if(purple_conversation_members_has_member(members, contact_info, NULL))
+		{
 			PurpleDemoProtocolIMInfo *info = g_new(PurpleDemoProtocolIMInfo, 1);
-			const char *author = purple_message_get_author_name(message);
+			PurpleContactInfo *author = purple_message_get_author(message);
 			const char *contents = NULL;
+			const char *author_id = NULL;
 
-			if(purple_strequal(author, "Hades")) {
+			author_id = purple_contact_info_get_id(author);
+			if(purple_strequal(author_id, "hades")) {
 				contents = "🫥️";
 			} else {
 				/* TRANSLATORS: This is a reference to the Cap of Invisibility owned by
@@ -254,12 +249,7 @@ purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation
 			}
 
 			info->conversation = g_object_ref(conversation);
-			info->message = g_object_new(
-				PURPLE_TYPE_MESSAGE,
-				"author", author,
-				"contents", contents,
-				"flags", PURPLE_MESSAGE_SEND,
-				NULL);
+			info->message = purple_message_new(contact_info, contents);
 
 			g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, purple_demo_protocol_echo_im_cb,
 			                info, (GDestroyNotify)purple_demo_protocol_im_info_free);

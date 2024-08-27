@@ -37,6 +37,12 @@ purple_demo_connection_connect(PurpleConnection *connection,
                                G_GNUC_UNUSED GError **error)
 {
 	PurpleAccount *account = purple_connection_get_account(connection);
+	PurpleContactInfo *info = purple_account_get_contact_info(account);
+	const char *username = NULL;
+
+	username = purple_account_get_username(account);
+	purple_contact_info_set_id(info, username);
+	purple_contact_info_set_username(info, username);
 
 	purple_connection_set_state(connection, PURPLE_CONNECTION_STATE_CONNECTED);
 
