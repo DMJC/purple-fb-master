@@ -22,6 +22,8 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <birb.h>
+
 #include "purplenotification.h"
 
 #include "purpleenums.h"
@@ -39,6 +41,7 @@ typedef struct {
 	char *icon_name;
 	gboolean read;
 	gboolean interactive;
+	gboolean persistent;
 
 	gpointer data;
 	GDestroyNotify data_destroy_func;
@@ -63,6 +66,7 @@ enum {
 	PROP_ICON_NAME,
 	PROP_READ,
 	PROP_INTERACTIVE,
+	PROP_PERSISTENT,
 	PROP_DATA,
 	PROP_DATA_DESTROY_FUNC,
 	N_PROPERTIES,
@@ -76,7 +80,7 @@ G_DEFINE_TYPE_WITH_PRIVATE(PurpleNotification, purple_notification,
  * Helpers
  *****************************************************************************/
 static void
-purple_notification_set_id(PurpleNotification *notification, const gchar *id) {
+purple_notification_set_id(PurpleNotification *notification, const char *id) {
 	PurpleNotificationPrivate *priv = NULL;
 
 	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
@@ -162,49 +166,53 @@ purple_notification_get_property(GObject *obj, guint param_id, GValue *value,
 	PurpleNotification *notification = PURPLE_NOTIFICATION(obj);
 
 	switch(param_id) {
-		case PROP_ID:
-			g_value_set_string(value,
-			                   purple_notification_get_id(notification));
-			break;
-		case PROP_TYPE:
-			g_value_set_enum(value,
-			                 purple_notification_get_notification_type(notification));
-			break;
-		case PROP_ACCOUNT:
-			g_value_set_object(value,
-			                   purple_notification_get_account(notification));
-			break;
-		case PROP_CREATED_TIMESTAMP:
-			g_value_set_boxed(value,
-			                  purple_notification_get_created_timestamp(notification));
-			break;
-		case PROP_TITLE:
-			g_value_set_string(value,
-			                   purple_notification_get_title(notification));
-			break;
-		case PROP_SUBTITLE:
-			g_value_set_string(value,
-			                   purple_notification_get_subtitle(notification));
-			break;
-		case PROP_ICON_NAME:
-			g_value_set_string(value,
-			                   purple_notification_get_icon_name(notification));
-			break;
-		case PROP_READ:
-			g_value_set_boolean(value,
-			                    purple_notification_get_read(notification));
-			break;
-		case PROP_INTERACTIVE:
-			g_value_set_boolean(value,
-			                    purple_notification_get_interactive(notification));
-			break;
-		case PROP_DATA:
-			g_value_set_pointer(value,
-			                    purple_notification_get_data(notification));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		g_value_set_string(value,
+		                   purple_notification_get_id(notification));
+		break;
+	case PROP_TYPE:
+		g_value_set_enum(value,
+		                 purple_notification_get_notification_type(notification));
+		break;
+	case PROP_ACCOUNT:
+		g_value_set_object(value,
+		                   purple_notification_get_account(notification));
+		break;
+	case PROP_CREATED_TIMESTAMP:
+		g_value_set_boxed(value,
+		                  purple_notification_get_created_timestamp(notification));
+		break;
+	case PROP_TITLE:
+		g_value_set_string(value,
+		                   purple_notification_get_title(notification));
+		break;
+	case PROP_SUBTITLE:
+		g_value_set_string(value,
+		                   purple_notification_get_subtitle(notification));
+		break;
+	case PROP_ICON_NAME:
+		g_value_set_string(value,
+		                   purple_notification_get_icon_name(notification));
+		break;
+	case PROP_READ:
+		g_value_set_boolean(value,
+		                    purple_notification_get_read(notification));
+		break;
+	case PROP_INTERACTIVE:
+		g_value_set_boolean(value,
+		                    purple_notification_get_interactive(notification));
+		break;
+	case PROP_PERSISTENT:
+		g_value_set_boolean(value,
+		                    purple_notification_get_persistent(notification));
+		break;
+	case PROP_DATA:
+		g_value_set_pointer(value,
+		                    purple_notification_get_data(notification));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -215,53 +223,57 @@ purple_notification_set_property(GObject *obj, guint param_id,
 	PurpleNotification *notification = PURPLE_NOTIFICATION(obj);
 
 	switch(param_id) {
-		case PROP_ID:
-			purple_notification_set_id(notification,
-			                           g_value_get_string(value));
-			break;
-		case PROP_TYPE:
-			purple_notification_set_notification_type(notification,
-			                                          g_value_get_enum(value));
-			break;
-		case PROP_ACCOUNT:
-			purple_notification_set_account(notification,
-			                                g_value_get_object(value));
-			break;
-		case PROP_CREATED_TIMESTAMP:
-			purple_notification_set_created_timestamp(notification,
-			                                          g_value_get_boxed(value));
-			break;
-		case PROP_TITLE:
-			purple_notification_set_title(notification,
-			                              g_value_get_string(value));
-			break;
-		case PROP_SUBTITLE:
-			purple_notification_set_subtitle(notification,
-			                                 g_value_get_string(value));
-			break;
-		case PROP_ICON_NAME:
-			purple_notification_set_icon_name(notification,
-			                                  g_value_get_string(value));
-			break;
-		case PROP_READ:
-			purple_notification_set_read(notification,
-			                             g_value_get_boolean(value));
-			break;
-		case PROP_INTERACTIVE:
-			purple_notification_set_interactive(notification,
-			                                    g_value_get_boolean(value));
-			break;
-		case PROP_DATA:
-			purple_notification_set_data(notification,
-			                             g_value_get_pointer(value));
-			break;
-		case PROP_DATA_DESTROY_FUNC:
-			purple_notification_set_data_destroy_func(notification,
-			                                          g_value_get_pointer(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
+	case PROP_ID:
+		purple_notification_set_id(notification,
+		                           g_value_get_string(value));
+		break;
+	case PROP_TYPE:
+		purple_notification_set_notification_type(notification,
+		                                          g_value_get_enum(value));
+		break;
+	case PROP_ACCOUNT:
+		purple_notification_set_account(notification,
+		                                g_value_get_object(value));
+		break;
+	case PROP_CREATED_TIMESTAMP:
+		purple_notification_set_created_timestamp(notification,
+		                                          g_value_get_boxed(value));
+		break;
+	case PROP_TITLE:
+		purple_notification_set_title(notification,
+		                              g_value_get_string(value));
+		break;
+	case PROP_SUBTITLE:
+		purple_notification_set_subtitle(notification,
+		                                 g_value_get_string(value));
+		break;
+	case PROP_ICON_NAME:
+		purple_notification_set_icon_name(notification,
+		                                  g_value_get_string(value));
+		break;
+	case PROP_READ:
+		purple_notification_set_read(notification,
+		                             g_value_get_boolean(value));
+		break;
+	case PROP_INTERACTIVE:
+		purple_notification_set_interactive(notification,
+		                                    g_value_get_boolean(value));
+		break;
+	case PROP_PERSISTENT:
+		purple_notification_set_persistent(notification,
+		                                   g_value_get_boolean(value));
+		break;
+	case PROP_DATA:
+		purple_notification_set_data(notification,
+		                             g_value_get_pointer(value));
+		break;
+	case PROP_DATA_DESTROY_FUNC:
+		purple_notification_set_data_destroy_func(notification,
+		                                          g_value_get_pointer(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+		break;
 	}
 }
 
@@ -275,7 +287,7 @@ purple_notification_finalize(GObject *obj) {
 	g_clear_pointer(&priv->id, g_free);
 	g_clear_object(&priv->account);
 
-	g_clear_pointer(&priv->created_timestamp, g_date_time_unref);
+	birb_date_time_clear(&priv->created_timestamp);
 	g_clear_pointer(&priv->title, g_free);
 	g_clear_pointer(&priv->subtitle, g_free);
 	g_clear_pointer(&priv->icon_name, g_free);
@@ -289,15 +301,7 @@ purple_notification_finalize(GObject *obj) {
 
 static void
 purple_notification_init(PurpleNotification *notification) {
-	PurpleNotificationPrivate *priv = NULL;
-
-	priv = purple_notification_get_instance_private(notification);
-
 	purple_notification_set_id(notification, NULL);
-
-	if(priv->created_timestamp == NULL) {
-		purple_notification_set_created_timestamp(notification, NULL);
-	}
 }
 
 static void
@@ -307,6 +311,159 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	obj_class->get_property = purple_notification_get_property;
 	obj_class->set_property = purple_notification_set_property;
 	obj_class->finalize = purple_notification_finalize;
+
+	/**
+	 * PurpleNotification:id:
+	 *
+	 * The ID of the notification. Used for things that need to address it.
+	 * This is auto populated at creation time.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ID] = g_param_spec_string(
+		"id", NULL, NULL,
+		NULL,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:type:
+	 *
+	 * The [enum@NotificationType] of this notification.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_TYPE] = g_param_spec_enum(
+		"type", NULL, NULL,
+		PURPLE_TYPE_NOTIFICATION_TYPE,
+		PURPLE_NOTIFICATION_TYPE_UNKNOWN,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:account:
+	 *
+	 * An optional [class@Account] that this notification is for.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ACCOUNT] = g_param_spec_object(
+		"account", NULL, NULL,
+		PURPLE_TYPE_ACCOUNT,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:created-timestamp:
+	 *
+	 * The creation time of this notification. This always represented as UTC
+	 * internally, and will be set to UTC now by default.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_CREATED_TIMESTAMP] = g_param_spec_boxed(
+		"created-timestamp", NULL, NULL,
+		G_TYPE_DATE_TIME,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:title:
+	 *
+	 * An optional title for this notification. A user interface may or may not
+	 * choose to use this when displaying the notification. Regardless, this
+	 * should be a translated string.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_TITLE] = g_param_spec_string(
+		"title", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:subtitle:
+	 *
+	 * An optional subtitle for this notification. A user interface may or may
+	 * not choose to use this when displaying the notification. Regardless,
+	 * this should be a translated string.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_SUBTITLE] = g_param_spec_string(
+		"subtitle", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:icon-name:
+	 *
+	 * The icon-name in the icon theme to use for the notification. A user
+	 * interface may or may not choose to use this when display the
+	 * notification.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ICON_NAME] = g_param_spec_string(
+		"icon-name", NULL, NULL,
+		NULL,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:read:
+	 *
+	 * Whether or not the notification has been read.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_READ] = g_param_spec_boolean(
+		"read", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:interactive:
+	 *
+	 * Whether or not the notification can be interacted with.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_INTERACTIVE] = g_param_spec_boolean(
+		"interactive", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:persistent:
+	 *
+	 * Whether or not the notification can be dismissed by users.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_PERSISTENT] = g_param_spec_boolean(
+		"persistent", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:data:
+	 *
+	 * Data specific to the [enum@NotificationType] for the notification.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_DATA] = g_param_spec_pointer(
+		"data", NULL, NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleNotification:data-destroy-func:
+	 *
+	 * A function to call to free [property@PurpleNotification:data].
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_DATA_DESTROY_FUNC] = g_param_spec_pointer(
+		"data-destroy-func", NULL, NULL,
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	/**
 	 * PurpleNotification::deleted:
@@ -327,159 +484,6 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 		NULL,
 		G_TYPE_NONE,
 		0);
-
-	/**
-	 * PurpleNotification:id:
-	 *
-	 * The ID of the notification. Used for things that need to address it.
-	 * This is auto populated at creation time.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_ID] = g_param_spec_string(
-		"id", "id",
-		"The identifier of the notification.",
-		NULL,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:type:
-	 *
-	 * The [enum@NotificationType] of this notification.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_TYPE] = g_param_spec_enum(
-		"type", "type",
-		"The type of notification.",
-		PURPLE_TYPE_NOTIFICATION_TYPE,
-		PURPLE_NOTIFICATION_TYPE_UNKNOWN,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:account:
-	 *
-	 * An optional [class@Account] that this notification is for.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_ACCOUNT] = g_param_spec_object(
-		"account", "account",
-		"The optional account that this notification is for.",
-		PURPLE_TYPE_ACCOUNT,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:created-timestamp:
-	 *
-	 * The creation time of this notification. This always represented as UTC
-	 * internally, and will be set to UTC now by default.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_CREATED_TIMESTAMP] = g_param_spec_boxed(
-		"created-timestamp", "created-timestamp",
-		"The timestamp when this notification was created.",
-		G_TYPE_DATE_TIME,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:title:
-	 *
-	 * An optional title for this notification. A user interface may or may not
-	 * choose to use this when displaying the notification. Regardless, this
-	 * should be a translated string.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_TITLE] = g_param_spec_string(
-		"title", "title",
-		"The title for the notification.",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:subtitle:
-	 *
-	 * An optional subtitle for this notification. A user interface may or may
-	 * not choose to use this when displaying the notification. Regardless,
-	 * this should be a translated string.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_SUBTITLE] = g_param_spec_string(
-		"subtitle", "subtitle",
-		"The subtitle for the notification.",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:icon-name:
-	 *
-	 * The icon-name in the icon theme to use for the notification. A user
-	 * interface may or may not choose to use this when display the
-	 * notification.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_ICON_NAME] = g_param_spec_string(
-		"icon-name", "icon-name",
-		"The icon name for the notification.",
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:read:
-	 *
-	 * Whether or not the notification has been read.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_READ] = g_param_spec_boolean(
-		"read", "read",
-		"Whether or not the notification has been read.",
-		FALSE,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:interactive:
-	 *
-	 * Whether or not the notification can be interacted with.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_INTERACTIVE] = g_param_spec_boolean(
-		"interactive", "interactive",
-		"Whether or not the notification can be interacted with.",
-		FALSE,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:data:
-	 *
-	 * Data specific to the [enum@NotificationType] for the notification.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_DATA] = g_param_spec_pointer(
-		"data", "data",
-		"The type specific data for the notification.",
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleNotification:data-destroy-func:
-	 *
-	 * A function to call to free [property@PurpleNotification:data].
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_DATA_DESTROY_FUNC] = g_param_spec_pointer(
-		"data-destroy-func", "data-destroy-func",
-		"The destroy function to clean up the data property.",
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
-
 }
 
 /******************************************************************************
@@ -662,16 +666,22 @@ purple_notification_set_created_timestamp(PurpleNotification *notification,
 
 	priv = purple_notification_get_instance_private(notification);
 
-	g_clear_pointer(&priv->created_timestamp, g_date_time_unref);
-
-	if(timestamp == NULL) {
-		priv->created_timestamp = g_date_time_new_now_utc();
-	} else {
-		priv->created_timestamp = g_date_time_to_utc(timestamp);
+	if(birb_date_time_set(&priv->created_timestamp, timestamp)) {
+		g_object_notify_by_pspec(G_OBJECT(notification),
+		                         properties[PROP_CREATED_TIMESTAMP]);
 	}
+}
 
-	g_object_notify_by_pspec(G_OBJECT(notification),
-	                         properties[PROP_CREATED_TIMESTAMP]);
+void
+purple_notification_set_created_timestamp_now(PurpleNotification *notification)
+{
+	GDateTime *timestamp = NULL;
+
+	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
+
+	timestamp = g_date_time_new_now_local();
+	purple_notification_set_created_timestamp(notification, timestamp);
+	g_date_time_unref(timestamp);
 }
 
 const char *
@@ -809,6 +819,35 @@ purple_notification_set_interactive(PurpleNotification *notification,
 
 		g_object_notify_by_pspec(G_OBJECT(notification),
 		                         properties[PROP_INTERACTIVE]);
+	}
+}
+
+gboolean
+purple_notification_get_persistent(PurpleNotification *notification) {
+	PurpleNotificationPrivate *priv = NULL;
+
+	g_return_val_if_fail(PURPLE_IS_NOTIFICATION(notification), FALSE);
+
+	priv = purple_notification_get_instance_private(notification);
+
+	return priv->persistent;
+}
+
+void
+purple_notification_set_persistent(PurpleNotification *notification,
+                                   gboolean persistent)
+{
+	PurpleNotificationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
+
+	priv = purple_notification_get_instance_private(notification);
+
+	if(priv->persistent != persistent) {
+		priv->persistent = persistent;
+
+		g_object_notify_by_pspec(G_OBJECT(notification),
+		                         properties[PROP_PERSISTENT]);
 	}
 }
 

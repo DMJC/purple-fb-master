@@ -233,6 +233,17 @@ PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_created_timestamp(PurpleNotification *notification, GDateTime *timestamp);
 
 /**
+ * purple_notification_set_created_timestamp_now:
+ * @notification: The instance.
+ *
+ * Sets the created timestamp of @notification to the current local time.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_notification_set_created_timestamp_now(PurpleNotification *notification);
+
+/**
  * purple_notification_get_title:
  * @notification: The instance.
  *
@@ -356,6 +367,32 @@ gboolean purple_notification_get_interactive(PurpleNotification *notification);
  */
 PURPLE_AVAILABLE_IN_3_0
 void purple_notification_set_interactive(PurpleNotification *notification, gboolean interactive);
+
+/**
+ * purple_notification_get_persistent:
+ * @notification: The instance.
+ *
+ * Gets whether or not @notification is able to be dismissed by a user.
+ *
+ * Returns: %TRUE if the user should not be able to dismiss @notification,
+ *          otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_notification_get_persistent(PurpleNotification *notification);
+
+/**
+ * purple_notification_set_persistent:
+ * @notification: The instance.
+ * @persistent: The new state.
+ *
+ * Sets whether or not @notification is persistent.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_notification_set_persistent(PurpleNotification *notification, gboolean persistent);
 
 /**
  * purple_notification_get_data:

@@ -18,6 +18,8 @@
 
 #include <glib.h>
 
+#include <birb.h>
+
 #include <purple.h>
 
 /******************************************************************************
@@ -65,7 +67,12 @@ test_purple_notification_new(void) {
 	id = purple_notification_get_id(notification);
 	g_assert_nonnull(id);
 
-	/* Make sure that the created-timestamp was set. */
+	/* Make sure that the created-timestamp was not set. */
+	created_timestamp = purple_notification_get_created_timestamp(notification);
+	g_assert_null(created_timestamp);
+
+	/* Make sure set_created_timestamp_now works. */
+	purple_notification_set_created_timestamp_now(notification);
 	created_timestamp = purple_notification_get_created_timestamp(notification);
 	g_assert_nonnull(created_timestamp);
 
@@ -103,6 +110,7 @@ test_purple_notification_properties(void) {
 	char *subtitle1 = NULL;
 	char *title1 = NULL;
 	gboolean interactive = FALSE;
+	gboolean persistent = FALSE;
 	gboolean read = FALSE;
 
 	created_timestamp = g_date_time_new_now_utc();
@@ -112,6 +120,7 @@ test_purple_notification_properties(void) {
 		"created-timestamp", created_timestamp,
 		"icon-name", "icon-name",
 		"interactive", TRUE,
+		"persistent", TRUE,
 		"read", TRUE,
 		"subtitle", "subtitle",
 		"title", "title",
@@ -125,6 +134,7 @@ test_purple_notification_properties(void) {
 		"created-timestamp", &created_timestamp1,
 		"icon-name", &icon_name1,
 		"interactive", &interactive,
+		"persistent", &persistent,
 		"read", &read,
 		"subtitle", &subtitle1,
 		"title", &title1,
@@ -134,21 +144,20 @@ test_purple_notification_properties(void) {
 	g_assert_true(g_date_time_equal(created_timestamp, created_timestamp1));
 	g_date_time_unref(created_timestamp1);
 
-	g_assert_cmpstr(title1, ==, "title");
-	g_clear_pointer(&title1, g_free);
+	g_assert_cmpstr(icon_name1, ==, "icon-name");
+	g_clear_pointer(&icon_name1, g_free);
+
+	g_assert_true(interactive);
+	g_assert_true(persistent);
+	g_assert_true(read);
 
 	g_assert_cmpstr(subtitle1, ==, "subtitle");
 	g_clear_pointer(&subtitle1, g_free);
 
-	g_assert_cmpstr(icon_name1, ==, "icon-name");
-	g_clear_pointer(&icon_name1, g_free);
-
-	g_assert_true(read);
-
-	g_assert_true(interactive);
+	g_assert_cmpstr(title1, ==, "title");
+	g_clear_pointer(&title1, g_free);
 
 	g_date_time_unref(created_timestamp);
-
 	g_assert_finalize_object(notification);
 }
 
