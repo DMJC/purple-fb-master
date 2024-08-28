@@ -37,14 +37,14 @@
 static gboolean
 purple_demo_protocol_failure_tick(gpointer data,
                                   PurpleConnectionError error_code,
-                                  const gchar *tick_str,
-                                  const gchar *tick_plural_str,
-                                  const gchar *disconnect_str)
+                                  const char *tick_str,
+                                  const char *tick_plural_str,
+                                  const char *disconnect_str)
 {
 	PurpleConnection *connection = PURPLE_CONNECTION(data);
 	PurpleAccount *account = purple_connection_get_account(connection);
-	gchar *message = NULL;
-	gint timeout = 0;
+	char *message = NULL;
+	int timeout = 0;
 
 	timeout = GPOINTER_TO_INT(g_object_steal_data(G_OBJECT(connection),
 	                                              "reaping-time"));
@@ -101,8 +101,8 @@ purple_demo_protocol_temporary_failure_cb(gpointer data) {
 static void
 purple_demo_protocol_failure_action_activate(G_GNUC_UNUSED GSimpleAction *action,
                                              GVariant *parameter,
-                                             const gchar *tick_str,
-                                             const gchar *tick_plural_str,
+                                             const char *tick_str,
+                                             const char *tick_plural_str,
                                              GSourceFunc cb)
 {
 	PurpleAccountManager *account_manager = NULL;
@@ -277,7 +277,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
                                              G_GNUC_UNUSED gpointer data)
 {
 	PurpleConnection *connection = NULL;
-	const gchar *account_id = NULL;
+	const char *account_id = NULL;
 	PurpleAccountManager *manager = NULL;
 	PurpleAccount *account = NULL;
 	PurpleRequestPage *page = NULL;
@@ -429,7 +429,7 @@ purple_demo_protocol_request_fields_activate(G_GNUC_UNUSED GSimpleAction *action
 /******************************************************************************
  * Contact action implementations
  *****************************************************************************/
-static const gchar *contacts[] = {"Alice", "Bob", "Carlos", "Erin" };
+static const char *contact_ids[] = {"alice", "bob", "carlos", "erin" };
 
 static void
 purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
@@ -439,23 +439,29 @@ purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
 	PurpleAccount *account = NULL;
 	PurpleAccountManager *account_manager = NULL;
 	PurpleAddContactRequest *request = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactManager *contact_manager = NULL;
 	PurpleNotification *notification = NULL;
 	PurpleNotificationManager *notification_manager = NULL;
-	const gchar *account_id = NULL;
+	const char *account_id = NULL;
 	static guint counter = 0;
 
 	account_id = g_variant_get_string(parameter, NULL);
 	account_manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(account_manager, account_id);
 
-	request = purple_add_contact_request_new(account, contacts[counter]);
+	contact_manager = purple_contact_manager_get_default();
+	contact = purple_contact_manager_find_with_id(contact_manager, account,
+	                                              contact_ids[counter]);
+
+	request = purple_add_contact_request_new(contact);
 	notification = purple_notification_new_from_add_contact_request(request);
 
 	notification_manager = purple_notification_manager_get_default();
 	purple_notification_manager_add(notification_manager, notification);
 
 	counter++;
-	if(counter >= G_N_ELEMENTS(contacts)) {
+	if(counter >= G_N_ELEMENTS(contact_ids)) {
 		counter = 0;
 	}
 

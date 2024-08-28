@@ -25,10 +25,7 @@
 struct _PurpleAddContactRequest {
 	GObject parent;
 
-	PurpleAccount *account;
-
-	char *username;
-	char *alias;
+	PurpleContact *contact;
 	char *message;
 
 	/* This tracks whether add has been called. */
@@ -43,9 +40,7 @@ static guint signals[N_SIGNALS] = {0, };
 
 enum {
 	PROP_0,
-	PROP_ACCOUNT,
-	PROP_USERNAME,
-	PROP_ALIAS,
+	PROP_CONTACT,
 	PROP_MESSAGE,
 	N_PROPERTIES,
 };
@@ -55,25 +50,13 @@ static GParamSpec *properties[N_PROPERTIES] = {NULL, };
  * Helpers
  *****************************************************************************/
 static void
-purple_add_contact_request_set_account(PurpleAddContactRequest *request,
-                                       PurpleAccount *account)
-{
-	g_return_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request));
-	g_return_if_fail(PURPLE_IS_ACCOUNT(account));
-
-	if(g_set_object(&request->account, account)) {
-		g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_ACCOUNT]);
-	}
-}
-
-static void
-purple_add_contact_request_set_username(PurpleAddContactRequest *request,
-                                        const char *username)
+purple_add_contact_request_set_contact(PurpleAddContactRequest *request,
+                                       PurpleContact *contact)
 {
 	g_return_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request));
 
-	if(g_set_str(&request->username, username)) {
-		g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_USERNAME]);
+	if(g_set_object(&request->contact, contact)) {
+		g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_CONTACT]);
 	}
 }
 
@@ -90,17 +73,9 @@ purple_add_contact_request_get_property(GObject *obj, guint param_id,
 	PurpleAddContactRequest *request = PURPLE_ADD_CONTACT_REQUEST(obj);
 
 	switch(param_id) {
-	case PROP_ACCOUNT:
+	case PROP_CONTACT:
 		g_value_set_object(value,
-		                   purple_add_contact_request_get_account(request));
-		break;
-	case PROP_USERNAME:
-		g_value_set_string(value,
-		                   purple_add_contact_request_get_username(request));
-		break;
-	case PROP_ALIAS:
-		g_value_set_string(value,
-		                   purple_add_contact_request_get_alias(request));
+		                   purple_add_contact_request_get_contact(request));
 		break;
 	case PROP_MESSAGE:
 		g_value_set_string(value,
@@ -120,17 +95,9 @@ purple_add_contact_request_set_property(GObject *obj, guint param_id,
 	PurpleAddContactRequest *request = PURPLE_ADD_CONTACT_REQUEST(obj);
 
 	switch(param_id) {
-	case PROP_ACCOUNT:
-		purple_add_contact_request_set_account(request,
+	case PROP_CONTACT:
+		purple_add_contact_request_set_contact(request,
 		                                       g_value_get_object(value));
-		break;
-	case PROP_USERNAME:
-		purple_add_contact_request_set_username(request,
-		                                        g_value_get_string(value));
-		break;
-	case PROP_ALIAS:
-		purple_add_contact_request_set_alias(request,
-		                                     g_value_get_string(value));
 		break;
 	case PROP_MESSAGE:
 		purple_add_contact_request_set_message(request,
@@ -146,7 +113,7 @@ static void
 purple_add_contact_request_dispose(GObject *obj) {
 	PurpleAddContactRequest *request = PURPLE_ADD_CONTACT_REQUEST(obj);
 
-	g_clear_object(&request->account);
+	g_clear_object(&request->contact);
 
 	G_OBJECT_CLASS(purple_add_contact_request_parent_class)->dispose(obj);
 }
@@ -155,8 +122,6 @@ static void
 purple_add_contact_request_finalize(GObject *obj) {
 	PurpleAddContactRequest *request = PURPLE_ADD_CONTACT_REQUEST(obj);
 
-	g_clear_pointer(&request->username, g_free);
-	g_clear_pointer(&request->alias, g_free);
 	g_clear_pointer(&request->message, g_free);
 
 	G_OBJECT_CLASS(purple_add_contact_request_parent_class)->finalize(obj);
@@ -178,40 +143,16 @@ purple_add_contact_request_class_init(PurpleAddContactRequestClass *klass)
 	obj_class->finalize = purple_add_contact_request_finalize;
 
 	/**
-	 * PurpleAddContactRequest:account:
+	 * PurpleAddContactRequest:contact:
 	 *
-	 * The account that this add contact request is for.
+	 * The contact that this request is for.
 	 *
 	 * Since: 3.0
 	 */
-	properties[PROP_ACCOUNT] = g_param_spec_object(
-		"account", NULL, NULL,
-		PURPLE_TYPE_ACCOUNT,
+	properties[PROP_CONTACT] = g_param_spec_object(
+		"contact", NULL, NULL,
+		PURPLE_TYPE_CONTACT,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleAddContactRequest:username:
-	 *
-	 * The username of the remote user to be added.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_USERNAME] = g_param_spec_string(
-		"username", NULL, NULL,
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleAddContactRequest:alias:
-	 *
-	 * The alias of the remote user to be added.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_ALIAS] = g_param_spec_string(
-		"alias", NULL, NULL,
-		NULL,
-		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleAddContactRequest:message:
@@ -253,47 +194,20 @@ purple_add_contact_request_class_init(PurpleAddContactRequestClass *klass)
  * Public API
  *****************************************************************************/
 PurpleAddContactRequest *
-purple_add_contact_request_new(PurpleAccount *account, const char *username) {
-	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
-	g_return_val_if_fail(username != NULL, NULL);
+purple_add_contact_request_new(PurpleContact *contact) {
+	g_return_val_if_fail(PURPLE_IS_CONTACT(contact), NULL);
 
 	return g_object_new(
 		PURPLE_TYPE_ADD_CONTACT_REQUEST,
-		"account", account,
-		"username", username,
+		"contact", contact,
 		NULL);
 }
 
-PurpleAccount *
-purple_add_contact_request_get_account(PurpleAddContactRequest *request) {
+PurpleContact *
+purple_add_contact_request_get_contact(PurpleAddContactRequest *request) {
 	g_return_val_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request), NULL);
 
-	return request->account;
-}
-
-const char *
-purple_add_contact_request_get_username(PurpleAddContactRequest *request) {
-	g_return_val_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request), NULL);
-
-	return request->username;
-}
-
-void
-purple_add_contact_request_set_alias(PurpleAddContactRequest *request,
-                                     const char *alias)
-{
-	g_return_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request));
-
-	if(g_set_str(&request->alias, alias)) {
-		g_object_notify_by_pspec(G_OBJECT(request), properties[PROP_ALIAS]);
-	}
-}
-
-const char *
-purple_add_contact_request_get_alias(PurpleAddContactRequest *request) {
-	g_return_val_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request), NULL);
-
-	return request->alias;
+	return request->contact;
 }
 
 void
