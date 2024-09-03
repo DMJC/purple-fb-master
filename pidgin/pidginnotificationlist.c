@@ -51,29 +51,6 @@ struct _PidginNotificationList {
  * Helpers
  *****************************************************************************/
 static GtkWidget *
-pidgin_notification_list_unknown_notification(PurpleNotification *notification) {
-	GtkWidget *widget = NULL;
-	gchar *label = NULL;
-	const gchar *title = NULL;
-
-	title = purple_notification_get_title(notification);
-	if(title != NULL) {
-		label = g_strdup_printf(_("Unknown notification type %d: %s"),
-		                        purple_notification_get_notification_type(notification),
-		                        title);
-	} else {
-		label = g_strdup_printf(_("Unknown notification type %d"),
-		                        purple_notification_get_notification_type(notification));
-	}
-
-	widget = gtk_label_new(label);
-
-	g_free(label);
-
-	return widget;
-}
-
-static GtkWidget *
 pidgin_notification_generic_new(PurpleNotification *notification) {
 	GtkWidget *row = NULL;
 	GtkWidget *icon = NULL;
@@ -149,9 +126,6 @@ pidgin_notification_list_bind_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
 	notification = gtk_list_item_get_item(item);
 
 	switch(purple_notification_get_notification_type(notification)) {
-		case PURPLE_NOTIFICATION_TYPE_GENERIC:
-			widget = pidgin_notification_generic_new(notification);
-			break;
 		case PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR:
 			widget = pidgin_notification_connection_error_new(notification);
 			break;
@@ -161,13 +135,10 @@ pidgin_notification_list_bind_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
 		case PURPLE_NOTIFICATION_TYPE_ADD_CONTACT:
 			widget = pidgin_notification_add_contact_new(notification);
 			break;
+		case PURPLE_NOTIFICATION_TYPE_GENERIC:
 		default:
-			widget = pidgin_notification_list_unknown_notification(notification);
+			widget = pidgin_notification_generic_new(notification);
 			break;
-	}
-
-	if(!GTK_IS_WIDGET(widget)) {
-		widget = pidgin_notification_list_unknown_notification(notification);
 	}
 
 	gtk_list_item_set_child(item, widget);
