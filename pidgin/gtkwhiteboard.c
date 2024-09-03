@@ -342,13 +342,14 @@ static void pidgin_whiteboard_clear(PurpleWhiteboard *wb)
 	PidginWhiteboard *gtkwb = g_object_get_data(G_OBJECT(wb), UI_DATA);
 	GtkWidget *drawing_area = gtkwb->drawing_area;
 	cairo_t *cr = gtkwb->cr;
-	GtkAllocation allocation;
+	int width, height;
 	GdkRGBA white = {1.0f, 1.0f, 1.0f, 1.0f};
 
-	gtk_widget_get_allocation(drawing_area, &allocation);
+	width = cairo_image_surface_get_width(gtkwb->surface);
+	height = cairo_image_surface_get_height(gtkwb->surface);
 
 	gdk_cairo_set_source_rgba(cr, &white);
-	cairo_rectangle(cr, 0, 0, allocation.width, allocation.height);
+	cairo_rectangle(cr, 0, 0, width, height);
 	cairo_fill(cr);
 
 	gtk_widget_queue_draw(drawing_area);
@@ -404,8 +405,7 @@ pidgin_whiteboard_save_response(GObject *obj, GAsyncResult *result,
 	PidginWhiteboard *gtkwb = (PidginWhiteboard *)data;
 	GFile *file = NULL;
 	char *filename = NULL;
-	GdkPixbuf *pixbuf;
-	gboolean success;
+	cairo_status_t status;
 
 	file = gtk_file_dialog_save_finish(GTK_FILE_DIALOG(obj), result, NULL);
 	if(file == NULL) {
@@ -413,19 +413,15 @@ pidgin_whiteboard_save_response(GObject *obj, GAsyncResult *result,
 	}
 
 	filename = g_file_get_path(file);
-	pixbuf = gdk_pixbuf_get_from_surface(gtkwb->surface, 0, 0,
-	                                     gtkwb->width, gtkwb->height);
 
-	success = gdk_pixbuf_save(pixbuf, filename, "png", NULL,
-	                          "compression", "9", NULL);
-	g_object_unref(pixbuf);
-
-	if (success) {
+	status = cairo_surface_write_to_png(gtkwb->surface, filename);
+	if(status == CAIRO_STATUS_SUCCESS) {
 		purple_debug_info("gtkwhiteboard", "whiteboard saved to \"%s\"",
 		                  filename);
 	} else {
 		purple_debug_error("gtkwhiteboard",
-		                   "whiteboard couldn't be saved to \"%s\"", filename);
+		                   "whiteboard couldn't be saved to \"%s\": %s",
+		                   filename, cairo_status_to_string(status));
 	}
 
 	g_free(filename);
