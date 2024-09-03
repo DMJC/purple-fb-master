@@ -72,6 +72,7 @@ test_purple_conversation_properties(void) {
 	gboolean favorite = FALSE;
 	gboolean needs_attention = FALSE;
 	gboolean logging = FALSE;
+	gboolean drafting = FALSE;
 
 	account = g_object_new(
 		PURPLE_TYPE_ACCOUNT,
@@ -98,6 +99,7 @@ test_purple_conversation_properties(void) {
 		"created-on", created_on,
 		"creator", creator,
 		"description", "to describe or not to describe...",
+		"drafting", TRUE,
 		"favorite", TRUE,
 		"id", "id1",
 		"logging", TRUE,
@@ -121,6 +123,7 @@ test_purple_conversation_properties(void) {
 		"created-on", &created_on1,
 		"creator", &creator1,
 		"description", &description,
+		"drafting", &drafting,
 		"favorite", &favorite,
 		"global-id", &global_id,
 		"id", &id,
@@ -160,6 +163,8 @@ test_purple_conversation_properties(void) {
 
 	g_assert_cmpstr(description, ==, "to describe or not to describe...");
 	g_clear_pointer(&description, g_free);
+
+	g_assert_true(drafting);
 
 	g_assert_true(favorite);
 

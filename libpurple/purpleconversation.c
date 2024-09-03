@@ -72,6 +72,7 @@ struct _PurpleConversation {
 	GDateTime *last_typing;
 
 	gboolean logging;
+	gboolean drafting;
 };
 
 enum {
@@ -103,6 +104,7 @@ enum {
 	PROP_NEEDS_ATTENTION,
 	PROP_TYPING_STATE,
 	PROP_LOGGING,
+	PROP_DRAFTING,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -475,6 +477,10 @@ purple_conversation_set_property(GObject *obj, guint param_id,
 		purple_conversation_set_logging(conversation,
 		                                g_value_get_boolean(value));
 		break;
+	case PROP_DRAFTING:
+		purple_conversation_set_drafting(conversation,
+		                                 g_value_get_boolean(value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 		break;
@@ -589,6 +595,10 @@ purple_conversation_get_property(GObject *obj, guint param_id, GValue *value,
 	case PROP_LOGGING:
 		g_value_set_boolean(value,
 		                    purple_conversation_get_logging(conversation));
+		break;
+	case PROP_DRAFTING:
+		g_value_set_boolean(value,
+		                    purple_conversation_get_drafting(conversation));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -1101,6 +1111,22 @@ purple_conversation_class_init(PurpleConversationClass *klass) {
 	 */
 	properties[PROP_LOGGING] = g_param_spec_boolean(
 		"logging", NULL, NULL,
+		FALSE,
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversation:drafting:
+	 *
+	 * Whether or not the user has drafted a message for this conversation.
+	 *
+	 * This will not be set to false after a call to
+	 * [method@Conversation.write_message] as anything can call that which
+	 * could break the accounting of this property.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_DRAFTING] = g_param_spec_boolean(
+		"drafting", NULL, NULL,
 		FALSE,
 		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -1873,5 +1899,26 @@ purple_conversation_set_logging(PurpleConversation *conversation,
 
 		g_object_notify_by_pspec(G_OBJECT(conversation),
 		                         properties[PROP_LOGGING]);
+	}
+}
+
+gboolean
+purple_conversation_get_drafting(PurpleConversation *conversation) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION(conversation), FALSE);
+
+	return conversation->drafting;
+}
+
+void
+purple_conversation_set_drafting(PurpleConversation *conversation,
+                                 gboolean drafting)
+{
+	g_return_if_fail(PURPLE_IS_CONVERSATION(conversation));
+
+	if(conversation->drafting != drafting) {
+		conversation->drafting = drafting;
+
+		g_object_notify_by_pspec(G_OBJECT(conversation),
+		                         properties[PROP_DRAFTING]);
 	}
 }

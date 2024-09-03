@@ -884,6 +884,41 @@ gboolean purple_conversation_get_logging(PurpleConversation *conversation);
 PURPLE_AVAILABLE_IN_3_0
 void purple_conversation_set_logging(PurpleConversation *conversation, gboolean logging);
 
+/**
+ * purple_conversation_get_drafting:
+ * @conversation: The instance.
+ *
+ * Gets whether or not the user is currently drafting a message in
+ * @conversation.
+ *
+ * This is similar to [property@Conversation:typing-state] except there is no
+ * timeout.
+ *
+ * This is typically just for user interfaces, but might be useful elsewhere.
+ *
+ * Returns: %TRUE if the user has entered text into the input widget for
+ *          @conversation otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_conversation_get_drafting(PurpleConversation *conversation);
+
+/**
+ * purple_conversation_set_drafting:
+ * @conversation: The instance.
+ * @drafting: The new state.
+ *
+ * Sets the drafting state of @conversation to @drafting.
+ *
+ * This can be used by user interfaces to keep track of whether the user has
+ * started drafting a message for this conversation.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_conversation_set_drafting(PurpleConversation *conversation, gboolean drafting);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONVERSATION_H */
