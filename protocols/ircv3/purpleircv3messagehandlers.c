@@ -165,7 +165,7 @@ purple_ircv3_message_handler_tagmsg(IbisClient *client,
 	tags = ibis_message_get_tags(ibis_message);
 
 	if(params == NULL) {
-		g_warning("privmsg received with no parameters");
+		g_warning("tagmsg received with no parameters");
 
 		return FALSE;
 	}
@@ -228,12 +228,13 @@ purple_ircv3_message_handler_privmsg(IbisClient *client, const char *command,
 	PurpleConversation *conversation = NULL;
 	PurpleMessage *message = NULL;
 	GDateTime *dt = NULL;
+	IbisCTCPMessage *ctcp_message = NULL;
 	IbisTags *tags = NULL;
 	GStrv params = NULL;
-	char *stripped = NULL;
 	const char *target = NULL;
 
 	params = ibis_message_get_params(ibis_message);
+	ctcp_message = ibis_message_get_ctcp_message(ibis_message);
 	tags = ibis_message_get_tags(ibis_message);
 
 	if(params == NULL) {
@@ -265,9 +266,33 @@ purple_ircv3_message_handler_privmsg(IbisClient *client, const char *command,
 
 	purple_ircv3_add_contact_to_conversation(contact, conversation);
 
-	stripped = ibis_formatting_strip(params[1]);
-	message = purple_message_new(PURPLE_CONTACT_INFO(contact), stripped);
-	g_clear_pointer(&stripped, g_free);
+	if(IBIS_IS_CTCP_MESSAGE(ctcp_message)) {
+		if(ibis_ctcp_message_is_command(ctcp_message, IBIS_CTCP_ACTION)) {
+			GStrv ctcp_params = NULL;
+			char *ctcp_body = NULL;
+			char *stripped = NULL;
+
+			ctcp_params = ibis_ctcp_message_get_params(ctcp_message);
+			ctcp_body = g_strjoinv(" ", ctcp_params);
+			stripped = ibis_formatting_strip(ctcp_body);
+			g_free(ctcp_body);
+
+			message = purple_message_new(PURPLE_CONTACT_INFO(contact),
+			                             stripped);
+			g_free(stripped);
+
+			purple_message_set_action(message, TRUE);
+		}
+	}
+
+	if(!PURPLE_IS_MESSAGE(message)) {
+		char *stripped = NULL;
+
+		stripped = ibis_formatting_strip(params[1]);
+		message = purple_message_new(PURPLE_CONTACT_INFO(contact), stripped);
+		g_clear_pointer(&stripped, g_free);
+	}
+
 
 	if(purple_strequal(command, IBIS_MSG_NOTICE)) {
 		purple_message_set_notice(message, TRUE);

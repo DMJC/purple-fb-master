@@ -1,4 +1,4 @@
 [wrap-hg]
 directory = ibis
 url = https://keep.imfreedom.org/ibis/ibis
-revision = v0.5.0
+revision = v0.7.1

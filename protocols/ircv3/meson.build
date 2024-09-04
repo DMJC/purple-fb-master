@@ -18,7 +18,7 @@ if not DYNAMIC_IRCV3
 	subdir_done()
 endif
 
-ibis_dep = dependency('ibis', version : '>= 0.5.0')
+ibis_dep = dependency('ibis', version : '>= 0.7.1')
 
 ircv3_filebase = f'purple-@purple_major_version@-ircv3'
 
