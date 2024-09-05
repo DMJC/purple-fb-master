@@ -28,6 +28,7 @@
 struct _PurpleConversationMember {
 	GObject parent;
 
+	PurpleBadges *badges;
 	PurpleContactInfo *contact_info;
 	PurpleTags *tags;
 
@@ -38,6 +39,7 @@ struct _PurpleConversationMember {
 
 enum {
 	PROP_0,
+	PROP_BADGES,
 	PROP_CONTACT_INFO,
 	PROP_TAGS,
 	PROP_TYPING_STATE,
@@ -120,6 +122,10 @@ purple_conversation_member_get_property(GObject *obj, guint param_id,
 	PurpleConversationMember *member = PURPLE_CONVERSATION_MEMBER(obj);
 
 	switch(param_id) {
+	case PROP_BADGES:
+		g_value_set_object(value,
+		                   purple_conversation_member_get_badges(member));
+		break;
 	case PROP_CONTACT_INFO:
 		g_value_set_object(value,
 		                   purple_conversation_member_get_contact_info(member));
@@ -187,6 +193,7 @@ static void
 purple_conversation_member_finalize(GObject *obj) {
 	PurpleConversationMember *member = PURPLE_CONVERSATION_MEMBER(obj);
 
+	g_clear_object(&member->badges);
 	g_clear_object(&member->tags);
 	g_clear_pointer(&member->nickname, g_free);
 
@@ -195,6 +202,7 @@ purple_conversation_member_finalize(GObject *obj) {
 
 static void
 purple_conversation_member_init(PurpleConversationMember *member) {
+	member->badges = purple_badges_new();
 	member->tags = purple_tags_new();
 }
 
@@ -206,6 +214,18 @@ purple_conversation_member_class_init(PurpleConversationMemberClass *klass) {
 	obj_class->finalize = purple_conversation_member_finalize;
 	obj_class->get_property = purple_conversation_member_get_property;
 	obj_class->set_property = purple_conversation_member_set_property;
+
+	/**
+	 * PurpleConversationMember:badges:
+	 *
+	 * The badges for the member.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_BADGES] = g_param_spec_object(
+		"badges", NULL, NULL,
+		PURPLE_TYPE_BADGES,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleConversationMember:contact-info:
@@ -287,6 +307,13 @@ purple_conversation_member_new(PurpleContactInfo *info) {
 		PURPLE_TYPE_CONVERSATION_MEMBER,
 		"contact-info", info,
 		NULL);
+}
+
+PurpleBadges *
+purple_conversation_member_get_badges(PurpleConversationMember *member) {
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MEMBER(member), NULL);
+
+	return member->badges;
 }
 
 PurpleContactInfo *

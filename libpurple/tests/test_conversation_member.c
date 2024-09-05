@@ -55,6 +55,7 @@ test_purple_conversation_member_new(void) {
 
 static void
 test_purple_conversation_member_properties(void) {
+	PurpleBadges *badges = NULL;
 	PurpleContactInfo *info = NULL;
 	PurpleContactInfo *info1 = NULL;
 	PurpleConversationMember *member = NULL;
@@ -78,12 +79,16 @@ test_purple_conversation_member_properties(void) {
 
 	/* Now use g_object_get to read all of the properties. */
 	g_object_get(member,
+		"badges", &badges,
 		"contact-info", &info1,
 		"name-for-display", &name_for_display,
 		"nickname", &nickname,
 		"tags", &tags,
 		"typing-state", &typing_state,
 		NULL);
+
+	g_assert_true(PURPLE_IS_BADGES(badges));
+	g_clear_object(&badges);
 
 	g_assert_true(info1 == info);
 	g_clear_object(&info1);

@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "purplebadges.h"
 #include "purplecontactinfo.h"
 #include "purpletags.h"
 #include "purpletyping.h"
@@ -72,6 +73,23 @@ G_DECLARE_FINAL_TYPE(PurpleConversationMember, purple_conversation_member,
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleConversationMember *purple_conversation_member_new(PurpleContactInfo *info);
+
+/**
+ * purple_conversation_member_get_badges:
+ * @member: The instance.
+ *
+ * Gets the [class@Badges] from @member.
+ *
+ * This is generally used by user interfaces to display the badges, and
+ * protocols will update the badges as necessary. That said, nothing is
+ * stopping plugins from adding their own.
+ *
+ * Returns: (transfer none): The badges.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleBadges *purple_conversation_member_get_badges(PurpleConversationMember *member);
 
 /**
  * purple_conversation_member_get_contact_info:
