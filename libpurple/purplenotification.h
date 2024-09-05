@@ -127,8 +127,10 @@ PurpleNotification *purple_notification_new(PurpleNotificationType type, PurpleA
  * Returns: (transfer full): The new notification.
  *
  * Since: 3.0
+ *
+ * Deprecated: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_notification_add_contact_new)
 PurpleNotification *purple_notification_new_from_add_contact_request(PurpleAddContactRequest *request);
 
 /**

@@ -27,6 +27,7 @@
 #include "purplenotification.h"
 
 #include "purpleenums.h"
+#include "purplenotificationaddcontact.h"
 #include "util.h"
 
 typedef struct {
@@ -504,28 +505,9 @@ purple_notification_new(PurpleNotificationType type, PurpleAccount *account,
 PurpleNotification *
 purple_notification_new_from_add_contact_request(PurpleAddContactRequest *request)
 {
-	PurpleAccount *account = NULL;
-	PurpleContact *remote = NULL;
-	PurpleContactInfo *info = NULL;
-	PurpleNotification *notification = NULL;
-	char *title = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request), NULL);
 
-	remote = purple_add_contact_request_get_contact(request);
-	account = purple_contact_get_account(remote);
-	info = purple_account_get_contact_info(account);
-
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_ADD_CONTACT,
-	                                       account, request, g_object_unref);
-
-	title = g_strdup_printf(_("%s added %s to their contact_list"),
-	                        purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(remote)),
-	                        purple_contact_info_get_name_for_display(info));
-	purple_notification_set_title(notification, title);
-	g_free(title);
-
-	return notification;
+	return purple_notification_add_contact_new(request);
 }
 
 PurpleNotification *

@@ -28,6 +28,7 @@ PROGS = [
     'message',
     'messages',
     'notification',
+    'notification_add_contact',
     'notification_authorization_request',
     'notification_manager',
     'person',
