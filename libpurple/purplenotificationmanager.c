@@ -504,7 +504,9 @@ purple_notification_manager_remove_with_account(PurpleNotificationManager *manag
 		/* If the notification's type is connection error, set can_remove to
 		 * the value of the all parameter.
 		 */
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		type = purple_notification_get_notification_type(notification);
+		G_GNUC_END_IGNORE_DEPRECATIONS
 		if(type == PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR) {
 			can_remove = all;
 		}

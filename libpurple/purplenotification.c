@@ -113,22 +113,6 @@ purple_notification_set_notification_type(PurpleNotification *notification,
 }
 
 static void
-purple_notification_set_account(PurpleNotification *notification,
-                                PurpleAccount *account)
-{
-	PurpleNotificationPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
-
-	priv = purple_notification_get_instance_private(notification);
-
-	if(g_set_object(&priv->account, account)) {
-		g_object_notify_by_pspec(G_OBJECT(notification),
-		                         properties[PROP_ACCOUNT]);
-	}
-}
-
-static void
 purple_notification_set_data(PurpleNotification *notification, gpointer data) {
 	PurpleNotificationPrivate *priv = NULL;
 
@@ -172,8 +156,10 @@ purple_notification_get_property(GObject *obj, guint param_id, GValue *value,
 		                   purple_notification_get_id(notification));
 		break;
 	case PROP_TYPE:
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		g_value_set_enum(value,
 		                 purple_notification_get_notification_type(notification));
+		G_GNUC_END_IGNORE_DEPRECATIONS
 		break;
 	case PROP_ACCOUNT:
 		g_value_set_object(value,
@@ -208,8 +194,10 @@ purple_notification_get_property(GObject *obj, guint param_id, GValue *value,
 		                    purple_notification_get_persistent(notification));
 		break;
 	case PROP_DATA:
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 		g_value_set_pointer(value,
 		                    purple_notification_get_data(notification));
+		G_GNUC_END_IGNORE_DEPRECATIONS
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -301,8 +289,7 @@ purple_notification_finalize(GObject *obj) {
 }
 
 static void
-purple_notification_init(PurpleNotification *notification) {
-	purple_notification_set_id(notification, NULL);
+purple_notification_init(G_GNUC_UNUSED PurpleNotification *notification) {
 }
 
 static void
@@ -316,15 +303,18 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	/**
 	 * PurpleNotification:id:
 	 *
-	 * The ID of the notification. Used for things that need to address it.
-	 * This is auto populated at creation time.
+	 * The ID of the notification.
+	 *
+	 * This used for things that need to address it.
+	 *
+	 * If not set, this will be auto populated at creation time.
 	 *
 	 * Since: 3.0
 	 */
 	properties[PROP_ID] = g_param_spec_string(
 		"id", NULL, NULL,
 		NULL,
-		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:type:
@@ -337,7 +327,8 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 		"type", NULL, NULL,
 		PURPLE_TYPE_NOTIFICATION_TYPE,
 		PURPLE_NOTIFICATION_TYPE_UNKNOWN,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_DEPRECATED |
+		G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:account:
@@ -349,7 +340,7 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	properties[PROP_ACCOUNT] = g_param_spec_object(
 		"account", NULL, NULL,
 		PURPLE_TYPE_ACCOUNT,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:created-timestamp:
@@ -451,7 +442,8 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 */
 	properties[PROP_DATA] = g_param_spec_pointer(
 		"data", NULL, NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_DEPRECATED |
+		G_PARAM_STATIC_STRINGS);
 
 	/**
 	 * PurpleNotification:data-destroy-func:
@@ -462,7 +454,8 @@ purple_notification_class_init(PurpleNotificationClass *klass) {
 	 */
 	properties[PROP_DATA_DESTROY_FUNC] = g_param_spec_pointer(
 		"data-destroy-func", NULL, NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_DEPRECATED |
+		G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
@@ -494,11 +487,33 @@ PurpleNotification *
 purple_notification_new(PurpleNotificationType type, PurpleAccount *account,
                         gpointer data, GDestroyNotify data_destroy_func)
 {
-	return g_object_new(PURPLE_TYPE_NOTIFICATION,
+	PurpleNotification *notification = NULL;
+	char *envvar = NULL;
+
+	/* This is temporary until this function gets replaced with the generic one
+	 * below.
+	 */
+	envvar = g_strdup(g_getenv("G_ENABLE_DIAGNOSTIC"));
+	g_unsetenv("G_ENABLE_DIAGNOSTIC");
+
+	notification = g_object_new(PURPLE_TYPE_NOTIFICATION,
 	                    "type", type,
 	                    "account", account,
 	                    "data", data,
 	                    "data-destroy-func", data_destroy_func,
+	                    NULL);
+
+	g_setenv("G_ENABLE_DIAGNOSTIC", envvar, FALSE);
+	g_free(envvar);
+
+	return notification;
+}
+
+PurpleNotification *
+purple_notification_new_generic(const char *id, const char *title) {
+	return g_object_new(PURPLE_TYPE_NOTIFICATION,
+	                    "id", id,
+	                    "title", title,
 	                    NULL);
 }
 
@@ -523,9 +538,11 @@ purple_notification_new_from_authorization_request(PurpleAuthorizationRequest *a
 	                     NULL);
 
 	account = purple_authorization_request_get_account(authorization_request);
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_AUTHORIZATION_REQUEST,
 	                                       account, authorization_request,
 	                                       g_object_unref);
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	username = purple_authorization_request_get_username(authorization_request);
 	alias = purple_authorization_request_get_alias(authorization_request);
@@ -552,6 +569,7 @@ PurpleNotification *
 purple_notification_new_from_connection_error(PurpleAccount *account,
                                               PurpleConnectionErrorInfo *info)
 {
+	PurpleConnectionErrorInfo *copy = NULL;
 	PurpleNotification *notification = NULL;
 	PurpleProtocol *protocol = NULL;
 	char *title = NULL;
@@ -560,8 +578,12 @@ purple_notification_new_from_connection_error(PurpleAccount *account,
 	g_return_val_if_fail(PURPLE_IS_ACCOUNT(account), NULL);
 	g_return_val_if_fail(info != NULL, NULL);
 
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+	copy = purple_connection_error_info_copy(info);
 	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR,
-	                                       account, info, NULL);
+	                                       account, copy,
+	                                       (GDestroyNotify)purple_connection_error_info_free);
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	/* Set the title of the notification. */
 	username = purple_account_get_username(account);
@@ -618,6 +640,22 @@ purple_notification_get_account(PurpleNotification *notification) {
 	priv = purple_notification_get_instance_private(notification);
 
 	return priv->account;
+}
+
+void
+purple_notification_set_account(PurpleNotification *notification,
+                                PurpleAccount *account)
+{
+	PurpleNotificationPrivate *priv = NULL;
+
+	g_return_if_fail(PURPLE_IS_NOTIFICATION(notification));
+
+	priv = purple_notification_get_instance_private(notification);
+
+	if(g_set_object(&priv->account, account)) {
+		g_object_notify_by_pspec(G_OBJECT(notification),
+		                         properties[PROP_ACCOUNT]);
+	}
 }
 
 GDateTime *
@@ -738,7 +776,6 @@ purple_notification_set_icon_name(PurpleNotification *notification,
 		g_object_notify_by_pspec(G_OBJECT(notification),
 		                         properties[PROP_ICON_NAME]);
 	}
-
 }
 
 gboolean

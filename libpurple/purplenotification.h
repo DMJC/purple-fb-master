@@ -113,8 +113,27 @@ struct _PurpleNotificationClass {
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_notification_new_generic)
 PurpleNotification *purple_notification_new(PurpleNotificationType type, PurpleAccount *account, gpointer data, GDestroyNotify data_destroy_func);
+
+/**
+ * purple_notification_new_generic:
+ * @id: (nullable): An id for the notification.
+ * @title: (nullable): The title for the notification.
+ *
+ * Creates a new notification with @title.
+ *
+ * If @id is %NULL it will be set to a random identifier. The @id is used to
+ * tell protocols that the notification was read/dismissed/whatever. So if you
+ * set the id for that purpose, but sure to set [property@Notification:account]
+ * as well.
+ *
+ * Returns: (transfers full): The new notification.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+PurpleNotification *purple_notification_new_generic(const char *id, const char *title);
 
 /**
  * purple_notification_new_from_add_contact_request:
@@ -152,7 +171,7 @@ PurpleNotification *purple_notification_new_from_authorization_request(PurpleAut
 /**
  * purple_notification_new_from_connection_error:
  * @account: The [class@Purple.Account] that had the connection error.
- * @info: The [struct@Purple.ConnectionErrorInfo] for the error.
+ * @info: (transfer none): The [struct@Purple.ConnectionErrorInfo] for the error.
  *
  * Creates a new [class@Purple.Notification] for @account with the @info for
  * the connection. This helper will automatically fill out the notification
@@ -188,7 +207,7 @@ const char *purple_notification_get_id(PurpleNotification *notification);
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED
 PurpleNotificationType purple_notification_get_notification_type(PurpleNotification *notification);
 
 /**
@@ -203,6 +222,18 @@ PurpleNotificationType purple_notification_get_notification_type(PurpleNotificat
  */
 PURPLE_AVAILABLE_IN_3_0
 PurpleAccount *purple_notification_get_account(PurpleNotification *notification);
+
+/**
+ * purple_notification_set_account:
+ * @notification: The instance.
+ * @account: (nullable): The new account.
+ *
+ * Sets the account of @notification to @account.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+void purple_notification_set_account(PurpleNotification *notification, PurpleAccount *account);
 
 /**
  * purple_notification_get_created_timestamp:
@@ -406,7 +437,7 @@ void purple_notification_set_persistent(PurpleNotification *notification, gboole
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED
 gpointer purple_notification_get_data(PurpleNotification *notification);
 
 /**

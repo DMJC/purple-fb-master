@@ -67,8 +67,7 @@ test_purple_notification_manager_add_remove(void) {
 	                 &removed_called);
 
 	/* Create the notification and store its id. */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       NULL, NULL, NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
 
 	/* Add the notification to the manager. */
 	purple_notification_manager_add(manager, notification);
@@ -103,8 +102,7 @@ test_purple_notification_manager_double_add(void) {
 
 		manager = g_object_new(PURPLE_TYPE_NOTIFICATION_MANAGER, NULL);
 
-		notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-		                                       NULL, NULL, NULL);
+		notification = purple_notification_new_generic(NULL, NULL);
 
 		purple_notification_manager_add(manager, notification);
 		purple_notification_manager_add(manager, notification);
@@ -134,8 +132,7 @@ test_purple_notification_manager_double_remove(void) {
 	                 G_CALLBACK(test_purple_notification_manager_increment_cb),
 	                 &removed_called);
 
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       NULL, NULL, NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
 
 	purple_notification_manager_add(manager, notification);
 
@@ -164,8 +161,7 @@ test_purple_notification_manager_remove_with_account_simple(void) {
 	g_assert_cmpuint(0, ==, g_list_model_get_n_items(model));
 
 	/* Add a single notification without the account */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       NULL, NULL, NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
 	purple_notification_manager_add(manager, notification);
 	purple_notification_manager_remove_with_account(manager, account, TRUE);
 	g_assert_cmpuint(1, ==, g_list_model_get_n_items(model));
@@ -173,8 +169,8 @@ test_purple_notification_manager_remove_with_account_simple(void) {
 	g_clear_object(&notification);
 
 	/* Add a single notification with the account */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       account, NULL, NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
+	purple_notification_set_account(notification, account);
 	purple_notification_manager_add(manager, notification);
 	purple_notification_manager_remove_with_account(manager, account, TRUE);
 	g_assert_cmpuint(0, ==, g_list_model_get_n_items(model));
@@ -202,9 +198,8 @@ test_purple_notification_manager_remove_with_account_mixed(void) {
 
 	/* Add our notifications. */
 	for(int i = 0; pattern[i] >= 0; i++) {
-		notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-		                                       accounts[pattern[i]], NULL,
-		                                       NULL);
+		notification = purple_notification_new_generic(NULL, NULL);
+		purple_notification_set_account(notification, accounts[pattern[i]]);
 		purple_notification_manager_add(manager, notification);
 		g_clear_object(&notification);
 	}
@@ -231,6 +226,7 @@ test_purple_notification_manager_remove_with_account_mixed(void) {
 
 static void
 test_purple_notification_manager_remove_with_account_all(void) {
+	PurpleConnectionErrorInfo *info = NULL;
 	PurpleNotificationManager *manager = NULL;
 	PurpleNotification *notification = NULL;
 	PurpleAccount *account = NULL;
@@ -266,26 +262,27 @@ test_purple_notification_manager_remove_with_account_all(void) {
 	g_assert_cmpuint(0, ==, g_list_model_get_n_items(model));
 
 	/* Add a generic notification with an account. */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       account, NULL, NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
+	purple_notification_set_account(notification, account);
 	purple_notification_manager_add(manager, notification);
 	g_clear_object(&notification);
 
 	/* Add a connection error notification with the account. */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR,
-	                                       account, NULL, NULL);
+	info = purple_connection_error_info_new(PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
+	                                        "the network is borked.");
+	notification = purple_notification_new_from_connection_error(account, info);
+	purple_connection_error_info_free(info);
 	purple_notification_manager_add(manager, notification);
 	g_clear_object(&notification);
 
 	/* Add a generic notification with the account. */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       account, NULL, NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
+	purple_notification_set_account(notification, account);
 	purple_notification_manager_add(manager, notification);
 	g_clear_object(&notification);
 
 	/* Add a generic notification without an account. */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       NULL, NULL, NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
 	purple_notification_manager_add(manager, notification);
 	g_clear_object(&notification);
 
@@ -298,8 +295,10 @@ test_purple_notification_manager_remove_with_account_all(void) {
 
 	/* Make sure that the second item is the connection error. */
 	notification = g_list_model_get_item(G_LIST_MODEL(model), 1);
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	g_assert_cmpint(purple_notification_get_notification_type(notification),
 	                ==, PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR);
+	G_GNUC_END_IGNORE_DEPRECATIONS
 	g_clear_object(&notification);
 
 	/* Remove the non-transient notifications for the account. */
@@ -336,10 +335,7 @@ test_purple_notification_manager_read_propagation(void) {
 	                 &unread_count_called);
 
 	/* Create the notification. */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       NULL,
-	                                       NULL,
-	                                       NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
 
 	purple_notification_manager_add(manager, notification);
 

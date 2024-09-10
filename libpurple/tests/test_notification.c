@@ -23,45 +23,18 @@
 #include <purple.h>
 
 /******************************************************************************
- * Callbacks
- *****************************************************************************/
-static void
-test_purple_notification_destroy_data_cb(gpointer data) {
-	guint *counter = data;
-
-	*counter = *counter + 1;
-}
-
-/******************************************************************************
  * Tests
  *****************************************************************************/
 static void
 test_purple_notification_new(void) {
-	PurpleAccount *account1 = NULL;
-	PurpleAccount *account2 = NULL;
 	PurpleNotification *notification = NULL;
-	PurpleNotificationType type = PURPLE_NOTIFICATION_TYPE_UNKNOWN;
 	GDateTime *created_timestamp = NULL;
 	const char *id = NULL;
 
-	account1 = purple_account_new("test", "test");
-
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       account1,
-	                                       NULL,
-	                                       NULL);
+	notification = purple_notification_new_generic(NULL, NULL);
 
 	/* Make sure we got a valid notification. */
 	g_assert_true(PURPLE_IS_NOTIFICATION(notification));
-
-	/* Check the type. */
-	type = purple_notification_get_notification_type(notification);
-	g_assert_cmpint(PURPLE_NOTIFICATION_TYPE_GENERIC, ==, type);
-
-	/* Verify the account is set properly. */
-	account2 = purple_notification_get_account(notification);
-	g_assert_nonnull(account2);
-	g_assert_true(account1 == account2);
 
 	/* Make sure that the id was generated. */
 	id = purple_notification_get_id(notification);
@@ -76,29 +49,7 @@ test_purple_notification_new(void) {
 	created_timestamp = purple_notification_get_created_timestamp(notification);
 	g_assert_nonnull(created_timestamp);
 
-	g_clear_object(&account1);
 	g_assert_finalize_object(notification);
-}
-
-static void
-test_purple_notification_destroy_data_func(void) {
-	PurpleNotification *notification = NULL;
-	guint counter = 0;
-
-	/* Create the notification. */
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       NULL,
-	                                       &counter,
-	                                       test_purple_notification_destroy_data_cb);
-
-	/* Sanity check. */
-	g_assert_true(PURPLE_IS_NOTIFICATION(notification));
-
-	/* Unref it to force the destroy callback to be called. */
-	g_assert_finalize_object(notification);
-
-	/* Make sure the callback was called. */
-	g_assert_cmpuint(counter, ==, 1);
 }
 
 static void
@@ -124,7 +75,6 @@ test_purple_notification_properties(void) {
 		"read", TRUE,
 		"subtitle", "subtitle",
 		"title", "title",
-		"type", PURPLE_NOTIFICATION_TYPE_GENERIC,
 		NULL);
 
 	g_assert_true(PURPLE_IS_NOTIFICATION(notification));
@@ -171,8 +121,6 @@ main(int argc, char *argv[]) {
 
 	g_test_add_func("/notification/new",
 	                test_purple_notification_new);
-	g_test_add_func("/notification/destroy-data-func",
-	                test_purple_notification_destroy_data_func);
 	g_test_add_func("/notification/properties",
 	                test_purple_notification_properties);
 
