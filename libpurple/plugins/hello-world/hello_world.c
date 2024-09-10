@@ -26,9 +26,7 @@ hello_world_load(GPluginPlugin *plugin, GError **error) {
 	PurpleNotification *notification = NULL;
 	PurpleNotificationManager *manager = NULL;
 
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       NULL, NULL, NULL);
-	purple_notification_set_title(notification, "Hello World!");
+	notification = purple_notification_new_generic(NULL, "Hello World!");
 	purple_notification_set_subtitle(notification,
 	                                 "This is the Hello World! plugin :)");
 

@@ -1106,13 +1106,12 @@ purple_account_connect(PurpleAccount *account)
 		PurpleNotificationManager *manager = NULL;
 		char *value = NULL;
 
-		notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-		                                       account, NULL, NULL);
-
 		value = g_strdup_printf(_("Failed to load account '%s'"),
 		                        account->username);
-		purple_notification_set_title(notification, value);
+		notification = purple_notification_new_generic(NULL, value);
 		g_free(value);
+
+		purple_notification_set_account(notification, account);
 
 		value = g_strdup_printf(_("Failed to find a protocol with id '%s'"),
 		                        account->protocol_id);

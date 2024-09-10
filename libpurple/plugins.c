@@ -447,28 +447,28 @@ purple_plugins_load_saved(const char *key)
 		if(error != NULL) {
 			PurpleNotification *notification = NULL;
 			PurpleNotificationManager *manager = NULL;
-			char *msg = NULL;
+			const char *msg = NULL;
 			char *title = NULL;
 
 			if(error->message != NULL) {
-				msg = g_strdup(error->message);
+				msg = error->message;
 			} else {
-				msg = g_strdup(_("Unknown error"));
+				msg = _("Unknown error");
 			}
-			g_clear_error(&error);
 
-			notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-			                                       NULL, msg, g_free);
+			title = g_strdup_printf(_("Failed to load saved plugin %s"), file);
+			notification = purple_notification_new_generic(NULL, title);
+			g_free(title);
 
+			purple_notification_set_subtitle(notification, msg);
 			purple_notification_set_icon_name(notification,
 			                                  "dialog-error-symbolic");
-			title = g_strdup_printf(_("Failed to load saved plugin %s"), file);
-			purple_notification_set_title(notification, title);
-			g_free(title);
 
 			manager = purple_notification_manager_get_default();
 			purple_notification_manager_add(manager, notification);
 			g_clear_object(&notification);
+
+			g_clear_error(&error);
 		}
 
 		g_free(l->data);
