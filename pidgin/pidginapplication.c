@@ -55,7 +55,7 @@ struct _PidginApplication {
 /******************************************************************************
  * Globals
  *****************************************************************************/
-static gchar *opt_config_dir_arg = NULL;
+static char *opt_config_dir_arg = NULL;
 static gboolean opt_debug = FALSE;
 static gboolean opt_nologin = FALSE;
 
@@ -150,7 +150,7 @@ pidgin_application_init_plugins(void) {
 		g_message("PURPLE_PLUGINS_SKIP environment variable set, skipping "
 		          "normal Pidgin plugin paths");
 	} else {
-		gchar *path = g_build_filename(purple_data_dir(), "plugins", NULL);
+		char *path = g_build_filename(purple_data_dir(), "plugins", NULL);
 
 		if(!g_file_test(path, G_FILE_TEST_IS_DIR)) {
 			g_mkdir(path, S_IRUSR | S_IWUSR | S_IXUSR);
@@ -202,13 +202,11 @@ static void
 pidgin_application_setup_debug(G_GNUC_UNUSED PidginApplication *application) {
 	pidgin_debug_init_handler();
 
-	if(purple_strequal(PURPLE_BUILD_BUILDTYPE, "debug") ||
-	   purple_strequal(PURPLE_BUILD_BUILDTYPE, "debugoptimized"))
-	{
-		pidgin_debug_set_print_enabled(TRUE);
-	} else {
-		pidgin_debug_set_print_enabled(opt_debug);
-	}
+#ifdef PURPLE_DEBUG
+	pidgin_debug_set_print_enabled(TRUE);
+#else /* PURPLE_DEBUG */
+	pidgin_debug_set_print_enabled(opt_debug);
+#endif /* PURPLE_DEBUG */
 }
 
 /******************************************************************************
@@ -219,7 +217,7 @@ pidgin_application_setup_debug(G_GNUC_UNUSED PidginApplication *application) {
  *
  * This list keeps track of which actions should only be enabled while online.
  */
-static const gchar *pidgin_application_online_actions[] = {
+static const char *pidgin_application_online_actions[] = {
 };
 
 /**
@@ -228,7 +226,7 @@ static const gchar *pidgin_application_online_actions[] = {
  * This list keeps track of which actions should only be enabled if a protocol
  * supporting channels is connected.
  */
-static const gchar *pidgin_application_channel_actions[] = {
+static const char *pidgin_application_channel_actions[] = {
 	"join-channel",
 };
 
@@ -243,15 +241,13 @@ static const gchar *pidgin_application_channel_actions[] = {
  */
 static void
 pidgin_application_actions_set_enabled(PidginApplication *application,
-                                       const gchar *const *actions,
+                                       const char *const *actions,
                                        guint n_actions,
                                        gboolean enabled)
 {
-	guint i = 0;
-
-	for(i = 0; i < n_actions; i++) {
+	for(guint i = 0; i < n_actions; i++) {
 		GAction *action = NULL;
-		const gchar *name = actions[i];
+		const char *name = actions[i];
 
 		action = g_action_map_lookup_action(G_ACTION_MAP(application), name);
 
@@ -298,7 +294,7 @@ pidgin_application_connect_account(G_GNUC_UNUSED GSimpleAction *simple,
 {
 	PurpleAccount *account = NULL;
 	PurpleAccountManager *manager = NULL;
-	const gchar *id = NULL;
+	const char *id = NULL;
 
 	id = g_variant_get_string(parameter, NULL);
 
@@ -328,7 +324,7 @@ pidgin_application_disable_account(G_GNUC_UNUSED GSimpleAction *simple,
 {
 	PurpleAccount *account = NULL;
 	PurpleAccountManager *manager = NULL;
-	const gchar *id = NULL;
+	const char *id = NULL;
 
 	id = g_variant_get_string(parameter, NULL);
 
@@ -363,7 +359,7 @@ pidgin_application_edit_account(G_GNUC_UNUSED GSimpleAction *simple,
 	PidginApplication *application = data;
 	PurpleAccount *account = NULL;
 	PurpleAccountManager *manager = NULL;
-	const gchar *id = NULL;
+	const char *id = NULL;
 
 	if(!g_variant_is_of_type(parameter, G_VARIANT_TYPE_STRING)) {
 		g_warning("parameter is of type %s, expected %s",
@@ -398,7 +394,7 @@ pidgin_application_enable_account(G_GNUC_UNUSED GSimpleAction *simple,
 {
 	PurpleAccount *account = NULL;
 	PurpleAccountManager *manager = NULL;
-	const gchar *id = NULL;
+	const char *id = NULL;
 
 	id = g_variant_get_string(parameter, NULL);
 
@@ -565,7 +561,7 @@ pidgin_application_add_shortcuts(PidginApplication *application) {
 }
 
 /******************************************************************************
- * Purple Signal Callbacks
+ * Callbacks
  *****************************************************************************/
 static void
 pidgin_application_connected_cb(G_GNUC_UNUSED PurpleAccountManager *manager,
@@ -679,14 +675,14 @@ pidgin_application_window_added(GtkApplication *application,
 	GTK_APPLICATION_CLASS(pidgin_application_parent_class)->window_added(application,
 	                                                                     window);
 
-	if(strstr(VERSION, "-devel")) {
-		gtk_widget_add_css_class(GTK_WIDGET(window), "devel");
-	}
+#ifdef PURPLE_DEBUG
+	gtk_widget_add_css_class(GTK_WIDGET(window), "devel");
+#endif /* PURPLE_DEBUG */
 
 	g_hash_table_iter_init(&iter, pidgin_application->action_groups);
 	while(g_hash_table_iter_next(&iter, &key, &value)) {
 		GActionGroup *action_group = value;
-		gchar *prefix = key;
+		char *prefix = key;
 
 		gtk_widget_insert_action_group(GTK_WIDGET(window), prefix,
 		                               action_group);
@@ -710,8 +706,8 @@ pidgin_application_startup(GApplication *application) {
 			purple_util_set_user_dir(opt_config_dir_arg);
 		} else {
 			/* Make an absolute (if not canonical) path */
-			gchar *cwd = g_get_current_dir();
-			gchar *path = g_build_filename(cwd, opt_config_dir_arg, NULL);
+			char *cwd = g_get_current_dir();
+			char *path = g_build_filename(cwd, opt_config_dir_arg, NULL);
 
 			purple_util_set_user_dir(path);
 
@@ -760,8 +756,7 @@ pidgin_application_startup(GApplication *application) {
 
 	gtk_window_set_default_icon_name("pidgin");
 
-	g_free(opt_config_dir_arg);
-	opt_config_dir_arg = NULL;
+	g_clear_pointer(&opt_config_dir_arg, g_free);
 
 	if(purple_prefs_get_bool(PIDGIN_PREFS_ROOT "/debug/enabled")) {
 		pidgin_debug_window_show();
@@ -806,13 +801,13 @@ pidgin_application_activate(G_GNUC_UNUSED GApplication *application) {
 	}
 }
 
-static gint
+static int
 pidgin_application_handle_local_options(G_GNUC_UNUSED GApplication *application,
                                         GVariantDict *options)
 {
 	if (g_variant_dict_contains(options, "version")) {
-		printf("%s %s (libpurple %s)\n", PIDGIN_NAME, DISPLAY_VERSION,
-		       purple_core_get_version());
+		g_print("%s %s (libpurple %s)\n", PIDGIN_NAME, DISPLAY_VERSION,
+		        purple_core_get_version());
 
 		return 0;
 	}
@@ -836,7 +831,7 @@ static void
 pidgin_application_init(PidginApplication *application) {
 	GApplication *gapp = G_APPLICATION(application);
 	gboolean online = FALSE;
-	gint n_actions = 0;
+	int n_actions = 0;
 
 	application->action_groups = g_hash_table_new_full(g_str_hash, g_str_equal,
 	                                                   g_free, g_object_unref);
@@ -896,7 +891,7 @@ pidgin_application_new(void) {
 
 void
 pidgin_application_add_action_group(PidginApplication *application,
-                                    const gchar *prefix,
+                                    const char *prefix,
                                     GActionGroup *action_group)
 {
 	GList *windows = NULL;

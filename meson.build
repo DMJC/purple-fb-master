@@ -60,6 +60,7 @@ conf.set_quoted('PURPLE_BUILD_CPU', host_machine.cpu())
 conf.set_quoted('PURPLE_BUILD_ARCHITECTURE', host_machine.cpu_family())
 conf.set_quoted('PURPLE_BUILD_ENDIANNESS', host_machine.endian())
 conf.set_quoted('PURPLE_BUILD_BUILDTYPE', get_option('buildtype'))
+conf.set('PURPLE_DEBUG', get_option('debug'))
 
 version_conf.set('PURPLE_MAJOR_VERSION', purple_major_version)
 version_conf.set('PURPLE_MINOR_VERSION', purple_minor_version)
