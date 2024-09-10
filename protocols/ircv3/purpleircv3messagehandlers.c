@@ -149,6 +149,88 @@ purple_ircv3_message_handler_part(G_GNUC_UNUSED IbisClient *client,
 }
 
 gboolean
+purple_ircv3_message_handler_namreply(IbisClient *client,
+                                      G_GNUC_UNUSED const char *command,
+                                      IbisMessage *message, gpointer data)
+{
+	PurpleIRCv3Connection *connection = data;
+	PurpleConversation *conversation = NULL;
+	GStrv params = NULL;
+	GStrv nicks = NULL;
+	const char *target = NULL;
+
+	params = ibis_message_get_params(message);
+	if(params == NULL) {
+		g_warning("namreply received with no parameters");
+
+		return FALSE;
+	}
+
+	if(g_strv_length(params) != 4) {
+		char *body = g_strjoinv(" ", params);
+		g_warning("unknown namreply format: '%s'", body);
+		g_free(body);
+
+		return FALSE;
+	}
+
+	/* params[0] holds nick of the user and params[1] holds the channel type
+	 * (public/private) but we don't care about either of these.
+	 */
+
+	target = params[2];
+	if(!ibis_client_is_channel(client, target)) {
+		g_warning("received namreply for '%s' which is not a channel.",
+		          target);
+
+		return FALSE;
+	}
+
+	conversation = purple_ircv3_connection_find_or_create_conversation(connection,
+	                                                                   target);
+
+	/* Split the last parameter on space to get a list of all the nicks. */
+	nicks = g_strsplit(params[3], " ", -1);
+	if(nicks != NULL) {
+		PurpleAccount *account = NULL;
+		PurpleConnection *purple_connection = NULL;
+		PurpleContactManager *manager = purple_contact_manager_get_default();
+		PurpleConversationMembers *members = NULL;
+
+		purple_connection = PURPLE_CONNECTION(connection);
+		account = purple_connection_get_account(purple_connection);
+
+		members = purple_conversation_get_members(conversation);
+
+		for(guint i = 0; i < g_strv_length(nicks); i++) {
+			PurpleContact *contact = NULL;
+			const char *nick = nicks[i];
+			char *stripped = NULL;
+
+			stripped = ibis_client_strip_source_prefix(client, nick);
+
+			contact = purple_contact_manager_find_with_id(manager, account,
+			                                              stripped);
+			if(!PURPLE_IS_CONTACT(contact)) {
+				contact = purple_contact_new(account, stripped);
+				purple_contact_info_set_username(PURPLE_CONTACT_INFO(contact),
+				                                 stripped);
+				purple_contact_manager_add(manager, contact);
+			}
+
+			purple_conversation_members_add_member(members,
+			                                       PURPLE_CONTACT_INFO(contact),
+			                                       FALSE, NULL);
+			g_free(stripped);
+		}
+	}
+
+	g_strfreev(nicks);
+
+	return TRUE;
+}
+
+gboolean
 purple_ircv3_message_handler_tagmsg(IbisClient *client,
                                     G_GNUC_UNUSED const char *command,
                                     IbisMessage *ibis_message, gpointer data)

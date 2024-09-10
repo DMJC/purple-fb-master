@@ -248,6 +248,15 @@ purple_ircv3_wrote_message_echo_cb(G_GNUC_UNUSED IbisClient *client,
 }
 
 static gboolean
+purple_ircv3_message_handler_ignore(G_GNUC_UNUSED IbisClient *client,
+                                    G_GNUC_UNUSED const char *command,
+                                    G_GNUC_UNUSED IbisMessage *message,
+                                    G_GNUC_UNUSED gpointer data)
+{
+	return TRUE;
+}
+
+static gboolean
 purple_ircv3_connection_saslsuccess(IbisClient *client,
                                     G_GNUC_UNUSED const char *command,
                                     G_GNUC_UNUSED IbisMessage *message,
@@ -466,6 +475,13 @@ purple_ircv3_connection_add_message_handlers(PurpleIRCv3Connection *connection,
 	g_signal_connect_object(client, "message::" IBIS_MSG_PART,
 	                        G_CALLBACK(purple_ircv3_message_handler_part),
 	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_NAMREPLY,
+	                        G_CALLBACK(purple_ircv3_message_handler_namreply),
+	                        connection, G_CONNECT_DEFAULT);
+	g_signal_connect_object(client, "message::" IBIS_RPL_ENDOFNAMES,
+	                        G_CALLBACK(purple_ircv3_message_handler_ignore),
+	                        connection, G_CONNECT_DEFAULT);
+
 
 	g_signal_connect_object(client, "message",
 	                        G_CALLBACK(purple_ircv3_connection_unknown_message_cb),

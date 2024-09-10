@@ -40,6 +40,7 @@ G_BEGIN_DECLS
 
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_join(IbisClient *client, const char *command, IbisMessage *message, gpointer data);
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_part(IbisClient *client, const char *command, IbisMessage *message, gpointer data);
+G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_namreply(IbisClient *client, const char *command, IbisMessage *message, gpointer data);
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_tagmsg(IbisClient *client, const char *command, IbisMessage *ibis_message, gpointer data);
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_privmsg(IbisClient *client, const char *command, IbisMessage *message, gpointer data);
 G_GNUC_INTERNAL gboolean purple_ircv3_message_handler_topic(IbisClient *client, const char *command, IbisMessage *message, gpointer data);
