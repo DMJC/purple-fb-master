@@ -77,10 +77,17 @@ purple_notification_add_contact_set_request(PurpleNotificationAddContact *notifi
 	g_return_if_fail(PURPLE_IS_NOTIFICATION_ADD_CONTACT(notification));
 
 	if(g_set_object(&notification->request, request)) {
+		PurpleAccount *account = NULL;
+		GObject *obj = G_OBJECT(notification);
+
+		g_object_freeze_notify(obj);
+
 		if(PURPLE_IS_ADD_CONTACT_REQUEST(request)) {
 			PurpleContact *contact = NULL;
 
 			contact = purple_add_contact_request_get_contact(request);
+			account = purple_contact_get_account(contact);
+
 			g_signal_connect_object(contact, "notify",
 			                        G_CALLBACK(purple_notification_add_contact_contact_notify_cb),
 			                        notification, G_CONNECT_DEFAULT);
@@ -91,8 +98,11 @@ purple_notification_add_contact_set_request(PurpleNotificationAddContact *notifi
 			                        notification, G_CONNECT_DEFAULT);
 		}
 
-		g_object_notify_by_pspec(G_OBJECT(notification),
-		                         properties[PROP_REQUEST]);
+		purple_notification_set_account(PURPLE_NOTIFICATION(notification),
+		                                account);
+
+		g_object_notify_by_pspec(obj, properties[PROP_REQUEST]);
+		g_object_thaw_notify(obj);
 
 		purple_notification_add_contact_update(notification);
 	}
@@ -208,11 +218,14 @@ purple_notification_add_contact_class_init(PurpleNotificationAddContactClass *kl
  * Public API
  *****************************************************************************/
 PurpleNotification *
-purple_notification_add_contact_new(PurpleAddContactRequest *request) {
+purple_notification_add_contact_new(const char *id,
+                                    PurpleAddContactRequest *request)
+{
 	g_return_val_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request), NULL);
 
 	return g_object_new(
 		PURPLE_TYPE_NOTIFICATION_ADD_CONTACT,
+		"id", id,
 		"request", request,
 		NULL);
 }

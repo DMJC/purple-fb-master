@@ -54,16 +54,20 @@ G_DECLARE_FINAL_TYPE(PurpleNotificationAddContact,
 
 /**
  * purple_notification_add_contact_new:
+ * @id: (nullable): An identifier for this notification.
  * @request: The add contact request.
  *
  * Creates a new [class@Notification] for @request.
+ *
+ * Since @request has a [class@Contact] which has a [class@Account],
+ * [property@Notification:account] will automatically be set to that.
  *
  * Returns: The new notification.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleNotification *purple_notification_add_contact_new(PurpleAddContactRequest *request);
+PurpleNotification *purple_notification_add_contact_new(const char *id, PurpleAddContactRequest *request);
 
 /**
  * purple_notification_add_contact_get_request:

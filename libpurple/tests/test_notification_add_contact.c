@@ -49,7 +49,7 @@ test_purple_notification_add_contact_new(void) {
 	account = purple_account_new("test", "test");
 	contact = purple_contact_new(account, "remote");
 	request = purple_add_contact_request_new(contact);
-	notification = purple_notification_add_contact_new(request);
+	notification = purple_notification_add_contact_new(NULL, request);
 
 	g_assert_true(PURPLE_IS_NOTIFICATION(notification));
 	g_assert_true(PURPLE_IS_NOTIFICATION_ADD_CONTACT(notification));
@@ -64,10 +64,12 @@ test_purple_notification_add_contact_new(void) {
 static void
 test_purple_notification_add_contact_properties(void) {
 	PurpleAccount *account = NULL;
+	PurpleAccount *account1 = NULL;
 	PurpleAddContactRequest *request = NULL;
 	PurpleAddContactRequest *request1 = NULL;
 	PurpleContact *contact = NULL;
 	PurpleNotification *notification = NULL;
+	char *id = NULL;
 
 	account = purple_account_new("test", "test");
 	contact = purple_contact_new(account, "username");
@@ -75,13 +77,22 @@ test_purple_notification_add_contact_properties(void) {
 
 	notification = g_object_new(
 		PURPLE_TYPE_NOTIFICATION_ADD_CONTACT,
+		"id", "notification1",
 		"request", request,
 		NULL);
 
 	g_object_get(
 		notification,
+		"account", &account1,
+		"id", &id,
 		"request", &request1,
 		NULL);
+
+	g_assert_true(account1 == account);
+	g_clear_object(&account1);
+
+	g_assert_cmpstr(id, ==, "notification1");
+	g_clear_pointer(&id, g_free);
 
 	g_assert_true(request1 == request);
 	g_clear_object(&request1);
@@ -106,7 +117,7 @@ test_purple_notification_add_contact_updates_title(void) {
 	contact = purple_contact_new(account, "remote-username");
 	request = purple_add_contact_request_new(contact);
 
-	notification = purple_notification_add_contact_new(request);
+	notification = purple_notification_add_contact_new(NULL, request);
 	g_signal_connect(notification, "notify::title",
 	                 G_CALLBACK(test_purple_notification_add_contact_notify_cb),
 	                 &counter);

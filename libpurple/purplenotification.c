@@ -522,7 +522,7 @@ purple_notification_new_from_add_contact_request(PurpleAddContactRequest *reques
 {
 	g_return_val_if_fail(PURPLE_IS_ADD_CONTACT_REQUEST(request), NULL);
 
-	return purple_notification_add_contact_new(request);
+	return purple_notification_add_contact_new(NULL, request);
 }
 
 PurpleNotification *
