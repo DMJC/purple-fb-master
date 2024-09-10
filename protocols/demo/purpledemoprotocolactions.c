@@ -455,7 +455,7 @@ purple_demo_protocol_remote_add(G_GNUC_UNUSED GSimpleAction *action,
 	                                              contact_ids[counter]);
 
 	request = purple_add_contact_request_new(contact);
-	notification = purple_notification_new_from_add_contact_request(request);
+	notification = purple_notification_add_contact_new(NULL, request);
 
 	notification_manager = purple_notification_manager_get_default();
 	purple_notification_manager_add(notification_manager, notification);
@@ -493,9 +493,7 @@ purple_demo_protocol_generic_notification(G_GNUC_UNUSED GSimpleAction *action,
 	account_manager = purple_account_manager_get_default();
 	account = purple_account_manager_find_by_id(account_manager, account_id);
 
-	notification = purple_notification_new(PURPLE_NOTIFICATION_TYPE_GENERIC,
-	                                       account, NULL, NULL);
-	purple_notification_set_title(notification, puns[counter]);
+	notification = purple_notification_new_generic(NULL, puns[counter]);
 	purple_notification_set_icon_name(notification, "im-purple-demo");
 
 	notification_manager = purple_notification_manager_get_default();
