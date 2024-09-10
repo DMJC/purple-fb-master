@@ -189,6 +189,35 @@ purple_demo_protocol_create_conversation_finish(G_GNUC_UNUSED PurpleProtocolConv
 }
 
 static void
+purple_demo_protocol_conversation_leave_conversation_async(PurpleProtocolConversation *protocol,
+                                                           G_GNUC_UNUSED PurpleConversation *conversation,
+                                                           GCancellable *cancellable,
+                                                           GAsyncReadyCallback callback,
+                                                           gpointer data)
+{
+	GTask *task = NULL;
+
+	task = g_task_new(protocol, cancellable, callback, data);
+	g_task_set_source_tag(task,
+	                      purple_demo_protocol_conversation_leave_conversation_async);
+
+	g_task_return_boolean(task, TRUE);
+	g_clear_object(&task);
+}
+
+static gboolean
+purple_demo_protocol_conversation_leave_conversation_finish(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
+                                                            GAsyncResult *result,
+                                                            GError **error)
+{
+	gpointer tag = purple_demo_protocol_conversation_leave_conversation_async;
+
+	g_return_val_if_fail(g_async_result_is_tagged(result, tag), FALSE);
+
+	return g_task_propagate_boolean(G_TASK(result), error);
+}
+
+static void
 purple_demo_protocol_send_message_async(G_GNUC_UNUSED PurpleProtocolConversation *protocol,
                                         PurpleConversation *conversation,
                                         PurpleMessage *message,
@@ -282,6 +311,11 @@ purple_demo_protocol_conversation_init(PurpleProtocolConversationInterface *ifac
 		purple_demo_protocol_create_conversation_async;
 	iface->create_conversation_finish =
 		purple_demo_protocol_create_conversation_finish;
+
+	iface->leave_conversation_async =
+		purple_demo_protocol_conversation_leave_conversation_async;
+	iface->leave_conversation_finish =
+		purple_demo_protocol_conversation_leave_conversation_finish;
 
 	iface->send_message_async = purple_demo_protocol_send_message_async;
 	iface->send_message_finish = purple_demo_protocol_send_message_finish;
