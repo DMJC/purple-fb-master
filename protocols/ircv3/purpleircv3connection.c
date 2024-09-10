@@ -943,3 +943,11 @@ purple_ircv3_connection_find_or_create_contact(PurpleIRCv3Connection *connection
 
 	return contact;
 }
+
+PurpleConversation *
+purple_ircv3_connection_get_status_conversation(PurpleIRCv3Connection *connection)
+{
+	g_return_val_if_fail(PURPLE_IRCV3_IS_CONNECTION(connection), NULL);
+
+	return connection->status_conversation;
+}

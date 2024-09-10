@@ -343,8 +343,12 @@ purple_ircv3_message_handler_privmsg(IbisClient *client, const char *command,
 		target = purple_contact_info_get_id(PURPLE_CONTACT_INFO(contact));
 	}
 
-	conversation = purple_ircv3_connection_find_or_create_conversation(connection,
-	                                                                   target);
+	if(IBIS_IS_CTCP_MESSAGE(ctcp_message)) {
+		conversation = purple_ircv3_connection_get_status_conversation(connection);
+	} else {
+		conversation = purple_ircv3_connection_find_or_create_conversation(connection,
+		                                                                   target);
+	}
 
 	purple_ircv3_add_contact_to_conversation(contact, conversation);
 
@@ -364,6 +368,16 @@ purple_ircv3_message_handler_privmsg(IbisClient *client, const char *command,
 			g_free(stripped);
 
 			purple_message_set_action(message, TRUE);
+		} else {
+			char *body = NULL;
+
+			body = g_strdup_printf(_("requested CTCP '%s' (to %s) from %s"),
+			                       ibis_ctcp_message_get_command(ctcp_message),
+			                       params[0],
+			                       purple_contact_info_get_id(PURPLE_CONTACT_INFO(contact)));
+
+			message = purple_message_new(PURPLE_CONTACT_INFO(contact), body);
+			g_free(body);
 		}
 	}
 

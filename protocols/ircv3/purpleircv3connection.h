@@ -137,6 +137,19 @@ PurpleConversation *purple_ircv3_connection_find_or_create_conversation(PurpleIR
 PURPLE_IRCV3_AVAILABLE_IN_ALL
 PurpleContact *purple_ircv3_connection_find_or_create_contact(PurpleIRCv3Connection *connection, IbisMessage *message);
 
+/**
+ * purple_ircv3_connection_get_status_conversation: (skip)
+ * @connection: The instance.
+ *
+ * Gets the status conversation from @connection.
+ *
+ * Returns: (transfer none): The status conversation.
+ *
+ * Since: 3.0
+ */
+G_GNUC_INTERNAL
+PurpleConversation *purple_ircv3_connection_get_status_conversation(PurpleIRCv3Connection *connection);
+
 G_END_DECLS
 
 #endif /* PURPLE_IRCV3_CONNECTION_H */
