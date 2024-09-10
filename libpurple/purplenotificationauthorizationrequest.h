@@ -54,16 +54,20 @@ G_DECLARE_FINAL_TYPE(PurpleNotificationAuthorizationRequest,
 
 /**
  * purple_notification_authorization_request_new:
+ * @id: (nullable): An identifier for the notification.
  * @request: The authorization request instance.
  *
  * Creates a new [class@Notification] for @request.
+ *
+ * Since [class@AuthorizationRequest] has a [class@Account],
+ * [property@Notification:account] will automatically be set to that.
  *
  * Returns: The new notification.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleNotification *purple_notification_authorization_request_new(PurpleAuthorizationRequest *request);
+PurpleNotification *purple_notification_authorization_request_new(const char *id, PurpleAuthorizationRequest *request);
 
 /**
  * purple_notification_authorization_request_get_request:

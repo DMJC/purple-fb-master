@@ -85,16 +85,27 @@ purple_notification_authorization_request_set_request(PurpleNotificationAuthoriz
 	g_return_if_fail(PURPLE_IS_NOTIFICATION_AUTHORIZATION_REQUEST(notification));
 
 	if(g_set_object(&notification->authorization_request, request)) {
+		PurpleAccount *account = NULL;
+		GObject *obj = G_OBJECT(notification);
+
+		g_object_freeze_notify(obj);
+
 		if(PURPLE_IS_AUTHORIZATION_REQUEST(request)) {
+			account = purple_authorization_request_get_account(request);
+
 			g_signal_connect_object(request, "notify",
 			                        G_CALLBACK(purple_notification_authorization_request_request_changed_cb),
 			                        notification, 0);
 
-			purple_notification_authorization_request_update(notification);
 		}
 
-		g_object_notify_by_pspec(G_OBJECT(notification),
-		                         properties[PROP_AUTHORIZATION_REQUEST]);
+		purple_notification_set_account(PURPLE_NOTIFICATION(notification),
+		                                account);
+
+		g_object_notify_by_pspec(obj, properties[PROP_AUTHORIZATION_REQUEST]);
+		g_object_thaw_notify(obj);
+
+		purple_notification_authorization_request_update(notification);
 	}
 }
 
@@ -115,6 +126,28 @@ purple_notification_authorization_request_request_changed_cb(G_GNUC_UNUSED GObje
 G_DEFINE_FINAL_TYPE(PurpleNotificationAuthorizationRequest,
                     purple_notification_authorization_request,
                     PURPLE_TYPE_NOTIFICATION)
+
+static void
+purple_notification_authorization_request_constructed(GObject *obj) {
+	PurpleAccount *account = NULL;
+	PurpleNotification *notification = PURPLE_NOTIFICATION(obj);
+
+	G_OBJECT_CLASS(purple_notification_authorization_request_parent_class)->constructed(obj);
+
+	account = purple_notification_get_account(notification);
+	if(!PURPLE_IS_ACCOUNT(account)) {
+		PurpleNotificationAuthorizationRequest *auth_notification = NULL;
+
+		auth_notification = PURPLE_NOTIFICATION_AUTHORIZATION_REQUEST(obj);
+
+		account = purple_authorization_request_get_account(auth_notification->authorization_request);
+
+		purple_notification_set_account(notification, account);
+	}
+
+	purple_notification_set_icon_name(notification,
+	                                  "address-book-new-symbolic");
+}
 
 static void
 purple_notification_authorization_request_finalize(GObject *object) {
@@ -179,6 +212,7 @@ purple_notification_authorization_request_class_init(PurpleNotificationAuthoriza
 {
 	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 
+	obj_class->constructed = purple_notification_authorization_request_constructed;
 	obj_class->finalize = purple_notification_authorization_request_finalize;
 	obj_class->get_property = purple_notification_authorization_request_get_property;
 	obj_class->set_property = purple_notification_authorization_request_set_property;
@@ -203,18 +237,15 @@ purple_notification_authorization_request_class_init(PurpleNotificationAuthoriza
  * Public API
  *****************************************************************************/
 PurpleNotification *
-purple_notification_authorization_request_new(PurpleAuthorizationRequest *request)
+purple_notification_authorization_request_new(const char *id,
+                                              PurpleAuthorizationRequest *request)
 {
-	PurpleAccount *account = NULL;
-
 	g_return_val_if_fail(PURPLE_IS_AUTHORIZATION_REQUEST(request), NULL);
-
-	account = purple_authorization_request_get_account(request);
 
 	return g_object_new(
 	    PURPLE_TYPE_NOTIFICATION_AUTHORIZATION_REQUEST,
-	    "account", account,
 	    "authorization-request", request,
+	    "id", id,
 	    NULL);
 }
 

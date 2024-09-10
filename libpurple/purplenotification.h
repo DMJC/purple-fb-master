@@ -165,7 +165,7 @@ PurpleNotification *purple_notification_new_from_add_contact_request(PurpleAddCo
  *
  * Since: 3.0
  */
-PURPLE_AVAILABLE_IN_3_0
+PURPLE_DEPRECATED_FOR(purple_notification_authorization_request_new)
 PurpleNotification *purple_notification_new_from_authorization_request(PurpleAuthorizationRequest *authorization_request);
 
 /**
