@@ -1151,6 +1151,11 @@ purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b) {
 }
 
 gboolean
+purple_contact_info_equal(PurpleContactInfo *a, PurpleContactInfo *b) {
+	return purple_contact_info_compare(a, b) == 0;
+}
+
+gboolean
 purple_contact_info_matches(PurpleContactInfo *info, const char *needle) {
 	PurpleContactInfoPrivate *priv = NULL;
 

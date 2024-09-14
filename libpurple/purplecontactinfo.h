@@ -531,6 +531,20 @@ PURPLE_AVAILABLE_IN_3_0
 int purple_contact_info_compare(PurpleContactInfo *a, PurpleContactInfo *b);
 
 /**
+ * purple_contact_info_equal:
+ * @a: (nullable): The first instance.
+ * @b: (nullable): The second instance.
+ *
+ * Checks two [class@ContactInfo] objects for equality.
+ *
+ * Returns: %TRUE if @a and @b are equal, otherwise %FALSE.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+gboolean purple_contact_info_equal(PurpleContactInfo *a, PurpleContactInfo *b);
+
+/**
  * purple_contact_info_matches:
  * @info: The instance.
  * @needle: (nullable): The string to match.

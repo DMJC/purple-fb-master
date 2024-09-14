@@ -348,6 +348,56 @@ test_purple_contact_info_compare_name__name(void) {
 }
 
 /******************************************************************************
+ * purple_contact_info_equal tests
+ *****************************************************************************/
+static void
+test_purple_contact_info_equal_not_null__not_null(void) {
+	PurpleContactInfo *info_a = NULL;
+	PurpleContactInfo *info_b = NULL;
+
+	info_a = purple_contact_info_new(NULL);
+	info_b = purple_contact_info_new(NULL);
+
+	g_assert_true(purple_contact_info_equal(info_a, info_b));
+
+	purple_contact_info_set_username(info_a, "foo");
+	g_assert_false(purple_contact_info_equal(info_a, info_b));
+
+	purple_contact_info_set_username(info_b, "foo");
+	g_assert_true(purple_contact_info_equal(info_a, info_b));
+
+	g_clear_object(&info_a);
+	g_clear_object(&info_b);
+}
+
+static void
+test_purple_contact_info_equal_not_null__null(void) {
+	PurpleContactInfo *info = NULL;
+
+	info = purple_contact_info_new(NULL);
+
+	g_assert_false(purple_contact_info_equal(info, NULL));
+
+	g_clear_object(&info);
+}
+
+static void
+test_purple_contact_info_equal_null__not_null(void) {
+	PurpleContactInfo *info = NULL;
+
+	info = purple_contact_info_new(NULL);
+
+	g_assert_false(purple_contact_info_equal(NULL, info));
+
+	g_clear_object(&info);
+}
+
+static void
+test_purple_contact_info_equal_null__null(void) {
+	g_assert_true(purple_contact_info_equal(NULL, NULL));
+}
+
+/******************************************************************************
  * Matches
  *****************************************************************************/
 static void
@@ -556,6 +606,15 @@ main(int argc, char *argv[]) {
 	                test_purple_contact_info_compare_no_person__person);
 	g_test_add_func("/contact-info/compare/name__name",
 	                test_purple_contact_info_compare_name__name);
+
+	g_test_add_func("/contact-info/equal/not_null__not_null",
+	                test_purple_contact_info_equal_not_null__not_null);
+	g_test_add_func("/contact-info/equal/not_null__null",
+	                test_purple_contact_info_equal_not_null__null);
+	g_test_add_func("/contact-info/equal/null__not_null",
+	                test_purple_contact_info_equal_null__not_null);
+	g_test_add_func("/contact-info/equal/null__null",
+	                test_purple_contact_info_equal_null__null);
 
 	g_test_add_func("/contact-info/matches/accepts_null",
 	                test_purple_contact_info_matches_accepts_null);
