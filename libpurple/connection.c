@@ -53,8 +53,6 @@ typedef struct {
 	PurpleAccount *account;       /* The account being connected to.   */
 	char *password;               /* The password used.                */
 
-	char *display_name;           /* How you appear to other people.   */
-
 	/* Wants to Die state.  This is set when the user chooses to log out, or
 	 * when the protocol is disconnected and should not be automatically
 	 * reconnected (incorrect password, etc.).  Protocols should rely on
@@ -78,7 +76,6 @@ enum {
 	PROP_STATE,
 	PROP_ACCOUNT,
 	PROP_PASSWORD,
-	PROP_DISPLAY_NAME,
 	N_PROPERTIES,
 };
 
@@ -156,22 +153,6 @@ purple_connection_set_state(PurpleConnection *connection,
 	g_object_notify_by_pspec(G_OBJECT(connection), properties[PROP_STATE]);
 }
 
-void
-purple_connection_set_display_name(PurpleConnection *connection,
-                                   const gchar *name)
-{
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_if_fail(PURPLE_IS_CONNECTION(connection));
-
-	priv = purple_connection_get_instance_private(connection);
-
-	if(g_set_str(&priv->display_name, name)) {
-		g_object_notify_by_pspec(G_OBJECT(connection),
-		                         properties[PROP_DISPLAY_NAME]);
-	}
-}
-
 PurpleConnectionState
 purple_connection_get_state(PurpleConnection *connection) {
 	PurpleConnectionPrivate *priv = NULL;
@@ -242,17 +223,6 @@ purple_connection_set_password(PurpleConnection *connection,
 	priv->password = g_strdup(password);
 
 	g_object_notify_by_pspec(G_OBJECT(connection), properties[PROP_PASSWORD]);
-}
-
-const char *
-purple_connection_get_display_name(PurpleConnection *connection) {
-	PurpleConnectionPrivate *priv = NULL;
-
-	g_return_val_if_fail(PURPLE_IS_CONNECTION(connection), NULL);
-
-	priv = purple_connection_get_instance_private(connection);
-
-	return priv->display_name;
 }
 
 gboolean
@@ -501,10 +471,6 @@ purple_connection_set_property(GObject *obj, guint param_id,
 			purple_connection_set_password(connection,
 			                               g_value_get_string(value));
 			break;
-		case PROP_DISPLAY_NAME:
-			purple_connection_set_display_name(connection,
-			                                   g_value_get_string(value));
-			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
 			break;
@@ -539,10 +505,6 @@ purple_connection_get_property(GObject *obj, guint param_id, GValue *value,
 		case PROP_PASSWORD:
 			g_value_set_string(value,
 			                   purple_connection_get_password(connection));
-			break;
-		case PROP_DISPLAY_NAME:
-			g_value_set_string(value,
-			                   purple_connection_get_display_name(connection));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -607,7 +569,6 @@ purple_connection_finalize(GObject *object) {
 	g_clear_pointer(&priv->error_info, purple_connection_error_info_free);
 
 	purple_str_wipe(priv->password);
-	g_free(priv->display_name);
 	g_free(priv->id);
 
 	g_clear_object(&priv->cancellable);
@@ -704,18 +665,6 @@ purple_connection_class_init(PurpleConnectionClass *klass) {
 	properties[PROP_PASSWORD] = g_param_spec_string(
 		"password", "Password",
 		"The password used for connection.", NULL,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
-
-	/**
-	 * PurpleConnection:display-name:
-	 *
-	 * The display name for the account.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_DISPLAY_NAME] = g_param_spec_string(
-		"display-name", "Display name",
-		"Your name that appears to other people.", NULL,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);

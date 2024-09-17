@@ -149,18 +149,6 @@ PURPLE_AVAILABLE_IN_ALL
 void purple_connection_set_state(PurpleConnection *gc, PurpleConnectionState state);
 
 /**
- * purple_connection_set_display_name:
- * @gc:   The connection.
- * @name: The displayed name.
- *
- * Sets the connection's displayed name.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-void purple_connection_set_display_name(PurpleConnection *gc, const char *name);
-
-/**
  * purple_connection_get_state:
  * @gc: The connection.
  *
@@ -267,19 +255,6 @@ void purple_connection_set_password(PurpleConnection *connection, const char *pa
  */
 PURPLE_AVAILABLE_IN_3_0
 GCancellable *purple_connection_get_cancellable(PurpleConnection *connection);
-
-/**
- * purple_connection_get_display_name:
- * @gc: The connection.
- *
- * Returns the connection's displayed name.
- *
- * Returns: The connection's displayed name.
- *
- * Since: 2.0
- */
-PURPLE_AVAILABLE_IN_ALL
-const char *purple_connection_get_display_name(PurpleConnection *gc);
 
 /**
  * purple_connection_error:
