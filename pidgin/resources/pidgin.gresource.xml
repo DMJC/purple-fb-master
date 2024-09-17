@@ -39,6 +39,7 @@
     <file compressed="true" preprocess="xml-stripblanks">notificationaddcontact.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">notificationlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">typinglabel.ui</file>
     <file compressed="true">style.css</file>
     <file>icons/16x16/status/pidgin-user-available.png</file>
     <file>icons/16x16/status/pidgin-user-away.png</file>

@@ -33,6 +33,8 @@
 
 #include <gtk/gtk.h>
 
+#include <purple.h>
+
 #include "pidginversion.h"
 
 G_BEGIN_DECLS
