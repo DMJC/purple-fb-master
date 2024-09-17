@@ -30,6 +30,7 @@ PROGS = [
     'notification',
     'notification_add_contact',
     'notification_authorization_request',
+    'notification_link',
     'notification_manager',
     'person',
     'presence',
