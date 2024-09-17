@@ -37,6 +37,7 @@
     <file compressed="true" preprocess="xml-stripblanks">infopane.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">notification.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">notificationaddcontact.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">notificationlink.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">notificationlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">presenceicon.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">typinglabel.ui</file>

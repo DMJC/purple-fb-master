@@ -29,6 +29,7 @@
 #include "pidginnotifiable.h"
 #include "pidginnotification.h"
 #include "pidginnotificationaddcontact.h"
+#include "pidginnotificationlink.h"
 
 enum {
 	PROP_0,
@@ -105,6 +106,8 @@ pidgin_notification_list_bind_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
 
 	if(PURPLE_IS_NOTIFICATION_ADD_CONTACT(notification)) {
 		widget = pidgin_notification_add_contact_new(notification);
+	} else if(PURPLE_IS_NOTIFICATION_LINK(notification)) {
+		widget = pidgin_notification_link_new(notification);
 	} else {
 		widget = pidgin_notification_new(notification);
 	}
