@@ -1,4 +1,0 @@
-[wrap-hg]
-directory = libgnt
-url = https://bitbucket.com/pidgin/libgnt
-revision = default
