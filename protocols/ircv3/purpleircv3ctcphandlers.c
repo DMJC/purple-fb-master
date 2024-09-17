@@ -56,6 +56,36 @@ purple_ircv3_ctcp_handle_version(G_GNUC_UNUSED PurpleIRCv3Connection *connection
 	ibis_client_write(client, response);
 }
 
+static void
+purple_ircv3_ctcp_handle_ping(G_GNUC_UNUSED PurpleIRCv3Connection *connection,
+                              IbisClient *client, IbisMessage *message,
+                              IbisCTCPMessage *ctcp_message)
+{
+	IbisMessage *response = NULL;
+	IbisCTCPMessage *ctcp_response = NULL;
+	GStrv params = NULL;
+	char *nick = NULL;
+	const char *source = NULL;
+
+	ctcp_response = ibis_ctcp_message_new(IBIS_CTCP_PING);
+	params = ibis_ctcp_message_get_params(ctcp_message);
+	if(params != NULL) {
+		ibis_ctcp_message_set_paramsv(ctcp_response, params);
+	}
+
+	response = ibis_message_new(IBIS_MSG_NOTICE);
+
+	source = ibis_message_get_source(message);
+	ibis_source_parse(source, &nick, NULL, NULL);
+	ibis_message_set_params(response, nick, NULL);
+	g_free(nick);
+
+	ibis_message_set_ctcp_message(response, ctcp_response);
+	g_clear_object(&ctcp_response);
+
+	ibis_client_write(client, response);
+}
+
 /******************************************************************************
  * Internal API
  *****************************************************************************/
@@ -72,5 +102,8 @@ purple_ircv3_ctcp_handler(PurpleIRCv3Connection *connection,
 	if(purple_strequal(command, IBIS_CTCP_VERSION)) {
 		purple_ircv3_ctcp_handle_version(connection, client, message,
 		                                 ctcp_message);
+	} else if(purple_strequal(command, IBIS_CTCP_PING)) {
+		purple_ircv3_ctcp_handle_ping(connection, client, message,
+		                              ctcp_message);
 	}
 }
