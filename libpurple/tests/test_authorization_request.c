@@ -57,60 +57,61 @@ test_purple_authorization_request_denied_message_cb(G_GNUC_UNUSED PurpleAuthoriz
  *****************************************************************************/
 static void
 test_purple_authorization_request_new(void) {
-	PurpleAccount *account1 = NULL, *account2 = NULL;
+	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
-	const char *username = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContact *contact1 = NULL;
 
-	account1 = purple_account_new("test", "test");
-
-	request = purple_authorization_request_new(account1, "remote-username");
+	account = purple_account_new("test", "test");
+	contact = purple_contact_new(account, NULL);
+	request = purple_authorization_request_new(contact);
 
 	/* Make sure we got a valid authorization request. */
 	g_assert_true(PURPLE_IS_AUTHORIZATION_REQUEST(request));
 
-	/* Verify the account is set properly. */
-	account2 = purple_authorization_request_get_account(request);
-	g_assert_nonnull(account2);
-	g_assert_true(account1 == account2);
+	/* Verify the contact is set properly. */
+	contact1 = purple_authorization_request_get_contact(request);
+	g_assert_true(contact1 == contact);
 
-	/* Verify the username set properly. */
-	username = purple_authorization_request_get_username(request);
-	g_assert_cmpstr(username, ==, "remote-username");
-
-	/* Unref it to destroy it. */
-	g_clear_object(&request);
-
-	/* Clean up the account. */
-	g_clear_object(&account1);
+	g_assert_finalize_object(request);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(account);
 }
 
 static void
 test_purple_authorization_request_properties(void) {
 	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContact *contact1 = NULL;
+	char *message = NULL;
 
 	account = purple_account_new("test", "test");
-	request = purple_authorization_request_new(account, "username");
+	contact = purple_contact_new(account, NULL);
+
+	request = g_object_new(
+		PURPLE_TYPE_AUTHORIZATION_REQUEST,
+		"contact", contact,
+		"message", "hello friend",
+		NULL);
 
 	g_assert_true(PURPLE_IS_AUTHORIZATION_REQUEST(request));
 
-	/* Verify the alias property works and is nullable. */
-	purple_authorization_request_set_alias(request, "alias");
-	g_assert_cmpstr(purple_authorization_request_get_alias(request), ==,
-	                "alias");
-	purple_authorization_request_set_alias(request, NULL);
-	g_assert_null(purple_authorization_request_get_alias(request));
+	g_object_get(
+		request,
+		"contact", &contact1,
+		"message", &message,
+		NULL);
 
-	/* Verify the message property works and is nullable. */
-	purple_authorization_request_set_message(request, "message");
-	g_assert_cmpstr(purple_authorization_request_get_message(request), ==,
-	                "message");
-	purple_authorization_request_set_message(request, NULL);
-	g_assert_null(purple_authorization_request_get_message(request));
+	g_assert_true(contact1 == contact);
+	g_clear_object(&contact1);
 
-	/* Cleanup. */
-	g_clear_object(&request);
-	g_clear_object(&account);
+	g_assert_cmpstr(message, ==, "hello friend");
+	g_clear_pointer(&message, g_free);
+
+	g_assert_finalize_object(request);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(account);
 }
 
 static void
@@ -118,12 +119,12 @@ test_purple_authorization_request_accept(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
 		PurpleAuthorizationRequest *request = NULL;
+		PurpleContact *contact = NULL;
 		guint counter = 0;
 
 		account = purple_account_new("test", "test");
-		request = purple_authorization_request_new(account, "username");
-
-		g_assert_true(PURPLE_IS_AUTHORIZATION_REQUEST(request));
+		contact = purple_contact_new(account, NULL);
+		request = purple_authorization_request_new(contact);
 
 		g_signal_connect(request, "accepted",
 		                 G_CALLBACK(test_purple_authorization_request_accepted_counter_cb),
@@ -138,8 +139,9 @@ test_purple_authorization_request_accept(void) {
 		g_assert_cmpuint(counter, ==, 1);
 
 		/* Cleanup. */
-		g_clear_object(&account);
-		g_clear_object(&request);
+		g_assert_finalize_object(request);
+		g_assert_finalize_object(contact);
+		g_assert_finalize_object(account);
 	}
 
 	g_test_trap_subprocess(NULL, 0, 0);
@@ -151,12 +153,12 @@ test_purple_authorization_request_accept_deny(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
 		PurpleAuthorizationRequest *request = NULL;
+		PurpleContact *contact = NULL;
 		guint counter = 0;
 
 		account = purple_account_new("test", "test");
-		request = purple_authorization_request_new(account, "username");
-
-		g_assert_true(PURPLE_IS_AUTHORIZATION_REQUEST(request));
+		contact = purple_contact_new(account, NULL);
+		request = purple_authorization_request_new(contact);
 
 		g_signal_connect(request, "accepted",
 		                 G_CALLBACK(test_purple_authorization_request_accepted_counter_cb),
@@ -174,8 +176,9 @@ test_purple_authorization_request_accept_deny(void) {
 		g_assert_cmpuint(counter, ==, 1);
 
 		/* Cleanup. */
-		g_clear_object(&account);
-		g_clear_object(&request);
+		g_assert_finalize_object(request);
+		g_assert_finalize_object(contact);
+		g_assert_finalize_object(account);
 	}
 
 	g_test_trap_subprocess(NULL, 0, 0);
@@ -187,12 +190,12 @@ test_purple_authorization_request_deny(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
 		PurpleAuthorizationRequest *request = NULL;
+		PurpleContact *contact = NULL;
 		guint counter = 0;
 
 		account = purple_account_new("test", "test");
-		request = purple_authorization_request_new(account, "username");
-
-		g_assert_true(PURPLE_IS_AUTHORIZATION_REQUEST(request));
+		contact = purple_contact_new(account, NULL);
+		request = purple_authorization_request_new(contact);
 
 		g_signal_connect(request, "denied",
 		                 G_CALLBACK(test_purple_authorization_request_denied_counter_cb),
@@ -207,8 +210,9 @@ test_purple_authorization_request_deny(void) {
 		g_assert_cmpuint(counter, ==, 1);
 
 		/* Cleanup. */
-		g_clear_object(&account);
-		g_clear_object(&request);
+		g_assert_finalize_object(request);
+		g_assert_finalize_object(contact);
+		g_assert_finalize_object(account);
 	}
 
 	g_test_trap_subprocess(NULL, 0, 0);
@@ -220,12 +224,12 @@ test_purple_authorization_request_deny_accept(void) {
 	if(g_test_subprocess()) {
 		PurpleAccount *account = NULL;
 		PurpleAuthorizationRequest *request = NULL;
+		PurpleContact *contact = NULL;
 		guint counter = 0;
 
 		account = purple_account_new("test", "test");
-		request = purple_authorization_request_new(account, "username");
-
-		g_assert_true(PURPLE_IS_AUTHORIZATION_REQUEST(request));
+		contact = purple_contact_new(account, NULL);
+		request = purple_authorization_request_new(contact);
 
 		g_signal_connect(request, "denied",
 		                 G_CALLBACK(test_purple_authorization_request_denied_counter_cb),
@@ -243,8 +247,9 @@ test_purple_authorization_request_deny_accept(void) {
 		g_assert_cmpuint(counter, ==, 1);
 
 		/* Cleanup. */
-		g_clear_object(&account);
-		g_clear_object(&request);
+		g_assert_finalize_object(request);
+		g_assert_finalize_object(contact);
+		g_assert_finalize_object(account);
 	}
 
 	g_test_trap_subprocess(NULL, 0, 0);
@@ -255,11 +260,11 @@ static void
 test_purple_authorization_request_deny_message_null(void) {
 	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
+	PurpleContact *contact = NULL;
 
 	account = purple_account_new("test", "test");
-	request = purple_authorization_request_new(account, "username");
-
-	g_assert_true(PURPLE_IS_AUTHORIZATION_REQUEST(request));
+	contact = purple_contact_new(account, NULL);
+	request = purple_authorization_request_new(contact);
 
 	g_signal_connect(request, "denied",
 	                 G_CALLBACK(test_purple_authorization_request_denied_message_cb),
@@ -269,19 +274,20 @@ test_purple_authorization_request_deny_message_null(void) {
 	purple_authorization_request_deny(request, NULL);
 
 	/* Cleanup. */
-	g_clear_object(&account);
-	g_clear_object(&request);
+	g_assert_finalize_object(request);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(account);
 }
 
 static void
 test_purple_authorization_request_deny_message_non_null(void) {
 	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
+	PurpleContact *contact = NULL;
 
 	account = purple_account_new("test", "test");
-	request = purple_authorization_request_new(account, "username");
-
-	g_assert_true(PURPLE_IS_AUTHORIZATION_REQUEST(request));
+	contact = purple_contact_new(account, NULL);
+	request = purple_authorization_request_new(contact);
 
 	g_signal_connect(request, "denied",
 	                 G_CALLBACK(test_purple_authorization_request_denied_message_cb),
@@ -291,8 +297,9 @@ test_purple_authorization_request_deny_message_non_null(void) {
 	purple_authorization_request_deny(request, "this is a message");
 
 	/* Cleanup. */
-	g_clear_object(&account);
-	g_clear_object(&request);
+	g_assert_finalize_object(request);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(account);
 }
 
 /******************************************************************************

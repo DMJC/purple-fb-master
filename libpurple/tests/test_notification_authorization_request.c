@@ -43,12 +43,14 @@ test_purple_notification_authorization_request_new(void) {
 	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
 	PurpleAuthorizationRequest *request1 = NULL;
+	PurpleContact *contact = NULL;
 	PurpleNotification *notification = NULL;
 	PurpleNotificationAuthorizationRequest *auth_notification = NULL;
 	const char *id = NULL;
 
 	account = purple_account_new("test", "test");
-	request = purple_authorization_request_new(account, "remote-username");
+	contact = purple_contact_new(account, NULL);
+	request = purple_authorization_request_new(contact);
 	notification = purple_notification_authorization_request_new("id",
 	                                                             request);
 
@@ -63,9 +65,9 @@ test_purple_notification_authorization_request_new(void) {
 	g_assert_true(request1 == request);
 
 	g_assert_finalize_object(notification);
-
-	g_clear_object(&request);
-	g_clear_object(&account);
+	g_assert_finalize_object(request);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(account);
 }
 
 static void
@@ -74,11 +76,13 @@ test_purple_notification_authorization_request_properties(void) {
 	PurpleAccount *account1 = NULL;
 	PurpleAuthorizationRequest *request = NULL;
 	PurpleAuthorizationRequest *request1 = NULL;
+	PurpleContact *contact = NULL;
 	PurpleNotification *notification = NULL;
 	char *id = NULL;
 
 	account = purple_account_new("test", "test");
-	request = purple_authorization_request_new(account, "username");
+	contact = purple_contact_new(account, NULL);
+	request = purple_authorization_request_new(contact);
 
 	notification = g_object_new(
 		PURPLE_TYPE_NOTIFICATION_AUTHORIZATION_REQUEST,
@@ -103,20 +107,22 @@ test_purple_notification_authorization_request_properties(void) {
 	g_clear_pointer(&id, g_free);
 
 	g_assert_finalize_object(notification);
-
-	g_clear_object(&request);
-	g_clear_object(&account);
+	g_assert_finalize_object(request);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(account);
 }
 
 static void
 test_purple_notification_authorization_request_updates_title(void) {
 	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
+	PurpleContact *contact = NULL;
 	PurpleNotification *notification = NULL;
 	guint counter = 0;
 
 	account = purple_account_new("test", "test");
-	request = purple_authorization_request_new(account, "remote-username");
+	contact = purple_contact_new(account, NULL);
+	request = purple_authorization_request_new(contact);
 
 	notification = purple_notification_authorization_request_new(NULL,
 	                                                             request);
@@ -126,14 +132,14 @@ test_purple_notification_authorization_request_updates_title(void) {
 
 	g_assert_cmpuint(counter, ==, 0);
 
-	purple_authorization_request_set_alias(request, "foo");
+	purple_contact_info_set_alias(PURPLE_CONTACT_INFO(contact), "foo");
 
 	g_assert_cmpuint(counter, ==, 1);
 
 	g_assert_finalize_object(notification);
-
-	g_clear_object(&request);
-	g_clear_object(&account);
+	g_assert_finalize_object(request);
+	g_assert_finalize_object(contact);
+	g_assert_finalize_object(account);
 }
 
 /******************************************************************************

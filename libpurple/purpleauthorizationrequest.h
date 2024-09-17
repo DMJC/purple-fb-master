@@ -30,7 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "purpleaccount.h"
+#include "purplecontact.h"
 #include "purpleversion.h"
 
 G_BEGIN_DECLS
@@ -53,10 +53,9 @@ G_DECLARE_FINAL_TYPE(PurpleAuthorizationRequest, purple_authorization_request,
 
 /**
  * purple_authorization_request_new:
- * @account: The account that this request is for.
- * @username: The username of the user requesting authorization.
+ * @contact: The contact of the user requesting authorization.
  *
- * Creates a new [class@Purple.AuthorizationRequest] for @username on @account.
+ * Creates a new [class@Purple.AuthorizationRequest] for @contact.
  *
  * This is typically only used by libpurple itself.
  *
@@ -65,59 +64,20 @@ G_DECLARE_FINAL_TYPE(PurpleAuthorizationRequest, purple_authorization_request,
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleAuthorizationRequest *purple_authorization_request_new(PurpleAccount *account, const char *username);
+PurpleAuthorizationRequest *purple_authorization_request_new(PurpleContact *contact);
 
 /**
- * purple_authorization_request_get_account:
+ * purple_authorization_request_get_contact:
  * @request: The instance.
  *
- * Gets the [class@Account] for @request.
+ * Gets the contact for the user requesting authorization.
  *
- * Returns: (transfer none): The account.
+ * Returns: (transfer none): The contact of the remote user.
  *
  * Since: 3.0
  */
 PURPLE_AVAILABLE_IN_3_0
-PurpleAccount *purple_authorization_request_get_account(PurpleAuthorizationRequest *request);
-
-/**
- * purple_authorization_request_get_username:
- * @request: The instance.
- *
- * Gets the username for the user requesting authorization.
- *
- * Returns: The username of the remote user.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-const char *purple_authorization_request_get_username(PurpleAuthorizationRequest *request);
-
-/**
- * purple_authorization_request_set_alias:
- * @request: The instance.
- * @alias: (nullable): The alias of the remote user.
- *
- * Sets the alias of the remote user to @alias. User interfaces can use this
- * when presenting the authorization request to the end user.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-void purple_authorization_request_set_alias(PurpleAuthorizationRequest *request, const char *alias);
-
-/**
- * purple_authorization_request_get_alias:
- * @request: The instance.
- *
- * Gets the alias of the remote user if one was set.
- *
- * Returns: (nullable): The alias if one was set.
- *
- * Since: 3.0
- */
-PURPLE_AVAILABLE_IN_3_0
-const char *purple_authorization_request_get_alias(PurpleAuthorizationRequest *request);
+PurpleContact *purple_authorization_request_get_contact(PurpleAuthorizationRequest *request);
 
 /**
  * purple_authorization_request_set_message:

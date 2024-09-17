@@ -40,9 +40,9 @@ struct _PurpleNotificationAuthorizationRequest {
 };
 
 static void
-purple_notification_authorization_request_request_changed_cb(GObject *obj,
-                                                             GParamSpec *pspec,
-                                                             gpointer data);
+purple_notification_authorization_request_notify_cb(GObject *obj,
+                                                    GParamSpec *pspec,
+                                                    gpointer data);
 
 /******************************************************************************
  * Helpers
@@ -52,28 +52,22 @@ purple_notification_authorization_request_update(PurpleNotificationAuthorization
 {
 	PurpleAccount *account = NULL;
 	PurpleAuthorizationRequest *request = NULL;
+	PurpleContact *contact = NULL;
+	PurpleContactInfo *account_info = NULL;
+	PurpleContactInfo *contact_info = NULL;
 	PurpleNotification *notification = PURPLE_NOTIFICATION(auth_notification);
 	char *title = NULL;
-	const char *alias = NULL;
-	const char *username = NULL;
 
 	request = auth_notification->authorization_request;
-	account = purple_authorization_request_get_account(request);
-	username = purple_authorization_request_get_username(request);
-	alias = purple_authorization_request_get_alias(request);
+	contact = purple_authorization_request_get_contact(request);
+	contact_info = PURPLE_CONTACT_INFO(contact);
 
-	if(!purple_strempty(alias)) {
-		title = g_strdup_printf(_("%s (%s) would like to add %s to their"
-		                          " contact list"),
-		                        alias, username,
-		                        purple_account_get_username(account));
-	} else {
-		title = g_strdup_printf(_("%s would like to add %s to their contact"
-		                          " list"),
-		                        username,
-		                        purple_account_get_username(account));
-	}
+	account = purple_contact_get_account(contact);
+	account_info = purple_account_get_contact_info(account);
 
+	title = g_strdup_printf(_("%s would like to add %s to their contact list"),
+	                        purple_contact_info_get_name_for_display(contact_info),
+	                        purple_contact_info_get_name_for_display(account_info));
 	purple_notification_set_title(notification, title);
 	g_free(title);
 }
@@ -91,12 +85,18 @@ purple_notification_authorization_request_set_request(PurpleNotificationAuthoriz
 		g_object_freeze_notify(obj);
 
 		if(PURPLE_IS_AUTHORIZATION_REQUEST(request)) {
-			account = purple_authorization_request_get_account(request);
+			PurpleContact *contact = NULL;
+
+			contact = purple_authorization_request_get_contact(request);
+			account = purple_contact_get_account(contact);
 
 			g_signal_connect_object(request, "notify",
-			                        G_CALLBACK(purple_notification_authorization_request_request_changed_cb),
-			                        notification, 0);
+			                        G_CALLBACK(purple_notification_authorization_request_notify_cb),
+			                        notification, G_CONNECT_DEFAULT);
 
+			g_signal_connect_object(contact, "notify::name-for-display",
+			                        G_CALLBACK(purple_notification_authorization_request_notify_cb),
+			                        notification, G_CONNECT_DEFAULT);
 		}
 
 		purple_notification_set_account(PURPLE_NOTIFICATION(notification),
@@ -113,9 +113,9 @@ purple_notification_authorization_request_set_request(PurpleNotificationAuthoriz
  * Callbacks
  *****************************************************************************/
 static void
-purple_notification_authorization_request_request_changed_cb(G_GNUC_UNUSED GObject *obj,
-                                                             G_GNUC_UNUSED GParamSpec *pspec,
-                                                             gpointer data)
+purple_notification_authorization_request_notify_cb(G_GNUC_UNUSED GObject *obj,
+                                                    G_GNUC_UNUSED GParamSpec *pspec,
+                                                    gpointer data)
 {
 	purple_notification_authorization_request_update(data);
 }
@@ -136,11 +136,12 @@ purple_notification_authorization_request_constructed(GObject *obj) {
 
 	account = purple_notification_get_account(notification);
 	if(!PURPLE_IS_ACCOUNT(account)) {
+		PurpleContact *contact = NULL;
 		PurpleNotificationAuthorizationRequest *auth_notification = NULL;
 
 		auth_notification = PURPLE_NOTIFICATION_AUTHORIZATION_REQUEST(obj);
-
-		account = purple_authorization_request_get_account(auth_notification->authorization_request);
+		contact = purple_authorization_request_get_contact(auth_notification->authorization_request);
+		account = purple_contact_get_account(contact);
 
 		purple_notification_set_account(notification, account);
 	}
