@@ -209,6 +209,31 @@ pidgin_application_setup_debug(G_GNUC_UNUSED PidginApplication *application) {
 #endif /* PURPLE_DEBUG */
 }
 
+static void
+pidgin_application_add_debug_notification(G_GNUC_UNUSED PidginApplication *application)
+{
+#ifdef PURPLE_DEBUG
+	PurpleNotification *notification = NULL;
+	PurpleNotificationManager *manager = NULL;
+
+	notification = purple_notification_link_new(NULL,
+	                                            _("Unreleased Version"),
+	                                            _("Issue Tracker"),
+	                                            "https://issues.imfreedom.org/issues/PIDGIN");
+	purple_notification_set_subtitle(notification,
+	                                 _("This is an unreleased version of "
+	                                   "Pidgin which means things will be "
+	                                   "broken. Please check our issue "
+	                                   "tracker before reporting bugs."));
+	purple_notification_set_icon_name(notification, "im.pidgin.Pidgin3");
+	purple_notification_set_persistent(notification, TRUE);
+
+	manager = purple_notification_manager_get_default();
+	purple_notification_manager_add(manager, notification);
+	g_clear_object(&notification);
+#endif /* PURPLE_DEBUG */
+}
+
 /******************************************************************************
  * Actions
  *****************************************************************************/
@@ -748,6 +773,8 @@ pidgin_application_startup(GApplication *application) {
 
 		return;
 	}
+
+	pidgin_application_add_debug_notification(PIDGIN_APPLICATION(application));
 
 	pidgin_application_init_plugins();
 
