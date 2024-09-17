@@ -337,6 +337,7 @@ purple_ircv3_rpl_welcome_handler(G_GNUC_UNUSED IbisClient *client,
 		 * parameter of RPL_WELCOME is the nick that the server assigned us.
 		 */
 		purple_contact_info_set_id(info, params[0]);
+		purple_contact_info_set_username(info, params[0]);
 	}
 
 	purple_ircv3_write_server_status_message(connection, message, FALSE);
@@ -602,7 +603,7 @@ purple_ircv3_connection_connect(PurpleConnection *purple_connection,
 	                                             connection->client);
 
 	ibis_client_set_nick(connection->client,
-	                     purple_connection_get_display_name(purple_connection));
+	                     purple_account_get_username(account));
 
 	value = purple_account_get_string(account, "ident", NULL);
 	ibis_client_set_username(connection->client, value);
@@ -725,8 +726,6 @@ purple_ircv3_connection_constructed(GObject *obj) {
 	/* Split the username into nick and server and store the values. */
 	username = purple_account_get_username(account);
 	userparts = g_strsplit(username, "@", 2);
-	purple_connection_set_display_name(PURPLE_CONNECTION(connection),
-	                                   userparts[0]);
 	connection->server_name = g_strdup(userparts[1]);
 
 	/* Free the userparts vector. */
