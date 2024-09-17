@@ -128,7 +128,7 @@ PurpleNotification *purple_notification_new(PurpleNotificationType type, PurpleA
  * set the id for that purpose, but sure to set [property@Notification:account]
  * as well.
  *
- * Returns: (transfers full): The new notification.
+ * Returns: (transfer full): The new notification.
  *
  * Since: 3.0
  */
