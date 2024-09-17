@@ -1,6 +1,7 @@
 IRCV3_SOURCES = [
 	'purpleircv3connection.c',
 	'purpleircv3core.c',
+	'purpleircv3ctcphandlers.c',
 	'purpleircv3messagehandlers.c',
 	'purpleircv3protocol.c',
 	'purpleircv3protocolconversation.c',
@@ -9,6 +10,7 @@ IRCV3_SOURCES = [
 IRCV3_HEADERS = [
 	'purpleircv3connection.h',
 	'purpleircv3core.h',
+	'purpleircv3ctcphandlers.h',
 	'purpleircv3messagehandlers.h',
 	'purpleircv3protocol.h',
 	'purpleircv3protocolconversation.h',
@@ -18,7 +20,7 @@ if not DYNAMIC_IRCV3
 	subdir_done()
 endif
 
-ibis_dep = dependency('ibis', version : '>= 0.8.0')
+ibis_dep = dependency('ibis', version : '>= 0.8.1')
 
 ircv3_filebase = f'purple-@purple_major_version@-ircv3'
 

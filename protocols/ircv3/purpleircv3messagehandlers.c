@@ -26,6 +26,7 @@
 
 #include "purpleircv3connection.h"
 #include "purpleircv3core.h"
+#include "purpleircv3ctcphandlers.h"
 
 /******************************************************************************
  * Helpers
@@ -421,14 +422,18 @@ purple_ircv3_message_handler_privmsg(IbisClient *client, const char *command,
 		purple_message_set_timestamp_now(message);
 	}
 
-	/* Check if this is a CTCP message. */
-	if(ibis_message_get_ctcp(ibis_message)) {
-		/* TODO: later... */
-	}
-
 	purple_conversation_write_message(conversation, message);
 
 	g_clear_object(&message);
+
+	/* If the message contained a CTCP message and was a PRIVMSG, we then need
+	 * to attempt to handle it.
+	 */
+	if(IBIS_IS_CTCP_MESSAGE(ctcp_message) &&
+	   purple_strequal(command, IBIS_MSG_PRIVMSG))
+	{
+		purple_ircv3_ctcp_handler(connection, client, ibis_message);
+	}
 
 	return TRUE;
 }
