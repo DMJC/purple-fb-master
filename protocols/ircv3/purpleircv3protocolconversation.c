@@ -43,6 +43,7 @@ purple_ircv3_protocol_conversation_send_message_async(PurpleProtocolConversation
 	PurpleIRCv3Connection *v3_connection = NULL;
 	PurpleAccount *account = NULL;
 	PurpleConnection *connection = NULL;
+	PurpleConversation *status_conversation = NULL;
 	IbisClient *client = NULL;
 	IbisMessage *ibis_message = NULL;
 	GTask *task = NULL;
@@ -52,6 +53,16 @@ purple_ircv3_protocol_conversation_send_message_async(PurpleProtocolConversation
 	connection = purple_account_get_connection(account);
 	v3_connection = PURPLE_IRCV3_CONNECTION(connection);
 
+	/* We ignore non commands to the status conversation. */
+	status_conversation = purple_ircv3_connection_get_status_conversation(v3_connection);
+	if(conversation == status_conversation) {
+		task = g_task_new(protocol, cancellable, callback, data);
+		g_task_return_boolean(task, TRUE);
+		g_clear_object(&task);
+
+		return;
+	}
+
 	id = purple_conversation_get_id(conversation);
 	/* TODO: the new message dialog sets the name but not the id and we want to
 	 * use the id only, so for now if id is NULL we grab the name.
@@ -60,11 +71,11 @@ purple_ircv3_protocol_conversation_send_message_async(PurpleProtocolConversation
 		id = purple_conversation_get_name(conversation);
 	}
 
-	client = purple_ircv3_connection_get_client(v3_connection);
-
 	ibis_message = ibis_message_new(IBIS_MSG_PRIVMSG);
 	ibis_message_set_params(ibis_message, id,
 	                        purple_message_get_contents(message), NULL);
+
+	client = purple_ircv3_connection_get_client(v3_connection);
 	ibis_client_write(client, ibis_message);
 
 	task = g_task_new(protocol, cancellable, callback, data);
