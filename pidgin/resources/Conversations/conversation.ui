@@ -66,15 +66,14 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
       </object>
     </child>
     <child>
-      <object class="AdwFlap">
-        <property name="flap-position">end</property>
-        <property name="fold-policy">auto</property>
-        <property name="swipe-to-close">1</property>
-        <property name="swipe-to-open">1</property>
-        <binding name="reveal-flap">
+      <object class="AdwOverlaySplitView">
+        <property name="sidebar-position">end</property>
+        <property name="enable-hide-gesture">true</property>
+        <property name="enable-show-gesture">true</property>
+        <binding name="show-sidebar">
           <lookup name="active">toggle_flap</lookup>
         </binding>
-        <child type="content">
+        <property name="content">
           <object class="GtkScrolledWindow">
             <property name="hexpand">1</property>
             <property name="vadjustment">
@@ -102,8 +101,8 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
               </object>
             </child>
           </object>
-        </child>
-        <child type="flap">
+        </property>
+        <property name="sidebar">
           <object class="GtkScrolledWindow">
             <property name="hscrollbar-policy">never</property>
             <property name="margin-bottom">6</property>
@@ -142,7 +141,7 @@ along with this library; if not, see <https://www.gnu.org/licenses/>.
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
     <child>

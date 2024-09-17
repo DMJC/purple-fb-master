@@ -202,11 +202,10 @@ endif
 #######################################################################
 if get_option('gtkui')
 	gtk = dependency('gtk4', version : '>= 4.10.0')
-	libadwaita = dependency('libadwaita-1', version : '>= 1.2')
-endif	# GTK
+	libadwaita = dependency('libadwaita-1', version : '>= 1.4')
+endif
 
 ENABLE_GTK = get_option('gtkui')
-
 
 #######################################################################
 # Check for LibXML2 (required)
