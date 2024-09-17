@@ -41,8 +41,8 @@ modules:
     sources:
       - type: archive
         archive-type: tar-xz
-        url: https://sourceforge.net/projects/pidgin/files/ibis/0.8.0/ibis-0.8.0.tar.xz/download
-        sha256: a4cadcd1d2775536401ba410314953fc1dbbea16a62a0520b66acfe31986f309
+        url: https://sourceforge.net/projects/pidgin/files/ibis/0.8.2/ibis-0.8.2.tar.xz/download
+        sha256: cd5c5fdfed9912baa56f8219b7839ca165480b993d362cbda4be4c2fdc627c91
   - name: xeme
     buildsystem: meson
     config-opts:
