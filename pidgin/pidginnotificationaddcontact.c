@@ -27,264 +27,101 @@
 #include "pidgin/pidginnotificationaddcontact.h"
 
 struct _PidginNotificationAddContact {
-	AdwActionRow parent;
-
-	PurpleNotification *notification;
-
-	GtkWidget *icon;
-	GtkWidget *add;
-	GtkWidget *message;
+	PidginNotification parent;
 };
-
-enum {
-	PROP_0,
-	PROP_NOTIFICATION,
-	N_PROPERTIES,
-};
-static GParamSpec *properties[N_PROPERTIES] = {NULL, };
 
 G_DEFINE_FINAL_TYPE(PidginNotificationAddContact,
-                    pidgin_notification_add_contact, ADW_TYPE_ACTION_ROW)
-
-/******************************************************************************
- * Helpers
- *****************************************************************************/
-static void
-pidgin_notification_add_contact_update(PidginNotificationAddContact *add_contact)
-{
-	PurpleAccount *account = NULL;
-	PurpleAddContactRequest *request = NULL;
-	const gchar *title = NULL;
-	const gchar *icon_name = NULL, *message = NULL;
-
-	g_return_if_fail(PIDGIN_IS_NOTIFICATION_ADD_CONTACT(add_contact));
-
-	if(!PURPLE_IS_NOTIFICATION(add_contact->notification)) {
-		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(add_contact),
-		                              _("Notification missing"));
-
-		gtk_image_set_from_icon_name(GTK_IMAGE(add_contact->icon), NULL);
-		adw_action_row_set_subtitle(ADW_ACTION_ROW(add_contact), NULL);
-
-		gtk_widget_set_visible(add_contact->add, FALSE);
-		gtk_widget_set_visible(add_contact->message, FALSE);
-
-		return;
-	}
-
-	account = purple_notification_get_account(add_contact->notification);
-	if(!PURPLE_IS_ACCOUNT(account)) {
-		adw_preferences_row_set_title(ADW_PREFERENCES_ROW(add_contact),
-		                              _("Notification is missing an account"));
-
-		gtk_image_set_from_icon_name(GTK_IMAGE(add_contact->icon), NULL);
-		adw_action_row_set_subtitle(ADW_ACTION_ROW(add_contact), NULL);
-
-		gtk_widget_set_visible(add_contact->add, FALSE);
-		gtk_widget_set_visible(add_contact->message, FALSE);
-
-		return;
-	}
-
-	request = purple_notification_get_data(add_contact->notification);
-
-	/* Set the icon name if one was specified. */
-	icon_name = purple_notification_get_icon_name(add_contact->notification);
-	if(icon_name == NULL) {
-		PurpleProtocol *protocol = NULL;
-
-		protocol = purple_account_get_protocol(account);
-		icon_name = purple_protocol_get_icon_name(protocol);
-
-		if(icon_name == NULL) {
-			icon_name = "dialog-question";
-		}
-	}
-	gtk_image_set_from_icon_name(GTK_IMAGE(add_contact->icon), icon_name);
-
-	title = purple_notification_get_title(add_contact->notification);
-	adw_preferences_row_set_title(ADW_PREFERENCES_ROW(add_contact), title);
-
-	message = purple_add_contact_request_get_message(request);
-	adw_action_row_set_subtitle(ADW_ACTION_ROW(add_contact), message);
-
-	gtk_widget_set_visible(add_contact->add, TRUE);
-	gtk_widget_set_visible(add_contact->message, TRUE);
-}
-
-static void
-pidgin_notification_add_contact_set_notification(PidginNotificationAddContact *add_contact,
-                                                 PurpleNotification *notification)
-{
-	if(g_set_object(&add_contact->notification, notification)) {
-		pidgin_notification_add_contact_update(add_contact);
-
-		g_object_notify_by_pspec(G_OBJECT(add_contact),
-		                         properties[PROP_NOTIFICATION]);
-	}
-}
-
-static void
-pidgin_notification_add_contact_close(PidginNotificationAddContact *add_contact)
-{
-	PurpleNotificationManager *manager = NULL;
-
-	purple_notification_delete(add_contact->notification);
-
-	manager = purple_notification_manager_get_default();
-	purple_notification_manager_remove(manager, add_contact->notification);
-}
+                    pidgin_notification_add_contact, PIDGIN_TYPE_NOTIFICATION)
 
 /******************************************************************************
  * Callbacks
  *****************************************************************************/
 static void
-pidgin_notification_add_contact_add_cb(G_GNUC_UNUSED GtkButton *button,
-                                       gpointer data)
+pidgin_notification_add_contact_create_dm_cb(GObject *self,
+                                             GAsyncResult *result,
+                                             G_GNUC_UNUSED gpointer data)
 {
-	PidginNotificationAddContact *pidgin_request = data;
-	PurpleAddContactRequest *request = NULL;
+	PurpleContact *contact = PURPLE_CONTACT(self);
+	PurpleConversation *conversation = NULL;
+	GError *error = NULL;
 
-	request = purple_notification_get_data(pidgin_request->notification);
+	conversation = purple_contact_create_dm_finish(contact, result, &error);
+	if(error != NULL) {
+		g_warning("failed to create dm for %s: %s",
+		          purple_contact_info_get_name_for_display(PURPLE_CONTACT_INFO(contact)),
+		          error->message);
 
-	purple_add_contact_request_add(request);
+		g_clear_error(&error);
+		g_clear_object(&conversation);
 
-	pidgin_notification_add_contact_close(pidgin_request);
+		return;
+	}
+
+	if(PURPLE_IS_CONVERSATION(conversation)) {
+		purple_conversation_present(conversation);
+	}
+
+	g_clear_object(&conversation);
 }
 
+/******************************************************************************
+ * Actions
+ *****************************************************************************/
 static void
-pidgin_notification_add_contact_message_cb(G_GNUC_UNUSED GtkButton *button,
-                                           gpointer data)
+pidgin_notification_add_contact_message(GtkWidget *self,
+                                        G_GNUC_UNUSED const char *action_name,
+                                        G_GNUC_UNUSED GVariant *parameter)
 {
-	PidginNotificationAddContact *pidgin_request = data;
+	PidginNotification *pidgin_notification = PIDGIN_NOTIFICATION(self);
+	PurpleNotification *purple_notification = NULL;
 	PurpleAddContactRequest *request = NULL;
 	PurpleContact *contact = NULL;
 	PurpleConversation *conversation = NULL;
 
-	request = purple_notification_get_data(pidgin_request->notification);
+	purple_notification = pidgin_notification_get_notification(pidgin_notification);
+	request = purple_notification_add_contact_get_request(PURPLE_NOTIFICATION_ADD_CONTACT(purple_notification));
 	contact = purple_add_contact_request_get_contact(request);
 
 	conversation = purple_contact_find_dm(contact);
 	if(PURPLE_IS_CONVERSATION(conversation)) {
 		purple_conversation_present(conversation);
 	} else {
-		purple_contact_create_dm_async(contact, NULL, NULL, NULL);
+		purple_contact_create_dm_async(contact, NULL,
+		                               pidgin_notification_add_contact_create_dm_cb,
+		                               NULL);
 	}
-}
-
-static void
-pidgin_notification_add_contact_remove_cb(G_GNUC_UNUSED GtkButton *button,
-                                          gpointer data)
-{
-	PidginNotificationAddContact *request = data;
-
-	pidgin_notification_add_contact_close(request);
 }
 
 /******************************************************************************
  * GObject Implementation
  *****************************************************************************/
 static void
-pidgin_notification_add_contact_get_property(GObject *obj, guint param_id,
-                                             GValue *value, GParamSpec *pspec)
+pidgin_notification_add_contact_init(PidginNotificationAddContact *notification)
 {
-	PidginNotificationAddContact *request = NULL;
-
-	request = PIDGIN_NOTIFICATION_ADD_CONTACT(obj);
-
-	switch(param_id) {
-		case PROP_NOTIFICATION:
-			g_value_set_object(value,
-			                   pidgin_notification_add_contact_get_notification(request));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
-	}
-}
-
-static void
-pidgin_notification_add_contact_set_property(GObject *obj, guint param_id,
-                                             const GValue *value,
-                                             GParamSpec *pspec)
-{
-	PidginNotificationAddContact *request = NULL;
-
-	request = PIDGIN_NOTIFICATION_ADD_CONTACT(obj);
-
-	switch(param_id) {
-		case PROP_NOTIFICATION:
-			pidgin_notification_add_contact_set_notification(request,
-			                                                 g_value_get_object(value));
-			break;
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-			break;
-	}
-}
-
-static void
-pidgin_notification_add_contact_dispose(GObject *obj) {
-	PidginNotificationAddContact *request = NULL;
-
-	request = PIDGIN_NOTIFICATION_ADD_CONTACT(obj);
-
-	g_clear_object(&request->notification);
-
-	G_OBJECT_CLASS(pidgin_notification_add_contact_parent_class)->dispose(obj);
-}
-
-static void
-pidgin_notification_add_contact_init(PidginNotificationAddContact *list) {
-	gtk_widget_init_template(GTK_WIDGET(list));
+	gtk_widget_init_template(GTK_WIDGET(notification));
 }
 
 static void
 pidgin_notification_add_contact_class_init(PidginNotificationAddContactClass *klass)
 {
-	GObjectClass *obj_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
-
-	obj_class->get_property = pidgin_notification_add_contact_get_property;
-	obj_class->set_property = pidgin_notification_add_contact_set_property;
-	obj_class->dispose = pidgin_notification_add_contact_dispose;
-
-	/**
-	 * PidginNotificationAddContact:notification:
-	 *
-	 * The [type@Purple.Notification] that is being displayed.
-	 *
-	 * Since: 3.0
-	 */
-	properties[PROP_NOTIFICATION] = g_param_spec_object(
-		"notification", "notification",
-		"The notification to display",
-		PURPLE_TYPE_NOTIFICATION,
-		G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-
-	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
 
 	gtk_widget_class_set_template_from_resource(
 	    widget_class,
-	    "/im/pidgin/Pidgin3/Notifications/addcontact.ui"
+	    "/im/pidgin/Pidgin3/notificationaddcontact.ui"
 	);
 
-	gtk_widget_class_bind_template_child(widget_class,
-	                                     PidginNotificationAddContact,
-	                                     icon);
-	gtk_widget_class_bind_template_child(widget_class,
-	                                     PidginNotificationAddContact,
-	                                     add);
-	gtk_widget_class_bind_template_child(widget_class,
-	                                     PidginNotificationAddContact,
-	                                     message);
-
-	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_notification_add_contact_add_cb);
-	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_notification_add_contact_message_cb);
-	gtk_widget_class_bind_template_callback(widget_class,
-	                                        pidgin_notification_add_contact_remove_cb);
+#if 0
+	/* This is disabled because it uses the request API and we really need to
+	 * create a real dialog for this instead.
+	 */
+	gtk_widget_class_install_action(widget_class, "notification.add-contact",
+	                                NULL,
+	                                pidgin_notification_add_contact_add_contact);
+#endif
+	gtk_widget_class_install_action(widget_class, "notification.message",
+	                                NULL,
+	                                pidgin_notification_add_contact_message);
 }
 
 /******************************************************************************
@@ -292,16 +129,11 @@ pidgin_notification_add_contact_class_init(PidginNotificationAddContactClass *kl
  *****************************************************************************/
 GtkWidget *
 pidgin_notification_add_contact_new(PurpleNotification *notification) {
+	g_return_val_if_fail(PURPLE_IS_NOTIFICATION_ADD_CONTACT(notification),
+	                     NULL);
+
 	return g_object_new(
 		PIDGIN_TYPE_NOTIFICATION_ADD_CONTACT,
 		"notification", notification,
 		NULL);
-}
-
-PurpleNotification *
-pidgin_notification_add_contact_get_notification(PidginNotificationAddContact *add_contact)
-{
-	g_return_val_if_fail(PIDGIN_IS_NOTIFICATION_ADD_CONTACT(add_contact), NULL);
-
-	return add_contact->notification;
 }

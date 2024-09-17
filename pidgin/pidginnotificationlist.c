@@ -24,12 +24,11 @@
 
 #include <purple.h>
 
-#include "pidgin/pidginnotificationlist.h"
+#include "pidginnotificationlist.h"
 
-#include "pidgin/pidginnotifiable.h"
-#include "pidgin/pidginnotificationaddcontact.h"
-#include "pidgin/pidginnotificationauthorizationrequest.h"
-#include "pidgin/pidginnotificationconnectionerror.h"
+#include "pidginnotifiable.h"
+#include "pidginnotification.h"
+#include "pidginnotificationaddcontact.h"
 
 enum {
 	PROP_0,
@@ -50,27 +49,6 @@ struct _PidginNotificationList {
 /******************************************************************************
  * Helpers
  *****************************************************************************/
-static GtkWidget *
-pidgin_notification_generic_new(PurpleNotification *notification) {
-	GtkWidget *row = NULL;
-	GtkWidget *icon = NULL;
-
-	icon = gtk_image_new();
-	gtk_image_set_icon_size(GTK_IMAGE(icon), GTK_ICON_SIZE_LARGE);
-	g_object_bind_property(notification, "icon-name", icon, "icon-name",
-	                       G_BINDING_SYNC_CREATE);
-
-	row = adw_action_row_new();
-	adw_action_row_add_prefix(ADW_ACTION_ROW(row), icon);
-
-	g_object_bind_property(notification, "title", row, "title",
-	                       G_BINDING_SYNC_CREATE);
-	g_object_bind_property(notification, "subtitle", row, "subtitle",
-	                       G_BINDING_SYNC_CREATE);
-
-	return row;
-}
-
 static guint
 pidgin_notification_list_get_count(PidginNotificationList *list) {
 	g_return_val_if_fail(PIDGIN_IS_NOTIFICATION_LIST(list), 0);
@@ -125,20 +103,10 @@ pidgin_notification_list_bind_cb(G_GNUC_UNUSED GtkSignalListItemFactory *self,
 
 	notification = gtk_list_item_get_item(item);
 
-	switch(purple_notification_get_notification_type(notification)) {
-		case PURPLE_NOTIFICATION_TYPE_CONNECTION_ERROR:
-			widget = pidgin_notification_connection_error_new(notification);
-			break;
-		case PURPLE_NOTIFICATION_TYPE_AUTHORIZATION_REQUEST:
-			widget = pidgin_notification_authorization_request_new(notification);
-			break;
-		case PURPLE_NOTIFICATION_TYPE_ADD_CONTACT:
-			widget = pidgin_notification_add_contact_new(notification);
-			break;
-		case PURPLE_NOTIFICATION_TYPE_GENERIC:
-		default:
-			widget = pidgin_notification_generic_new(notification);
-			break;
+	if(PURPLE_IS_NOTIFICATION_ADD_CONTACT(notification)) {
+		widget = pidgin_notification_add_contact_new(notification);
+	} else {
+		widget = pidgin_notification_new(notification);
 	}
 
 	gtk_list_item_set_child(item, widget);

@@ -35,6 +35,7 @@
 
 #include <purple.h>
 
+#include "pidginnotification.h"
 #include "pidginversion.h"
 
 G_BEGIN_DECLS
@@ -53,7 +54,7 @@ G_BEGIN_DECLS
 
 PIDGIN_AVAILABLE_IN_3_0
 G_DECLARE_FINAL_TYPE(PidginNotificationAddContact, pidgin_notification_add_contact,
-                     PIDGIN, NOTIFICATION_ADD_CONTACT, AdwActionRow)
+                     PIDGIN, NOTIFICATION_ADD_CONTACT, PidginNotification)
 
 /**
  * pidgin_notification_add_contact_new:
@@ -69,19 +70,6 @@ G_DECLARE_FINAL_TYPE(PidginNotificationAddContact, pidgin_notification_add_conta
  */
 PIDGIN_AVAILABLE_IN_3_0
 GtkWidget *pidgin_notification_add_contact_new(PurpleNotification *notification);
-
-/**
- * pidgin_notification_add_contact_get_notification:
- * @request: The instance.
- *
- * Gets the [class@Purple.Notification] that @request is displaying.
- *
- * Returns: (transfer none): The notification.
- *
- * Since: 3.0
- */
-PIDGIN_AVAILABLE_IN_3_0
-PurpleNotification *pidgin_notification_add_contact_get_notification(PidginNotificationAddContact *request);
 
 G_END_DECLS
 
