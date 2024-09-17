@@ -174,13 +174,13 @@ endif
 #######################################################################
 # Once we require >= 2.74.0, remove the hack in the if(TRUE) block in
 # libpurple/core.c.
-glib = dependency('glib-2.0', version : '>= 2.76.0')
+glib = dependency('glib-2.0', version : '>= 2.78.0')
 gio = dependency('gio-2.0')
 gnome = import('gnome')
 
 add_project_arguments(
-	'-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_76',
-	'-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_76',
+	'-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_78',
+	'-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_78',
 	language : 'c',)
 
 #######################################################################

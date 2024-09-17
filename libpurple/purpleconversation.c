@@ -209,7 +209,7 @@ purple_conversation_set_account(PurpleConversation *conversation,
 
 			g_signal_connect_object(account, "notify::connected",
 			                        G_CALLBACK(purple_conversation_account_connected_cb),
-			                        conversation, 0);
+			                        conversation, G_CONNECT_DEFAULT);
 		}
 
 		obj = G_OBJECT(conversation);
@@ -349,7 +349,7 @@ purple_conversation_account_connected_cb(GObject *obj,
  * To avoid this, we just set the typing_state_source to 0 which will make
  * purple_conversation_set_typing_state not try to cancel the source.
  */
-static gboolean
+static void
 purple_conversation_typing_state_typing_cb(gpointer data) {
 	PurpleConversation *conversation = data;
 
@@ -357,8 +357,6 @@ purple_conversation_typing_state_typing_cb(gpointer data) {
 
 	purple_conversation_set_typing_state(conversation,
 	                                     PURPLE_TYPING_STATE_PAUSED);
-
-	return G_SOURCE_REMOVE;
 }
 
 /*
@@ -376,7 +374,7 @@ purple_conversation_typing_state_typing_cb(gpointer data) {
  * To avoid this, we just set the typing_state_source to 0 which will make
  * purple_conversation_set_typing_state not try to cancel the source.
  */
-static gboolean
+static void
 purple_conversation_typing_state_paused_cb(gpointer data) {
 	PurpleConversation *conversation = data;
 
@@ -384,8 +382,6 @@ purple_conversation_typing_state_paused_cb(gpointer data) {
 
 	purple_conversation_set_typing_state(conversation,
 	                                     PURPLE_TYPING_STATE_NONE);
-
-	return G_SOURCE_REMOVE;
 }
 
 /**************************************************************************
@@ -1809,8 +1805,8 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 
 	/* We set some default timeouts based on the state. If the new state is
 	 * TYPING, we use a 6 second timeout that will change the state to PAUSED.
-	 * When the state changes to PAUSED we will set a 30 second time that will
-	 * change the state to NONE.
+	 * When the state changes to PAUSED we will set a 30 second timeout that
+	 * will change the state to NONE.
 	 *
 	 * This allows the user interface to just tell libpurple when the user is
 	 * typing, and the rest happens automatically.
@@ -1819,11 +1815,15 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 		GDateTime *now = NULL;
 
 		conversation->typing_state_source =
-			g_timeout_add_seconds(6,
-			                      purple_conversation_typing_state_typing_cb,
-			                      conversation);
+			g_timeout_add_seconds_once(6,
+			                           purple_conversation_typing_state_typing_cb,
+			                           conversation);
 
-		/* Use local time because this is local to the user and we might want
+		/* We don't want to spam services with typing notifications, so we only
+		 * send them if it's been at least 3 seconds since the last one was
+		 * sent.
+		 *
+		 * Use local time because this is local to the user and we might want
 		 * to output this during debug or something, and a local time stamp
 		 * will make a lot more sense then.
 		 */
@@ -1832,8 +1832,9 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 			GTimeSpan difference = 0;
 
 			difference = g_date_time_difference(now, conversation->last_typing);
+			birb_date_time_clear(&conversation->last_typing);
 
-			if(difference > 3 * G_TIME_SPAN_SECOND) {
+			if(difference >= 3 * G_TIME_SPAN_SECOND) {
 				send = TRUE;
 			}
 		}
@@ -1841,9 +1842,11 @@ purple_conversation_set_typing_state(PurpleConversation *conversation,
 		conversation->last_typing = now;
 	} else if(typing_state == PURPLE_TYPING_STATE_PAUSED) {
 		conversation->typing_state_source =
-			g_timeout_add_seconds(30,
-			                      purple_conversation_typing_state_paused_cb,
-			                      conversation);
+			g_timeout_add_seconds_once(30,
+			                           purple_conversation_typing_state_paused_cb,
+			                           conversation);
+	} else if(typing_state == PURPLE_TYPING_STATE_NONE) {
+		birb_date_time_clear(&conversation->last_typing);
 	}
 
 	if(conversation->typing_state != typing_state) {
