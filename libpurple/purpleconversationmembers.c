@@ -26,12 +26,15 @@ struct _PurpleConversationMembers {
 	GObject parent;
 
 	GPtrArray *members;
+
+	GListStore *active_typers;
 };
 
 enum {
 	PROP_0,
 	PROP_ITEM_TYPE,
 	PROP_N_ITEMS,
+	PROP_ACTIVE_TYPERS,
 	N_PROPERTIES,
 };
 static GParamSpec *properties[N_PROPERTIES] = {NULL, };
@@ -79,6 +82,29 @@ purple_conversation_members_member_changed_cb(GObject *self,
 
 	if(found) {
 		g_list_model_items_changed(G_LIST_MODEL(members), position, 0, 0);
+	}
+}
+
+static void
+purple_conversation_members_typing_changed_cb(GObject *self,
+                                              G_GNUC_UNUSED GParamSpec *pspec,
+                                              gpointer data)
+{
+	PurpleConversationMember *member = PURPLE_CONVERSATION_MEMBER(self);
+	PurpleConversationMembers *members = data;
+	PurpleTypingState state = PURPLE_TYPING_STATE_NONE;
+	gboolean found = FALSE;
+	guint position = 0;
+
+	state = purple_conversation_member_get_typing_state(member);
+
+	found = g_list_store_find(members->active_typers, member, &position);
+	if(found && state != PURPLE_TYPING_STATE_TYPING) {
+		g_list_store_remove(members->active_typers, position);
+	}
+
+	if(!found && state == PURPLE_TYPING_STATE_TYPING) {
+		g_list_store_append(members->active_typers, member);
 	}
 }
 
@@ -132,6 +158,7 @@ purple_conversation_members_finalize(GObject *obj) {
 	PurpleConversationMembers *members = PURPLE_CONVERSATION_MEMBERS(obj);
 
 	g_clear_pointer(&members->members, g_ptr_array_unref);
+	g_clear_object(&members->active_typers);
 
 	G_OBJECT_CLASS(purple_conversation_members_parent_class)->finalize(obj);
 }
@@ -140,6 +167,8 @@ static void
 purple_conversation_members_get_property(GObject *obj, guint param_id,
                                          GValue *value, GParamSpec *pspec)
 {
+	PurpleConversationMembers *members = PURPLE_CONVERSATION_MEMBERS(obj);
+
 	switch(param_id) {
 	case PROP_ITEM_TYPE:
 		g_value_set_gtype(value,
@@ -147,6 +176,10 @@ purple_conversation_members_get_property(GObject *obj, guint param_id,
 		break;
 	case PROP_N_ITEMS:
 		g_value_set_uint(value, g_list_model_get_n_items(G_LIST_MODEL(obj)));
+		break;
+	case PROP_ACTIVE_TYPERS:
+		g_value_set_object(value,
+		                   purple_conversation_members_get_active_typers(members));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
@@ -158,6 +191,8 @@ static void
 purple_conversation_members_init(PurpleConversationMembers *members) {
 	/* We allocate 2 as dms have at least 2 members. */
 	members->members = g_ptr_array_new_full(2, g_object_unref);
+
+	members->active_typers = g_list_store_new(PURPLE_TYPE_CONVERSATION_MEMBER);
 }
 
 static void
@@ -189,6 +224,18 @@ purple_conversation_members_class_init(PurpleConversationMembersClass *klass) {
 	properties[PROP_N_ITEMS] = g_param_spec_uint(
 		"n-items", NULL, NULL,
 		0, G_MAXUINT, 0,
+		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+	/**
+	 * PurpleConversationMembers:active-typers:
+	 *
+	 * The list of [class@ConversationMember]s that are actively typing.
+	 *
+	 * Since: 3.0
+	 */
+	properties[PROP_ACTIVE_TYPERS] = g_param_spec_object(
+		"active-typers", NULL, NULL,
+		G_TYPE_LIST_MODEL,
 		G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 	g_object_class_install_properties(obj_class, N_PROPERTIES, properties);
@@ -271,7 +318,7 @@ purple_conversation_members_add_member(PurpleConversationMembers *members,
 	                        G_CALLBACK(purple_conversation_members_member_changed_cb),
 	                        members, G_CONNECT_DEFAULT);
 	g_signal_connect_object(member, "notify::typing-state",
-	                        G_CALLBACK(purple_conversation_members_member_changed_cb),
+	                        G_CALLBACK(purple_conversation_members_typing_changed_cb),
 	                        members, G_CONNECT_DEFAULT);
 
 	g_signal_emit(members, signals[SIG_MEMBER_ADDED], 0, member, announce,
@@ -357,4 +404,12 @@ purple_conversation_members_remove_member(PurpleConversationMembers *members,
 	g_clear_object(&member);
 
 	return TRUE;
+}
+
+GListModel *
+purple_conversation_members_get_active_typers(PurpleConversationMembers *members)
+{
+	g_return_val_if_fail(PURPLE_IS_CONVERSATION_MEMBERS(members), NULL);
+
+	return G_LIST_MODEL(members->active_typers);
 }

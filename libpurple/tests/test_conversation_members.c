@@ -169,7 +169,8 @@ test_purple_conversation_members_item_changed(void) {
 	 * make changes to it, to verify that the items-changed signal gets called.
 	 */
 	info = purple_contact_info_new("second");
-	member = purple_conversation_members_add_member(members, info, FALSE, NULL);
+	member = purple_conversation_members_add_member(members, info, FALSE,
+	                                                NULL);
 	g_assert_true(PURPLE_IS_CONVERSATION_MEMBER(member));
 
 	/* Connect the items-changed signal. We do this after everything is added
@@ -194,11 +195,70 @@ test_purple_conversation_members_item_changed(void) {
 	purple_conversation_member_set_nickname(member, "nickname");
 	g_assert_cmpuint(counter, ==, 1);
 
-	/* Change the typing-state on the member. */
+	g_assert_finalize_object(members);
+	g_assert_finalize_object(info);
+}
+
+/******************************************************************************
+ * Active Typers Tests
+ *****************************************************************************/
+static void
+test_purple_conversation_members_active_typers_changed_cb(G_GNUC_UNUSED GListModel *model,
+                                                          G_GNUC_UNUSED guint position,
+                                                          G_GNUC_UNUSED guint removed,
+                                                          G_GNUC_UNUSED guint added,
+                                                          gpointer data)
+{
+	guint *counter = data;
+
+	*counter = *counter + 1;
+}
+
+static void
+test_purple_conversation_members_active_typers(void) {
+	PurpleContactInfo *info = NULL;
+	PurpleConversationMember *member = NULL;
+	PurpleConversationMembers *members = NULL;
+	GListModel *active_typers = NULL;
+	guint counter = 0;
+
+	members = purple_conversation_members_new();
+	active_typers = purple_conversation_members_get_active_typers(members);
+	g_signal_connect(active_typers, "items-changed",
+	                 G_CALLBACK(test_purple_conversation_members_active_typers_changed_cb),
+	                 &counter);
+
+	info = purple_contact_info_new(NULL);
+	member = purple_conversation_members_add_member(members, info, FALSE,
+	                                                NULL);
+
+	g_assert_cmpuint(counter, ==, 0);
+
+	purple_conversation_member_set_typing_state(member,
+	                                            PURPLE_TYPING_STATE_TYPING, 0);
+	g_assert_cmpuint(counter, ==, 1);
+	g_assert_cmpuint(g_list_model_get_n_items(active_typers), ==, 1);
+
+	/* If the a user gets a typing refresh nothing should change. */
 	counter = 0;
 	purple_conversation_member_set_typing_state(member,
-	                                            PURPLE_TYPING_STATE_TYPING, 6);
+	                                            PURPLE_TYPING_STATE_TYPING, 0);
+	g_assert_cmpuint(counter, ==, 0);
+	g_assert_cmpuint(g_list_model_get_n_items(active_typers), ==, 1);
+
+	/* Set the user's typing state to none. */
+	counter = 0;
+	purple_conversation_member_set_typing_state(member,
+	                                            PURPLE_TYPING_STATE_NONE, 0);
 	g_assert_cmpuint(counter, ==, 1);
+	g_assert_cmpuint(g_list_model_get_n_items(active_typers), ==, 0);
+
+	/* Set the user's state to none again and verify no changes. */
+	counter = 0;
+	purple_conversation_member_set_typing_state(member,
+	                                            PURPLE_TYPING_STATE_NONE, 0);
+	g_assert_cmpuint(counter, ==, 0);
+	g_assert_cmpuint(g_list_model_get_n_items(active_typers), ==, 0);
 
 	g_assert_finalize_object(members);
 	g_assert_finalize_object(info);
@@ -216,6 +276,8 @@ main(int argc, char *argv[]) {
 	                test_purple_conversation_members_add_remove);
 	g_test_add_func("/conversation-members/items-changed",
 	                test_purple_conversation_members_item_changed);
+	g_test_add_func("/conversation-members/active-typers",
+	                test_purple_conversation_members_active_typers);
 
 	return g_test_run();
 }

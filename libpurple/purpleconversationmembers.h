@@ -153,6 +153,20 @@ PurpleConversationMembers *purple_conversation_members_new(void);
 PURPLE_AVAILABLE_IN_3_0
 gboolean purple_conversation_members_remove_member(PurpleConversationMembers *members, PurpleContactInfo *info, gboolean announce, const char *message);
 
+/**
+ * purple_conversation_members_get_active_typers:
+ * @members: The instances.
+ *
+ * Gets the list of [class@ConversationMember]s that are actively typing.
+ *
+ * Returns: (transfer none): The list of active of members that are actively
+ *          typing.
+ *
+ * Since: 3.0
+ */
+PURPLE_AVAILABLE_IN_3_0
+GListModel *purple_conversation_members_get_active_typers(PurpleConversationMembers *members);
+
 G_END_DECLS
 
 #endif /* PURPLE_CONVERSATION_MEMBERS_H */
